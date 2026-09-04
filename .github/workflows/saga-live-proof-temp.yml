@@ -1,0 +1,50 @@
+name: Temporary Saga official calendar live proof
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/saga-live-proof-temp.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Inspect official Saga monthly schedule pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          for ym in 202609 202610; do
+            url="https://www.sagakeiba.net/schedule/sch${ym}/"
+            curl -fsSL --retry 3 --retry-delay 2 -A 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' "$url" -o "/tmp/saga-${ym}.html"
+            echo "SAGA ${ym} bytes=$(wc -c < /tmp/saga-${ym}.html) sha256=$(sha256sum /tmp/saga-${ym}.html | awk '{print $1}')"
+          done
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const plain=(value)=>String(value).replace(/<br\s*\/?>/gi,' | ').replace(/<[^>]+>/g,' ').replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/\s+/g,' ').trim();
+          for(const ym of ['202609','202610']){
+            const html=fs.readFileSync(`/tmp/saga-${ym}.html`,'utf8');
+            console.log('TITLE', ym, plain(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? ''));
+            console.log('H2', ym, plain(html.match(/<h2[^>]*>([\s\S]*?)<\/h2>/i)?.[1] ?? ''));
+            const tables=[...html.matchAll(/<table\b[^>]*>[\s\S]*?<\/table>/gi)].map((m)=>m[0]);
+            console.log('TABLE_COUNT', ym, tables.length);
+            for(const [ti,table] of tables.entries()){
+              const header=plain(table.match(/<tr\b[^>]*>([\s\S]*?)<\/tr>/i)?.[1] ?? '');
+              if(!/本場|日付|開催/.test(header)) continue;
+              console.log('TARGET_TABLE', ym, ti, header);
+              const rows=[...table.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)].map((m)=>m[1]);
+              console.log('ROW_COUNT', ym, rows.length);
+              for(const row of rows){
+                const cells=[...row.matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)].map((m)=>plain(m[1]));
+                if(cells.length) console.log('ROW', ym, JSON.stringify(cells));
+              }
+            }
+          }
+          NODE
