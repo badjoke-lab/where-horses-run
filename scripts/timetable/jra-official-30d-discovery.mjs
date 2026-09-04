@@ -26,9 +26,9 @@ async function fetchProgramme(date, fetchImpl) {
     headers: JRA_HEADERS,
   });
 
-  // JRA returns HTTP 403 for guessed calendar dates that have no daily programme.
-  // That can mean either a genuine non-racing date or a future programme that is
-  // not published yet, so it is never sufficient negative evidence by itself.
+  // JRA returns HTTP 403/404 for guessed dates with no accessible daily programme.
+  // That is not reliable negative evidence: it may mean a genuine non-racing date
+  // or a future programme that is not published yet. Keep it unclassified.
   if (response.status === 403 || response.status === 404) return { status: 'not_published', url };
   if (!response.ok) throw new Error(`HTTP ${response.status}: ${url}`);
 
@@ -61,7 +61,10 @@ export async function discoverJraOfficial30dWithCompleteness({ dates, fetchImpl 
   const meetings = [...new Map(found.map((meeting) => [meeting.meeting_id, meeting])).values()];
   const sourceVisibleHorizon = successfulDates.at(-1);
   const requestedHorizon = dates.at(-1);
-  const completeness = sourceVisibleHorizon === requestedHorizon ? 'complete' : 'partial';
+  // A daily programme URL can positively prove a meeting but cannot prove that a
+  // 403/404 date is a non-racing date. Therefore absence reconciliation is allowed
+  // only when every requested date was positively classified by this source.
+  const completeness = notPublishedDates.length === 0 ? 'complete' : 'partial';
   return {
     meetings,
     completeness: {
@@ -72,7 +75,7 @@ export async function discoverJraOfficial30dWithCompleteness({ dates, fetchImpl 
       completeness,
       parsed_meeting_count: meetings.length,
       parsed_detail_count: 0,
-      pending_count: notPublishedDates.filter((date) => date > sourceVisibleHorizon).length,
+      pending_count: notPublishedDates.length,
       failure_count: 0,
       not_published_count: notPublishedDates.length,
       not_published_dates: notPublishedDates,
