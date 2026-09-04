@@ -1,0 +1,40 @@
+name: Nankankeiba next Kawasaki live proof temp
+
+on:
+  push:
+    branches:
+      - chore/nankankeiba-detail-ci-guard
+    paths:
+      - '.github/workflows/nankankeiba-next-kawasaki-live-proof-temp.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prove next Kawasaki meeting is discovered without fixed dates
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import { discoverNankankeibaOfficial30d } from './scripts/timetable/nankankeiba-official-30d-discovery.mjs';
+
+          const dates = ['2026-10-12', '2026-10-13', '2026-10-14', '2026-10-15', '2026-10-16'];
+          const result = await discoverNankankeibaOfficial30d({ dates });
+          assert.equal(result.completeness.result, 'complete');
+          const kawasaki = result.meetings.filter((row) => row.racecourse_id === 'kawasaki-racecourse');
+          assert.deepEqual(kawasaki.map((row) => row.date), dates);
+          assert.ok(kawasaki.every((row) => row.venue_code === '21'));
+          console.log(JSON.stringify({
+            completeness: result.completeness.result,
+            dates: kawasaki.map((row) => row.date),
+            programme_urls: kawasaki.map((row) => row.nankankeiba_program_url ?? null),
+            source_urls: kawasaki.map((row) => row.official_source_url),
+          }, null, 2));
+          NODE
