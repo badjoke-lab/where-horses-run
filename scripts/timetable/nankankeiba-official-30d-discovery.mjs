@@ -36,25 +36,50 @@ export function nankankeibaQuarterUrl(date) {
   return `https://www.nankankeiba.com/calendar/${year}${quarter}.do`;
 }
 
+export function decodeNankankeibaHtml(bytes, contentType = '') {
+  const utf8 = new TextDecoder('utf-8').decode(bytes);
+  const declarationProbe = `${contentType}\n${utf8.slice(0, 4096)}`;
+  if (/charset\s*=\s*["']?(?:shift[_-]?jis|sjis|windows-31j)/i.test(declarationProbe)) {
+    return new TextDecoder('shift_jis').decode(bytes);
+  }
+  return utf8;
+}
+
 function cells(rowHtml) {
   return [...String(rowHtml).matchAll(/<(?:td|th)\b[^>]*>([\s\S]*?)<\/(?:td|th)>/gi)].map((match) => match[1]);
 }
 
-function monthSection(html, month) {
+function monthSectionCandidates(html, month) {
   const source = String(html);
   const marker = new RegExp(`(?:>|\\s)${Number(month)}月(?:<|\\s)`, 'g');
-  const match = marker.exec(source);
-  if (!match) return null;
-  const start = match.index;
-  let end = source.length;
-  for (let nextMonth = Number(month) + 1; nextMonth <= 12; nextMonth += 1) {
-    const next = new RegExp(`(?:>|\\s)${nextMonth}月(?:<|\\s)`).exec(source.slice(start + match[0].length));
-    if (next) {
-      end = start + match[0].length + next.index;
-      break;
+  const matches = [...source.matchAll(marker)];
+  if (!matches.length) return [];
+  return matches.map((match) => {
+    const start = match.index ?? 0;
+    const afterMarker = start + match[0].length;
+    let end = source.length;
+    const nextMonth = Number(month) + 1;
+    if (nextMonth <= 12) {
+      const nextPattern = new RegExp(`(?:>|\\s)${nextMonth}月(?:<|\\s)`, 'g');
+      const next = nextPattern.exec(source.slice(afterMarker));
+      if (next) end = afterMarker + next.index;
     }
-  }
-  return source.slice(start, end);
+    return source.slice(start, end);
+  });
+}
+
+function monthSection(html, month) {
+  const candidates = monthSectionCandidates(html, month);
+  if (!candidates.length) return null;
+  const venueNames = Object.keys(SOUTH_KANTO_VENUES);
+  const scored = candidates.map((section) => {
+    const text = plain(section);
+    const venueCount = venueNames.filter((name) => text.includes(name)).length;
+    const tableRows = (section.match(/<tr\b/gi) ?? []).length;
+    return { section, venueCount, tableRows };
+  });
+  scored.sort((left, right) => right.venueCount - left.venueCount || right.tableRows - left.tableRows || right.section.length - left.section.length);
+  return scored[0].section;
 }
 
 function meetingCell(cellHtml) {
@@ -99,7 +124,8 @@ export function parseNankankeibaCalendarMonth(html, { year, month, allowedDates,
   for (const rowMatch of section.matchAll(/<tr\b[^>]*>[\s\S]*?<\/tr>/gi)) {
     const rowCells = cells(rowMatch[0]);
     if (rowCells.length < 2) continue;
-    const venueEntry = Object.entries(SOUTH_KANTO_VENUES).find(([name]) => plain(rowCells[0]) === name);
+    const venueCellText = plain(rowCells[0]);
+    const venueEntry = Object.entries(SOUTH_KANTO_VENUES).find(([name]) => venueCellText === name || venueCellText.includes(name));
     if (!venueEntry) continue;
     const [, venue] = venueEntry;
     seenVenueRows.add(venue.code);
@@ -144,7 +170,11 @@ async function fetchHtml(url, fetchImpl) {
   if (finalUrl.protocol !== 'https:' || finalUrl.hostname !== 'www.nankankeiba.com') {
     throw new Error(`unexpected nankankeiba redirect: ${finalUrl.toString()}`);
   }
-  return { body: await response.text(), url: finalUrl.toString() };
+  const bytes = await response.arrayBuffer();
+  return {
+    body: decodeNankankeibaHtml(bytes, response.headers.get('content-type') ?? ''),
+    url: finalUrl.toString(),
+  };
 }
 
 export async function discoverNankankeibaOfficial30d({ dates, fetchImpl = fetch }) {
