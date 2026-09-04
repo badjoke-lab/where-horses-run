@@ -22,29 +22,21 @@ jobs:
       - name: Probe live Kawasaki programme HTML
         run: |
           node --input-type=module <<'NODE'
-          for (const url of [
-            'https://www.nankankeiba.com/program/20260908210702.do',
-            'https://www.nankankeiba.com/program/20260910210704.do',
-          ]) {
+          const probes = [
+            ['https://www.nankankeiba.com/program/20260908210702.do', ['キリギリス賞', '15:00', '1400']],
+            ['https://www.nankankeiba.com/program/20260910210704.do', ['Ｃ３(一)(二)', '20:50', '1600']],
+          ];
+          for (const [url, markers] of probes) {
             const r = await fetch(url, { headers: { 'user-agent': 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)' } });
             console.log('URL', url, 'STATUS', r.status, 'FINAL', r.url, 'CTYPE', r.headers.get('content-type'));
             const bytes = await r.arrayBuffer();
             const html = new TextDecoder('shift_jis').decode(bytes);
             console.log('LEN', html.length);
-            console.log('DEBA LINKS', [...html.matchAll(/href=["']([^"']*(?:DebaTable|S_DebaTable|program)[^"']*)["']/gi)].slice(0,30).map(m=>m[1]));
-            const text = html
-              .replace(/<script[\s\S]*?<\/script>/gi, ' ')
-              .replace(/<style[\s\S]*?<\/style>/gi, ' ')
-              .replace(/<br\s*\/?>/gi, '\n')
-              .replace(/<\/(?:tr|td|th|div|section|article|p|li|h[1-6]|table)>/gi, '\n')
-              .replace(/<[^>]+>/g, ' ')
-              .replace(/&nbsp;|&#160;/gi, ' ')
-              .replace(/&amp;/gi, '&')
-              .replace(/[\t\u3000 ]+/g, ' ')
-              .replace(/\r/g, '')
-              .replace(/\n\s+/g, '\n')
-              .replace(/\n{2,}/g, '\n')
-              .trim();
-            console.log(text.split('\n').filter(line => /(?:R|発走|距離|ダート|芝|左|右|川崎)/.test(line)).slice(0,180).join('\n'));
+            for (const marker of markers) {
+              const i = html.indexOf(marker);
+              console.log('MARKER', marker, 'INDEX', i);
+              if (i >= 0) console.log(html.slice(Math.max(0, i - 1200), i + 1800).replace(/\s+/g, ' '));
+            }
+            console.log('RACE CLASS TOKENS', [...new Set([...html.matchAll(/class=["']([^"']*(?:race|Race|program|time|course)[^"']*)["']/g)].map(m => m[1]))].slice(0,80));
           }
           NODE
