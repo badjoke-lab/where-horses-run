@@ -14,27 +14,41 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Inspect official JRA September and October calendars
+      - name: Inspect official JRA calendar data dependencies
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
-          import re, urllib.request
-          for month in ('sep','oct'):
-              url=f'https://www.jra.go.jp/keiba/calendar/{month}.html'
-              req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)','Accept-Language':'ja'})
-              raw=urllib.request.urlopen(req,timeout=20).read()
-              text=raw.decode('shift_jis','replace')
-              print('URL',url,'BYTES',len(raw),'TITLE',re.findall(r'<title[^>]*>(.*?)</title>',text,re.I|re.S)[:1])
-              hrefs=sorted(set(re.findall(r'href=[\"\']([^\"\']*calendar2026[^\"\']+\.html)[\"\']',text,re.I)))
-              print('PROGRAMME_HREF_COUNT',len(hrefs))
-              print('\n'.join(hrefs[:80]))
-              for pattern in (r'0905\.html',r'0907\.html',r'1003\.html',r'1004\.html'):
-                  print('PATTERN',pattern,'COUNT',len(re.findall(pattern,text,re.I)))
-              samples=[]
-              for m in re.finditer(r'calendar2026',text,re.I):
-                  samples.append(re.sub(r'\s+',' ',text[max(0,m.start()-180):m.start()+300]))
-                  if len(samples)>=8: break
-              print('SAMPLES')
-              print('\n---\n'.join(samples))
+          import re, urllib.parse, urllib.request
+          base='https://www.jra.go.jp/keiba/calendar/sep.html'
+          req=urllib.request.Request(base,headers={'User-Agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)','Accept-Language':'ja'})
+          raw=urllib.request.urlopen(req,timeout=20).read()
+          text=raw.decode('shift_jis','replace')
+          print('PAGE_BYTES',len(raw))
+          refs=[]
+          for attr in ('src','href'):
+              for value in re.findall(rf'{attr}=[\"\']([^\"\']+)[\"\']',text,re.I):
+                  if any(token in value.lower() for token in ('calendar','schedule','.js','.json','api')):
+                      refs.append(urllib.parse.urljoin(base,value))
+          refs=list(dict.fromkeys(refs))
+          print('REFS',len(refs))
+          print('\n'.join(refs))
+          for ref in refs:
+              if not ref.lower().split('?',1)[0].endswith('.js'): continue
+              try:
+                  r=urllib.request.Request(ref,headers={'User-Agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)'})
+                  body=urllib.request.urlopen(r,timeout=20).read().decode('utf-8','replace')
+              except Exception as exc:
+                  print('JS_FAIL',ref,repr(exc)); continue
+              print('JS',ref,'BYTES',len(body))
+              hits=[]
+              for pattern in (r'[^\"\']+\.json[^\"\']*',r'[^\"\']+(?:calendar|schedule)[^\"\']*',r'url\s*:\s*[\"\'][^\"\']+[\"\']'):
+                  for hit in re.findall(pattern,body,re.I):
+                      value=' '.join(str(hit).split())
+                      if value not in hits: hits.append(value)
+              print('\n'.join(hits[:120]))
+          print('INLINE_MARKERS')
+          for token in ('calendarData','schedule','kaisai','開催'):
+              for m in list(re.finditer(token,text,re.I))[:10]:
+                  print(token, re.sub(r'\s+',' ',text[max(0,m.start()-220):m.start()+420]))
           PY
