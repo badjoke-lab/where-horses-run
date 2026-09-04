@@ -36,6 +36,15 @@ export function nankankeibaQuarterUrl(date) {
   return `https://www.nankankeiba.com/calendar/${year}${quarter}.do`;
 }
 
+export function decodeNankankeibaHtml(bytes, contentType = '') {
+  const utf8 = new TextDecoder('utf-8').decode(bytes);
+  const declarationProbe = `${contentType}\n${utf8.slice(0, 4096)}`;
+  if (/charset\s*=\s*["']?(?:shift[_-]?jis|sjis|windows-31j)/i.test(declarationProbe)) {
+    return new TextDecoder('shift_jis').decode(bytes);
+  }
+  return utf8;
+}
+
 function cells(rowHtml) {
   return [...String(rowHtml).matchAll(/<(?:td|th)\b[^>]*>([\s\S]*?)<\/(?:td|th)>/gi)].map((match) => match[1]);
 }
@@ -161,7 +170,11 @@ async function fetchHtml(url, fetchImpl) {
   if (finalUrl.protocol !== 'https:' || finalUrl.hostname !== 'www.nankankeiba.com') {
     throw new Error(`unexpected nankankeiba redirect: ${finalUrl.toString()}`);
   }
-  return { body: await response.text(), url: finalUrl.toString() };
+  const bytes = await response.arrayBuffer();
+  return {
+    body: decodeNankankeibaHtml(bytes, response.headers.get('content-type') ?? ''),
+    url: finalUrl.toString(),
+  };
 }
 
 export async function discoverNankankeibaOfficial30d({ dates, fetchImpl = fetch }) {
