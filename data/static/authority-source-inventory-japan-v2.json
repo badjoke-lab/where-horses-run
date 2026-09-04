@@ -22,7 +22,7 @@
       "source_status": "verified",
       "adapter_candidate_status": "candidate",
       "implementation_boundary": "reviewed_pipeline_v1",
-      "notes": "JRA A+ capability and A+ public ceiling are approved. Individual meetings remain limited to reviewed canonical fields and human-approved publication."
+      "notes": "JRA A+ capability and A+ public ceiling are approved. The official monthly calendar JSON under /keiba/common/calendar/json/YYYYMM.json is the fail-closed mother-set baseline; daily calendar programme pages are fetched only for dates positively scheduled by that baseline and contribute detail without controlling absence completeness. Individual public fields remain limited to reviewed canonical publication rules."
     },
     {
       "authority_source_key": "japan/nar-local-government-racing/nar-monthly-convene-info",
@@ -40,7 +40,7 @@
       "source_status": "verified",
       "adapter_candidate_status": "candidate",
       "implementation_boundary": "production_mother_set_union_v1",
-      "notes": "South Kanto 4 Racing official quarterly calendar (nankankeiba.com/calendar/YYYYQQ.do with quarter-start months 01/04/07/10) is an independent mother_set source for Urawa, Funabashi, Oi, and Kawasaki. Positive evidence is unioned with NAR; source failure must block absence-based public removal."
+      "notes": "South Kanto 4 Racing official quarterly calendar (nankankeiba.com/calendar/YYYYQQ.do with quarter-start months 01/04/07/10) is the independent mother_set source for Urawa, Funabashi, Oi, and Kawasaki. All four venue rows must expose complete month day grids; calendar fetch/structure failures block absence removal. Linked programme pages are supplemental positive evidence only, so a programme parse failure is retained as a diagnostic but does not downgrade a structurally complete quarter calendar. Positive evidence is unioned with NAR."
     },
     {
       "authority_source_key": "japan/nar-local-government-racing/iwatekeiba-official-calendar",

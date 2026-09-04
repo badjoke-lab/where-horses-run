@@ -26,6 +26,10 @@ function isoDate(year, month, day) {
   return Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== value ? null : value;
 }
 
+function daysInMonth(year, month) {
+  return new Date(Date.UTC(Number(year), Number(month), 0)).getUTCDate();
+}
+
 function quarterStartMonth(month) {
   return Math.floor((Number(month) - 1) / 3) * 3 + 1;
 }
@@ -121,6 +125,8 @@ export function parseNankankeibaCalendarMonth(html, { year, month, allowedDates,
   const allowed = new Set(allowedDates);
   const meetings = [];
   const seenVenueRows = new Set();
+  const requiredDays = daysInMonth(year, month);
+  let invalidVenueGrid = false;
   for (const rowMatch of section.matchAll(/<tr\b[^>]*>[\s\S]*?<\/tr>/gi)) {
     const rowCells = cells(rowMatch[0]);
     if (rowCells.length < 2) continue;
@@ -128,8 +134,9 @@ export function parseNankankeibaCalendarMonth(html, { year, month, allowedDates,
     const venueEntry = Object.entries(SOUTH_KANTO_VENUES).find(([name]) => venueCellText === name || venueCellText.includes(name));
     if (!venueEntry) continue;
     const [, venue] = venueEntry;
+    if (seenVenueRows.has(venue.code) || rowCells.length < requiredDays + 1) invalidVenueGrid = true;
     seenVenueRows.add(venue.code);
-    for (let day = 1; day < rowCells.length; day += 1) {
+    for (let day = 1; day <= requiredDays; day += 1) {
       if (!meetingCell(rowCells[day])) continue;
       const date = isoDate(year, month, day);
       if (!date || !allowed.has(date)) continue;
@@ -137,7 +144,7 @@ export function parseNankankeibaCalendarMonth(html, { year, month, allowedDates,
     }
   }
   return {
-    structural_valid: seenVenueRows.size === 4,
+    structural_valid: seenVenueRows.size === 4 && !invalidVenueGrid,
     meetings: [...new Map(meetings.map((row) => [row.meeting_id, row])).values()],
     programme_links: programmeLinks(section, sourceUrl),
   };
@@ -181,7 +188,8 @@ export async function discoverNankankeibaOfficial30d({ dates, fetchImpl = fetch 
   const allowed = new Set(dates);
   const sourceUrls = [...new Set(dates.map(nankankeibaQuarterUrl))];
   const meetings = [];
-  const failures = [];
+  const calendarFailures = [];
+  const supplementalFailures = [];
   const pageResults = [];
 
   for (const sourceUrl of sourceUrls) {
@@ -202,32 +210,36 @@ export async function discoverNankankeibaOfficial30d({ dates, fetchImpl = fetch 
         meetings.push(...parsed.meetings);
         links.push(...parsed.programme_links);
       }
-      if (!structurallyValid) failures.push({ source_url: page.url, reason: 'calendar_structure_incomplete' });
+      if (!structurallyValid) calendarFailures.push({ source_url: page.url, reason: 'calendar_structure_incomplete' });
 
+      // Programme pages are supplemental positive evidence. The quarter calendar
+      // remains the mother-set classifier only after every venue row exposes a
+      // complete day grid. A broken supplementary programme must not downgrade
+      // an otherwise complete calendar.
       for (const link of [...new Map(links.map((row) => [row.url, row])).values()]) {
         try {
           const programme = await fetchHtml(link.url, fetchImpl);
           const year = Number(link.programme_key.slice(0, 4));
           const programmeDates = parseNankankeibaProgrammeDates(programme.body, year).filter((date) => allowed.has(date));
           if (!programmeDates.length) {
-            failures.push({ source_url: programme.url, reason: 'programme_dates_incomplete' });
+            supplementalFailures.push({ source_url: programme.url, reason: 'programme_dates_incomplete' });
             continue;
           }
           for (const date of programmeDates) meetings.push(meetingRow(link.venue, date, programme.url));
         } catch (error) {
-          failures.push({ source_url: link.url, reason: String(error?.message ?? error) });
+          supplementalFailures.push({ source_url: link.url, reason: String(error?.message ?? error) });
         }
       }
       pageResults.push({ source_url: page.url, result: structurallyValid ? 'complete' : 'partial' });
     } catch (error) {
-      failures.push({ source_url: sourceUrl, reason: String(error?.message ?? error) });
+      calendarFailures.push({ source_url: sourceUrl, reason: String(error?.message ?? error) });
       pageResults.push({ source_url: sourceUrl, result: 'failed' });
     }
   }
 
   const deduped = [...new Map(meetings.map((row) => [row.meeting_id, row])).values()].sort((a, b) => a.date.localeCompare(b.date) || a.meeting_id.localeCompare(b.meeting_id));
   const successfulPages = pageResults.filter((row) => row.result === 'complete').length;
-  const completeness = failures.length === 0 && successfulPages === sourceUrls.length
+  const completeness = calendarFailures.length === 0 && successfulPages === sourceUrls.length
     ? 'complete'
     : successfulPages === 0 ? 'failed' : 'partial';
   return {
@@ -241,10 +253,12 @@ export async function discoverNankankeibaOfficial30d({ dates, fetchImpl = fetch 
       parsed_meeting_count: deduped.length,
       parsed_detail_count: 0,
       pending_count: 0,
-      failure_count: failures.length,
+      failure_count: calendarFailures.length,
+      supplemental_failure_count: supplementalFailures.length,
       source_visible_horizon: dates.at(-1),
       source_urls: sourceUrls,
-      failures,
+      failures: calendarFailures,
+      supplemental_failures: supplementalFailures,
     },
   };
 }
