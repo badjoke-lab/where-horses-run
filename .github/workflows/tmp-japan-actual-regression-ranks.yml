@@ -1,0 +1,42 @@
+name: Temporary Japan actual regression ranks
+
+on:
+  push:
+    branches:
+      - proof/japan-actual-regression-ranks-20260905
+
+permissions:
+  contents: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies
+        run: npm install --no-package-lock --no-audit --no-fund
+      - name: Run live Japan full acquisition and print target ranks
+        run: |
+          node scripts/timetable/run-japan-zero-based-30d.mjs --execution-date=2026-09-05 --scope=full
+          node <<'NODE'
+          const fs = require('fs');
+          const path = 'data/generated/timetable/japan-zero-based-30d-reconciliation.json';
+          const data = JSON.parse(fs.readFileSync(path, 'utf8'));
+          const targets = new Set([
+            'banei-obihiro-racecourse-2026-09-07',
+            'nar-kochi-racecourse-2026-09-05',
+            'nar-kochi-racecourse-2026-09-06',
+            'nar-saga-racecourse-2026-09-05',
+          ]);
+          const rows = data.reconciliations.filter((row) => targets.has(row.meeting_id));
+          console.log('TARGET_RECONCILIATIONS=' + JSON.stringify(rows, null, 2));
+          console.log('SOURCE_COMPLETENESS=' + JSON.stringify(data.source_completeness ?? null, null, 2));
+          console.log('ABSENCE_FAMILIES=' + JSON.stringify(data.absence_reconciliation_families ?? null, null, 2));
+          if (rows.length !== targets.size) {
+            throw new Error(`expected ${targets.size} target reconciliations, got ${rows.length}`);
+          }
+          NODE
