@@ -31,3 +31,6 @@ jobs:
 
       - name: Check race acquisition
         run: npm run check
+
+      - name: Check current NAR RaceList markup
+        run: node scripts/check-nar-racelist-current-markup.mjs
