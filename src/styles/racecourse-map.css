@@ -81,6 +81,35 @@
   font-size: 0.9rem;
 }
 
+.today-meeting-map__selected,
+.calendar-map-switch__selected {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--whr-space-3);
+  padding: var(--whr-space-2) var(--whr-space-3);
+  border: 1px solid var(--whr-color-border);
+  border-radius: 0.75rem;
+  background: var(--whr-color-bg);
+}
+
+.today-meeting-map__selected[hidden],
+.calendar-map-switch__selected[hidden] {
+  display: none;
+}
+
+.today-meeting-map__selected button,
+.calendar-map-switch__selected button {
+  min-height: 2.25rem;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--whr-color-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--whr-color-text);
+  cursor: pointer;
+  font: inherit;
+}
+
 .calendar-map-switch {
   display: grid;
   gap: var(--whr-space-3);
@@ -116,8 +145,7 @@
   border-radius: 999px;
 }
 
-.calendar-map-switch__buttons button,
-.calendar-map-switch__selected button {
+.calendar-map-switch__buttons button {
   min-height: 2.25rem;
   padding: 0.35rem 0.8rem;
   border: 1px solid transparent;
@@ -135,7 +163,8 @@
 }
 
 .calendar-map-switch__buttons button:focus-visible,
-.calendar-map-switch__selected button:focus-visible {
+.calendar-map-switch__selected button:focus-visible,
+.today-meeting-map__selected button:focus-visible {
   outline: 3px solid #111;
   outline-offset: 2px;
 }
@@ -148,24 +177,6 @@
 .calendar-map-switch__panel[hidden],
 [data-calendar-list-view][hidden] {
   display: none;
-}
-
-.calendar-map-switch__selected {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--whr-space-3);
-  padding: var(--whr-space-2) var(--whr-space-3);
-  border: 1px solid var(--whr-color-border);
-  border-radius: 0.75rem;
-}
-
-.calendar-map-switch__selected[hidden] {
-  display: none;
-}
-
-.calendar-map-switch__selected button {
-  border-color: var(--whr-color-border);
 }
 
 .home-racing-map {
@@ -253,6 +264,7 @@
   padding: var(--whr-space-3);
   border: 1px solid var(--whr-color-border);
   border-radius: 0.75rem;
+  background: var(--whr-color-bg);
 }
 
 .home-racing-map__selected[hidden] {
@@ -297,9 +309,19 @@
   .today-meeting-map__heading,
   .calendar-map-switch__heading,
   .calendar-map-switch__selected,
+  .today-meeting-map__selected,
   .home-racing-map__heading {
     align-items: start;
     flex-direction: column;
+  }
+
+  .today-meeting-map__selected,
+  .calendar-map-switch__selected,
+  .home-racing-map__selected {
+    position: sticky;
+    bottom: var(--whr-space-2);
+    z-index: 3;
+    box-shadow: 0 0.35rem 1.2rem rgb(0 0 0 / 0.14);
   }
 
   .home-racing-map__periods {
