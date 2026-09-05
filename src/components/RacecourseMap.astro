@@ -33,7 +33,7 @@ const {
   data-geojson-url={geojsonUrl}
   data-style-url={styleUrl}
   data-fallback-message={fallbackMessage}
-  data-map-state="loading"
+  data-map-state="idle"
 >
   <div class="racecourse-map__canvas" data-map-canvas role="region" aria-label={ariaLabel}></div>
   <p class="racecourse-map__status" data-map-status aria-live="polite">Loading interactive map…</p>
@@ -44,6 +44,8 @@ const {
 
 <script is:inline type="module">
   const MAPLIBRE_MODULE_URL = 'https://unpkg.com/maplibre-gl@6.7.0/dist/maplibre-gl.mjs';
+  const MAP_POINT_LAYER = 'racecourse-points';
+  const MAP_HIT_LAYER = 'racecourse-hit-targets';
 
   const parseRacecourseIds = (value) => {
     try {
@@ -76,6 +78,7 @@ const {
   const initRacecourseMap = async (root) => {
     if (root.dataset.mapInitialized === 'true') return;
     root.dataset.mapInitialized = 'true';
+    root.dataset.mapState = 'loading';
 
     const canvas = root.querySelector('[data-map-canvas]');
     const status = root.querySelector('[data-map-status]');
@@ -167,6 +170,14 @@ const {
         }
       };
 
+      const focusRacecourse = (racecourseId) => {
+        const feature = featureByRacecourseId.get(racecourseId);
+        const coordinates = feature?.geometry?.coordinates;
+        if (!Array.isArray(coordinates) || !visibleRacecourseIds.has(racecourseId)) return;
+        setSelected(racecourseId, false);
+        map.jumpTo({ center: coordinates, zoom: Math.max(map.getZoom(), features.length === 1 ? startZoom : 8) });
+      };
+
       const fitVisible = (visibleFeatures) => {
         if (visibleFeatures.length === 1) {
           const coordinates = visibleFeatures[0]?.geometry?.coordinates;
@@ -187,9 +198,11 @@ const {
       const applyVisibleIds = (ids, fit = true) => {
         const nextIds = Array.from(new Set(ids)).filter((id) => featureByRacecourseId.has(id));
         visibleRacecourseIds = new Set(nextIds);
-        map.setFilter('racecourse-points', nextIds.length > 0
+        const filter = nextIds.length > 0
           ? ['in', ['get', 'racecourse_id'], ['literal', nextIds]]
-          : ['==', 1, 0]);
+          : ['==', 1, 0];
+        map.setFilter(MAP_POINT_LAYER, filter);
+        map.setFilter(MAP_HIT_LAYER, filter);
 
         const selectedRacecourseId = root.dataset.selectedRacecourseId;
         if (selectedRacecourseId && !visibleRacecourseIds.has(selectedRacecourseId)) {
@@ -218,24 +231,34 @@ const {
           }
         });
         map.addLayer({
-          id: 'racecourse-points',
+          id: MAP_HIT_LAYER,
           type: 'circle',
           source: 'racecourses',
           paint: {
-            'circle-radius': ['case', ['boolean', ['feature-state', 'selected'], false], 9, 7],
+            'circle-radius': 22,
+            'circle-color': '#111111',
+            'circle-opacity': 0.01
+          }
+        });
+        map.addLayer({
+          id: MAP_POINT_LAYER,
+          type: 'circle',
+          source: 'racecourses',
+          paint: {
+            'circle-radius': ['case', ['boolean', ['feature-state', 'selected'], false], 10, 7],
             'circle-color': '#111111',
             'circle-stroke-color': '#ffffff',
             'circle-stroke-width': 2
           }
         });
 
-        map.on('mouseenter', 'racecourse-points', () => {
+        map.on('mouseenter', MAP_HIT_LAYER, () => {
           map.getCanvas().style.cursor = 'pointer';
         });
-        map.on('mouseleave', 'racecourse-points', () => {
+        map.on('mouseleave', MAP_HIT_LAYER, () => {
           map.getCanvas().style.cursor = '';
         });
-        map.on('click', 'racecourse-points', (event) => {
+        map.on('click', MAP_HIT_LAYER, (event) => {
           const racecourseId = event.features?.[0]?.properties?.racecourse_id;
           if (typeof racecourseId === 'string') setSelected(racecourseId, true);
         });
@@ -253,11 +276,7 @@ const {
 
         root.addEventListener('racecourse-map:focus', (event) => {
           const racecourseId = event?.detail?.racecourseId;
-          const feature = featureByRacecourseId.get(racecourseId);
-          const coordinates = feature?.geometry?.coordinates;
-          if (!Array.isArray(coordinates) || !visibleRacecourseIds.has(racecourseId)) return;
-          setSelected(racecourseId, false);
-          map.jumpTo({ center: coordinates, zoom: Math.max(map.getZoom(), features.length === 1 ? startZoom : 8) });
+          if (typeof racecourseId === 'string') focusRacecourse(racecourseId);
         });
 
         ready = true;
@@ -267,6 +286,12 @@ const {
           bubbles: true,
           detail: { featureCount: features.length, visibleFeatureCount: visibleRacecourseIds.size }
         }));
+
+        const pendingFocus = root.dataset.pendingFocusRacecourseId;
+        if (pendingFocus) {
+          delete root.dataset.pendingFocusRacecourseId;
+          focusRacecourse(pendingFocus);
+        }
       });
 
       map.on('error', () => {
@@ -277,7 +302,36 @@ const {
     }
   };
 
+  const scheduleRacecourseMap = (root) => {
+    const activate = () => {
+      if (root.dataset.mapInitialized === 'true') return;
+      observer?.disconnect();
+      initRacecourseMap(root);
+    };
+
+    let observer = null;
+    if ('IntersectionObserver' in window) {
+      observer = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) activate();
+      }, { rootMargin: '320px 0px' });
+      observer.observe(root);
+    } else {
+      activate();
+    }
+
+    root.addEventListener('racecourse-map:activate', activate);
+    root.addEventListener('racecourse-map:set-visible', () => {
+      if (root.dataset.mapInitialized !== 'true') activate();
+    });
+    root.addEventListener('racecourse-map:focus', (event) => {
+      if (root.dataset.mapInitialized === 'true') return;
+      const racecourseId = event?.detail?.racecourseId;
+      if (typeof racecourseId === 'string') root.dataset.pendingFocusRacecourseId = racecourseId;
+      activate();
+    });
+  };
+
   document.querySelectorAll('[data-racecourse-map]').forEach((root) => {
-    initRacecourseMap(root);
+    scheduleRacecourseMap(root);
   });
 </script>
