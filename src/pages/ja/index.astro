@@ -1,8 +1,15 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import HomeRacingMap from '../../components/HomeRacingMap.astro';
 import { getActiveCountries, getGlossaryEntries, getRacecourses, siteData } from '../../lib/data';
 import { getRacingTypes } from '../../lib/racingTypes';
-import { getTimetableDateContext, getTimetableMeetingRowsForDate, type TimetableMeetingRow } from '../../data/timetableMeetingRows';
+import {
+  getTimetableDateContext,
+  getTimetableMeetingRowsForDate,
+  getTimetableMeetingRowsForWindow,
+  type TimetableMeetingRow,
+} from '../../data/timetableMeetingRows';
+import { addCalendarDays } from '../../lib/timetable/calendarDateContext.mjs';
 
 const countries = getActiveCountries().slice(0, 6);
 const allRacecourses = getRacecourses();
@@ -13,6 +20,9 @@ const glossaryTerms = getGlossaryEntries().filter((entry) => ['data_term', 'trac
 const sourceCount = siteData.sources.length;
 const calendarContext = getTimetableDateContext();
 const todayPreview = getTimetableMeetingRowsForDate(calendarContext.today).slice(0, 4);
+const mapCandidateStart = addCalendarDays(calendarContext.today, -2);
+const mapCandidateEndExclusive = addCalendarDays(calendarContext.today, 9);
+const mapCandidates = getTimetableMeetingRowsForWindow(mapCandidateStart, mapCandidateEndExclusive);
 const timeRange = (meeting: TimetableMeetingRow) => {
   if (meeting.first_race_time_local && meeting.last_race_time_local) return `${meeting.first_race_time_local}–${meeting.last_race_time_local}`;
   return meeting.first_race_time_local ?? meeting.last_race_time_local ?? null;
@@ -35,6 +45,8 @@ const meetingRacecourseName = (meeting: TimetableMeetingRow) => racecourseNameJa
       <a href="/ja/today/">今日の競馬を見る</a> · <a href="/ja/countries/">国・地域から探す</a> · <a href="/ja/tracks/">競馬場から探す</a>
     </p>
   </section>
+
+  <HomeRacingMap records={mapCandidates} lang="ja" />
 
   <section class="section-grid" aria-label="主要な探し方">
     <article class="card">
