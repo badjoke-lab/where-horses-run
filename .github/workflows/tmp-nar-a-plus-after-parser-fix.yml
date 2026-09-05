@@ -11,32 +11,64 @@ permissions:
 jobs:
   proof:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Install dependencies
-        run: npm install --no-package-lock --no-audit --no-fund
-      - name: Run live Japan 30-day acquisition
-        run: node scripts/timetable/run-japan-zero-based-30d.mjs --execution-date=2026-09-05 --scope=full
-      - name: Print target reconciliation ranks
+      - name: Run targeted live adapter proof
         run: |
           node --input-type=module <<'NODE'
-          import fs from 'node:fs';
-          const report = JSON.parse(fs.readFileSync('data/generated/timetable/japan-zero-based-30d-reconciliation.json', 'utf8'));
-          const targets = new Set([
+          import { japanOfficial30dAdapters } from './scripts/timetable/japan-official-30d-adapters.mjs';
+
+          const nar = japanOfficial30dAdapters['nar-standard'];
+          const banei = japanOfficial30dAdapters.banei;
+          const targets = [
+            [nar, {
+              meeting_id: 'nar-kochi-racecourse-2026-09-05', date: '2026-09-05',
+              authority_id: 'nar-local-government-racing', racing_system_id: 'japan-nar-system',
+              racecourse_id: 'kochi-racecourse', venue_code: '31',
+              official_source_url: 'https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=31&k_raceDate=2026%2F09%2F05',
+            }],
+            [nar, {
+              meeting_id: 'nar-kochi-racecourse-2026-09-06', date: '2026-09-06',
+              authority_id: 'nar-local-government-racing', racing_system_id: 'japan-nar-system',
+              racecourse_id: 'kochi-racecourse', venue_code: '31',
+              official_source_url: 'https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=31&k_raceDate=2026%2F09%2F06',
+            }],
+            [nar, {
+              meeting_id: 'nar-saga-racecourse-2026-09-05', date: '2026-09-05',
+              authority_id: 'nar-local-government-racing', racing_system_id: 'japan-nar-system',
+              racecourse_id: 'saga-racecourse', venue_code: '32',
+              official_source_url: 'https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=32&k_raceDate=2026%2F09%2F05',
+            }],
+            [banei, {
+              meeting_id: 'banei-obihiro-racecourse-2026-09-07', date: '2026-09-07',
+              authority_id: 'banei-tokachi', racing_system_id: 'japan-banei-system',
+              racecourse_id: 'obihiro-racecourse',
+            }],
+          ];
+
+          const results = [];
+          for (const [adapter, meeting] of targets) {
+            const result = await adapter.inspect(meeting);
+            results.push({
+              meeting_id: meeting.meeting_id,
+              status: result.status,
+              reason: result.reason ?? null,
+              rank: result.meeting?.capability_rank ?? 'C',
+              rows: result.meeting?.timetable_rows?.length ?? 0,
+            });
+          }
+          console.log(JSON.stringify(results, null, 2));
+
+          for (const meetingId of [
             'nar-kochi-racecourse-2026-09-05',
             'nar-kochi-racecourse-2026-09-06',
             'nar-saga-racecourse-2026-09-05',
-            'banei-obihiro-racecourse-2026-09-07',
-          ]);
-          const rows = report.reconciliations
-            .filter((row) => targets.has(row.meeting_id))
-            .map(({ meeting_id, acquisition_group, outcome, reason, official_rank, public_rank }) => ({
-              meeting_id, acquisition_group, outcome, reason: reason ?? null, official_rank, public_rank,
-            }));
-          if (rows.length !== targets.size) throw new Error(`Expected ${targets.size} target rows, got ${rows.length}`);
-          console.log(JSON.stringify(rows, null, 2));
+          ]) {
+            const row = results.find((value) => value.meeting_id === meetingId);
+            if (row?.status !== 'ok' || row.rank !== 'A+') throw new Error(`${meetingId}: expected live A+, got ${JSON.stringify(row)}`);
+          }
           NODE
