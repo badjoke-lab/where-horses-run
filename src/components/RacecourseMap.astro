@@ -1,0 +1,225 @@
+---
+import '../styles/racecourse-map.css';
+
+interface Props {
+  racecourseIds?: string[];
+  ariaLabel?: string;
+  initialZoom?: number;
+  geojsonUrl?: string;
+  styleUrl?: string;
+  fallbackMessage?: string;
+}
+
+const {
+  racecourseIds = [],
+  ariaLabel = 'Interactive racecourse map',
+  initialZoom = 2,
+  geojsonUrl = '/data/racecourse-locations-v1.geojson',
+  styleUrl = 'https://tiles.openfreemap.org/styles/liberty',
+  fallbackMessage = 'Interactive map unavailable. Verified location details and page navigation remain available.'
+} = Astro.props;
+---
+
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@6.7.0/dist/maplibre-gl.css" />
+
+<div
+  class="racecourse-map"
+  data-racecourse-map
+  data-racecourse-ids={JSON.stringify(racecourseIds)}
+  data-initial-zoom={String(initialZoom)}
+  data-geojson-url={geojsonUrl}
+  data-style-url={styleUrl}
+  data-fallback-message={fallbackMessage}
+  data-map-state="loading"
+>
+  <div class="racecourse-map__canvas" data-map-canvas role="region" aria-label={ariaLabel}></div>
+  <p class="racecourse-map__status" data-map-status aria-live="polite">Loading interactive map…</p>
+  <noscript>
+    <p class="racecourse-map__fallback">{fallbackMessage}</p>
+  </noscript>
+</div>
+
+<script is:inline type="module">
+  const MAPLIBRE_MODULE_URL = 'https://unpkg.com/maplibre-gl@6.7.0/dist/maplibre-gl.mjs';
+
+  const parseRacecourseIds = (value) => {
+    try {
+      const parsed = JSON.parse(value || '[]');
+      return Array.isArray(parsed) ? parsed.filter((id) => typeof id === 'string' && id.length > 0) : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const boundsForFeatures = (features) => {
+    const points = features
+      .map((feature) => feature?.geometry?.coordinates)
+      .filter((coordinates) => Array.isArray(coordinates) && coordinates.length >= 2);
+    if (points.length === 0) return null;
+
+    let minLng = points[0][0];
+    let maxLng = points[0][0];
+    let minLat = points[0][1];
+    let maxLat = points[0][1];
+    for (const [lng, lat] of points.slice(1)) {
+      minLng = Math.min(minLng, lng);
+      maxLng = Math.max(maxLng, lng);
+      minLat = Math.min(minLat, lat);
+      maxLat = Math.max(maxLat, lat);
+    }
+    return [[minLng, minLat], [maxLng, maxLat]];
+  };
+
+  const initRacecourseMap = async (root) => {
+    if (root.dataset.mapInitialized === 'true') return;
+    root.dataset.mapInitialized = 'true';
+
+    const canvas = root.querySelector('[data-map-canvas]');
+    const status = root.querySelector('[data-map-status]');
+    const fallbackMessage = root.dataset.fallbackMessage || 'Interactive map unavailable.';
+    const requestedIds = parseRacecourseIds(root.dataset.racecourseIds);
+    const initialZoom = Number(root.dataset.initialZoom || '2');
+    const geojsonUrl = root.dataset.geojsonUrl || '/data/racecourse-locations-v1.geojson';
+    const styleUrl = root.dataset.styleUrl || 'https://tiles.openfreemap.org/styles/liberty';
+
+    let map = null;
+    let ready = false;
+    const fail = () => {
+      if (ready) return;
+      root.dataset.mapState = 'failed';
+      if (canvas) canvas.hidden = true;
+      if (status) {
+        status.hidden = false;
+        status.textContent = fallbackMessage;
+      }
+      try {
+        map?.remove();
+      } catch {
+        // Keep the non-map page usable even if cleanup also fails.
+      }
+    };
+
+    try {
+      const [maplibregl, response] = await Promise.all([
+        import(MAPLIBRE_MODULE_URL),
+        fetch(geojsonUrl, { credentials: 'same-origin' })
+      ]);
+
+      if (!response.ok) throw new Error(`GeoJSON request failed: ${response.status}`);
+      if (typeof maplibregl.supported === 'function' && !maplibregl.supported()) {
+        throw new Error('MapLibre is not supported in this browser');
+      }
+
+      const projection = await response.json();
+      const allFeatures = Array.isArray(projection?.features) ? projection.features : [];
+      const requestedSet = new Set(requestedIds);
+      const features = requestedSet.size > 0
+        ? allFeatures.filter((feature) => requestedSet.has(feature?.properties?.racecourse_id))
+        : allFeatures;
+
+      if (requestedSet.size > 0 && features.length !== requestedSet.size) {
+        throw new Error('One or more requested racecourse locations are not present in the reviewed projection');
+      }
+      if (features.length === 0) throw new Error('No reviewed racecourse locations available for this map');
+
+      const singleCoordinates = features.length === 1 ? features[0]?.geometry?.coordinates : null;
+      const startCenter = Array.isArray(singleCoordinates) ? singleCoordinates : [0, 20];
+      const startZoom = Number.isFinite(initialZoom) ? initialZoom : 2;
+
+      map = new maplibregl.Map({
+        container: canvas,
+        style: styleUrl,
+        center: startCenter,
+        zoom: features.length === 1 ? startZoom : 1.5,
+        attributionControl: true,
+        keyboard: true
+      });
+      map.addControl(new maplibregl.NavigationControl({ showCompass: false, showZoom: true }), 'top-right');
+
+      let selectedFeatureId = null;
+      const setSelected = (racecourseId, emit = true) => {
+        const feature = features.find((candidate) => candidate?.properties?.racecourse_id === racecourseId);
+        if (!feature) return;
+        if (selectedFeatureId !== null) {
+          map.setFeatureState({ source: 'racecourses', id: selectedFeatureId }, { selected: false });
+        }
+        selectedFeatureId = feature.id;
+        map.setFeatureState({ source: 'racecourses', id: selectedFeatureId }, { selected: true });
+        root.dataset.selectedRacecourseId = racecourseId;
+        if (emit) {
+          root.dispatchEvent(new CustomEvent('racecourse-map:select', {
+            bubbles: true,
+            detail: { racecourseId }
+          }));
+        }
+      };
+
+      map.once('load', () => {
+        map.addSource('racecourses', {
+          type: 'geojson',
+          data: {
+            ...projection,
+            features
+          }
+        });
+        map.addLayer({
+          id: 'racecourse-points',
+          type: 'circle',
+          source: 'racecourses',
+          paint: {
+            'circle-radius': ['case', ['boolean', ['feature-state', 'selected'], false], 9, 7],
+            'circle-color': '#111111',
+            'circle-stroke-color': '#ffffff',
+            'circle-stroke-width': 2
+          }
+        });
+
+        map.on('mouseenter', 'racecourse-points', () => {
+          map.getCanvas().style.cursor = 'pointer';
+        });
+        map.on('mouseleave', 'racecourse-points', () => {
+          map.getCanvas().style.cursor = '';
+        });
+        map.on('click', 'racecourse-points', (event) => {
+          const racecourseId = event.features?.[0]?.properties?.racecourse_id;
+          if (typeof racecourseId === 'string') setSelected(racecourseId, true);
+        });
+
+        if (features.length > 1) {
+          const bounds = boundsForFeatures(features);
+          if (bounds) map.fitBounds(bounds, { padding: 48, maxZoom: 8, duration: 0 });
+        } else {
+          const racecourseId = features[0]?.properties?.racecourse_id;
+          if (typeof racecourseId === 'string') setSelected(racecourseId, false);
+        }
+
+        root.addEventListener('racecourse-map:focus', (event) => {
+          const racecourseId = event?.detail?.racecourseId;
+          const feature = features.find((candidate) => candidate?.properties?.racecourse_id === racecourseId);
+          const coordinates = feature?.geometry?.coordinates;
+          if (!Array.isArray(coordinates)) return;
+          setSelected(racecourseId, false);
+          map.jumpTo({ center: coordinates, zoom: Math.max(map.getZoom(), startZoom) });
+        });
+
+        ready = true;
+        root.dataset.mapState = 'ready';
+        if (status) status.hidden = true;
+        root.dispatchEvent(new CustomEvent('racecourse-map:ready', {
+          bubbles: true,
+          detail: { featureCount: features.length }
+        }));
+      });
+
+      map.on('error', () => {
+        if (!ready) fail();
+      });
+    } catch {
+      fail();
+    }
+  };
+
+  document.querySelectorAll('[data-racecourse-map]').forEach((root) => {
+    initRacecourseMap(root);
+  });
+</script>

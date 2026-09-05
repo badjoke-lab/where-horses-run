@@ -1,0 +1,59 @@
+.racecourse-map {
+  display: grid;
+  gap: var(--whr-space-2);
+  width: 100%;
+}
+
+.racecourse-map__canvas {
+  width: 100%;
+  min-height: 420px;
+  overflow: hidden;
+  border: 1px solid var(--whr-color-border);
+  border-radius: 0.75rem;
+  background: #f4f4f4;
+}
+
+.racecourse-map__canvas[hidden] {
+  display: none;
+}
+
+.racecourse-map__status,
+.racecourse-map__fallback,
+.racecourse-map__meta,
+.racecourse-map__attribution {
+  margin: 0;
+  color: var(--whr-color-muted);
+  font-size: 0.9rem;
+}
+
+.racecourse-map[data-map-state='failed'] {
+  padding: var(--whr-space-3);
+  border: 1px solid var(--whr-color-border);
+  border-radius: 0.75rem;
+  background: #fafafa;
+}
+
+.racecourse-map .maplibregl-canvas:focus-visible,
+.racecourse-map .maplibregl-ctrl button:focus-visible {
+  outline: 3px solid #111;
+  outline-offset: 2px;
+}
+
+.racecourse-map .maplibregl-ctrl-attrib {
+  font-size: 11px;
+}
+
+.racecourse-location-section {
+  display: grid;
+  gap: var(--whr-space-3);
+}
+
+.racecourse-location-section > p {
+  margin: 0;
+}
+
+@media (max-width: 700px) {
+  .racecourse-map__canvas {
+    min-height: 340px;
+  }
+}

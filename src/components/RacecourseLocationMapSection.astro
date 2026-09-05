@@ -1,0 +1,65 @@
+---
+import RacecourseMap from './RacecourseMap.astro';
+import locationRegistry from '../../data/static/racecourse-locations-v1.json';
+
+interface Props {
+  racecourseId: string;
+  racecourseName: string;
+  contextText?: string;
+  lang?: 'en' | 'ja';
+}
+
+const {
+  racecourseId,
+  racecourseName,
+  contextText,
+  lang = 'en'
+} = Astro.props;
+
+const entry = (locationRegistry as any).locations?.find((candidate: any) => candidate?.id === racecourseId);
+const location = entry?.location ?? null;
+const isJapanese = lang === 'ja';
+const title = isJapanese ? '所在地 / 地図' : 'Location / Map';
+const addressLabel = isJapanese ? '確認済み住所' : 'Verified address';
+const pointLabel = isJapanese ? '確認済み地点' : 'Verified venue point';
+const checkedLabel = isJapanese ? '位置情報の最終確認' : 'Location last checked';
+const pendingText = isJapanese
+  ? '位置情報は確認中です。確認済みの住所・座標が登録されるまで地図上の地点は表示しません。'
+  : 'Location verification is pending. No map point is shown until a reviewed address and coordinates are registered.';
+const fallbackMessage = isJapanese
+  ? 'インタラクティブ地図を読み込めません。確認済みの所在地情報とページ内の案内は引き続き利用できます。'
+  : 'Interactive map unavailable. Verified location details and page navigation remain available.';
+const mapAriaLabel = isJapanese
+  ? `${racecourseName}の確認済み所在地を示す地図`
+  : `Map showing the reviewed location of ${racecourseName}`;
+---
+
+<section class="card racecourse-location-section" aria-labelledby={`location-map-${racecourseId}`}>
+  <h2 id={`location-map-${racecourseId}`}>{title}</h2>
+
+  {location ? (
+    <>
+      <p>
+        <strong>{location.address ? `${addressLabel}:` : `${pointLabel}:`}</strong>{' '}
+        {location.address ?? `${location.latitude}, ${location.longitude}`}
+      </p>
+      {contextText ? <p><strong>{isJapanese ? '地域' : 'Context'}:</strong> {contextText}</p> : null}
+
+      <RacecourseMap
+        racecourseIds={[racecourseId]}
+        ariaLabel={mapAriaLabel}
+        initialZoom={16.5}
+        fallbackMessage={fallbackMessage}
+      />
+
+      <p class="racecourse-map__meta">
+        {checkedLabel}: {location.location_last_checked} · {location.precision} · {location.verification_state}
+      </p>
+      <p class="racecourse-map__attribution">
+        Map: <a href="https://openfreemap.org/">OpenFreeMap</a> · Data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>
+      </p>
+    </>
+  ) : (
+    <p>{pendingText}</p>
+  )}
+</section>
