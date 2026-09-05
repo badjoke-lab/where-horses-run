@@ -102,7 +102,7 @@ if (!Array.isArray(racecourses)) {
 
     for (const legacyKey of ['latitude', 'longitude', 'coordinates', 'lat', 'lon', 'lng']) {
       if (Object.prototype.hasOwnProperty.call(racecourse, legacyKey)) {
-        fail(`${id}: top-level ${legacyKey} is forbidden; use location.${legacyKey === 'lat' ? 'latitude' : legacyKey === 'lon' || legacyKey === 'lng' ? 'longitude' : legacyKey}`);
+        fail(`${id}: top-level ${legacyKey} is forbidden; use the canonical location.latitude/location.longitude fields`);
       }
     }
 
