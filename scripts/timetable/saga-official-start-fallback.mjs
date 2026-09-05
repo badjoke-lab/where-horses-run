@@ -108,21 +108,46 @@ function isoDate(year, month, day) {
   return Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== value ? null : value;
 }
 
+function iwateTimingFromText(text, year) {
+  const normalized = normalizeWide(plain(text));
+  const dateMatch = /(?:水沢|盛岡|水|盛)?\s*(\d{1,2})\s*(?:\/|月)\s*(\d{1,2})(?:日)?(?:\s*[（(][^）)]*[）)])?/.exec(normalized);
+  if (!dateMatch) return null;
+  const date = isoDate(Number(year), Number(dateMatch[1]), Number(dateMatch[2]));
+  if (!date) return null;
+  const times = [...normalized.matchAll(/(\d{1,2}):(\d{2})/g)]
+    .map((time) => `${String(Number(time[1])).padStart(2, '0')}:${time[2]}`);
+  if (times.length < 4) return null;
+  return {
+    date,
+    timing: {
+      first_race_time_local: times[1],
+      last_race_time_local: times[3],
+    },
+  };
+}
+
 export function parseIwateOfficialHomeTimes(html, year) {
   const rows = new Map();
   for (const match of String(html).matchAll(/<tr\b[^>]*>[\s\S]*?<\/tr>/gi)) {
-    const text = normalizeWide(plain(match[0]));
-    const dateMatch = /(?:水沢|盛岡|水|盛)?\s*(\d{1,2})\s*(?:\/|月)\s*(\d{1,2})(?:日)?/.exec(text);
-    if (!dateMatch) continue;
-    const date = isoDate(Number(year), Number(dateMatch[1]), Number(dateMatch[2]));
-    if (!date) continue;
-    const times = [...text.matchAll(/(?:^|\s)(\d{1,2}):(\d{2})(?=\s|$)/g)]
-      .map((time) => `${String(Number(time[1])).padStart(2, '0')}:${time[2]}`);
-    if (times.length < 4) continue;
-    rows.set(date, {
-      first_race_time_local: times[1],
-      last_race_time_local: times[3],
-    });
+    const parsed = iwateTimingFromText(match[0], year);
+    if (parsed) rows.set(parsed.date, parsed.timing);
+  }
+
+  const pageText = normalizeWide(plain(html));
+  const hasOfficialTimingHeader = /開催日/.test(pageText)
+    && /本場入場開始/.test(pageText)
+    && /第\s*1レース/.test(pageText)
+    && /メインレース/.test(pageText)
+    && /最終レース/.test(pageText);
+  if (!hasOfficialTimingHeader) return rows;
+
+  const datePattern = /(?:水沢|盛岡|水|盛)\s*(\d{1,2})\s*(?:\/|月)\s*(\d{1,2})(?:日)?(?:\s*[（(][^）)]*[）)])?/g;
+  const matches = [...pageText.matchAll(datePattern)];
+  for (let index = 0; index < matches.length; index += 1) {
+    const start = matches[index].index ?? 0;
+    const end = matches[index + 1]?.index ?? pageText.length;
+    const parsed = iwateTimingFromText(pageText.slice(start, end), year);
+    if (parsed) rows.set(parsed.date, parsed.timing);
   }
   return rows;
 }
