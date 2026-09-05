@@ -80,6 +80,17 @@ assert.deepEqual(iwateTimes.get('2026-09-13'), { first_race_time_local: '11:30',
 assert.deepEqual(iwateTimes.get('2026-09-15'), { first_race_time_local: '11:30', last_race_time_local: '18:00' });
 assert.equal(parseIwateOfficialHomeTimes('<table><tr><td>水 09/13(日)</td><td>11:30</td></tr></table>', 2026).size, 0);
 
+const iwateResponsiveFixture = `
+<section class="race-time">
+  <div>開催日　本場入場開始　第1レース　メインレース　最終レース　重賞・特別</div>
+  <div>水 09/13(日) 開催情報 <span>11:00／11:30／18:05／18:05</span> 重・青藍賞M2</div>
+  <div>水 09/14(月) 開催情報 <span>11:00／11:40／18:05／18:05</span> 爽秋特別</div>
+  <div>水 09/15(火) 開催情報 <span>11:00／11:30／18:00／18:00</span> スプリント特別</div>
+</section>`;
+const iwateResponsiveTimes = parseIwateOfficialHomeTimes(iwateResponsiveFixture, 2026);
+assert.deepEqual(iwateResponsiveTimes.get('2026-09-13'), { first_race_time_local: '11:30', last_race_time_local: '18:05' });
+assert.deepEqual(iwateResponsiveTimes.get('2026-09-15'), { first_race_time_local: '11:30', last_race_time_local: '18:00' });
+
 const kasamatsuIndexFixture = `
 <html><body>
 <a href="/news/detail/1483">第９回競馬「西日本３歳優駿シリーズ」開催の お知らせ</a>
