@@ -306,16 +306,36 @@ function canNankanFallback(primary) {
   return ['race_number_discovery_incomplete', 'scheduled_pending_details', 'details_pending'].includes(primary?.status);
 }
 
+function iwateFreshHomeUrl(monthKey) {
+  const url = new URL(IWATE_OFFICIAL_HOME_URL);
+  url.searchParams.set('_whr_timetable', `${monthKey}-${Date.now()}`);
+  return url.toString();
+}
+
 export function withSagaOfficialStartFallback(baseInspect, fetchImpl = fetch) {
-  const iwateByYear = new Map();
+  const iwateByMonth = new Map();
   const kasamatsuByYear = new Map();
 
-  const iwateTimes = (year, requestFetch) => {
-    if (!iwateByYear.has(year)) {
-      iwateByYear.set(year, fetchOfficialText(IWATE_OFFICIAL_HOME_URL, requestFetch, 'www.iwatekeiba.or.jp')
-        .then((page) => ({ rows: parseIwateOfficialHomeTimes(page.body, year), url: page.url })));
+  const iwateTimes = (date, requestFetch) => {
+    const monthKey = date.slice(0, 7);
+    const year = Number(date.slice(0, 4));
+    if (!iwateByMonth.has(monthKey)) {
+      iwateByMonth.set(monthKey, (async () => {
+        try {
+          const page = await fetchOfficialText(IWATE_OFFICIAL_HOME_URL, requestFetch, 'www.iwatekeiba.or.jp');
+          const rows = parseIwateOfficialHomeTimes(page.body, year);
+          if (rows.has(date)) return { rows, url: IWATE_OFFICIAL_HOME_URL };
+        } catch {
+          // A stale or unavailable canonical homepage is retried below with a cache-busting query.
+        }
+        const freshPage = await fetchOfficialText(iwateFreshHomeUrl(monthKey), requestFetch, 'www.iwatekeiba.or.jp');
+        return {
+          rows: parseIwateOfficialHomeTimes(freshPage.body, year),
+          url: IWATE_OFFICIAL_HOME_URL,
+        };
+      })());
     }
-    return iwateByYear.get(year);
+    return iwateByMonth.get(monthKey);
   };
 
   const kasamatsuTimes = (year, requestFetch) => {
@@ -340,8 +360,7 @@ export function withSagaOfficialStartFallback(baseInspect, fetchImpl = fetch) {
 
     if (['10', '11'].includes(meeting.venue_code) || ['morioka-racecourse', 'mizusawa-racecourse'].includes(meeting.racecourse_id)) {
       try {
-        const year = Number(meeting.date.slice(0, 4));
-        const page = await iwateTimes(year, requestFetch);
+        const page = await iwateTimes(meeting.date, requestFetch);
         const timing = page.rows.get(meeting.date);
         if (timing?.first_race_time_local && timing?.last_race_time_local) {
           return {
