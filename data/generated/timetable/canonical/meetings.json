@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-05T15:56:06.690Z",
+  "generated_at": "2026-09-05T16:06:11.444Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -19487,6 +19487,64 @@
       "freshness": {
         "last_checked_date": "2026-09-04",
         "generated_at": "2026-09-04T22:48:35.453Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
+      "meeting_id": "kra-jeju-racecourse-2026-10-05",
+      "country_id": "south-korea",
+      "authority_id": "korea-racing-authority",
+      "racing_system_id": "kra-national-racing-system",
+      "timezone": "Asia/Seoul",
+      "racecourse_id": "jeju-racecourse",
+      "date": "2026-10-05",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "kra-annual-race-operation-plan",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://race.kra.co.kr/raceoper/RaceoperView.do?Sub=1&meet=1",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-05",
+        "generated_at": "2026-09-05T16:06:11.444Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
+      "meeting_id": "kra-seoul-racecourse-2026-10-05",
+      "country_id": "south-korea",
+      "authority_id": "korea-racing-authority",
+      "racing_system_id": "kra-national-racing-system",
+      "timezone": "Asia/Seoul",
+      "racecourse_id": "seoul-racecourse",
+      "date": "2026-10-05",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "kra-annual-race-operation-plan",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://race.kra.co.kr/raceoper/RaceoperView.do?Sub=1&meet=1",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-05",
+        "generated_at": "2026-09-05T16:06:11.444Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
