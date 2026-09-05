@@ -1,0 +1,129 @@
+name: Temporary production map post-merge audit
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  production-browser-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Wait for merged map runtime on production
+        shell: bash
+        run: |
+          set -euo pipefail
+          url='https://whr.badjoke-lab.com/'
+          for i in $(seq 1 30); do
+            body="$(mktemp)"
+            if curl -LfsS --connect-timeout 15 --max-time 45 "$url" -o "$body"; then
+              if grep -Fq 'const MAP_LOAD_TIMEOUT_MS = 15000' "$body" \
+                && grep -Fq "map.once('load'" "$body" \
+                && ! grep -Fq "map.on('error', fail)" "$body"; then
+                echo "Merged map runtime is live on production."
+                rm -f "$body"
+                exit 0
+              fi
+            fi
+            rm -f "$body"
+            echo "Production has not switched to merged runtime yet (attempt $i/30)."
+            sleep 10
+          done
+          echo 'Merged map runtime did not reach production within 5 minutes.' >&2
+          exit 1
+
+      - name: Install Chromium audit runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/whr-prod-map-audit /tmp/pw-prod-map-audit
+          cd /tmp/pw-prod-map-audit
+          npm init -y >/dev/null 2>&1
+          npm install --no-audit --no-fund playwright@1.55.0 >/dev/null
+          npx playwright install --with-deps chromium >/dev/null
+
+      - name: Audit production maps on desktop and mobile
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd /tmp/pw-prod-map-audit
+          node <<'NODE'
+          const fs = require('node:fs');
+          const { chromium, devices } = require('playwright');
+          const base = 'https://whr.badjoke-lab.com';
+          const out = '/tmp/whr-prod-map-audit';
+          const routes = [
+            { name: 'home', path: '/', root: '[data-home-racing-map] [data-racecourse-map]' },
+            { name: 'today', path: '/today/', root: '[data-today-map-sync] [data-racecourse-map]' },
+            { name: 'calendar', path: '/calendar/', root: '[data-calendar-map-switch] [data-racecourse-map]', calendar: true },
+            { name: 'tokyo', path: '/tracks/tokyo-racecourse/', root: '[data-racecourse-map]' },
+          ];
+          const modes = [
+            { name: 'desktop', options: { viewport: { width: 1440, height: 1000 } } },
+            { name: 'mobile', options: { ...devices['iPhone 13'] } },
+          ];
+
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            const report = [];
+            try {
+              for (const mode of modes) {
+                const context = await browser.newContext(mode.options);
+                for (const route of routes) {
+                  const page = await context.newPage();
+                  const pageErrors = [];
+                  page.on('pageerror', (error) => pageErrors.push(String(error)));
+                  const response = await page.goto(base + route.path, { waitUntil: 'domcontentloaded', timeout: 60000 });
+                  if (!response || response.status() !== 200) throw new Error(`${route.name}/${mode.name}: HTTP ${response?.status()}`);
+
+                  if (route.calendar) {
+                    const dateSelect = page.locator('[data-filter-date]');
+                    await dateSelect.waitFor({ state: 'visible', timeout: 30000 });
+                    const values = await dateSelect.locator('option').evaluateAll((options) => options.map((o) => o.value).filter(Boolean));
+                    if (!values.length) throw new Error('calendar: no selectable date options');
+                    await dateSelect.selectOption(values[0]);
+                    await page.locator('[data-calendar-view-map]').click();
+                  }
+
+                  const root = page.locator(route.root).first();
+                  await root.scrollIntoViewIfNeeded();
+                  await page.waitForFunction(
+                    (selector) => document.querySelector(selector)?.getAttribute('data-map-state') === 'ready',
+                    route.root,
+                    { timeout: 60000 }
+                  );
+                  await page.waitForTimeout(2000);
+
+                  const mapState = await root.getAttribute('data-map-state');
+                  const visibleCount = await root.getAttribute('data-visible-racecourse-count');
+                  const canvasCount = await root.locator('canvas').count();
+                  const maplibreCanvasCount = await root.locator('.maplibregl-canvas').count();
+                  const canvasHidden = await root.locator('[data-map-canvas]').getAttribute('hidden');
+                  const entry = { route: route.name, mode: mode.name, mapState, visibleCount, canvasCount, maplibreCanvasCount, canvasHidden, pageErrors };
+                  report.push(entry);
+                  console.log(JSON.stringify(entry));
+                  await page.screenshot({ path: `${out}/${route.name}-${mode.name}.png`, fullPage: true });
+                  if (mapState !== 'ready' || canvasCount < 1 || maplibreCanvasCount < 1 || canvasHidden !== null || pageErrors.length) {
+                    throw new Error(`${route.name}/${mode.name}: production rendered-map contract failed`);
+                  }
+                  await page.close();
+                }
+                await context.close();
+              }
+            } finally {
+              await browser.close();
+            }
+            fs.writeFileSync(`${out}/report.json`, JSON.stringify(report, null, 2));
+          })().catch((error) => { console.error(error); process.exit(1); });
+          NODE
+
+      - name: Upload production audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-map-postmerge-audit
+          path: /tmp/whr-prod-map-audit
+          if-no-files-found: error
+          retention-days: 1
