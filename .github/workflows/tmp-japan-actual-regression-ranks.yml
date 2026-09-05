@@ -11,35 +11,31 @@ permissions:
 jobs:
   proof:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Install dependencies
-        run: npm install --no-package-lock --no-audit --no-fund
-      - name: Inspect live target adapter rows
+      - name: Inspect live NAR RaceList markup
         run: |
           node --input-type=module <<'NODE'
-          import { japanOfficial30dAdapters } from './scripts/timetable/japan-official-30d-adapters.mjs';
-
           const targets = [
-            ['nar-standard', 'nar-kochi-racecourse-2026-09-05', ['2026-09-05']],
-            ['nar-standard', 'nar-kochi-racecourse-2026-09-06', ['2026-09-06']],
-            ['nar-standard', 'nar-saga-racecourse-2026-09-05', ['2026-09-05']],
-            ['banei', 'banei-obihiro-racecourse-2026-09-07', ['2026-09-07']],
+            ['kochi-0905', 'https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=31&k_raceDate=2026%2F09%2F05'],
+            ['saga-0905', 'https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=32&k_raceDate=2026%2F09%2F05'],
           ];
-
-          for (const [group, meetingId, dates] of targets) {
-            const adapter = japanOfficial30dAdapters[group];
-            const start = dates[0];
-            const end = new Date(`${dates.at(-1)}T00:00:00Z`);
-            end.setUTCDate(end.getUTCDate() + 1);
-            const discovered = await adapter.discover({ start, end_exclusive: end.toISOString().slice(0, 10), dates });
-            const meeting = discovered.find((row) => row.meeting_id === meetingId);
-            if (!meeting) throw new Error(`target not discovered: ${meetingId}`);
-            const inspected = await adapter.inspect(meeting, { attempt: 1 });
-            console.log('TARGET_INSPECT=' + JSON.stringify({ meetingId, discovered: meeting, inspected }, null, 2));
+          for (const [name, url] of targets) {
+            const response = await fetch(url, { headers: { 'user-agent': 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0)', 'accept-language': 'ja,en;q=.7' } });
+            if (!response.ok) throw new Error(`${name}: HTTP ${response.status}`);
+            const bytes = await response.arrayBuffer();
+            const candidates = ['shift_jis', 'utf-8'].map((encoding) => ({ encoding, text: new TextDecoder(encoding).decode(bytes) }));
+            candidates.sort((a,b) => (b.text.match(/[競馬発走]/g)?.length ?? 0) - (a.text.match(/[競馬発走]/g)?.length ?? 0));
+            const html = candidates[0].text;
+            console.log(`PAGE=${name} encoding=${candidates[0].encoding} bytes=${bytes.byteLength}`);
+            const rows = [...html.matchAll(/<tr\b[^>]*>[\s\S]*?<\/tr>/gi)].map((m) => m[0]);
+            for (const raceNo of [1, 2]) {
+              const row = rows.find((value) => new RegExp(`[?&](?:amp;)?k_raceNo=${raceNo}(?:&|&amp;|["'])`, 'i').test(value));
+              console.log(`RAW_ROW_${name}_R${raceNo}=` + (row ?? 'NOT_FOUND'));
+            }
           }
           NODE
