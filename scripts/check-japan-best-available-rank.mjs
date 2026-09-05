@@ -35,6 +35,7 @@ assert.equal(monbetsuDiscovery[0].racecourse_id, 'monbetsu-racecourse');
 assert.equal(monbetsuDiscovery[0].venue_code, '36');
 assert.match(monbetsuDiscovery[0].official_source_url, /k_babaCode=36/);
 
+// Official NAR Monbetsu race metadata carries both surface and inner/outer course.
 assert.deepEqual(
   parseNarDebaMetadata('<div>ダート 1000ｍ（外コース・右）</div>'),
   { surface: 'Dirt', distance_m: 1000, course_label: 'Dirt Outer Right-handed' },
