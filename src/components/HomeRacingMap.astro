@@ -1,0 +1,298 @@
+---
+import RacecourseMap from './RacecourseMap.astro';
+import locationRegistry from '../../data/static/racecourse-locations-v1.json';
+import { getRacecourses } from '../lib/data';
+import type { TimetableMeetingRow } from '../data/timetableMeetingRows';
+
+interface Props {
+  records: TimetableMeetingRow[];
+  lang?: 'en' | 'ja';
+}
+
+const { records, lang = 'en' } = Astro.props;
+const isJapanese = lang === 'ja';
+const reviewedRacecourseIds = new Set(
+  ((locationRegistry as any).locations ?? [])
+    .map((entry: any) => entry?.id)
+    .filter((id: unknown) => typeof id === 'string' && id.length > 0)
+);
+const racecourseById = new Map(getRacecourses().map((track) => [track.id, track]));
+const candidateRacecourseIds = [...new Set(
+  records.filter((record) => reviewedRacecourseIds.has(record.racecourse_id)).map((record) => record.racecourse_id)
+)];
+const publicRows = records.map((record) => {
+  const track = racecourseById.get(record.racecourse_id);
+  return {
+    meetingId: record.meeting_id,
+    racecourseId: record.racecourse_id,
+    racecourseName: isJapanese ? (track?.name_ja ?? record.racecourse_name) : record.racecourse_name,
+    racecourseSlug: track?.slug ?? null,
+    country: record.country_label,
+    authority: record.authority_label,
+    sourceDate: record.date,
+    sourceTimezone: record.timezone,
+    firstRaceTime: record.first_race_time_local ?? null,
+    lastRaceTime: record.last_race_time_local ?? null,
+    publicRank: record.capability_rank,
+    detailPath: record.detail_path ? (isJapanese ? `/ja${record.detail_path}` : record.detail_path) : null,
+    officialSourceUrl: record.official_source_url,
+    hasReviewedLocation: reviewedRacecourseIds.has(record.racecourse_id),
+  };
+});
+const rowsJson = JSON.stringify(publicRows).replace(/</g, '\\u003c');
+const fallbackMessage = isJapanese
+  ? 'インタラクティブ地図を読み込めません。今日・明日・カレンダーの通常ページは引き続き利用できます。'
+  : 'Interactive map unavailable. Today, Tomorrow, and Calendar pages remain available.';
+---
+
+<section class="home-racing-map card" data-home-racing-map data-lang={lang} aria-labelledby="home-racing-map-title">
+  <div class="home-racing-map__heading">
+    <div>
+      <p class="home-racing-map__eyebrow">{isJapanese ? '地図から探す' : 'Explore by map'}</p>
+      <h2 id="home-racing-map-title">{isJapanese ? 'どこで競馬がある？' : 'Where is racing happening?'}</h2>
+    </div>
+    <div class="home-racing-map__periods" role="group" aria-label={isJapanese ? '地図の期間' : 'Map period'}>
+      <button type="button" data-home-map-period="today" aria-pressed="true">{isJapanese ? '今日' : 'Today'}</button>
+      <button type="button" data-home-map-period="tomorrow" aria-pressed="false">{isJapanese ? '明日' : 'Tomorrow'}</button>
+      <button type="button" data-home-map-period="next7" aria-pressed="false">{isJapanese ? '7日間' : 'Next 7 days'}</button>
+    </div>
+  </div>
+
+  <div class="home-racing-map__timezone">
+    <label>
+      <span>{isJapanese ? '表示タイムゾーン' : 'Display timezone'}</span>
+      <select data-home-map-timezone aria-label={isJapanese ? '表示タイムゾーン' : 'Display timezone'}>
+        <option value="Asia/Tokyo">Asia/Tokyo</option>
+        <option value="UTC">UTC</option>
+      </select>
+    </label>
+    <output data-home-map-timezone-status>Asia/Tokyo</output>
+  </div>
+
+  <p class="home-racing-map__status" data-home-map-status aria-live="polite"></p>
+
+  {candidateRacecourseIds.length > 0 ? (
+    <>
+      <RacecourseMap
+        racecourseIds={candidateRacecourseIds}
+        visibleRacecourseIds={[]}
+        initialZoom={2}
+        ariaLabel={isJapanese ? '選択期間に開催がある競馬場の世界地図' : 'World map of racecourses with meetings in the selected period'}
+        fallbackMessage={fallbackMessage}
+      />
+      <p class="racecourse-map__attribution">
+        Map: <a href="https://openfreemap.org/">OpenFreeMap</a> · Data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>
+      </p>
+      <article class="home-racing-map__selected" data-home-map-selected hidden>
+        <h3 data-home-map-selected-name></h3>
+        <p data-home-map-selected-meta></p>
+        <ul data-home-map-selected-meetings></ul>
+        <p data-home-map-selected-links></p>
+      </article>
+    </>
+  ) : (
+    <p>{isJapanese ? '現在の公開候補には確認済み位置情報を持つ競馬場がありません。' : 'No current public candidate has a reviewed racecourse location.'}</p>
+  )}
+
+  <p class="home-racing-map__boundary">
+    {isJapanese
+      ? '地図は既存の公開meetingと確認済み競馬場位置だけを使います。地図から開催を新規取得・推測しません。'
+      : 'The map uses only existing public meetings and reviewed racecourse locations. It does not discover or infer meetings.'}
+  </p>
+  <script type="application/json" data-home-map-records set:html={rowsJson}></script>
+</section>
+
+<script is:inline>
+  (() => {
+    const install = () => {
+      document.querySelectorAll('[data-home-racing-map]').forEach((root) => {
+        if (!(root instanceof HTMLElement) || root.dataset.homeMapInitialized === 'true') return;
+        root.dataset.homeMapInitialized = 'true';
+
+        const mapRoot = root.querySelector('[data-racecourse-map]');
+        const timezoneSelect = root.querySelector('[data-home-map-timezone]');
+        const timezoneStatus = root.querySelector('[data-home-map-timezone-status]');
+        const status = root.querySelector('[data-home-map-status]');
+        const dataNode = root.querySelector('[data-home-map-records]');
+        const periodButtons = [...root.querySelectorAll('[data-home-map-period]')];
+        const selected = root.querySelector('[data-home-map-selected]');
+        const selectedName = root.querySelector('[data-home-map-selected-name]');
+        const selectedMeta = root.querySelector('[data-home-map-selected-meta]');
+        const selectedMeetings = root.querySelector('[data-home-map-selected-meetings]');
+        const selectedLinks = root.querySelector('[data-home-map-selected-links]');
+        if (!(timezoneSelect instanceof HTMLSelectElement) || !(dataNode instanceof HTMLScriptElement)) return;
+
+        let records = [];
+        try { records = JSON.parse(dataNode.textContent || '[]'); } catch { records = []; }
+        const isJa = root.dataset.lang === 'ja';
+        let period = 'today';
+        let visibleProjected = [];
+
+        const isTimeZoneSupported = (timeZone) => {
+          if (!timeZone) return false;
+          try { new Intl.DateTimeFormat('en', { timeZone }).format(new Date(0)); return true; } catch { return false; }
+        };
+        const dateParts = (instant, timeZone) => Object.fromEntries(new Intl.DateTimeFormat('en-US', {
+          timeZone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
+        }).formatToParts(instant).filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
+        const localDateTimeToInstant = (dateText, timeText, timeZone) => {
+          const dateMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateText || '');
+          const timeMatch = /^(\d{1,2}):(\d{2})(?::(\d{2}))?$/.exec(timeText || '');
+          if (!dateMatch || !timeMatch || !isTimeZoneSupported(timeZone)) return null;
+          const targetUtc = Date.UTC(Number(dateMatch[1]), Number(dateMatch[2]) - 1, Number(dateMatch[3]), Number(timeMatch[1]), Number(timeMatch[2]), Number(timeMatch[3] ?? '0'));
+          let guess = targetUtc;
+          for (let pass = 0; pass < 4; pass += 1) {
+            const parts = dateParts(new Date(guess), timeZone);
+            const representedUtc = Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day), Number(parts.hour), Number(parts.minute), Number(parts.second));
+            const correction = targetUtc - representedUtc;
+            guess += correction;
+            if (correction === 0) break;
+          }
+          return new Date(guess);
+        };
+        const formatDate = (instant, timeZone) => {
+          const parts = dateParts(instant, timeZone);
+          return `${parts.year}-${parts.month}-${parts.day}`;
+        };
+        const formatTime = (instant, timeZone) => new Intl.DateTimeFormat('en-GB', {
+          timeZone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+        }).format(instant);
+        const addDays = (dateText, days) => {
+          const date = new Date(`${dateText}T00:00:00.000Z`);
+          date.setUTCDate(date.getUTCDate() + days);
+          return date.toISOString().slice(0, 10);
+        };
+        const populateTimeZones = () => {
+          const zones = typeof Intl.supportedValuesOf === 'function'
+            ? Intl.supportedValuesOf('timeZone')
+            : ['UTC', 'Asia/Tokyo', 'Asia/Hong_Kong', 'Asia/Dubai', 'Europe/Istanbul', 'Europe/London', 'America/New_York', 'Australia/Sydney'];
+          const values = Array.from(new Set(['UTC', ...zones]));
+          timezoneSelect.replaceChildren(...values.map((zone) => {
+            const option = document.createElement('option');
+            option.value = zone;
+            option.textContent = zone;
+            return option;
+          }));
+        };
+        const project = (record, timeZone) => {
+          const first = record.firstRaceTime ? localDateTimeToInstant(record.sourceDate, record.firstRaceTime, record.sourceTimezone) : null;
+          let last = record.lastRaceTime ? localDateTimeToInstant(record.sourceDate, record.lastRaceTime, record.sourceTimezone) : null;
+          if (first && last && last.getTime() < first.getTime()) last = new Date(last.getTime() + 86_400_000);
+          const anchor = first || last;
+          return {
+            ...record,
+            projectedDate: anchor ? formatDate(anchor, timeZone) : record.sourceDate,
+            firstProjectedTime: first ? formatTime(first, timeZone) : null,
+            lastProjectedTime: last ? formatTime(last, timeZone) : null,
+            lastProjectedDate: last ? formatDate(last, timeZone) : null,
+          };
+        };
+        const periodWindow = (timeZone) => {
+          const today = formatDate(new Date(), timeZone);
+          if (period === 'tomorrow') {
+            const start = addDays(today, 1);
+            return { start, endExclusive: addDays(start, 1), label: start };
+          }
+          if (period === 'next7') return { start: today, endExclusive: addDays(today, 7), label: `${today}–${addDays(today, 6)}` };
+          return { start: today, endExclusive: addDays(today, 1), label: today };
+        };
+        const clearSelected = () => {
+          if (selected instanceof HTMLElement) selected.hidden = true;
+          if (selectedName) selectedName.textContent = '';
+          if (selectedMeta) selectedMeta.textContent = '';
+          if (selectedMeetings) selectedMeetings.replaceChildren();
+          if (selectedLinks) selectedLinks.replaceChildren();
+        };
+        const renderSelected = (racecourseId) => {
+          const rows = visibleProjected.filter((record) => record.racecourseId === racecourseId);
+          if (!rows.length) { clearSelected(); return; }
+          const first = rows[0];
+          if (selectedName) selectedName.textContent = first.racecourseName;
+          if (selectedMeta) selectedMeta.textContent = `${first.country} · ${first.authority}`;
+          if (selectedMeetings) {
+            selectedMeetings.replaceChildren(...rows.map((record) => {
+              const li = document.createElement('li');
+              const times = record.firstProjectedTime
+                ? record.lastProjectedTime
+                  ? `${record.firstProjectedTime}–${record.lastProjectedDate && record.lastProjectedDate !== record.projectedDate ? `${record.lastProjectedDate} ` : ''}${record.lastProjectedTime}`
+                  : record.firstProjectedTime
+                : '';
+              li.textContent = `${record.projectedDate}${times ? ` · ${times}` : ''} · ${isJa ? '公開ランク' : 'Public rank'} ${record.publicRank}`;
+              return li;
+            }));
+          }
+          if (selectedLinks) {
+            const parts = [];
+            if (first.racecourseSlug) {
+              const track = document.createElement('a');
+              track.href = `${isJa ? '/ja' : ''}/tracks/${first.racecourseSlug}/`;
+              track.textContent = isJa ? '競馬場ページ' : 'Racecourse page';
+              parts.push(track);
+            }
+            const calendar = document.createElement('a');
+            calendar.href = `${isJa ? '/ja' : ''}/calendar/?date=${encodeURIComponent(first.projectedDate)}`;
+            calendar.textContent = isJa ? 'カレンダーで見る' : 'Open in Calendar';
+            parts.push(calendar);
+            parts.forEach((link, index) => {
+              if (index > 0) selectedLinks.append(document.createTextNode(' · '));
+              selectedLinks.append(link);
+            });
+          }
+          if (selected instanceof HTMLElement) selected.hidden = false;
+        };
+        const apply = () => {
+          const timeZone = isTimeZoneSupported(timezoneSelect.value) ? timezoneSelect.value : 'Asia/Tokyo';
+          const windowRange = periodWindow(timeZone);
+          visibleProjected = records
+            .map((record) => project(record, timeZone))
+            .filter((record) => record.projectedDate >= windowRange.start && record.projectedDate < windowRange.endExclusive);
+          const ids = Array.from(new Set(visibleProjected.filter((record) => record.hasReviewedLocation).map((record) => record.racecourseId)));
+          if (mapRoot instanceof HTMLElement) {
+            mapRoot.dispatchEvent(new CustomEvent('racecourse-map:set-visible', { detail: { racecourseIds: ids, fit: true } }));
+          }
+          if (timezoneStatus) timezoneStatus.textContent = timeZone;
+          if (status) {
+            status.textContent = isJa
+              ? `${windowRange.label} · ${visibleProjected.length}開催 / ${ids.length}競馬場を表示`
+              : `${windowRange.label} · ${visibleProjected.length} meetings / ${ids.length} mapped racecourses`;
+          }
+          clearSelected();
+          root.dataset.period = period;
+          root.dataset.timeZone = timeZone;
+        };
+
+        periodButtons.forEach((button) => {
+          if (!(button instanceof HTMLButtonElement)) return;
+          button.addEventListener('click', () => {
+            period = button.dataset.homeMapPeriod || 'today';
+            periodButtons.forEach((candidate) => candidate.setAttribute('aria-pressed', String(candidate === button)));
+            apply();
+          });
+        });
+        timezoneSelect.addEventListener('change', () => {
+          const selectedZone = isTimeZoneSupported(timezoneSelect.value) ? timezoneSelect.value : 'Asia/Tokyo';
+          const url = new URL(window.location.href);
+          url.searchParams.set('tz', selectedZone);
+          window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+          apply();
+        });
+        if (mapRoot instanceof HTMLElement) {
+          mapRoot.addEventListener('racecourse-map:ready', apply);
+          mapRoot.addEventListener('racecourse-map:select', (event) => {
+            const racecourseId = event?.detail?.racecourseId;
+            if (typeof racecourseId === 'string') renderSelected(racecourseId);
+          });
+        }
+
+        populateTimeZones();
+        const requestedZone = new URL(window.location.href).searchParams.get('tz');
+        const browserZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        timezoneSelect.value = isTimeZoneSupported(requestedZone) ? requestedZone : isTimeZoneSupported(browserZone) ? browserZone : 'Asia/Tokyo';
+        apply();
+      });
+    };
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
+    else install();
+  })();
+</script>
