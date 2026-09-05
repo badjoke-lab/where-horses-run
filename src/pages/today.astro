@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CalendarDateStatus from '../components/CalendarDateStatus.astro';
 import TimetableMeetingList from '../components/TimetableMeetingList.astro';
+import TodayMeetingMap from '../components/TodayMeetingMap.astro';
 import {
   getTimetableDataState,
   getTimetableDateContext,
@@ -31,6 +32,8 @@ const todayCandidates = getTimetableMeetingRowsForWindow(candidateStart, candida
   </section>
 
   <CalendarDateStatus context={context} dataState={dataState} displayDate={context.today} />
+
+  <TodayMeetingMap records={todayCandidates} date={context.today} />
 
   <section aria-label="Today meeting list">
     <TimetableMeetingList
