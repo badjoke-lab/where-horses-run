@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {
   classifyNarZeroRaceDiscovery,
   narRaceProgrammeLooksPublished,
@@ -63,6 +64,23 @@ assert.equal(
   narRaceProgrammeLooksPublished(oneStaticRaceReference),
   false,
   'one incidental race reference is insufficient publication evidence',
+);
+
+const adapterSource = fs.readFileSync('scripts/timetable/japan-official-30d-adapters.mjs', 'utf8');
+assert.match(
+  adapterSource,
+  /import \{ classifyNarZeroRaceDiscovery \} from '\.\/nar-publication-signal\.mjs';/,
+  'NAR inspector must import the publication classification guard',
+);
+assert.match(
+  adapterSource,
+  /if \(!numbers\.length\) return classifyNarZeroRaceDiscovery\(page\.body\);/,
+  'zero discovered NAR races must be classified from independent publication signals',
+);
+assert.doesNotMatch(
+  adapterSource,
+  /if \(!numbers\.length\) return \{ status: 'scheduled_pending_details', reason: 'scheduled_pending_details' \};/,
+  'NAR zero-race discovery must never unconditionally become C again',
 );
 
 console.log('NAR_PUBLICATION_SIGNAL_GUARD: pass');
