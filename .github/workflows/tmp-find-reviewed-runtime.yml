@@ -1,0 +1,17 @@
+name: Temp find reviewed runtime refs
+
+on:
+  push:
+    branches: [fix/nar-unquoted-race-name-links]
+
+permissions:
+  contents: read
+
+jobs:
+  grep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Find fixed reviewed runtime references
+        run: |
+          grep -R -n -E 'japanSep6Reviewed|japan-2026-09-05-reviewed-a-plus|japan-2026-09-06-kochi|applyJapanSep6Reviewed|Sep5Reviewed|sep5Reviewed' src scripts data/static || true
