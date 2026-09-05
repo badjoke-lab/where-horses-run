@@ -4,7 +4,6 @@ import CalendarCoverageDashboard from '../../../components/CalendarCoverageDashb
 import CalendarDateFocus from '../../../components/CalendarDateFocus.astro';
 import CalendarDateStatus from '../../../components/CalendarDateStatus.astro';
 import CalendarFilters from '../../../components/CalendarFilters.astro';
-import CalendarLivePlayers from '../../../components/CalendarLivePlayers.astro';
 import TimetableMeetingList from '../../../components/TimetableMeetingList.astro';
 import {
   getGroupedTimetableMeetingRows,
@@ -41,7 +40,6 @@ const groupedCalendarRecords = getGroupedTimetableMeetingRows(candidateRecords);
   <CalendarCoverageDashboard lang="ja" />
   <CalendarDateFocus lang="ja" />
   <CalendarFilters records={candidateRecords} lang="ja" />
-  <CalendarLivePlayers />
 
   <section aria-label="30日間の開催一覧">
     <TimetableMeetingList
