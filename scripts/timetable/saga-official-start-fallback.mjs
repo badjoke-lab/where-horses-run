@@ -5,6 +5,7 @@ const SAGA_OFFICIAL_START_URL = 'https://www.sagakeiba.net/raceinfo/start/';
 const MONBETSU_OFFICIAL_RACEINFO_URL = 'https://www.hokkaidokeiba.net/raceinfo/syuso.php';
 const IWATE_OFFICIAL_HOME_URL = 'https://www.iwatekeiba.or.jp/';
 const KASAMATSU_OFFICIAL_NEWS_URL = 'https://www.kasamatsu-keiba.com/news/1';
+const MONBETSU_SURFACE = 'Dirt';
 
 const entities = (value) => String(value ?? '')
   .replace(/&nbsp;|&#160;/gi, ' ')
@@ -78,7 +79,7 @@ export function parseSagaOfficialStartPage(html, date) {
 }
 
 export function parseMonbetsuOfficialRaceInfoPage(html, date, expectedRaceNumber = null) {
-  const normalized = asciiDigits(plain(html));
+  const normalized = normalizeWide(plain(html));
   const [year, month, day] = date.split('-');
   if (!new RegExp(`${year}年\\s*${Number(month)}月\\s*${Number(day)}日`).test(normalized)) return [];
 
@@ -87,19 +88,24 @@ export function parseMonbetsuOfficialRaceInfoPage(html, date, expectedRaceNumber
   const raceNumber = Number(raceMatch[1]);
   if (expectedRaceNumber != null && raceNumber !== expectedRaceNumber) return [];
 
-  const contextStart = Math.max(0, raceMatch.index - 400);
-  const context = normalized.slice(contextStart, raceMatch.index + raceMatch[0].length + 600);
-  const time = /発走時刻[^0-9]{0,24}(\d{1,2})\s*[:：]\s*(\d{2})/.exec(context);
-  if (!time) return [];
-  const distance = /(\d{3,4})\s*[mMｍＭ](?:\s*[（(](外|内)[）)])?/.exec(context);
+  const beforeRace = normalized.slice(Math.max(0, raceMatch.index - 500), raceMatch.index);
+  const timeMatches = [...beforeRace.matchAll(/発走時刻[^0-9]{0,24}(\d{1,2})\s*:\s*(\d{2})/g)];
+  const distanceMatches = [...beforeRace.matchAll(/(\d{3,4})\s*[mMｍＭ]\s*[（(](外|内)[）)]/g)];
+  const time = timeMatches.at(-1);
+  const distance = distanceMatches.at(-1);
+  if (!time || !distance) return [];
+
+  const afterRace = normalized.slice(raceMatch.index + raceMatch[0].length, raceMatch.index + raceMatch[0].length + 500);
+  const raceName = afterRace.match(/^\s*(.+?)\s*[（(]サラ系/)?.[1]?.trim() ?? null;
+  if (!raceName) return [];
 
   return [{
     label: `Race ${raceNumber}`,
     post_time_local: `${String(Number(time[1])).padStart(2, '0')}:${time[2]}`,
-    race_name: null,
-    distance_m: distance ? Number(distance[1]) : null,
-    surface: null,
-    course_label: null,
+    race_name: raceName,
+    distance_m: Number(distance[1]),
+    surface: MONBETSU_SURFACE,
+    course_label: distance[2] === '外' ? 'Outer' : 'Inner',
   }];
 }
 
@@ -435,7 +441,7 @@ export function withSagaOfficialStartFallback(baseInspect, fetchImpl = fetch) {
       }
     }
 
-    if (meeting.venue_code === '04') {
+    if (['04', '36'].includes(meeting.venue_code) || meeting.racecourse_id === 'monbetsu-racecourse') {
       try {
         const collected = await collectMonbetsuRaceInfo(requestFetch, meeting.date);
         if (collected?.rows.length) {
@@ -445,7 +451,6 @@ export function withSagaOfficialStartFallback(baseInspect, fetchImpl = fetch) {
               ...meeting,
               source_id: 'monbetsu-official-raceinfo-fallback',
               source_label: 'ホッカイドウ競馬',
-              capability_rank: 'A',
               timetable_rows: collected.rows,
               official_source_url: collected.url,
             },
