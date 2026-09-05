@@ -1,4 +1,5 @@
 import { fetchNankanOfficialProgramme } from './nankan-official-programme-fallback.mjs';
+import { fetchIwateOfficialProgrammeTiming } from './iwate-official-programme-fallback.mjs';
 
 const SAGA_OFFICIAL_START_URL = 'https://www.sagakeiba.net/raceinfo/start/';
 const MONBETSU_OFFICIAL_RACEINFO_URL = 'https://www.hokkaidokeiba.net/raceinfo/syuso.php';
@@ -359,6 +360,12 @@ export function withSagaOfficialStartFallback(baseInspect, fetchImpl = fetch) {
     if (!canFallback(primary)) return primary;
 
     if (['10', '11'].includes(meeting.venue_code) || ['morioka-racecourse', 'mizusawa-racecourse'].includes(meeting.racecourse_id)) {
+      try {
+        const programme = await fetchIwateOfficialProgrammeTiming(meeting, { fetchImpl: requestFetch });
+        if (programme) return programme;
+      } catch {
+        // Fall through to the homepage timing table when the programme PDF path is unavailable or malformed.
+      }
       try {
         const page = await iwateTimes(meeting.date, requestFetch);
         const timing = page.rows.get(meeting.date);
