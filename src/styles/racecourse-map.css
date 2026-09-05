@@ -168,6 +168,104 @@
   border-color: var(--whr-color-border);
 }
 
+.home-racing-map {
+  display: grid;
+  gap: var(--whr-space-3);
+  margin-block: var(--whr-space-4) var(--whr-space-5);
+}
+
+.home-racing-map__heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--whr-space-3);
+  flex-wrap: wrap;
+}
+
+.home-racing-map__heading h2,
+.home-racing-map__heading p,
+.home-racing-map__status,
+.home-racing-map__boundary,
+.home-racing-map__selected h3,
+.home-racing-map__selected p {
+  margin: 0;
+}
+
+.home-racing-map__eyebrow,
+.home-racing-map__status,
+.home-racing-map__boundary,
+.home-racing-map__timezone {
+  color: var(--whr-color-muted);
+  font-size: 0.9rem;
+}
+
+.home-racing-map__periods {
+  display: inline-flex;
+  gap: 0.25rem;
+  padding: 0.2rem;
+  border: 1px solid var(--whr-color-border);
+  border-radius: 999px;
+}
+
+.home-racing-map__periods button {
+  min-height: 2.25rem;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--whr-color-text);
+  cursor: pointer;
+  font: inherit;
+}
+
+.home-racing-map__periods button[aria-pressed='true'] {
+  border-color: var(--whr-color-border);
+  background: var(--whr-color-bg);
+  font-weight: 700;
+}
+
+.home-racing-map__periods button:focus-visible,
+.home-racing-map__timezone select:focus-visible {
+  outline: 3px solid #111;
+  outline-offset: 2px;
+}
+
+.home-racing-map__timezone {
+  display: flex;
+  align-items: end;
+  gap: var(--whr-space-2);
+  flex-wrap: wrap;
+}
+
+.home-racing-map__timezone label {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.home-racing-map__timezone select {
+  max-width: min(24rem, 80vw);
+  padding: 0.38rem 0.5rem;
+}
+
+.home-racing-map__selected {
+  display: grid;
+  gap: var(--whr-space-2);
+  padding: var(--whr-space-3);
+  border: 1px solid var(--whr-color-border);
+  border-radius: 0.75rem;
+}
+
+.home-racing-map__selected[hidden] {
+  display: none;
+}
+
+.home-racing-map__selected ul {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding-inline-start: 1.2rem;
+}
+
 .meeting-row__map-focus {
   min-height: 2rem;
   margin-inline-start: 0.5rem;
@@ -198,8 +296,18 @@
 
   .today-meeting-map__heading,
   .calendar-map-switch__heading,
-  .calendar-map-switch__selected {
+  .calendar-map-switch__selected,
+  .home-racing-map__heading {
     align-items: start;
     flex-direction: column;
+  }
+
+  .home-racing-map__periods {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .home-racing-map__periods button {
+    flex: 1 0 auto;
   }
 }
