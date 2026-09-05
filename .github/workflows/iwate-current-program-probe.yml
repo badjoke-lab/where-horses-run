@@ -13,52 +13,45 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Probe official Iwate endpoints
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Inspect official Iwate programme PDF text layout
         run: |
           node <<'NODE'
-          const urls = [
-            'https://www.iwatekeiba.or.jp/',
-            'https://www.iwatekeiba.or.jp/category/program',
-            'https://www.iwatekeiba.or.jp/news/260902d',
-            'https://www.iwatekeiba.or.jp/wp-json/wp/v2/search?search=%E4%BB%A4%E5%92%8C8%E5%B9%B4%E5%BA%A6%20%E7%AC%AC5%E5%9B%9E%E6%B0%B4%E6%B2%A2%E7%AB%B6%E9%A6%AC%E6%94%B9%E5%AE%9A%E7%95%AA%E7%B5%84&per_page=20',
-            'https://www.iwatekeiba.or.jp/wp-json/wp/v2/posts?search=%E7%AC%AC5%E5%9B%9E%E6%B0%B4%E6%B2%A2%E7%AB%B6%E9%A6%AC%E6%94%B9%E5%AE%9A%E7%95%AA%E7%B5%84&per_page=20',
-            'https://www.iwatekeiba.or.jp/dir/wp-content/uploads/2026/09/26-12-05mizusawa_kaitei.pdf',
-            'https://www.iwatekeiba.or.jp/dir/wp-content/uploads/2026/09/26-12-05mizusawa_kaitei01.pdf',
-            'https://www.iwatekeiba.or.jp/dir/wp-content/uploads/2026/09/26-12-05mizusawa_kaitei02.pdf',
-            'https://www.iwatekeiba.or.jp/dir/wp-content/uploads/2026/09/26-12-05mizusawa_kaitei03.pdf',
-            'https://www.iwatekeiba.or.jp/dir/wp-content/uploads/2026/09/26-12-05mizusawa_kaitei1.pdf',
-            'https://www.iwatekeiba.or.jp/dir/wp-content/uploads/2026/09/26-12-05mizusawa_kaitei2.pdf',
-          ];
-          const decoder = new TextDecoder('utf-8');
-          for (const url of urls) {
-            try {
-              const response = await fetch(url, {
-                redirect: 'follow',
-                headers: {
-                  'user-agent': 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; read-only source probe)',
-                  accept: '*/*',
-                  'accept-language': 'ja,en;q=.7',
-                  'cache-control': 'no-cache',
-                  pragma: 'no-cache',
-                },
-              });
-              const bytes = new Uint8Array(await response.arrayBuffer());
-              const head = decoder.decode(bytes.slice(0, Math.min(bytes.length, 5000)));
-              console.log(JSON.stringify({
-                requested_url: url,
-                status: response.status,
-                final_url: response.url,
-                content_type: response.headers.get('content-type'),
-                bytes: bytes.length,
-                is_pdf: bytes[0] === 0x25 && bytes[1] === 0x50 && bytes[2] === 0x44 && bytes[3] === 0x46,
-                has_current_title: head.includes('第5回水沢競馬改定番組') || head.includes('第5回水沢競馬'),
-                sample: /^application\/json/i.test(response.headers.get('content-type') || '') ? head.slice(0, 3000) : undefined,
+          import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
+
+          const url = 'https://www.iwatekeiba.or.jp/dir/wp-content/uploads/2026/09/26-12-05mizusawa_kaitei.pdf';
+          const response = await fetch(url, {
+            redirect: 'follow',
+            headers: {
+              'user-agent': 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; read-only source probe)',
+              accept: 'application/pdf',
+              'accept-language': 'ja,en;q=.7',
+              'cache-control': 'no-cache',
+              pragma: 'no-cache',
+            },
+          });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const bytes = new Uint8Array(await response.arrayBuffer());
+          const document = await getDocument({ data: bytes, useWorkerFetch: false, isEvalSupported: false }).promise;
+          console.log(JSON.stringify({ url: response.url, bytes: bytes.length, pages: document.numPages }));
+          for (let pageNumber = 1; pageNumber <= document.numPages; pageNumber += 1) {
+            const page = await document.getPage(pageNumber);
+            const text = await page.getTextContent();
+            const items = text.items
+              .filter((item) => item.str?.trim())
+              .map((item) => ({
+                str: item.str.trim(),
+                x: Number(item.transform[4].toFixed(2)),
+                y: Number(item.transform[5].toFixed(2)),
+                w: Number((item.width ?? 0).toFixed(2)),
               }));
-            } catch (error) {
-              console.log(JSON.stringify({ requested_url: url, error: String(error?.stack || error) }));
-            }
+            const interesting = items.filter((item) => /9月|13日|14日|15日|発走|時刻|第\s*1|第\s*12|\d{1,2}:\d{2}|\d{1,2}時\d{2}分/.test(item.str));
+            console.log(`PAGE ${pageNumber}`);
+            for (const item of interesting) console.log(JSON.stringify(item));
           }
           NODE
