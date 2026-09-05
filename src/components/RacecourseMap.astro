@@ -47,6 +47,7 @@ const {
   const MAPLIBRE_MODULE_URL = 'https://unpkg.com/maplibre-gl@6.7.0/dist/maplibre-gl.mjs';
   const MAP_POINT_LAYER = 'racecourse-points';
   const MAP_HIT_LAYER = 'racecourse-hit-targets';
+  const MAP_LOAD_TIMEOUT_MS = 15000;
 
   const parseRacecourseIds = (value) => {
     try {
@@ -92,8 +93,12 @@ const {
 
     let map = null;
     let ready = false;
+    let failed = false;
+    let loadTimeout = null;
     const fail = () => {
-      if (ready) return;
+      if (ready || failed) return;
+      failed = true;
+      if (loadTimeout !== null) window.clearTimeout(loadTimeout);
       root.dataset.mapState = 'failed';
       if (canvas) canvas.hidden = true;
       if (status) {
@@ -105,6 +110,7 @@ const {
       } catch {
         // Keep the non-map page usable even if cleanup also fails.
       }
+      map = null;
     };
 
     try {
@@ -150,6 +156,7 @@ const {
         keyboard: true
       });
       map.addControl(new maplibregl.NavigationControl({ showCompass: false, showZoom: true }), 'top-right');
+      loadTimeout = window.setTimeout(fail, MAP_LOAD_TIMEOUT_MS);
 
       let selectedFeatureId = null;
       let visibleRacecourseIds = new Set(allowedVisibleIds);
@@ -224,6 +231,13 @@ const {
       };
 
       map.once('load', () => {
+        if (failed) return;
+        if (loadTimeout !== null) {
+          window.clearTimeout(loadTimeout);
+          loadTimeout = null;
+        }
+        if (canvas) canvas.hidden = false;
+
         map.addSource('racecourses', {
           type: 'geojson',
           data: {
@@ -293,10 +307,6 @@ const {
           delete root.dataset.pendingFocusRacecourseId;
           focusRacecourse(pendingFocus);
         }
-      });
-
-      map.on('error', () => {
-        if (!ready) fail();
       });
     } catch {
       fail();
