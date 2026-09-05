@@ -91,7 +91,7 @@ function validatePlan(rows, html) {
   for (const row of rows) counts[trackKey(row.racecourse_id)] += 1;
   for (const [key, expected] of Object.entries(PLAN_2026.expected_days)) {
     if (counts[key] !== expected) throw new Error(`KRA official-plan generated ${key} day count ${counts[key]} != ${expected}`);
-    if (!html.includes(`${expected}日`) && !html.includes(`${expected}일`)) throw new Error(`KRA official page no longer exposes expected ${key} day count ${expected}`);
+    if (!html.includes(`${expected}일`)) throw new Error(`KRA official page no longer exposes expected ${key} day count ${expected}`);
   }
   return counts;
 }
