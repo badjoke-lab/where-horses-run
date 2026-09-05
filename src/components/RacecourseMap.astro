@@ -3,6 +3,7 @@ import '../styles/racecourse-map.css';
 
 interface Props {
   racecourseIds?: string[];
+  visibleRacecourseIds?: string[];
   ariaLabel?: string;
   initialZoom?: number;
   geojsonUrl?: string;
@@ -12,6 +13,7 @@ interface Props {
 
 const {
   racecourseIds = [],
+  visibleRacecourseIds = racecourseIds,
   ariaLabel = 'Interactive racecourse map',
   initialZoom = 2,
   geojsonUrl = '/data/racecourse-locations-v1.geojson',
@@ -26,6 +28,7 @@ const {
   class="racecourse-map"
   data-racecourse-map
   data-racecourse-ids={JSON.stringify(racecourseIds)}
+  data-visible-racecourse-ids={JSON.stringify(visibleRacecourseIds)}
   data-initial-zoom={String(initialZoom)}
   data-geojson-url={geojsonUrl}
   data-style-url={styleUrl}
@@ -78,6 +81,7 @@ const {
     const status = root.querySelector('[data-map-status]');
     const fallbackMessage = root.dataset.fallbackMessage || 'Interactive map unavailable.';
     const requestedIds = parseRacecourseIds(root.dataset.racecourseIds);
+    const initialVisibleIds = parseRacecourseIds(root.dataset.visibleRacecourseIds);
     const initialZoom = Number(root.dataset.initialZoom || '2');
     const geojsonUrl = root.dataset.geojsonUrl || '/data/racecourse-locations-v1.geojson';
     const styleUrl = root.dataset.styleUrl || 'https://tiles.openfreemap.org/styles/liberty';
@@ -122,7 +126,14 @@ const {
       }
       if (features.length === 0) throw new Error('No reviewed racecourse locations available for this map');
 
-      const singleCoordinates = features.length === 1 ? features[0]?.geometry?.coordinates : null;
+      const featureByRacecourseId = new Map(
+        features.map((feature) => [feature?.properties?.racecourse_id, feature])
+      );
+      const allowedVisibleIds = initialVisibleIds.filter((id) => featureByRacecourseId.has(id));
+      const startingFeatures = allowedVisibleIds
+        .map((id) => featureByRacecourseId.get(id))
+        .filter(Boolean);
+      const singleCoordinates = startingFeatures.length === 1 ? startingFeatures[0]?.geometry?.coordinates : null;
       const startCenter = Array.isArray(singleCoordinates) ? singleCoordinates : [0, 20];
       const startZoom = Number.isFinite(initialZoom) ? initialZoom : 2;
 
@@ -130,16 +141,18 @@ const {
         container: canvas,
         style: styleUrl,
         center: startCenter,
-        zoom: features.length === 1 ? startZoom : 1.5,
+        zoom: startingFeatures.length === 1 ? (features.length === 1 ? startZoom : Math.max(startZoom, 8)) : 1.5,
         attributionControl: true,
         keyboard: true
       });
       map.addControl(new maplibregl.NavigationControl({ showCompass: false, showZoom: true }), 'top-right');
 
       let selectedFeatureId = null;
+      let visibleRacecourseIds = new Set(allowedVisibleIds);
+
       const setSelected = (racecourseId, emit = true) => {
-        const feature = features.find((candidate) => candidate?.properties?.racecourse_id === racecourseId);
-        if (!feature) return;
+        const feature = featureByRacecourseId.get(racecourseId);
+        if (!feature || !visibleRacecourseIds.has(racecourseId)) return;
         if (selectedFeatureId !== null) {
           map.setFeatureState({ source: 'racecourses', id: selectedFeatureId }, { selected: false });
         }
@@ -152,6 +165,48 @@ const {
             detail: { racecourseId }
           }));
         }
+      };
+
+      const fitVisible = (visibleFeatures) => {
+        if (visibleFeatures.length === 1) {
+          const coordinates = visibleFeatures[0]?.geometry?.coordinates;
+          if (Array.isArray(coordinates)) {
+            map.jumpTo({
+              center: coordinates,
+              zoom: features.length === 1 ? startZoom : Math.max(startZoom, 8)
+            });
+          }
+          return;
+        }
+        if (visibleFeatures.length > 1) {
+          const bounds = boundsForFeatures(visibleFeatures);
+          if (bounds) map.fitBounds(bounds, { padding: 48, maxZoom: 8, duration: 0 });
+        }
+      };
+
+      const applyVisibleIds = (ids, fit = true) => {
+        const nextIds = Array.from(new Set(ids)).filter((id) => featureByRacecourseId.has(id));
+        visibleRacecourseIds = new Set(nextIds);
+        map.setFilter('racecourse-points', nextIds.length > 0
+          ? ['in', ['get', 'racecourse_id'], ['literal', nextIds]]
+          : ['==', 1, 0]);
+
+        const selectedRacecourseId = root.dataset.selectedRacecourseId;
+        if (selectedRacecourseId && !visibleRacecourseIds.has(selectedRacecourseId)) {
+          if (selectedFeatureId !== null) {
+            map.setFeatureState({ source: 'racecourses', id: selectedFeatureId }, { selected: false });
+          }
+          selectedFeatureId = null;
+          delete root.dataset.selectedRacecourseId;
+        }
+
+        const visibleFeatures = nextIds.map((id) => featureByRacecourseId.get(id)).filter(Boolean);
+        if (fit) fitVisible(visibleFeatures);
+        root.dataset.visibleRacecourseCount = String(visibleFeatures.length);
+        root.dispatchEvent(new CustomEvent('racecourse-map:visiblechange', {
+          bubbles: true,
+          detail: { racecourseIds: nextIds }
+        }));
       };
 
       map.once('load', () => {
@@ -185,21 +240,24 @@ const {
           if (typeof racecourseId === 'string') setSelected(racecourseId, true);
         });
 
-        if (features.length > 1) {
-          const bounds = boundsForFeatures(features);
-          if (bounds) map.fitBounds(bounds, { padding: 48, maxZoom: 8, duration: 0 });
-        } else {
-          const racecourseId = features[0]?.properties?.racecourse_id;
-          if (typeof racecourseId === 'string') setSelected(racecourseId, false);
+        applyVisibleIds([...visibleRacecourseIds], true);
+        if (visibleRacecourseIds.size === 1 && features.length === 1) {
+          const racecourseId = [...visibleRacecourseIds][0];
+          setSelected(racecourseId, false);
         }
+
+        root.addEventListener('racecourse-map:set-visible', (event) => {
+          const ids = Array.isArray(event?.detail?.racecourseIds) ? event.detail.racecourseIds : [];
+          applyVisibleIds(ids, event?.detail?.fit !== false);
+        });
 
         root.addEventListener('racecourse-map:focus', (event) => {
           const racecourseId = event?.detail?.racecourseId;
-          const feature = features.find((candidate) => candidate?.properties?.racecourse_id === racecourseId);
+          const feature = featureByRacecourseId.get(racecourseId);
           const coordinates = feature?.geometry?.coordinates;
-          if (!Array.isArray(coordinates)) return;
+          if (!Array.isArray(coordinates) || !visibleRacecourseIds.has(racecourseId)) return;
           setSelected(racecourseId, false);
-          map.jumpTo({ center: coordinates, zoom: Math.max(map.getZoom(), startZoom) });
+          map.jumpTo({ center: coordinates, zoom: Math.max(map.getZoom(), features.length === 1 ? startZoom : 8) });
         });
 
         ready = true;
@@ -207,7 +265,7 @@ const {
         if (status) status.hidden = true;
         root.dispatchEvent(new CustomEvent('racecourse-map:ready', {
           bubbles: true,
-          detail: { featureCount: features.length }
+          detail: { featureCount: features.length, visibleFeatureCount: visibleRacecourseIds.size }
         }));
       });
 

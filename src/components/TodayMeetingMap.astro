@@ -1,0 +1,180 @@
+---
+import RacecourseMap from './RacecourseMap.astro';
+import locationRegistry from '../../data/static/racecourse-locations-v1.json';
+import type { TimetableMeetingRow } from '../data/timetableMeetingRows';
+
+interface Props {
+  records: TimetableMeetingRow[];
+  date: string;
+  lang?: 'en' | 'ja';
+}
+
+const { records, date, lang = 'en' } = Astro.props;
+const isJapanese = lang === 'ja';
+const reviewedRacecourseIds = new Set(
+  ((locationRegistry as any).locations ?? [])
+    .map((entry: any) => entry?.id)
+    .filter((id: unknown) => typeof id === 'string' && id.length > 0)
+);
+const mappedRecords = records.filter((record) => reviewedRacecourseIds.has(record.racecourse_id));
+const candidateRacecourseIds = [...new Set(mappedRecords.map((record) => record.racecourse_id))];
+const initialVisibleRacecourseIds = [...new Set(
+  mappedRecords.filter((record) => record.date === date).map((record) => record.racecourse_id)
+)];
+const meetingMap = records.map((record) => ({
+  meetingId: record.meeting_id,
+  racecourseId: record.racecourse_id,
+  hasReviewedLocation: reviewedRacecourseIds.has(record.racecourse_id),
+}));
+const meetingMapJson = JSON.stringify(meetingMap).replace(/</g, '\\u003c');
+const unresolvedCandidateCount = records.filter((record) => !reviewedRacecourseIds.has(record.racecourse_id)).length;
+const fallbackMessage = isJapanese
+  ? 'インタラクティブ地図を読み込めません。下の開催一覧、競馬場リンク、公式リンクは引き続き利用できます。'
+  : 'Interactive map unavailable. The meeting list, racecourse links, and official links below remain available.';
+---
+
+<section class="today-meeting-map card" aria-labelledby="today-map-title" data-today-map-sync data-lang={lang}>
+  <div class="today-meeting-map__heading">
+    <div>
+      <p class="today-meeting-map__eyebrow">{isJapanese ? '同じ公開開催データ' : 'Same public meeting data'}</p>
+      <h2 id="today-map-title">{isJapanese ? '今日の開催マップ' : 'Today on the map'}</h2>
+    </div>
+    <p class="today-meeting-map__status" data-today-map-status aria-live="polite">
+      {initialVisibleRacecourseIds.length} {isJapanese ? '競馬場を地図表示' : 'mapped racecourses'}
+    </p>
+  </div>
+
+  <p>
+    {isJapanese
+      ? '地図と下の開催一覧は同じ公開meeting recordを使用します。地図の地点を選ぶと対応する開催へ移動し、一覧の「地図」から地点へフォーカスできます。'
+      : 'The map and meeting list below use the same public meeting records. Select a point to move to its meeting row, or use Map on a row to focus that venue.'}
+  </p>
+
+  {candidateRacecourseIds.length > 0 ? (
+    <>
+      <RacecourseMap
+        racecourseIds={candidateRacecourseIds}
+        visibleRacecourseIds={initialVisibleRacecourseIds}
+        initialZoom={2.25}
+        ariaLabel={isJapanese ? '今日の確認済み開催競馬場マップ' : 'Map of reviewed racecourses with meetings today'}
+        fallbackMessage={fallbackMessage}
+      />
+      <p class="racecourse-map__attribution">
+        Map: <a href="https://openfreemap.org/">OpenFreeMap</a> · Data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>
+      </p>
+    </>
+  ) : (
+    <p>{isJapanese ? '現在の候補開催には、確認済み位置情報を持つ競馬場がありません。' : 'No candidate meeting currently has a reviewed racecourse location.'}</p>
+  )}
+
+  {unresolvedCandidateCount > 0 ? (
+    <p class="racecourse-map__meta">
+      {isJapanese
+        ? `位置未確認の開催 ${unresolvedCandidateCount}件は、開催一覧には残し、地図には推測表示しません。`
+        : `${unresolvedCandidateCount} meeting(s) without a reviewed venue location remain in the list and are not guessed onto the map.`}
+    </p>
+  ) : null}
+
+  <script type="application/json" data-today-map-meeting-map set:html={meetingMapJson}></script>
+</section>
+
+<script is:inline>
+  (() => {
+    const install = () => {
+      document.querySelectorAll('[data-today-map-sync]').forEach((root) => {
+        if (!(root instanceof HTMLElement) || root.dataset.todayMapInitialized === 'true') return;
+        root.dataset.todayMapInitialized = 'true';
+
+        const mapRoot = root.querySelector('[data-racecourse-map]');
+        const status = root.querySelector('[data-today-map-status]');
+        const dataNode = root.querySelector('[data-today-map-meeting-map]');
+        if (!(mapRoot instanceof HTMLElement) || !(dataNode instanceof HTMLScriptElement)) return;
+
+        let entries = [];
+        try { entries = JSON.parse(dataNode.textContent || '[]'); } catch { entries = []; }
+        const mapping = new Map(entries.map((entry) => [entry.meetingId, entry]));
+        const isJa = root.dataset.lang === 'ja';
+
+        const listRows = () => Array.from(document.querySelectorAll('[data-calendar-meeting-row]'))
+          .filter((row) => row instanceof HTMLElement);
+        const mappedEntryForRow = (row) => mapping.get(row.dataset.meetingId || '');
+        const visibleRacecourseIds = () => Array.from(new Set(
+          listRows()
+            .filter((row) => row.dataset.timezoneScopeHidden !== 'true' && !row.hidden)
+            .map(mappedEntryForRow)
+            .filter((entry) => entry?.hasReviewedLocation)
+            .map((entry) => entry.racecourseId)
+        ));
+
+        const clearRowSelection = () => {
+          listRows().forEach((row) => row.classList.remove('meeting-row--map-selected'));
+        };
+        const selectRowsForRacecourse = (racecourseId, moveFocus) => {
+          clearRowSelection();
+          const matchingRows = listRows().filter((row) => {
+            const entry = mappedEntryForRow(row);
+            return entry?.racecourseId === racecourseId && row.dataset.timezoneScopeHidden !== 'true' && !row.hidden;
+          });
+          matchingRows.forEach((row) => row.classList.add('meeting-row--map-selected'));
+          const first = matchingRows[0];
+          if (!first) return;
+          first.scrollIntoView({ block: 'nearest', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+          if (moveFocus) {
+            const button = first.querySelector('[data-meeting-map-focus]');
+            if (button instanceof HTMLElement) button.focus({ preventScroll: true });
+          }
+        };
+
+        const addListMapControls = () => {
+          listRows().forEach((row) => {
+            if (row.querySelector('[data-meeting-map-focus]')) return;
+            const entry = mappedEntryForRow(row);
+            if (!entry?.hasReviewedLocation) return;
+            const identity = row.querySelector('.meeting-row__identity');
+            if (!(identity instanceof HTMLElement)) return;
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'meeting-row__map-focus';
+            button.dataset.meetingMapFocus = 'true';
+            button.textContent = isJa ? '地図' : 'Map';
+            button.setAttribute('aria-label', isJa ? 'この競馬場を地図で表示' : 'Show this racecourse on the map');
+            button.addEventListener('click', () => {
+              selectRowsForRacecourse(entry.racecourseId, false);
+              mapRoot.dispatchEvent(new CustomEvent('racecourse-map:focus', {
+                detail: { racecourseId: entry.racecourseId }
+              }));
+            });
+            identity.append(' ', button);
+          });
+        };
+
+        const syncVisible = () => {
+          addListMapControls();
+          const ids = visibleRacecourseIds();
+          mapRoot.dispatchEvent(new CustomEvent('racecourse-map:set-visible', {
+            detail: { racecourseIds: ids, fit: true }
+          }));
+          if (status) {
+            status.textContent = isJa ? `${ids.length}競馬場を地図表示` : `${ids.length} mapped racecourses`;
+          }
+          const selected = mapRoot.dataset.selectedRacecourseId;
+          if (selected && !ids.includes(selected)) clearRowSelection();
+        };
+
+        mapRoot.addEventListener('racecourse-map:ready', syncVisible);
+        mapRoot.addEventListener('racecourse-map:select', (event) => {
+          const racecourseId = event?.detail?.racecourseId;
+          if (typeof racecourseId === 'string') selectRowsForRacecourse(racecourseId, true);
+        });
+        window.addEventListener('whr:timezonechange', () => requestAnimationFrame(syncVisible));
+        window.addEventListener('whr:meetingstatechange', () => requestAnimationFrame(syncVisible));
+
+        addListMapControls();
+        syncVisible();
+      });
+    };
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
+    else install();
+  })();
+</script>

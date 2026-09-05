@@ -52,8 +52,65 @@
   margin: 0;
 }
 
+.today-meeting-map {
+  display: grid;
+  gap: var(--whr-space-3);
+  margin-block: var(--whr-space-4);
+}
+
+.today-meeting-map > p {
+  margin: 0;
+}
+
+.today-meeting-map__heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--whr-space-3);
+  flex-wrap: wrap;
+}
+
+.today-meeting-map__heading h2,
+.today-meeting-map__heading p {
+  margin: 0;
+}
+
+.today-meeting-map__eyebrow,
+.today-meeting-map__status {
+  color: var(--whr-color-muted);
+  font-size: 0.9rem;
+}
+
+.meeting-row__map-focus {
+  min-height: 2rem;
+  margin-inline-start: 0.5rem;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--whr-color-border);
+  border-radius: 999px;
+  background: var(--whr-color-bg);
+  color: var(--whr-color-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+}
+
+.meeting-row__map-focus:hover {
+  text-decoration: underline;
+}
+
+.meeting-row__map-focus:focus-visible,
+.meeting-row--map-selected {
+  outline: 3px solid #111;
+  outline-offset: 2px;
+}
+
 @media (max-width: 700px) {
   .racecourse-map__canvas {
     min-height: 340px;
+  }
+
+  .today-meeting-map__heading {
+    align-items: start;
+    flex-direction: column;
   }
 }
