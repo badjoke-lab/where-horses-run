@@ -4,6 +4,7 @@ import CalendarCoverageDashboard from '../../components/CalendarCoverageDashboar
 import CalendarDateFocus from '../../components/CalendarDateFocus.astro';
 import CalendarDateStatus from '../../components/CalendarDateStatus.astro';
 import CalendarFilters from '../../components/CalendarFilters.astro';
+import CalendarMeetingMap from '../../components/CalendarMeetingMap.astro';
 import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
 import {
   getGroupedTimetableMeetingRows,
@@ -39,8 +40,9 @@ const groups = getGroupedTimetableMeetingRows(candidateRecords);
   <CalendarCoverageDashboard />
   <CalendarDateFocus />
   <CalendarFilters records={candidateRecords} />
+  <CalendarMeetingMap records={candidateRecords} />
 
-  <section aria-label="Rolling 30-day meeting list">
+  <section aria-label="Rolling 30-day meeting list" data-calendar-list-view>
     <TimetableMeetingList
       groups={groups}
       scope="rolling-30"
