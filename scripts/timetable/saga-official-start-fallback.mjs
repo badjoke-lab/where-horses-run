@@ -5,6 +5,9 @@ const SAGA_OFFICIAL_START_URL = 'https://www.sagakeiba.net/raceinfo/start/';
 const MONBETSU_OFFICIAL_RACEINFO_URL = 'https://www.hokkaidokeiba.net/raceinfo/syuso.php';
 const IWATE_OFFICIAL_HOME_URL = 'https://www.iwatekeiba.or.jp/';
 const KASAMATSU_OFFICIAL_NEWS_URL = 'https://www.kasamatsu-keiba.com/news/1';
+// Hokkaido Keiba's official Monbetsu racecards identify prior-course records as ダ and
+// the venue operates the same dirt course for the current programme. Keep this stable
+// venue fact separate from date/race-specific parsing; rank remains derived centrally.
 const MONBETSU_SURFACE = 'Dirt';
 
 const entities = (value) => String(value ?? '')
