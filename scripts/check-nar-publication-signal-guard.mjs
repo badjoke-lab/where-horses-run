@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {
+  classifyNarZeroRaceDiscovery,
   narRaceProgrammeLooksPublished,
   narRaceProgrammePublicationSignals,
 } from './timetable/nar-publication-signal.mjs';
@@ -15,6 +16,11 @@ assert.equal(
   narRaceProgrammeLooksPublished(unpublished),
   false,
   'static RaceList navigation must not be mistaken for a published race programme',
+);
+assert.deepEqual(
+  classifyNarZeroRaceDiscovery(unpublished),
+  { status: 'scheduled_pending_details', reason: 'scheduled_pending_details' },
+  'genuinely unpublished RaceList remains pending rather than failing',
 );
 
 const publishedWithUnknownRaceNumberMarkup = `
@@ -33,6 +39,14 @@ assert.equal(
   narRaceProgrammeLooksPublished(publishedWithUnknownRaceNumberMarkup),
   true,
   'published programme must remain detectable even when current k_raceNo/1R discovery markup disappears',
+);
+assert.deepEqual(
+  classifyNarZeroRaceDiscovery(publishedWithUnknownRaceNumberMarkup),
+  {
+    status: 'race_number_discovery_incomplete',
+    reason: 'published_programme_without_discoverable_race_numbers',
+  },
+  'published-looking programme must fail closed instead of being silently labeled C',
 );
 
 const signals = narRaceProgrammePublicationSignals(publishedWithUnknownRaceNumberMarkup);
