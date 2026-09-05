@@ -56,7 +56,7 @@ const monbetsuOfficialRows = parseMonbetsuOfficialRaceInfoPage(monbetsuOfficialF
 assert.deepEqual(monbetsuOfficialRows, [{
   label: 'Race 1',
   post_time_local: '14:25',
-  race_name: '２歳 未勝利',
+  race_name: '2歳 未勝利',
   distance_m: 1000,
   surface: 'Dirt',
   course_label: 'Outer',
@@ -70,7 +70,7 @@ const monbetsuSponsorFixture = `
 <div>（サラ系２歳　定量）</div>
 </body></html>`;
 const sponsored = parseMonbetsuOfficialRaceInfoPage(monbetsuSponsorFixture, '2026-09-08', 3);
-assert.equal(sponsored[0].race_name, '公益社団法人日本軽種馬協会協賛 ２歳牝馬 未勝利');
+assert.equal(sponsored[0].race_name, '公益社団法人日本軽種馬協会協賛 2歳牝馬 未勝利');
 assert.equal(sponsored[0].distance_m, 1100);
 assert.equal(sponsored[0].surface, 'Dirt');
 assert.equal(sponsored[0].course_label, 'Outer');
