@@ -49,7 +49,7 @@
     "validate:hokkaido-official-30d": "node scripts/check-hokkaido-official-30d.mjs",
     "validate:kanazawa-official-30d": "node scripts/check-kanazawa-official-30d.mjs",
     "validate:kochi-official-30d": "node scripts/check-kochi-official-30d.mjs",
-    "validate:saga-official-30d": "node scripts/check-saga-official-30d.mjs"
+    "validate:saga-official-30d": "node scripts/check-saga-official-30d.mjs && node scripts/check-iwate-official-programme-fallback.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0",
