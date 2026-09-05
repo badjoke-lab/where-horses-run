@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://where-horses-run.example/schemas/racecourse-location.schema.json",
+  "title": "Where Horses Run racecourse location",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "latitude",
+    "longitude",
+    "precision",
+    "verification_state",
+    "evidence",
+    "location_last_checked"
+  ],
+  "properties": {
+    "address": {
+      "type": "string",
+      "minLength": 1
+    },
+    "latitude": {
+      "type": "number",
+      "minimum": -90,
+      "maximum": 90
+    },
+    "longitude": {
+      "type": "number",
+      "minimum": -180,
+      "maximum": 180
+    },
+    "precision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "verification_state": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["url", "repository_ref"]
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "location_last_checked": {
+      "type": "string",
+      "format": "date"
+    }
+  }
+}
