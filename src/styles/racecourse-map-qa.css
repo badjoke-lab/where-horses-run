@@ -1,0 +1,34 @@
+.racecourse-map .maplibregl-ctrl button {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.meeting-row__map-focus,
+.calendar-map-switch__buttons button,
+.calendar-map-switch__selected button,
+.today-meeting-map__selected button,
+.home-racing-map__periods button {
+  min-height: 44px;
+}
+
+.home-racing-map__timezone select {
+  min-height: 44px;
+}
+
+@media (max-width: 700px) {
+  .calendar-map-switch__buttons button,
+  .home-racing-map__periods button,
+  .meeting-row__map-focus,
+  .calendar-map-switch__selected button,
+  .today-meeting-map__selected button {
+    min-width: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .today-meeting-map__selected,
+  .calendar-map-switch__selected,
+  .home-racing-map__selected {
+    scroll-behavior: auto;
+  }
+}
