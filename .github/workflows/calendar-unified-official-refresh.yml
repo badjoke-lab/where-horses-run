@@ -42,6 +42,8 @@ on:
       - 'scripts/timetable/run-uae-era-official-window.mjs'
       - 'scripts/timetable/run-kra-official-window.mjs'
       - 'scripts/timetable/run-tjk-current-best-available.mjs'
+      - 'scripts/check-calendar-refresh-publication-boundaries.mjs'
+      - 'scripts/check-kra-window-bounds.mjs'
       - 'scripts/check-japan-mother-set-safety.mjs'
       - 'scripts/check-japan-per-family-absence-reconciliation.mjs'
       - 'scripts/check-jra-official-30d-completeness.mjs'
@@ -89,6 +91,8 @@ on:
       - 'scripts/timetable/run-uae-era-official-window.mjs'
       - 'scripts/timetable/run-kra-official-window.mjs'
       - 'scripts/timetable/run-tjk-current-best-available.mjs'
+      - 'scripts/check-calendar-refresh-publication-boundaries.mjs'
+      - 'scripts/check-kra-window-bounds.mjs'
       - 'scripts/check-japan-mother-set-safety.mjs'
       - 'scripts/check-japan-per-family-absence-reconciliation.mjs'
       - 'scripts/check-jra-official-30d-completeness.mjs'
@@ -154,6 +158,8 @@ jobs:
           node --check scripts/timetable/run-uae-era-official-window.mjs
           node --check scripts/timetable/run-kra-official-window.mjs
           node --check scripts/timetable/run-tjk-current-best-available.mjs
+          node scripts/check-calendar-refresh-publication-boundaries.mjs
+          node scripts/check-kra-window-bounds.mjs
       - name: Exercise Japan mother-set safety contracts
         run: |
           node scripts/check-japan-mother-set-safety.mjs
@@ -233,11 +239,35 @@ jobs:
           node --check scripts/timetable/run-uae-era-official-window.mjs
           node --check scripts/timetable/run-kra-official-window.mjs
           node --check scripts/timetable/run-tjk-current-best-available.mjs
+          node scripts/check-calendar-refresh-publication-boundaries.mjs
+          node scripts/check-kra-window-bounds.mjs
       - name: Refresh Japan official mother set and best available detail
         run: |
           node scripts/timetable/run-japan-zero-based-30d.mjs \
             --execution-date="${{ steps.scope.outputs.japan_date }}" \
             --scope="${{ steps.scope.outputs.scope }}"
+      - name: Re-apply frozen reviewed Calendar observations after Japan
+        run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
+      - name: Validate Japan generated public site state
+        run: npm run build
+      - name: Persist Japan official state before non-Japan collection
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json
+          git add data/generated/timetable/japan-zero-based-30d-reconciliation.json 2>/dev/null || true
+          git add data/generated/timetable/japan-zero-based-3d-reconciliation.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "No verified Japan timetable change to persist."
+          else
+            git commit -m "data: refresh Japan official timetable (${{ steps.scope.outputs.scope }})"
+            git push origin HEAD:main
+          fi
       - name: Collect HKJC official window
         run: |
           mkdir -p .calendar-unified
@@ -296,7 +326,7 @@ jobs:
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Validate generated public site state
         run: npm run build
-      - name: Persist canonical and public rolling state once
+      - name: Persist remaining canonical and public rolling state
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
