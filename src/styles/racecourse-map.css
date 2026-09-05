@@ -81,6 +81,93 @@
   font-size: 0.9rem;
 }
 
+.calendar-map-switch {
+  display: grid;
+  gap: var(--whr-space-3);
+  margin-block: var(--whr-space-4);
+}
+
+.calendar-map-switch__heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--whr-space-3);
+  flex-wrap: wrap;
+}
+
+.calendar-map-switch__heading h2,
+.calendar-map-switch__heading p,
+.calendar-map-switch__hint,
+.calendar-map-switch__panel > p {
+  margin: 0;
+}
+
+.calendar-map-switch__eyebrow,
+.calendar-map-switch__hint {
+  color: var(--whr-color-muted);
+  font-size: 0.9rem;
+}
+
+.calendar-map-switch__buttons {
+  display: inline-flex;
+  gap: 0.25rem;
+  padding: 0.2rem;
+  border: 1px solid var(--whr-color-border);
+  border-radius: 999px;
+}
+
+.calendar-map-switch__buttons button,
+.calendar-map-switch__selected button {
+  min-height: 2.25rem;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--whr-color-text);
+  cursor: pointer;
+  font: inherit;
+}
+
+.calendar-map-switch__buttons button[aria-pressed='true'] {
+  border-color: var(--whr-color-border);
+  background: var(--whr-color-bg);
+  font-weight: 700;
+}
+
+.calendar-map-switch__buttons button:focus-visible,
+.calendar-map-switch__selected button:focus-visible {
+  outline: 3px solid #111;
+  outline-offset: 2px;
+}
+
+.calendar-map-switch__panel {
+  display: grid;
+  gap: var(--whr-space-3);
+}
+
+.calendar-map-switch__panel[hidden],
+[data-calendar-list-view][hidden] {
+  display: none;
+}
+
+.calendar-map-switch__selected {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--whr-space-3);
+  padding: var(--whr-space-2) var(--whr-space-3);
+  border: 1px solid var(--whr-color-border);
+  border-radius: 0.75rem;
+}
+
+.calendar-map-switch__selected[hidden] {
+  display: none;
+}
+
+.calendar-map-switch__selected button {
+  border-color: var(--whr-color-border);
+}
+
 .meeting-row__map-focus {
   min-height: 2rem;
   margin-inline-start: 0.5rem;
@@ -109,7 +196,9 @@
     min-height: 340px;
   }
 
-  .today-meeting-map__heading {
+  .today-meeting-map__heading,
+  .calendar-map-switch__heading,
+  .calendar-map-switch__selected {
     align-items: start;
     flex-direction: column;
   }
