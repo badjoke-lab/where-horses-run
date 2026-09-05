@@ -70,11 +70,8 @@ export function baneiDebaTableUrl(date, raceNumber) {
 }
 
 function raceNameFromBlock(block, raceNumber) {
-  for (const match of block.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)) {
-    const hrefMatch = match[1].match(/\bhref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
-    const href = hrefMatch?.[1] ?? hrefMatch?.[2] ?? hrefMatch?.[3] ?? '';
-    if (!/(?:D[ea]baTable|S_DebaTable)/i.test(href)) continue;
-    const value = compact(match[2]);
+  for (const match of block.matchAll(/<a\b[^>]*href=["'][^"']*(?:D[ea]baTable|S_DebaTable)[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi)) {
+    const value = compact(match[1]);
     if (value && !/(出馬表|詳細|オッズ|結果|映像|成績)/.test(value)) return value;
   }
   const lines = baneiText(block)
@@ -94,7 +91,7 @@ export function parseBaneiRaceList(html, date) {
   const blocks = [...String(html ?? '').matchAll(/<tr\b[^>]*>[\s\S]*?<\/tr>/gi)].map((match) => match[0]);
   for (const block of blocks) {
     const plain = compact(block);
-    const hrefRace = block.match(/[?&]k_raceNo=(\d{1,2})(?:&|["'\s>])/i);
+    const hrefRace = block.match(/[?&]k_raceNo=(\d{1,2})(?:&|["'])/i);
     const raceMatch = hrefRace ?? plain.match(/(?:^|\s)(\d{1,2})\s*R(?:\s|$)/i);
     const timeMatch = plain.match(/(?:^|\s)(\d{1,2}:\d{2})(?:\s|$)/);
     const straightMatch = plain.match(/直\s*(\d{3,4})\s*[mｍＭ]/);
@@ -120,7 +117,7 @@ export function parseBaneiRaceList(html, date) {
 
 export function discoverBaneiRaceNumbers(html) {
   const found = new Set();
-  for (const match of String(html ?? '').matchAll(/[?&]k_raceNo=(\d{1,2})(?:&|["'\s>])/gi)) {
+  for (const match of String(html ?? '').matchAll(/[?&]k_raceNo=(\d{1,2})(?:&|["'])/gi)) {
     const value = Number(match[1]);
     if (value >= 1 && value <= 30) found.add(value);
   }
