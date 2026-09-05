@@ -32,6 +32,9 @@ jobs:
       - name: Check race acquisition
         run: npm run check
 
+      - name: Check map UI contract
+        run: node scripts/check-map-ui-contract.mjs
+
       - name: Check racecourse location contract
         run: node scripts/check-racecourse-location-schema.mjs
 
