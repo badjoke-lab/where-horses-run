@@ -3,6 +3,7 @@ import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 export const IWATE_OFFICIAL_PROGRAM_INDEX_URL = 'https://www.iwatekeiba.or.jp/category/program';
 const IWATE_HOST = 'www.iwatekeiba.or.jp';
 const FULLWIDTH_DIGITS = '０１２３４５６７８９';
+const defaultCacheByFetch = new WeakMap();
 
 const normalizeDigits = (value) => String(value ?? '').replace(/[０-９]/g, (char) => String(FULLWIDTH_DIGITS.indexOf(char)));
 const normalizeWide = (value) => normalizeDigits(value)
@@ -225,26 +226,83 @@ async function fetchOfficial(url, fetchImpl, accept) {
   return { response, url: finalUrl.toString() };
 }
 
-export async function fetchIwateOfficialProgrammeTiming(meeting, { fetchImpl = fetch } = {}) {
+function createProgrammeCache() {
+  return { html: new Map(), pdf: new Map() };
+}
+
+function cacheFor(fetchImpl, parsePdfImpl) {
+  let byParser = defaultCacheByFetch.get(fetchImpl);
+  if (!byParser) {
+    byParser = new WeakMap();
+    defaultCacheByFetch.set(fetchImpl, byParser);
+  }
+  let cache = byParser.get(parsePdfImpl);
+  if (!cache) {
+    cache = createProgrammeCache();
+    byParser.set(parsePdfImpl, cache);
+  }
+  return cache;
+}
+
+function cachedPromise(map, key, factory) {
+  const existing = map.get(key);
+  if (existing) return existing;
+  const pending = Promise.resolve().then(factory);
+  map.set(key, pending);
+  pending.catch(() => {
+    if (map.get(key) === pending) map.delete(key);
+  });
+  return pending;
+}
+
+async function fetchOfficialHtmlCached(url, fetchImpl, cache) {
+  return cachedPromise(cache.html, url, async () => {
+    const page = await fetchOfficial(url, fetchImpl, 'text/html');
+    return { body: await page.response.text(), url: page.url };
+  });
+}
+
+async function fetchOfficialPdfRowsCached(pdfUrl, year, venue, fetchImpl, parsePdfImpl, cache) {
+  const key = `${pdfUrl}\u0000${year}\u0000${venue}`;
+  return cachedPromise(cache.pdf, key, async () => {
+    const pdf = await fetchOfficial(pdfUrl, fetchImpl, 'application/pdf');
+    const contentType = pdf.response.headers?.get?.('content-type') ?? '';
+    if (contentType && !/^application\/pdf(?:\s*;|$)/i.test(contentType)) return null;
+    const bytes = new Uint8Array(await pdf.response.arrayBuffer());
+    return {
+      rows: await parsePdfImpl(bytes, year, venue),
+      url: pdf.url,
+    };
+  });
+}
+
+export async function fetchIwateOfficialProgrammeTiming(meeting, {
+  fetchImpl = fetch,
+  parsePdfImpl = parseIwateProgrammePdf,
+  cache = null,
+} = {}) {
   const venue = venueForMeeting(meeting);
   if (!venue || !/^\d{4}-\d{2}-\d{2}$/.test(String(meeting?.date ?? ''))) return null;
 
-  const index = await fetchOfficial(IWATE_OFFICIAL_PROGRAM_INDEX_URL, fetchImpl, 'text/html');
-  const indexHtml = await index.response.text();
-  const articles = parseIwateProgrammeArticleLinks(indexHtml, meeting.date, venue);
+  const requestCache = cache ?? cacheFor(fetchImpl, parsePdfImpl);
+  const index = await fetchOfficialHtmlCached(IWATE_OFFICIAL_PROGRAM_INDEX_URL, fetchImpl, requestCache);
+  const articles = parseIwateProgrammeArticleLinks(index.body, meeting.date, venue);
   for (const articleUrl of articles) {
     try {
-      const article = await fetchOfficial(articleUrl, fetchImpl, 'text/html');
-      const articleHtml = await article.response.text();
-      const pdfLinks = parseIwateProgrammePdfLinks(articleHtml, article.url);
+      const article = await fetchOfficialHtmlCached(articleUrl, fetchImpl, requestCache);
+      const pdfLinks = parseIwateProgrammePdfLinks(article.body, article.url);
       for (const pdfUrl of pdfLinks) {
         try {
-          const pdf = await fetchOfficial(pdfUrl, fetchImpl, 'application/pdf');
-          const contentType = pdf.response.headers?.get?.('content-type') ?? '';
-          if (contentType && !/^application\/pdf(?:\s*;|$)/i.test(contentType)) continue;
-          const bytes = new Uint8Array(await pdf.response.arrayBuffer());
-          const rows = await parseIwateProgrammePdf(bytes, Number(meeting.date.slice(0, 4)), venue);
-          const timing = rows.get(meeting.date);
+          const parsed = await fetchOfficialPdfRowsCached(
+            pdfUrl,
+            Number(meeting.date.slice(0, 4)),
+            venue,
+            fetchImpl,
+            parsePdfImpl,
+            requestCache,
+          );
+          if (!parsed) continue;
+          const timing = parsed.rows.get(meeting.date);
           if (!timing) continue;
           return {
             status: 'ok',
@@ -256,15 +314,15 @@ export async function fetchIwateOfficialProgrammeTiming(meeting, { fetchImpl = f
               first_race_time_local: timing.first_race_time_local,
               last_race_time_local: timing.last_race_time_local,
               timetable_rows: [],
-              official_source_url: pdf.url,
+              official_source_url: parsed.url,
             },
           };
         } catch {
-          // Try another official PDF from the same programme article.
+          // Try another official PDF from the same programme article. Failed cache entries are evicted so a later meeting can retry.
         }
       }
     } catch {
-      // Try the next matching official programme article.
+      // Try the next matching official programme article. Failed cache entries are evicted so a later meeting can retry.
     }
   }
   return null;

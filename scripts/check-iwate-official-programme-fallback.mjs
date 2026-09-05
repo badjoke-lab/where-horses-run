@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import {
   decodeIwateProgrammeTextItems,
+  fetchIwateOfficialProgrammeTiming,
+  IWATE_OFFICIAL_PROGRAM_INDEX_URL,
   parseIwateProgrammeArticleLinks,
   parseIwateProgrammePdfLinks,
 } from './timetable/iwate-official-programme-fallback.mjs';
@@ -65,5 +67,78 @@ assert.throws(
 );
 assert.throws(() => decodeIwateProgrammeTextItems(pdfFixture, 2026, '盛岡'), /venue marker missing/);
 assert.throws(() => decodeIwateProgrammeTextItems(pdfFixture.filter((row) => !row.str.includes('発走時刻')), 2026, '水沢'), /start-time marker missing/);
+
+const articleUrl = 'https://www.iwatekeiba.or.jp/news/260902d';
+const pdfUrl = 'https://www.iwatekeiba.or.jp/dir/wp-content/uploads/2026/09/26-12-05mizusawa_kaitei.pdf';
+const fetchIndexFixture = `<a href="/news/260902d">令和8年度 第5回水沢競馬改定番組（9月6日～9月15日）</a>`;
+const fetchArticleFixture = `<a href="${pdfUrl}">●PDFファイル</a>`;
+const programmeRows = new Map([
+  ['2026-09-13', { first_race_time_local: '11:30', last_race_time_local: '18:05' }],
+  ['2026-09-14', { first_race_time_local: '11:40', last_race_time_local: '18:05' }],
+  ['2026-09-15', { first_race_time_local: '11:30', last_race_time_local: '18:00' }],
+]);
+
+function makeResponse(url, body, contentType) {
+  const bytes = body instanceof Uint8Array ? body : new TextEncoder().encode(String(body));
+  return {
+    ok: true,
+    status: 200,
+    url,
+    headers: { get: (name) => name.toLowerCase() === 'content-type' ? contentType : null },
+    text: async () => new TextDecoder().decode(bytes),
+    arrayBuffer: async () => bytes.slice().buffer,
+  };
+}
+
+function makeFetch(counter) {
+  return async (url) => {
+    const key = String(url);
+    counter.set(key, (counter.get(key) ?? 0) + 1);
+    if (key === IWATE_OFFICIAL_PROGRAM_INDEX_URL) return makeResponse(key, fetchIndexFixture, 'text/html; charset=UTF-8');
+    if (key === articleUrl) return makeResponse(key, fetchArticleFixture, 'text/html; charset=UTF-8');
+    if (key === pdfUrl) return makeResponse(key, new Uint8Array([0x25, 0x50, 0x44, 0x46]), 'application/pdf');
+    throw new Error(`unexpected fetch: ${key}`);
+  };
+}
+
+const fetchCounts = new Map();
+const cachedFetch = makeFetch(fetchCounts);
+let parseCalls = 0;
+const cachedParser = async (_bytes, year, venue) => {
+  parseCalls += 1;
+  assert.equal(year, 2026);
+  assert.equal(venue, '水沢');
+  return programmeRows;
+};
+
+for (const date of ['2026-09-13', '2026-09-14', '2026-09-15']) {
+  const result = await fetchIwateOfficialProgrammeTiming(
+    { date, venue_code: '11', racecourse_id: 'mizusawa-racecourse' },
+    { fetchImpl: cachedFetch, parsePdfImpl: cachedParser },
+  );
+  assert.equal(result?.meeting?.first_race_time_local, programmeRows.get(date).first_race_time_local);
+  assert.equal(result?.meeting?.last_race_time_local, programmeRows.get(date).last_race_time_local);
+}
+assert.equal(fetchCounts.get(IWATE_OFFICIAL_PROGRAM_INDEX_URL), 1);
+assert.equal(fetchCounts.get(articleUrl), 1);
+assert.equal(fetchCounts.get(pdfUrl), 1);
+assert.equal(parseCalls, 1);
+
+const retryCounts = new Map();
+const retryFetch = makeFetch(retryCounts);
+let retryParseCalls = 0;
+const retryParser = async () => {
+  retryParseCalls += 1;
+  if (retryParseCalls === 1) throw new Error('transient parser failure');
+  return programmeRows;
+};
+const retryMeeting = { date: '2026-09-13', venue_code: '11', racecourse_id: 'mizusawa-racecourse' };
+assert.equal(await fetchIwateOfficialProgrammeTiming(retryMeeting, { fetchImpl: retryFetch, parsePdfImpl: retryParser }), null);
+const retried = await fetchIwateOfficialProgrammeTiming(retryMeeting, { fetchImpl: retryFetch, parsePdfImpl: retryParser });
+assert.equal(retried?.meeting?.first_race_time_local, '11:30');
+assert.equal(retryCounts.get(IWATE_OFFICIAL_PROGRAM_INDEX_URL), 1);
+assert.equal(retryCounts.get(articleUrl), 1);
+assert.equal(retryCounts.get(pdfUrl), 2);
+assert.equal(retryParseCalls, 2);
 
 console.log('IWATE_OFFICIAL_PROGRAMME_FALLBACK: pass');

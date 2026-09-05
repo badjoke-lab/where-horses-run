@@ -30,6 +30,7 @@ on:
       - 'scripts/timetable/nankankeiba-official-30d-discovery.mjs'
       - 'scripts/timetable/nankan-official-programme-fallback.mjs'
       - 'scripts/timetable/iwatekeiba-official-30d-discovery.mjs'
+      - 'scripts/timetable/iwate-official-programme-fallback.mjs'
       - 'scripts/timetable/hyogo-official-30d-discovery.mjs'
       - 'scripts/timetable/tokai-official-30d-discovery.mjs'
       - 'scripts/timetable/hokkaido-official-30d-discovery.mjs'
@@ -47,6 +48,7 @@ on:
       - 'scripts/check-nankankeiba-official-30d.mjs'
       - 'scripts/check-nankan-official-programme-fallback.mjs'
       - 'scripts/check-iwatekeiba-official-30d.mjs'
+      - 'scripts/check-iwate-official-programme-fallback.mjs'
       - 'scripts/check-hyogo-official-30d.mjs'
       - 'scripts/check-tokai-official-30d.mjs'
       - 'scripts/check-hokkaido-official-30d.mjs'
@@ -75,6 +77,7 @@ on:
       - 'scripts/timetable/nankankeiba-official-30d-discovery.mjs'
       - 'scripts/timetable/nankan-official-programme-fallback.mjs'
       - 'scripts/timetable/iwatekeiba-official-30d-discovery.mjs'
+      - 'scripts/timetable/iwate-official-programme-fallback.mjs'
       - 'scripts/timetable/hyogo-official-30d-discovery.mjs'
       - 'scripts/timetable/tokai-official-30d-discovery.mjs'
       - 'scripts/timetable/hokkaido-official-30d-discovery.mjs'
@@ -92,6 +95,7 @@ on:
       - 'scripts/check-nankankeiba-official-30d.mjs'
       - 'scripts/check-nankan-official-programme-fallback.mjs'
       - 'scripts/check-iwatekeiba-official-30d.mjs'
+      - 'scripts/check-iwate-official-programme-fallback.mjs'
       - 'scripts/check-hyogo-official-30d.mjs'
       - 'scripts/check-tokai-official-30d.mjs'
       - 'scripts/check-hokkaido-official-30d.mjs'
@@ -138,6 +142,7 @@ jobs:
           node --check scripts/timetable/nankankeiba-official-30d-discovery.mjs
           node --check scripts/timetable/nankan-official-programme-fallback.mjs
           node --check scripts/timetable/iwatekeiba-official-30d-discovery.mjs
+          node --check scripts/timetable/iwate-official-programme-fallback.mjs
           node --check scripts/timetable/hyogo-official-30d-discovery.mjs
           node --check scripts/timetable/tokai-official-30d-discovery.mjs
           node --check scripts/timetable/hokkaido-official-30d-discovery.mjs
@@ -157,6 +162,7 @@ jobs:
           node scripts/check-nankankeiba-official-30d.mjs
           node scripts/check-nankan-official-programme-fallback.mjs
           node scripts/check-iwatekeiba-official-30d.mjs
+          node scripts/check-iwate-official-programme-fallback.mjs
           node scripts/check-hyogo-official-30d.mjs
           node scripts/check-tokai-official-30d.mjs
           node scripts/check-hokkaido-official-30d.mjs
@@ -215,6 +221,7 @@ jobs:
           node --check scripts/timetable/nankankeiba-official-30d-discovery.mjs
           node --check scripts/timetable/nankan-official-programme-fallback.mjs
           node --check scripts/timetable/iwatekeiba-official-30d-discovery.mjs
+          node --check scripts/timetable/iwate-official-programme-fallback.mjs
           node --check scripts/timetable/hyogo-official-30d-discovery.mjs
           node --check scripts/timetable/tokai-official-30d-discovery.mjs
           node --check scripts/timetable/hokkaido-official-30d-discovery.mjs
