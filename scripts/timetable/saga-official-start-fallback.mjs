@@ -2,6 +2,8 @@ import { fetchNankanOfficialProgramme } from './nankan-official-programme-fallba
 
 const SAGA_OFFICIAL_START_URL = 'https://www.sagakeiba.net/raceinfo/start/';
 const MONBETSU_OFFICIAL_RACEINFO_URL = 'https://www.hokkaidokeiba.net/raceinfo/syuso.php';
+const IWATE_OFFICIAL_HOME_URL = 'https://www.iwatekeiba.or.jp/';
+const KASAMATSU_OFFICIAL_NEWS_URL = 'https://www.kasamatsu-keiba.com/news/1';
 
 const entities = (value) => String(value ?? '')
   .replace(/&nbsp;|&#160;/gi, ' ')
@@ -25,6 +27,7 @@ const lined = (value) => entities(value)
 
 const plain = (value) => lined(value).replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim();
 const asciiDigits = (value) => String(value ?? '').replace(/[０-９]/g, (digit) => String.fromCharCode(digit.charCodeAt(0) - 0xfee0));
+const normalizeWide = (value) => asciiDigits(value).replace(/：/g, ':').replace(/／/g, '/');
 
 function dateSection(text, date) {
   const [year, month, day] = date.split('-');
@@ -99,6 +102,70 @@ export function parseMonbetsuOfficialRaceInfoPage(html, date, expectedRaceNumber
   }];
 }
 
+function isoDate(year, month, day) {
+  const value = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  const parsed = new Date(`${value}T00:00:00Z`);
+  return Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== value ? null : value;
+}
+
+export function parseIwateOfficialHomeTimes(html, year) {
+  const rows = new Map();
+  for (const match of String(html).matchAll(/<tr\b[^>]*>[\s\S]*?<\/tr>/gi)) {
+    const text = normalizeWide(plain(match[0]));
+    const dateMatch = /(?:水沢|盛岡|水|盛)?\s*(\d{1,2})\s*(?:\/|月)\s*(\d{1,2})(?:日)?/.exec(text);
+    if (!dateMatch) continue;
+    const date = isoDate(Number(year), Number(dateMatch[1]), Number(dateMatch[2]));
+    if (!date) continue;
+    const times = [...text.matchAll(/(?:^|\s)(\d{1,2}):(\d{2})(?=\s|$)/g)]
+      .map((time) => `${String(Number(time[1])).padStart(2, '0')}:${time[2]}`);
+    if (times.length < 4) continue;
+    rows.set(date, {
+      first_race_time_local: times[1],
+      last_race_time_local: times[3],
+    });
+  }
+  return rows;
+}
+
+function hrefFromAttributes(attributes) {
+  const match = String(attributes).match(/\bhref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
+  return match?.[1] ?? match?.[2] ?? match?.[3] ?? null;
+}
+
+export function parseKasamatsuMeetingNoticeLinks(html, baseUrl = KASAMATSU_OFFICIAL_NEWS_URL) {
+  const links = [];
+  for (const match of String(html).matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)) {
+    const title = normalizeWide(plain(match[2]));
+    if (!/第\s*\d+\s*回(?:\s*笠松)?競馬/.test(title) || !/開催/.test(title) || !/お知らせ/.test(title)) continue;
+    const href = hrefFromAttributes(match[1]);
+    if (!href) continue;
+    let url;
+    try { url = new URL(entities(href), baseUrl); }
+    catch { continue; }
+    if (url.protocol !== 'https:' || url.hostname !== 'www.kasamatsu-keiba.com' || !/^\/news\/detail\//.test(url.pathname)) continue;
+    links.push(url.toString());
+  }
+  return [...new Set(links)];
+}
+
+export function parseKasamatsuFirstRaceTimes(html, year) {
+  const text = normalizeWide(plain(html));
+  const marker = /第\s*1\s*競走発走時刻/.exec(text);
+  if (!marker) return new Map();
+  const section = text.slice(marker.index + marker[0].length, marker.index + marker[0].length + 600);
+  const rows = new Map();
+  let currentMonth = null;
+  const pattern = /(?:(\d{1,2})月)?\s*(\d{1,2})日(?:\s*[（(][^）)]*[）)])?\s*(\d{1,2}):(\d{2})/g;
+  for (const match of section.matchAll(pattern)) {
+    if (match[1]) currentMonth = Number(match[1]);
+    if (!currentMonth) continue;
+    const date = isoDate(Number(year), currentMonth, Number(match[2]));
+    if (!date) continue;
+    rows.set(date, `${String(Number(match[3])).padStart(2, '0')}:${match[4]}`);
+  }
+  return rows;
+}
+
 function monbetsuRaceNumbers(html) {
   const numbers = new Set();
   for (const match of String(html).matchAll(/[?&](?:amp;)?p_rno=(\d{1,3})/gi)) {
@@ -115,6 +182,23 @@ async function decodePage(response, preferred = ['utf-8', 'shift_jis']) {
   return preferred
     .map((encoding) => new TextDecoder(encoding).decode(bytes))
     .sort((a, b) => (b.match(/[競馬発走]/g)?.length ?? 0) - (a.match(/[競馬発走]/g)?.length ?? 0))[0];
+}
+
+async function fetchOfficialText(url, fetchImpl, expectedHostname) {
+  const response = await fetchImpl(url, {
+    redirect: 'follow',
+    headers: {
+      'user-agent': 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; public timetable acquisition)',
+      accept: 'text/html',
+      'accept-language': 'ja,en;q=.7',
+    },
+  });
+  if (!response.ok) throw new Error(`HTTP ${response.status}: ${url}`);
+  const finalUrl = new URL(response.url || url);
+  if (finalUrl.protocol !== 'https:' || finalUrl.hostname !== expectedHostname) {
+    throw new Error(`unexpected official redirect: ${finalUrl.toString()}`);
+  }
+  return { body: await decodePage(response), url: finalUrl.toString() };
 }
 
 async function fetchSagaStartPage(fetchImpl) {
@@ -172,8 +256,25 @@ async function collectMonbetsuRaceInfo(fetchImpl, date) {
   return { rows, url: firstPage.url };
 }
 
+async function collectKasamatsuFirstRaceTimes(fetchImpl, year) {
+  const index = await fetchOfficialText(KASAMATSU_OFFICIAL_NEWS_URL, fetchImpl, 'www.kasamatsu-keiba.com');
+  const links = parseKasamatsuMeetingNoticeLinks(index.body, index.url).slice(0, 12);
+  const rows = new Map();
+  for (const link of links) {
+    try {
+      const page = await fetchOfficialText(link, fetchImpl, 'www.kasamatsu-keiba.com');
+      for (const [date, firstRaceTime] of parseKasamatsuFirstRaceTimes(page.body, year)) {
+        rows.set(date, { first_race_time_local: firstRaceTime, source_url: page.url });
+      }
+    } catch {
+      // A malformed or unavailable notice is not authoritative negative evidence.
+    }
+  }
+  return rows;
+}
+
 function canFallback(primary) {
-  return ['race_number_discovery_incomplete', 'scheduled_pending_details'].includes(primary.status);
+  return ['race_number_discovery_incomplete', 'scheduled_pending_details', 'details_pending'].includes(primary?.status);
 }
 
 function canNankanFallback(primary) {
@@ -181,6 +282,22 @@ function canNankanFallback(primary) {
 }
 
 export function withSagaOfficialStartFallback(baseInspect, fetchImpl = fetch) {
+  const iwateByYear = new Map();
+  const kasamatsuByYear = new Map();
+
+  const iwateTimes = (year, requestFetch) => {
+    if (!iwateByYear.has(year)) {
+      iwateByYear.set(year, fetchOfficialText(IWATE_OFFICIAL_HOME_URL, requestFetch, 'www.iwatekeiba.or.jp')
+        .then((page) => ({ rows: parseIwateOfficialHomeTimes(page.body, year), url: page.url })));
+    }
+    return iwateByYear.get(year);
+  };
+
+  const kasamatsuTimes = (year, requestFetch) => {
+    if (!kasamatsuByYear.has(year)) kasamatsuByYear.set(year, collectKasamatsuFirstRaceTimes(requestFetch, year));
+    return kasamatsuByYear.get(year);
+  };
+
   return async (meeting, context) => {
     const requestFetch = context?.fetchImpl ?? fetchImpl;
     const primary = await baseInspect(meeting, context);
@@ -195,6 +312,55 @@ export function withSagaOfficialStartFallback(baseInspect, fetchImpl = fetch) {
     }
 
     if (!canFallback(primary)) return primary;
+
+    if (['10', '11'].includes(meeting.venue_code) || ['morioka-racecourse', 'mizusawa-racecourse'].includes(meeting.racecourse_id)) {
+      try {
+        const year = Number(meeting.date.slice(0, 4));
+        const page = await iwateTimes(year, requestFetch);
+        const timing = page.rows.get(meeting.date);
+        if (timing?.first_race_time_local && timing?.last_race_time_local) {
+          return {
+            status: 'ok',
+            meeting: {
+              ...meeting,
+              source_id: 'iwatekeiba-official-time-fallback',
+              source_label: '岩手競馬',
+              capability_rank: 'B+',
+              first_race_time_local: timing.first_race_time_local,
+              last_race_time_local: timing.last_race_time_local,
+              timetable_rows: [],
+              official_source_url: page.url,
+            },
+          };
+        }
+      } catch {
+        // Preserve the primary NAR state when the regional timing table is unavailable or malformed.
+      }
+    }
+
+    if (meeting.venue_code === '23' || meeting.racecourse_id === 'kasamatsu-racecourse') {
+      try {
+        const year = Number(meeting.date.slice(0, 4));
+        const timing = (await kasamatsuTimes(year, requestFetch)).get(meeting.date);
+        if (timing?.first_race_time_local) {
+          return {
+            status: 'ok',
+            meeting: {
+              ...meeting,
+              source_id: 'kasamatsu-official-first-race-fallback',
+              source_label: '笠松けいば',
+              capability_rank: 'B',
+              first_race_time_local: timing.first_race_time_local,
+              last_race_time_local: null,
+              timetable_rows: [],
+              official_source_url: timing.source_url,
+            },
+          };
+        }
+      } catch {
+        // Preserve the primary NAR state when the official meeting notice is unavailable or malformed.
+      }
+    }
 
     if (meeting.venue_code === '32') {
       try {
@@ -243,4 +409,9 @@ export function withSagaOfficialStartFallback(baseInspect, fetchImpl = fetch) {
   };
 }
 
-export { SAGA_OFFICIAL_START_URL, MONBETSU_OFFICIAL_RACEINFO_URL };
+export {
+  SAGA_OFFICIAL_START_URL,
+  MONBETSU_OFFICIAL_RACEINFO_URL,
+  IWATE_OFFICIAL_HOME_URL,
+  KASAMATSU_OFFICIAL_NEWS_URL,
+};
