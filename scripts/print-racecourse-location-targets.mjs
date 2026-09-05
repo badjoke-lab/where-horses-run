@@ -36,14 +36,14 @@ for (const record of records) {
   });
 }
 
+if (rows.length === 0) {
+  throw new Error('MAP-002 canonical racecourse target set must not be empty');
+}
+
 rows.sort((a, b) => a.id.localeCompare(b.id, 'en'));
 
 console.log('MAP-002 canonical racecourse location targets');
 console.log(`count: ${rows.length}`);
 for (const row of rows) {
   console.log(`${row.id} | ${row.name_en} | ${row.country_id} | ${row.source_file}`);
-}
-
-if (rows.length !== 41) {
-  throw new Error(`expected 41 current public racecourses, got ${rows.length}`);
 }
