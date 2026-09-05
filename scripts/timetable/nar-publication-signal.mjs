@@ -47,3 +47,16 @@ export function narRaceProgrammeLooksPublished(html) {
   const repeatedDetailLinks = signals.detail_link_count >= 2 && signals.post_time_count >= 2;
   return timedRaceStructure || linkedRaceStructure || repeatedDetailLinks;
 }
+
+export function classifyNarZeroRaceDiscovery(html) {
+  if (narRaceProgrammeLooksPublished(html)) {
+    return {
+      status: 'race_number_discovery_incomplete',
+      reason: 'published_programme_without_discoverable_race_numbers',
+    };
+  }
+  return {
+    status: 'scheduled_pending_details',
+    reason: 'scheduled_pending_details',
+  };
+}
