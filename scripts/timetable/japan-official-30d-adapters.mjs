@@ -210,8 +210,11 @@ export function parseNarMonthlySchedule(html, year, month, dates, baseUrl) {
 }
 
 function narRaceNameFromBlock(block, raceNumber) {
-  for (const match of block.matchAll(/<a\b[^>]*href=["'][^"']*(?:DebaTable|S_DebaTable)[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi)) {
-    const value = plain(match[1]);
+  for (const match of block.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)) {
+    const hrefMatch = match[1].match(/\bhref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
+    const href = hrefMatch?.[1] ?? hrefMatch?.[2] ?? hrefMatch?.[3] ?? '';
+    if (!/(?:DebaTable|S_DebaTable)/i.test(href)) continue;
+    const value = plain(match[2]);
     if (value && !new RegExp(`^${raceNumber}\\s*R$`, 'i').test(value) && !/(出馬表|詳細)/.test(value)) return value;
   }
   return null;
