@@ -84,6 +84,17 @@ assert.equal(narRows.length, 2);
 assert.equal(narRows[0].race_name, 'Ｃ６組');
 assert.equal(narRows[0].distance_m, 1500);
 
+const narCurrentUnquotedHrefFixture = `<table><tr class="data">
+<td>1R</td><td>15:25</td><td></td><td>特別</td>
+<td><a href=/KeibaWeb/TodayRaceInfo/DebaTable?k_raceDate=2026%2F09%2F05&amp;k_raceNo=1&amp;k_babaCode=31>徳島県ミルクとすだち特別２歳－４</a></td>
+<td>右1300m</td><td>曇</td><td>不良</td><td>8</td>
+</tr></table>`;
+const narCurrentUnquotedRows = parseNarRaceListPage(narCurrentUnquotedHrefFixture);
+assert.equal(narCurrentUnquotedRows.length, 1);
+assert.equal(narCurrentUnquotedRows[0].race_name, '徳島県ミルクとすだち特別２歳－４');
+assert.equal(narCurrentUnquotedRows[0].post_time_local, '15:25');
+assert.equal(narCurrentUnquotedRows[0].distance_m, 1300);
+
 const calls = [];
 let narIncompleteAttempts = 0;
 let narPendingAttempts = 0;
