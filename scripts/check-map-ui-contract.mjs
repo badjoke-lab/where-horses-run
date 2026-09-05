@@ -38,9 +38,14 @@ for (const token of [
   "rootMargin: '320px 0px'",
   'racecourse-map:activate',
   "root.dataset.mapState = 'failed'",
+  'const MAP_LOAD_TIMEOUT_MS = 15000',
+  'loadTimeout = window.setTimeout(fail, MAP_LOAD_TIMEOUT_MS)',
+  'if (failed) return',
+  'canvas.hidden = false',
   'duration: 0',
 ]) requireText(map, token, 'RacecourseMap');
 
+forbidText(map, "map.on('error',", 'RacecourseMap transient error handling');
 requireText(map, "fetch(geojsonUrl, { credentials: 'same-origin' })", 'RacecourseMap local projection fetch');
 const fetchCalls = map.match(/\bfetch\s*\(/g) ?? [];
 if (fetchCalls.length !== 1) fail(`RacecourseMap must have exactly one runtime fetch (local GeoJSON); found ${fetchCalls.length}`);
@@ -76,5 +81,5 @@ for (const token of [
 ]) requireText(touchQa, token, 'map touch-target QA styles');
 
 if (!process.exitCode) {
-  console.log('MAP-010 map UI contract OK: lazy runtime, local racing projection, touch targets, attribution, failure fallback, and selected-card boundaries verified.');
+  console.log('MAP-010 map UI contract OK: lazy runtime, timeout-only load failure, local racing projection, touch targets, attribution, failure fallback, and selected-card boundaries verified.');
 }
