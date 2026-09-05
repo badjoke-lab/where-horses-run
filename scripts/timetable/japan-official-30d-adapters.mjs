@@ -12,7 +12,7 @@ const JRA_VENUES = {
   '中山': 'nakayama', '中京': 'chukyo', '京都': 'kyoto', '阪神': 'hanshin', '小倉': 'kokura',
 };
 const NAR_VENUES = {
-  '01': ['北見', 'kitami'], '02': ['岩見沢', 'iwamizawa'], '03': ['帯広ば', 'obihiro'], '04': ['門別', 'mombetsu'],
+  '01': ['北見', 'kitami'], '02': ['岩見沢', 'iwamizawa'], '03': ['帯広ば', 'obihiro'], '36': ['門別', 'monbetsu'],
   '10': ['盛岡', 'morioka'], '11': ['水沢', 'mizusawa'], '18': ['浦和', 'urawa'], '19': ['船橋', 'funabashi'],
   '20': ['大井', 'oi'], '21': ['川崎', 'kawasaki'], '22': ['金沢', 'kanazawa'], '23': ['笠松', 'kasamatsu'],
   '24': ['名古屋', 'nagoya'], '27': ['園田', 'sonoda'], '28': ['姫路', 'himeji'], '31': ['高知', 'kochi'], '32': ['佐賀', 'saga'],
@@ -85,10 +85,12 @@ function surfaceLabel(token) {
   if (/^(?:ダ|ダート)$/.test(token)) return 'Dirt';
   return null;
 }
-function courseLabel(surfaceToken, turn = null) {
+function courseLabel(surfaceToken, turn = null, circuit = null) {
   const parts = [];
   if (/^芝/.test(surfaceToken)) parts.push(surfaceToken === '芝・外' ? 'Turf Outer' : 'Turf');
   else if (/^(?:ダ|ダート)$/.test(surfaceToken)) parts.push('Dirt');
+  if (circuit === '外') parts.push('Outer');
+  else if (circuit === '内') parts.push('Inner');
   if (turn === '右') parts.push('Right-handed');
   else if (turn === '左') parts.push('Left-handed');
   else if (turn === '直') parts.push('Straight');
@@ -256,14 +258,14 @@ export function parseNarRaceListPage(html) {
   return [...rows.values()].sort((a, b) => a.race_number - b.race_number);
 }
 
-function parseNarDebaMetadata(html) {
+export function parseNarDebaMetadata(html) {
   const text = plain(html);
-  const match = text.match(/(ダート|芝)\s*(\d{3,4})\s*[mｍＭ]\s*[（(]\s*(右|左|直)\s*[）)]/);
+  const match = text.match(/(ダート|芝)\s*(\d{3,4})\s*[mｍＭ]\s*[（(]\s*(?:(外|内)コース\s*[・･]\s*)?(右|左|直)\s*[）)]/);
   if (!match) return null;
   return {
     surface: surfaceLabel(match[1]),
     distance_m: Number(match[2]),
-    course_label: courseLabel(match[1], match[3]),
+    course_label: courseLabel(match[1], match[4], match[3] ?? null),
   };
 }
 

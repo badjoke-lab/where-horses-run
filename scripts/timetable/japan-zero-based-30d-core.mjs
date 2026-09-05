@@ -13,6 +13,71 @@ function rank(value) {
   return index < 0 ? 0 : index;
 }
 
+function validTime(value) {
+  return typeof value === 'string' && /^\d{2}:\d{2}$/.test(value);
+}
+
+function safeRows(rows = []) {
+  return (Array.isArray(rows) ? rows : []).map((row) => ({
+    label: row?.label ?? null,
+    post_time_local: row?.post_time_local ?? null,
+    race_name: row?.race_name ?? null,
+    distance_m: row?.distance_m ?? null,
+    surface: row?.surface ?? null,
+    course_label: row?.course_label ?? null,
+    metadata_status: 'verified',
+    source_label: row?.source_label ?? null,
+  }));
+}
+
+function rowHasRaceTime(row) {
+  return typeof row?.label === 'string'
+    && row.label.length > 0
+    && validTime(row.post_time_local);
+}
+
+function rowHasAPlusMetadata(row) {
+  return rowHasRaceTime(row)
+    && typeof row.race_name === 'string'
+    && row.race_name.length > 0
+    && Number.isInteger(row.distance_m)
+    && row.distance_m > 0
+    && typeof row.surface === 'string'
+    && row.surface.length > 0
+    && typeof row.course_label === 'string'
+    && row.course_label.length > 0;
+}
+
+function raceNumberFromLabel(label) {
+  if (typeof label !== 'string') return null;
+  const match = label.match(/(?:Race\s*|^)(\d{1,2})(?:\s*R)?$/i) ?? label.match(/^(\d{1,2})R$/i);
+  return match ? Number(match[1]) : null;
+}
+
+function rowsAreContinuous(rows) {
+  if (!rows.length || !rows.every(rowHasRaceTime)) return false;
+  const numbers = rows.map((row) => raceNumberFromLabel(row.label));
+  if (numbers.every(Number.isInteger)) return numbers.every((number, index) => number === index + 1);
+  return new Set(rows.map((row) => row.label)).size === rows.length;
+}
+
+/**
+ * Best-available rank is derived centrally from normalized public-safe evidence.
+ * Adapter-declared capability_rank is deliberately ignored as a ceiling/floor.
+ */
+export function deriveJapanBestAvailableRank(meeting, rows = meeting?.timetable_rows ?? []) {
+  const normalizedRows = safeRows(rows);
+  if (rowsAreContinuous(normalizedRows)) {
+    return normalizedRows.every(rowHasAPlusMetadata) ? 'A+' : 'A';
+  }
+
+  const first = meeting?.first_race_time_local ?? normalizedRows[0]?.post_time_local ?? null;
+  const last = meeting?.last_race_time_local ?? normalizedRows.at(-1)?.post_time_local ?? null;
+  if (validTime(first) && validTime(last)) return 'B+';
+  if (validTime(first)) return 'B';
+  return 'C';
+}
+
 export function assertJapanCompleteness(official, reconciliations, resultingPublic = []) {
   const officialIds = new Set(official.map((row) => row.meeting_id));
   const counts = new Map();
@@ -54,19 +119,6 @@ export function japan30DayRange(executionDate) {
   return { start, end_exclusive: cursor.toISOString().slice(0, 10), dates };
 }
 
-function safeRows(rows = []) {
-  return rows.map((row) => ({
-    label: row.label ?? null,
-    post_time_local: row.post_time_local ?? null,
-    race_name: row.race_name ?? null,
-    distance_m: row.distance_m ?? null,
-    surface: row.surface ?? null,
-    course_label: row.course_label ?? null,
-    metadata_status: 'verified',
-    source_label: row.source_label ?? null,
-  }));
-}
-
 function sourceTrace(meeting, previous = {}) {
   return {
     ...previous,
@@ -84,6 +136,14 @@ function sourceTrace(meeting, previous = {}) {
 function safeMeeting(meeting, checkedAt, previous = null) {
   const rows = safeRows(meeting.timetable_rows);
   const base = previous ?? {};
+  const firstRaceTime = meeting.first_race_time_local ?? rows[0]?.post_time_local ?? null;
+  const lastRaceTime = meeting.last_race_time_local ?? rows.at(-1)?.post_time_local ?? null;
+  const capabilityRank = deriveJapanBestAvailableRank({
+    ...meeting,
+    first_race_time_local: firstRaceTime,
+    last_race_time_local: lastRaceTime,
+  }, rows);
+
   return {
     ...base,
     meeting_id: meeting.meeting_id,
@@ -93,10 +153,10 @@ function safeMeeting(meeting, checkedAt, previous = null) {
     racecourse_id: meeting.racecourse_id,
     date: meeting.date,
     timezone: 'Asia/Tokyo',
-    capability_rank: meeting.capability_rank ?? 'C',
-    display_status: meeting.capability_rank === 'C' ? 'partial' : 'displayable',
-    first_race_time_local: meeting.first_race_time_local ?? rows[0]?.post_time_local ?? null,
-    last_race_time_local: meeting.last_race_time_local ?? rows.at(-1)?.post_time_local ?? null,
+    capability_rank: capabilityRank,
+    display_status: capabilityRank === 'C' ? 'partial' : 'displayable',
+    first_race_time_local: firstRaceTime,
+    last_race_time_local: lastRaceTime,
     source_trace: sourceTrace(meeting, base.source_trace),
     freshness: {
       ...(base.freshness ?? {}),
@@ -133,48 +193,14 @@ function publicPolicyId(authorityId) {
   return value;
 }
 
-function rowHasRaceTime(row) {
-  return typeof row?.label === 'string'
-    && row.label.length > 0
-    && typeof row?.post_time_local === 'string'
-    && /^\d{2}:\d{2}$/.test(row.post_time_local);
-}
-
-function rowHasAPlusMetadata(row) {
-  return rowHasRaceTime(row)
-    && typeof row.race_name === 'string'
-    && row.race_name.length > 0
-    && Number.isInteger(row.distance_m)
-    && row.distance_m > 0
-    && typeof row.surface === 'string'
-    && row.surface.length > 0
-    && typeof row.course_label === 'string'
-    && row.course_label.length > 0;
-}
-
-function fallbackMeetingRank(meeting) {
-  if (meeting.first_race_time_local && meeting.last_race_time_local) return 'B+';
-  if (meeting.first_race_time_local) return 'B';
-  return 'C';
-}
-
 function safeEffectivePublicRank(meeting, detail) {
-  const capabilityRank = RANKS.includes(meeting.capability_rank) ? meeting.capability_rank : 'C';
-  if (rank(capabilityRank) < rank('A')) return capabilityRank;
-
-  const rows = Array.isArray(detail?.timetable_rows) ? detail.timetable_rows : [];
-  if (!rows.length || !rows.every(rowHasRaceTime)) return fallbackMeetingRank(meeting);
-  if (capabilityRank === 'A+') return rows.every(rowHasAPlusMetadata) ? 'A+' : 'A';
-  return 'A';
+  return deriveJapanBestAvailableRank(meeting, detail?.timetable_rows ?? []);
 }
 
 function publicTimetableRows(detail, effectivePublicRank) {
   const aPlus = effectivePublicRank === 'A+';
   return detail.timetable_rows.map((row) => {
-    const value = {
-      label: row.label,
-      post_time_local: row.post_time_local,
-    };
+    const value = { label: row.label, post_time_local: row.post_time_local };
     if (aPlus) {
       value.race_name = row.race_name;
       value.distance_m = row.distance_m;
@@ -211,7 +237,7 @@ function publicMeetingRecord(meeting, detail) {
 }
 
 function publicDetailRecord(meeting, detail, publicMeeting) {
-  if (!['A', 'A+'].includes(publicMeeting.effective_public_rank)) return null;
+  if (!detail || !['A', 'A+'].includes(publicMeeting.effective_public_rank)) return null;
   const aPlus = publicMeeting.effective_public_rank === 'A+';
   return {
     meeting_id: meeting.meeting_id,
@@ -246,12 +272,22 @@ function comparableMeeting(row) {
     source: row.source_trace?.official_source_url ?? row.official_source_url ?? null,
   });
 }
+
 function comparableRows(row) {
-  return JSON.stringify((row?.timetable_rows ?? []).map(({ label, post_time_local, race_name, distance_m, surface, course_label }) => ({ label, post_time_local, race_name, distance_m, surface, course_label })));
+  return JSON.stringify((row?.timetable_rows ?? []).map(({ label, post_time_local, race_name, distance_m, surface, course_label }) => ({
+    label, post_time_local, race_name, distance_m, surface, course_label,
+  })));
 }
-function isFailure(value) { return value?.status === 'acquisition_failed' || value?.status === 'race_number_discovery_incomplete'; }
-function isPending(value) { return value?.status === 'details_pending' || value?.status === 'scheduled_pending_details'; }
-function isRetryable(value) { return isFailure(value) || value?.status === 'scheduled_pending_details'; }
+
+function isFailure(value) {
+  return value?.status === 'acquisition_failed' || value?.status === 'race_number_discovery_incomplete';
+}
+function isPending(value) {
+  return value?.status === 'details_pending' || value?.status === 'scheduled_pending_details';
+}
+function isRetryable(value) {
+  return isFailure(value) || value?.status === 'scheduled_pending_details';
+}
 
 async function inspectWithRetry(adapter, meeting, attempts, retryDelayMs) {
   let result;
@@ -281,11 +317,7 @@ function ensureOfficialScheduleRow({ officialMeeting, checkedAt, canonicalMap, p
     return publicMap.get(officialMeeting.meeting_id)?.capability_rank ?? previousCanonical.capability_rank;
   }
 
-  const scheduleOnly = safeMeeting({
-    ...officialMeeting,
-    capability_rank: 'C',
-    timetable_rows: [],
-  }, checkedAt);
+  const scheduleOnly = safeMeeting({ ...officialMeeting, timetable_rows: [] }, checkedAt);
   canonicalMap.set(scheduleOnly.meeting_id, scheduleOnly);
   publicMap.set(scheduleOnly.meeting_id, {
     ...scheduleOnly,
@@ -296,7 +328,14 @@ function ensureOfficialScheduleRow({ officialMeeting, checkedAt, canonicalMap, p
 }
 
 /** Official discovery completes before canonical/public state is read or consulted. */
-export async function runJapanZeroBased30d({ executionDate, adapters, loadExisting = () => ({ canonical: [], public: [] }), attempts = 3, retryDelayMs = 250, checkedAt = new Date().toISOString() }) {
+export async function runJapanZeroBased30d({
+  executionDate,
+  adapters,
+  loadExisting = () => ({ canonical: [], public: [] }),
+  attempts = 3,
+  retryDelayMs = 250,
+  checkedAt = new Date().toISOString(),
+}) {
   const range = japan30DayRange(executionDate);
   for (const group of JAPAN_GROUPS) {
     if (!adapters?.[group]?.discover || !adapters[group]?.inspect) throw new Error(`missing official adapter: ${group}`);
@@ -318,7 +357,6 @@ export async function runJapanZeroBased30d({ executionDate, adapters, loadExisti
     ids.add(meeting.meeting_id);
   }
 
-  // Deliberately after all three official enumerations: existing rows can never seed discovery.
   const existing = await loadExisting();
   const canonicalMap = new Map((existing.canonical ?? []).map((row) => [row.meeting_id, row]));
   const publicMap = new Map((existing.public ?? []).map((row) => [row.meeting_id, row]));
@@ -384,9 +422,6 @@ export async function runJapanZeroBased30d({ executionDate, adapters, loadExisti
     });
   }
 
-  // Serialize every meeting in the current official mother set into the public schema.
-  // Canonical-only fields never leak into the public list, and an A/A+ detail route is
-  // emitted only when a matching safe public detail exists.
   for (const meetingId of ids) {
     const canonical = canonicalMap.get(meetingId);
     if (!canonical) throw new Error(`missing canonical Japan meeting after reconciliation: ${meetingId}`);
