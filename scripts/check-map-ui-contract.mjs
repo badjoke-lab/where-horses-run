@@ -61,7 +61,7 @@ requireText(calendar, 'data-calendar-map-selected', 'Calendar persistent selecte
 requireText(home, 'data-home-map-selected', 'Home persistent selected-racecourse card');
 requireText(css, 'position: sticky', 'mobile selected-card presentation');
 
-for (const token of ['MapLibre', 'OpenFreeMap', 'attribution', 'API key', 'fallback']) {
+for (const token of ['MapLibre', 'OpenFreeMap', 'attribution', 'API key', 'Failure boundary']) {
   requireText(providerDecision, token, 'map runtime provider decision');
 }
 
@@ -76,5 +76,5 @@ for (const token of [
 ]) requireText(touchQa, token, 'map touch-target QA styles');
 
 if (!process.exitCode) {
-  console.log('MAP-010 map UI contract OK: lazy runtime, local racing projection, touch targets, attribution, fallback, and selected-card boundaries verified.');
+  console.log('MAP-010 map UI contract OK: lazy runtime, local racing projection, touch targets, attribution, failure fallback, and selected-card boundaries verified.');
 }
