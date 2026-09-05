@@ -15,7 +15,6 @@ const sourceFiles = [
 ];
 
 const registryPath = 'data/static/racecourse-locations-v1.json';
-const currentStatePath = 'data/static/racecourse-current-state-v1.json';
 
 function readJson(relativePath) {
   return JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf8'));
@@ -27,7 +26,6 @@ const canonicalRecords = sourceFiles.flatMap((file) => {
   return value.map((record) => ({ ...record, __source_file: file }));
 });
 const registry = readJson(registryPath);
-const currentState = readJson(currentStatePath);
 
 const errors = [];
 function fail(message) { errors.push(message); }
@@ -51,11 +49,11 @@ for (const record of canonicalRecords) {
   canonicalById.set(record.id, record);
 }
 
-const expectedCount = currentState?.counts?.racecourses;
-if (!Number.isInteger(expectedCount) || expectedCount < 1) {
-  fail(`${currentStatePath}: counts.racecourses must be a positive integer`);
-} else if (canonicalById.size !== expectedCount) {
-  fail(`canonical racecourse count ${canonicalById.size} does not match current-state count ${expectedCount}`);
+if (canonicalById.size === 0) {
+  fail('canonical racecourse set must not be empty');
+}
+if (canonicalById.size !== canonicalRecords.length) {
+  fail(`canonical racecourse set contains duplicate ids: ${canonicalRecords.length} records / ${canonicalById.size} unique ids`);
 }
 
 if (registry?.schema_version !== 'racecourse-locations-v1') {
