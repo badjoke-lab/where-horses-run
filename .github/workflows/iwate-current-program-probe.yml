@@ -18,6 +18,45 @@ jobs:
         with:
           node-version: 22
       - run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Discover official Iwate programme links
+        run: |
+          node <<'NODE'
+          const pages = [
+            'https://www.iwatekeiba.or.jp/',
+            'https://www.iwatekeiba.or.jp/category/program',
+            'https://www.iwatekeiba.or.jp/news/260902d',
+          ];
+          const plain = (value) => String(value ?? '')
+            .replace(/<[^>]+>/g, ' ')
+            .replace(/&nbsp;|&#160;/gi, ' ')
+            .replace(/&amp;/gi, '&')
+            .replace(/\s+/g, ' ')
+            .trim();
+          for (const url of pages) {
+            const response = await fetch(url, {
+              redirect: 'follow',
+              headers: {
+                'user-agent': 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; read-only source probe)',
+                accept: 'text/html',
+                'accept-language': 'ja,en;q=.7',
+                'cache-control': 'no-cache',
+                pragma: 'no-cache',
+              },
+            });
+            const html = await response.text();
+            console.log(`PAGE ${response.url} status=${response.status} bytes=${html.length}`);
+            for (const match of html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)) {
+              const attrs = match[1];
+              const text = plain(match[2]);
+              const href = attrs.match(/\bhref\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s>]+))/i)?.slice(1).find(Boolean);
+              if (!href) continue;
+              const absolute = new URL(href, response.url).toString();
+              if (/水沢|改定|番組|kaitei|\.pdf/i.test(`${text} ${absolute}`)) {
+                console.log(JSON.stringify({ text, href: absolute }));
+              }
+            }
+          }
+          NODE
       - name: Inspect official Iwate programme PDF text layout
         run: |
           node <<'NODE'
@@ -37,7 +76,7 @@ jobs:
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
           const bytes = new Uint8Array(await response.arrayBuffer());
           const document = await getDocument({ data: bytes, useWorkerFetch: false, isEvalSupported: false }).promise;
-          console.log(JSON.stringify({ url: response.url, bytes: bytes.length, pages: document.numPages }));
+          console.log(JSON.stringify({ url: response.url, pages: document.numPages }));
           for (let pageNumber = 1; pageNumber <= document.numPages; pageNumber += 1) {
             const page = await document.getPage(pageNumber);
             const text = await page.getTextContent();
@@ -50,7 +89,7 @@ jobs:
                 w: Number((item.width ?? 0).toFixed(2)),
               }));
             const interesting = items.filter((item) => /9月|13日|14日|15日|発走|時刻|第\s*1|第\s*12|\d{1,2}:\d{2}|\d{1,2}時\d{2}分/.test(item.str));
-            console.log(`PAGE ${pageNumber}`);
+            console.log(`PDF PAGE ${pageNumber}`);
             for (const item of interesting) console.log(JSON.stringify(item));
           }
           NODE
