@@ -46,8 +46,8 @@ const fallbackMessage = isJapanese
 
   <p>
     {isJapanese
-      ? '地図と下の開催一覧は同じ公開meeting recordを使用します。地図の地点を選ぶと対応する開催へ移動し、一覧の「地図」から地点へフォーカスできます。'
-      : 'The map and meeting list below use the same public meeting records. Select a point to move to its meeting row, or use Map on a row to focus that venue.'}
+      ? '地図と下の開催一覧は同じ公開meeting recordを使用します。地図の地点を選ぶと対応する開催が選択され、一覧の「地図」から地点へフォーカスできます。'
+      : 'The map and meeting list below use the same public meeting records. Select a point to select its meeting, or use Map on a row to focus that venue.'}
   </p>
 
   {candidateRacecourseIds.length > 0 ? (
@@ -62,6 +62,10 @@ const fallbackMessage = isJapanese
       <p class="racecourse-map__attribution">
         Map: <a href="https://openfreemap.org/">OpenFreeMap</a> · Data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>
       </p>
+      <div class="today-meeting-map__selected" data-today-map-selected hidden>
+        <strong data-today-map-selected-label></strong>
+        <button type="button" data-today-map-show-list>{isJapanese ? 'Listで見る' : 'Show in List'}</button>
+      </div>
     </>
   ) : (
     <p>{isJapanese ? '現在の候補開催には、確認済み位置情報を持つ競馬場がありません。' : 'No candidate meeting currently has a reviewed racecourse location.'}</p>
@@ -88,12 +92,16 @@ const fallbackMessage = isJapanese
         const mapRoot = root.querySelector('[data-racecourse-map]');
         const status = root.querySelector('[data-today-map-status]');
         const dataNode = root.querySelector('[data-today-map-meeting-map]');
+        const selectedBox = root.querySelector('[data-today-map-selected]');
+        const selectedLabel = root.querySelector('[data-today-map-selected-label]');
+        const showListButton = root.querySelector('[data-today-map-show-list]');
         if (!(mapRoot instanceof HTMLElement) || !(dataNode instanceof HTMLScriptElement)) return;
 
         let entries = [];
         try { entries = JSON.parse(dataNode.textContent || '[]'); } catch { entries = []; }
         const mapping = new Map(entries.map((entry) => [entry.meetingId, entry]));
         const isJa = root.dataset.lang === 'ja';
+        let selectedRacecourseId = null;
 
         const listRows = () => Array.from(document.querySelectorAll('[data-calendar-meeting-row]'))
           .filter((row) => row instanceof HTMLElement);
@@ -109,20 +117,37 @@ const fallbackMessage = isJapanese
         const clearRowSelection = () => {
           listRows().forEach((row) => row.classList.remove('meeting-row--map-selected'));
         };
-        const selectRowsForRacecourse = (racecourseId, moveFocus) => {
+        const hideSelected = () => {
+          selectedRacecourseId = null;
           clearRowSelection();
-          const matchingRows = listRows().filter((row) => {
-            const entry = mappedEntryForRow(row);
-            return entry?.racecourseId === racecourseId && row.dataset.timezoneScopeHidden !== 'true' && !row.hidden;
-          });
+          if (selectedBox instanceof HTMLElement) selectedBox.hidden = true;
+          if (selectedLabel) selectedLabel.textContent = '';
+        };
+        const matchingRowsForRacecourse = (racecourseId) => listRows().filter((row) => {
+          const entry = mappedEntryForRow(row);
+          return entry?.racecourseId === racecourseId && row.dataset.timezoneScopeHidden !== 'true' && !row.hidden;
+        });
+        const selectRowsForRacecourse = (racecourseId) => {
+          clearRowSelection();
+          const matchingRows = matchingRowsForRacecourse(racecourseId);
           matchingRows.forEach((row) => row.classList.add('meeting-row--map-selected'));
           const first = matchingRows[0];
-          if (!first) return;
-          first.scrollIntoView({ block: 'nearest', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
-          if (moveFocus) {
-            const button = first.querySelector('[data-meeting-map-focus]');
-            if (button instanceof HTMLElement) button.focus({ preventScroll: true });
+          if (!first) {
+            hideSelected();
+            return null;
           }
+          selectedRacecourseId = racecourseId;
+          if (selectedLabel) selectedLabel.textContent = first.dataset.racecourse || racecourseId;
+          if (selectedBox instanceof HTMLElement) selectedBox.hidden = false;
+          return first;
+        };
+        const showSelectedInList = () => {
+          if (!selectedRacecourseId) return;
+          const first = matchingRowsForRacecourse(selectedRacecourseId)[0];
+          if (!first) return;
+          first.scrollIntoView({ block: 'center', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+          const button = first.querySelector('[data-meeting-map-focus]');
+          if (button instanceof HTMLElement) button.focus({ preventScroll: true });
         };
 
         const addListMapControls = () => {
@@ -139,7 +164,7 @@ const fallbackMessage = isJapanese
             button.textContent = isJa ? '地図' : 'Map';
             button.setAttribute('aria-label', isJa ? 'この競馬場を地図で表示' : 'Show this racecourse on the map');
             button.addEventListener('click', () => {
-              selectRowsForRacecourse(entry.racecourseId, false);
+              selectRowsForRacecourse(entry.racecourseId);
               mapRoot.dispatchEvent(new CustomEvent('racecourse-map:focus', {
                 detail: { racecourseId: entry.racecourseId }
               }));
@@ -157,15 +182,17 @@ const fallbackMessage = isJapanese
           if (status) {
             status.textContent = isJa ? `${ids.length}競馬場を地図表示` : `${ids.length} mapped racecourses`;
           }
-          const selected = mapRoot.dataset.selectedRacecourseId;
-          if (selected && !ids.includes(selected)) clearRowSelection();
+          if (selectedRacecourseId && !ids.includes(selectedRacecourseId)) hideSelected();
         };
 
         mapRoot.addEventListener('racecourse-map:ready', syncVisible);
         mapRoot.addEventListener('racecourse-map:select', (event) => {
           const racecourseId = event?.detail?.racecourseId;
-          if (typeof racecourseId === 'string') selectRowsForRacecourse(racecourseId, true);
+          if (typeof racecourseId !== 'string') return;
+          const first = selectRowsForRacecourse(racecourseId);
+          if (first && !window.matchMedia('(max-width: 700px)').matches) showSelectedInList();
         });
+        if (showListButton instanceof HTMLButtonElement) showListButton.addEventListener('click', showSelectedInList);
         window.addEventListener('whr:timezonechange', () => requestAnimationFrame(syncVisible));
         window.addEventListener('whr:meetingstatechange', () => requestAnimationFrame(syncVisible));
 
