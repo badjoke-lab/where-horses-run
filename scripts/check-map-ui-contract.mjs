@@ -16,6 +16,7 @@ const forbidText = (source, needle, label) => {
 
 const map = read('src/components/RacecourseMap.astro');
 const css = read('src/styles/racecourse-map.css');
+const touchQa = read('src/styles/racecourse-map-qa.css');
 const today = read('src/components/TodayMeetingMap.astro');
 const calendar = read('src/components/CalendarMeetingMap.astro');
 const home = read('src/components/HomeRacingMap.astro');
@@ -23,6 +24,7 @@ const detail = read('src/components/RacecourseLocationMapSection.astro');
 const providerDecision = read('docs/decisions/map-runtime-provider-2026-09-06.md');
 
 for (const token of [
+  "import '../styles/racecourse-map-qa.css'",
   'https://unpkg.com/maplibre-gl@6.7.0/dist/maplibre-gl.css',
   'https://unpkg.com/maplibre-gl@6.7.0/dist/maplibre-gl.mjs',
   "styleUrl = 'https://tiles.openfreemap.org/styles/liberty'",
@@ -32,9 +34,9 @@ for (const token of [
   "const MAP_HIT_LAYER = 'racecourse-hit-targets'",
   "'circle-radius': 22",
   "'circle-opacity': 0.01",
-  "new IntersectionObserver",
+  'new IntersectionObserver',
   "rootMargin: '320px 0px'",
-  "racecourse-map:activate",
+  'racecourse-map:activate',
   "root.dataset.mapState = 'failed'",
   'duration: 0',
 ]) requireText(map, token, 'RacecourseMap');
@@ -58,13 +60,11 @@ requireText(today, 'data-today-map-selected', 'Today persistent selected-racecou
 requireText(calendar, 'data-calendar-map-selected', 'Calendar persistent selected-racecourse card');
 requireText(home, 'data-home-map-selected', 'Home persistent selected-racecourse card');
 requireText(css, 'position: sticky', 'mobile selected-card presentation');
-requireText(css, 'prefers-reduced-motion', 'reduced-motion behavior');
 
 for (const token of ['MapLibre', 'OpenFreeMap', 'attribution', 'API key', 'fallback']) {
   requireText(providerDecision, token, 'map runtime provider decision');
 }
 
-const touchQa = read('src/styles/racecourse-map-qa.css');
 for (const token of [
   'min-height: 44px',
   'min-width: 44px',
@@ -72,6 +72,7 @@ for (const token of [
   '.calendar-map-switch__buttons button',
   '.home-racing-map__periods button',
   '.maplibregl-ctrl button',
+  'prefers-reduced-motion: reduce',
 ]) requireText(touchQa, token, 'map touch-target QA styles');
 
 if (!process.exitCode) {
