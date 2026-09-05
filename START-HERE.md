@@ -1,14 +1,15 @@
 # Where Horses Run — current development entry point
 
 Status: active entry point  
-Last reviewed: 2026-08-25
+Last reviewed: 2026-09-05
 
 ## Required reading
 
 ```text
 docs/governance/document-authority.md
 docs/project-roadmap.md
-docs/project-roadmap-2026-08-25-addendum.md
+docs/project-roadmap-2026-09-05-addendum.md
+docs/decisions/map-ui-integration-2026-09-05.md
 docs/operations/deployment-and-ci-policy.md
 docs/calendar/README.md
 docs/calendar/source-test-v2-contract.md
@@ -367,7 +368,9 @@ Completed implementation unit: `RACECOURSE-PAGE-BILINGUAL-QA-01`
 Completed implementation unit: `GLOSSARY-SCHEMA-EXTENSION-01`
 Completed implementation unit: `GLOSSARY-QA-RELEASE-01`
 Current stage: `reviewed_incremental_maintenance`
-Current state authority: `docs/project-roadmap-2026-08-25-addendum.md`
+Active product/UI lane: `map_ui_integration`
+Current state authority: `docs/project-roadmap-2026-09-05-addendum.md`
+Current map/UI decision authority: `docs/decisions/map-ui-integration-2026-09-05.md`
 
 Current NAR status:
 
@@ -388,7 +391,7 @@ The 71 C meetings are published schedule identities, not A+ detail-complete meet
 
 ## Completed glossary sequence
 
-The former glossary active sequence is complete through `GLOSSARY-QA-RELEASE-01`. Current execution is `reviewed_incremental_maintenance`; use `docs/project-roadmap-2026-08-25-addendum.md` for the live maintenance lanes and source gates.
+The former glossary active sequence is complete through `GLOSSARY-QA-RELEASE-01`. Current execution is `reviewed_incremental_maintenance`; use `docs/project-roadmap-2026-09-05-addendum.md` for the live maintenance lanes, map/UI lane, and source gates.
 
 The Acquisition Control Plane foundation, Actions/local multi-job runners, Review Queue, Rank-aware Retry Queue, review cohort planning, review PR package preparation, Due-job planning, artifact-only scheduled planning, and Operations v2 are already implemented. Scheduled acquisition execution and unattended publication remain disabled.
 
