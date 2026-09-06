@@ -130,6 +130,22 @@ a:hover {
   color: var(--whr-color-navy);
 }
 
+/* Yellow has two explicit meanings: timed ranks are before start; B/C are racing today. */
+.racecourse-map__legend-dot--upcoming ~ .racecourse-map__legend-label--en,
+.racecourse-map__legend-dot--upcoming ~ .racecourse-map__legend-label--ja {
+  font-size: 0;
+}
+
+.racecourse-map__legend-dot--upcoming ~ .racecourse-map__legend-label--en::after {
+  content: 'Upcoming / racing today';
+  font-size: .78rem;
+}
+
+.racecourse-map__legend-dot--upcoming ~ .racecourse-map__legend-label--ja::after {
+  content: '開催前 / 本日開催';
+  font-size: .78rem;
+}
+
 .site-footer {
   background: var(--whr-color-navy);
   border-block-start: 3px solid var(--whr-color-gold);
