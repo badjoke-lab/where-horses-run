@@ -81,7 +81,7 @@ requireText(css, 'right: 0.5rem;', 'mobile selected-card close right offset');
 for (const token of [
   'const clearSelected = (emit = true) => {',
   "new CustomEvent('racecourse-map:deselect'",
-  "new CustomEvent('racecourse-map:clear-selection'",
+  "root.addEventListener('racecourse-map:clear-selection'",
   'toggle && root.dataset.selectedRacecourseId === racecourseId',
   'map.queryRenderedFeatures(event.point',
   'if (interactive.length === 0) clearSelected(true)',
