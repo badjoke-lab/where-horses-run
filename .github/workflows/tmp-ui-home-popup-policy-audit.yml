@@ -1,0 +1,121 @@
+name: Temporary Home popup policy audit
+
+on:
+  pull_request:
+    branches:
+      - fix/unify-meeting-state-and-home-copy-20260907
+
+permissions:
+  contents: read
+
+jobs:
+  browser-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+      - run: npm install
+      - run: npm run build
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Start static server
+        run: |
+          python3 -m http.server 4321 --directory dist > /tmp/whr-popup-audit-server.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4321/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/whr-popup-audit-server.log
+          exit 1
+      - name: Audit Home copy and meeting-state presentation
+        run: |
+          mkdir -p audit/ui-home-popup-policy
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { chromium } from 'playwright';
+
+          const browser = await chromium.launch({ headless: true });
+          const cases = [
+            { name: 'en-desktop', path: '/?tz=Asia%2FTokyo', width: 1440, height: 1100, lang: 'en' },
+            { name: 'ja-desktop', path: '/ja/?tz=Asia%2FTokyo', width: 1440, height: 1100, lang: 'ja' },
+            { name: 'en-mobile', path: '/?tz=Asia%2FTokyo', width: 390, height: 844, lang: 'en' },
+            { name: 'ja-mobile', path: '/ja/?tz=Asia%2FTokyo', width: 390, height: 844, lang: 'ja' },
+          ];
+          const failures = [];
+          const report = [];
+          const assert = (condition, message) => { if (!condition) throw new Error(message); };
+
+          const dateInTokyo = () => new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit',
+          }).format(new Date());
+
+          for (const item of cases) {
+            const page = await browser.newPage({ viewport: { width: item.width, height: item.height } });
+            const pageErrors = [];
+            page.on('pageerror', (error) => pageErrors.push(String(error)));
+            try {
+              await page.goto(`http://127.0.0.1:4321${item.path}`, { waitUntil: 'domcontentloaded' });
+              await page.waitForFunction(() => document.querySelector('[data-meeting-range="today"]')?.getAttribute('aria-pressed') === 'true');
+              await page.waitForTimeout(350);
+
+              const expectedHomeTitle = item.lang === 'ja' ? '競馬開催を探す' : 'Find horse racing meetings';
+              assert((await page.locator('#page-title').textContent())?.trim() === expectedHomeTitle, `${item.name}: Home title still Today-specific`);
+
+              const today = dateInTokyo();
+              const dayPolicy = await page.evaluate((today) => [...document.querySelectorAll('[data-calendar-meeting-row]')]
+                .filter((row) => row instanceof HTMLElement && !row.hidden && ['B', 'C'].includes(row.dataset.rank || '') && (row.dataset.date || '') === today)
+                .map((row) => ({ id: row.dataset.meetingId, rank: row.dataset.rank, state: row.dataset.meetingState, policy: row.dataset.meetingStatePolicy, background: getComputedStyle(row).backgroundColor })), today);
+              assert(dayPolicy.length > 0, `${item.name}: no visible B/C same-day rows to verify`);
+              assert(dayPolicy.every((row) => row.state === 'upcoming' && row.policy === 'day' && row.background === 'rgb(255, 243, 196)'), `${item.name}: B/C same-day yellow rule failed ${JSON.stringify(dayPolicy.slice(0, 5))}`);
+
+              const timedSelector = '[data-calendar-meeting-row][data-meeting-state-policy="timed"][data-meeting-state="upcoming"]';
+              const timedRows = page.locator(timedSelector).filter({ visible: true });
+              const timedCount = await timedRows.count();
+              assert(timedCount > 0, `${item.name}: no timed upcoming row to verify popup`);
+              let clicked = false;
+              for (let i = 0; i < timedCount; i += 1) {
+                const row = timedRows.nth(i);
+                const mapButton = row.locator('[data-meeting-map-focus]');
+                if (await mapButton.count()) {
+                  await mapButton.click();
+                  clicked = true;
+                  break;
+                }
+              }
+              assert(clicked, `${item.name}: no mapped timed-upcoming row`);
+              await page.waitForFunction(() => !document.querySelector('[data-today-map-selected]')?.hasAttribute('hidden'));
+              await page.waitForTimeout(150);
+              const popup = (await page.locator('[data-today-map-selected-status]').textContent())?.trim();
+              assert(popup === (item.lang === 'ja' ? '開催前' : 'Upcoming'), `${item.name}: popup label is ${popup}`);
+              const bodyText = await page.locator('body').innerText();
+              assert(!bodyText.includes(item.lang === 'ja' ? '今日これから' : 'Later today'), `${item.name}: obsolete popup/legend wording remains`);
+
+              await page.locator('[data-meeting-range="tomorrow"]').click();
+              await page.waitForTimeout(150);
+              assert((await page.locator('#page-title').textContent())?.trim() === expectedHomeTitle, `${item.name}: Home title changed with range`);
+              assert(pageErrors.length === 0, `${item.name}: page errors ${pageErrors.join(' | ')}`);
+              const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+              assert(overflow <= 1, `${item.name}: horizontal overflow ${overflow}px`);
+              await page.screenshot({ path: `audit/ui-home-popup-policy/${item.name}.png`, fullPage: true });
+              report.push({ name: item.name, popup, dayPolicyCount: dayPolicy.length, ok: true });
+            } catch (error) {
+              failures.push({ name: item.name, error: error instanceof Error ? error.stack || error.message : String(error), url: page.url(), pageErrors });
+              try { await page.screenshot({ path: `audit/ui-home-popup-policy/${item.name}-failure.png`, fullPage: true }); } catch {}
+            } finally {
+              await page.close();
+            }
+          }
+
+          await browser.close();
+          fs.writeFileSync('audit/ui-home-popup-policy/report.json', JSON.stringify(report, null, 2));
+          fs.writeFileSync('audit/ui-home-popup-policy/failures.json', JSON.stringify(failures, null, 2));
+          if (failures.length) throw new Error(`Home popup policy audit failed: ${failures.map((f) => f.name).join(', ')}`);
+          NODE
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: home-popup-policy-audit
+          path: audit/ui-home-popup-policy
