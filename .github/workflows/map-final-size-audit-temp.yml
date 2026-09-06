@@ -1,0 +1,119 @@
+name: Temporary map final size browser audit
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install and build exact map head
+        run: |
+          npm install --no-audit --no-fund
+          npm run build
+      - name: Start built site
+        shell: bash
+        run: |
+          nohup npm run preview -- --host 127.0.0.1 --port 4321 >/tmp/whr-preview.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4321/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/whr-preview.log
+          exit 1
+      - name: Audit point emphasis on desktop and mobile
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/map-final-size /tmp/pw-map-final-size
+          cd /tmp/pw-map-final-size
+          npm init -y >/dev/null 2>&1
+          npm install --no-audit --no-fund playwright@1.55.0 >/dev/null
+          npx playwright install --with-deps chromium >/dev/null
+          node <<'NODE'
+          const fs = require('node:fs');
+          const { chromium, devices } = require('playwright');
+          const base = 'http://127.0.0.1:4321';
+          const out = '/tmp/map-final-size';
+          const routes = [
+            { name: 'home-ja', path: '/ja/?tz=Asia%2FTokyo', root: '[data-home-racing-map] [data-racecourse-map]', legend: true },
+            { name: 'today-ja', path: '/ja/today/?tz=Asia%2FTokyo', root: '[data-today-map-sync] [data-racecourse-map]', legend: true },
+            { name: 'calendar-ja', path: '/ja/calendar/?tz=Asia%2FTokyo', root: '[data-calendar-map-switch] [data-racecourse-map]', legend: true, calendar: true },
+            { name: 'track-ja', path: '/ja/tracks/tokyo-racecourse/', root: '[data-racecourse-map]', legend: false },
+          ];
+          const modes = [
+            { name: 'desktop', options: { viewport: { width: 1440, height: 1000 } } },
+            { name: 'mobile', options: { ...devices['iPhone 13'] } },
+          ];
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            const report = [];
+            try {
+              for (const mode of modes) {
+                const context = await browser.newContext(mode.options);
+                for (const route of routes) {
+                  const page = await context.newPage();
+                  const pageErrors = [];
+                  page.on('pageerror', (error) => pageErrors.push(String(error)));
+                  const response = await page.goto(base + route.path, { waitUntil: 'domcontentloaded', timeout: 60000 });
+                  if (!response || response.status() !== 200) throw new Error(`${route.name}/${mode.name}: HTTP ${response?.status()}`);
+                  if (route.calendar) {
+                    const dateSelect = page.locator('[data-filter-date]');
+                    await dateSelect.waitFor({ state: 'visible', timeout: 30000 });
+                    const values = await dateSelect.locator('option').evaluateAll((options) => options.map((o) => o.value).filter(Boolean));
+                    if (!values.length) throw new Error('calendar: no selectable date options');
+                    await dateSelect.selectOption(values[0]);
+                    await page.locator('[data-calendar-view-map]').click();
+                  }
+                  const root = page.locator(route.root).first();
+                  await root.scrollIntoViewIfNeeded();
+                  await page.waitForFunction((selector) => document.querySelector(selector)?.getAttribute('data-map-state') === 'ready', route.root, { timeout: 60000 });
+                  await page.waitForTimeout(1200);
+                  const canvasCount = await root.locator('.maplibregl-canvas').count();
+                  const legend = root.locator('[data-map-legend]');
+                  const legendHidden = await legend.getAttribute('hidden');
+                  let futureColor = null;
+                  if (route.legend) {
+                    futureColor = await root.locator('.racecourse-map__legend-dot--future').evaluate((el) => getComputedStyle(el).backgroundColor);
+                    if (futureColor !== 'rgb(17, 17, 17)') throw new Error(`${route.name}/${mode.name}: scheduled legend is not black: ${futureColor}`);
+                    if (legendHidden !== null) throw new Error(`${route.name}/${mode.name}: status legend is hidden`);
+                  } else if (legendHidden === null) {
+                    throw new Error(`${route.name}/${mode.name}: detail map unexpectedly exposes meeting legend`);
+                  }
+                  const scriptText = await page.locator('script[type="module"]').allTextContents();
+                  const joined = scriptText.join('\n');
+                  if (!joined.includes("'running', 10") || !joined.includes("'upcoming', 10") || !joined.includes("'ended', 9") || !joined.includes("'future', 7")) {
+                    throw new Error(`${route.name}/${mode.name}: final point-size expression missing`);
+                  }
+                  if (!joined.includes("'future', '#111111'")) throw new Error(`${route.name}/${mode.name}: scheduled point is not black in map expression`);
+                  if (canvasCount < 1 || pageErrors.length) throw new Error(`${route.name}/${mode.name}: rendered map contract failed: ${pageErrors.join(' | ')}`);
+                  const entry = { route: route.name, mode: mode.name, canvasCount, legendHidden, futureColor, pageErrors };
+                  report.push(entry);
+                  console.log(JSON.stringify(entry));
+                  await page.screenshot({ path: `${out}/${route.name}-${mode.name}.png`, fullPage: true });
+                  await page.close();
+                }
+                await context.close();
+              }
+            } finally {
+              await browser.close();
+            }
+            fs.writeFileSync(`${out}/report.json`, JSON.stringify(report, null, 2));
+          })().catch((error) => { console.error(error); process.exit(1); });
+          NODE
+      - name: Upload audit artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: map-final-size-browser-audit
+          path: /tmp/map-final-size
+          if-no-files-found: error
+          retention-days: 1
