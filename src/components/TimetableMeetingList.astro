@@ -274,7 +274,7 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
     if (running instanceof HTMLElement) running.hidden = state !== 'running';
     if (ended instanceof HTMLElement) ended.hidden = state !== 'ended';
   };
-  const setMeetingState = (row, now = Date.now()) => {
+  const setMeetingState = (row, timeZone, now = Date.now()) => {
     if (!(row instanceof HTMLElement)) return;
     const sourceDate = row.dataset.sourceDate || '';
     const sourceTimeZone = row.dataset.sourceTimezone || '';
@@ -288,8 +288,10 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
       return;
     }
 
-    const venueToday = formatProjectedDate(new Date(now), sourceTimeZone);
-    const dayState = sourceDate < venueToday ? 'past' : sourceDate > venueToday ? 'future' : 'today';
+    const selectedTimeZone = isCuratedTimeZone(timeZone) ? timeZone : sourceTimeZone;
+    const displayedDate = row.dataset.date || sourceDate;
+    const displayToday = formatProjectedDate(new Date(now), selectedTimeZone);
+    const dayState = displayedDate < displayToday ? 'past' : displayedDate > displayToday ? 'future' : 'today';
     row.dataset.meetingDayState = dayState;
 
     const timed = TIMED_RANKS.has(rank) && Boolean(firstTime && lastTime);
@@ -304,7 +306,9 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
         let endMs = rawEnd.getTime();
         if (endMs < start.getTime()) endMs += 86_400_000;
         row.dataset.sortStart = String(start.getTime());
-        state = now < start.getTime() ? 'upcoming' : now <= endMs ? 'running' : 'ended';
+        if (now >= start.getTime() && now <= endMs) state = 'running';
+        else if (now > endMs) state = 'ended';
+        else state = dayState === 'today' ? 'upcoming' : 'future';
       } else {
         state = dayState === 'past' ? 'ended' : dayState === 'today' ? 'upcoming' : 'future';
       }
@@ -349,7 +353,7 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
       row.dataset.timezoneScopeHidden = visibleByScope ? 'false' : 'true';
       row.hidden = !visibleByScope;
       if (visibleByScope) scopeVisibleCount += 1;
-      setMeetingState(row);
+      setMeetingState(row, timeZone);
     });
     const groupsContainer = root.querySelector('[data-timetable-date-groups]');
     if (groupsContainer) {
