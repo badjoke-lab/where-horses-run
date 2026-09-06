@@ -425,9 +425,32 @@ const {
       let selectedFeatureId = null;
       let visibleRacecourseIds = new Set(allowedVisibleIds);
 
-      const setSelected = (racecourseId, emit = true) => {
+      const clearSelected = (emit = true) => {
+        const racecourseId = root.dataset.selectedRacecourseId || null;
+        if (selectedFeatureId !== null) {
+          try {
+            map.setFeatureState({ source: MAP_SOURCE, id: selectedFeatureId }, { selected: false });
+          } catch {
+            // The feature may have been re-clustered or removed from the visible source.
+          }
+        }
+        selectedFeatureId = null;
+        delete root.dataset.selectedRacecourseId;
+        if (emit && racecourseId) {
+          root.dispatchEvent(new CustomEvent('racecourse-map:deselect', {
+            bubbles: true,
+            detail: { racecourseId }
+          }));
+        }
+      };
+
+      const setSelected = (racecourseId, emit = true, toggle = false) => {
         const feature = featureByRacecourseId.get(racecourseId);
         if (!feature || !visibleRacecourseIds.has(racecourseId)) return;
+        if (toggle && root.dataset.selectedRacecourseId === racecourseId) {
+          clearSelected(emit);
+          return;
+        }
         if (selectedFeatureId !== null) {
           map.setFeatureState({ source: MAP_SOURCE, id: selectedFeatureId }, { selected: false });
         }
@@ -758,7 +781,15 @@ const {
 
         map.on('click', MAP_HIT_LAYER, (event) => {
           const racecourseId = event.features?.[0]?.properties?.racecourse_id;
-          if (typeof racecourseId === 'string') setSelected(racecourseId, true);
+          if (typeof racecourseId === 'string') setSelected(racecourseId, true, true);
+        });
+
+        map.on('click', (event) => {
+          if (!root.dataset.selectedRacecourseId) return;
+          const interactive = map.queryRenderedFeatures(event.point, {
+            layers: [MAP_CLUSTER_LAYER, MAP_HIT_LAYER]
+          });
+          if (interactive.length === 0) clearSelected(true);
         });
 
         ready = true;
@@ -776,6 +807,11 @@ const {
         root.addEventListener('racecourse-map:focus', (event) => {
           const racecourseId = event?.detail?.racecourseId;
           if (typeof racecourseId === 'string') focusRacecourse(racecourseId);
+        });
+
+        root.addEventListener('racecourse-map:clear-selection', () => clearSelected(false));
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape' && root.dataset.selectedRacecourseId) clearSelected(true);
         });
 
         root.dataset.mapState = 'ready';

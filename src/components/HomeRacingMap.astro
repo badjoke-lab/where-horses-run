@@ -212,15 +212,9 @@ const fallbackMessage = isJapanese
         const visibleIds = () => Array.from(new Set(
           visibleProjected.filter((record) => record.hasReviewedLocation).map((record) => record.racecourseId)
         ));
-        const clearMapSelection = (racecourseId) => {
-          if (!(mapRoot instanceof HTMLElement) || !racecourseId) return;
-          const ids = visibleIds();
-          mapRoot.dispatchEvent(new CustomEvent('racecourse-map:set-visible', {
-            detail: { racecourseIds: ids.filter((id) => id !== racecourseId), fit: false }
-          }));
-          requestAnimationFrame(() => mapRoot.dispatchEvent(new CustomEvent('racecourse-map:set-visible', {
-            detail: { racecourseIds: ids, fit: false }
-          })));
+        const clearMapSelection = () => {
+          if (!(mapRoot instanceof HTMLElement)) return;
+          mapRoot.dispatchEvent(new CustomEvent('racecourse-map:clear-selection'));
         };
         const renderSelected = (racecourseId) => {
           const rows = visibleProjected.filter((record) => record.racecourseId === racecourseId);
@@ -317,6 +311,7 @@ const fallbackMessage = isJapanese
             const racecourseId = event?.detail?.racecourseId;
             if (typeof racecourseId === 'string') renderSelected(racecourseId);
           });
+          mapRoot.addEventListener('racecourse-map:deselect', clearSelected);
         }
 
         populateTimeZones();
