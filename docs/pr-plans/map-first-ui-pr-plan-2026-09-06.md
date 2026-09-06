@@ -76,7 +76,7 @@ Completion:
 - existing public routes remain reachable;
 - footer no longer promotes newsletter/social blocks as required product UI.
 
-Status: **verified complete for merge**. Existing CI/build passed, direct Chromium checks passed for EN/JA desktop/mobile, zero horizontal overflow and zero page errors were observed, More/Timezone interactions passed, and the temporary audit PR was closed unmerged.
+Status: **complete**. Existing CI/build passed, direct Chromium checks passed for EN/JA desktop/mobile, zero horizontal overflow and zero page errors were observed, More/Timezone interactions passed, and the temporary audit PR was closed unmerged.
 
 ## UI-002 — Home composition
 
@@ -94,6 +94,8 @@ Completion:
 - map is visually primary on desktop and mobile;
 - Today's Racing and Up Next remain available below the map;
 - secondary informational destinations are not equal-weight Home feature cards.
+
+Status: **verified complete for merge**. Existing CI/build passed. Direct Chromium checks passed for EN/JA desktop/mobile with zero horizontal overflow and zero page errors. The Home map rendered at 638px on desktop and 422px on mobile in the audit viewports. Today/Tomorrow/Next 7 days switching passed, the legacy equal-weight Home feature grid was absent, and Today's Racing / Up Next remained below the map. The temporary audit PR was closed unmerged.
 
 ## UI-003 — Home selected information
 
@@ -219,8 +221,8 @@ Mobile: bottom nav, More, 44px controls, no sticky selected card
 ## Current execution pointer
 
 ```text
-Current UI after UI-001 merge: UI-002
-Then UI: UI-003 -> UI-004 -> UI-005 -> UI-006 -> UI-007 -> UI-008 -> UI-009
+Current UI after UI-002 merge: UI-003
+Then UI: UI-004 -> UI-005 -> UI-006 -> UI-007 -> UI-008 -> UI-009
 Parallel Calendar quality lane: active independently throughout
 ```
 
