@@ -1,4 +1,6 @@
 import supplementData from '../../../data/static/tjk-public-timetable-supplement-v1.json';
+import generatedMeetingListData from '../../../data/generated/timetable/public/meeting-list.json';
+import generatedMeetingDetailsData from '../../../data/generated/timetable/public/meeting-details.json';
 import { bhaPublicMeetingRows, isBhaSupplementWindowMeeting } from './bhaPublicSupplement.ts';
 import { hriPublicMeetingRows, isHriSupplementWindowMeeting } from './hriPublicSupplement.ts';
 import {
@@ -59,7 +61,31 @@ type SupplementData = {
   readonly rank_a: Readonly<Record<string, RankARecord>>;
 };
 
+type GeneratedMeetingListData = {
+  readonly meetings: readonly {
+    readonly meeting_id: string;
+    readonly authority_id: string;
+  }[];
+};
+
+type GeneratedMeetingDetailsData = {
+  readonly details: readonly {
+    readonly meeting_id: string;
+    readonly authority_id: string;
+  }[];
+};
+
 const supplement = supplementData as SupplementData;
+const generatedTjkMeetingIds = new Set(
+  (generatedMeetingListData as GeneratedMeetingListData).meetings
+    .filter((meeting) => meeting.authority_id === AUTHORITY_ID)
+    .map((meeting) => meeting.meeting_id),
+);
+const generatedTjkDetailIds = new Set(
+  (generatedMeetingDetailsData as GeneratedMeetingDetailsData).details
+    .filter((detail) => detail.authority_id === AUTHORITY_ID)
+    .map((detail) => detail.meeting_id),
+);
 
 function parseMeetingId(meetingId: string): { racecourseId: string; date: string } {
   const match = meetingId.match(/^tjk-(.+-racecourse)-(\d{4}-\d{2}-\d{2})$/);
@@ -73,12 +99,7 @@ export function isTjkSupplementWindowMeeting(meeting: {
   readonly date: string;
 }): boolean {
   return (
-    (
-      meeting.authority_id === AUTHORITY_ID
-        && meeting.date >= WINDOW_START
-        && meeting.date < WINDOW_END_EXCLUSIVE
-    )
-    || mizusawaReviewedMeetingIds.has(meeting.meeting_id)
+    mizusawaReviewedMeetingIds.has(meeting.meeting_id)
     || isBhaSupplementWindowMeeting(meeting)
     || isHriSupplementWindowMeeting(meeting)
     || isFranceGalopSupplementWindowMeeting(meeting)
@@ -112,15 +133,7 @@ const tjkRows = supplement.meeting_ids.map((meetingId) => {
   } as const;
 });
 
-export const tjkPublicMeetingRows = [
-  ...tjkRows,
-  ...mizusawaReviewedRows,
-  ...bhaPublicMeetingRows,
-  ...hriPublicMeetingRows,
-  ...franceGalopPublicMeetingRows,
-] as const;
-
-export const tjkPublicMeetingDetails = Object.entries(supplement.rank_a).map(([meetingId, rankA]) => {
+const tjkDetails = Object.entries(supplement.rank_a).map(([meetingId, rankA]) => {
   const { racecourseId, date } = parseMeetingId(meetingId);
   return {
     meeting_id: meetingId,
@@ -149,9 +162,21 @@ export const tjkPublicMeetingDetails = Object.entries(supplement.rank_a).map(([m
   } as const;
 });
 
+export const tjkPublicMeetingRows = [
+  ...tjkRows.filter((meeting) => !generatedTjkMeetingIds.has(meeting.meeting_id)),
+  ...mizusawaReviewedRows,
+  ...bhaPublicMeetingRows,
+  ...hriPublicMeetingRows,
+  ...franceGalopPublicMeetingRows,
+] as const;
+
+export const tjkPublicMeetingDetails = tjkDetails.filter(
+  (detail) => !generatedTjkDetailIds.has(detail.meeting_id),
+);
+
 if (tjkRows.length !== 63) {
   throw new Error(`TJK supplement must contain 63 meetings, got ${tjkRows.length}`);
 }
-if (tjkPublicMeetingDetails.length !== 6) {
-  throw new Error(`TJK supplement must contain 6 Rank A details, got ${tjkPublicMeetingDetails.length}`);
+if (tjkDetails.length !== 6) {
+  throw new Error(`TJK supplement must contain 6 Rank A details, got ${tjkDetails.length}`);
 }
