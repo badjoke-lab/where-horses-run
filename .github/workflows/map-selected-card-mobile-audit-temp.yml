@@ -1,0 +1,238 @@
+name: Temporary map selected-card mobile audit
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install and build exact feature head
+        run: |
+          npm install --no-audit --no-fund
+          npm run build
+      - name: Start built site
+        shell: bash
+        run: |
+          nohup npm run preview -- --host 127.0.0.1 --port 4321 >/tmp/whr-preview.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4321/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/whr-preview.log
+          exit 1
+      - name: Audit mobile map flows
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/map-selected-card-mobile /tmp/pw-map-selected-card-mobile
+          cd /tmp/pw-map-selected-card-mobile
+          npm init -y >/dev/null 2>&1
+          npm install --no-audit --no-fund playwright@1.55.0 >/dev/null
+          npx playwright install --with-deps chromium >/dev/null
+          node <<'NODE'
+          const fs = require('node:fs');
+          const { chromium, devices } = require('playwright');
+          const base = 'http://127.0.0.1:4321';
+          const out = '/tmp/map-selected-card-mobile';
+          const report = [];
+
+          const inViewport = (el) => {
+            const rect = el.getBoundingClientRect();
+            return rect.bottom > 0 && rect.top < window.innerHeight;
+          };
+
+          async function assertActionTargets(card, label) {
+            const sizes = await card.locator('a:visible, button:visible').evaluateAll((nodes) => nodes.map((node) => ({
+              text: (node.textContent || '').trim(),
+              width: node.getBoundingClientRect().width,
+              height: node.getBoundingClientRect().height,
+            })));
+            if (!sizes.length) throw new Error(`${label}: no card actions`);
+            for (const size of sizes) {
+              if (size.height < 43.5) throw new Error(`${label}: action below 44px: ${JSON.stringify(size)}`);
+            }
+            return sizes;
+          }
+
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            try {
+              const mobile = await browser.newContext({ ...devices['iPhone 13'] });
+
+              // Today: List -> Map -> close, then synthetic pin selection must stay on map until Show in List.
+              {
+                const page = await mobile.newPage();
+                const pageErrors = [];
+                page.on('pageerror', (error) => pageErrors.push(String(error)));
+                const response = await page.goto(base + '/ja/today/?tz=Asia%2FTokyo', { waitUntil: 'domcontentloaded', timeout: 60000 });
+                if (!response || response.status() !== 200) throw new Error(`today: HTTP ${response?.status()}`);
+                const rowButton = page.locator('[data-meeting-map-focus]').filter({ visible: true }).first();
+                await rowButton.waitFor({ state: 'visible', timeout: 30000 });
+                const row = rowButton.locator('xpath=ancestor::*[@data-calendar-meeting-row][1]');
+                const meetingId = await row.getAttribute('data-meeting-id');
+                const racecourseId = await page.locator('[data-today-map-meeting-map]').evaluate((el, id) => {
+                  const entries = JSON.parse(el.textContent || '[]');
+                  return entries.find((entry) => entry.meetingId === id)?.racecourseId || null;
+                }, meetingId);
+                if (!racecourseId) throw new Error('today: could not resolve racecourse id');
+
+                await rowButton.click();
+                const mapSection = page.locator('[data-today-map-sync]');
+                const mapRoot = mapSection.locator('[data-racecourse-map]');
+                await page.waitForFunction(() => document.querySelector('[data-today-map-sync] [data-racecourse-map]')?.getAttribute('data-map-state') === 'ready', null, { timeout: 60000 });
+                await page.waitForFunction((id) => document.querySelector('[data-today-map-sync] [data-racecourse-map]')?.getAttribute('data-selected-racecourse-id') === id, racecourseId, { timeout: 10000 });
+                await page.waitForTimeout(700);
+                if (!(await mapSection.evaluate(inViewport))) throw new Error('today: List -> Map did not bring map into viewport');
+
+                const card = page.locator('[data-today-map-selected]');
+                await card.waitFor({ state: 'visible', timeout: 10000 });
+                const status = await card.locator('[data-today-map-selected-status]').textContent();
+                const statusKey = await card.locator('[data-today-map-selected-status]').getAttribute('data-status');
+                const meta = await card.locator('[data-today-map-selected-meta]').textContent();
+                const trackHref = await card.locator('[data-today-map-selected-track]:visible').getAttribute('href');
+                const actions = await assertActionTargets(card, 'today');
+                if (!status?.trim() || !['running','upcoming','ended','future'].includes(statusKey || '')) throw new Error(`today: bad status ${statusKey}/${status}`);
+                if (!meta?.includes('公開ランク')) throw new Error(`today: selected meta lacks rank: ${meta}`);
+                if (!trackHref?.startsWith('/ja/tracks/')) throw new Error(`today: racecourse link missing: ${trackHref}`);
+
+                await card.locator('[data-today-map-close]').click();
+                await page.waitForTimeout(150);
+                if (await card.isVisible()) throw new Error('today: close did not hide selected card');
+                if (await mapRoot.getAttribute('data-selected-racecourse-id')) throw new Error('today: close did not clear selected pin ring');
+
+                await mapSection.scrollIntoViewIfNeeded();
+                const beforePinSelectY = await page.evaluate(() => window.scrollY);
+                await mapRoot.evaluate((el, id) => el.dispatchEvent(new CustomEvent('racecourse-map:select', { bubbles: true, detail: { racecourseId: id } })), racecourseId);
+                await card.waitFor({ state: 'visible', timeout: 10000 });
+                await page.waitForTimeout(250);
+                const afterPinSelectY = await page.evaluate(() => window.scrollY);
+                if (Math.abs(afterPinSelectY - beforePinSelectY) > 20) throw new Error(`today: mobile pin selection auto-scrolled by ${afterPinSelectY - beforePinSelectY}px`);
+                await card.locator('[data-today-map-show-list]').click();
+                await page.waitForTimeout(700);
+                if (!(await row.evaluate(inViewport))) throw new Error('today: Show in List did not bring matching row into viewport');
+                if (pageErrors.length) throw new Error(`today page errors: ${pageErrors.join(' | ')}`);
+                await page.screenshot({ path: `${out}/today-ja-mobile.png`, fullPage: true });
+                report.push({ case: 'today-ja-mobile', racecourseId, statusKey, meta, trackHref, actions, pinSelectionScrollDelta: afterPinSelectY - beforePinSelectY, pageErrors });
+                await page.close();
+              }
+
+              // Calendar: List -> Map must set date/view, select venue/card, and Show in List must return to the same row.
+              {
+                const page = await mobile.newPage();
+                const pageErrors = [];
+                page.on('pageerror', (error) => pageErrors.push(String(error)));
+                const response = await page.goto(base + '/ja/calendar/?tz=Asia%2FTokyo', { waitUntil: 'domcontentloaded', timeout: 60000 });
+                if (!response || response.status() !== 200) throw new Error(`calendar: HTTP ${response?.status()}`);
+                const rowButton = page.locator('[data-calendar-row-map-focus]').filter({ visible: true }).first();
+                await rowButton.waitFor({ state: 'visible', timeout: 30000 });
+                const row = rowButton.locator('xpath=ancestor::*[@data-calendar-meeting-row][1]');
+                const meetingId = await row.getAttribute('data-meeting-id');
+                const racecourseId = await page.locator('[data-calendar-map-meeting-map]').evaluate((el, id) => {
+                  const entries = JSON.parse(el.textContent || '[]');
+                  return entries.find((entry) => entry.meetingId === id)?.racecourseId || null;
+                }, meetingId);
+                if (!racecourseId) throw new Error('calendar: could not resolve racecourse id');
+
+                await rowButton.click();
+                const mapSection = page.locator('[data-calendar-map-switch]');
+                const mapRoot = mapSection.locator('[data-racecourse-map]');
+                await page.waitForFunction(() => document.querySelector('[data-calendar-map-switch]')?.getAttribute('data-calendar-view') === 'map', null, { timeout: 10000 });
+                await page.waitForFunction(() => document.querySelector('[data-calendar-map-switch] [data-racecourse-map]')?.getAttribute('data-map-state') === 'ready', null, { timeout: 60000 });
+                await page.waitForFunction((id) => document.querySelector('[data-calendar-map-switch] [data-racecourse-map]')?.getAttribute('data-selected-racecourse-id') === id, racecourseId, { timeout: 10000 });
+                await page.waitForTimeout(700);
+                if (!(await mapSection.evaluate(inViewport))) throw new Error('calendar: List -> Map did not bring map into viewport');
+                if (new URL(page.url()).searchParams.get('view') !== 'map') throw new Error(`calendar: view=map missing from URL: ${page.url()}`);
+
+                const card = page.locator('[data-calendar-map-selected]');
+                await card.waitFor({ state: 'visible', timeout: 10000 });
+                const statusKey = await card.locator('[data-calendar-map-selected-status]').getAttribute('data-status');
+                const meta = await card.locator('[data-calendar-map-selected-meta]').textContent();
+                const trackHref = await card.locator('[data-calendar-map-selected-track]:visible').getAttribute('href');
+                const actions = await assertActionTargets(card, 'calendar');
+                if (!['running','upcoming','ended','future'].includes(statusKey || '')) throw new Error(`calendar: bad status ${statusKey}`);
+                if (!meta?.includes('公開ランク')) throw new Error(`calendar: selected meta lacks rank: ${meta}`);
+                if (!trackHref?.startsWith('/ja/tracks/')) throw new Error(`calendar: racecourse link missing: ${trackHref}`);
+
+                await card.locator('[data-calendar-map-show-list]').click();
+                await page.waitForTimeout(700);
+                if ((await page.locator('[data-calendar-view-list]').getAttribute('aria-pressed')) !== 'true') throw new Error('calendar: Show in List did not restore List mode');
+                if (!(await row.evaluate(inViewport))) throw new Error('calendar: Show in List did not bring matching row into viewport');
+
+                await rowButton.click();
+                await card.waitFor({ state: 'visible', timeout: 10000 });
+                await card.locator('[data-calendar-map-close]').click();
+                await page.waitForTimeout(150);
+                if (await card.isVisible()) throw new Error('calendar: close did not hide selected card');
+                if (await mapRoot.getAttribute('data-selected-racecourse-id')) throw new Error('calendar: close did not clear selected pin ring');
+                if (pageErrors.length) throw new Error(`calendar page errors: ${pageErrors.join(' | ')}`);
+                await page.screenshot({ path: `${out}/calendar-ja-mobile.png`, fullPage: true });
+                report.push({ case: 'calendar-ja-mobile', racecourseId, statusKey, meta, trackHref, actions, pageErrors });
+                await page.close();
+              }
+
+              // Home period must round-trip through the URL and reload.
+              {
+                const page = await mobile.newPage();
+                const pageErrors = [];
+                page.on('pageerror', (error) => pageErrors.push(String(error)));
+                await page.goto(base + '/ja/?tz=Asia%2FTokyo', { waitUntil: 'domcontentloaded', timeout: 60000 });
+                const tomorrow = page.locator('[data-home-map-period="tomorrow"]');
+                await tomorrow.click();
+                if (new URL(page.url()).searchParams.get('period') !== 'tomorrow') throw new Error(`home: period=tomorrow missing: ${page.url()}`);
+                await page.reload({ waitUntil: 'domcontentloaded' });
+                if ((await tomorrow.getAttribute('aria-pressed')) !== 'true') throw new Error('home: tomorrow period did not survive reload');
+                await page.locator('[data-home-map-period="today"]').click();
+                if (new URL(page.url()).searchParams.has('period')) throw new Error(`home: today should remove default period param: ${page.url()}`);
+                if (pageErrors.length) throw new Error(`home page errors: ${pageErrors.join(' | ')}`);
+                await page.screenshot({ path: `${out}/home-ja-mobile.png`, fullPage: true });
+                report.push({ case: 'home-ja-mobile', tomorrowRoundTrip: true, todayDefaultUrl: true, pageErrors });
+                await page.close();
+              }
+
+              await mobile.close();
+
+              // English desktop smoke for the new selected-card data and links.
+              const desktop = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+              {
+                const page = await desktop.newPage();
+                const pageErrors = [];
+                page.on('pageerror', (error) => pageErrors.push(String(error)));
+                await page.goto(base + '/today/?tz=Asia%2FTokyo', { waitUntil: 'domcontentloaded', timeout: 60000 });
+                const button = page.locator('[data-meeting-map-focus]').first();
+                await button.waitFor({ state: 'visible', timeout: 30000 });
+                await button.click();
+                const card = page.locator('[data-today-map-selected]');
+                await card.waitFor({ state: 'visible', timeout: 10000 });
+                const meta = await card.locator('[data-today-map-selected-meta]').textContent();
+                const trackHref = await card.locator('[data-today-map-selected-track]:visible').getAttribute('href');
+                if (!meta?.includes('Public rank')) throw new Error(`today-en: selected meta lacks rank: ${meta}`);
+                if (!trackHref?.startsWith('/tracks/')) throw new Error(`today-en: racecourse link missing: ${trackHref}`);
+                if (pageErrors.length) throw new Error(`today-en page errors: ${pageErrors.join(' | ')}`);
+                report.push({ case: 'today-en-desktop', meta, trackHref, pageErrors });
+                await page.screenshot({ path: `${out}/today-en-desktop.png`, fullPage: true });
+                await page.close();
+              }
+              await desktop.close();
+            } finally {
+              await browser.close();
+            }
+            fs.writeFileSync(`${out}/report.json`, JSON.stringify(report, null, 2));
+          })().catch((error) => { console.error(error); process.exit(1); });
+          NODE
+      - name: Upload audit artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: map-selected-card-mobile-audit
+          path: /tmp/map-selected-card-mobile
+          if-no-files-found: error
+          retention-days: 1
