@@ -369,16 +369,32 @@ async function inspectNar(meeting) {
   return finish(meeting, enriched, page.url);
 }
 
-async function inspectBanei(meeting) {
-  const url = baneiRaceListUrl(meeting.date);
-  const page = await get(url);
-  const numbers = discoverBaneiRaceNumbers(page.body);
-  if (!numbers.length) {
+async function baneiProgramFallback(meeting, primaryError = null) {
+  try {
     const fallback = await fetchBaneiOfficialProgramRows(meeting, get);
     if (fallback?.status === 'race_number_discovery_incomplete') return fallback;
     if (fallback?.status === 'ok') return finish(meeting, fallback.rows, fallback.url);
     return { status: 'scheduled_pending_details', reason: 'scheduled_pending_details' };
+  } catch (fallbackError) {
+    if (!primaryError) throw fallbackError;
+    const error = new Error(
+      `Banei NAR detail failed (${primaryError?.message ?? primaryError}); official program fallback failed (${fallbackError?.message ?? fallbackError})`,
+    );
+    error.cause = fallbackError;
+    throw error;
   }
+}
+
+async function inspectBanei(meeting) {
+  const url = baneiRaceListUrl(meeting.date);
+  let page;
+  try {
+    page = await get(url);
+  } catch (error) {
+    return baneiProgramFallback(meeting, error);
+  }
+  const numbers = discoverBaneiRaceNumbers(page.body);
+  if (!numbers.length) return baneiProgramFallback(meeting);
   const parsed = parseBaneiRaceList(page.body, meeting.date);
   if (parsed.length !== numbers.length || !numbers.every((number, index) => number === index + 1)) {
     return { status: 'race_number_discovery_incomplete', reason: 'race_number_discovery_incomplete' };
