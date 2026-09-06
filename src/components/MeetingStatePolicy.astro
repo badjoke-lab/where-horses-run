@@ -53,17 +53,17 @@
       return new Date(guess);
     };
 
-    const setBadges = (row, state) => {
+    const setBadges = (row, state, policy) => {
       const root = row.closest('[data-display-timezone-root]');
       const isJa = root?.dataset.lang === 'ja';
       const upcoming = row.querySelector('[data-meeting-upcoming-badge]');
       const running = row.querySelector('[data-meeting-running-badge]');
       const ended = row.querySelector('[data-meeting-ended-badge]');
       if (upcoming instanceof HTMLElement) {
-        upcoming.textContent = state === 'day-today'
+        upcoming.textContent = policy === 'day'
           ? (isJa ? '本日開催' : 'Racing today')
           : (isJa ? '開催前' : 'Upcoming');
-        upcoming.hidden = state !== 'upcoming' && state !== 'day-today';
+        upcoming.hidden = state !== 'upcoming';
       }
       if (running instanceof HTMLElement) running.hidden = state !== 'running';
       if (ended instanceof HTMLElement) ended.hidden = state !== 'ended';
@@ -79,11 +79,14 @@
       if (!sourceDate || !isTimeZoneSupported(sourceTimeZone)) return;
 
       const currentDate = formatDate(new Date(now), sourceTimeZone);
-      const dayState = sourceDate < currentDate ? 'past' : sourceDate > currentDate ? 'future' : 'today';
-      row.dataset.meetingDayState = dayState;
+      const calendarDayState = sourceDate < currentDate ? 'past' : sourceDate > currentDate ? 'future' : 'today';
+      row.dataset.meetingCalendarDayState = calendarDayState;
 
+      const timed = TIMED_RANKS.has(rank) && Boolean(firstTime && lastTime);
+      const policy = timed ? 'timed' : 'day';
       let state = 'future';
-      if (TIMED_RANKS.has(rank) && firstTime && lastTime) {
+
+      if (timed) {
         const start = localDateTimeToInstant(sourceDate, firstTime, sourceTimeZone);
         const rawEnd = localDateTimeToInstant(sourceDate, lastTime, sourceTimeZone);
         if (start && rawEnd) {
@@ -92,31 +95,66 @@
           row.dataset.sortStart = String(start.getTime());
           state = now < start.getTime() ? 'upcoming' : now <= endMs ? 'running' : 'ended';
         } else {
-          state = dayState === 'past' ? 'ended' : dayState === 'today' ? 'day-today' : 'future';
+          state = calendarDayState === 'past' ? 'ended' : calendarDayState === 'today' ? 'upcoming' : 'future';
         }
       } else {
-        state = dayState === 'past' ? 'ended' : dayState === 'today' ? 'day-today' : 'future';
+        state = calendarDayState === 'past' ? 'ended' : calendarDayState === 'today' ? 'upcoming' : 'future';
       }
 
       row.dataset.meetingState = state;
-      row.dataset.meetingStatePolicy = TIMED_RANKS.has(rank) && firstTime && lastTime ? 'timed' : 'day';
-      setBadges(row, state);
+      row.dataset.meetingStatePolicy = policy;
+
+      // RacecourseMap's existing status adapter only paints upcoming amber when dayState=today.
+      // Keep the true calendar-day state separately above, while exposing the established visual state here.
+      row.dataset.meetingDayState = state === 'upcoming' ? 'today' : calendarDayState;
+      setBadges(row, state, policy);
     };
 
-    const applyAll = () => document.querySelectorAll('[data-calendar-meeting-row]').forEach((row) => applyToRow(row));
+    const patchLegendCopy = () => {
+      document.querySelectorAll('.racecourse-map__legend-label--ja').forEach((node) => {
+        if (node.textContent?.trim() === '今日これから') node.textContent = '開催前 / 本日開催';
+      });
+      document.querySelectorAll('.racecourse-map__legend-label--en').forEach((node) => {
+        if (node.textContent?.trim() === 'Later today') node.textContent = 'Upcoming / racing today';
+      });
+    };
+
+    const syncSelectedMapStatus = () => {
+      const selected = document.querySelector('.meeting-row--map-selected:not([hidden])');
+      const target = document.querySelector('[data-today-map-selected-status]');
+      if (!(selected instanceof HTMLElement) || !(target instanceof HTMLElement)) return;
+      const isJa = document.documentElement.lang === 'ja';
+      const state = selected.dataset.meetingState || 'future';
+      const policy = selected.dataset.meetingStatePolicy || 'day';
+      target.dataset.status = state === 'upcoming' ? 'upcoming' : state;
+      target.textContent = state === 'running'
+        ? (isJa ? '開催中' : 'Racing now')
+        : state === 'ended'
+          ? (isJa ? '終了' : 'Finished')
+          : state === 'upcoming'
+            ? (policy === 'day' ? (isJa ? '本日開催' : 'Racing today') : (isJa ? '開催前' : 'Upcoming'))
+            : (isJa ? '開催予定' : 'Scheduled');
+    };
+
+    const applyAll = () => {
+      document.querySelectorAll('[data-calendar-meeting-row]').forEach((row) => applyToRow(row));
+      patchLegendCopy();
+      syncSelectedMapStatus();
+    };
 
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyAll, { once: true });
     else applyAll();
 
     window.addEventListener('whr:meetingstatechange', applyAll);
     window.addEventListener('whr:timezonechange', applyAll);
+    window.addEventListener('whr:todayfilterchange', applyAll);
+    document.addEventListener('racecourse-map:select', () => requestAnimationFrame(syncSelectedMapStatus));
     window.setInterval(applyAll, 60_000);
   })();
 </script>
 
 <style is:global>
-  .meeting-row[data-meeting-state='upcoming'],
-  .meeting-row[data-meeting-state='day-today'] {
+  .meeting-row[data-meeting-state='upcoming'] {
     background: #fff3c4;
     box-shadow: inset .25rem 0 0 #d18a00;
     opacity: 1;
