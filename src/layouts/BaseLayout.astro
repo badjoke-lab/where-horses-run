@@ -51,6 +51,14 @@ const defaultLanguageSwitchHref = hasBilingualCounterpart
   : isJapanese ? '/' : '/ja/';
 const languageSwitchHref = explicitAlternateHref ?? defaultLanguageSwitchHref;
 const alternateLabel = isJapanese ? 'English' : '日本語';
+const timeZoneOptions = [
+  { value: 'Asia/Tokyo', label: isJapanese ? '日本 — UTC+09:00' : 'Japan — UTC+09:00' },
+  { value: 'Asia/Seoul', label: isJapanese ? '韓国 — UTC+09:00' : 'Korea — UTC+09:00' },
+  { value: 'Asia/Hong_Kong', label: isJapanese ? '香港 — UTC+08:00' : 'Hong Kong — UTC+08:00' },
+  { value: 'Asia/Dubai', label: 'UAE — UTC+04:00' },
+  { value: 'Europe/Istanbul', label: isJapanese ? 'トルコ — UTC+03:00' : 'Türkiye — UTC+03:00' },
+  { value: 'UTC', label: 'UTC — UTC+00:00' },
+];
 
 const primaryNavigationItems = [
   { href: isJapanese ? '/ja/today/' : '/today/', label: isJapanese ? '今日' : 'Today' },
@@ -208,8 +216,7 @@ const socialImageAlt = isJapanese
                   <label class="mobile-more-timezone">
                     <span>{isJapanese ? '表示タイムゾーン' : 'Display timezone'}</span>
                     <select data-global-timezone-select aria-label={isJapanese ? '表示タイムゾーン' : 'Display timezone'}>
-                      <option value="Asia/Tokyo">Asia/Tokyo</option>
-                      <option value="UTC">UTC</option>
+                      {timeZoneOptions.map((option) => <option value={option.value}>{option.label}</option>)}
                     </select>
                   </label>
                 </li>
@@ -241,8 +248,7 @@ const socialImageAlt = isJapanese
                       <label>
                         <span>{isJapanese ? '表示タイムゾーン' : 'Display timezone'}</span>
                         <select data-global-timezone-select aria-label={isJapanese ? '表示タイムゾーン' : 'Display timezone'}>
-                          <option value="Asia/Tokyo">Asia/Tokyo</option>
-                          <option value="UTC">UTC</option>
+                          {timeZoneOptions.map((option) => <option value={option.value}>{option.label}</option>)}
                         </select>
                       </label>
                     </div>
@@ -303,8 +309,7 @@ const socialImageAlt = isJapanese
           <label class="mobile-more-timezone">
             <span>{isJapanese ? '表示タイムゾーン' : 'Display timezone'}</span>
             <select data-global-timezone-select aria-label={isJapanese ? '表示タイムゾーン' : 'Display timezone'}>
-              <option value="Asia/Tokyo">Asia/Tokyo</option>
-              <option value="UTC">UTC</option>
+              {timeZoneOptions.map((option) => <option value={option.value}>{option.label}</option>)}
             </select>
           </label>
         </div>
@@ -331,6 +336,19 @@ const socialImageAlt = isJapanese
             return false;
           }
         };
+        const curatedTimeZones = () => {
+          const isJa = document.documentElement.lang === 'ja';
+          return [
+            ['Asia/Tokyo', isJa ? '日本 — UTC+09:00' : 'Japan — UTC+09:00'],
+            ['Asia/Seoul', isJa ? '韓国 — UTC+09:00' : 'Korea — UTC+09:00'],
+            ['Asia/Hong_Kong', isJa ? '香港 — UTC+08:00' : 'Hong Kong — UTC+08:00'],
+            ['Asia/Dubai', 'UAE — UTC+04:00'],
+            ['Europe/Istanbul', isJa ? 'トルコ — UTC+03:00' : 'Türkiye — UTC+03:00'],
+            ['UTC', 'UTC — UTC+00:00'],
+          ];
+        };
+        const isCuratedTimeZone = (timeZone) => curatedTimeZones().some(([value]) => value === timeZone);
+        const displayTimeZone = (timeZone) => curatedTimeZones().find(([value]) => value === timeZone)?.[1] ?? timeZone;
         const dateParts = (instant, timeZone) => Object.fromEntries(new Intl.DateTimeFormat('en-US', {
           timeZone,
           year: 'numeric',
@@ -386,7 +404,7 @@ const socialImageAlt = isJapanese
           return date.toISOString().slice(0, 10);
         };
         const propagateTimeZone = (timeZone) => {
-          if (!isTimeZoneSupported(timeZone)) return;
+          if (!isCuratedTimeZone(timeZone)) return;
           document.querySelectorAll('a[href]').forEach((anchor) => {
             if (!(anchor instanceof HTMLAnchorElement)) return;
             const rawHref = anchor.getAttribute('href');
@@ -397,12 +415,12 @@ const socialImageAlt = isJapanese
             anchor.setAttribute('href', `${url.pathname}${url.search}${url.hash}`);
           });
           document.querySelectorAll('[data-timezone-label]').forEach((node) => {
-            node.textContent = timeZone;
+            node.textContent = displayTimeZone(timeZone);
           });
         };
         const applyProjectionMetadata = (detail) => {
           if (!detail || typeof detail !== 'object') return;
-          if (typeof detail.timeZone === 'string') propagateTimeZone(detail.timeZone);
+          if (typeof detail.timeZone === 'string' && isCuratedTimeZone(detail.timeZone)) propagateTimeZone(detail.timeZone);
           if (typeof detail.targetDate === 'string') {
             document.querySelectorAll('[data-timezone-target-date]').forEach((node) => { node.textContent = detail.targetDate; });
           }
@@ -414,14 +432,10 @@ const socialImageAlt = isJapanese
           }
         };
         const populateTimeZones = (select) => {
-          const zones = typeof Intl.supportedValuesOf === 'function'
-            ? Intl.supportedValuesOf('timeZone')
-            : ['UTC', 'Asia/Tokyo', 'Asia/Hong_Kong', 'Asia/Seoul', 'Asia/Dubai', 'Europe/Istanbul', 'Europe/London', 'America/New_York', 'Australia/Sydney'];
-          const values = Array.from(new Set(['UTC', ...zones]));
-          select.replaceChildren(...values.map((zone) => {
+          select.replaceChildren(...curatedTimeZones().map(([value, label]) => {
             const option = document.createElement('option');
-            option.value = zone;
-            option.textContent = zone;
+            option.value = value;
+            option.textContent = label;
             return option;
           }));
         };
@@ -487,7 +501,7 @@ const socialImageAlt = isJapanese
               values.push(
                 authorityLabel(record, isJa),
                 projectedTime || (isJa ? '未確認' : 'Not verified'),
-                projectedTime ? timeZone : (record.timezone || (isJa ? '現地時刻を確認' : 'Check local time')),
+                projectedTime ? displayTimeZone(timeZone) : (record.timezone || (isJa ? '現地時刻を確認' : 'Check local time')),
               );
             }
             values.forEach((value, index) => {
@@ -548,10 +562,11 @@ const socialImageAlt = isJapanese
           intro?.insertAdjacentElement('afterend', control);
           const requested = new URL(window.location.href).searchParams.get('tz');
           const browser = Intl.DateTimeFormat().resolvedOptions().timeZone;
-          const initial = isTimeZoneSupported(requested)
+          const initial = isCuratedTimeZone(requested)
             ? requested
-            : isTimeZoneSupported(browser) ? browser : 'Asia/Tokyo';
+            : isCuratedTimeZone(browser) ? browser : 'Asia/Tokyo';
           const apply = (timeZone, updateHistory) => {
+            if (!isCuratedTimeZone(timeZone)) return;
             const today = formatProjectedDate(new Date(), timeZone);
             const endExclusive = addDateDays(today, 30);
             const projected = candidates
@@ -591,7 +606,7 @@ const socialImageAlt = isJapanese
               }
             }
             select.value = timeZone;
-            output.textContent = timeZone;
+            output.textContent = displayTimeZone(timeZone);
             if (updateHistory) {
               const url = new URL(window.location.href);
               url.searchParams.set('tz', timeZone);
@@ -608,7 +623,7 @@ const socialImageAlt = isJapanese
           };
           apply(initial, new URL(window.location.href).searchParams.get('tz') !== initial);
           select.addEventListener('change', () => {
-            const selected = isTimeZoneSupported(select.value) ? select.value : 'Asia/Tokyo';
+            const selected = isCuratedTimeZone(select.value) ? select.value : 'Asia/Tokyo';
             apply(selected, true);
           });
         };
@@ -618,15 +633,15 @@ const socialImageAlt = isJapanese
           if (!selects.length) return;
           const requested = new URL(window.location.href).searchParams.get('tz');
           const browser = Intl.DateTimeFormat().resolvedOptions().timeZone;
-          const initial = isTimeZoneSupported(requested)
+          const initial = isCuratedTimeZone(requested)
             ? requested
-            : isTimeZoneSupported(browser) ? browser : 'Asia/Tokyo';
+            : isCuratedTimeZone(browser) ? browser : 'Asia/Tokyo';
           selects.forEach((select) => {
             populateTimeZones(select);
             select.value = initial;
           });
           const apply = (timeZone) => {
-            if (!isTimeZoneSupported(timeZone)) return;
+            if (!isCuratedTimeZone(timeZone)) return;
             selects.forEach((select) => { select.value = timeZone; });
             const url = new URL(window.location.href);
             url.searchParams.set('tz', timeZone);
@@ -642,11 +657,11 @@ const socialImageAlt = isJapanese
         };
         initializeGlobalTimezoneControls();
         const requested = new URL(window.location.href).searchParams.get('tz');
-        if (isTimeZoneSupported(requested)) propagateTimeZone(requested);
+        if (isCuratedTimeZone(requested)) propagateTimeZone(requested);
         window.addEventListener('whr:timezonechange', (event) => {
           applyProjectionMetadata(event.detail);
           const timeZone = event?.detail?.timeZone;
-          if (typeof timeZone === 'string' && isTimeZoneSupported(timeZone)) {
+          if (typeof timeZone === 'string' && isCuratedTimeZone(timeZone)) {
             document.querySelectorAll('[data-global-timezone-select]').forEach((node) => {
               if (node instanceof HTMLSelectElement) node.value = timeZone;
             });

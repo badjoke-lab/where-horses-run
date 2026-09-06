@@ -145,11 +145,21 @@ const meetingList = read('src/components/TimetableMeetingList.astro');
 for (const marker of [
   'data-projection-scope',
   'data-timezone-scope-hidden',
-  "Intl.supportedValuesOf('timeZone')",
+  'isCuratedTimeZone',
+  'Asia/Tokyo',
+  'Asia/Seoul',
+  'Asia/Hong_Kong',
+  'Asia/Dubai',
+  'Europe/Istanbul',
+  'UTC+09:00',
+  'UTC+00:00',
   'whr:timezonechange',
   "scope === 'rolling-30'",
 ]) {
   if (!meetingList.includes(marker)) fail(`TimetableMeetingList missing selected-timezone projection marker: ${marker}`);
+}
+if (meetingList.includes("Intl.supportedValuesOf('timeZone')")) {
+  fail('TimetableMeetingList must not expand the full browser IANA timezone list.');
 }
 
 const meetingProjection = read('src/components/MeetingTimezoneProjection.astro');
@@ -167,8 +177,17 @@ for (const file of [
 }
 
 const baseLayout = read('src/layouts/BaseLayout.astro');
-for (const marker of ['url.searchParams.set(\'tz\', timeZone)', 'whr:timezonechange']) {
+for (const marker of [
+  "url.searchParams.set('tz', timeZone)",
+  'whr:timezonechange',
+  'isCuratedTimeZone',
+  'UTC+09:00',
+  'UTC+00:00',
+]) {
   if (!baseLayout.includes(marker)) fail(`BaseLayout missing timezone navigation marker: ${marker}`);
+}
+if (baseLayout.includes("Intl.supportedValuesOf('timeZone')")) {
+  fail('BaseLayout must not expand the full browser IANA timezone list.');
 }
 
 const countryPage = read('src/components/CountryDetailPage.astro');
