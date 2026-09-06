@@ -1,90 +1,60 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import HomeRacingMap from '../components/HomeRacingMap.astro';
-import '../styles/home-map-first.css';
+import MeetingStatePolicy from '../components/MeetingStatePolicy.astro';
+import TimetableMeetingList from '../components/TimetableMeetingList.astro';
+import TodayFilters from '../components/TodayFilters.astro';
+import TodayMeetingMap from '../components/TodayMeetingMap.astro';
+import '../styles/today-practical.css';
 import {
   getTimetableDateContext,
-  getTimetableMeetingRowsForDate,
   getTimetableMeetingRowsForWindow,
-  type TimetableMeetingRow,
 } from '../data/timetableMeetingRows';
 import { addCalendarDays } from '../lib/timetable/calendarDateContext.mjs';
 
-const calendarContext = getTimetableDateContext();
-const todayPreview = getTimetableMeetingRowsForDate(calendarContext.today).slice(0, 6);
-const tomorrow = addCalendarDays(calendarContext.today, 1);
-const upNextEndExclusive = addCalendarDays(calendarContext.today, 8);
-const upNext = getTimetableMeetingRowsForWindow(tomorrow, upNextEndExclusive).slice(0, 6);
-const mapCandidateStart = addCalendarDays(calendarContext.today, -2);
-const mapCandidateEndExclusive = addCalendarDays(calendarContext.today, 9);
-const mapCandidates = getTimetableMeetingRowsForWindow(mapCandidateStart, mapCandidateEndExclusive);
-const timeRange = (meeting: TimetableMeetingRow) => {
-  if (meeting.first_race_time_local && meeting.last_race_time_local) return `${meeting.first_race_time_local}–${meeting.last_race_time_local}`;
-  return meeting.first_race_time_local ?? meeting.last_race_time_local ?? null;
-};
+const context = getTimetableDateContext();
+const candidateStart = addCalendarDays(context.today, -2);
+const candidateEndExclusive = addCalendarDays(context.today, 10);
+const meetingCandidates = getTimetableMeetingRowsForWindow(candidateStart, candidateEndExclusive);
 ---
 
 <BaseLayout
-  title="Where Horses Run | Global Horse Racing Calendar & Timetable"
-  description="Find racing days, race times, racecourses, racing types, and official sources around the world."
+  title="Where Horses Run | Global horse racing today, tomorrow & next 7 days"
+  description="Find horse racing today, tomorrow, or across the next seven days by map and timetable, with official sources and published race times."
+  canonicalPath="/"
+  alternatePath="/ja/"
 >
-  <section class="hero home-hero" aria-labelledby="page-title">
-    <p class="hero__eyebrow">Global horse racing calendar</p>
-    <h1 id="page-title">Where is racing today?</h1>
-    <p class="hero__summary">Find race meetings around the world by place and time.</p>
-  </section>
+  <main class="today-page" data-today-page data-home-meeting-window>
+    <MeetingStatePolicy />
 
-  <HomeRacingMap records={mapCandidates} />
-
-  <div class="home-primary-flow">
-    <section class="home-meeting-summary" aria-labelledby="home-today-title">
-      <div class="home-section-heading">
-        <div>
-          <p class="home-section-heading__eyebrow">Today</p>
-          <h2 id="home-today-title">Today’s Racing</h2>
-        </div>
-        <a href="/today/">View all today’s racing</a>
-      </div>
-      {todayPreview.length > 0 ? (
-        <ul class="home-meeting-list">
-          {todayPreview.map((meeting) => (
-            <li>
-              <a href={meeting.detail_path ?? `/calendar/?date=${meeting.date}`}>
-                <strong>{meeting.racecourse_name}</strong>
-                <span>{meeting.country_label}</span>
-                <span>{timeRange(meeting) ?? 'Time not published'}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No reviewed public meeting is listed for today.</p>
-      )}
+    <section class="hero today-page__hero" aria-labelledby="page-title">
+      <p class="hero__eyebrow" data-window-eyebrow>Today</p>
+      <h1 id="page-title" data-window-title>Today’s racing</h1>
+      <p class="today-page__context">
+        <span>Today / Tomorrow / 7 days</span> · <span data-timezone-label>{context.timeZone}</span>
+      </p>
+      <p class="hero__summary">
+        Use one map and one timetable for today, tomorrow, or the next seven days. The list uses the same public meeting rows and state rules as Calendar.
+      </p>
     </section>
 
-    <section class="home-meeting-summary" aria-labelledby="home-up-next-title">
-      <div class="home-section-heading">
+    <TodayFilters records={meetingCandidates} />
+
+    <TodayMeetingMap records={meetingCandidates} date={context.today} />
+
+    <section class="today-page__list" aria-labelledby="home-list-title" data-today-practical-list>
+      <div class="today-page__list-heading">
         <div>
-          <p class="home-section-heading__eyebrow">Next meetings</p>
-          <h2 id="home-up-next-title">Up Next</h2>
+          <p class="today-page__eyebrow">Meeting list</p>
+          <h2 id="home-list-title" data-window-list-title>Today’s meetings</h2>
         </div>
-        <a href="/calendar/">Open Calendar</a>
+        <p>Map, Home, and Calendar use the same public meeting rows and rank-aware state policy.</p>
       </div>
-      {upNext.length > 0 ? (
-        <ul class="home-meeting-list home-meeting-list--up-next">
-          {upNext.map((meeting) => (
-            <li>
-              <a href={meeting.detail_path ?? `/calendar/?date=${meeting.date}`}>
-                <strong>{meeting.racecourse_name}</strong>
-                <span>{meeting.date}</span>
-                <span>{timeRange(meeting) ?? meeting.country_label}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No reviewed upcoming meeting is listed in the next seven days.</p>
-      )}
+      <TimetableMeetingList
+        records={meetingCandidates}
+        date={context.today}
+        scope="all"
+        emptyLabel="No meetings are currently listed for the selected period and display timezone. Check official sources for the latest information."
+      />
     </section>
-  </div>
+  </main>
 </BaseLayout>
