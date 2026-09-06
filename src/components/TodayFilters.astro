@@ -63,6 +63,9 @@ const timeZoneOptions = [
     <span class="today-state-summary__item today-state-summary__item--ended">
       <span aria-hidden="true"></span>{isJapanese ? '終了' : 'Finished'} <strong data-today-count="ended">0</strong>
     </span>
+    <span class="today-state-summary__item today-state-summary__item--unknown">
+      <span aria-hidden="true"></span>{isJapanese ? '時刻未確認' : 'Time not confirmed'} <strong data-today-count="unknown">0</strong>
+    </span>
     <span class="today-state-summary__total"><strong data-today-visible-count>0</strong> {isJapanese ? '開催を表示' : 'meetings shown'}</span>
   </div>
   <p class="today-controls__empty" data-today-filter-empty hidden>
@@ -86,7 +89,7 @@ const timeZoneOptions = [
         const reset = controls.querySelector('[data-today-filter-reset]');
         const total = controls.querySelector('[data-today-visible-count]');
         const empty = controls.querySelector('[data-today-filter-empty]');
-        const countNodes = new Map(['running', 'upcoming', 'ended'].map((state) => [state, controls.querySelector(`[data-today-count="${state}"]`)]));
+        const countNodes = new Map(['running', 'upcoming', 'ended', 'unknown'].map((state) => [state, controls.querySelector(`[data-today-count="${state}"]`)]));
         if (!(timezone instanceof HTMLSelectElement) || !(country instanceof HTMLSelectElement) || !(authority instanceof HTMLSelectElement) || !(rank instanceof HTMLSelectElement)) return;
 
         const timezoneRoot = () => document.querySelector('[data-display-timezone-root][data-projection-scope="today"]');
@@ -109,14 +112,17 @@ const timeZoneOptions = [
           const dayState = row.dataset.meetingDayState || 'unknown';
           if (meetingState === 'running') return 'running';
           if (meetingState === 'ended' || dayState === 'past') return 'ended';
-          return 'upcoming';
+          if (meetingState === 'upcoming' && dayState === 'today') return 'upcoming';
+          return 'unknown';
         };
         const stateLabel = (state) => state === 'running'
           ? (isJa ? '開催中' : 'Racing now')
           : state === 'ended'
             ? (isJa ? '終了' : 'Finished')
-            : (isJa ? '今日これから' : 'Later today');
-        const stateOrder = { running: 0, upcoming: 1, ended: 2 };
+            : state === 'upcoming'
+              ? (isJa ? '今日これから' : 'Later today')
+              : (isJa ? '時刻未確認' : 'Time not confirmed');
+        const stateOrder = { running: 0, upcoming: 1, unknown: 2, ended: 3 };
         const sortRows = (left, right) => {
           const stateDiff = stateOrder[stateFor(left)] - stateOrder[stateFor(right)];
           if (stateDiff !== 0) return stateDiff;
@@ -137,7 +143,7 @@ const timeZoneOptions = [
             if (!(list instanceof HTMLElement)) return;
             const listRows = Array.from(list.querySelectorAll('[data-calendar-meeting-row]')).filter((row) => row instanceof HTMLElement).sort(sortRows);
             listRows.forEach((row) => list.append(row));
-            ['running', 'upcoming', 'ended'].forEach((state) => {
+            ['running', 'upcoming', 'unknown', 'ended'].forEach((state) => {
               const first = listRows.find((row) => !row.hidden && stateFor(row) === state);
               if (!first) return;
               const count = listRows.filter((row) => !row.hidden && stateFor(row) === state).length;
@@ -169,7 +175,7 @@ const timeZoneOptions = [
           if (status) status.textContent = isJa ? `${racecourseIds.length}競馬場を地図表示` : `${racecourseIds.length} mapped racecourses`;
         };
         const applyFilters = () => {
-          const counts = { running: 0, upcoming: 0, ended: 0 };
+          const counts = { running: 0, upcoming: 0, ended: 0, unknown: 0 };
           let visible = 0;
           rows().forEach((row) => {
             const filtered = !matchesFilters(row);
