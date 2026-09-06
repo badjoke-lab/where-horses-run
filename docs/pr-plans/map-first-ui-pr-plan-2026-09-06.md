@@ -6,6 +6,20 @@ Canonical UI specification: `docs/specs/map-first-site-ui-2026-09-06.md`
 
 This plan converts the active roadmap Work IDs into bounded implementation PRs. PR numbers are not preassigned. Do not infer execution state from historical PR-plan numbering.
 
+## Parallel Calendar lane rule
+
+This PR plan governs only the map-first UI lane. Calendar acquisition/coverage/review/publication quality remains a separate active lane under the canonical Calendar documents and may proceed independently while `UI-001`–`UI-009` are in progress.
+
+Do not:
+
+- pause Calendar quality work while waiting for a UI PR;
+- interpret `UI-005` as Calendar data-quality completion;
+- patch missing/incorrect Calendar data in UI-only code;
+- create a second Calendar/map meeting truth to make the UI look complete;
+- block safe Calendar-lane merges merely because a UI branch is open.
+
+When Calendar work changes main, re-read/rebase the UI branch against current public meeting/view-model behavior before merge where relevant.
+
 ## PR discipline
 
 Every UI PR must state:
@@ -13,6 +27,7 @@ Every UI PR must state:
 ```text
 Work ID
 Canonical documents reviewed
+Parallel Calendar state/assumptions checked
 Pages/components touched
 Runtime behavior changes
 Mobile behavior changes
@@ -111,7 +126,7 @@ Completion:
 - list and map use the same public meeting set/state;
 - EN/JA mobile behavior passes direct browser interaction QA.
 
-## UI-005 — Calendar
+## UI-005 — Calendar presentation
 
 Scope:
 
@@ -126,7 +141,10 @@ Completion:
 
 - changing date updates List and Map consistently;
 - mobile does not force the map into the initial view;
-- back/share navigation reproduces core Calendar state.
+- back/share navigation reproduces core Calendar state;
+- no claim is made that Calendar coverage, acquisition quality, source reliability, or rank promotion is complete.
+
+Calendar data defects observed during this PR are filed/routed to the parallel Calendar lane instead of being cosmetically hidden in UI code.
 
 ## UI-006 — Racecourses index
 
@@ -199,8 +217,9 @@ Mobile: bottom nav, More, 44px controls, no sticky selected card
 ## Current execution pointer
 
 ```text
-Current: UI-001
-Then: UI-002 -> UI-003 -> UI-004 -> UI-005 -> UI-006 -> UI-007 -> UI-008 -> UI-009
+Current UI: UI-001
+Then UI: UI-002 -> UI-003 -> UI-004 -> UI-005 -> UI-006 -> UI-007 -> UI-008 -> UI-009
+Parallel Calendar quality lane: active independently throughout
 ```
 
-After each merge, compare the implementation with the canonical UI specification and active roadmap before starting the next Work ID. If the implementation decision changes the agreed UI, update the canonical documents rather than silently allowing drift.
+After each merge, compare the implementation with the canonical UI specification and active roadmap before starting the next Work ID. Also check current main for Calendar-lane changes that affect the public meeting/view model. If the implementation decision changes the agreed UI, update the canonical documents rather than silently allowing drift.
