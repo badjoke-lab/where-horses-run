@@ -52,18 +52,26 @@ const defaultLanguageSwitchHref = hasBilingualCounterpart
 const languageSwitchHref = explicitAlternateHref ?? defaultLanguageSwitchHref;
 const alternateLabel = isJapanese ? 'English' : '日本語';
 
-const navigationItems = [
+const primaryNavigationItems = [
   { href: isJapanese ? '/ja/today/' : '/today/', label: isJapanese ? '今日' : 'Today' },
   { href: isJapanese ? '/ja/calendar/' : '/calendar/', label: isJapanese ? 'カレンダー' : 'Calendar' },
-  { href: isJapanese ? '/ja/search/' : '/search/', label: isJapanese ? '検索' : 'Search' },
-  { href: isJapanese ? '/ja/countries/' : '/countries/', label: isJapanese ? '国・地域' : 'Countries' },
   { href: isJapanese ? '/ja/tracks/' : '/tracks/', label: isJapanese ? '競馬場' : 'Racecourses' },
+];
+const secondaryNavigationItems = [
+  { href: isJapanese ? '/ja/countries/' : '/countries/', label: isJapanese ? '国・地域' : 'Countries' },
   { href: isJapanese ? '/ja/types/' : '/types/', label: isJapanese ? '競馬種別' : 'Racing Types' },
   { href: isJapanese ? '/ja/glossary/' : '/glossary/', label: isJapanese ? '用語集' : 'Glossary' },
-  { href: isJapanese ? '/ja/sources/' : '/sources/', label: isJapanese ? '公式情報源' : 'Sources' },
+  { href: isJapanese ? '/ja/sources/' : '/sources/', label: isJapanese ? '公式情報源' : 'Official Sources' },
+  { href: isJapanese ? '/ja/about/' : '/about/', label: isJapanese ? 'このサイトについて' : 'About' },
+];
+const searchHref = isJapanese ? '/ja/search/' : '/search/';
+const disclaimerHref = isJapanese ? '/ja/disclaimer/' : '/disclaimer/';
+const mobileBottomItems = [
+  { href: homeHref, label: isJapanese ? 'ホーム' : 'Home' },
+  ...primaryNavigationItems,
 ];
 const isCurrentNavigationItem = (href: string) =>
-  canonicalPathname === href || canonicalPathname.startsWith(href);
+  canonicalPathname === href || (href !== homeHref && canonicalPathname.startsWith(href));
 
 const countryPathMatch = /^\/(?:ja\/)?countries\/([^/]+)\/$/.exec(canonicalPathname);
 const countrySlug = countryPathMatch?.[1] ?? null;
@@ -174,47 +182,87 @@ const socialImageAlt = isJapanese
       <header
         class="site-header"
         aria-label={isJapanese ? 'サイトヘッダー' : 'Site header'}
-        data-mobile-navigation="details-summary-v1"
-        data-mobile-navigation-links="9"
-        data-desktop-layout="responsive-shell-v1"
+        data-mobile-navigation="bottom-nav-v1"
+        data-mobile-navigation-links="5"
+        data-desktop-layout="map-first-shell-v1"
       >
         <div class="site-header__inner">
-          <a class="site-brand" href={homeHref}>{isJapanese ? '競馬どこ？' : 'Where Horses Run'}</a>
+          <a class="site-brand" href={homeHref}>Where Horses Run</a>
 
           <details class="site-navigation">
             <summary class="site-navigation__summary">
               <span>{isJapanese ? 'メニュー' : 'Menu'}</span>
             </summary>
-            <nav class="site-nav" aria-label={isJapanese ? 'モバイル主要ナビゲーション' : 'Mobile main navigation'}>
+            <nav class="site-nav" aria-label={isJapanese ? 'モバイル補助ナビゲーション' : 'Mobile utility navigation'}>
               <ul class="site-nav__list">
-                {navigationItems.map((item) => (
+                <li><a href={searchHref}>{isJapanese ? '検索' : 'Search'}</a></li>
+                {secondaryNavigationItems.map((item) => (
                   <li>
                     <a href={item.href} aria-current={isCurrentNavigationItem(item.href) ? 'page' : undefined}>
                       {item.label}
                     </a>
                   </li>
                 ))}
-                <li class="site-nav__language">
-                  <a href={languageSwitchHref} hreflang={isJapanese ? 'en' : 'ja'}>{alternateLabel}</a>
+                <li><a href={languageSwitchHref} hreflang={isJapanese ? 'en' : 'ja'}>{alternateLabel}</a></li>
+                <li class="site-nav__utility">
+                  <label class="mobile-more-timezone">
+                    <span>{isJapanese ? '表示タイムゾーン' : 'Display timezone'}</span>
+                    <select data-global-timezone-select aria-label={isJapanese ? '表示タイムゾーン' : 'Display timezone'}>
+                      <option value="Asia/Tokyo">Asia/Tokyo</option>
+                      <option value="UTC">UTC</option>
+                    </select>
+                  </label>
                 </li>
               </ul>
             </nav>
           </details>
 
-          <nav class="desktop-site-nav" aria-label={isJapanese ? '主要ナビゲーション' : 'Main navigation'}>
-            <ul class="site-nav__list">
-              {navigationItems.map((item) => (
+          <div class="desktop-shell-nav">
+            <nav class="desktop-primary-nav" aria-label={isJapanese ? '主要ナビゲーション' : 'Primary navigation'}>
+              <ul class="desktop-primary-nav__list">
+                {primaryNavigationItems.map((item) => (
+                  <li>
+                    <a href={item.href} aria-current={isCurrentNavigationItem(item.href) ? 'page' : undefined}>
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            <nav class="desktop-utility-nav" aria-label={isJapanese ? '補助ナビゲーション' : 'Utility navigation'}>
+              <ul class="desktop-utility-nav__list">
+                <li><a href={searchHref}>{isJapanese ? '検索' : 'Search'}</a></li>
+                <li><a href={languageSwitchHref} hreflang={isJapanese ? 'en' : 'ja'}>{alternateLabel}</a></li>
                 <li>
-                  <a href={item.href} aria-current={isCurrentNavigationItem(item.href) ? 'page' : undefined}>
-                    {item.label}
-                  </a>
+                  <details class="desktop-timezone">
+                    <summary class="desktop-timezone__summary">{isJapanese ? 'タイムゾーン' : 'Timezone'}</summary>
+                    <div class="desktop-timezone__panel">
+                      <label>
+                        <span>{isJapanese ? '表示タイムゾーン' : 'Display timezone'}</span>
+                        <select data-global-timezone-select aria-label={isJapanese ? '表示タイムゾーン' : 'Display timezone'}>
+                          <option value="Asia/Tokyo">Asia/Tokyo</option>
+                          <option value="UTC">UTC</option>
+                        </select>
+                      </label>
+                    </div>
+                  </details>
                 </li>
-              ))}
-              <li class="site-nav__language">
-                <a href={languageSwitchHref} hreflang={isJapanese ? 'en' : 'ja'}>{alternateLabel}</a>
-              </li>
-            </ul>
-          </nav>
+                <li>
+                  <details class="desktop-more">
+                    <summary class="desktop-more__summary">{isJapanese ? 'その他' : 'More'}</summary>
+                    <div class="desktop-more__panel">
+                      <ul>
+                        {secondaryNavigationItems.map((item) => (
+                          <li><a href={item.href}>{item.label}</a></li>
+                        ))}
+                      </ul>
+                    </div>
+                  </details>
+                </li>
+              </ul>
+            </nav>
+          </div>
         </div>
       </header>
 
@@ -224,10 +272,44 @@ const socialImageAlt = isJapanese
 
       <footer class="site-footer">
         <div class="site-footer__inner">
-          <p>{isJapanese ? '競馬の開催情報、競馬場、競馬種別、公式情報を探せます。' : 'Find racing calendars, meetings, racecourses, racing types, and official sources.'}</p>
+          <a class="site-footer__brand" href={homeHref}>Where Horses Run</a>
+          <nav aria-label={isJapanese ? 'フッターナビゲーション' : 'Footer navigation'}>
+            <ul class="site-footer__links">
+              <li><a href={isJapanese ? '/ja/calendar/' : '/calendar/'}>{isJapanese ? 'カレンダー' : 'Calendar'}</a></li>
+              <li><a href={isJapanese ? '/ja/tracks/' : '/tracks/'}>{isJapanese ? '競馬場' : 'Racecourses'}</a></li>
+              <li><a href={isJapanese ? '/ja/sources/' : '/sources/'}>{isJapanese ? '公式情報源' : 'Sources'}</a></li>
+              <li><a href={isJapanese ? '/ja/about/' : '/about/'}>{isJapanese ? 'このサイトについて' : 'About'}</a></li>
+              <li><a href={disclaimerHref}>{isJapanese ? '免責事項' : 'Disclaimer'}</a></li>
+            </ul>
+          </nav>
         </div>
       </footer>
     </div>
+
+    <nav class="mobile-bottom-nav" aria-label={isJapanese ? 'モバイル主要ナビゲーション' : 'Mobile primary navigation'}>
+      {mobileBottomItems.map((item) => (
+        <a href={item.href} aria-current={isCurrentNavigationItem(item.href) ? 'page' : undefined}>{item.label}</a>
+      ))}
+      <details class="mobile-bottom-more">
+        <summary class="mobile-bottom-more__summary">{isJapanese ? 'その他' : 'More'}</summary>
+        <div class="mobile-bottom-more__panel">
+          <ul>
+            <li><a href={searchHref}>{isJapanese ? '検索' : 'Search'}</a></li>
+            {secondaryNavigationItems.map((item) => (
+              <li><a href={item.href}>{item.label}</a></li>
+            ))}
+            <li><a href={languageSwitchHref} hreflang={isJapanese ? 'en' : 'ja'}>{alternateLabel}</a></li>
+          </ul>
+          <label class="mobile-more-timezone">
+            <span>{isJapanese ? '表示タイムゾーン' : 'Display timezone'}</span>
+            <select data-global-timezone-select aria-label={isJapanese ? '表示タイムゾーン' : 'Display timezone'}>
+              <option value="Asia/Tokyo">Asia/Tokyo</option>
+              <option value="UTC">UTC</option>
+            </select>
+          </label>
+        </div>
+      </details>
+    </nav>
 
     {countryId && (
       <script
@@ -530,10 +612,45 @@ const socialImageAlt = isJapanese
             apply(selected, true);
           });
         };
+        const initializeGlobalTimezoneControls = () => {
+          const selects = [...document.querySelectorAll('[data-global-timezone-select]')]
+            .filter((node) => node instanceof HTMLSelectElement);
+          if (!selects.length) return;
+          const requested = new URL(window.location.href).searchParams.get('tz');
+          const browser = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          const initial = isTimeZoneSupported(requested)
+            ? requested
+            : isTimeZoneSupported(browser) ? browser : 'Asia/Tokyo';
+          selects.forEach((select) => {
+            populateTimeZones(select);
+            select.value = initial;
+          });
+          const apply = (timeZone) => {
+            if (!isTimeZoneSupported(timeZone)) return;
+            selects.forEach((select) => { select.value = timeZone; });
+            const url = new URL(window.location.href);
+            url.searchParams.set('tz', timeZone);
+            window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+            propagateTimeZone(timeZone);
+            window.dispatchEvent(new CustomEvent('whr:timezonechange', {
+              detail: { timeZone, scope: 'global-shell' },
+            }));
+          };
+          selects.forEach((select) => {
+            select.addEventListener('change', () => apply(select.value));
+          });
+        };
+        initializeGlobalTimezoneControls();
         const requested = new URL(window.location.href).searchParams.get('tz');
         if (isTimeZoneSupported(requested)) propagateTimeZone(requested);
         window.addEventListener('whr:timezonechange', (event) => {
           applyProjectionMetadata(event.detail);
+          const timeZone = event?.detail?.timeZone;
+          if (typeof timeZone === 'string' && isTimeZoneSupported(timeZone)) {
+            document.querySelectorAll('[data-global-timezone-select]').forEach((node) => {
+              if (node instanceof HTMLSelectElement) node.value = timeZone;
+            });
+          }
         });
         initializeCountryTimezoneProjection();
       })();
