@@ -1,0 +1,238 @@
+---
+import type { TimetableMeetingRow } from '../data/timetableMeetingRows';
+import { getRacecourses } from '../lib/data';
+
+interface Props {
+  records: TimetableMeetingRow[];
+  lang?: 'en' | 'ja';
+  showDate?: boolean;
+}
+
+const { records, lang = 'en', showDate = false } = Astro.props;
+const isJa = lang === 'ja';
+const racecourseById = new Map(getRacecourses().map((track) => [track.id, track]));
+const racecourseName = (record: TimetableMeetingRow) => isJa
+  ? (racecourseById.get(record.racecourse_id)?.name_ja ?? record.racecourse_name)
+  : record.racecourse_name;
+const detailHref = (record: TimetableMeetingRow) => record.detail_path
+  ? (isJa ? `/ja${record.detail_path}` : record.detail_path)
+  : `${isJa ? '/ja' : ''}/calendar/?date=${record.date}`;
+const rows = records.map((record) => ({
+  meetingId: record.meeting_id,
+  racecourseName: racecourseName(record),
+  country: record.country_label,
+  authority: record.authority_label,
+  sourceDate: record.date,
+  sourceTimezone: record.timezone,
+  firstRaceTime: record.first_race_time_local ?? null,
+  lastRaceTime: record.last_race_time_local ?? null,
+  rank: record.capability_rank,
+  href: detailHref(record),
+}));
+const rowsJson = JSON.stringify(rows).replace(/</g, '\\u003c');
+---
+
+<div class="home-meeting-preview" data-home-meeting-preview data-lang={lang} data-show-date={String(showDate)}>
+  <ul class="home-meeting-preview__list">
+    {rows.map((row) => (
+      <li
+        class="home-meeting-preview__row"
+        data-home-preview-row
+        data-meeting-id={row.meetingId}
+        data-source-date={row.sourceDate}
+        data-source-timezone={row.sourceTimezone}
+        data-first-race-time={row.firstRaceTime ?? ''}
+        data-last-race-time={row.lastRaceTime ?? ''}
+        data-rank={row.rank}
+        data-meeting-state="future"
+      >
+        <div class="home-meeting-preview__identity">
+          <strong>{row.racecourseName}</strong>
+          <span>{row.country} · {row.authority}</span>
+        </div>
+        <div class="home-meeting-preview__time">
+          {showDate && <span data-preview-date>{row.sourceDate}</span>}
+          <span data-preview-time>{row.firstRaceTime && row.lastRaceTime ? `${row.firstRaceTime}–${row.lastRaceTime}` : row.firstRaceTime ?? '—'}</span>
+        </div>
+        <span class="home-meeting-preview__rank">{row.rank}</span>
+        <span class="home-meeting-preview__state" data-preview-state>{isJa ? '開催予定' : 'Scheduled'}</span>
+        <a class="home-meeting-preview__link" href={row.href}>{isJa ? '詳細' : 'Details'}</a>
+      </li>
+    ))}
+  </ul>
+  <script type="application/json" data-home-preview-records set:html={rowsJson}></script>
+</div>
+
+<script is:inline>
+  (() => {
+    const CURATED = new Set(['Asia/Tokyo', 'Asia/Seoul', 'Asia/Hong_Kong', 'Asia/Dubai', 'Europe/Istanbul', 'UTC']);
+    const isTimeZoneSupported = (timeZone) => {
+      if (!timeZone) return false;
+      try { new Intl.DateTimeFormat('en', { timeZone }).format(new Date(0)); return true; } catch { return false; }
+    };
+    const dateParts = (instant, timeZone) => Object.fromEntries(new Intl.DateTimeFormat('en-US', {
+      timeZone,
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
+    }).formatToParts(instant).filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
+    const formatDate = (instant, timeZone) => {
+      const parts = dateParts(instant, timeZone);
+      return `${parts.year}-${parts.month}-${parts.day}`;
+    };
+    const formatTime = (instant, timeZone) => new Intl.DateTimeFormat('en-GB', {
+      timeZone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+    }).format(instant);
+    const localDateTimeToInstant = (dateText, timeText, timeZone) => {
+      const dateMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateText || '');
+      const timeMatch = /^(\d{1,2}):(\d{2})(?::(\d{2}))?$/.exec(timeText || '');
+      if (!dateMatch || !timeMatch || !isTimeZoneSupported(timeZone)) return null;
+      const targetUtc = Date.UTC(
+        Number(dateMatch[1]), Number(dateMatch[2]) - 1, Number(dateMatch[3]),
+        Number(timeMatch[1]), Number(timeMatch[2]), Number(timeMatch[3] ?? '0')
+      );
+      let guess = targetUtc;
+      for (let pass = 0; pass < 4; pass += 1) {
+        const parts = dateParts(new Date(guess), timeZone);
+        const representedUtc = Date.UTC(
+          Number(parts.year), Number(parts.month) - 1, Number(parts.day),
+          Number(parts.hour), Number(parts.minute), Number(parts.second)
+        );
+        const correction = targetUtc - representedUtc;
+        guess += correction;
+        if (correction === 0) break;
+      }
+      return new Date(guess);
+    };
+    const stateFor = (record, now) => {
+      const currentSourceDate = formatDate(now, record.sourceTimezone);
+      const timed = record.rank === 'B+' || record.rank === 'A' || record.rank === 'A+';
+      if (!timed) {
+        if (record.sourceDate < currentSourceDate) return 'ended';
+        if (record.sourceDate === currentSourceDate) return 'today';
+        return 'future';
+      }
+      const start = record.firstRaceTime
+        ? localDateTimeToInstant(record.sourceDate, record.firstRaceTime, record.sourceTimezone)
+        : null;
+      let end = record.lastRaceTime
+        ? localDateTimeToInstant(record.sourceDate, record.lastRaceTime, record.sourceTimezone)
+        : null;
+      if (!start || !end) return record.sourceDate < currentSourceDate ? 'ended' : 'future';
+      if (end.getTime() < start.getTime()) end = new Date(end.getTime() + 86_400_000);
+      if (now.getTime() < start.getTime()) return 'upcoming';
+      if (now.getTime() <= end.getTime()) return 'running';
+      return 'ended';
+    };
+    const labelFor = (state, isJa) => {
+      if (state === 'running') return isJa ? '開催中' : 'Racing now';
+      if (state === 'upcoming') return isJa ? '開催前' : 'Upcoming';
+      if (state === 'today') return isJa ? '本日開催' : 'Racing today';
+      if (state === 'ended') return isJa ? '終了' : 'Finished';
+      return isJa ? '開催予定' : 'Scheduled';
+    };
+    const initialZone = () => {
+      const requested = new URL(window.location.href).searchParams.get('tz');
+      const browser = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      if (CURATED.has(requested)) return requested;
+      if (CURATED.has(browser)) return browser;
+      return 'Asia/Tokyo';
+    };
+    const install = (root) => {
+      if (!(root instanceof HTMLElement) || root.dataset.homePreviewInitialized === 'true') return;
+      root.dataset.homePreviewInitialized = 'true';
+      const dataNode = root.querySelector('[data-home-preview-records]');
+      if (!(dataNode instanceof HTMLScriptElement)) return;
+      let records = [];
+      try { records = JSON.parse(dataNode.textContent || '[]'); } catch { records = []; }
+      const recordById = new Map(records.map((record) => [record.meetingId, record]));
+      const isJa = root.dataset.lang === 'ja';
+      const showDate = root.dataset.showDate === 'true';
+      let displayTimeZone = initialZone();
+
+      const apply = () => {
+        const now = new Date();
+        root.querySelectorAll('[data-home-preview-row]').forEach((row) => {
+          if (!(row instanceof HTMLElement)) return;
+          const record = recordById.get(row.dataset.meetingId || '');
+          if (!record) return;
+          const first = record.firstRaceTime
+            ? localDateTimeToInstant(record.sourceDate, record.firstRaceTime, record.sourceTimezone)
+            : null;
+          let last = record.lastRaceTime
+            ? localDateTimeToInstant(record.sourceDate, record.lastRaceTime, record.sourceTimezone)
+            : null;
+          if (first && last && last.getTime() < first.getTime()) last = new Date(last.getTime() + 86_400_000);
+          const projectedDate = first ? formatDate(first, displayTimeZone) : record.sourceDate;
+          const timeNode = row.querySelector('[data-preview-time]');
+          if (timeNode) {
+            const firstText = first ? formatTime(first, displayTimeZone) : null;
+            const lastText = last ? formatTime(last, displayTimeZone) : null;
+            timeNode.textContent = firstText && lastText ? `${firstText}–${lastText}` : firstText ?? '—';
+          }
+          const dateNode = row.querySelector('[data-preview-date]');
+          if (showDate && dateNode) dateNode.textContent = projectedDate;
+          const state = stateFor(record, now);
+          row.dataset.meetingState = state;
+          const stateNode = row.querySelector('[data-preview-state]');
+          if (stateNode) stateNode.textContent = labelFor(state, isJa);
+          const link = row.querySelector('a[href]');
+          if (link instanceof HTMLAnchorElement) {
+            const url = new URL(link.href, window.location.href);
+            if (url.origin === window.location.origin) {
+              url.searchParams.set('tz', displayTimeZone);
+              link.href = `${url.pathname}${url.search}${url.hash}`;
+            }
+          }
+        });
+      };
+
+      window.addEventListener('whr:timezonechange', (event) => {
+        const next = event?.detail?.timeZone;
+        if (!CURATED.has(next) || next === displayTimeZone) return;
+        displayTimeZone = next;
+        apply();
+      });
+      window.setInterval(apply, 60_000);
+      apply();
+    };
+
+    const boot = () => document.querySelectorAll('[data-home-meeting-preview]').forEach(install);
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+    else boot();
+  })();
+</script>
+
+<style>
+  .home-meeting-preview__list { display: grid; list-style: none; margin: 0; padding: 0; }
+  .home-meeting-preview__row {
+    align-items: center;
+    background: #fff;
+    border-block-end: 1px solid rgba(0,0,0,.12);
+    display: grid;
+    gap: .3rem .65rem;
+    grid-template-columns: minmax(11rem, 1.5fr) minmax(7rem, .8fr) auto auto auto;
+    min-height: 58px;
+    padding: .55rem .5rem;
+  }
+  .home-meeting-preview__row[data-meeting-state='upcoming'],
+  .home-meeting-preview__row[data-meeting-state='today'] { background: #fff3c4; box-shadow: inset .25rem 0 0 #d18a00; }
+  .home-meeting-preview__row[data-meeting-state='running'] { background: #fff0ef; box-shadow: inset .25rem 0 0 #c40000; }
+  .home-meeting-preview__row[data-meeting-state='ended'] { background: #f3f3f3; opacity: .62; }
+  .home-meeting-preview__identity { display: grid; gap: .1rem; min-width: 0; }
+  .home-meeting-preview__identity span,
+  .home-meeting-preview__time { color: var(--whr-color-muted); font-size: .8rem; }
+  .home-meeting-preview__time { display: grid; gap: .05rem; white-space: nowrap; }
+  .home-meeting-preview__rank,
+  .home-meeting-preview__state { border: 1px solid var(--whr-color-border); border-radius: 999px; font-size: .72rem; font-weight: 800; padding: .12rem .4rem; white-space: nowrap; }
+  .home-meeting-preview__row[data-meeting-state='running'] .home-meeting-preview__state { background: #c40000; border-color: #c40000; color: #fff; }
+  .home-meeting-preview__row[data-meeting-state='ended'] .home-meeting-preview__state { background: #666; border-color: #666; color: #fff; }
+  .home-meeting-preview__link { align-items: center; display: inline-flex; min-height: 44px; white-space: nowrap; }
+  @media (max-width: 760px) {
+    .home-meeting-preview__row { grid-template-columns: 1fr auto; padding: .62rem .35rem; }
+    .home-meeting-preview__identity { grid-column: 1; }
+    .home-meeting-preview__rank { grid-column: 2; grid-row: 1; }
+    .home-meeting-preview__time { grid-column: 1; }
+    .home-meeting-preview__state { grid-column: 2; grid-row: 2; }
+    .home-meeting-preview__link { grid-column: 1 / -1; justify-self: start; }
+  }
+</style>
