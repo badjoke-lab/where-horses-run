@@ -1,8 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HomeRacingMap from '../components/HomeRacingMap.astro';
-import { getActiveCountries, getGlossaryEntries, getRacecourses, siteData } from '../lib/data';
-import { getRacingTypes } from '../lib/racingTypes';
 import {
   getTimetableDateContext,
   getTimetableMeetingRowsForDate,
@@ -11,13 +9,11 @@ import {
 } from '../data/timetableMeetingRows';
 import { addCalendarDays } from '../lib/timetable/calendarDateContext.mjs';
 
-const countries = getActiveCountries().slice(0, 6);
-const racecourses = getRacecourses().slice(0, 6);
-const racingTypes = getRacingTypes().slice(0, 8);
-const glossaryTerms = getGlossaryEntries().filter((entry) => ['data_term', 'track_term', 'role'].includes(entry.category)).slice(0, 8);
-const sourceCount = siteData.sources.length;
 const calendarContext = getTimetableDateContext();
-const todayPreview = getTimetableMeetingRowsForDate(calendarContext.today).slice(0, 4);
+const todayPreview = getTimetableMeetingRowsForDate(calendarContext.today).slice(0, 6);
+const tomorrow = addCalendarDays(calendarContext.today, 1);
+const upNextEndExclusive = addCalendarDays(calendarContext.today, 8);
+const upNext = getTimetableMeetingRowsForWindow(tomorrow, upNextEndExclusive).slice(0, 6);
 const mapCandidateStart = addCalendarDays(calendarContext.today, -2);
 const mapCandidateEndExclusive = addCalendarDays(calendarContext.today, 9);
 const mapCandidates = getTimetableMeetingRowsForWindow(mapCandidateStart, mapCandidateEndExclusive);
@@ -31,77 +27,63 @@ const timeRange = (meeting: TimetableMeetingRow) => {
   title="Where Horses Run | Global Horse Racing Calendar & Timetable"
   description="Find racing days, race times, racecourses, racing types, and official sources around the world."
 >
-  <section class="hero" aria-labelledby="page-title">
+  <section class="hero home-hero" aria-labelledby="page-title">
     <p class="hero__eyebrow">Global horse racing calendar</p>
-    <h1 id="page-title">Where Horses Run</h1>
-    <p class="hero__summary">
-      Find today’s and tomorrow’s racing, browse by country or racecourse, and open official sources for final details.
-    </p>
-    <p>
-      <a href="/today/">See today’s racing</a> · <a href="/countries/">Browse countries</a> · <a href="/tracks/">Browse racecourses</a>
-    </p>
+    <h1 id="page-title">Where is racing today?</h1>
+    <p class="hero__summary">Find race meetings around the world by place and time.</p>
   </section>
 
   <HomeRacingMap records={mapCandidates} />
 
-  <section class="section-grid" aria-label="Primary discovery paths">
-    <article class="card">
-      <h2><a href="/today/">Today’s Racing</a></h2>
-      <p>Racing listed for {calendarContext.today} ({calendarContext.timeZone}).</p>
+  <div class="home-primary-flow">
+    <section class="home-meeting-summary" aria-labelledby="home-today-title">
+      <div class="home-section-heading">
+        <div>
+          <p class="home-section-heading__eyebrow">Today</p>
+          <h2 id="home-today-title">Today’s Racing</h2>
+        </div>
+        <a href="/today/">View all today’s racing</a>
+      </div>
       {todayPreview.length > 0 ? (
-        <ul>
+        <ul class="home-meeting-list">
           {todayPreview.map((meeting) => (
             <li>
-              <strong>{meeting.racecourse_name}</strong>
-              {timeRange(meeting) ? ` · ${timeRange(meeting)}` : ''}
+              <a href={meeting.detail_path ?? `/calendar/?date=${meeting.date}`}>
+                <strong>{meeting.racecourse_name}</strong>
+                <span>{meeting.country_label}</span>
+                <span>{timeRange(meeting) ?? 'Time not published'}</span>
+              </a>
             </li>
           ))}
         </ul>
       ) : (
-        <p>No racing is listed for today. Browse countries or official sources for more information.</p>
+        <p>No reviewed public meeting is listed for today.</p>
       )}
-    </article>
+    </section>
 
-    <article class="card">
-      <h2><a href="/calendar/">Calendar</a></h2>
-      <p>Choose a date to see scheduled meetings and available race times.</p>
-      <p><a href="/tomorrow/">Tomorrow’s racing</a> · <a href="/calendar/">Open calendar</a></p>
-    </article>
-
-    <article class="card">
-      <h2><a href="/countries/">Browse by Country</a></h2>
-      <p>Find racing, racecourses, and official sources by country or jurisdiction.</p>
-      <ul>{countries.map((country) => <li><a href={`/countries/${country.slug}/`}>{country.name_en}</a></li>)}</ul>
-    </article>
-
-    <article class="card">
-      <h2><a href="/tracks/">Explore Racecourses</a></h2>
-      <p>Find location, racing information, course details, and official links for each racecourse.</p>
-      <ul>{racecourses.map((track) => <li><a href={`/tracks/${track.slug}/`}>{track.name_en}</a> — {track.city}</li>)}</ul>
-    </article>
-
-    <article class="card">
-      <h2><a href="/types/">Browse by Racing Type</a></h2>
-      <p>Explore flat, jump, harness, and other racing types with related countries and racecourses.</p>
-      <ul>{racingTypes.map((type) => <li><a href={`/types/${type.slug}/`}>{type.name_en}</a></li>)}</ul>
-    </article>
-
-    <article class="card">
-      <h2><a href="/glossary/">Racing Glossary</a></h2>
-      <p>Look up racing terms used across calendar and racecourse pages.</p>
-      <ul>{glossaryTerms.map((term) => <li><a href={`/glossary/${term.slug}/`}>{term.term_en}</a></li>)}</ul>
-    </article>
-
-    <article class="card">
-      <h2><a href="/sources/">Official Sources</a></h2>
-      <p>Browse {sourceCount} official and reference sources.</p>
-      <p>Use official sources to confirm entries, odds, results, payouts, and other race-specific details.</p>
-    </article>
-
-    <article class="card">
-      <h2><a href="/about/">About</a></h2>
-      <p>Learn what the site covers, where the information comes from, and how it is maintained.</p>
-      <p><a href="/faq/">Frequently Asked Questions</a> · <a href="/disclaimer/">Disclaimer</a></p>
-    </article>
-  </section>
+    <section class="home-meeting-summary" aria-labelledby="home-up-next-title">
+      <div class="home-section-heading">
+        <div>
+          <p class="home-section-heading__eyebrow">Next meetings</p>
+          <h2 id="home-up-next-title">Up Next</h2>
+        </div>
+        <a href="/calendar/">Open Calendar</a>
+      </div>
+      {upNext.length > 0 ? (
+        <ul class="home-meeting-list home-meeting-list--up-next">
+          {upNext.map((meeting) => (
+            <li>
+              <a href={meeting.detail_path ?? `/calendar/?date=${meeting.date}`}>
+                <strong>{meeting.racecourse_name}</strong>
+                <span>{meeting.date}</span>
+                <span>{timeRange(meeting) ?? meeting.country_label}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No reviewed upcoming meeting is listed in the next seven days.</p>
+      )}
+    </section>
+  </div>
 </BaseLayout>
