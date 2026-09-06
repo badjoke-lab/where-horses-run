@@ -1,0 +1,170 @@
+name: Temporary UI-004 Today clean audit
+
+on:
+  pull_request:
+    branches:
+      - feat/ui-004-today-practical-clean
+
+permissions:
+  contents: read
+
+jobs:
+  browser-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+      - run: npm install
+      - run: npm run build
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Start static server
+        run: |
+          python3 -m http.server 4321 --directory dist > /tmp/whr-ui004-server.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4321/today/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/whr-ui004-server.log
+          exit 1
+      - name: Audit Today interactions
+        run: |
+          mkdir -p audit/ui-004
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { chromium } from 'playwright';
+
+          const browser = await chromium.launch({ headless: true });
+          const cases = [
+            { name: 'en-desktop', path: '/today/?tz=Asia%2FTokyo', width: 1440, height: 1100, mobile: false },
+            { name: 'ja-desktop', path: '/ja/today/?tz=Asia%2FTokyo', width: 1440, height: 1100, mobile: false },
+            { name: 'en-mobile', path: '/today/?tz=Asia%2FTokyo', width: 390, height: 844, mobile: true },
+            { name: 'ja-mobile', path: '/ja/today/?tz=Asia%2FTokyo', width: 390, height: 844, mobile: true },
+          ];
+          const expectedZones = ['Asia/Tokyo', 'Asia/Seoul', 'Asia/Hong_Kong', 'Asia/Dubai', 'Europe/Istanbul', 'UTC'];
+          const expectedOffsets = ['UTC+09:00', 'UTC+09:00', 'UTC+08:00', 'UTC+04:00', 'UTC+03:00', 'UTC+00:00'];
+          const report = [];
+          const assert = (condition, message) => { if (!condition) throw new Error(message); };
+
+          for (const item of cases) {
+            const page = await browser.newPage({ viewport: { width: item.width, height: item.height } });
+            const pageErrors = [];
+            page.on('pageerror', (error) => pageErrors.push(String(error)));
+            await page.goto(`http://127.0.0.1:4321${item.path}`, { waitUntil: 'domcontentloaded' });
+            await page.waitForFunction(() => document.querySelector('[data-racecourse-map]')?.getAttribute('data-map-state') === 'ready', null, { timeout: 20000 });
+            await page.waitForFunction(() => Number(document.querySelector('[data-today-visible-count]')?.textContent || '0') > 0, null, { timeout: 10000 });
+            await page.waitForTimeout(300);
+
+            const timezoneContract = await page.evaluate(() => ({
+              top: [...document.querySelectorAll('[data-today-timezone] option')].map((o) => ({ value: o.value, label: o.textContent?.trim() || '' })),
+              global: [...document.querySelectorAll('[data-global-timezone-select]')].map((select) => [...select.options].map((o) => ({ value: o.value, label: o.textContent?.trim() || '' }))),
+            }));
+            assert(JSON.stringify(timezoneContract.top.map((x) => x.value)) === JSON.stringify(expectedZones), `${item.name}: Today timezone values differ from curated six`);
+            timezoneContract.top.forEach((entry, index) => assert(entry.label.includes(expectedOffsets[index]), `${item.name}: missing ${expectedOffsets[index]} on ${entry.value}`));
+            timezoneContract.global.forEach((options) => {
+              assert(JSON.stringify(options.map((x) => x.value)) === JSON.stringify(expectedZones), `${item.name}: global timezone values differ from curated six`);
+              options.forEach((entry, index) => assert(entry.label.includes(expectedOffsets[index]), `${item.name}: global option missing ${expectedOffsets[index]}`));
+            });
+
+            const snapshot = async () => page.evaluate(() => {
+              const allRows = [...document.querySelectorAll('[data-calendar-meeting-row]')].filter((row) => row instanceof HTMLElement);
+              const visibleRows = allRows.filter((row) => !row.hidden);
+              const stateFor = (row) => {
+                const meetingState = row.dataset.meetingState || 'unknown';
+                const dayState = row.dataset.meetingDayState || 'unknown';
+                if (meetingState === 'running') return 'running';
+                if (meetingState === 'ended' || dayState === 'past') return 'ended';
+                return 'upcoming';
+              };
+              const counts = { running: 0, upcoming: 0, ended: 0 };
+              visibleRows.forEach((row) => { counts[stateFor(row)] += 1; });
+              const summary = Object.fromEntries(['running', 'upcoming', 'ended'].map((state) => [state, Number(document.querySelector(`[data-today-count="${state}"]`)?.textContent || '0')]));
+              const mapping = JSON.parse(document.querySelector('[data-today-map-meeting-map]')?.textContent || '[]');
+              const byMeeting = new Map(mapping.map((entry) => [entry.meetingId, entry]));
+              const mappedRacecourses = [...new Set(visibleRows.map((row) => byMeeting.get(row.dataset.meetingId || '')).filter((entry) => entry?.hasReviewedLocation).map((entry) => entry.racecourseId))];
+              return {
+                visibleCount: visibleRows.length,
+                counts,
+                summary,
+                countries: [...new Set(visibleRows.map((row) => row.dataset.country || ''))],
+                authorities: [...new Set(visibleRows.map((row) => row.dataset.authority || ''))],
+                ranks: [...new Set(visibleRows.map((row) => row.dataset.rank || ''))],
+                mappedRacecourses,
+                mapVisibleCount: Number(document.querySelector('[data-racecourse-map]')?.getAttribute('data-visible-racecourse-count') || '0'),
+                timezoneLabel: document.querySelector('[data-timezone-label]')?.textContent?.trim() || '',
+                targetDate: document.querySelector('[data-timezone-target-date]')?.textContent?.trim() || '',
+              };
+            });
+
+            const initial = await snapshot();
+            assert(initial.visibleCount > 0, `${item.name}: no visible meetings`);
+            assert(JSON.stringify(initial.counts) === JSON.stringify(initial.summary), `${item.name}: summary counts mismatch`);
+            assert(initial.counts.running + initial.counts.upcoming + initial.counts.ended === initial.visibleCount, `${item.name}: state total mismatch`);
+            assert(initial.mapVisibleCount === initial.mappedRacecourses.length, `${item.name}: map/list visible set mismatch`);
+            assert(initial.targetDate.length === 10, `${item.name}: target date missing`);
+
+            for (const [kind, values] of [['country', initial.countries], ['authority', initial.authorities], ['rank', initial.ranks]]) {
+              if (!values.length) continue;
+              await page.locator(`[data-today-filter="${kind}"]`).selectOption(values[0]);
+              await page.waitForTimeout(200);
+              const filtered = await snapshot();
+              assert(filtered.visibleCount > 0, `${item.name}: ${kind} filter unexpectedly empty`);
+              assert(filtered.mapVisibleCount === filtered.mappedRacecourses.length, `${item.name}: ${kind} map/list mismatch`);
+              await page.locator('[data-today-filter-reset]').click();
+              await page.waitForTimeout(200);
+              assert((await snapshot()).visibleCount === initial.visibleCount, `${item.name}: reset failed after ${kind}`);
+            }
+
+            await page.locator('[data-today-timezone]').selectOption('UTC');
+            await page.waitForFunction(() => document.querySelector('[data-display-timezone-select]')?.value === 'UTC');
+            await page.waitForTimeout(250);
+            const utc = await snapshot();
+            assert(utc.timezoneLabel === 'UTC — UTC+00:00', `${item.name}: friendly UTC label missing: ${utc.timezoneLabel}`);
+            assert(utc.mapVisibleCount === utc.mappedRacecourses.length, `${item.name}: UTC map/list mismatch`);
+            await page.locator('[data-today-timezone]').selectOption('Asia/Tokyo');
+            await page.waitForFunction(() => document.querySelector('[data-display-timezone-select]')?.value === 'Asia/Tokyo');
+            await page.waitForTimeout(250);
+
+            if (item.mobile) {
+              const candidate = await page.evaluate(() => {
+                const mapping = JSON.parse(document.querySelector('[data-today-map-meeting-map]')?.textContent || '[]');
+                const byMeeting = new Map(mapping.map((entry) => [entry.meetingId, entry]));
+                const row = [...document.querySelectorAll('[data-calendar-meeting-row]')].find((candidate) => candidate instanceof HTMLElement && !candidate.hidden && byMeeting.get(candidate.dataset.meetingId || '')?.hasReviewedLocation);
+                if (!(row instanceof HTMLElement)) return null;
+                return byMeeting.get(row.dataset.meetingId || '')?.racecourseId || null;
+              });
+              assert(candidate, `${item.name}: no mapped meeting for mobile interaction`);
+              await page.locator('[data-today-map-sync]').scrollIntoViewIfNeeded();
+              const before = await page.evaluate(() => window.scrollY);
+              await page.locator('[data-racecourse-map]').evaluate((el, id) => el.dispatchEvent(new CustomEvent('racecourse-map:select', { detail: { racecourseId: id } })), candidate);
+              await page.waitForFunction(() => document.querySelector('[data-today-map-selected]') instanceof HTMLElement && !document.querySelector('[data-today-map-selected]').hidden);
+              await page.waitForTimeout(250);
+              const after = await page.evaluate(() => window.scrollY);
+              assert(Math.abs(after - before) <= 5, `${item.name}: pin selection auto-scrolled by ${after - before}px`);
+              await page.locator('[data-today-map-show-list]').click();
+              await page.waitForTimeout(700);
+              assert(await page.evaluate(() => document.activeElement?.matches?.('[data-meeting-map-focus]') === true), `${item.name}: Show in List did not focus list action`);
+              await page.locator('[data-meeting-map-focus]:focus').click();
+              await page.waitForTimeout(400);
+              assert(await page.locator('[data-racecourse-map]').getAttribute('data-selected-racecourse-id') === candidate, `${item.name}: list-to-map focus failed`);
+            }
+
+            const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+            assert(overflow <= 1, `${item.name}: horizontal overflow ${overflow}px`);
+            assert(pageErrors.length === 0, `${item.name}: page errors ${pageErrors.join(' | ')}`);
+            await page.screenshot({ path: `audit/ui-004/${item.name}.png`, fullPage: true });
+            report.push({ name: item.name, initial, utc, timezoneContract, overflow, pageErrors, ok: true });
+            await page.close();
+          }
+
+          await browser.close();
+          fs.writeFileSync('audit/ui-004/report.json', JSON.stringify(report, null, 2));
+          console.log(JSON.stringify(report, null, 2));
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ui-004-today-clean-browser-audit
+          path: audit/ui-004
