@@ -4,7 +4,7 @@ This directory contains the active roadmaps, contracts, schemas, reviewed resear
 
 ## Start here
 
-1. [Documentation authority](governance/document-authority.md)
+1. [Documentation authority](governance/document-authority.md) + [2026-09-06 UI authority addendum](governance/document-authority-2026-09-06-addendum.md)
 2. [Project roadmap](project-roadmap.md)
 3. [2026-09-06 active project-roadmap addendum](project-roadmap-2026-09-06-addendum.md)
 4. [Map-first site UI specification](specs/map-first-site-ui-2026-09-06.md)
@@ -30,6 +30,7 @@ Overall:
 - [Map-first site UI specification](specs/map-first-site-ui-2026-09-06.md) — current public information architecture, navigation, responsive/mobile behavior, map status presentation, and page-role contract
 - [Map UI integration decision](decisions/map-ui-integration-2026-09-05.md)
 - [Documentation authority](governance/document-authority.md)
+- [2026-09-06 UI authority addendum](governance/document-authority-2026-09-06-addendum.md) — sets the current top-level execution pointer and canonical UI document set without replacing other governance/Calendar authority lists
 - [Internal source handling boundary](governance/internal-source-handling.md)
 - [Deployment and CI policy](operations/deployment-and-ci-policy.md)
 
