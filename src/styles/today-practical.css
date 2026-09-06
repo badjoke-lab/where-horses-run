@@ -1,0 +1,301 @@
+.today-page {
+  display: grid;
+  gap: var(--whr-space-4);
+}
+
+.today-page__hero {
+  gap: var(--whr-space-2);
+  padding-block: var(--whr-space-3) var(--whr-space-2);
+  border-bottom: 0;
+}
+
+.today-page__hero h1 {
+  max-width: 24ch;
+  font-size: clamp(1.8rem, 3.4vw, 2.7rem);
+}
+
+.today-page__hero .hero__summary {
+  max-width: 52rem;
+  color: var(--whr-color-muted);
+}
+
+.today-page__context {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.today-controls {
+  display: grid;
+  gap: var(--whr-space-3);
+  padding-block: var(--whr-space-3);
+  border-block: 1px solid var(--whr-color-border);
+}
+
+.today-controls__filters {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  align-items: end;
+  gap: var(--whr-space-2);
+}
+
+.today-controls__filters label {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+  color: var(--whr-color-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.today-controls__filters select,
+.today-controls__reset {
+  min-height: 44px;
+  border: 1px solid var(--whr-color-border);
+  border-radius: 0.5rem;
+  background: var(--whr-color-bg);
+  color: var(--whr-color-text);
+  font: inherit;
+}
+
+.today-controls__filters select {
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+}
+
+.today-controls__reset {
+  padding-inline: 1rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.today-controls__filters :is(select, button):focus-visible {
+  outline: 3px solid #111;
+  outline-offset: 2px;
+}
+
+.today-state-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--whr-space-2);
+  flex-wrap: wrap;
+}
+
+.today-state-summary__item,
+.today-state-summary__total {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 36px;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--whr-color-border);
+  border-radius: 999px;
+  font-size: 0.86rem;
+}
+
+.today-state-summary__item > span:first-child,
+.today-state-divider > span:first-child {
+  display: inline-block;
+  width: 0.72rem;
+  height: 0.72rem;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px #111;
+  flex: 0 0 auto;
+}
+
+.today-state-summary__item--running > span:first-child,
+.today-state-divider--running > span:first-child {
+  background: #c40000;
+}
+
+.today-state-summary__item--upcoming > span:first-child,
+.today-state-divider--upcoming > span:first-child {
+  background: #d18a00;
+}
+
+.today-state-summary__item--future > span:first-child,
+.today-state-divider--future > span:first-child {
+  background: #111;
+}
+
+.today-state-summary__item--ended > span:first-child,
+.today-state-divider--ended > span:first-child {
+  background: #666;
+}
+
+.today-state-summary__total {
+  margin-inline-start: auto;
+  border-style: dashed;
+  color: var(--whr-color-muted);
+}
+
+.today-controls__empty {
+  margin: 0;
+  padding: 0.75rem;
+  border: 1px dashed var(--whr-color-border);
+  border-radius: 0.5rem;
+}
+
+.today-page .today-meeting-map.card {
+  margin-block: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.today-page .today-meeting-map__heading {
+  padding-block-start: var(--whr-space-2);
+  border-top: 2px solid var(--whr-color-text);
+}
+
+.today-page .racecourse-map__canvas {
+  min-height: clamp(480px, 54vh, 620px);
+  border-radius: 1rem;
+}
+
+.today-page__list {
+  display: grid;
+  gap: var(--whr-space-3);
+  margin-block-end: var(--whr-space-5);
+}
+
+.today-page__list-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--whr-space-3);
+  padding-block-start: var(--whr-space-3);
+  border-top: 2px solid var(--whr-color-text);
+}
+
+.today-page__list-heading h2,
+.today-page__list-heading p {
+  margin: 0;
+}
+
+.today-page__list-heading > p {
+  max-width: 34rem;
+  color: var(--whr-color-muted);
+  font-size: 0.88rem;
+  text-align: right;
+}
+
+.today-page__eyebrow {
+  color: var(--whr-color-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.today-page__list [data-display-timezone-root] > .timezone-control {
+  display: none;
+}
+
+.today-page__list .timetable-date-group > h2 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.today-state-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  margin-block-start: var(--whr-space-3);
+  padding: 0.55rem 0.65rem;
+  border-bottom: 2px solid var(--whr-color-text);
+  background: var(--whr-color-bg);
+}
+
+.today-state-divider:first-child {
+  margin-block-start: 0;
+}
+
+.today-state-divider small {
+  margin-inline-start: auto;
+  color: var(--whr-color-muted);
+  font-size: 0.82rem;
+}
+
+.today-page .meeting-row[hidden] {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .today-controls__filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .today-controls__reset {
+    width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .today-page {
+    gap: var(--whr-space-3);
+  }
+
+  .today-page__hero {
+    padding-block-start: var(--whr-space-2);
+  }
+
+  .today-controls__filters {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .today-controls__filters label:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .today-controls__reset {
+    min-height: 44px;
+  }
+
+  .today-state-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+
+  .today-state-summary__item {
+    justify-content: center;
+    min-width: 0;
+    padding-inline: 0.35rem;
+    text-align: center;
+  }
+
+  .today-state-summary__total {
+    grid-column: 1 / -1;
+    justify-content: center;
+    margin-inline-start: 0;
+  }
+
+  .today-page .racecourse-map__canvas {
+    min-height: clamp(340px, 48vh, 420px);
+    border-radius: 0.75rem;
+  }
+
+  .today-page__list-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .today-page__list-heading > p {
+    text-align: left;
+  }
+
+  .today-state-divider {
+    position: relative;
+    z-index: 0;
+  }
+}
