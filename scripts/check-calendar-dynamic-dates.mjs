@@ -120,7 +120,13 @@ for (const marker of [
   "scope === 'rolling-30'",
   "const TIMED_RANKS = new Set(['A+', 'A', 'B+'])",
   "const policy = timed ? 'timed' : 'day'",
-  "state = now < start.getTime() ? 'upcoming' : now <= endMs ? 'running' : 'ended'",
+  "const displayedDate = row.dataset.date || sourceDate",
+  "const displayToday = formatProjectedDate(new Date(now), selectedTimeZone)",
+  "const dayState = displayedDate < displayToday ? 'past' : displayedDate > displayToday ? 'future' : 'today'",
+  "if (now >= start.getTime() && now <= endMs) state = 'running'",
+  "else if (now > endMs) state = 'ended'",
+  "else state = dayState === 'today' ? 'upcoming' : 'future'",
+  "setMeetingState(row, timeZone)",
   "state = dayState === 'past' ? 'ended' : dayState === 'today' ? 'upcoming' : 'future'",
   "meetingToday: '本日開催'",
   "meetingUpcoming: '開催前'",
@@ -134,6 +140,9 @@ for (const marker of [
   '#f3f3f3',
 ]) {
   if (!meetingList.includes(marker)) fail(`TimetableMeetingList missing lifecycle contract marker: ${marker}`);
+}
+if (meetingList.includes("state = now < start.getTime() ? 'upcoming' : now <= endMs ? 'running' : 'ended'")) {
+  fail('Timed meetings must not turn yellow before the selected display date begins.');
 }
 if (meetingList.includes("Intl.supportedValuesOf('timeZone')")) fail('TimetableMeetingList must not expand the full browser IANA timezone list.');
 if (meetingList.includes("(record.capability_rank === 'A' || record.capability_rank === 'A+') &&")) fail('TimetableMeetingList must not gate B+ out of timed lifecycle state.');
@@ -185,6 +194,7 @@ console.log('TIMEZONE_BOUNDARIES: pass');
 console.log('SELECTED_TIMEZONE_PROJECTION: pass');
 console.log('UNIFIED_HOME_WINDOW: pass');
 console.log('RANK_AWARE_MEETING_STATE_POLICY: pass');
+console.log('DISPLAY_DATE_MIDNIGHT_YELLOW_BOUNDARY: pass');
 console.log('WHR_BRAND_SYSTEM: pass');
 console.log('ROLLING_WINDOW_DAYS: 30');
 console.log('FIXED_MONTH_YEAR_COPY: 0');
