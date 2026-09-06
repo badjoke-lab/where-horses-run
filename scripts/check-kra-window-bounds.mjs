@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {
+  assessKraWindowCoverage,
   generateKraPlanMeetings,
   parseKraOperationPlan,
   validateKraGeneratedPlan,
@@ -14,8 +15,11 @@ assert.match(source, /skipped_not_published/, 'KRA artifact must expose publicat
 assert.match(source, /fallback_full_detail/, 'KRA published-racecard probe failure must fall back to full detail collection');
 assert.match(source, /PUBLISHED_RACECARD_URL[\s\S]*ThisWeekDetailInfoList\.do/, 'KRA detail gate must use the official published racecard page');
 assert.match(source, /parsePublishedRacecardMeetings/, 'KRA detail gate must parse racecourse/date pairs from published racecards');
+assert.match(source, /window_coverage:\s*windowCoverage/, 'KRA artifact must expose annual-plan window coverage');
+assert.match(source, /completeness:\s*windowCoverage\.status/, 'KRA artifact must expose complete vs partial annual-plan coverage');
 assert.doesNotMatch(source, /RegistStateList\.do/, 'KRA detail gate must not treat registration status as published racecard evidence');
 assert.doesNotMatch(source, /PLAN_2026/, 'KRA runtime must not hard-code a 2026 annual plan');
+assert.doesNotMatch(source, /PLAN_2027/, 'KRA runtime must not hard-code a 2027 annual plan');
 
 const fixture = `
 <html><body>
@@ -46,6 +50,34 @@ assert.deepEqual(validateKraGeneratedPlan(annual, plan, track), {
   busan: 86,
   yeongcheon: 12,
   jeju: 101,
+});
+
+assert.deepEqual(assessKraWindowCoverage(2026, '2026-09-06', 30), {
+  status: 'complete',
+  start_year_available: true,
+  requested_plan_years: [2026],
+  covered_plan_years: [2026],
+  unresolved_plan_years: [],
+  unresolved_reason: null,
+  end_date_exclusive: '2026-10-06',
+});
+assert.deepEqual(assessKraWindowCoverage(2026, '2026-12-15', 30), {
+  status: 'partial',
+  start_year_available: true,
+  requested_plan_years: [2026, 2027],
+  covered_plan_years: [2026],
+  unresolved_plan_years: [2027],
+  unresolved_reason: 'official_annual_plan_not_available',
+  end_date_exclusive: '2027-01-14',
+});
+assert.deepEqual(assessKraWindowCoverage(2026, '2027-01-01', 30), {
+  status: 'unavailable',
+  start_year_available: false,
+  requested_plan_years: [2027],
+  covered_plan_years: [],
+  unresolved_plan_years: [2027],
+  unresolved_reason: 'official_annual_plan_not_available',
+  end_date_exclusive: '2027-01-31',
 });
 
 console.log('KRA_WINDOW_BOUNDS: pass');

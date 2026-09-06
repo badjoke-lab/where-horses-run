@@ -132,6 +132,30 @@ function inClosure(date, plan) {
   return plan.closures.some(([start, end]) => date >= start && date <= end);
 }
 
+export function assessKraWindowCoverage(planYear, startDate, days) {
+  if (!Number.isInteger(planYear) || planYear < 2000) throw new Error('KRA plan year is invalid');
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate)) throw new Error('KRA window start date is invalid');
+  if (!Number.isInteger(days) || days < 1 || days > 62) throw new Error('KRA window days are invalid');
+
+  const endDateExclusive = plusDays(startDate, days);
+  const lastDate = plusDays(endDateExclusive, -1);
+  const requestedPlanYears = [...new Set(eachDate(startDate, lastDate).map((date) => Number(date.slice(0, 4))))].sort((a, b) => a - b);
+  const startYear = Number(startDate.slice(0, 4));
+  const startYearAvailable = startYear === planYear;
+  const coveredPlanYears = requestedPlanYears.filter((year) => year === planYear);
+  const unresolvedPlanYears = requestedPlanYears.filter((year) => year !== planYear);
+
+  return {
+    status: !startYearAvailable ? 'unavailable' : (unresolvedPlanYears.length ? 'partial' : 'complete'),
+    start_year_available: startYearAvailable,
+    requested_plan_years: requestedPlanYears,
+    covered_plan_years: coveredPlanYears,
+    unresolved_plan_years: unresolvedPlanYears,
+    unresolved_reason: unresolvedPlanYears.length ? 'official_annual_plan_not_available' : null,
+    end_date_exclusive: endDateExclusive,
+  };
+}
+
 export function generateKraPlanMeetings(plan, trackConfig) {
   const rows = [];
   const add = (date, key) => {
