@@ -126,12 +126,10 @@ const fixedCalendarHeadings = [
   /\b\d{4}年(?:1[0-2]|[1-9])月\s*開催カレンダー/,
 ];
 const pageChecks = [
-  ['src/pages/today.astro', ['CalendarDateStatus', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="today"', 'data-timezone-target-date']],
-  ['src/pages/tomorrow.astro', ['CalendarDateStatus', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="tomorrow"', 'data-timezone-target-date']],
-  ['src/pages/calendar/index.astro', ['CalendarDateNavigation', 'CalendarPresentationState', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="rolling-30"', 'windowEndInclusive']],
-  ['src/pages/ja/today.astro', ['CalendarDateStatus', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="today"', 'data-timezone-target-date']],
-  ['src/pages/ja/tomorrow.astro', ['CalendarDateStatus', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="tomorrow"', 'data-timezone-target-date']],
-  ['src/pages/ja/calendar/index.astro', ['CalendarDateNavigation', 'CalendarPresentationState', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="rolling-30"', 'windowEndInclusive']],
+  ['src/pages/index.astro', ['TodayFilters', 'TodayMeetingMap', 'TimetableMeetingList', 'getTimetableMeetingRowsForWindow', 'getGroupedTimetableMeetingRows', 'addCalendarDays', 'scope="all"', 'data-home-meeting-window']],
+  ['src/pages/ja/index.astro', ['TodayFilters', 'TodayMeetingMap', 'TimetableMeetingList', 'getTimetableMeetingRowsForWindow', 'getGroupedTimetableMeetingRows', 'addCalendarDays', 'scope="all"', 'data-home-meeting-window']],
+  ['src/pages/calendar/index.astro', ['CalendarDateNavigation', 'CalendarPresentationState', 'MeetingStatePolicy', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="rolling-30"', 'windowEndInclusive']],
+  ['src/pages/ja/calendar/index.astro', ['CalendarDateNavigation', 'CalendarPresentationState', 'MeetingStatePolicy', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="rolling-30"', 'windowEndInclusive']],
 ];
 for (const [file, markers] of pageChecks) {
   const content = read(file);
@@ -139,6 +137,18 @@ for (const [file, markers] of pageChecks) {
   for (const pattern of fixedCalendarHeadings) {
     if (pattern.test(content)) fail(`${file} retains fixed month/year Calendar copy.`);
   }
+}
+
+const legacyRouteChecks = [
+  ['src/pages/today.astro', "const target = '/'", 'Today is now the default Home view'],
+  ['src/pages/tomorrow.astro', "const target = '/?range=tomorrow'", "url.searchParams.set('range', 'tomorrow')"],
+  ['src/pages/ja/today.astro', "const target = '/ja/'", '今日の開催はトップページの初期表示'],
+  ['src/pages/ja/tomorrow.astro', "const target = '/ja/?range=tomorrow'", "url.searchParams.set('range', 'tomorrow')"],
+];
+for (const [file, targetMarker, behaviorMarker] of legacyRouteChecks) {
+  const content = read(file);
+  if (!content.includes(targetMarker)) fail(`${file} missing unified-Home route target.`);
+  if (!content.includes(behaviorMarker)) fail(`${file} missing unified-Home redirect behavior.`);
 }
 
 for (const file of ['src/pages/calendar/index.astro', 'src/pages/ja/calendar/index.astro']) {
@@ -166,18 +176,28 @@ if (meetingList.includes("Intl.supportedValuesOf('timeZone')")) {
   fail('TimetableMeetingList must not expand the full browser IANA timezone list.');
 }
 
-const meetingProjection = read('src/components/MeetingTimezoneProjection.astro');
-for (const marker of ['data-meeting-timezone-select', 'data-meeting-source-time', 'whr:timezonechange']) {
-  if (!meetingProjection.includes(marker)) fail(`MeetingTimezoneProjection missing ${marker}.`);
-}
-for (const file of [
-  'src/pages/timetable/meetings/[meeting_id].astro',
-  'src/pages/ja/timetable/meetings/[meeting_id].astro',
+const homeControls = read('src/components/TodayFilters.astro');
+for (const marker of [
+  'data-meeting-range="today"',
+  'data-meeting-range="tomorrow"',
+  'data-meeting-range="next7"',
+  "activeRange === 'next7'",
+  "activeRange === 'tomorrow'",
+  'CURATED_TIMEZONES',
 ]) {
-  const content = read(file);
-  for (const marker of ['MeetingTimezoneProjection', 'data-meeting-source-time', 'data-meeting-projected-date']) {
-    if (!content.includes(marker)) fail(`${file} missing ${marker}.`);
-  }
+  if (!homeControls.includes(marker)) fail(`Unified Home controls missing ${marker}.`);
+}
+
+const statePolicy = read('src/components/MeetingStatePolicy.astro');
+for (const marker of [
+  "new Set(['A+', 'A', 'B+'])",
+  "state = now < start.getTime() ? 'upcoming' : now <= endMs ? 'running' : 'ended'",
+  "state = calendarDayState === 'past' ? 'ended' : calendarDayState === 'today' ? 'upcoming' : 'future'",
+  "policy === 'day'",
+  "'本日開催'",
+  "'開催前'",
+]) {
+  if (!statePolicy.includes(marker)) fail(`MeetingStatePolicy missing rank/state contract marker: ${marker}`);
 }
 
 const baseLayout = read('src/layouts/BaseLayout.astro');
@@ -192,6 +212,23 @@ for (const marker of [
 }
 if (baseLayout.includes("Intl.supportedValuesOf('timeZone')")) {
   fail('BaseLayout must not expand the full browser IANA timezone list.');
+}
+if (baseLayout.includes("href: isJapanese ? '/ja/today/' : '/today/'")) {
+  fail('BaseLayout must not retain Today as a separate primary navigation destination.');
+}
+
+const meetingProjection = read('src/components/MeetingTimezoneProjection.astro');
+for (const marker of ['data-meeting-timezone-select', 'data-meeting-source-time', 'whr:timezonechange']) {
+  if (!meetingProjection.includes(marker)) fail(`MeetingTimezoneProjection missing ${marker}.`);
+}
+for (const file of [
+  'src/pages/timetable/meetings/[meeting_id].astro',
+  'src/pages/ja/timetable/meetings/[meeting_id].astro',
+]) {
+  const content = read(file);
+  for (const marker of ['MeetingTimezoneProjection', 'data-meeting-source-time', 'data-meeting-projected-date']) {
+    if (!content.includes(marker)) fail(`${file} missing ${marker}.`);
+  }
 }
 
 const countryPage = read('src/components/CountryDetailPage.astro');
@@ -216,5 +253,7 @@ console.log('REFERENCE_DATE_OVERRIDE: pass');
 console.log('SOURCE_DATE_EPOCH: pass');
 console.log('TIMEZONE_BOUNDARIES: pass');
 console.log('SELECTED_TIMEZONE_PROJECTION: pass');
+console.log('UNIFIED_HOME_WINDOW: pass');
+console.log('RANK_AWARE_MEETING_STATE_POLICY: pass');
 console.log('ROLLING_WINDOW_DAYS: 30');
 console.log('FIXED_MONTH_YEAR_COPY: 0');
