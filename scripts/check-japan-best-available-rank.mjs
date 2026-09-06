@@ -1,7 +1,18 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { deriveJapanBestAvailableRank, runJapanZeroBased30d } from './timetable/japan-zero-based-30d-core.mjs';
 import { parseNarDebaMetadata, parseNarMonthlySchedule } from './timetable/japan-official-30d-adapters.mjs';
 import { parseMonbetsuOfficialRaceInfoPage } from './timetable/saga-official-start-fallback.mjs';
+
+const publicViewModelSource = readFileSync(
+  new URL('../src/lib/timetable/publicTimetableViewModel.ts', import.meta.url),
+  'utf8',
+);
+assert.doesNotMatch(
+  publicViewModelSource,
+  /\['nar-mizusawa-racecourse-\d{4}-\d{2}-\d{2}',\s*\{[^}]*effective_public_rank:\s*'B\+'/s,
+  'public view model must not hard-code Mizusawa A+/A down to B+',
+);
 
 const aPlusRows = [1, 2].map((number) => ({
   label: `Race ${number}`,
