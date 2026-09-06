@@ -1,0 +1,220 @@
+name: Temporary UI-005 rolling Calendar audit
+
+on:
+  pull_request:
+    branches:
+      - fix/ui-005-calendar-rolling-list
+
+permissions:
+  contents: read
+
+jobs:
+  browser-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+      - run: npm install
+      - run: npm run build
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Start static server
+        run: |
+          python3 -m http.server 4321 --directory dist > /tmp/whr-ui005-rolling-server.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4321/calendar/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/whr-ui005-rolling-server.log
+          exit 1
+      - name: Audit rolling Calendar interactions
+        run: |
+          mkdir -p audit/ui-005-rolling
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { chromium } from 'playwright';
+
+          const browser = await chromium.launch({ headless: true });
+          const cases = [
+            { name: 'en-desktop', path: '/calendar/?tz=Asia%2FTokyo', width: 1440, height: 1100, mobile: false },
+            { name: 'ja-desktop', path: '/ja/calendar/?tz=Asia%2FTokyo', width: 1440, height: 1100, mobile: false },
+            { name: 'en-mobile', path: '/calendar/?tz=Asia%2FTokyo', width: 390, height: 844, mobile: true },
+            { name: 'ja-mobile', path: '/ja/calendar/?tz=Asia%2FTokyo', width: 390, height: 844, mobile: true },
+          ];
+          const report = [];
+          const failures = [];
+          const assert = (condition, message) => { if (!condition) throw new Error(message); };
+
+          const snapshot = async (page) => page.evaluate(() => {
+            const rows = [...document.querySelectorAll('[data-calendar-meeting-row]')].filter((row) => row instanceof HTMLElement);
+            const visibleRows = rows.filter((row) => !row.hidden && row.dataset.timezoneScopeHidden !== 'true');
+            const date = document.querySelector('[data-filter-date]')?.value ?? '';
+            const dateSelect = document.querySelector('[data-filter-date]');
+            const filters = document.querySelector('[data-calendar-filters]');
+            const listButton = document.querySelector('[data-calendar-view-list]');
+            const mapButton = document.querySelector('[data-calendar-view-map]');
+            const url = new URL(location.href);
+            return {
+              date,
+              dateOptions: dateSelect instanceof HTMLSelectElement ? [...dateSelect.options].map((option) => option.value) : [],
+              visibleCount: visibleRows.length,
+              visibleDates: [...new Set(visibleRows.map((row) => row.dataset.date || ''))].filter(Boolean).sort(),
+              countries: [...new Set(visibleRows.map((row) => row.dataset.country || ''))].filter(Boolean).sort(),
+              params: Object.fromEntries(url.searchParams.entries()),
+              hasDateParam: url.searchParams.has('date'),
+              listPressed: listButton?.getAttribute('aria-pressed') === 'true',
+              mapPressed: mapButton?.getAttribute('aria-pressed') === 'true',
+              listHidden: document.querySelector('[data-calendar-list-view]')?.hidden === true,
+              mapHidden: document.querySelector('[data-calendar-map-panel]')?.hidden === true,
+              filtersOpen: filters instanceof HTMLDetailsElement ? filters.open : null,
+              timezone: document.querySelector('[data-display-timezone-select]')?.value || '',
+            };
+          });
+
+          for (const item of cases) {
+            const page = await browser.newPage({ viewport: { width: item.width, height: item.height } });
+            const pageErrors = [];
+            let checkpoint = 'open';
+            page.on('pageerror', (error) => pageErrors.push(String(error)));
+            try {
+              await page.goto(`http://127.0.0.1:4321${item.path}`, { waitUntil: 'domcontentloaded' });
+              await page.waitForFunction(() => {
+                const date = document.querySelector('[data-filter-date]');
+                const list = document.querySelector('[data-calendar-view-list]');
+                return date instanceof HTMLSelectElement && list?.getAttribute('aria-pressed') === 'true';
+              }, null, { timeout: 10000 });
+              await page.waitForTimeout(200);
+
+              checkpoint = 'rolling-default';
+              const initial = await snapshot(page);
+              assert(initial.visibleCount > 0, `${item.name}: no visible Calendar meetings`);
+              assert(initial.visibleDates.length > 1, `${item.name}: default Calendar is not a rolling multi-date list`);
+              assert(initial.date === '', `${item.name}: default date focus is not empty`);
+              assert(initial.dateOptions[0] === '', `${item.name}: All 30 days option is not first`);
+              assert(!initial.hasDateParam, `${item.name}: default URL incorrectly forces date`);
+              assert(initial.params.view === 'list', `${item.name}: default view is not list`);
+              assert(initial.params.tz === 'Asia/Tokyo', `${item.name}: timezone missing from URL`);
+              assert(initial.listPressed && !initial.mapPressed && !initial.listHidden && initial.mapHidden, `${item.name}: initial List-first state wrong`);
+              assert(item.mobile ? initial.filtersOpen === false : initial.filtersOpen === true, `${item.name}: filter expansion state wrong`);
+
+              checkpoint = 'date-focus';
+              const focusDate = initial.dateOptions.find((value) => /^\d{4}-\d{2}-\d{2}$/.test(value) && initial.visibleDates.includes(value));
+              assert(Boolean(focusDate), `${item.name}: no focusable date option`);
+              await page.locator('[data-filter-date]').selectOption(focusDate);
+              await page.waitForTimeout(200);
+              const focused = await snapshot(page);
+              assert(focused.date === focusDate, `${item.name}: selected date did not persist in control`);
+              assert(focused.params.date === focusDate, `${item.name}: selected date did not persist in URL`);
+              assert(focused.visibleCount > 0, `${item.name}: selected date unexpectedly empty`);
+              assert(focused.visibleDates.length === 1 && focused.visibleDates[0] === focusDate, `${item.name}: date focus did not narrow to one day`);
+
+              checkpoint = 'previous-next';
+              const nextDisabled = await page.locator('[data-calendar-date-next]').isDisabled();
+              if (!nextDisabled) {
+                await page.locator('[data-calendar-date-next]').click();
+                await page.waitForTimeout(160);
+                const next = await snapshot(page);
+                assert(next.date !== focusDate, `${item.name}: Next did not move date focus`);
+                assert(next.params.date === next.date, `${item.name}: Next date not reflected in URL`);
+                await page.locator('[data-calendar-date-prev]').click();
+                await page.waitForTimeout(160);
+                assert((await snapshot(page)).date === focusDate, `${item.name}: Previous did not restore focus date`);
+              }
+
+              checkpoint = 'return-all-30';
+              await page.locator('[data-filter-date]').selectOption('');
+              await page.waitForTimeout(200);
+              const restoredAll = await snapshot(page);
+              assert(restoredAll.date === '', `${item.name}: All 30 days did not clear date control`);
+              assert(!restoredAll.hasDateParam, `${item.name}: All 30 days did not remove date URL parameter`);
+              assert(restoredAll.visibleDates.length > 1, `${item.name}: All 30 days did not restore multi-date list`);
+
+              checkpoint = 'country-filter';
+              if (item.mobile) {
+                const details = page.locator('[data-calendar-filters]');
+                if (!(await details.evaluate((node) => node.open))) await details.locator('summary').click();
+              }
+              const current = await snapshot(page);
+              if (current.countries.length > 0) {
+                await page.locator('[data-filter-country]').selectOption(current.countries[0]);
+                await page.waitForTimeout(200);
+                const visibleCountries = await page.evaluate(() => [...document.querySelectorAll('[data-calendar-meeting-row]')]
+                  .filter((row) => row instanceof HTMLElement && !row.hidden && row.dataset.timezoneScopeHidden !== 'true')
+                  .map((row) => row.dataset.country));
+                assert(visibleCountries.length > 0, `${item.name}: country filter unexpectedly empty`);
+                assert(visibleCountries.every((country) => country === current.countries[0]), `${item.name}: country filter mismatch`);
+                await page.locator('[data-filter-reset]').click();
+                await page.waitForTimeout(150);
+              }
+
+              checkpoint = 'map-switch';
+              await page.locator('[data-calendar-view-map]').click();
+              await page.waitForTimeout(250);
+              const map = await snapshot(page);
+              assert(map.mapPressed && !map.listPressed && map.listHidden && !map.mapHidden, `${item.name}: Map switch failed`);
+              assert(map.params.view === 'map', `${item.name}: Map view not persisted in URL`);
+              assert(!map.hasDateParam, `${item.name}: Map switch reintroduced date without request`);
+              await page.waitForFunction(() => ['ready', 'error'].includes(document.querySelector('[data-racecourse-map]')?.getAttribute('data-map-state') || ''), null, { timeout: 20000 });
+
+              checkpoint = 'list-restore';
+              await page.locator('[data-calendar-view-list]').click();
+              await page.waitForTimeout(150);
+              const list = await snapshot(page);
+              assert(list.params.view === 'list' && list.listPressed && !list.listHidden, `${item.name}: List view not restored`);
+              assert(!list.hasDateParam, `${item.name}: List restore reintroduced date without request`);
+
+              checkpoint = 'timezone';
+              await page.locator('[data-display-timezone-select]').evaluate((select) => {
+                select.value = 'UTC';
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+              });
+              await page.waitForFunction(() => new URL(location.href).searchParams.get('tz') === 'UTC', null, { timeout: 5000 });
+              await page.waitForTimeout(250);
+              const utc = await snapshot(page);
+              assert(utc.timezone === 'UTC', `${item.name}: timezone did not switch to UTC`);
+              assert(!utc.hasDateParam && utc.date === '', `${item.name}: timezone switch forced date focus`);
+              assert(utc.visibleDates.length > 1, `${item.name}: timezone switch lost rolling multi-date view`);
+
+              checkpoint = 'deep-link-date-focus';
+              const pathname = new URL(page.url()).pathname;
+              await page.goto(`http://127.0.0.1:4321${pathname}?tz=Asia%2FTokyo&date=${encodeURIComponent(focusDate)}&view=map`, { waitUntil: 'domcontentloaded' });
+              await page.waitForFunction(() => document.querySelector('[data-filter-date]')?.value === new URL(location.href).searchParams.get('date'), null, { timeout: 10000 });
+              await page.waitForTimeout(250);
+              const deep = await snapshot(page);
+              assert(deep.date === focusDate && deep.visibleDates.length === 1 && deep.visibleDates[0] === focusDate, `${item.name}: date deep-link did not restore focus`);
+              assert(deep.mapPressed && deep.params.view === 'map', `${item.name}: map deep-link did not restore view`);
+
+              checkpoint = 'overflow-errors';
+              const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+              assert(overflow <= 1, `${item.name}: horizontal overflow ${overflow}px`);
+              assert(pageErrors.length === 0, `${item.name}: page errors ${pageErrors.join(' | ')}`);
+              await page.screenshot({ path: `audit/ui-005-rolling/${item.name}.png`, fullPage: true });
+              report.push({ name: item.name, initial, focused, restoredAll, map, list, utc, deep, overflow, pageErrors, ok: true });
+            } catch (error) {
+              const message = error instanceof Error ? error.stack || error.message : String(error);
+              let snap = null;
+              try { snap = await snapshot(page); } catch {}
+              try { await page.screenshot({ path: `audit/ui-005-rolling/${item.name}-failure.png`, fullPage: true }); } catch {}
+              try { fs.writeFileSync(`audit/ui-005-rolling/${item.name}-failure.html`, await page.content()); } catch {}
+              const failure = { name: item.name, checkpoint, url: page.url(), snapshot: snap, pageErrors, error: message };
+              failures.push(failure);
+              report.push({ ...failure, ok: false });
+              console.error(`UI-005 ROLLING FAILURE ${JSON.stringify(failure)}`);
+            } finally {
+              await page.close();
+            }
+          }
+
+          await browser.close();
+          fs.writeFileSync('audit/ui-005-rolling/report.json', JSON.stringify(report, null, 2));
+          fs.writeFileSync('audit/ui-005-rolling/failures.json', JSON.stringify(failures, null, 2));
+          if (failures.length) throw new Error(`rolling Calendar audit failed: ${failures.map((f) => `${f.name}@${f.checkpoint}`).join(', ')}`);
+          NODE
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ui-005-rolling-calendar-audit
+          path: audit/ui-005-rolling
