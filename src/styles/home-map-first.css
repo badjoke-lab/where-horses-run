@@ -31,6 +31,82 @@
   min-height: 44px;
 }
 
+.home-racing-map__selected {
+  padding: var(--whr-space-4);
+  border-color: #111;
+}
+
+.home-racing-map__selected-heading > div {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.home-racing-map__selected-meta {
+  color: var(--whr-color-muted);
+}
+
+.home-racing-map__selected-meetings {
+  display: grid;
+  gap: var(--whr-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-racing-map__selected-meeting {
+  display: grid;
+  gap: var(--whr-space-2);
+  padding-block-start: var(--whr-space-3);
+  border-top: 1px solid var(--whr-color-border);
+}
+
+.home-racing-map__selected-meeting-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--whr-space-2);
+}
+
+.home-racing-map__selected-facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--whr-space-2) var(--whr-space-3);
+  margin: 0;
+}
+
+.home-racing-map__selected-facts div {
+  min-width: 0;
+}
+
+.home-racing-map__selected-facts dt {
+  color: var(--whr-color-muted);
+  font-size: 0.78rem;
+}
+
+.home-racing-map__selected-facts dd {
+  margin: 0.15rem 0 0;
+  font-weight: 700;
+}
+
+.home-racing-map__selected-meeting-actions,
+.home-racing-map__selected-more,
+.home-racing-map__selected-links {
+  margin: 0;
+}
+
+.home-racing-map__selected-meeting-actions a,
+.home-racing-map__selected-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.home-racing-map__selected-more {
+  color: var(--whr-color-muted);
+  font-size: 0.9rem;
+}
+
 .home-primary-flow {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -104,7 +180,9 @@
   text-decoration: underline;
 }
 
-.home-meeting-list a:focus-visible {
+.home-meeting-list a:focus-visible,
+.home-racing-map__selected-meeting-actions a:focus-visible,
+.home-racing-map__selected-links a:focus-visible {
   outline: 3px solid #111;
   outline-offset: 2px;
 }
@@ -145,6 +223,23 @@
   .home-racing-map .racecourse-map__canvas {
     min-height: clamp(360px, 50vh, 460px);
     border-radius: 0.75rem;
+  }
+
+  .home-racing-map__selected {
+    padding: var(--whr-space-3);
+  }
+
+  .home-racing-map__selected-meeting-heading {
+    align-items: flex-start;
+  }
+
+  .home-racing-map__selected-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-racing-map__selected-meeting-actions a,
+  .home-racing-map__selected-links a {
+    min-height: 44px;
   }
 
   .home-section-heading {

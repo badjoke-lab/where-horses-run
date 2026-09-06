@@ -2,6 +2,7 @@
 import RacecourseMap from './RacecourseMap.astro';
 import locationRegistry from '../../data/static/racecourse-locations-v1.json';
 import { getRacecourses } from '../lib/data';
+import { getPublicTimetableMeetingDetail } from '../lib/timetable/publicTimetableViewModel';
 import type { TimetableMeetingRow } from '../data/timetableMeetingRows';
 
 interface Props {
@@ -22,6 +23,7 @@ const candidateRacecourseIds = [...new Set(
 )];
 const publicRows = records.map((record) => {
   const track = racecourseById.get(record.racecourse_id);
+  const publicDetail = getPublicTimetableMeetingDetail(record.meeting_id);
   return {
     meetingId: record.meeting_id,
     racecourseId: record.racecourse_id,
@@ -33,6 +35,7 @@ const publicRows = records.map((record) => {
     sourceTimezone: record.timezone,
     firstRaceTime: record.first_race_time_local ?? null,
     lastRaceTime: record.last_race_time_local ?? null,
+    raceCount: publicDetail?.timetable_rows.length ?? null,
     publicRank: record.capability_rank,
     detailPath: record.detail_path ? (isJapanese ? `/ja${record.detail_path}` : record.detail_path) : null,
     officialSourceUrl: record.official_source_url,
@@ -83,14 +86,17 @@ const fallbackMessage = isJapanese
       <p class="racecourse-map__attribution">
         Map: <a href="https://openfreemap.org/">OpenFreeMap</a> · Data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>
       </p>
-      <article class="home-racing-map__selected" data-home-map-selected hidden>
+      <article class="home-racing-map__selected" data-home-map-selected hidden aria-live="polite">
         <div class="home-racing-map__selected-heading">
-          <h3 data-home-map-selected-name></h3>
+          <div>
+            <h3 data-home-map-selected-name></h3>
+            <p data-home-map-selected-meta></p>
+          </div>
           <button type="button" class="map-selected-card__close" data-home-map-close aria-label={isJapanese ? '選択を閉じる' : 'Close selection'}>×</button>
         </div>
-        <p data-home-map-selected-meta></p>
-        <ul data-home-map-selected-meetings></ul>
-        <p data-home-map-selected-links></p>
+        <ul class="home-racing-map__selected-meetings" data-home-map-selected-meetings></ul>
+        <p class="home-racing-map__selected-more" data-home-map-selected-more hidden></p>
+        <p class="home-racing-map__selected-links" data-home-map-selected-links></p>
       </article>
     </>
   ) : (
@@ -122,6 +128,7 @@ const fallbackMessage = isJapanese
         const selectedName = root.querySelector('[data-home-map-selected-name]');
         const selectedMeta = root.querySelector('[data-home-map-selected-meta]');
         const selectedMeetings = root.querySelector('[data-home-map-selected-meetings]');
+        const selectedMore = root.querySelector('[data-home-map-selected-more]');
         const selectedLinks = root.querySelector('[data-home-map-selected-links]');
         const closeButton = root.querySelector('[data-home-map-close]');
         if (!(timezoneSelect instanceof HTMLSelectElement) || !(dataNode instanceof HTMLScriptElement)) return;
@@ -129,6 +136,7 @@ const fallbackMessage = isJapanese
         let records = [];
         try { records = JSON.parse(dataNode.textContent || '[]'); } catch { records = []; }
         const isJa = root.dataset.lang === 'ja';
+        const MAX_SELECTED_MEETINGS = 3;
         let period = 'today';
         let visibleProjected = [];
         let selectedRacecourseId = null;
@@ -190,6 +198,8 @@ const fallbackMessage = isJapanese
             firstProjectedTime: first ? formatTime(first, timeZone) : null,
             lastProjectedTime: last ? formatTime(last, timeZone) : null,
             lastProjectedDate: last ? formatDate(last, timeZone) : null,
+            firstInstantMs: first ? first.getTime() : null,
+            lastInstantMs: last ? last.getTime() : null,
           };
         };
         const periodWindow = (timeZone) => {
@@ -201,12 +211,31 @@ const fallbackMessage = isJapanese
           if (period === 'next7') return { start: today, endExclusive: addDays(today, 7), label: `${today}–${addDays(today, 6)}` };
           return { start: today, endExclusive: addDays(today, 1), label: today };
         };
+        const stateForMeeting = (record, timeZone) => {
+          const now = Date.now();
+          const today = formatDate(new Date(now), timeZone);
+          if (record.projectedDate > today) return { key: 'future', label: isJa ? '開催予定' : 'Scheduled' };
+          if (record.projectedDate < today) return { key: 'ended', label: isJa ? '終了' : 'Finished' };
+          if (typeof record.firstInstantMs === 'number' && now < record.firstInstantMs) return { key: 'upcoming', label: isJa ? '今日これから' : 'Later today' };
+          if (typeof record.lastInstantMs === 'number' && now > record.lastInstantMs) return { key: 'ended', label: isJa ? '終了' : 'Finished' };
+          if (
+            typeof record.firstInstantMs === 'number' &&
+            typeof record.lastInstantMs === 'number' &&
+            now >= record.firstInstantMs &&
+            now <= record.lastInstantMs
+          ) return { key: 'running', label: isJa ? '開催中' : 'Racing now' };
+          return { key: 'today', label: isJa ? '今日' : 'Today' };
+        };
         const clearSelected = () => {
           selectedRacecourseId = null;
           if (selected instanceof HTMLElement) selected.hidden = true;
           if (selectedName) selectedName.textContent = '';
           if (selectedMeta) selectedMeta.textContent = '';
           if (selectedMeetings) selectedMeetings.replaceChildren();
+          if (selectedMore instanceof HTMLElement) {
+            selectedMore.textContent = '';
+            selectedMore.hidden = true;
+          }
           if (selectedLinks) selectedLinks.replaceChildren();
         };
         const visibleIds = () => Array.from(new Set(
@@ -216,24 +245,87 @@ const fallbackMessage = isJapanese
           if (!(mapRoot instanceof HTMLElement)) return;
           mapRoot.dispatchEvent(new CustomEvent('racecourse-map:clear-selection'));
         };
+        const appendFact = (dl, label, value, dataAttribute) => {
+          if (!value) return;
+          const wrapper = document.createElement('div');
+          const dt = document.createElement('dt');
+          const dd = document.createElement('dd');
+          dt.textContent = label;
+          dd.textContent = value;
+          if (dataAttribute) dd.dataset[dataAttribute] = 'true';
+          wrapper.append(dt, dd);
+          dl.append(wrapper);
+        };
+        const renderMeetingRow = (record, timeZone) => {
+          const li = document.createElement('li');
+          li.className = 'home-racing-map__selected-meeting';
+          li.dataset.homeMapSelectedMeeting = record.meetingId;
+
+          const heading = document.createElement('div');
+          heading.className = 'home-racing-map__selected-meeting-heading';
+          const date = document.createElement('strong');
+          date.textContent = record.projectedDate;
+          const state = stateForMeeting(record, timeZone);
+          const stateBadge = document.createElement('span');
+          stateBadge.className = 'map-selected-card__status';
+          stateBadge.dataset.status = state.key;
+          stateBadge.dataset.homeMapSelectedState = 'true';
+          stateBadge.textContent = state.label;
+          heading.append(date, stateBadge);
+
+          const facts = document.createElement('dl');
+          facts.className = 'home-racing-map__selected-facts';
+          if (record.firstProjectedTime) {
+            appendFact(facts, isJa ? '第1R' : 'First race', record.firstProjectedTime, 'homeMapSelectedFirstRace');
+          }
+          if (record.lastProjectedTime) {
+            const lastValue = record.lastProjectedDate && record.lastProjectedDate !== record.projectedDate
+              ? `${record.lastProjectedDate} ${record.lastProjectedTime}`
+              : record.lastProjectedTime;
+            appendFact(facts, isJa ? '最終R' : 'Last race', lastValue, 'homeMapSelectedLastRace');
+          }
+          if (Number.isInteger(record.raceCount) && record.raceCount > 0) {
+            appendFact(facts, isJa ? 'レース数' : 'Races', String(record.raceCount), 'homeMapSelectedRaceCount');
+          }
+          appendFact(facts, isJa ? '公開ランク' : 'Public rank', record.publicRank, 'homeMapSelectedRank');
+
+          const actions = document.createElement('p');
+          actions.className = 'home-racing-map__selected-meeting-actions';
+          const primary = document.createElement('a');
+          primary.dataset.homeMapSelectedMeetingLink = 'true';
+          if (record.detailPath) {
+            primary.href = record.detailPath;
+            primary.textContent = isJa ? '開催詳細' : 'Meeting details';
+          } else {
+            primary.href = `${isJa ? '/ja' : ''}/calendar/?date=${encodeURIComponent(record.projectedDate)}`;
+            primary.textContent = isJa ? 'カレンダーで見る' : 'Open in Calendar';
+          }
+          actions.append(primary);
+
+          li.append(heading, facts, actions);
+          return li;
+        };
         const renderSelected = (racecourseId) => {
-          const rows = visibleProjected.filter((record) => record.racecourseId === racecourseId);
+          const rows = visibleProjected
+            .filter((record) => record.racecourseId === racecourseId)
+            .sort((left, right) => `${left.projectedDate}:${left.firstProjectedTime ?? '99:99'}:${left.meetingId}`.localeCompare(`${right.projectedDate}:${right.firstProjectedTime ?? '99:99'}:${right.meetingId}`));
           if (!rows.length) { clearSelected(); return; }
           selectedRacecourseId = racecourseId;
           const first = rows[0];
+          const timeZone = isTimeZoneSupported(timezoneSelect.value) ? timezoneSelect.value : 'Asia/Tokyo';
           if (selectedName) selectedName.textContent = first.racecourseName;
           if (selectedMeta) selectedMeta.textContent = `${first.country} · ${first.authority}`;
           if (selectedMeetings) {
-            selectedMeetings.replaceChildren(...rows.map((record) => {
-              const li = document.createElement('li');
-              const times = record.firstProjectedTime
-                ? record.lastProjectedTime
-                  ? `${record.firstProjectedTime}–${record.lastProjectedDate && record.lastProjectedDate !== record.projectedDate ? `${record.lastProjectedDate} ` : ''}${record.lastProjectedTime}`
-                  : record.firstProjectedTime
-                : '';
-              li.textContent = `${record.projectedDate}${times ? ` · ${times}` : ''} · ${isJa ? '公開ランク' : 'Public rank'} ${record.publicRank}`;
-              return li;
-            }));
+            selectedMeetings.replaceChildren(...rows.slice(0, MAX_SELECTED_MEETINGS).map((record) => renderMeetingRow(record, timeZone)));
+          }
+          if (selectedMore instanceof HTMLElement) {
+            const remaining = rows.length - MAX_SELECTED_MEETINGS;
+            selectedMore.hidden = remaining <= 0;
+            selectedMore.textContent = remaining > 0
+              ? isJa
+                ? `ほか${remaining}開催があります。カレンダーで確認できます。`
+                : `${remaining} more meeting${remaining === 1 ? '' : 's'} available in Calendar.`
+              : '';
           }
           if (selectedLinks) {
             selectedLinks.replaceChildren();
@@ -246,7 +338,7 @@ const fallbackMessage = isJapanese
             }
             const calendar = document.createElement('a');
             calendar.href = `${isJa ? '/ja' : ''}/calendar/?date=${encodeURIComponent(first.projectedDate)}`;
-            calendar.textContent = isJa ? 'カレンダーで見る' : 'Open in Calendar';
+            calendar.textContent = isJa ? 'カレンダーを開く' : 'Open Calendar';
             parts.push(calendar);
             parts.forEach((link, index) => {
               if (index > 0) selectedLinks.append(document.createTextNode(' · '));
@@ -300,9 +392,8 @@ const fallbackMessage = isJapanese
         });
         if (closeButton instanceof HTMLButtonElement) {
           closeButton.addEventListener('click', () => {
-            const closing = selectedRacecourseId;
             clearSelected();
-            clearMapSelection(closing);
+            clearMapSelection();
           });
         }
         if (mapRoot instanceof HTMLElement) {
