@@ -29,13 +29,13 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
     <MeetingStatePolicy />
 
     <section class="hero today-page__hero" aria-labelledby="page-title">
-      <p class="hero__eyebrow" data-window-eyebrow>Today</p>
-      <h1 id="page-title" data-window-title>Today’s racing</h1>
+      <p class="hero__eyebrow">Global horse racing</p>
+      <h1 id="page-title">Find horse racing meetings</h1>
       <p class="today-page__context">
         <span>Today / Tomorrow / 7 days</span> · <span data-timezone-label>{context.timeZone}</span>
       </p>
       <p class="hero__summary">
-        Use one map and one timetable for today, tomorrow, or the next seven days. The list uses the same public meeting rows and state rules as Calendar.
+        Find meetings today, tomorrow, or over the next seven days on one map and list. Filter by timezone, country, authority, or public rank.
       </p>
     </section>
 
@@ -49,7 +49,7 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
           <p class="today-page__eyebrow">Meeting list</p>
           <h2 id="home-list-title" data-window-list-title>Today’s meetings</h2>
         </div>
-        <p>Map, Home, and Calendar use the same public meeting rows and rank-aware state policy.</p>
+        <p>The list follows the selected period and active filters.</p>
       </div>
       <TimetableMeetingList
         groups={meetingGroups}
