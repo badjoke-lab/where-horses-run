@@ -35,7 +35,7 @@
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "HKJC A+ capability is initially published as A+ to test programme-summary display and later policy switching."
+      "notes": "HKJC publishes the centrally derived best-available rank up to A+ when complete verified programme metadata is present."
     },
     {
       "id": "jra-reviewed-a-plus",
@@ -98,64 +98,64 @@
       "notes": "Banei may publish up to A+ for display and switching tests."
     },
     {
-      "id": "kra-reviewed-a",
+      "id": "kra-reviewed-a-plus",
       "priority": 400,
       "match": {
         "authority_ids": [
           "korea-racing-authority"
         ]
       },
-      "max_public_rank": "A",
+      "max_public_rank": "A+",
       "include_in_public_list": true,
       "a_plus_fields": {
-        "show_race_name": false,
-        "show_distance": false,
-        "show_surface": false,
-        "show_course": false
+        "show_race_name": true,
+        "show_distance": true,
+        "show_surface": true,
+        "show_course": true
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "KRA may publish up to A when reviewed official weekly start-time data supplies complete Race 1-N post times. Technical A+ observations remain bounded to public A."
+      "notes": "KRA publishes the centrally derived best-available rank. Complete verified programme metadata may reach A+; time-only programmes remain A or lower."
     },
     {
-      "id": "uae-reviewed-a",
+      "id": "uae-reviewed-a-plus",
       "priority": 400,
       "match": {
         "authority_ids": [
           "emirates-racing-authority"
         ]
       },
-      "max_public_rank": "A",
+      "max_public_rank": "A+",
       "include_in_public_list": true,
       "a_plus_fields": {
-        "show_race_name": false,
-        "show_distance": false,
-        "show_surface": false,
-        "show_course": false
+        "show_race_name": true,
+        "show_distance": true,
+        "show_surface": true,
+        "show_course": true
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "UAE may publish up to A when reviewed ERA racecard data supplies complete Race 1-N post times. Schedule-only records remain C until detail becomes source-visible."
+      "notes": "UAE publishes the centrally derived best-available rank. Complete verified ERA programme metadata may reach A+; partial observations remain lower automatically."
     },
     {
-      "id": "tjk-reviewed-a",
+      "id": "tjk-reviewed-a-plus",
       "priority": 400,
       "match": {
         "authority_ids": [
           "turkiye-jokey-kulubu"
         ]
       },
-      "max_public_rank": "A",
+      "max_public_rank": "A+",
       "include_in_public_list": true,
       "a_plus_fields": {
-        "show_race_name": false,
-        "show_distance": false,
-        "show_surface": false,
-        "show_course": false
+        "show_race_name": true,
+        "show_distance": true,
+        "show_surface": true,
+        "show_course": true
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "TJK technical source capability is A+, but reviewed public output is capped at A: meeting identity plus complete Race 1-N post times only."
+      "notes": "TJK publishes the centrally derived best-available rank. Current time-only rows derive as A; complete verified programme metadata may reach A+."
     }
   ]
 }
