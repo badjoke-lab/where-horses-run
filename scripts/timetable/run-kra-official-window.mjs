@@ -2,29 +2,31 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import {
-  currentSeoulWeekBounds,
   generateKraPlanMeetings,
   parseKraOperationPlan,
-  parseKraRegistrationDates,
   validateKraGeneratedPlan,
 } from './kra-operation-plan-core.mjs';
 
 const OFFICIAL_PLAN_URL = 'https://race.kra.co.kr/raceoper/RaceoperView.do?Sub=1&meet=1';
+const PUBLISHED_RACECARD_URL = 'https://race.kra.co.kr/thisweekrace/ThisWeekDetailInfoList.do?Act=01&Sub=1&meet=0';
 const DETAIL_CHILD_TIMEOUT_MS = 60_000;
 const TRACK = Object.freeze({
   seoul: {
     racecourse_id: 'seoul-racecourse', detail_supported: true, meet_code: '1',
-    registration_url: 'https://race.kra.co.kr/chulmainfo/RegistStateList.do?meet=1',
   },
   busan: {
     racecourse_id: 'busan-gyeongnam-racecourse', detail_supported: true, meet_code: '3',
-    registration_url: 'https://race.kra.co.kr/chulmainfo/RegistStateList.do?meet=3',
   },
-  yeongcheon: { racecourse_id: 'yeongcheon-racecourse', detail_supported: false, meet_code: null, registration_url: null },
+  yeongcheon: { racecourse_id: 'yeongcheon-racecourse', detail_supported: false, meet_code: null },
   jeju: {
     racecourse_id: 'jeju-racecourse', detail_supported: true, meet_code: '2',
-    registration_url: 'https://race.kra.co.kr/chulmainfo/RegistStateList.do?meet=2',
   },
+});
+const RACECARD_REGION_TO_TRACK = Object.freeze({
+  '서울': 'seoul',
+  '부경': 'busan',
+  '제주': 'jeju',
+  '영천': 'yeongcheon',
 });
 
 function arg(name, fallback = null) {
@@ -48,6 +50,53 @@ function plusDays(date, count) {
 
 function trackKey(racecourseId) {
   return Object.entries(TRACK).find(([, value]) => value.racecourse_id === racecourseId)?.[0] ?? null;
+}
+
+function decodeHtmlEntities(value) {
+  return String(value ?? '')
+    .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, code) => String.fromCodePoint(Number.parseInt(code, 16)))
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'");
+}
+
+function stripHtml(value) {
+  return decodeHtmlEntities(String(value ?? '')
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<br\s*\/?>/gi, ' ')
+    .replace(/<[^>]+>/g, ' '))
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function parseCells(rowHtml) {
+  return [...String(rowHtml).matchAll(/<(?:th|td)\b[^>]*>([\s\S]*?)<\/(?:th|td)>/gi)]
+    .map((match) => stripHtml(match[1]));
+}
+
+function parsePublishedRacecardMeetings(html) {
+  const text = stripHtml(html);
+  if (!text.includes('출전정보') || !text.includes('경주일자') || !text.includes('거리') || !text.includes('출발')) {
+    throw new Error('KRA published-racecard page fingerprint changed');
+  }
+
+  const meetings = new Set();
+  for (const match of String(html).matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)) {
+    const cells = parseCells(match[1]);
+    const region = cells.find((cell) => Object.hasOwn(RACECARD_REGION_TO_TRACK, cell.trim()))?.trim();
+    const dateCell = cells.find((cell) => /20\d{2}\s*\/\s*\d{1,2}\s*\/\s*\d{1,2}/.test(cell));
+    if (!region || !dateCell) continue;
+    const track = RACECARD_REGION_TO_TRACK[region];
+    if (!TRACK[track]?.detail_supported) continue;
+    const dateMatch = dateCell.match(/(20\d{2})\s*\/\s*(\d{1,2})\s*\/\s*(\d{1,2})/);
+    if (!dateMatch) continue;
+    const date = `${dateMatch[1]}-${String(Number(dateMatch[2])).padStart(2, '0')}-${String(Number(dateMatch[3])).padStart(2, '0')}`;
+    meetings.add(`${track}:${date}`);
+  }
+  return [...meetings].sort();
 }
 
 async function fetchKraHtml(url) {
@@ -90,16 +139,14 @@ function collectDetail(meeting) {
   catch { return { detail: null, status: 'invalid_json' }; }
 }
 
-async function registrationProbe(key) {
-  const config = TRACK[key];
-  if (!config.detail_supported || !config.registration_url) return { status: 'unsupported', dates: [] };
+async function publishedRacecardProbe() {
   try {
-    const html = await fetchKraHtml(config.registration_url);
-    return { status: 'success', dates: parseKraRegistrationDates(html) };
+    const html = await fetchKraHtml(PUBLISHED_RACECARD_URL);
+    return { status: 'success', meetings: parsePublishedRacecardMeetings(html) };
   } catch (error) {
     return {
       status: 'fallback_full_detail',
-      dates: [],
+      meetings: [],
       error: String(error?.message ?? error).slice(0, 300),
     };
   }
@@ -123,14 +170,23 @@ const annualCounts = validateKraGeneratedPlan(annual, plan, TRACK);
 const endDateExclusive = plusDays(startDate, days);
 const windowRows = annual.filter((row) => row.date >= startDate && row.date < endDateExclusive);
 
-const probeEntries = await Promise.all(Object.keys(TRACK).map(async (key) => [key, await registrationProbe(key)]));
-const publicationProbes = Object.fromEntries(probeEntries);
-const currentWeek = currentSeoulWeekBounds();
+const sharedPublicationProbe = await publishedRacecardProbe();
+const publicationProbes = Object.fromEntries(Object.keys(TRACK).map((key) => {
+  if (!TRACK[key].detail_supported) return [key, { status: 'unsupported', dates: [] }];
+  const dates = sharedPublicationProbe.meetings
+    .filter((meeting) => meeting.startsWith(`${key}:`))
+    .map((meeting) => meeting.slice(key.length + 1));
+  return [key, {
+    status: sharedPublicationProbe.status,
+    dates,
+    ...(sharedPublicationProbe.error ? { error: sharedPublicationProbe.error } : {}),
+  }];
+}));
 const isLiveWindow = startDate === liveSeoulDate;
 
 function detailEligible(schedule, key) {
   if (!isLiveWindow) return true;
-  if (schedule.date >= currentWeek.monday && schedule.date <= currentWeek.sunday) return true;
+  if (schedule.date === liveSeoulDate) return true;
   const probe = publicationProbes[key];
   if (!probe || probe.status !== 'success') return true;
   return probe.dates.includes(schedule.date);
@@ -189,11 +245,12 @@ const artifact = {
   racing_system_id: 'kra-national-racing-system',
   timezone: 'Asia/Seoul',
   discovery: {
-    method: 'official_operation_plan_dynamic_week_pattern_plus_registration_gated_todayrace',
+    method: 'official_operation_plan_dynamic_week_pattern_plus_published_racecard_gated_todayrace',
     schedule_source_id: 'kra-annual-race-operation-plan',
     schedule_source_url: OFFICIAL_PLAN_URL,
     official_plan_year: plan.year,
     annual_day_counts: annualCounts,
+    publication_probe_source_url: PUBLISHED_RACECARD_URL,
     publication_probe: Object.fromEntries(Object.entries(publicationProbes).map(([key, probe]) => [key, {
       status: probe.status,
       published_dates_in_window: probe.dates.filter((date) => date >= startDate && date < endDateExclusive),
