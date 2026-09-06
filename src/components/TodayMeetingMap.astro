@@ -1,6 +1,7 @@
 ---
 import RacecourseMap from './RacecourseMap.astro';
 import locationRegistry from '../../data/static/racecourse-locations-v1.json';
+import { getRacecourses } from '../lib/data';
 import type { TimetableMeetingRow } from '../data/timetableMeetingRows';
 
 interface Props {
@@ -16,6 +17,7 @@ const reviewedRacecourseIds = new Set(
     .map((entry: any) => entry?.id)
     .filter((id: unknown) => typeof id === 'string' && id.length > 0)
 );
+const racecourseById = new Map(getRacecourses().map((track) => [track.id, track]));
 const mappedRecords = records.filter((record) => reviewedRacecourseIds.has(record.racecourse_id));
 const candidateRacecourseIds = [...new Set(mappedRecords.map((record) => record.racecourse_id))];
 const initialVisibleRacecourseIds = [...new Set(
@@ -24,6 +26,7 @@ const initialVisibleRacecourseIds = [...new Set(
 const meetingMap = records.map((record) => ({
   meetingId: record.meeting_id,
   racecourseId: record.racecourse_id,
+  racecourseSlug: racecourseById.get(record.racecourse_id)?.slug ?? null,
   hasReviewedLocation: reviewedRacecourseIds.has(record.racecourse_id),
 }));
 const meetingMapJson = JSON.stringify(meetingMap).replace(/</g, '\\u003c');
@@ -62,9 +65,17 @@ const fallbackMessage = isJapanese
       <p class="racecourse-map__attribution">
         Map: <a href="https://openfreemap.org/">OpenFreeMap</a> · Data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>
       </p>
-      <div class="today-meeting-map__selected" data-today-map-selected hidden>
-        <strong data-today-map-selected-label></strong>
-        <button type="button" data-today-map-show-list>{isJapanese ? 'Listで見る' : 'Show in List'}</button>
+      <div class="today-meeting-map__selected map-selected-card" data-today-map-selected hidden>
+        <div class="map-selected-card__body">
+          <strong data-today-map-selected-label></strong>
+          <span class="map-selected-card__status" data-today-map-selected-status></span>
+          <span class="map-selected-card__meta" data-today-map-selected-meta></span>
+        </div>
+        <div class="map-selected-card__actions">
+          <a data-today-map-selected-track hidden>{isJapanese ? '競馬場ページ' : 'Racecourse page'}</a>
+          <button type="button" data-today-map-show-list>{isJapanese ? 'Listで見る' : 'Show in List'}</button>
+          <button type="button" class="map-selected-card__close" data-today-map-close aria-label={isJapanese ? '選択を閉じる' : 'Close selection'}>×</button>
+        </div>
       </div>
     </>
   ) : (
@@ -94,7 +105,11 @@ const fallbackMessage = isJapanese
         const dataNode = root.querySelector('[data-today-map-meeting-map]');
         const selectedBox = root.querySelector('[data-today-map-selected]');
         const selectedLabel = root.querySelector('[data-today-map-selected-label]');
+        const selectedStatus = root.querySelector('[data-today-map-selected-status]');
+        const selectedMeta = root.querySelector('[data-today-map-selected-meta]');
+        const selectedTrack = root.querySelector('[data-today-map-selected-track]');
         const showListButton = root.querySelector('[data-today-map-show-list]');
+        const closeButton = root.querySelector('[data-today-map-close]');
         if (!(mapRoot instanceof HTMLElement) || !(dataNode instanceof HTMLScriptElement)) return;
 
         let entries = [];
@@ -103,6 +118,7 @@ const fallbackMessage = isJapanese
         const isJa = root.dataset.lang === 'ja';
         let selectedRacecourseId = null;
 
+        const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const listRows = () => Array.from(document.querySelectorAll('[data-calendar-meeting-row]'))
           .filter((row) => row instanceof HTMLElement);
         const mappedEntryForRow = (row) => mapping.get(row.dataset.meetingId || '');
@@ -113,6 +129,23 @@ const fallbackMessage = isJapanese
             .filter((entry) => entry?.hasReviewedLocation)
             .map((entry) => entry.racecourseId)
         ));
+        const statusForRow = (row) => {
+          const meetingState = row.dataset.meetingState || 'unknown';
+          const dayState = row.dataset.meetingDayState || 'unknown';
+          if (meetingState === 'running') return { key: 'running', label: isJa ? '開催中' : 'Racing now' };
+          if ((meetingState === 'upcoming' || meetingState === 'unknown') && dayState === 'today') {
+            return { key: 'upcoming', label: isJa ? '今日これから' : 'Later today' };
+          }
+          if (meetingState === 'ended' || dayState === 'past') return { key: 'ended', label: isJa ? '終了' : 'Finished' };
+          return { key: 'future', label: isJa ? '開催予定' : 'Scheduled' };
+        };
+        const timeForRow = (row) => {
+          const first = row.querySelector('[data-race-time="first"]')?.textContent?.trim() || '';
+          const last = row.querySelector('[data-race-time="last"]')?.textContent?.trim() || '';
+          if (first && last) return `${first}–${last}`;
+          if (first) return `${first}–`;
+          return '—';
+        };
 
         const clearRowSelection = () => {
           listRows().forEach((row) => row.classList.remove('meeting-row--map-selected'));
@@ -122,11 +155,40 @@ const fallbackMessage = isJapanese
           clearRowSelection();
           if (selectedBox instanceof HTMLElement) selectedBox.hidden = true;
           if (selectedLabel) selectedLabel.textContent = '';
+          if (selectedStatus instanceof HTMLElement) {
+            selectedStatus.textContent = '';
+            delete selectedStatus.dataset.status;
+          }
+          if (selectedMeta) selectedMeta.textContent = '';
+          if (selectedTrack instanceof HTMLAnchorElement) {
+            selectedTrack.hidden = true;
+            selectedTrack.removeAttribute('href');
+          }
         };
         const matchingRowsForRacecourse = (racecourseId) => listRows().filter((row) => {
           const entry = mappedEntryForRow(row);
           return entry?.racecourseId === racecourseId && row.dataset.timezoneScopeHidden !== 'true' && !row.hidden;
         });
+        const renderSelectedDetails = (first) => {
+          const entry = mappedEntryForRow(first);
+          const meetingStatus = statusForRow(first);
+          if (selectedLabel) selectedLabel.textContent = first.dataset.racecourse || entry?.racecourseId || '';
+          if (selectedStatus instanceof HTMLElement) {
+            selectedStatus.textContent = meetingStatus.label;
+            selectedStatus.dataset.status = meetingStatus.key;
+          }
+          if (selectedMeta) {
+            const rank = first.dataset.rank || '—';
+            selectedMeta.textContent = `${timeForRow(first)} · ${isJa ? '公開ランク' : 'Public rank'} ${rank}`;
+          }
+          if (selectedTrack instanceof HTMLAnchorElement && entry?.racecourseSlug) {
+            selectedTrack.href = `${isJa ? '/ja' : ''}/tracks/${entry.racecourseSlug}/`;
+            selectedTrack.hidden = false;
+          } else if (selectedTrack instanceof HTMLAnchorElement) {
+            selectedTrack.hidden = true;
+            selectedTrack.removeAttribute('href');
+          }
+        };
         const selectRowsForRacecourse = (racecourseId) => {
           clearRowSelection();
           const matchingRows = matchingRowsForRacecourse(racecourseId);
@@ -137,7 +199,7 @@ const fallbackMessage = isJapanese
             return null;
           }
           selectedRacecourseId = racecourseId;
-          if (selectedLabel) selectedLabel.textContent = first.dataset.racecourse || racecourseId;
+          renderSelectedDetails(first);
           if (selectedBox instanceof HTMLElement) selectedBox.hidden = false;
           return first;
         };
@@ -145,9 +207,19 @@ const fallbackMessage = isJapanese
           if (!selectedRacecourseId) return;
           const first = matchingRowsForRacecourse(selectedRacecourseId)[0];
           if (!first) return;
-          first.scrollIntoView({ block: 'center', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+          first.scrollIntoView({ block: 'center', behavior: reducedMotion() ? 'auto' : 'smooth' });
           const button = first.querySelector('[data-meeting-map-focus]');
           if (button instanceof HTMLElement) button.focus({ preventScroll: true });
+        };
+        const clearMapSelection = (racecourseId) => {
+          if (!racecourseId) return;
+          const ids = visibleRacecourseIds();
+          mapRoot.dispatchEvent(new CustomEvent('racecourse-map:set-visible', {
+            detail: { racecourseIds: ids.filter((id) => id !== racecourseId), fit: false }
+          }));
+          requestAnimationFrame(() => mapRoot.dispatchEvent(new CustomEvent('racecourse-map:set-visible', {
+            detail: { racecourseIds: ids, fit: false }
+          })));
         };
 
         const addListMapControls = () => {
@@ -165,9 +237,10 @@ const fallbackMessage = isJapanese
             button.setAttribute('aria-label', isJa ? 'この競馬場を地図で表示' : 'Show this racecourse on the map');
             button.addEventListener('click', () => {
               selectRowsForRacecourse(entry.racecourseId);
-              mapRoot.dispatchEvent(new CustomEvent('racecourse-map:focus', {
+              root.scrollIntoView({ block: 'start', behavior: reducedMotion() ? 'auto' : 'smooth' });
+              requestAnimationFrame(() => mapRoot.dispatchEvent(new CustomEvent('racecourse-map:focus', {
                 detail: { racecourseId: entry.racecourseId }
-              }));
+              })));
             });
             identity.append(' ', button);
           });
@@ -183,6 +256,7 @@ const fallbackMessage = isJapanese
             status.textContent = isJa ? `${ids.length}競馬場を地図表示` : `${ids.length} mapped racecourses`;
           }
           if (selectedRacecourseId && !ids.includes(selectedRacecourseId)) hideSelected();
+          else if (selectedRacecourseId) selectRowsForRacecourse(selectedRacecourseId);
         };
 
         mapRoot.addEventListener('racecourse-map:ready', syncVisible);
@@ -193,6 +267,13 @@ const fallbackMessage = isJapanese
           if (first && !window.matchMedia('(max-width: 700px)').matches) showSelectedInList();
         });
         if (showListButton instanceof HTMLButtonElement) showListButton.addEventListener('click', showSelectedInList);
+        if (closeButton instanceof HTMLButtonElement) {
+          closeButton.addEventListener('click', () => {
+            const closing = selectedRacecourseId;
+            hideSelected();
+            clearMapSelection(closing);
+          });
+        }
         window.addEventListener('whr:timezonechange', () => requestAnimationFrame(syncVisible));
         window.addEventListener('whr:meetingstatechange', () => requestAnimationFrame(syncVisible));
 
