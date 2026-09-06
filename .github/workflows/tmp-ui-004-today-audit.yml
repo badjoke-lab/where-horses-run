@@ -1,0 +1,210 @@
+name: Temporary UI-004 Today audit
+
+on:
+  pull_request:
+    branches:
+      - feat/ui-004-today-practical
+
+permissions:
+  contents: read
+
+jobs:
+  browser-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+      - run: npm install
+      - run: npm run build
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Start static server
+        run: |
+          python3 -m http.server 4321 --directory dist > /tmp/whr-ui004-server.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4321/today/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/whr-ui004-server.log
+          exit 1
+      - name: Audit Today filters, state groups, map/list sync and mobile flow
+        run: |
+          mkdir -p audit/ui-004
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { chromium } from 'playwright';
+
+          const browser = await chromium.launch({ headless: true });
+          const cases = [
+            { name: 'en-today-desktop', path: '/today/?tz=Asia%2FTokyo', width: 1440, height: 1100, mobile: false },
+            { name: 'ja-today-desktop', path: '/ja/today/?tz=Asia%2FTokyo', width: 1440, height: 1100, mobile: false },
+            { name: 'en-today-mobile', path: '/today/?tz=Asia%2FTokyo', width: 390, height: 844, mobile: true },
+            { name: 'ja-today-mobile', path: '/ja/today/?tz=Asia%2FTokyo', width: 390, height: 844, mobile: true },
+          ];
+          const report = [];
+          const assert = (condition, message) => { if (!condition) throw new Error(message); };
+
+          for (const item of cases) {
+            const page = await browser.newPage({ viewport: { width: item.width, height: item.height } });
+            const pageErrors = [];
+            page.on('pageerror', (error) => pageErrors.push(String(error)));
+            await page.goto(`http://127.0.0.1:4321${item.path}`, { waitUntil: 'domcontentloaded' });
+            await page.waitForFunction(() => document.querySelector('[data-racecourse-map]')?.getAttribute('data-map-state') === 'ready', null, { timeout: 20000 });
+            await page.waitForFunction(() => Number(document.querySelector('[data-today-visible-count]')?.textContent || '0') > 0, null, { timeout: 10000 });
+            await page.waitForTimeout(300);
+
+            const snapshot = async () => page.evaluate(() => {
+              const allRows = [...document.querySelectorAll('[data-calendar-meeting-row]')].filter((row) => row instanceof HTMLElement);
+              const visibleRows = allRows.filter((row) => !row.hidden);
+              const stateFor = (row) => {
+                const meetingState = row.dataset.meetingState || 'unknown';
+                const dayState = row.dataset.meetingDayState || 'unknown';
+                if (meetingState === 'running') return 'running';
+                if (meetingState === 'ended' || dayState === 'past') return 'ended';
+                return 'upcoming';
+              };
+              const counts = { running: 0, upcoming: 0, ended: 0 };
+              visibleRows.forEach((row) => { counts[stateFor(row)] += 1; });
+              const summary = Object.fromEntries(['running', 'upcoming', 'ended'].map((state) => [state, Number(document.querySelector(`[data-today-count="${state}"]`)?.textContent || '0')]));
+              const dividers = [...document.querySelectorAll('[data-today-state-divider]')].map((node) => node.getAttribute('data-today-state-divider'));
+              const mappingNode = document.querySelector('[data-today-map-meeting-map]');
+              let mapping = [];
+              try { mapping = JSON.parse(mappingNode?.textContent || '[]'); } catch { mapping = []; }
+              const byMeeting = new Map(mapping.map((entry) => [entry.meetingId, entry]));
+              const mappedRacecourses = [...new Set(visibleRows
+                .map((row) => byMeeting.get(row.dataset.meetingId || ''))
+                .filter((entry) => entry?.hasReviewedLocation)
+                .map((entry) => entry.racecourseId))];
+              return {
+                visibleCount: visibleRows.length,
+                counts,
+                summary,
+                dividers,
+                visibleCountries: [...new Set(visibleRows.map((row) => row.dataset.country || ''))],
+                visibleAuthorities: [...new Set(visibleRows.map((row) => row.dataset.authority || ''))],
+                visibleRanks: [...new Set(visibleRows.map((row) => row.dataset.rank || ''))],
+                mappedRacecourses,
+                mapVisibleCount: Number(document.querySelector('[data-racecourse-map]')?.getAttribute('data-visible-racecourse-count') || '0'),
+                targetDate: document.querySelector('[data-timezone-target-date]')?.textContent?.trim() || '',
+                timezoneLabel: document.querySelector('[data-timezone-label]')?.textContent?.trim() || '',
+              };
+            });
+
+            const initial = await snapshot();
+            assert(initial.visibleCount > 0, `${item.name}: no visible meetings`);
+            assert(JSON.stringify(initial.counts) === JSON.stringify(initial.summary), `${item.name}: summary counts do not match visible row states`);
+            assert(initial.counts.running + initial.counts.upcoming + initial.counts.ended === initial.visibleCount, `${item.name}: state counts do not sum to visible count`);
+            const order = { running: 0, upcoming: 1, ended: 2 };
+            assert(initial.dividers.every((state, index, arr) => index === 0 || order[arr[index - 1]] < order[state]), `${item.name}: state dividers not ordered`);
+            assert(initial.mapVisibleCount === initial.mappedRacecourses.length, `${item.name}: initial map/list visible set mismatch ${initial.mapVisibleCount} vs ${initial.mappedRacecourses.length}`);
+            assert(initial.targetDate.length === 10, `${item.name}: dynamic target date missing`);
+
+            const exerciseFilter = async (kind, values) => {
+              if (values.length < 1) return null;
+              const value = values[0];
+              await page.locator(`[data-today-filter="${kind}"]`).selectOption(value);
+              await page.waitForTimeout(250);
+              const filtered = await snapshot();
+              assert(filtered.visibleCount > 0, `${item.name}: ${kind} filter unexpectedly empty for ${value}`);
+              const field = kind === 'country' ? 'visibleCountries' : kind === 'authority' ? 'visibleAuthorities' : 'visibleRanks';
+              assert(filtered[field].length === 1 && filtered[field][0] === value, `${item.name}: ${kind} filter did not constrain list to ${value}`);
+              assert(filtered.mapVisibleCount === filtered.mappedRacecourses.length, `${item.name}: ${kind} filter map/list mismatch`);
+              await page.locator('[data-today-filter-reset]').click();
+              await page.waitForTimeout(250);
+              const reset = await snapshot();
+              assert(reset.visibleCount === initial.visibleCount, `${item.name}: reset after ${kind} did not restore visible set`);
+              return { kind, value, visible: filtered.visibleCount, mapVisible: filtered.mapVisibleCount };
+            };
+
+            const filterResults = [];
+            for (const [kind, values] of [['country', initial.visibleCountries], ['authority', initial.visibleAuthorities], ['rank', initial.visibleRanks]]) {
+              const result = await exerciseFilter(kind, values);
+              if (result) filterResults.push(result);
+            }
+
+            const topTimezone = page.locator('[data-today-timezone]');
+            await topTimezone.selectOption('UTC');
+            await page.waitForFunction(() => document.querySelector('[data-display-timezone-select]')?.value === 'UTC');
+            await page.waitForTimeout(250);
+            const utc = await snapshot();
+            assert(utc.timezoneLabel === 'UTC', `${item.name}: visible timezone label did not update to UTC`);
+            assert(utc.mapVisibleCount === utc.mappedRacecourses.length, `${item.name}: timezone change map/list mismatch`);
+            await topTimezone.selectOption('Asia/Tokyo');
+            await page.waitForFunction(() => document.querySelector('[data-display-timezone-select]')?.value === 'Asia/Tokyo');
+            await page.waitForTimeout(250);
+
+            const interactionCandidate = await page.evaluate(() => {
+              const mappingNode = document.querySelector('[data-today-map-meeting-map]');
+              const mapping = JSON.parse(mappingNode?.textContent || '[]');
+              const byMeeting = new Map(mapping.map((entry) => [entry.meetingId, entry]));
+              const row = [...document.querySelectorAll('[data-calendar-meeting-row]')].find((candidate) => {
+                if (!(candidate instanceof HTMLElement) || candidate.hidden) return false;
+                return byMeeting.get(candidate.dataset.meetingId || '')?.hasReviewedLocation;
+              });
+              if (!(row instanceof HTMLElement)) return null;
+              const entry = byMeeting.get(row.dataset.meetingId || '');
+              return { racecourseId: entry.racecourseId, meetingId: row.dataset.meetingId };
+            });
+            assert(interactionCandidate, `${item.name}: no mapped visible row for interaction audit`);
+
+            if (item.mobile) {
+              await page.locator('[data-today-map-sync]').scrollIntoViewIfNeeded();
+              const beforeSelectY = await page.evaluate(() => window.scrollY);
+              await page.locator('[data-racecourse-map]').evaluate((el, id) => {
+                el.dispatchEvent(new CustomEvent('racecourse-map:select', { detail: { racecourseId: id } }));
+              }, interactionCandidate.racecourseId);
+              await page.waitForFunction(() => {
+                const card = document.querySelector('[data-today-map-selected]');
+                return card instanceof HTMLElement && !card.hidden;
+              });
+              await page.waitForTimeout(250);
+              const afterSelectY = await page.evaluate(() => window.scrollY);
+              assert(Math.abs(afterSelectY - beforeSelectY) <= 5, `${item.name}: mobile pin select auto-scrolled list by ${afterSelectY - beforeSelectY}px`);
+
+              await page.locator('[data-today-map-show-list]').click();
+              await page.waitForTimeout(700);
+              const activeIsMapButton = await page.evaluate(() => document.activeElement?.matches?.('[data-meeting-map-focus]') === true);
+              assert(activeIsMapButton, `${item.name}: explicit Show in List did not focus list map action`);
+              const listScrollY = await page.evaluate(() => window.scrollY);
+              assert(Math.abs(listScrollY - afterSelectY) > 20, `${item.name}: explicit Show in List did not move to list`);
+
+              const focusedButton = page.locator('[data-meeting-map-focus]:focus');
+              await focusedButton.click();
+              await page.waitForTimeout(500);
+              const selectedId = await page.locator('[data-racecourse-map]').getAttribute('data-selected-racecourse-id');
+              assert(selectedId === interactionCandidate.racecourseId, `${item.name}: list Map action did not focus/select expected racecourse`);
+            }
+
+            const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+            assert(overflow <= 1, `${item.name}: horizontal overflow ${overflow}px`);
+            assert(pageErrors.length === 0, `${item.name}: page errors ${pageErrors.join(' | ')}`);
+            await page.screenshot({ path: `audit/ui-004/${item.name}.png`, fullPage: true });
+
+            report.push({
+              name: item.name,
+              initialVisible: initial.visibleCount,
+              stateCounts: initial.counts,
+              dividerOrder: initial.dividers,
+              initialMapVisible: initial.mapVisibleCount,
+              filters: filterResults,
+              utcVisible: utc.visibleCount,
+              utcMapVisible: utc.mapVisibleCount,
+              mobileInteraction: item.mobile ? 'pin-no-auto-scroll / explicit-list-scroll / list-to-map-focus passed' : null,
+              overflow,
+              pageErrors,
+              ok: true,
+            });
+            await page.close();
+          }
+
+          await browser.close();
+          fs.writeFileSync('audit/ui-004/report.json', JSON.stringify(report, null, 2));
+          console.log(JSON.stringify(report, null, 2));
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ui-004-today-browser-audit
+          path: audit/ui-004
