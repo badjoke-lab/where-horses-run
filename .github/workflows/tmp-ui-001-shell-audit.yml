@@ -1,0 +1,119 @@
+name: Temporary UI-001 shell audit
+
+on:
+  pull_request:
+    branches:
+      - feat/ui-001-shared-shell
+
+permissions:
+  contents: read
+
+jobs:
+  browser-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Start static server
+        run: |
+          python3 -m http.server 4321 --directory dist > /tmp/whr-ui001-server.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4321/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/whr-ui001-server.log
+          exit 1
+      - name: Audit desktop and mobile shell
+        run: |
+          mkdir -p audit/ui-001
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { chromium } from 'playwright';
+
+          const browser = await chromium.launch({ headless: true });
+          const cases = [
+            { name: 'en-home-desktop', path: '/', width: 1440, height: 1000, mobile: false, primary: ['Today', 'Calendar', 'Racecourses'] },
+            { name: 'ja-home-desktop', path: '/ja/', width: 1440, height: 1000, mobile: false, primary: ['今日', 'カレンダー', '競馬場'] },
+            { name: 'en-today-mobile', path: '/today/', width: 390, height: 844, mobile: true, current: 'Today' },
+            { name: 'ja-calendar-mobile', path: '/ja/calendar/', width: 390, height: 844, mobile: true, current: 'カレンダー' },
+          ];
+          const report = [];
+
+          const assert = (condition, message) => {
+            if (!condition) throw new Error(message);
+          };
+
+          for (const item of cases) {
+            const page = await browser.newPage({ viewport: { width: item.width, height: item.height } });
+            const errors = [];
+            page.on('pageerror', (error) => errors.push(String(error)));
+            page.on('console', (message) => {
+              if (message.type() === 'error') errors.push(`console: ${message.text()}`);
+            });
+            await page.goto(`http://127.0.0.1:4321${item.path}`, { waitUntil: 'domcontentloaded' });
+            await page.waitForTimeout(400);
+
+            const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+            assert(overflow <= 1, `${item.name}: horizontal overflow ${overflow}px`);
+            assert(errors.length === 0, `${item.name}: page errors: ${errors.join(' | ')}`);
+
+            if (!item.mobile) {
+              const display = await page.locator('.desktop-shell-nav').evaluate((el) => getComputedStyle(el).display);
+              assert(display !== 'none', `${item.name}: desktop shell nav hidden`);
+              const labels = await page.locator('.desktop-primary-nav a').allTextContents();
+              assert(JSON.stringify(labels.map((v) => v.trim())) === JSON.stringify(item.primary), `${item.name}: primary nav mismatch ${JSON.stringify(labels)}`);
+              const mobileDisplay = await page.locator('.mobile-bottom-nav').evaluate((el) => getComputedStyle(el).display);
+              assert(mobileDisplay === 'none', `${item.name}: mobile bottom nav visible on desktop`);
+              await page.locator('.desktop-more__summary').click();
+              assert(await page.locator('.desktop-more__panel').isVisible(), `${item.name}: More panel not visible`);
+              const moreCount = await page.locator('.desktop-more__panel a').count();
+              assert(moreCount === 5, `${item.name}: expected 5 secondary links, got ${moreCount}`);
+              await page.locator('.desktop-timezone__summary').click();
+              const timezone = page.locator('.desktop-timezone__panel [data-global-timezone-select]');
+              assert(await timezone.isVisible(), `${item.name}: timezone select not visible`);
+              await timezone.selectOption('UTC');
+              assert(new URL(page.url()).searchParams.get('tz') === 'UTC', `${item.name}: timezone not written to URL`);
+            } else {
+              const bottom = page.locator('.mobile-bottom-nav');
+              const display = await bottom.evaluate((el) => getComputedStyle(el).display);
+              assert(display === 'grid', `${item.name}: mobile bottom nav not grid`);
+              const targetCount = await bottom.locator(':scope > a, :scope > details').count();
+              assert(targetCount === 5, `${item.name}: expected 5 bottom-nav items, got ${targetCount}`);
+              const current = await bottom.locator('a[aria-current="page"]').allTextContents();
+              assert(current.map((v) => v.trim()).includes(item.current), `${item.name}: current item mismatch ${JSON.stringify(current)}`);
+              const topSummary = page.locator('.site-navigation__summary');
+              assert(await topSummary.isVisible(), `${item.name}: top menu button missing`);
+              await page.locator('.mobile-bottom-more__summary').click();
+              const panel = page.locator('.mobile-bottom-more__panel');
+              assert(await panel.isVisible(), `${item.name}: bottom More panel not visible`);
+              const moreLinks = await panel.locator('a').count();
+              assert(moreLinks === 7, `${item.name}: expected Search + 5 secondary + Language, got ${moreLinks}`);
+              const timezone = panel.locator('[data-global-timezone-select]');
+              assert(await timezone.isVisible(), `${item.name}: mobile timezone select missing`);
+              await timezone.selectOption('UTC');
+              assert(new URL(page.url()).searchParams.get('tz') === 'UTC', `${item.name}: mobile timezone not written to URL`);
+              const bottomBox = await bottom.boundingBox();
+              assert(bottomBox && bottomBox.y + bottomBox.height <= item.height + 1, `${item.name}: bottom nav outside viewport`);
+            }
+
+            await page.screenshot({ path: `audit/ui-001/${item.name}.png`, fullPage: true });
+            report.push({ name: item.name, overflow, errors, url: page.url(), ok: true });
+            await page.close();
+          }
+
+          await browser.close();
+          fs.writeFileSync('audit/ui-001/report.json', JSON.stringify(report, null, 2));
+          console.log(JSON.stringify(report, null, 2));
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ui-001-shell-browser-audit
+          path: audit/ui-001
