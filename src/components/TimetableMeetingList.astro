@@ -48,6 +48,15 @@ const text = lang === 'ja'
       displayTimeZone: 'Display timezone',
     };
 
+const timeZoneOptions = [
+  { value: 'Asia/Tokyo', label: lang === 'ja' ? '日本 — UTC+09:00' : 'Japan — UTC+09:00' },
+  { value: 'Asia/Seoul', label: lang === 'ja' ? '韓国 — UTC+09:00' : 'Korea — UTC+09:00' },
+  { value: 'Asia/Hong_Kong', label: lang === 'ja' ? '香港 — UTC+08:00' : 'Hong Kong — UTC+08:00' },
+  { value: 'Asia/Dubai', label: 'UAE — UTC+04:00' },
+  { value: 'Europe/Istanbul', label: lang === 'ja' ? 'トルコ — UTC+03:00' : 'Türkiye — UTC+03:00' },
+  { value: 'UTC', label: 'UTC — UTC+00:00' },
+];
+
 const jaRacecourseLabelById: Record<string, string> = {
   'tokyo-racecourse': '東京競馬場', 'obihiro-racecourse': '帯広競馬場',
   'sha-tin-racecourse': '沙田競馬場', 'happy-valley-racecourse': 'ハッピーバレー競馬場',
@@ -111,11 +120,10 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
     <label>
       <span>{text.displayTimeZone}</span>
       <select data-display-timezone-select aria-label={text.displayTimeZone}>
-        <option value="Asia/Tokyo">Asia/Tokyo</option>
-        <option value="UTC">UTC</option>
+        {timeZoneOptions.map((option) => <option value={option.value}>{option.label}</option>)}
       </select>
     </label>
-    <output data-display-timezone-status>Asia/Tokyo</output>
+    <output data-display-timezone-status>{timeZoneOptions[0].label}</output>
   </div>
 
   <div class="timetable-date-groups" data-timetable-date-groups>
@@ -183,6 +191,16 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
     if (!timeZone) return false;
     try { new Intl.DateTimeFormat('en', { timeZone }).format(new Date(0)); return true; } catch { return false; }
   };
+  const curatedTimeZones = (isJa) => [
+    ['Asia/Tokyo', isJa ? '日本 — UTC+09:00' : 'Japan — UTC+09:00'],
+    ['Asia/Seoul', isJa ? '韓国 — UTC+09:00' : 'Korea — UTC+09:00'],
+    ['Asia/Hong_Kong', isJa ? '香港 — UTC+08:00' : 'Hong Kong — UTC+08:00'],
+    ['Asia/Dubai', 'UAE — UTC+04:00'],
+    ['Europe/Istanbul', isJa ? 'トルコ — UTC+03:00' : 'Türkiye — UTC+03:00'],
+    ['UTC', 'UTC — UTC+00:00'],
+  ];
+  const isCuratedTimeZone = (timeZone) => curatedTimeZones(false).some(([value]) => value === timeZone);
+  const displayTimeZone = (timeZone, isJa) => curatedTimeZones(isJa).find(([value]) => value === timeZone)?.[1] ?? timeZone;
   const dateParts = (instant, timeZone) => Object.fromEntries(new Intl.DateTimeFormat('en-US', {
     timeZone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
   }).formatToParts(instant).filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
@@ -224,12 +242,13 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
     }
     return { start: null, endExclusive: null, targetDate: null, windowStart: null, windowEndInclusive: null };
   };
-  const populateTimeZones = (select) => {
-    const zones = typeof Intl.supportedValuesOf === 'function'
-      ? Intl.supportedValuesOf('timeZone')
-      : ['UTC', 'Asia/Tokyo', 'Asia/Hong_Kong', 'Asia/Dubai', 'Europe/Istanbul', 'Europe/London', 'America/New_York', 'Australia/Sydney'];
-    const values = Array.from(new Set(['UTC', ...zones]));
-    select.replaceChildren(...values.map((zone) => { const option = document.createElement('option'); option.value = zone; option.textContent = zone; return option; }));
+  const populateTimeZones = (select, isJa) => {
+    select.replaceChildren(...curatedTimeZones(isJa).map(([value, label]) => {
+      const option = document.createElement('option');
+      option.value = value;
+      option.textContent = label;
+      return option;
+    }));
   };
   const propagateTimeZoneToLinks = (root, timeZone) => {
     root.querySelectorAll('a[href]').forEach((anchor) => {
@@ -289,6 +308,7 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
   const projectRoot = (root, timeZone) => {
     const rows = Array.from(root.querySelectorAll('[data-calendar-meeting-row]'));
     const uiLang = root.dataset.lang === 'ja' ? 'ja' : 'en';
+    const isJa = uiLang === 'ja';
     const scope = root.dataset.projectionScope || 'all';
     const scopeWindow = scopeWindowFor(scope, timeZone);
     let scopeVisibleCount = 0;
@@ -349,7 +369,7 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
     const empty = root.querySelector('[data-timezone-scope-empty]');
     if (empty instanceof HTMLElement) empty.hidden = scopeVisibleCount !== 0;
     const status = root.querySelector('[data-display-timezone-status]');
-    if (status) status.textContent = timeZone;
+    if (status) status.textContent = displayTimeZone(timeZone, isJa);
     propagateTimeZoneToLinks(root, timeZone);
     window.dispatchEvent(new CustomEvent('whr:meetingstatechange'));
     window.dispatchEvent(new CustomEvent('whr:timezonechange', { detail: {
@@ -363,10 +383,11 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
   document.querySelectorAll('[data-display-timezone-root]').forEach((root) => {
     const select = root.querySelector('[data-display-timezone-select]');
     if (!(select instanceof HTMLSelectElement)) return;
-    populateTimeZones(select);
+    const isJa = root.dataset.lang === 'ja';
+    populateTimeZones(select, isJa);
     const requested = new URL(window.location.href).searchParams.get('tz');
     const browser = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const initial = isTimeZoneSupported(requested) ? requested : isTimeZoneSupported(browser) ? browser : 'Asia/Tokyo';
+    const initial = isCuratedTimeZone(requested) ? requested : isCuratedTimeZone(browser) ? browser : 'Asia/Tokyo';
     select.value = initial;
     const initialUrl = new URL(window.location.href);
     if (initialUrl.searchParams.get('tz') !== initial) {
@@ -375,14 +396,20 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
     }
     projectRoot(root, initial);
     select.addEventListener('change', () => {
-      const selected = isTimeZoneSupported(select.value) ? select.value : 'Asia/Tokyo';
+      const selected = isCuratedTimeZone(select.value) ? select.value : 'Asia/Tokyo';
       const url = new URL(window.location.href);
       url.searchParams.set('tz', selected);
       window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
       projectRoot(root, selected);
     });
+    window.addEventListener('whr:timezonechange', (event) => {
+      const selected = event?.detail?.timeZone;
+      if (!isCuratedTimeZone(selected) || select.value === selected) return;
+      select.value = selected;
+      projectRoot(root, selected);
+    });
     window.setInterval(() => {
-      const selected = isTimeZoneSupported(select.value) ? select.value : 'Asia/Tokyo';
+      const selected = isCuratedTimeZone(select.value) ? select.value : 'Asia/Tokyo';
       projectRoot(root, selected);
     }, 60_000);
   });
