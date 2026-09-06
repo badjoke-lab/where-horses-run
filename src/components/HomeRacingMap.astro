@@ -222,6 +222,7 @@ const fallbackMessage = isJapanese
             }));
           }
           if (selectedLinks) {
+            selectedLinks.replaceChildren();
             const parts = [];
             if (first.racecourseSlug) {
               const track = document.createElement('a');
