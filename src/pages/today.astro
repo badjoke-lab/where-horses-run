@@ -2,7 +2,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CalendarDateStatus from '../components/CalendarDateStatus.astro';
 import TimetableMeetingList from '../components/TimetableMeetingList.astro';
+import TodayFilters from '../components/TodayFilters.astro';
 import TodayMeetingMap from '../components/TodayMeetingMap.astro';
+import '../styles/today-practical.css';
 import {
   getTimetableDataState,
   getTimetableDateContext,
@@ -23,24 +25,38 @@ const todayCandidates = getTimetableMeetingRowsForWindow(candidateStart, candida
   canonicalPath="/today/"
   alternatePath="/ja/today/"
 >
-  <section class="hero" aria-labelledby="page-title">
-    <p class="hero__eyebrow">Today’s racing</p>
-    <h1 id="page-title">Today’s racing</h1>
-    <p class="hero__summary">
-      Meetings listed for <span data-timezone-target-date>{context.today}</span> in <span data-timezone-label>{context.timeZone}</span>. Available race times are converted to the selected display timezone.
-    </p>
-  </section>
+  <main class="today-page" data-today-page>
+    <section class="hero today-page__hero" aria-labelledby="page-title">
+      <p class="hero__eyebrow">Today</p>
+      <h1 id="page-title">Today’s racing</h1>
+      <p class="today-page__context">
+        <time data-timezone-target-date>{context.today}</time> · <span data-timezone-label>{context.timeZone}</span>
+      </p>
+      <p class="hero__summary">
+        See what is racing now, what starts later today, what is still scheduled, and what has finished in your selected display timezone.
+      </p>
+    </section>
 
-  <CalendarDateStatus context={context} dataState={dataState} displayDate={context.today} />
+    <CalendarDateStatus context={context} dataState={dataState} displayDate={context.today} />
 
-  <TodayMeetingMap records={todayCandidates} date={context.today} />
+    <TodayFilters records={todayCandidates} />
 
-  <section aria-label="Today meeting list">
-    <TimetableMeetingList
-      records={todayCandidates}
-      date={context.today}
-      scope="today"
-      emptyLabel="No meetings are currently listed for today in the selected display timezone. Check official sources for the latest information."
-    />
-  </section>
+    <TodayMeetingMap records={todayCandidates} date={context.today} />
+
+    <section class="today-page__list" aria-labelledby="today-list-title" data-today-practical-list>
+      <div class="today-page__list-heading">
+        <div>
+          <p class="today-page__eyebrow">Meeting list</p>
+          <h2 id="today-list-title">Today by status and time</h2>
+        </div>
+        <p>Map and list use the same public meeting rows and the same meeting-state calculation.</p>
+      </div>
+      <TimetableMeetingList
+        records={todayCandidates}
+        date={context.today}
+        scope="today"
+        emptyLabel="No meetings are currently listed for today in the selected display timezone. Check official sources for the latest information."
+      />
+    </section>
+  </main>
 </BaseLayout>
