@@ -15,8 +15,8 @@ This addendum updates the current public UI execution state after completion of 
 Current stage: reviewed_incremental_maintenance
 Primary product lane: map_first_site_ui
 Parallel data-quality lane: calendar_quality_and_coverage
-Current UI Work ID: UI-005
-Next UI Work ID: UI-006
+Current UI Work ID: UI-006
+Next UI Work ID: UI-007
 Automatic publication: disabled
 Human review bypass: prohibited
 ```
@@ -40,15 +40,16 @@ stale/false/missing meeting correction
 timezone/date/public-display correctness
 ```
 
-`UI-005` is **Calendar presentation work only**: date hierarchy, List/Map behavior, responsive filters, URL state, and interaction design. Completing `UI-005` must not be interpreted as completing Calendar coverage, acquisition quality, rank promotion, or source reliability.
+`UI-005` is **Calendar presentation work only**: rolling-window hierarchy, optional date focus, List/Map behavior, responsive filters, URL state, and interaction design. Completing `UI-005` must not be interpreted as completing Calendar coverage, acquisition quality, rank promotion, or source reliability.
 
 If UI work exposes a Calendar data defect, do not hide it with presentation-only data, guessed values, a second meeting truth, or a map-only override. Route the defect to the parallel Calendar lane and continue the UI lane independently where safe.
 
 A Calendar-lane merge may change generated/public meeting data while UI work is open. UI branches must re-read/rebase against current main as needed rather than freezing Calendar progress behind UI work.
 
-Latest parallel-lane state reviewed before advancing to `UI-005`:
+Latest parallel-lane state reviewed before and during `UI-005`:
 
 ```text
+1ae2707cd577a1674627488a10dc15e5dc1d423b  data: refresh unified official rolling timetable (full)
 83c01a6bd11d2860dcacee85a83364f3e09285a4  data: refresh unified official rolling timetable (full)
 324c4860dd863a65b174580a5a9c89c87eadf150  data: refresh Japan official timetable (full)
 ebb38931560af493e3c79416bd1faf566525074b  fix(calendar): normalize stale canonical ranks across authority window
@@ -123,7 +124,7 @@ The current Work IDs are:
 2. `UI-002` — Home map-first composition and removal/demotion of old equal-weight feature cards;
 3. `UI-003` — Home selected-card enrichment and Today/Up-Next summary structure;
 4. `UI-004` — Today practical-state UI and mobile map/list interaction completion;
-5. `UI-005` — Calendar date-driven UI, responsive filters, List-first mobile behavior, URL-state completion;
+5. `UI-005` — Calendar rolling 30-day UI, optional date focus, responsive filters, List-first mobile behavior, URL-state completion;
 6. `UI-006` — Racecourses primary index/search UI;
 7. `UI-007` — racecourse-detail map/Today/Next/Upcoming/Profile/Sources composition;
 8. `UI-008` — Countries and secondary reference-page simplification/demotion;
@@ -287,27 +288,48 @@ Temporary browser-audit PR `#876` passed and was closed unmerged. Stale supersed
 
 ## UI-005 — Calendar
 
-Calendar remains selected-date authoritative.
+Calendar defaults to the current rolling 30-day public meeting window. A selected date is an optional focus only; it is not the default Calendar authority.
 
-Implementation status: **current active Work ID**.
+Implementation status: **complete**, with the selected-date-only regression introduced in PR `#881` corrected by PR `#887` before advancing the UI lane.
 
-Desktop supports List/Map and full useful filters. Mobile starts in List mode and shows Map only after explicit selection. Mobile filters should collapse into a compact filter control rather than reproduce a wide desktop toolbar.
+Desktop supports List/Map and full useful filters. Mobile starts in List mode and shows Map only after explicit selection. Mobile filters collapse into a compact filter control rather than reproduce a wide desktop toolbar.
 
-Target URL-backed state includes:
+Default behavior:
 
 ```text
-date
+no forced date parameter
+rolling 30-day List/Map meeting set
+optional date focus
+All 30 days returns to rolling view
+```
+
+URL-backed state includes:
+
+```text
 view
 tz
+date  # optional only when one day is explicitly focused
 ```
 
 Stable/share-worthy filters may follow.
+
+Verified UI-005 evidence:
+
+```text
+Calendar dynamic dates: success
+Race Acquisition Check: success
+rolling 30-day default contract: enforced
+selected-date-only default: prohibited
+EN/JA desktop/mobile browser audit: required before merge of correction PR #887
+```
 
 `UI-005` changes Calendar presentation only. It neither certifies nor blocks the parallel Calendar data-quality lane.
 
 ## UI-006 — Racecourses
 
 Racecourses is elevated to a primary navigation destination. The index is search/place driven and should prefer reviewed identity, location, authority, and upcoming-meeting context over decorative imagery.
+
+Implementation status: **current active Work ID**.
 
 ## UI-007 — racecourse detail
 
@@ -380,10 +402,10 @@ Conversation history is not the execution authority.
 ## Current Work ID
 
 ```text
-Current UI Work ID: UI-005
-Next UI Work ID after completion: UI-006
+Current UI Work ID: UI-006
+Next UI Work ID after completion: UI-007
 Parallel Calendar lane: active independently
-Current main reviewed before UI-005: c92822b610ee615c92ded605f75aea0bb3760aa6
+Current main reviewed before UI-006: 57ddf71aeaa5e0944aa025935281ea3f09b6ab4b
 ```
 
 ## Completion definition
