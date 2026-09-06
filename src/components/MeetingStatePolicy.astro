@@ -95,7 +95,11 @@
       const policy = timed ? 'timed' : 'day';
       let state = 'future';
 
-      if (timed) {
+      if (calendarDayState === 'past') {
+        state = 'ended';
+      } else if (calendarDayState === 'future') {
+        state = 'future';
+      } else if (timed) {
         const start = localDateTimeToInstant(sourceDate, firstTime, sourceTimeZone);
         const rawEnd = localDateTimeToInstant(sourceDate, lastTime, sourceTimeZone);
         if (start && rawEnd) {
@@ -104,15 +108,15 @@
           row.dataset.sortStart = String(start.getTime());
           state = now < start.getTime() ? 'upcoming' : now <= endMs ? 'running' : 'ended';
         } else {
-          state = calendarDayState === 'past' ? 'ended' : calendarDayState === 'today' ? 'upcoming' : 'future';
+          state = 'upcoming';
         }
       } else {
-        state = calendarDayState === 'past' ? 'ended' : calendarDayState === 'today' ? 'upcoming' : 'future';
+        state = 'upcoming';
       }
 
       row.dataset.meetingState = state;
       row.dataset.meetingStatePolicy = policy;
-      row.dataset.meetingDayState = state === 'upcoming' ? 'today' : calendarDayState;
+      row.dataset.meetingDayState = calendarDayState;
       setBadges(row, state, policy);
     };
 
