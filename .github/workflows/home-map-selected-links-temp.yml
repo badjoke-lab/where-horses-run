@@ -1,0 +1,99 @@
+name: Temporary Home map selected-link audit
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install and build exact hotfix branch
+        run: |
+          npm install --no-audit --no-fund
+          npm run build
+      - name: Start built site
+        shell: bash
+        run: |
+          nohup npm run preview -- --host 127.0.0.1 --port 4321 >/tmp/whr-preview.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4321/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/whr-preview.log
+          exit 1
+      - name: Verify repeated Home map selection does not duplicate links
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/home-map-selected-links /tmp/pw-home-map-selected-links
+          cd /tmp/pw-home-map-selected-links
+          npm init -y >/dev/null 2>&1
+          npm install --no-audit --no-fund playwright@1.55.0 >/dev/null
+          npx playwright install --with-deps chromium >/dev/null
+          node <<'NODE'
+          const fs = require('node:fs');
+          const { chromium } = require('playwright');
+          const base = 'http://127.0.0.1:4321';
+          const out = '/tmp/home-map-selected-links';
+          const routes = [
+            { name: 'en', path: '/' },
+            { name: 'ja', path: '/ja/' },
+          ];
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            const report = [];
+            try {
+              for (const route of routes) {
+                const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+                const pageErrors = [];
+                page.on('pageerror', (error) => pageErrors.push(String(error)));
+                const response = await page.goto(base + route.path, { waitUntil: 'domcontentloaded', timeout: 60000 });
+                if (!response || response.status() !== 200) throw new Error(`${route.name}: HTTP ${response?.status()}`);
+                const mapRoot = page.locator('[data-home-racing-map] [data-racecourse-map]').first();
+                await mapRoot.scrollIntoViewIfNeeded();
+                await page.waitForFunction(() => document.querySelector('[data-home-racing-map] [data-racecourse-map]')?.getAttribute('data-map-state') === 'ready', null, { timeout: 60000 });
+                const racecourseId = await mapRoot.evaluate((el) => {
+                  const raw = el.getAttribute('data-visible-racecourse-ids') || el.getAttribute('data-racecourse-ids') || '[]';
+                  const ids = JSON.parse(raw);
+                  return ids[0] || null;
+                });
+                if (!racecourseId) throw new Error(`${route.name}: no racecourse id available`);
+                for (let i = 0; i < 10; i += 1) {
+                  await mapRoot.evaluate((el, id) => {
+                    el.dispatchEvent(new CustomEvent('racecourse-map:select', { bubbles: true, detail: { racecourseId: id } }));
+                  }, racecourseId);
+                }
+                const selected = page.locator('[data-home-map-selected]');
+                await selected.waitFor({ state: 'visible', timeout: 10000 });
+                const linkCount = await selected.locator('[data-home-map-selected-links] a').count();
+                const labels = await selected.locator('[data-home-map-selected-links] a').allTextContents();
+                const entry = { route: route.name, racecourseId, linkCount, labels, pageErrors };
+                report.push(entry);
+                console.log(JSON.stringify(entry));
+                await page.screenshot({ path: `${out}/${route.name}.png`, fullPage: true });
+                if (linkCount !== 2) throw new Error(`${route.name}: expected 2 selected-card links after 10 selections, found ${linkCount}`);
+                if (pageErrors.length) throw new Error(`${route.name}: page errors: ${pageErrors.join(' | ')}`);
+                await page.close();
+              }
+            } finally {
+              await browser.close();
+            }
+            fs.writeFileSync(`${out}/report.json`, JSON.stringify(report, null, 2));
+          })().catch((error) => { console.error(error); process.exit(1); });
+          NODE
+      - name: Upload audit artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: home-map-selected-links-audit
+          path: /tmp/home-map-selected-links
+          if-no-files-found: error
+          retention-days: 1
