@@ -1,7 +1,39 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { deriveJapanBestAvailableRank, runJapanZeroBased30d } from './timetable/japan-zero-based-30d-core.mjs';
 import { parseNarDebaMetadata, parseNarMonthlySchedule } from './timetable/japan-official-30d-adapters.mjs';
 import { parseMonbetsuOfficialRaceInfoPage } from './timetable/saga-official-start-fallback.mjs';
+
+const publicViewModelSource = readFileSync(
+  new URL('../src/lib/timetable/publicTimetableViewModel.ts', import.meta.url),
+  'utf8',
+);
+assert.doesNotMatch(
+  publicViewModelSource,
+  /\['nar-mizusawa-racecourse-\d{4}-\d{2}-\d{2}',\s*\{[^}]*effective_public_rank:\s*'B\+'/s,
+  'public view model must not hard-code Mizusawa A+/A down to B+',
+);
+
+const meetingStatePolicySource = readFileSync(
+  new URL('../src/components/MeetingStatePolicy.astro', import.meta.url),
+  'utf8',
+);
+assert.doesNotMatch(
+  meetingStatePolicySource,
+  /meetingDayState\s*=\s*state\s*===\s*['"]upcoming['"]\s*\?\s*['"]today['"]/,
+  'upcoming timing state must not coerce a future calendar day to today',
+);
+assert.match(
+  meetingStatePolicySource,
+  /meetingDayState\s*=\s*calendarDayState/,
+  'meetingDayState must preserve the selected-timezone calendar day state',
+);
+const futureCalendarGuardIndex = meetingStatePolicySource.indexOf("} else if (calendarDayState === 'future') {");
+const timedTodayBranchIndex = meetingStatePolicySource.indexOf('} else if (timed) {');
+assert.ok(
+  futureCalendarGuardIndex >= 0 && timedTodayBranchIndex > futureCalendarGuardIndex,
+  'future calendar days must be resolved before timed upcoming/running evaluation',
+);
 
 const aPlusRows = [1, 2].map((number) => ({
   label: `Race ${number}`,
