@@ -30,13 +30,13 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
     <MeetingStatePolicy />
 
     <section class="hero today-page__hero" aria-labelledby="page-title">
-      <p class="hero__eyebrow" data-window-eyebrow>今日</p>
-      <h1 id="page-title" data-window-title>今日の開催</h1>
+      <p class="hero__eyebrow">世界の競馬開催</p>
+      <h1 id="page-title">競馬開催を探す</h1>
       <p class="today-page__context">
         <span>今日 / 明日 / 7日間</span> · <span data-timezone-label>{context.timeZone}</span>
       </p>
       <p class="hero__summary">
-        今日・明日・今後7日間を、同じ地図と同じ開催一覧で切り替えます。開催一覧はカレンダーと同じ公開meeting rowと状態判定を使います。
+        今日・明日・今後7日間の競馬開催を、地図と一覧で確認できます。期間、タイムゾーン、国・地域、主催・管轄、公開ランクで絞り込めます。
       </p>
     </section>
 
@@ -50,7 +50,7 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
           <p class="today-page__eyebrow">開催一覧</p>
           <h2 id="home-list-title" data-window-list-title>今日の開催一覧</h2>
         </div>
-        <p>地図・トップ・カレンダーは同じ公開meeting rowとランク別状態ルールを使います。</p>
+        <p>表示中の期間と絞り込み条件に合う開催を一覧表示します。</p>
       </div>
       <TimetableMeetingList
         groups={meetingGroups}
