@@ -6,8 +6,9 @@ This directory contains the active roadmaps, contracts, schemas, reviewed resear
 
 1. [Documentation authority](governance/document-authority.md)
 2. [Project roadmap](project-roadmap.md)
-3. [2026-08-25 active project-roadmap addendum](project-roadmap-2026-08-25-addendum.md)
-4. [Deployment and CI policy](operations/deployment-and-ci-policy.md)
+3. [2026-09-06 active project-roadmap addendum](project-roadmap-2026-09-06-addendum.md)
+4. [Map-first site UI specification](specs/map-first-site-ui-2026-09-06.md)
+5. [Deployment and CI policy](operations/deployment-and-ci-policy.md)
 
 ## Programme sections
 
@@ -16,7 +17,7 @@ This directory contains the active roadmaps, contracts, schemas, reviewed resear
 - [Specifications](specs/README.md) — product, data, UI, display, acquisition, and operations specifications
 - [Research](research/README.md) — country/source surveys and feasibility notes
 - [Decisions](decisions/README.md) — accepted project decisions
-- [PR plans](pr-plans/README.md) — historical or scoped implementation plans; not the top-level schedule
+- [PR plans](pr-plans/README.md) — scoped implementation plans; top-level execution remains controlled by the project roadmap/addendum
 - [Runbooks](runbooks/README.md) — repeatable operational procedures
 - [Operations](operations/README.md) — deployment, CI, branch, preview, and merge rules
 
@@ -25,10 +26,16 @@ This directory contains the active roadmaps, contracts, schemas, reviewed resear
 Overall:
 
 - [Project roadmap](project-roadmap.md)
-- [2026-08-25 active project-roadmap addendum](project-roadmap-2026-08-25-addendum.md) — post-v1 reviewed incremental maintenance state after the M6 v1.0 release
+- [2026-09-06 active project-roadmap addendum](project-roadmap-2026-09-06-addendum.md) — current map-first site-UI execution state; inherits reviewed incremental-maintenance/publication controls unless explicitly changed
+- [Map-first site UI specification](specs/map-first-site-ui-2026-09-06.md) — current public information architecture, navigation, responsive/mobile behavior, map status presentation, and page-role contract
+- [Map UI integration decision](decisions/map-ui-integration-2026-09-05.md)
 - [Documentation authority](governance/document-authority.md)
 - [Internal source handling boundary](governance/internal-source-handling.md)
 - [Deployment and CI policy](operations/deployment-and-ci-policy.md)
+
+Current map-first UI execution plan:
+
+- [Map-first UI PR plan](pr-plans/map-first-ui-pr-plan-2026-09-06.md) — bounded implementation sequence for `UI-001` through `UI-009`; the top-level roadmap/addendum remains authoritative
 
 Country pages:
 
@@ -56,5 +63,6 @@ Racecourse pages:
 - [Profile evidence](racecourses/profile-evidence.md)
 - [Page-link architecture](racecourses/page-link-architecture.md)
 - [2026-08-09 current-state addendum](racecourses/current-state-2026-08-09-addendum.md) — current 37/74 growth state and identity-only rules
+- [Map-first site UI specification](specs/map-first-site-ui-2026-09-06.md) — current racecourse-page composition, high-zoom location map, Today/Next/Upcoming, reviewed profile fields, mobile order, and navigation role
 
-The v0 specification and early PR plans are historical product/planning baselines. Current active contracts, schemas, roadmaps, and adopted addenda override them when they differ.
+The v0 specification and early PR plans are historical product/planning baselines. Current active contracts, schemas, roadmaps, adopted addenda, and the active map-first UI specification override them when they differ.
