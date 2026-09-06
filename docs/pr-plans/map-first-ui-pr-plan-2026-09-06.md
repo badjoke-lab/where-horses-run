@@ -4,21 +4,19 @@ Status: active scoped implementation plan
 Top-level authority: `docs/project-roadmap-2026-09-06-addendum.md`  
 Canonical UI specification: `docs/specs/map-first-site-ui-2026-09-06.md`
 
-This plan converts the active roadmap Work IDs into bounded implementation PRs. PR numbers are not preassigned. Do not infer execution state from historical PR-plan numbering.
+This plan governs only the map-first UI lane. Calendar acquisition/coverage/review/publication quality remains a separate active lane and may proceed independently.
 
 ## Parallel Calendar lane rule
 
-This PR plan governs only the map-first UI lane. Calendar acquisition/coverage/review/publication quality remains a separate active lane under the canonical Calendar documents and may proceed independently while `UI-001`–`UI-009` are in progress.
-
 Do not:
 
-- pause Calendar quality work while waiting for a UI PR;
+- pause Calendar quality work while waiting for UI;
 - interpret `UI-005` as Calendar data-quality completion;
 - patch missing/incorrect Calendar data in UI-only code;
-- create a second Calendar/map meeting truth to make the UI look complete;
-- block safe Calendar-lane merges merely because a UI branch is open.
+- create a second Calendar/map meeting truth;
+- block safe Calendar-lane merges because a UI branch is open.
 
-When Calendar work changes main, re-read/rebase the UI branch against current public meeting/view-model behavior before merge where relevant.
+When Calendar changes main, re-read/rebase the UI branch against current public meeting/view-model behavior where relevant.
 
 ## PR discipline
 
@@ -38,192 +36,109 @@ Completion conditions
 Next Work ID
 ```
 
-Do not create new workflows/checkers merely to satisfy this plan when existing checks can be extended or direct browser verification can be done without permanent CI bloat.
+Do not create permanent workflows/checkers when existing checks or temporary direct browser verification are sufficient.
 
-## UI-001 — shared shell
+## UI-001 — shared shell — COMPLETE
 
-Scope:
+Scope: BaseLayout desktop primary navigation, compact mobile header, five-item mobile bottom navigation, `More`, language/timezone, compact footer, focus/accessibility, 44px targets.
 
-- `BaseLayout` desktop primary navigation;
-- compact mobile header;
-- five-item mobile bottom navigation;
-- `More` secondary navigation;
-- language/timezone placement;
-- compact footer;
-- preserve accessibility, focus, and 44px touch targets.
+Verified: CI/build green; EN/JA desktop/mobile browser QA green; zero overflow/page errors; More/Timezone interactions green; temporary audit closed unmerged.
 
-Primary navigation target:
-
-```text
-Desktop: Today | Calendar | Racecourses
-Mobile: Home | Today | Calendar | Racecourses | More
-```
-
-Secondary destinations:
-
-```text
-Countries
-Racing Types
-Glossary
-Official Sources
-About
-```
-
-Completion:
-
-- EN/JA desktop and mobile shell renders without overflow;
-- primary/secondary navigation matches the canonical UI spec;
-- existing public routes remain reachable;
-- footer no longer promotes newsletter/social blocks as required product UI.
-
-Status: **complete**. Existing CI/build passed, direct Chromium checks passed for EN/JA desktop/mobile, zero horizontal overflow and zero page errors were observed, More/Timezone interactions passed, and the temporary audit PR was closed unmerged.
-
-## UI-002 — Home composition
+## UI-002 — Home composition — COMPLETE
 
 Scope:
 
-- reduce hero height/content;
-- keep `Today | Tomorrow | Next 7 days`; no `Now` tab;
-- move world map to the primary content position;
-- keep timezone and legend adjacent to discovery controls;
-- remove/demote equal-weight legacy Home promotional cards;
-- retain map failure fallback and ordinary meeting navigation.
+- compact hero;
+- `Today | Tomorrow | Next 7 days`; no `Now`;
+- world map as primary content;
+- timezone/legend near discovery controls;
+- remove equal-weight legacy Home promo cards;
+- retain map failure fallback and meeting navigation.
 
-Completion:
+Verified: CI/build green; EN/JA desktop/mobile QA green; zero overflow/page errors; desktop map 638px and mobile map 422px in audit viewports; period switching green; old feature grid absent; Today's Racing / Up Next retained. Temporary audit closed unmerged.
 
-- map is visually primary on desktop and mobile;
-- Today's Racing and Up Next remain available below the map;
-- secondary informational destinations are not equal-weight Home feature cards.
-
-Status: **verified complete for merge**. Existing CI/build passed. Direct Chromium checks passed for EN/JA desktop/mobile with zero horizontal overflow and zero page errors. The Home map rendered at 638px on desktop and 422px on mobile in the audit viewports. Today/Tomorrow/Next 7 days switching passed, the legacy equal-weight Home feature grid was absent, and Today's Racing / Up Next remained below the map. The temporary audit PR was closed unmerged.
-
-## UI-003 — Home selected information
+## UI-003 — Home selected information — COMPLETE
 
 Scope:
 
-- selected racecourse card content;
-- list-level meeting facts only;
-- bounded multi-meeting display for Next 7 days;
+- selected racecourse card;
+- public list-level facts only;
+- race count only from public detail;
+- bounded multi-meeting display;
 - real racecourse/detail/Calendar links;
-- preserve normal-flow mobile dismissal behavior.
+- normal-flow mobile dismissal.
 
-Completion:
+Verified:
 
-- card shows reviewed/public values only;
-- one venue remains one point;
-- repeated selection does not duplicate content/links;
-- dismissal and scrolling remain natural on mobile.
+```text
+CI/build: success
+EN/JA desktop/mobile selected-card QA: success
+same-selection x10: stable, no duplication
+Kawasaki Next 7 days: 5 meetings -> 3 rows + remaining note
+Hanshin: public-detail race count shown
+Mizusawa: no public detail -> no race count
+mobile normal-flow scrolling: success
+horizontal overflow: 0px
+page errors: 0
+```
 
-## UI-004 — Today
+Temporary audit PR #867 closed unmerged.
+
+## UI-004 — Today — ACTIVE
 
 Scope:
 
 - practical current-day page hierarchy;
-- status grouping/order;
-- timezone/country/authority/rank controls where supported;
+- state grouping/order: racing now / later today / finished;
+- timezone/country/authority/rank controls where supported by the existing public meeting set;
 - map/list synchronization;
-- explicit map-to-list mobile action rather than automatic scroll.
+- selected card based on the same public meeting rows;
+- explicit map-to-list action on mobile instead of automatic scroll;
+- list-to-map focus action;
+- EN/JA parity;
+- no presentation-only Calendar data fixes.
 
 Completion:
 
-- racing-now/later-today/finished states are immediately legible;
-- list and map use the same public meeting set/state;
-- EN/JA mobile behavior passes direct browser interaction QA.
+- current-day states are immediately legible;
+- list and map use the same public meeting set/state calculation;
+- mobile pin select does not force-scroll to list;
+- explicit `View in list` scroll/focus works;
+- list→map focuses the selected racecourse;
+- timezone/filter changes keep map/list consistent;
+- EN/JA desktop/mobile browser interaction QA passes;
+- zero horizontal overflow and no page errors.
 
 ## UI-005 — Calendar presentation
 
-Scope:
+Scope: date hierarchy, List/Map, List-first mobile, compact mobile filters, selected-date authority, URL state for date/view/tz and stable filters where useful.
 
-- date navigation hierarchy;
-- List/Map switch;
-- List-first mobile mode;
-- compact mobile filter control;
-- selected-date authority;
-- URL state for date/view/timezone and stable filters where appropriate.
-
-Completion:
-
-- changing date updates List and Map consistently;
-- mobile does not force the map into the initial view;
-- back/share navigation reproduces core Calendar state;
-- no claim is made that Calendar coverage, acquisition quality, source reliability, or rank promotion is complete.
-
-Calendar data defects observed during this PR are filed/routed to the parallel Calendar lane instead of being cosmetically hidden in UI code.
+Completion: date changes update List/Map consistently; mobile initial view is List; back/share restores core state; no claim of Calendar data-quality completion.
 
 ## UI-006 — Racecourses index
 
-Scope:
-
-- elevate Racecourses to a primary discovery page;
-- search by racecourse/place identity;
-- country/authority/type filters when supported by reviewed data;
-- concise results based on reviewed identity/location/upcoming context.
-
-Completion:
-
-- users can discover racecourse pages without navigating through Countries;
-- no decorative/fabricated racecourse facts are introduced.
+Scope: primary racecourse discovery, search by identity/place, reviewed country/authority/type filters where supported, concise reviewed location/upcoming context.
 
 ## UI-007 — racecourse detail
 
-Scope:
-
-- identity and locality hierarchy;
-- high-zoom single-point location map;
-- verified location text;
-- Today state or next meeting;
-- bounded upcoming meetings;
-- reviewed Course/Profile facts only;
-- Official Sources;
-- responsive single-column mobile order.
-
-Completion:
-
-- venue page is a useful destination from a map point;
-- unknown fields are omitted rather than invented;
-- map failure leaves location text/meeting/source content usable.
+Scope: identity/locality, high-zoom map, verified location, Today or next meeting, bounded upcoming meetings, reviewed Course/Profile facts, Official Sources, one-column mobile order.
 
 ## UI-008 — secondary surfaces
 
-Scope:
-
-- Countries index/detail simplification;
-- Racing Types reference layout;
-- Glossary reference/search layout;
-- Sources trust/methodology layout;
-- About/secondary navigation cleanup.
-
-Completion:
-
-- secondary pages remain reachable and useful;
-- they no longer dictate the Home/primary navigation hierarchy.
+Scope: Countries, Racing Types, Glossary, Sources, About simplification/demotion while keeping them reachable and useful.
 
 ## UI-009 — final UI audit
 
-Scope:
+Scope: EN/JA parity, desktop/tablet/mobile QA, visible interaction browser QA, production verification, no speculative content.
 
-- EN/JA parity;
-- desktop/tablet/mobile responsive QA;
-- visible interaction browser QA;
-- production verification after deploy;
-- no speculative content introduced by the redesign.
-
-Required representative interaction matrix:
-
-```text
-Home: period, timezone, cluster, pin select/dismiss, card scroll
-Today: pin select, list focus, timezone/state refresh
-Calendar: date change, List/Map, filters, URL/back behavior
-Racecourse: high-zoom map + failure fallback
-Mobile: bottom nav, More, 44px controls, no sticky selected card
-```
+Required interaction matrix includes Home period/timezone/cluster/pin/card scroll; Today pin/list/timezone/state; Calendar date/List/Map/filter/URL/back; racecourse high-zoom/fallback; mobile bottom nav/More/44px/no sticky selected card.
 
 ## Current execution pointer
 
 ```text
-Current UI after UI-002 merge: UI-003
-Then UI: UI-004 -> UI-005 -> UI-006 -> UI-007 -> UI-008 -> UI-009
+Current UI after UI-003 merge: UI-004
+Then UI: UI-005 -> UI-006 -> UI-007 -> UI-008 -> UI-009
 Parallel Calendar quality lane: active independently throughout
 ```
 
-After each merge, compare the implementation with the canonical UI specification and active roadmap before starting the next Work ID. Also check current main for Calendar-lane changes that affect the public meeting/view model. If the implementation decision changes the agreed UI, update the canonical documents rather than silently allowing drift.
+After each merge, compare the implementation with the canonical UI specification and active roadmap before starting the next Work ID. Also check current main for Calendar-lane changes affecting the public meeting/view model. If implementation decisions change agreed UI, update the canonical documents rather than silently drifting.
