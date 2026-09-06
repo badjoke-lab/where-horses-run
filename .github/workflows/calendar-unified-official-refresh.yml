@@ -123,6 +123,88 @@ jobs:
         run: npm run build
       - name: Check diff formatting
         run: git diff --check
+      - name: Exercise reset-and-rebuild persistence model
+        shell: bash
+        run: |
+          set -euo pipefail
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+          git init --bare "$tmp/remote.git" >/dev/null
+          git clone "$tmp/remote.git" "$tmp/seed" >/dev/null 2>&1
+          (
+            cd "$tmp/seed"
+            git config user.name test
+            git config user.email test@example.invalid
+            mkdir -p data/generated
+            printf 'base\n' > data/generated/snapshot.json
+            printf 'base-code\n' > code.txt
+            git add .
+            git commit -m base >/dev/null
+            git branch -M main
+            git push origin main >/dev/null 2>&1
+          )
+          git --git-dir="$tmp/remote.git" symbolic-ref HEAD refs/heads/main
+          git clone "$tmp/remote.git" "$tmp/writer" >/dev/null 2>&1
+          git clone "$tmp/remote.git" "$tmp/advancer" >/dev/null 2>&1
+          (
+            cd "$tmp/writer"
+            git config user.name test
+            git config user.email test@example.invalid
+            printf 'stale-generated\n' > data/generated/snapshot.json
+            git add data/generated/snapshot.json
+            git commit -m stale-generated >/dev/null
+          )
+          (
+            cd "$tmp/advancer"
+            git config user.name test
+            git config user.email test@example.invalid
+            printf 'advance-one\n' > code.txt
+            git add code.txt
+            git commit -m advance-one >/dev/null
+            git push origin HEAD:main >/dev/null 2>&1
+          )
+          (
+            cd "$tmp/writer"
+            git fetch origin main >/dev/null 2>&1
+            remote_main="$(git rev-parse origin/main)"
+            parent_sha="$(git rev-parse HEAD^)"
+            test "$parent_sha" != "$remote_main"
+            git reset --hard "$remote_main" >/dev/null
+            printf 'rebuilt-one\n' > data/generated/snapshot.json
+            git add data/generated/snapshot.json
+            git commit -m rebuilt-one >/dev/null
+          )
+          (
+            cd "$tmp/advancer"
+            git fetch origin main >/dev/null 2>&1
+            git reset --hard origin/main >/dev/null
+            printf 'advance-two\n' > code.txt
+            git add code.txt
+            git commit -m advance-two >/dev/null
+            git push origin HEAD:main >/dev/null 2>&1
+          )
+          (
+            cd "$tmp/writer"
+            git fetch origin main >/dev/null 2>&1
+            remote_main="$(git rev-parse origin/main)"
+            parent_sha="$(git rev-parse HEAD^)"
+            test "$parent_sha" != "$remote_main"
+            git reset --hard "$remote_main" >/dev/null
+            printf 'rebuilt-two\n' > data/generated/snapshot.json
+            git add data/generated/snapshot.json
+            git commit -m rebuilt-two >/dev/null
+            candidate_sha="$(git rev-parse HEAD)"
+            git fetch origin main >/dev/null 2>&1
+            test "$(git rev-parse HEAD^)" = "$(git rev-parse origin/main)"
+            git push origin "$candidate_sha:main" >/dev/null 2>&1
+          )
+          git clone "$tmp/remote.git" "$tmp/verify" >/dev/null 2>&1
+          test "$(cat "$tmp/verify/data/generated/snapshot.json")" = "rebuilt-two"
+          test "$(cat "$tmp/verify/code.txt")" = "advance-two"
+          if grep -R -nE '^(<<<<<<<|=======|>>>>>>>)' "$tmp/verify" --exclude-dir=.git; then
+            echo "Conflict markers survived reset-and-rebuild persistence." >&2
+            exit 1
+          fi
 
   refresh:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
@@ -177,27 +259,76 @@ jobs:
       - name: Persist Japan official state before non-Japan collection
         shell: bash
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add \
-            data/generated/timetable/canonical/meetings.json \
-            data/generated/timetable/canonical/meeting-details.json \
-            data/generated/timetable/public/meeting-list.json \
-            data/generated/timetable/public/meeting-details.json
-          git add data/generated/timetable/japan-zero-based-30d-reconciliation.json 2>/dev/null || true
-          git add data/generated/timetable/japan-zero-based-3d-reconciliation.json 2>/dev/null || true
-          if git diff --cached --quiet; then
-            echo "No verified Japan timetable change to persist."
-          else
-            git commit -m "data: refresh Japan official timetable (${{ steps.scope.outputs.scope }})"
-            git fetch origin main
-            git rebase origin/main
-            if [[ "$(git rev-parse HEAD)" == "$(git rev-parse origin/main)" ]]; then
-              echo "Verified Japan timetable state is already present on main."
-            else
-              git push origin HEAD:main
-            fi
+
+          refresh_japan_on_main() {
+            local remote_main="$1"
+            echo "Resetting to latest main $remote_main and rebuilding Japan snapshot."
+            git reset --hard "$remote_main"
+            npm install --no-package-lock --no-audit --no-fund
+            node scripts/timetable/run-japan-zero-based-30d.mjs \
+              --execution-date="${{ steps.scope.outputs.japan_date }}" \
+              --scope="${{ steps.scope.outputs.scope }}"
+            node scripts/timetable/apply-reviewed-calendar-observations.mjs
+            npm run build
+          }
+
+          stage_japan_state() {
+            git add \
+              data/generated/timetable/canonical/meetings.json \
+              data/generated/timetable/canonical/meeting-details.json \
+              data/generated/timetable/public/meeting-list.json \
+              data/generated/timetable/public/meeting-details.json
+            git add data/generated/timetable/japan-zero-based-30d-reconciliation.json 2>/dev/null || true
+            git add data/generated/timetable/japan-zero-based-3d-reconciliation.json 2>/dev/null || true
+          }
+
+          git fetch origin main
+          remote_main="$(git rev-parse origin/main)"
+          if [[ "$(git rev-parse HEAD)" != "$remote_main" ]]; then
+            refresh_japan_on_main "$remote_main"
           fi
+
+          for attempt in 1 2 3; do
+            stage_japan_state
+            if git diff --cached --quiet; then
+              echo "No verified Japan timetable change to persist."
+              exit 0
+            fi
+
+            git commit -m "data: refresh Japan official timetable (${{ steps.scope.outputs.scope }})"
+            candidate_sha="$(git rev-parse HEAD)"
+            parent_sha="$(git rev-parse HEAD^)"
+
+            git fetch origin main
+            remote_main="$(git rev-parse origin/main)"
+            if [[ "$parent_sha" != "$remote_main" ]]; then
+              echo "main advanced before Japan push; rebuilding from $remote_main (attempt $attempt/3)."
+              refresh_japan_on_main "$remote_main"
+              continue
+            fi
+
+            if git push origin "$candidate_sha:main"; then
+              echo "Persisted Japan snapshot from latest main on attempt $attempt/3."
+              exit 0
+            fi
+
+            git fetch origin main
+            remote_main="$(git rev-parse origin/main)"
+            if [[ "$remote_main" != "$parent_sha" ]]; then
+              echo "main advanced during Japan push; rebuilding from $remote_main (attempt $attempt/3)."
+              refresh_japan_on_main "$remote_main"
+              continue
+            fi
+
+            echo "Japan push failed even though main did not advance." >&2
+            exit 1
+          done
+
+          echo "Japan persistence exhausted 3 bounded rebuild attempts." >&2
+          exit 1
       - name: Collect HKJC official window
         run: |
           mkdir -p .calendar-unified
@@ -259,27 +390,116 @@ jobs:
       - name: Persist remaining canonical and public rolling state
         shell: bash
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add \
-            data/generated/timetable/canonical/meetings.json \
-            data/generated/timetable/canonical/meeting-details.json \
-            data/generated/timetable/public/meeting-list.json \
-            data/generated/timetable/public/meeting-details.json
-          git add data/generated/timetable/japan-zero-based-30d-reconciliation.json 2>/dev/null || true
-          git add data/generated/timetable/japan-zero-based-3d-reconciliation.json 2>/dev/null || true
-          if git diff --cached --quiet; then
-            echo "No verified timetable change to persist."
-            exit 0
-          fi
-          git commit -m "data: refresh unified official rolling timetable (${{ steps.scope.outputs.scope }})"
+
+          refresh_non_japan_on_main() {
+            local remote_main="$1"
+            echo "Resetting to latest main $remote_main and rebuilding non-Japan snapshot."
+            git reset --hard "$remote_main"
+            npm install --no-package-lock --no-audit --no-fund
+            rm -rf .calendar-unified
+            mkdir -p .calendar-unified
+            node scripts/timetable/run-hkjc-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/hkjc.json
+            node scripts/timetable/run-uae-era-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/uae.json
+            node scripts/timetable/run-kra-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/kra.json
+            node scripts/timetable/run-tjk-current-best-available.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/tjk.json
+            node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
+              --artifact=.calendar-unified/hkjc.json \
+              --artifact=.calendar-unified/uae.json \
+              --artifact=.calendar-unified/kra.json \
+              --artifact=.calendar-unified/tjk.json
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/hkjc.json \
+              --country-id=hong-kong \
+              --authority-id=hkjc \
+              --racing-system-id=hong-kong-hkjc-system \
+              --timezone=Asia/Hong_Kong
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/uae.json \
+              --country-id=united-arab-emirates \
+              --authority-id=emirates-racing-authority \
+              --racing-system-id=uae-national-racing-system \
+              --timezone=Asia/Dubai
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/kra.json \
+              --country-id=south-korea \
+              --authority-id=korea-racing-authority \
+              --racing-system-id=kra-national-racing-system \
+              --timezone=Asia/Seoul
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/tjk.json \
+              --country-id=turkey \
+              --authority-id=turkiye-jokey-kulubu \
+              --racing-system-id=tjk-national-racing-system \
+              --timezone=Europe/Istanbul
+            node scripts/timetable/apply-reviewed-calendar-observations.mjs
+            npm run build
+          }
+
+          stage_remaining_state() {
+            git add \
+              data/generated/timetable/canonical/meetings.json \
+              data/generated/timetable/canonical/meeting-details.json \
+              data/generated/timetable/public/meeting-list.json \
+              data/generated/timetable/public/meeting-details.json
+            git add data/generated/timetable/japan-zero-based-30d-reconciliation.json 2>/dev/null || true
+            git add data/generated/timetable/japan-zero-based-3d-reconciliation.json 2>/dev/null || true
+          }
+
           git fetch origin main
-          git rebase origin/main
-          if [[ "$(git rev-parse HEAD)" == "$(git rev-parse origin/main)" ]]; then
-            echo "Verified timetable state is already present on main."
-          else
-            git push origin HEAD:main
+          remote_main="$(git rev-parse origin/main)"
+          if [[ "$(git rev-parse HEAD)" != "$remote_main" ]]; then
+            refresh_non_japan_on_main "$remote_main"
           fi
+
+          for attempt in 1 2 3; do
+            stage_remaining_state
+            if git diff --cached --quiet; then
+              echo "No verified timetable change to persist."
+              exit 0
+            fi
+
+            git commit -m "data: refresh unified official rolling timetable (${{ steps.scope.outputs.scope }})"
+            candidate_sha="$(git rev-parse HEAD)"
+            parent_sha="$(git rev-parse HEAD^)"
+
+            git fetch origin main
+            remote_main="$(git rev-parse origin/main)"
+            if [[ "$parent_sha" != "$remote_main" ]]; then
+              echo "main advanced before rolling-state push; rebuilding from $remote_main (attempt $attempt/3)."
+              refresh_non_japan_on_main "$remote_main"
+              continue
+            fi
+
+            if git push origin "$candidate_sha:main"; then
+              echo "Persisted rolling snapshot from latest main on attempt $attempt/3."
+              exit 0
+            fi
+
+            git fetch origin main
+            remote_main="$(git rev-parse origin/main)"
+            if [[ "$remote_main" != "$parent_sha" ]]; then
+              echo "main advanced during rolling-state push; rebuilding from $remote_main (attempt $attempt/3)."
+              refresh_non_japan_on_main "$remote_main"
+              continue
+            fi
+
+            echo "Rolling-state push failed even though main did not advance." >&2
+            exit 1
+          done
+
+          echo "Rolling-state persistence exhausted 3 bounded rebuild attempts." >&2
+          exit 1
       - uses: actions/upload-artifact@v4
         if: always()
         with:
