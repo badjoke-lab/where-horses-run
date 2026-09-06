@@ -20,34 +20,7 @@ on:
     paths:
       - '.github/workflows/calendar-unified-official-refresh.yml'
       - 'package.json'
-      - 'scripts/timetable/apply-official-rolling-observations.mjs'
-      - 'scripts/timetable/apply-reviewed-calendar-observations.mjs'
-      - 'scripts/timetable/enforce-reviewed-calendar-exclusions.mjs'
-      - 'scripts/timetable/consolidate-official-acquisition-artifacts.mjs'
-      - 'scripts/timetable/run-japan-zero-based-30d.mjs'
-      - 'scripts/timetable/japan-zero-based-30d-core.mjs'
-      - 'scripts/timetable/japan-official-30d-adapters.mjs'
-      - 'scripts/timetable/banei-official-30d-discovery.mjs'
-      - 'scripts/timetable/banei-detail-core.mjs'
-      - 'scripts/timetable/banei-official-program-fallback.mjs'
-      - 'scripts/timetable/nar-publication-signal.mjs'
-      - 'scripts/timetable/japan-mother-set-safety.mjs'
-      - 'scripts/timetable/jra-official-30d-discovery.mjs'
-      - 'scripts/timetable/nankankeiba-official-30d-discovery.mjs'
-      - 'scripts/timetable/nankan-official-programme-fallback.mjs'
-      - 'scripts/timetable/iwatekeiba-official-30d-discovery.mjs'
-      - 'scripts/timetable/iwate-official-programme-fallback.mjs'
-      - 'scripts/timetable/hyogo-official-30d-discovery.mjs'
-      - 'scripts/timetable/tokai-official-30d-discovery.mjs'
-      - 'scripts/timetable/hokkaido-official-30d-discovery.mjs'
-      - 'scripts/timetable/kanazawa-official-30d-discovery.mjs'
-      - 'scripts/timetable/kochi-official-30d-discovery.mjs'
-      - 'scripts/timetable/saga-official-30d-discovery.mjs'
-      - 'scripts/timetable/saga-official-start-fallback.mjs'
-      - 'scripts/timetable/run-hkjc-official-window.mjs'
-      - 'scripts/timetable/run-uae-era-official-window.mjs'
-      - 'scripts/timetable/run-kra-official-window.mjs'
-      - 'scripts/timetable/run-tjk-current-best-available.mjs'
+      - 'scripts/timetable/**'
       - 'scripts/check-calendar-refresh-publication-boundaries.mjs'
       - 'scripts/check-kra-window-bounds.mjs'
       - 'scripts/check-japan-mother-set-safety.mjs'
@@ -76,34 +49,7 @@ on:
     paths:
       - '.github/workflows/calendar-unified-official-refresh.yml'
       - 'package.json'
-      - 'scripts/timetable/apply-official-rolling-observations.mjs'
-      - 'scripts/timetable/apply-reviewed-calendar-observations.mjs'
-      - 'scripts/timetable/enforce-reviewed-calendar-exclusions.mjs'
-      - 'scripts/timetable/consolidate-official-acquisition-artifacts.mjs'
-      - 'scripts/timetable/run-japan-zero-based-30d.mjs'
-      - 'scripts/timetable/japan-zero-based-30d-core.mjs'
-      - 'scripts/timetable/japan-official-30d-adapters.mjs'
-      - 'scripts/timetable/banei-official-30d-discovery.mjs'
-      - 'scripts/timetable/banei-detail-core.mjs'
-      - 'scripts/timetable/banei-official-program-fallback.mjs'
-      - 'scripts/timetable/nar-publication-signal.mjs'
-      - 'scripts/timetable/japan-mother-set-safety.mjs'
-      - 'scripts/timetable/jra-official-30d-discovery.mjs'
-      - 'scripts/timetable/nankankeiba-official-30d-discovery.mjs'
-      - 'scripts/timetable/nankan-official-programme-fallback.mjs'
-      - 'scripts/timetable/iwatekeiba-official-30d-discovery.mjs'
-      - 'scripts/timetable/iwate-official-programme-fallback.mjs'
-      - 'scripts/timetable/hyogo-official-30d-discovery.mjs'
-      - 'scripts/timetable/tokai-official-30d-discovery.mjs'
-      - 'scripts/timetable/hokkaido-official-30d-discovery.mjs'
-      - 'scripts/timetable/kanazawa-official-30d-discovery.mjs'
-      - 'scripts/timetable/kochi-official-30d-discovery.mjs'
-      - 'scripts/timetable/saga-official-30d-discovery.mjs'
-      - 'scripts/timetable/saga-official-start-fallback.mjs'
-      - 'scripts/timetable/run-hkjc-official-window.mjs'
-      - 'scripts/timetable/run-uae-era-official-window.mjs'
-      - 'scripts/timetable/run-kra-official-window.mjs'
-      - 'scripts/timetable/run-tjk-current-best-available.mjs'
+      - 'scripts/timetable/**'
       - 'scripts/check-calendar-refresh-publication-boundaries.mjs'
       - 'scripts/check-kra-window-bounds.mjs'
       - 'scripts/check-japan-mother-set-safety.mjs'
@@ -150,34 +96,9 @@ jobs:
         run: npm install --no-package-lock --no-audit --no-fund
       - name: Validate unified refresh syntax
         run: |
-          node --check scripts/timetable/apply-official-rolling-observations.mjs
-          node --check scripts/timetable/apply-reviewed-calendar-observations.mjs
-          node --check scripts/timetable/enforce-reviewed-calendar-exclusions.mjs
-          node --check scripts/timetable/consolidate-official-acquisition-artifacts.mjs
-          node --check scripts/timetable/run-japan-zero-based-30d.mjs
-          node --check scripts/timetable/japan-zero-based-30d-core.mjs
-          node --check scripts/timetable/japan-official-30d-adapters.mjs
-          node --check scripts/timetable/banei-official-30d-discovery.mjs
-          node --check scripts/timetable/banei-detail-core.mjs
-          node --check scripts/timetable/banei-official-program-fallback.mjs
-          node --check scripts/timetable/nar-publication-signal.mjs
-          node --check scripts/timetable/japan-mother-set-safety.mjs
-          node --check scripts/timetable/jra-official-30d-discovery.mjs
-          node --check scripts/timetable/nankankeiba-official-30d-discovery.mjs
-          node --check scripts/timetable/nankan-official-programme-fallback.mjs
-          node --check scripts/timetable/iwatekeiba-official-30d-discovery.mjs
-          node --check scripts/timetable/iwate-official-programme-fallback.mjs
-          node --check scripts/timetable/hyogo-official-30d-discovery.mjs
-          node --check scripts/timetable/tokai-official-30d-discovery.mjs
-          node --check scripts/timetable/hokkaido-official-30d-discovery.mjs
-          node --check scripts/timetable/kanazawa-official-30d-discovery.mjs
-          node --check scripts/timetable/kochi-official-30d-discovery.mjs
-          node --check scripts/timetable/saga-official-30d-discovery.mjs
-          node --check scripts/timetable/saga-official-start-fallback.mjs
-          node --check scripts/timetable/run-hkjc-official-window.mjs
-          node --check scripts/timetable/run-uae-era-official-window.mjs
-          node --check scripts/timetable/run-kra-official-window.mjs
-          node --check scripts/timetable/run-tjk-current-best-available.mjs
+          for file in scripts/timetable/*.mjs; do
+            node --check "$file"
+          done
           node scripts/check-calendar-refresh-publication-boundaries.mjs
           node scripts/check-kra-window-bounds.mjs
       - name: Exercise Japan mother-set safety contracts
@@ -239,33 +160,9 @@ jobs:
           echo "Resolved scope=$scope days=$days"
       - name: Validate production refresh syntax
         run: |
-          node --check scripts/timetable/apply-official-rolling-observations.mjs
-          node --check scripts/timetable/apply-reviewed-calendar-observations.mjs
-          node --check scripts/timetable/enforce-reviewed-calendar-exclusions.mjs
-          node --check scripts/timetable/run-japan-zero-based-30d.mjs
-          node --check scripts/timetable/japan-zero-based-30d-core.mjs
-          node --check scripts/timetable/japan-official-30d-adapters.mjs
-          node --check scripts/timetable/banei-official-30d-discovery.mjs
-          node --check scripts/timetable/banei-detail-core.mjs
-          node --check scripts/timetable/banei-official-program-fallback.mjs
-          node --check scripts/timetable/nar-publication-signal.mjs
-          node --check scripts/timetable/japan-mother-set-safety.mjs
-          node --check scripts/timetable/jra-official-30d-discovery.mjs
-          node --check scripts/timetable/nankankeiba-official-30d-discovery.mjs
-          node --check scripts/timetable/nankan-official-programme-fallback.mjs
-          node --check scripts/timetable/iwatekeiba-official-30d-discovery.mjs
-          node --check scripts/timetable/iwate-official-programme-fallback.mjs
-          node --check scripts/timetable/hyogo-official-30d-discovery.mjs
-          node --check scripts/timetable/tokai-official-30d-discovery.mjs
-          node --check scripts/timetable/hokkaido-official-30d-discovery.mjs
-          node --check scripts/timetable/kanazawa-official-30d-discovery.mjs
-          node --check scripts/timetable/kochi-official-30d-discovery.mjs
-          node --check scripts/timetable/saga-official-30d-discovery.mjs
-          node --check scripts/timetable/saga-official-start-fallback.mjs
-          node --check scripts/timetable/run-hkjc-official-window.mjs
-          node --check scripts/timetable/run-uae-era-official-window.mjs
-          node --check scripts/timetable/run-kra-official-window.mjs
-          node --check scripts/timetable/run-tjk-current-best-available.mjs
+          for file in scripts/timetable/*.mjs; do
+            node --check "$file"
+          done
           node scripts/check-calendar-refresh-publication-boundaries.mjs
           node scripts/check-kra-window-bounds.mjs
       - name: Refresh Japan official mother set and best available detail
