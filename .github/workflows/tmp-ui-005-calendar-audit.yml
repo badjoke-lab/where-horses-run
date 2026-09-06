@@ -124,16 +124,13 @@ jobs:
             assert(mapMode.params.view === 'map', `${item.name}: Map view not persisted in URL`);
             await page.waitForFunction(() => ['ready', 'error'].includes(document.querySelector('[data-racecourse-map]')?.getAttribute('data-map-state') || ''), null, { timeout: 20000 });
 
-            const focusCandidate = await page.locator('[data-calendar-row-map-focus]').count();
-            if (focusCandidate > 0) {
+            const visibleFocusButtons = page.locator('[data-calendar-meeting-row]:not([hidden]) [data-calendar-row-map-focus]');
+            if (await visibleFocusButtons.count() > 0) {
               await page.locator('[data-calendar-view-list]').click();
               await page.waitForTimeout(100);
-              const firstFocus = page.locator('[data-calendar-row-map-focus]').filter({ visible: true }).first();
-              if (await firstFocus.count()) {
-                await firstFocus.click();
-                await page.waitForTimeout(400);
-                assert((await snapshot()).mapPressed, `${item.name}: list-to-map action did not switch to Map`);
-              }
+              await visibleFocusButtons.first().click();
+              await page.waitForTimeout(400);
+              assert((await snapshot()).mapPressed, `${item.name}: list-to-map action did not switch to Map`);
             }
 
             await page.locator('[data-calendar-view-list]').click();
@@ -152,7 +149,8 @@ jobs:
             assert(utc.params.tz === 'UTC', `${item.name}: UTC not persisted in URL`);
             assert(utc.visibleDates.every((date) => date === utc.date), `${item.name}: UTC projection escaped selected date`);
 
-            const deepLink = `${location.pathname}?tz=Asia%2FTokyo&date=${encodeURIComponent(originalDate)}&view=map`;
+            const pathname = new URL(page.url()).pathname;
+            const deepLink = `${pathname}?tz=Asia%2FTokyo&date=${encodeURIComponent(originalDate)}&view=map`;
             await page.goto(`http://127.0.0.1:4321${deepLink}`, { waitUntil: 'domcontentloaded' });
             await page.waitForFunction(() => document.querySelector('[data-calendar-filters]')?.getAttribute('data-filter-ready') === 'true');
             await page.waitForTimeout(300);
