@@ -1,0 +1,108 @@
+name: Temporary UI-002 Home audit
+
+on:
+  pull_request:
+    branches:
+      - feat/ui-002-home-map-first
+
+permissions:
+  contents: read
+
+jobs:
+  browser-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+      - run: npm install
+      - run: npm run build
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Start static server
+        run: |
+          python3 -m http.server 4321 --directory dist > /tmp/whr-ui002-server.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4321/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/whr-ui002-server.log
+          exit 1
+      - name: Audit EN and JA Home desktop and mobile
+        run: |
+          mkdir -p audit/ui-002
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { chromium } from 'playwright';
+
+          const browser = await chromium.launch({ headless: true });
+          const cases = [
+            { name: 'en-home-desktop', path: '/', width: 1440, height: 1100, mobile: false, heading: 'Where is racing today?' },
+            { name: 'ja-home-desktop', path: '/ja/', width: 1440, height: 1100, mobile: false, heading: '今日、どこで競馬がある？' },
+            { name: 'en-home-mobile', path: '/', width: 390, height: 844, mobile: true, heading: 'Where is racing today?' },
+            { name: 'ja-home-mobile', path: '/ja/', width: 390, height: 844, mobile: true, heading: '今日、どこで競馬がある？' },
+          ];
+          const report = [];
+          const assert = (condition, message) => { if (!condition) throw new Error(message); };
+
+          for (const item of cases) {
+            const page = await browser.newPage({ viewport: { width: item.width, height: item.height } });
+            const pageErrors = [];
+            page.on('pageerror', (error) => pageErrors.push(String(error)));
+            await page.goto(`http://127.0.0.1:4321${item.path}`, { waitUntil: 'domcontentloaded' });
+            await page.waitForFunction(() => document.querySelector('[data-racecourse-map]')?.getAttribute('data-map-state') === 'ready', null, { timeout: 20000 });
+            await page.waitForTimeout(300);
+
+            const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+            assert(overflow <= 1, `${item.name}: horizontal overflow ${overflow}px`);
+            assert(pageErrors.length === 0, `${item.name}: page errors ${pageErrors.join(' | ')}`);
+            assert((await page.locator('.home-hero h1').textContent())?.trim() === item.heading, `${item.name}: unexpected Home heading`);
+            assert(await page.locator('.section-grid').count() === 0, `${item.name}: legacy equal-weight feature grid remains`);
+            assert(await page.locator('.home-primary-flow > .home-meeting-summary').count() === 2, `${item.name}: expected Today and Up Next sections`);
+
+            const periods = page.locator('[data-home-map-period]');
+            assert(await periods.count() === 3, `${item.name}: expected three Home periods`);
+            assert(await page.locator('[data-home-map-period="today"]').getAttribute('aria-pressed') === 'true', `${item.name}: Today not initially selected`);
+
+            const mapRoot = page.locator('.home-racing-map');
+            const mapCanvas = page.locator('.home-racing-map [data-map-canvas]');
+            const flow = page.locator('.home-primary-flow');
+            const mapBox = await mapRoot.boundingBox();
+            const canvasBox = await mapCanvas.boundingBox();
+            const flowBox = await flow.boundingBox();
+            assert(mapBox && canvasBox && flowBox, `${item.name}: missing Home layout box`);
+            assert(canvasBox.height >= (item.mobile ? 359 : 499), `${item.name}: Home map too short (${canvasBox.height}px)`);
+            assert(flowBox.y >= mapBox.y + mapBox.height - 2, `${item.name}: Today/Up Next not below map`);
+            assert(await page.locator('.home-racing-map .maplibregl-canvas').count() === 1, `${item.name}: MapLibre canvas missing`);
+
+            await page.locator('[data-home-map-period="tomorrow"]').click();
+            await page.waitForFunction(() => new URL(location.href).searchParams.get('period') === 'tomorrow');
+            assert(await page.locator('[data-home-map-period="tomorrow"]').getAttribute('aria-pressed') === 'true', `${item.name}: Tomorrow did not select`);
+
+            await page.locator('[data-home-map-period="next7"]').click();
+            await page.waitForFunction(() => new URL(location.href).searchParams.get('period') === 'next7');
+            assert(await page.locator('[data-home-map-period="next7"]').getAttribute('aria-pressed') === 'true', `${item.name}: Next 7 days did not select`);
+
+            const statusText = (await page.locator('[data-home-map-status]').textContent())?.trim() ?? '';
+            assert(statusText.length > 0, `${item.name}: map period status is empty`);
+
+            if (item.mobile) {
+              const bottom = page.locator('.mobile-bottom-nav');
+              assert(await bottom.isVisible(), `${item.name}: mobile bottom nav missing`);
+            }
+
+            await page.screenshot({ path: `audit/ui-002/${item.name}.png`, fullPage: true });
+            report.push({ name: item.name, overflow, mapHeight: canvasBox.height, statusText, pageErrors, url: page.url(), ok: true });
+            await page.close();
+          }
+
+          await browser.close();
+          fs.writeFileSync('audit/ui-002/report.json', JSON.stringify(report, null, 2));
+          console.log(JSON.stringify(report, null, 2));
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ui-002-home-browser-audit
+          path: audit/ui-002
