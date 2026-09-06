@@ -6,7 +6,6 @@ import CalendarDateStatus from '../../components/CalendarDateStatus.astro';
 import CalendarFilters from '../../components/CalendarFilters.astro';
 import CalendarMeetingMap from '../../components/CalendarMeetingMap.astro';
 import CalendarPresentationState from '../../components/CalendarPresentationState.astro';
-import MeetingStatePolicy from '../../components/MeetingStatePolicy.astro';
 import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
 import {
   getGroupedTimetableMeetingRows,
@@ -32,8 +31,6 @@ const groups = getGroupedTimetableMeetingRows(candidateRecords);
   alternatePath="/ja/calendar/"
 >
   <div class="calendar-page">
-    <MeetingStatePolicy />
-
     <section class="hero" aria-labelledby="page-title">
       <p class="hero__eyebrow">Racing calendar</p>
       <h1 id="page-title">Calendar</h1>
