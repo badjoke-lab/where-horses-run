@@ -114,6 +114,13 @@ jobs:
               assert(initial.listPressed && !initial.mapPressed && !initial.listHidden && initial.mapHidden, `${item.name}: initial mode is not List-first`);
               assert(item.mobile ? initial.filtersOpen === false : initial.filtersOpen === true, `${item.name}: filter expansion state wrong`);
 
+              checkpoint = 'mobile-filter-open';
+              if (item.mobile) {
+                await page.locator('[data-calendar-filters] > summary').click();
+                await page.waitForFunction(() => document.querySelector('[data-calendar-filters]')?.open === true, null, { timeout: 5000 });
+                assert((await snapshot()).filtersOpen === true, `${item.name}: mobile filters did not open explicitly`);
+              }
+
               checkpoint = 'country-filter';
               if (initial.countries.length > 0) {
                 await page.locator('[data-filter-country]').selectOption(initial.countries[0]);
