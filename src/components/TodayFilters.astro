@@ -18,8 +18,12 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
     <label>
       <span>{isJapanese ? '表示タイムゾーン' : 'Display timezone'}</span>
       <select data-today-timezone aria-label={isJapanese ? '表示タイムゾーン' : 'Display timezone'}>
-        <option value="Asia/Tokyo">Asia/Tokyo</option>
-        <option value="UTC">UTC</option>
+        <option value="Asia/Tokyo">{isJapanese ? '日本' : 'Japan'} — UTC+09:00</option>
+        <option value="Asia/Seoul">{isJapanese ? '韓国' : 'Korea'} — UTC+09:00</option>
+        <option value="Asia/Hong_Kong">{isJapanese ? '香港' : 'Hong Kong'} — UTC+08:00</option>
+        <option value="Asia/Dubai">{isJapanese ? 'UAE' : 'UAE'} — UTC+04:00</option>
+        <option value="Europe/Istanbul">{isJapanese ? 'トルコ' : 'Türkiye'} — UTC+03:00</option>
+        <option value="UTC">UTC — UTC+00:00</option>
       </select>
     </label>
     <label>
@@ -100,17 +104,28 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
           if (!zone) return false;
           try { new Intl.DateTimeFormat('en', { timeZone: zone }).format(new Date(0)); return true; } catch { return false; }
         };
+        const timeZoneOptions = [
+          ['Asia/Tokyo', isJa ? '日本 — UTC+09:00' : 'Japan — UTC+09:00'],
+          ['Asia/Seoul', isJa ? '韓国 — UTC+09:00' : 'Korea — UTC+09:00'],
+          ['Asia/Hong_Kong', isJa ? '香港 — UTC+08:00' : 'Hong Kong — UTC+08:00'],
+          ['Asia/Dubai', 'UAE — UTC+04:00'],
+          ['Europe/Istanbul', isJa ? 'トルコ — UTC+03:00' : 'Türkiye — UTC+03:00'],
+          ['UTC', 'UTC — UTC+00:00'],
+        ];
         const populateTimeZones = () => {
-          const zones = typeof Intl.supportedValuesOf === 'function'
-            ? Intl.supportedValuesOf('timeZone')
-            : ['UTC', 'Asia/Tokyo', 'Asia/Hong_Kong', 'Asia/Dubai', 'Europe/London', 'America/New_York', 'Australia/Sydney'];
-          const values = Array.from(new Set(['UTC', ...zones]));
-          timezone.replaceChildren(...values.map((zone) => {
+          timezone.replaceChildren(...timeZoneOptions.map(([zone, label]) => {
             const option = document.createElement('option');
             option.value = zone;
-            option.textContent = zone;
+            option.textContent = label;
             return option;
           }));
+        };
+        const ensureCurrentTimeZoneOption = (zone) => {
+          if (!isSupported(zone) || Array.from(timezone.options).some((option) => option.value === zone)) return;
+          const option = document.createElement('option');
+          option.value = zone;
+          option.textContent = zone;
+          timezone.append(option);
         };
         const stateFor = (row) => {
           const meetingState = row.dataset.meetingState || 'unknown';
@@ -199,7 +214,10 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
         };
         const syncTimezoneFromList = () => {
           const internal = internalTimezone();
-          if (internal instanceof HTMLSelectElement && isSupported(internal.value)) timezone.value = internal.value;
+          if (internal instanceof HTMLSelectElement && isSupported(internal.value)) {
+            ensureCurrentTimeZoneOption(internal.value);
+            timezone.value = internal.value;
+          }
         };
 
         populateTimeZones();
