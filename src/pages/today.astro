@@ -1,62 +1,28 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import CalendarDateStatus from '../components/CalendarDateStatus.astro';
-import TimetableMeetingList from '../components/TimetableMeetingList.astro';
-import TodayFilters from '../components/TodayFilters.astro';
-import TodayMeetingMap from '../components/TodayMeetingMap.astro';
-import '../styles/today-practical.css';
-import {
-  getTimetableDataState,
-  getTimetableDateContext,
-  getTimetableMeetingRowsForWindow,
-} from '../data/timetableMeetingRows';
-import { addCalendarDays } from '../lib/timetable/calendarDateContext.mjs';
-
-const context = getTimetableDateContext();
-const dataState = getTimetableDataState(context);
-const candidateStart = addCalendarDays(context.today, -2);
-const candidateEndExclusive = addCalendarDays(context.today, 4);
-const todayCandidates = getTimetableMeetingRowsForWindow(candidateStart, candidateEndExclusive);
+const target = '/';
 ---
-
-<BaseLayout
-  title={`Today's racing — ${context.today} | Where Horses Run`}
-  description={`See racing listed for ${context.today}, including available race times and links to official sources.`}
-  canonicalPath="/today/"
-  alternatePath="/ja/today/"
->
-  <main class="today-page" data-today-page>
-    <section class="hero today-page__hero" aria-labelledby="page-title">
-      <p class="hero__eyebrow">Today</p>
-      <h1 id="page-title">Today’s racing</h1>
-      <p class="today-page__context">
-        <time data-timezone-target-date>{context.today}</time> · <span data-timezone-label>{context.timeZone}</span>
-      </p>
-      <p class="hero__summary">
-        See what is racing now, what starts later today, and what has finished in your selected display timezone.
-      </p>
-    </section>
-
-    <CalendarDateStatus context={context} dataState={dataState} displayDate={context.today} />
-
-    <TodayFilters records={todayCandidates} />
-
-    <TodayMeetingMap records={todayCandidates} date={context.today} />
-
-    <section class="today-page__list" aria-labelledby="today-list-title" data-today-practical-list>
-      <div class="today-page__list-heading">
-        <div>
-          <p class="today-page__eyebrow">Meeting list</p>
-          <h2 id="today-list-title">Today by status and time</h2>
-        </div>
-        <p>Map and list use the same public meeting rows and state calculation.</p>
-      </div>
-      <TimetableMeetingList
-        records={todayCandidates}
-        date={context.today}
-        scope="today"
-        emptyLabel="No meetings are currently listed for today in the selected display timezone. Check official sources for the latest information."
-      />
-    </section>
-  </main>
-</BaseLayout>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Today is now the default Home racing view." />
+    <meta property="og:title" content="Today moved | Where Horses Run" />
+    <meta property="og:description" content="Today is now the default Home racing view." />
+    <meta name="twitter:title" content="Today moved | Where Horses Run" />
+    <meta name="twitter:description" content="Today is now the default Home racing view." />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href="https://whr.badjoke-lab.com/" />
+    <title>Today moved | Where Horses Run</title>
+  </head>
+  <body>
+    <p>Today is now the default Home view. <a href={target}>Open Home</a>.</p>
+    <script is:inline>
+      const url = new URL('/', window.location.origin);
+      const current = new URL(window.location.href);
+      current.searchParams.forEach((value, key) => url.searchParams.set(key, value));
+      url.searchParams.delete('range');
+      window.location.replace(`${url.pathname}${url.search}`);
+    </script>
+  </body>
+</html>

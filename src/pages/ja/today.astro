@@ -1,64 +1,28 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import CalendarDateStatus from '../../components/CalendarDateStatus.astro';
-import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
-import TodayFilters from '../../components/TodayFilters.astro';
-import TodayMeetingMap from '../../components/TodayMeetingMap.astro';
-import '../../styles/today-practical.css';
-import {
-  getTimetableDataState,
-  getTimetableDateContext,
-  getTimetableMeetingRowsForWindow,
-} from '../../data/timetableMeetingRows';
-import { addCalendarDays } from '../../lib/timetable/calendarDateContext.mjs';
-
-const context = getTimetableDateContext();
-const dataState = getTimetableDataState(context);
-const candidateStart = addCalendarDays(context.today, -2);
-const candidateEndExclusive = addCalendarDays(context.today, 4);
-const todayCandidates = getTimetableMeetingRowsForWindow(candidateStart, candidateEndExclusive);
+const target = '/ja/';
 ---
-
-<BaseLayout
-  title={`今日の開催 — ${context.today} | 競馬どこ？`}
-  description={`${context.today}の競馬開催情報と、掲載されているレース時刻を確認できます。`}
-  lang="ja"
-  canonicalPath="/ja/today/"
-  alternatePath="/today/"
->
-  <main class="today-page" data-today-page>
-    <section class="hero today-page__hero" aria-labelledby="page-title">
-      <p class="hero__eyebrow">今日</p>
-      <h1 id="page-title">今日の開催</h1>
-      <p class="today-page__context">
-        <time data-timezone-target-date>{context.today}</time> · <span data-timezone-label>{context.timeZone}</span>
-      </p>
-      <p class="hero__summary">
-        選択した表示タイムゾーンで、開催中・今日これから・終了した開催を地図と一覧から確認できます。
-      </p>
-    </section>
-
-    <CalendarDateStatus context={context} dataState={dataState} lang="ja" displayDate={context.today} />
-
-    <TodayFilters records={todayCandidates} lang="ja" />
-
-    <TodayMeetingMap records={todayCandidates} date={context.today} lang="ja" />
-
-    <section class="today-page__list" aria-labelledby="today-list-title" data-today-practical-list>
-      <div class="today-page__list-heading">
-        <div>
-          <p class="today-page__eyebrow">開催一覧</p>
-          <h2 id="today-list-title">状態・時刻順で見る</h2>
-        </div>
-        <p>地図と一覧は同じ公開meeting rowと同じ状態判定を使います。</p>
-      </div>
-      <TimetableMeetingList
-        records={todayCandidates}
-        date={context.today}
-        scope="today"
-        lang="ja"
-        emptyLabel="選択した表示タイムゾーンの今日に該当する開催情報は掲載されていません。最新情報は公式情報源で確認してください。"
-      />
-    </section>
-  </main>
-</BaseLayout>
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="今日の開催はトップページの初期表示へ統合しました。" />
+    <meta property="og:title" content="今日の開催はトップへ移動しました | 競馬どこ？" />
+    <meta property="og:description" content="今日の開催はトップページの初期表示へ統合しました。" />
+    <meta name="twitter:title" content="今日の開催はトップへ移動しました | 競馬どこ？" />
+    <meta name="twitter:description" content="今日の開催はトップページの初期表示へ統合しました。" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href="https://whr.badjoke-lab.com/ja/" />
+    <title>今日の開催はトップへ移動しました | 競馬どこ？</title>
+  </head>
+  <body>
+    <p>今日の開催はトップページの初期表示になりました。<a href={target}>トップを開く</a></p>
+    <script is:inline>
+      const url = new URL('/ja/', window.location.origin);
+      const current = new URL(window.location.href);
+      current.searchParams.forEach((value, key) => url.searchParams.set(key, value));
+      url.searchParams.delete('range');
+      window.location.replace(`${url.pathname}${url.search}`);
+    </script>
+  </body>
+</html>
