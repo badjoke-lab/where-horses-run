@@ -25,8 +25,8 @@ const groupedCalendarRecords = getGroupedTimetableMeetingRows(candidateRecords);
 ---
 
 <BaseLayout
-  title="開催カレンダー | 競馬どこ？"
-  description={`${context.windowStart}から${context.windowEndInclusive}までの範囲から日付を選び、同じ開催集合をListまたはMapで確認できます。`}
+  title="30日開催カレンダー | 競馬どこ？"
+  description={`${context.windowStart}から${context.windowEndInclusive}までの開催を30日一覧で確認し、必要な場合だけ1日へ絞り込めます。`}
   lang="ja"
   canonicalPath="/ja/calendar/"
   alternatePath="/calendar/"
@@ -34,9 +34,9 @@ const groupedCalendarRecords = getGroupedTimetableMeetingRows(candidateRecords);
   <div class="calendar-page">
     <section class="hero" aria-labelledby="page-title">
       <p class="hero__eyebrow">開催カレンダー</p>
-      <h1 id="page-title">カレンダー</h1>
+      <h1 id="page-title">30日開催カレンダー</h1>
       <p class="hero__summary">
-        日付を1日選び、その日の開催をListまたはMapで確認できます。現在の表示範囲は<span data-timezone-window-start>{context.windowStart}</span>から<span data-timezone-window-end>{context.windowEndInclusive}</span>、表示タイムゾーンは<span data-timezone-label>{context.timeZone}</span>です。
+        <span data-timezone-window-start>{context.windowStart}</span>から<span data-timezone-window-end>{context.windowEndInclusive}</span>までの開催を一覧できます。ListとMapは初期状態で30日全体を表示し、必要な場合だけ日付を選んで1日に絞り込みます。表示タイムゾーンは<span data-timezone-label>{context.timeZone}</span>です。
       </p>
     </section>
 
@@ -50,12 +50,12 @@ const groupedCalendarRecords = getGroupedTimetableMeetingRows(candidateRecords);
     <CalendarFilters records={candidateRecords} lang="ja" />
     <CalendarPresentationState lang="ja" />
 
-    <section aria-label="選択日の開催一覧" data-calendar-list-view>
+    <section aria-label="30日間の開催一覧" data-calendar-list-view>
       <TimetableMeetingList
         groups={groupedCalendarRecords}
         scope="rolling-30"
         lang="ja"
-        emptyLabel="選択した表示タイムゾーンの対象日に開催情報は掲載されていません。最新情報は公式情報源で確認してください。"
+        emptyLabel="現在の30日表示範囲または選択中の絞り込み条件に該当する開催情報は掲載されていません。最新情報は公式情報源で確認してください。"
       />
     </section>
 
