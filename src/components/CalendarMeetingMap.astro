@@ -206,17 +206,9 @@ const fallbackMessage = isJapanese
           if (selectedBox instanceof HTMLElement) selectedBox.hidden = false;
           return first;
         };
-        const clearMapSelection = (racecourseId) => {
-          if (!racecourseId) return;
-          const date = selectedDate();
-          const ids = visibleRacecourseIds(date);
+        const clearMapSelection = () => {
           if (!(mapRoot instanceof HTMLElement)) return;
-          mapRoot.dispatchEvent(new CustomEvent('racecourse-map:set-visible', {
-            detail: { racecourseIds: ids.filter((id) => id !== racecourseId), fit: false }
-          }));
-          requestAnimationFrame(() => mapRoot.dispatchEvent(new CustomEvent('racecourse-map:set-visible', {
-            detail: { racecourseIds: ids, fit: false }
-          })));
+          mapRoot.dispatchEvent(new CustomEvent('racecourse-map:clear-selection'));
         };
 
         const setView = (view, updateUrl = true) => {
@@ -318,7 +310,8 @@ const fallbackMessage = isJapanese
         }
         if (mapRoot instanceof HTMLElement) {
           mapRoot.addEventListener('racecourse-map:ready', syncMap);
-          mapRoot.addEventListener('racecourse-map:select', (event) => {
+          mapRoot.addEventListener('racecourse-map:deselect', hideSelected);
+        mapRoot.addEventListener('racecourse-map:select', (event) => {
             const racecourseId = event?.detail?.racecourseId;
             if (typeof racecourseId === 'string') selectRacecourse(racecourseId);
           });

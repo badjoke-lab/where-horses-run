@@ -398,10 +398,26 @@
   .today-meeting-map__selected,
   .calendar-map-switch__selected,
   .home-racing-map__selected {
-    position: sticky;
-    bottom: var(--whr-space-2);
-    z-index: 3;
+    position: relative;
+    z-index: 1;
     box-shadow: 0 0.35rem 1.2rem rgb(0 0 0 / 0.14);
+  }
+
+  .today-meeting-map__selected,
+  .calendar-map-switch__selected {
+    padding-right: 3.75rem;
+  }
+
+  .today-meeting-map__selected .map-selected-card__close,
+  .calendar-map-switch__selected .map-selected-card__close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--whr-color-bg);
   }
 
   .map-selected-card__body,

@@ -211,15 +211,9 @@ const fallbackMessage = isJapanese
           const button = first.querySelector('[data-meeting-map-focus]');
           if (button instanceof HTMLElement) button.focus({ preventScroll: true });
         };
-        const clearMapSelection = (racecourseId) => {
-          if (!racecourseId) return;
-          const ids = visibleRacecourseIds();
-          mapRoot.dispatchEvent(new CustomEvent('racecourse-map:set-visible', {
-            detail: { racecourseIds: ids.filter((id) => id !== racecourseId), fit: false }
-          }));
-          requestAnimationFrame(() => mapRoot.dispatchEvent(new CustomEvent('racecourse-map:set-visible', {
-            detail: { racecourseIds: ids, fit: false }
-          })));
+        const clearMapSelection = () => {
+          if (!(mapRoot instanceof HTMLElement)) return;
+          mapRoot.dispatchEvent(new CustomEvent('racecourse-map:clear-selection'));
         };
 
         const addListMapControls = () => {
@@ -260,6 +254,7 @@ const fallbackMessage = isJapanese
         };
 
         mapRoot.addEventListener('racecourse-map:ready', syncVisible);
+        mapRoot.addEventListener('racecourse-map:deselect', hideSelected);
         mapRoot.addEventListener('racecourse-map:select', (event) => {
           const racecourseId = event?.detail?.racecourseId;
           if (typeof racecourseId !== 'string') return;

@@ -68,7 +68,34 @@ const homeSelectedLinkResets = home.match(/selectedLinks\.replaceChildren\(\);/g
 if (homeSelectedLinkResets.length < 2) {
   fail(`Home selected-link rendering must reset links both when clearing and before re-rendering; found ${homeSelectedLinkResets.length} reset(s)`);
 }
-requireText(css, 'position: sticky', 'mobile selected-card presentation');
+
+// Mobile selected cards must scroll in normal document flow. Dismissal is explicit
+// and synchronized with the selected-pin state rather than relying on a sticky card.
+forbidText(css, 'position: sticky;', 'mobile selected-card presentation');
+requireText(css, 'position: relative;', 'mobile selected-card normal-flow presentation');
+requireText(css, '.today-meeting-map__selected .map-selected-card__close', 'Today mobile top-right close control');
+requireText(css, '.calendar-map-switch__selected .map-selected-card__close', 'Calendar mobile top-right close control');
+requireText(css, 'top: 0.5rem;', 'mobile selected-card close top offset');
+requireText(css, 'right: 0.5rem;', 'mobile selected-card close right offset');
+
+for (const token of [
+  'const clearSelected = (emit = true) => {',
+  "new CustomEvent('racecourse-map:deselect'",
+  "root.addEventListener('racecourse-map:clear-selection'",
+  'toggle && root.dataset.selectedRacecourseId === racecourseId',
+  'map.queryRenderedFeatures(event.point',
+  'if (interactive.length === 0) clearSelected(true)',
+  "event.key === 'Escape'",
+]) requireText(map, token, 'shared map dismissal behavior');
+
+for (const [label, source] of [
+  ['TodayMeetingMap', today],
+  ['CalendarMeetingMap', calendar],
+  ['HomeRacingMap', home],
+]) {
+  requireText(source, "racecourse-map:clear-selection", `${label} explicit close synchronization`);
+  requireText(source, "racecourse-map:deselect", `${label} map-driven dismissal synchronization`);
+}
 
 for (const token of ['MapLibre', 'OpenFreeMap', 'attribution', 'API key', 'Failure boundary']) {
   requireText(providerDecision, token, 'map runtime provider decision');
@@ -85,5 +112,5 @@ for (const token of [
 ]) requireText(touchQa, token, 'map touch-target QA styles');
 
 if (!process.exitCode) {
-  console.log('MAP-010 map UI contract OK: lazy runtime, timeout-only load failure, local racing projection, touch targets, attribution, failure fallback, and idempotent selected-card boundaries verified.');
+  console.log('MAP-010 map UI contract OK: lazy runtime, timeout-only load failure, local racing projection, touch targets, attribution, failure fallback, idempotent selected-card boundaries, and natural mobile dismissal verified.');
 }
