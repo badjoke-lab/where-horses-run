@@ -30,6 +30,9 @@ const todayCandidates = getTimetableMeetingRowsForWindow(candidateStart, candida
     <section class="hero today-page__hero" aria-labelledby="page-title">
       <p class="hero__eyebrow">今日</p>
       <h1 id="page-title">今日の開催</h1>
+      <p class="today-page__context">
+        <time data-timezone-target-date>{context.today}</time> · <span data-timezone-label>{context.timeZone}</span>
+      </p>
       <p class="hero__summary">
         選択した表示タイムゾーンで、開催中・今日これから・終了した開催を地図と一覧から確認できます。
       </p>
