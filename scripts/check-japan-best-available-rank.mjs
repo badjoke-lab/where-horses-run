@@ -8,11 +8,76 @@ const publicViewModelSource = readFileSync(
   new URL('../src/lib/timetable/publicTimetableViewModel.ts', import.meta.url),
   'utf8',
 );
+const tjkPublicSupplementSource = readFileSync(
+  new URL('../src/lib/timetable/tjkPublicSupplement.ts', import.meta.url),
+  'utf8',
+);
+
+assert.match(
+  publicViewModelSource,
+  /function mergePublicMeetingRowsMonotonic/,
+  'public meeting overlays must merge monotonically instead of replacing generated rows',
+);
+assert.match(
+  publicViewModelSource,
+  /function mergePublicMeetingDetailsMonotonic/,
+  'public detail overlays must merge monotonically instead of replacing generated details',
+);
+assert.match(
+  publicViewModelSource,
+  /canApplyMeetingRankOverride[\s\S]*isRankAtLeast\(override\.max_public_rank, meeting\.max_public_rank\)[\s\S]*isRankAtLeast\(override\.effective_public_rank, meeting\.effective_public_rank\)/,
+  'legacy meeting overrides must not lower the generated public rank or ceiling',
+);
+assert.match(
+  publicViewModelSource,
+  /canApplyDetailRankOverride[\s\S]*isRankAtLeast\(override\.max_public_rank, detail\.max_public_rank\)[\s\S]*isRankAtLeast\(override\.effective_public_rank, detail\.effective_public_rank\)/,
+  'legacy detail overrides must not lower generated detail rank or ceiling',
+);
+assert.doesNotMatch(
+  publicViewModelSource,
+  /new Map<string,\s*Partial<PublicTimetableMeetingRow>>/,
+  'meeting-specific corrections must not have type access to public rank fields',
+);
+assert.doesNotMatch(
+  publicViewModelSource,
+  /new Map<string,\s*Partial<PublicTimetableMeetingDetail>>/,
+  'detail-specific corrections must not have type access to public rank fields',
+);
+assert.doesNotMatch(
+  publicViewModelSource,
+  /\.filter\(\(meeting\) => !isTjkSupplementWindowMeeting\(meeting\)\)/,
+  'generated meetings must not be removed merely because a supplement exists',
+);
+assert.doesNotMatch(
+  publicViewModelSource,
+  /\.filter\(\(detail\) => !isTjkSupplementWindowMeeting\(detail\)\)/,
+  'generated details must not be removed merely because a supplement exists',
+);
+assert.doesNotMatch(
+  tjkPublicSupplementSource,
+  /mizusawaReviewedRows|MIZUSAWA_AUTHORITY_ID|MIZUSAWA_SOURCE_URL/,
+  'TJK supplement must not carry unrelated Mizusawa meeting overrides',
+);
 assert.doesNotMatch(
   publicViewModelSource,
   /\['nar-mizusawa-racecourse-\d{4}-\d{2}-\d{2}',\s*\{[^}]*effective_public_rank:\s*'B\+'/s,
   'public view model must not hard-code Mizusawa A+/A down to B+',
 );
+
+const rankOrder = new Map([
+  ['not_listed', 0],
+  ['D', 1],
+  ['C', 2],
+  ['B', 3],
+  ['B+', 4],
+  ['A', 5],
+  ['A+', 6],
+]);
+const monotonicRank = (existing, candidate) =>
+  rankOrder.get(existing) >= rankOrder.get(candidate) ? existing : candidate;
+assert.equal(monotonicRank('A+', 'B+'), 'A+', 'lower supplement rank must never replace generated A+');
+assert.equal(monotonicRank('A', 'A+'), 'A+', 'higher reviewed evidence may promote generated rank');
+assert.equal(monotonicRank('A+', 'C'), 'A+', 'schedule-only overlay must not cap an A+ generated meeting');
 
 const aPlusRows = [1, 2].map((number) => ({
   label: `Race ${number}`,

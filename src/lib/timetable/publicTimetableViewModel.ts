@@ -3,13 +3,11 @@ import meetingDetailsData from '../../../data/generated/timetable/public/meeting
 import japanAPlusOverridesData from '../../../data/generated/timetable/public/japan-a-plus-overrides.json';
 import type { CapabilityRank } from './canonicalTypes.ts';
 import {
-  isTjkSupplementWindowMeeting,
   tjkPublicMeetingDetails,
   tjkPublicMeetingRows,
 } from './tjkPublicSupplement.ts';
 import {
   baneiReviewedMeetingDetails,
-  baneiReviewedMeetingIds,
   baneiReviewedMeetingRows,
 } from './baneiReviewedSupplement.ts';
 
@@ -102,6 +100,50 @@ type JapanAPlusPublicOverrides = {
   readonly detail_overrides: readonly JapanDetailOverride[];
 };
 
+type PublicTimetableMeetingCorrection = Partial<Pick<
+  PublicTimetableMeetingRow,
+  | 'first_race_time_local'
+  | 'last_race_time_local'
+  | 'policy_id'
+  | 'source_status'
+  | 'official_source_url'
+  | 'last_checked_date'
+  | 'detail_path'
+  | 'show_live_label'
+  | 'show_replay_label'
+>>;
+
+type PublicTimetableDetailCorrection = Partial<Pick<
+  PublicTimetableMeetingDetail,
+  | 'policy_id'
+  | 'official_source_url'
+  | 'source_status'
+  | 'last_checked_date'
+  | 'show_race_name'
+  | 'show_distance'
+  | 'show_surface'
+  | 'show_course'
+  | 'show_live_label'
+  | 'show_replay_label'
+  | 'timetable_rows'
+>>;
+
+const RANK_ORDER: Record<CapabilityRank, number> = {
+  not_listed: 0,
+  D: 1,
+  C: 2,
+  B: 3,
+  'B+': 4,
+  A: 5,
+  'A+': 6,
+};
+
+const maxRank = (left: CapabilityRank, right: CapabilityRank): CapabilityRank =>
+  RANK_ORDER[left] >= RANK_ORDER[right] ? left : right;
+
+const isRankAtLeast = (candidate: CapabilityRank, floor: CapabilityRank): boolean =>
+  RANK_ORDER[candidate] >= RANK_ORDER[floor];
+
 const meetingListDataset = meetingListData as PublicMeetingListDataset;
 const meetingDetailsDataset = meetingDetailsData as PublicMeetingDetailsDataset;
 const japanAPlusOverrides = japanAPlusOverridesData as JapanAPlusPublicOverrides;
@@ -110,6 +152,22 @@ const overrideSnapshotDate = japanAPlusOverrides.generated_at.slice(0, 10);
 const canApplyReviewedOverride = (lastCheckedDate: string | undefined): boolean =>
   typeof lastCheckedDate === 'string' && lastCheckedDate <= overrideSnapshotDate;
 
+const canApplyMeetingRankOverride = (
+  meeting: PublicTimetableMeetingRow,
+  override: JapanMeetingOverride,
+): boolean =>
+  canApplyReviewedOverride(meeting.last_checked_date)
+  && isRankAtLeast(override.max_public_rank, meeting.max_public_rank)
+  && isRankAtLeast(override.effective_public_rank, meeting.effective_public_rank);
+
+const canApplyDetailRankOverride = (
+  detail: PublicTimetableMeetingDetail,
+  override: JapanDetailOverride,
+): boolean =>
+  canApplyReviewedOverride(detail.last_checked_date)
+  && isRankAtLeast(override.max_public_rank, detail.max_public_rank)
+  && isRankAtLeast(override.effective_public_rank, detail.effective_public_rank);
+
 const meetingOverrideIndex = new Map(
   japanAPlusOverrides.meeting_overrides.map((override) => [override.meeting_id, override]),
 );
@@ -117,7 +175,7 @@ const detailOverrideIndex = new Map(
   japanAPlusOverrides.detail_overrides.map((override) => [override.meeting_id, override]),
 );
 
-const reviewedPublicCorrections = new Map<string, Partial<PublicTimetableMeetingRow>>([
+const reviewedPublicCorrections = new Map<string, PublicTimetableMeetingCorrection>([
   [
     'kra-busan-gyeongnam-racecourse-2026-09-06',
     {
@@ -129,7 +187,7 @@ const reviewedPublicCorrections = new Map<string, Partial<PublicTimetableMeeting
   ],
 ]);
 
-const reviewedPublicDetailCorrections = new Map<string, Partial<PublicTimetableMeetingDetail>>([
+const reviewedPublicDetailCorrections = new Map<string, PublicTimetableDetailCorrection>([
   [
     'kra-busan-gyeongnam-racecourse-2026-09-06',
     {
@@ -180,41 +238,129 @@ const reviewedPublicSupplements: readonly PublicTimetableMeetingRow[] = [
   },
 ];
 
-const generatedPublicMeetingRows = meetingListDataset.meetings
+function mergePublicMeetingRowsMonotonic(
+  rows: readonly PublicTimetableMeetingRow[],
+): readonly PublicTimetableMeetingRow[] {
+  const merged = new Map<string, PublicTimetableMeetingRow>();
+  for (const candidate of rows) {
+    const existing = merged.get(candidate.meeting_id);
+    if (!existing) {
+      merged.set(candidate.meeting_id, candidate);
+      continue;
+    }
+
+    const candidateRank = RANK_ORDER[candidate.effective_public_rank];
+    const existingRank = RANK_ORDER[existing.effective_public_rank];
+    const candidatePreferred = candidateRank > existingRank
+      || (candidateRank === existingRank && candidate.last_checked_date > existing.last_checked_date);
+    const preferred = candidatePreferred ? candidate : existing;
+    const fallback = candidatePreferred ? existing : candidate;
+
+    merged.set(candidate.meeting_id, {
+      ...fallback,
+      ...preferred,
+      capability_rank: maxRank(existing.capability_rank, candidate.capability_rank),
+      max_public_rank: maxRank(existing.max_public_rank, candidate.max_public_rank),
+      effective_public_rank: maxRank(existing.effective_public_rank, candidate.effective_public_rank),
+      first_race_time_local: preferred.first_race_time_local ?? fallback.first_race_time_local,
+      last_race_time_local: preferred.last_race_time_local ?? fallback.last_race_time_local,
+      detail_path: preferred.detail_path ?? fallback.detail_path,
+    });
+  }
+  return [...merged.values()];
+}
+
+function mergePublicMeetingDetailsMonotonic(
+  details: readonly PublicTimetableMeetingDetail[],
+): readonly PublicTimetableMeetingDetail[] {
+  const merged = new Map<string, PublicTimetableMeetingDetail>();
+  for (const candidate of details) {
+    const existing = merged.get(candidate.meeting_id);
+    if (!existing) {
+      merged.set(candidate.meeting_id, candidate);
+      continue;
+    }
+
+    const candidateRank = RANK_ORDER[candidate.effective_public_rank];
+    const existingRank = RANK_ORDER[existing.effective_public_rank];
+    const candidatePreferred = candidateRank > existingRank
+      || (candidateRank === existingRank && candidate.last_checked_date > existing.last_checked_date);
+    const preferred = candidatePreferred ? candidate : existing;
+    const fallback = candidatePreferred ? existing : candidate;
+
+    merged.set(candidate.meeting_id, {
+      ...fallback,
+      ...preferred,
+      capability_rank: maxRank(existing.capability_rank, candidate.capability_rank),
+      max_public_rank: maxRank(existing.max_public_rank, candidate.max_public_rank),
+      effective_public_rank: maxRank(
+        existing.effective_public_rank,
+        candidate.effective_public_rank,
+      ) as PublicTimetableMeetingDetail['effective_public_rank'],
+    });
+  }
+  return [...merged.values()];
+}
+
+const generatedPublicMeetingRows: readonly PublicTimetableMeetingRow[] = meetingListDataset.meetings
   .filter((meeting) => !reviewedPublicExcludedMeetingIds.has(meeting.meeting_id))
-  .filter((meeting) => !isTjkSupplementWindowMeeting(meeting))
-  .filter((meeting) => !baneiReviewedMeetingIds.has(meeting.meeting_id))
   .map((meeting) => {
     const override = meetingOverrideIndex.get(meeting.meeting_id);
-    const withRankOverride = override && canApplyReviewedOverride(meeting.last_checked_date) ? { ...meeting, ...override } : meeting;
+    const withRankOverride = override && canApplyMeetingRankOverride(meeting, override)
+      ? { ...meeting, ...override }
+      : meeting;
     const correction = reviewedPublicCorrections.get(meeting.meeting_id);
     return correction ? { ...withRankOverride, ...correction } : withRankOverride;
   });
 
-const generatedMeetingIds = new Set(generatedPublicMeetingRows.map((meeting) => meeting.meeting_id));
-
-const publicMeetingRows: readonly PublicTimetableMeetingRow[] = [
+const publicMeetingRows: readonly PublicTimetableMeetingRow[] = mergePublicMeetingRowsMonotonic([
   ...generatedPublicMeetingRows,
-  ...reviewedPublicSupplements.filter((meeting) => !generatedMeetingIds.has(meeting.meeting_id)),
+  ...reviewedPublicSupplements,
   ...(baneiReviewedMeetingRows as readonly PublicTimetableMeetingRow[]),
   ...(tjkPublicMeetingRows as readonly PublicTimetableMeetingRow[]),
-];
+]);
 
 const generatedPublicMeetingDetails: readonly PublicTimetableMeetingDetail[] = meetingDetailsDataset.details
-  .filter((detail) => !isTjkSupplementWindowMeeting(detail))
-  .filter((detail) => !baneiReviewedMeetingIds.has(detail.meeting_id))
   .map((detail) => {
     const override = detailOverrideIndex.get(detail.meeting_id);
-    const withRankOverride = override && canApplyReviewedOverride(detail.last_checked_date) ? { ...detail, ...override } : detail;
+    const withRankOverride = override && canApplyDetailRankOverride(detail, override)
+      ? { ...detail, ...override }
+      : detail;
     const correction = reviewedPublicDetailCorrections.get(detail.meeting_id);
     return correction ? { ...withRankOverride, ...correction } : withRankOverride;
   });
 
-const publicMeetingDetails: readonly PublicTimetableMeetingDetail[] = [
+const publicMeetingDetails: readonly PublicTimetableMeetingDetail[] = mergePublicMeetingDetailsMonotonic([
   ...generatedPublicMeetingDetails,
   ...(baneiReviewedMeetingDetails as readonly PublicTimetableMeetingDetail[]),
   ...(tjkPublicMeetingDetails as readonly PublicTimetableMeetingDetail[]),
-];
+]);
+
+const finalMeetingIndex = new Map(publicMeetingRows.map((meeting) => [meeting.meeting_id, meeting]));
+for (const generated of generatedPublicMeetingRows) {
+  const published = finalMeetingIndex.get(generated.meeting_id);
+  if (!published) throw new Error(`Public meeting missing generated baseline: ${generated.meeting_id}`);
+  if (
+    !isRankAtLeast(published.capability_rank, generated.capability_rank)
+    || !isRankAtLeast(published.max_public_rank, generated.max_public_rank)
+    || !isRankAtLeast(published.effective_public_rank, generated.effective_public_rank)
+  ) {
+    throw new Error(`Public meeting rank downgraded below generated baseline: ${generated.meeting_id}`);
+  }
+}
+
+const finalDetailIndex = new Map(publicMeetingDetails.map((detail) => [detail.meeting_id, detail]));
+for (const generated of generatedPublicMeetingDetails) {
+  const published = finalDetailIndex.get(generated.meeting_id);
+  if (!published) throw new Error(`Public meeting detail missing generated baseline: ${generated.meeting_id}`);
+  if (
+    !isRankAtLeast(published.capability_rank, generated.capability_rank)
+    || !isRankAtLeast(published.max_public_rank, generated.max_public_rank)
+    || !isRankAtLeast(published.effective_public_rank, generated.effective_public_rank)
+  ) {
+    throw new Error(`Public meeting detail rank downgraded below generated baseline: ${generated.meeting_id}`);
+  }
+}
 
 export function getPublicTimetableGeneratedAt(): string { return meetingListDataset.generated_at; }
 export function getPublicTimetableMeetingRows(): readonly PublicTimetableMeetingRow[] { return publicMeetingRows; }
