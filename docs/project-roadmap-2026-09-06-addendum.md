@@ -14,9 +14,35 @@ This addendum updates the current public UI execution state after completion of 
 ```text
 Current stage: reviewed_incremental_maintenance
 Primary product lane: map_first_site_ui
+Parallel data-quality lane: calendar_quality_and_coverage
 Automatic publication: disabled
 Human review bypass: prohibited
 ```
+
+## Parallel Calendar quality lane
+
+The map-first UI lane does **not** replace, serialize, pause, or declare completion of Calendar quality work. Calendar remains a separate active lane and may proceed and merge independently while `UI-001`–`UI-009` are implemented.
+
+Calendar quality/recovery continues under the canonical Calendar contracts, roadmaps, schedules, registries, acquisition-control-plane rules, and publication boundaries listed in `docs/governance/document-authority.md`.
+
+The parallel Calendar lane is responsible for data-quality work including, as applicable:
+
+```text
+current-to-30-day official meeting coverage
+authority/source adapter completeness
+published race-level detail acquisition where officially available
+reviewed C/B/B+/A/A+ promotion behavior
+canonical/public synchronization
+completeness and mother-set gates
+stale/false/missing meeting correction
+timezone/date/public-display correctness
+```
+
+`UI-005` is **Calendar presentation work only**: date hierarchy, List/Map behavior, responsive filters, URL state, and interaction design. Completing `UI-005` must not be interpreted as completing Calendar coverage, acquisition quality, rank promotion, or source reliability.
+
+If UI work exposes a Calendar data defect, do not hide it with presentation-only data, guessed values, a second meeting truth, or a map-only override. Route the defect to the parallel Calendar lane and continue the UI lane independently where safe.
+
+A Calendar-lane merge may change generated/public meeting data while UI work is open. UI branches must re-read/rebase against current main as needed rather than freezing Calendar progress behind UI work.
 
 ## Completed map foundation
 
@@ -91,6 +117,8 @@ The current Work IDs are:
 8. `UI-008` — Countries and secondary reference-page simplification/demotion;
 9. `UI-009` — EN/JA desktop/tablet/mobile visual and interaction audit, then production verification.
 
+These UI Work IDs describe only the UI lane. They do not number or replace Calendar acquisition/coverage work running in parallel.
+
 Do not create `Now` as a fourth Home period. Home periods are fixed to:
 
 ```text
@@ -113,6 +141,25 @@ compact footer
 ```
 
 The shell must preserve EN/JA parity, legal/source navigation, usable non-map routes, and minimum 44px mobile targets.
+
+Implementation status: **complete when the UI-001 implementation PR is merged**.
+
+Verified implementation evidence before merge:
+
+```text
+existing repository CI/build: success
+EN Home desktop browser QA: success
+JA Home desktop browser QA: success
+EN Today mobile browser QA: success
+JA Calendar mobile browser QA: success
+horizontal overflow in all four cases: 0px
+page errors in all four cases: 0
+mobile bottom navigation: 5 items
+secondary More links: preserved
+Timezone -> URL state: verified
+```
+
+The temporary browser-audit workflow/PR used for this visual interaction check is closed unmerged and does not become permanent CI.
 
 ## UI-002 — Home map-first composition
 
@@ -177,6 +224,8 @@ tz
 ```
 
 Stable/share-worthy filters may follow.
+
+`UI-005` changes Calendar presentation only. It neither certifies nor blocks the parallel Calendar data-quality lane.
 
 ## UI-006 — Racecourses
 
@@ -243,21 +292,23 @@ Before each UI implementation PR:
 1. read `docs/specs/map-first-site-ui-2026-09-06.md`;
 2. read this addendum;
 3. read the specific applicable page/programme contract (Calendar/racecourse/etc.);
-4. compare the intended code change against those documents;
-5. if the intended behavior changes the specification or schedule, update the repository documents before or in the same PR;
-6. after merge, re-read this addendum and advance the current Work ID/state if the completion conditions were actually met.
+4. confirm the parallel Calendar lane has not changed the relevant public meeting/view-model assumptions on current main;
+5. compare the intended code change against those documents;
+6. if the intended behavior changes the specification or schedule, update the repository documents before or in the same PR;
+7. after merge, re-read this addendum and advance the current Work ID/state if the completion conditions were actually met.
 
 Conversation history is not the execution authority.
 
 ## Current Work ID
 
 ```text
-Current Work ID: UI-001
-Next after completion: UI-002
+Current UI Work ID after UI-001 merge: UI-002
+Next UI Work ID after completion: UI-003
+Parallel Calendar lane: active independently
 ```
 
 ## Completion definition
 
 The map-first UI lane is complete only when the shared shell, Home, Today, Calendar, Racecourses, racecourse detail, secondary navigation, responsive behavior, and EN/JA visual/interaction verification are all implemented against the canonical UI specification.
 
-Do not call the lane complete merely because the map itself works.
+Do not call the UI lane complete merely because the map itself works. Do not call the Calendar data-quality lane complete because `UI-005` or `UI-009` is complete.
