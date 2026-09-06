@@ -175,6 +175,9 @@ for (const marker of [
 if (meetingList.includes("Intl.supportedValuesOf('timeZone')")) {
   fail('TimetableMeetingList must not expand the full browser IANA timezone list.');
 }
+if (meetingList.includes("(record.capability_rank === 'A' || record.capability_rank === 'A+') &&")) {
+  fail('TimetableMeetingList must not gate meeting lifecycle state by A/A+ capability rank.');
+}
 
 const homeControls = read('src/components/TodayFilters.astro');
 for (const marker of [
@@ -190,14 +193,24 @@ for (const marker of [
 
 const statePolicy = read('src/components/MeetingStatePolicy.astro');
 for (const marker of [
-  "new Set(['A+', 'A', 'B+'])",
-  "state = now < start.getTime() ? 'upcoming' : now <= endMs ? 'running' : 'ended'",
-  "state = calendarDayState === 'past' ? 'ended' : calendarDayState === 'today' ? 'upcoming' : 'future'",
-  "policy === 'day'",
-  "'本日開催'",
-  "'開催前'",
+  "if (start && end)",
+  "policy = 'first-last'",
+  "state = now < start.getTime() ? 'future' : now <= end.getTime() ? 'running' : 'ended'",
+  "policy = 'first-only'",
+  "state = calendarDayState === 'past' ? 'ended' : now < start.getTime() ? 'future' : 'unknown'",
+  "row.dataset.meetingDayState = state === 'unknown' ? 'unknown' : calendarDayState",
+  ".today-state-summary__item--upcoming",
+  "display: none !important",
 ]) {
-  if (!statePolicy.includes(marker)) fail(`MeetingStatePolicy missing rank/state contract marker: ${marker}`);
+  if (!statePolicy.includes(marker)) fail(`MeetingStatePolicy missing time-derived neutral-state contract marker: ${marker}`);
+}
+for (const forbidden of [
+  "new Set(['A+', 'A', 'B+'])",
+  "calendarDayState === 'today' ? 'upcoming'",
+  "background: #fff3c4",
+  "#d18a00",
+]) {
+  if (statePolicy.includes(forbidden)) fail(`MeetingStatePolicy retains obsolete rank/yellow lifecycle marker: ${forbidden}`);
 }
 
 const baseLayout = read('src/layouts/BaseLayout.astro');
@@ -254,6 +267,6 @@ console.log('SOURCE_DATE_EPOCH: pass');
 console.log('TIMEZONE_BOUNDARIES: pass');
 console.log('SELECTED_TIMEZONE_PROJECTION: pass');
 console.log('UNIFIED_HOME_WINDOW: pass');
-console.log('RANK_AWARE_MEETING_STATE_POLICY: pass');
+console.log('TIME_DERIVED_NEUTRAL_MEETING_STATE_POLICY: pass');
 console.log('ROLLING_WINDOW_DAYS: 30');
 console.log('FIXED_MONTH_YEAR_COPY: 0');
