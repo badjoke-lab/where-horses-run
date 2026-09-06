@@ -79,7 +79,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: calendar-unified-official-refresh
+  group: calendar-unified-official-refresh-${{ github.event_name == 'pull_request' && 'smoke' || 'production' }}
   cancel-in-progress: false
 
 jobs:
