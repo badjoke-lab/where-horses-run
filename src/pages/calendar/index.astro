@@ -25,17 +25,17 @@ const groups = getGroupedTimetableMeetingRows(candidateRecords);
 ---
 
 <BaseLayout
-  title="Racing calendar | Where Horses Run"
-  description={`Choose a racing date from ${context.windowStart} through ${context.windowEndInclusive} and browse the same meeting set in List or Map view.`}
+  title="30-day racing calendar | Where Horses Run"
+  description={`Browse racing listed from ${context.windowStart} through ${context.windowEndInclusive}. Optionally focus one date without replacing the rolling 30-day list.`}
   canonicalPath="/calendar/"
   alternatePath="/ja/calendar/"
 >
   <div class="calendar-page">
     <section class="hero" aria-labelledby="page-title">
       <p class="hero__eyebrow">Racing calendar</p>
-      <h1 id="page-title">Calendar</h1>
+      <h1 id="page-title">30-day racing calendar</h1>
       <p class="hero__summary">
-        Choose one date, then browse its meetings in List or Map view. The current display window is <span data-timezone-window-start>{context.windowStart}</span> through <span data-timezone-window-end>{context.windowEndInclusive}</span> in <span data-timezone-label>{context.timeZone}</span>.
+        Browse meetings from <span data-timezone-window-start>{context.windowStart}</span> through <span data-timezone-window-end>{context.windowEndInclusive}</span>. The default List and Map cover the full rolling window; choose a date only when you want to focus one day. Times and date grouping use <span data-timezone-label>{context.timeZone}</span>.
       </p>
     </section>
 
@@ -48,11 +48,11 @@ const groups = getGroupedTimetableMeetingRows(candidateRecords);
     <CalendarFilters records={candidateRecords} />
     <CalendarPresentationState />
 
-    <section aria-label="Selected-date meeting list" data-calendar-list-view>
+    <section aria-label="Rolling 30-day meeting list" data-calendar-list-view>
       <TimetableMeetingList
         groups={groups}
         scope="rolling-30"
-        emptyLabel="No meetings are currently listed for the selected date in this display timezone. Check official sources for the latest information."
+        emptyLabel="No meetings are currently listed in the selected 30-day display window or active filters. Check official sources for the latest information."
       />
     </section>
 
