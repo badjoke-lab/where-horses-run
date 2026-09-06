@@ -44,6 +44,15 @@ If UI work exposes a Calendar data defect, do not hide it with presentation-only
 
 A Calendar-lane merge may change generated/public meeting data while UI work is open. UI branches must re-read/rebase against current main as needed rather than freezing Calendar progress behind UI work.
 
+Latest parallel-lane update observed before starting `UI-004`:
+
+```text
+dfe9f31c3e1923d610096d4a5e7ad3ef9f93f0c2  data: refresh unified official rolling timetable (full)
+aa237441e385a5f454705b865af1728ee08026d9  data: refresh Japan official timetable (full)
+```
+
+`UI-004` must therefore start from current main after those data refreshes rather than from the older `UI-003` branch base.
+
 ## Completed map foundation
 
 The following foundation is treated as implemented and no longer blocks the site-wide UI refactor:
@@ -140,8 +149,6 @@ mobile bottom: Home | Today | Calendar | Racecourses | More
 compact footer
 ```
 
-The shell must preserve EN/JA parity, legal/source navigation, usable non-map routes, and minimum 44px mobile targets.
-
 Implementation status: **complete**.
 
 Verified implementation evidence before merge:
@@ -179,7 +186,7 @@ compact footer
 
 Remove or demote Home promotional blocks that make Countries, Racing Types, Glossary, Sources, newsletter, social-media promotion, or fabricated summary statistics equal-weight with the primary racing-discovery task.
 
-Implementation status: **verified complete for merge**.
+Implementation status: **complete**.
 
 Verified implementation evidence before merge:
 
@@ -202,7 +209,7 @@ The temporary UI-002 browser-audit workflow/PR is closed unmerged and does not b
 
 ## UI-003 — Home information density
 
-Selected card should show public list-level meeting/racecourse information only, including where available:
+Selected card shows public list-level meeting/racecourse information only, including where available:
 
 ```text
 racecourse
@@ -218,6 +225,27 @@ racecourse link
 
 One venue remains one map point across multi-day periods.
 
+Implementation status: **complete**. Merge commit: `46dc387f477ae0bb3ed2c09cca5db51f2ec5d3ca`.
+
+Verified implementation evidence:
+
+```text
+existing repository CI/build: success
+EN/JA desktop selected-card browser QA: success
+EN/JA mobile selected-card browser QA: success
+same racecourse selection repeated 10 times: idempotent
+switching racecourse: content replaced rather than accumulated
+Next 7 days bounded display: Kawasaki 5 meetings -> 3 rendered + 2 remaining note
+race count source: public meeting detail timetable_rows.length only
+race-count positive case: Hanshin
+race-count omitted case without public detail: Mizusawa
+mobile selected-card normal-flow scrolling: success
+horizontal overflow: 0px
+page errors: 0
+```
+
+The temporary UI-003 browser-audit PR `#867` is closed unmerged and does not become permanent CI.
+
 ## UI-004 — Today
 
 Today becomes the practical current-day surface. It must make the following states immediately legible:
@@ -229,6 +257,22 @@ finished
 ```
 
 Map/list remain synchronized. Mobile pin selection does not force an automatic jump to the list; explicit `View in list` may do so.
+
+Implementation status: **active**.
+
+Required UI-004 behavior:
+
+```text
+Today heading/date/timezone
+Timezone / Country / Authority / Rank controls
+map using the same filtered public meeting rows
+selected card when applicable
+meeting list grouped or clearly ordered by racing now / later today / finished
+explicit mobile View in list action
+list -> map focus action
+```
+
+Do not create a UI-only meeting truth. Runtime state continues to derive from the same meeting rows/state calculation already used by Calendar/Map.
 
 ## UI-005 — Calendar
 
@@ -323,9 +367,10 @@ Conversation history is not the execution authority.
 ## Current Work ID
 
 ```text
-Current UI Work ID after UI-002 merge: UI-003
-Next UI Work ID after completion: UI-004
+Current UI Work ID: UI-004
+Next UI Work ID after completion: UI-005
 Parallel Calendar lane: active independently
+Current main reviewed before UI-004: dfe9f31c3e1923d610096d4a5e7ad3ef9f93f0c2
 ```
 
 ## Completion definition
