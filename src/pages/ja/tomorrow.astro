@@ -1,45 +1,23 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import CalendarDateStatus from '../../components/CalendarDateStatus.astro';
-import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
-import {
-  getTimetableDataState,
-  getTimetableDateContext,
-  getTimetableMeetingRowsForWindow,
-} from '../../data/timetableMeetingRows';
-import { addCalendarDays } from '../../lib/timetable/calendarDateContext.mjs';
-
-const context = getTimetableDateContext();
-const dataState = getTimetableDataState(context);
-const candidateStart = addCalendarDays(context.today, -2);
-const candidateEndExclusive = addCalendarDays(context.today, 4);
-const tomorrowCandidates = getTimetableMeetingRowsForWindow(candidateStart, candidateEndExclusive);
+const target = '/ja/?range=tomorrow';
 ---
-
-<BaseLayout
-  title={`明日の開催 — ${context.tomorrow} | 競馬どこ？`}
-  description={`${context.tomorrow}の競馬開催情報と、掲載されているレース時刻を確認できます。`}
-  lang="ja"
-  canonicalPath="/ja/tomorrow/"
-  alternatePath="/tomorrow/"
->
-  <section class="hero" aria-labelledby="page-title">
-    <p class="hero__eyebrow">明日の競馬</p>
-    <h1 id="page-title">明日の開催</h1>
-    <p class="hero__summary">
-      <span data-timezone-label>{context.timeZone}</span>での<span data-timezone-target-date>{context.tomorrow}</span>の開催情報です。確認できたレース時刻は選択した表示タイムゾーンへ変換します。
-    </p>
-  </section>
-
-  <CalendarDateStatus context={context} dataState={dataState} lang="ja" displayDate={context.tomorrow} />
-
-  <section aria-label="明日の開催一覧">
-    <TimetableMeetingList
-      records={tomorrowCandidates}
-      date={context.tomorrow}
-      scope="tomorrow"
-      lang="ja"
-      emptyLabel="選択した表示タイムゾーンの明日に該当する開催情報は掲載されていません。最新情報は公式情報源で確認してください。"
-    />
-  </section>
-</BaseLayout>
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href="https://whr.badjoke-lab.com/ja/?range=tomorrow" />
+    <title>明日の開催はトップへ移動しました | 競馬どこ？</title>
+  </head>
+  <body>
+    <p>明日の開催はトップページの表示切替へ統合しました。<a href={target}>トップで明日を見る</a></p>
+    <script is:inline>
+      const url = new URL('/ja/', window.location.origin);
+      const current = new URL(window.location.href);
+      current.searchParams.forEach((value, key) => url.searchParams.set(key, value));
+      url.searchParams.set('range', 'tomorrow');
+      window.location.replace(`${url.pathname}${url.search}`);
+    </script>
+  </body>
+</html>
