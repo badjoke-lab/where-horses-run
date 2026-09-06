@@ -310,9 +310,9 @@ const {
     };
   };
 
-  const statusFromHomeRecord = (record, projection, displayTimeZone, now) => {
+  const statusFromHomeRecord = (record, projected, displayTimeZone, now) => {
     const today = formatDate(now, displayTimeZone);
-    const { first, last, projectedDate } = projection;
+    const { first, last, projectedDate } = projected;
 
     if (first && last) {
       if (now.getTime() >= first.getTime() && now.getTime() <= last.getTime()) return 'running';
@@ -525,15 +525,41 @@ const {
         return result;
       };
 
+      const presentedFeatures = () => {
+        const inferred = inferStatuses();
+        return [...visibleRacecourseIds]
+          .map((id) => featureByRacecourseId.get(id))
+          .filter(Boolean)
+          .map((feature) => ({
+            ...feature,
+            properties: {
+              ...feature.properties,
+              meeting_status: useStatusPresentation
+                ? inferred[feature?.properties?.racecourse_id] || 'future'
+                : 'neutral'
+            }
+          }));
+      };
+
+      const refreshSourceData = () => {
+        const source = map.getSource(MAP_SOURCE);
+        if (!source || typeof source.setData !== 'function') return;
+        source.setData({
+          ...projection,
+          features: presentedFeatures()
+        });
+        if (selectedFeatureId !== null) {
+          try {
+            map.setFeatureState({ source: MAP_SOURCE, id: selectedFeatureId }, { selected: true });
+          } catch {
+            // Selection will be restored by the next explicit focus/select interaction if the feature was re-clustered.
+          }
+        }
+      };
+
       const applyStatuses = () => {
         if (!ready || !map.getSource(MAP_SOURCE)) return;
-        const inferred = inferStatuses();
-        visibleRacecourseIds.forEach((racecourseId) => {
-          const feature = featureByRacecourseId.get(racecourseId);
-          if (!feature) return;
-          const meetingStatus = useStatusPresentation ? inferred[racecourseId] || 'future' : 'neutral';
-          map.setFeatureState({ source: MAP_SOURCE, id: feature.id }, { meetingStatus });
-        });
+        refreshSourceData();
       };
 
       const applyVisibleIds = (ids, fit = true) => {
@@ -553,16 +579,11 @@ const {
         }
 
         visibleRacecourseIds = new Set(nextIds);
-        const visibleFeatures = nextIds.map((id) => featureByRacecourseId.get(id)).filter(Boolean);
-        const source = map.getSource(MAP_SOURCE);
-        source?.setData({
-          ...projection,
-          features: visibleFeatures
-        });
+        refreshSourceData();
 
+        const visibleFeatures = nextIds.map((id) => featureByRacecourseId.get(id)).filter(Boolean);
         if (fit) fitVisible(visibleFeatures);
         root.dataset.visibleRacecourseCount = String(visibleFeatures.length);
-        window.requestAnimationFrame(applyStatuses);
         root.dispatchEvent(new CustomEvent('racecourse-map:visiblechange', {
           bubbles: true,
           detail: { racecourseIds: nextIds }
@@ -581,7 +602,13 @@ const {
           type: 'geojson',
           data: {
             ...projection,
-            features: startingFeatures
+            features: startingFeatures.map((feature) => ({
+              ...feature,
+              properties: {
+                ...feature.properties,
+                meeting_status: useStatusPresentation ? 'future' : 'neutral'
+              }
+            }))
           },
           cluster: features.length > 1,
           clusterMaxZoom: 9,
@@ -654,7 +681,7 @@ const {
             'circle-radius': ['case', ['boolean', ['feature-state', 'selected'], false], 9, 7],
             'circle-color': [
               'match',
-              ['feature-state', 'meetingStatus'],
+              ['get', 'meeting_status'],
               'running', '#c40000',
               'upcoming', '#d18a00',
               'ended', '#666666',
@@ -665,7 +692,7 @@ const {
               'case',
               ['boolean', ['feature-state', 'selected'], false],
               '#ffffff',
-              ['==', ['feature-state', 'meetingStatus'], 'future'],
+              ['==', ['get', 'meeting_status'], 'future'],
               '#111111',
               '#ffffff'
             ],
@@ -722,6 +749,7 @@ const {
           if (typeof racecourseId === 'string') setSelected(racecourseId, true);
         });
 
+        ready = true;
         applyVisibleIds([...visibleRacecourseIds], true);
         if (visibleRacecourseIds.size === 1 && features.length === 1) {
           const racecourseId = [...visibleRacecourseIds][0];
@@ -738,7 +766,6 @@ const {
           if (typeof racecourseId === 'string') focusRacecourse(racecourseId);
         });
 
-        ready = true;
         root.dataset.mapState = 'ready';
         if (status) status.hidden = true;
         applyStatuses();
