@@ -1,0 +1,177 @@
+name: Temporary UI-003 Home selected audit
+
+on:
+  pull_request:
+    branches:
+      - feat/ui-003-home-selected-info
+
+permissions:
+  contents: read
+
+jobs:
+  browser-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+      - run: npm install
+      - run: npm run build
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Start static server
+        run: |
+          python3 -m http.server 4321 --directory dist > /tmp/whr-ui003-server.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4321/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/whr-ui003-server.log
+          exit 1
+      - name: Audit selected-card information and idempotence
+        run: |
+          mkdir -p audit/ui-003
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { chromium } from 'playwright';
+
+          const browser = await chromium.launch({ headless: true });
+          const cases = [
+            { name: 'en-home-desktop', path: '/?period=next7&tz=Asia%2FTokyo', width: 1440, height: 1100, mobile: false },
+            { name: 'ja-home-desktop', path: '/ja/?period=next7&tz=Asia%2FTokyo', width: 1440, height: 1100, mobile: false },
+            { name: 'en-home-mobile', path: '/?period=next7&tz=Asia%2FTokyo', width: 390, height: 844, mobile: true },
+            { name: 'ja-home-mobile', path: '/ja/?period=next7&tz=Asia%2FTokyo', width: 390, height: 844, mobile: true },
+          ];
+          const report = [];
+          const assert = (condition, message) => { if (!condition) throw new Error(message); };
+
+          for (const item of cases) {
+            const page = await browser.newPage({ viewport: { width: item.width, height: item.height } });
+            const pageErrors = [];
+            page.on('pageerror', (error) => pageErrors.push(String(error)));
+            await page.goto(`http://127.0.0.1:4321${item.path}`, { waitUntil: 'domcontentloaded' });
+            await page.waitForFunction(() => document.querySelector('[data-racecourse-map]')?.getAttribute('data-map-state') === 'ready', null, { timeout: 20000 });
+            await page.waitForTimeout(300);
+
+            const data = await page.evaluate(() => {
+              const node = document.querySelector('[data-home-map-records]');
+              const records = JSON.parse(node?.textContent || '[]');
+              const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {
+                timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit'
+              }).formatToParts(new Date()).filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
+              const today = `${parts.year}-${parts.month}-${parts.day}`;
+              const end = new Date(`${today}T00:00:00.000Z`);
+              end.setUTCDate(end.getUTCDate() + 7);
+              const endText = end.toISOString().slice(0, 10);
+              const visible = records.filter((record) => record.sourceTimezone === 'Asia/Tokyo' && record.sourceDate >= today && record.sourceDate < endText && record.hasReviewedLocation);
+              const groups = new Map();
+              for (const record of visible) {
+                const rows = groups.get(record.racecourseId) || [];
+                rows.push(record);
+                groups.set(record.racecourseId, rows);
+              }
+              const sortedGroups = [...groups.entries()].map(([racecourseId, rows]) => ({
+                racecourseId,
+                rows: rows.sort((a, b) => `${a.sourceDate}:${a.firstRaceTime ?? '99:99'}:${a.meetingId}`.localeCompare(`${b.sourceDate}:${b.firstRaceTime ?? '99:99'}:${b.meetingId}`))
+              }));
+              const capGroup = sortedGroups.find((group) => group.rows.length > 3) || null;
+              const countGroup = sortedGroups.find((group) => group.rows.slice(0, 3).some((record) => Number.isInteger(record.raceCount) && record.raceCount > 0)) || null;
+              const noCountGroup = sortedGroups.find((group) => group.rows.slice(0, 3).every((record) => record.raceCount == null)) || null;
+              const alternate = sortedGroups.find((group) => group.racecourseId !== (capGroup?.racecourseId ?? countGroup?.racecourseId)) || null;
+              return { today, endText, capGroup, countGroup, noCountGroup, alternate, groupCount: sortedGroups.length };
+            });
+
+            assert(data.groupCount > 1, `${item.name}: not enough visible Japanese racecourse groups for audit`);
+            assert(data.capGroup, `${item.name}: no racecourse with more than three meetings in Next 7 days`);
+            assert(data.countGroup, `${item.name}: no selected-card candidate with public race count`);
+
+            const select = async (racecourseId) => {
+              await page.locator('[data-racecourse-map]').evaluate((el, id) => {
+                el.dispatchEvent(new CustomEvent('racecourse-map:select', { detail: { racecourseId: id } }));
+              }, racecourseId);
+              await page.waitForFunction(() => {
+                const card = document.querySelector('[data-home-map-selected]');
+                return card instanceof HTMLElement && !card.hidden;
+              });
+            };
+
+            await select(data.capGroup.racecourseId);
+            let selectedRows = page.locator('[data-home-map-selected-meeting]');
+            assert(await selectedRows.count() === 3, `${item.name}: bounded selection did not cap at 3 rows`);
+            const moreText = (await page.locator('[data-home-map-selected-more]').textContent())?.trim() || '';
+            assert(moreText.length > 0, `${item.name}: remaining-meetings note missing`);
+            assert(await page.locator('[data-home-map-selected-state]').count() === 3, `${item.name}: meeting states missing`);
+            assert(await page.locator('[data-home-map-selected-meeting-link]').count() === 3, `${item.name}: per-meeting links missing`);
+
+            const initialSnapshot = await page.evaluate(() => ({
+              meetingIds: [...document.querySelectorAll('[data-home-map-selected-meeting]')].map((el) => el.getAttribute('data-home-map-selected-meeting')),
+              meetingLinks: document.querySelectorAll('[data-home-map-selected-meeting-link]').length,
+              globalLinks: document.querySelectorAll('[data-home-map-selected-links] a').length,
+              text: document.querySelector('[data-home-map-selected]')?.textContent?.replace(/\s+/g, ' ').trim() || '',
+            }));
+            for (let i = 0; i < 10; i += 1) await select(data.capGroup.racecourseId);
+            const repeatedSnapshot = await page.evaluate(() => ({
+              meetingIds: [...document.querySelectorAll('[data-home-map-selected-meeting]')].map((el) => el.getAttribute('data-home-map-selected-meeting')),
+              meetingLinks: document.querySelectorAll('[data-home-map-selected-meeting-link]').length,
+              globalLinks: document.querySelectorAll('[data-home-map-selected-links] a').length,
+              text: document.querySelector('[data-home-map-selected]')?.textContent?.replace(/\s+/g, ' ').trim() || '',
+            }));
+            assert(JSON.stringify(initialSnapshot) === JSON.stringify(repeatedSnapshot), `${item.name}: repeated same selection changed/duplicated card content`);
+
+            await select(data.countGroup.racecourseId);
+            assert(await page.locator('[data-home-map-selected-race-count]').count() > 0, `${item.name}: public race count not rendered`);
+
+            if (data.noCountGroup) {
+              await select(data.noCountGroup.racecourseId);
+              assert(await page.locator('[data-home-map-selected-race-count]').count() === 0, `${item.name}: race count rendered without public detail`);
+            }
+
+            if (data.alternate) {
+              await select(data.capGroup.racecourseId);
+              const beforeName = (await page.locator('[data-home-map-selected-name]').textContent())?.trim();
+              await select(data.alternate.racecourseId);
+              const afterName = (await page.locator('[data-home-map-selected-name]').textContent())?.trim();
+              assert(beforeName && afterName && beforeName !== afterName, `${item.name}: switching racecourse did not replace selected content`);
+            }
+
+            await select(data.capGroup.racecourseId);
+            if (item.mobile) {
+              const position = await page.locator('[data-home-map-selected]').evaluate((el) => getComputedStyle(el).position);
+              assert(position !== 'fixed' && position !== 'sticky', `${item.name}: selected card is not in normal flow (${position})`);
+              await page.evaluate(() => window.scrollBy(0, 300));
+              assert(await page.evaluate(() => window.scrollY) > 0, `${item.name}: page did not scroll with card open`);
+            }
+
+            const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+            assert(overflow <= 1, `${item.name}: horizontal overflow ${overflow}px`);
+            assert(pageErrors.length === 0, `${item.name}: page errors ${pageErrors.join(' | ')}`);
+
+            await page.screenshot({ path: `audit/ui-003/${item.name}.png`, fullPage: true });
+            await page.locator('[data-home-map-close]').click();
+            assert(await page.locator('[data-home-map-selected]').isHidden(), `${item.name}: close control did not dismiss selected card`);
+
+            report.push({
+              name: item.name,
+              overflow,
+              pageErrors,
+              capRacecourseId: data.capGroup.racecourseId,
+              capMeetingCount: data.capGroup.rows.length,
+              countRacecourseId: data.countGroup.racecourseId,
+              noCountRacecourseId: data.noCountGroup?.racecourseId ?? null,
+              repeatedSelectionStable: true,
+              normalFlowMobile: item.mobile ? true : null,
+              ok: true,
+            });
+            await page.close();
+          }
+
+          await browser.close();
+          fs.writeFileSync('audit/ui-003/report.json', JSON.stringify(report, null, 2));
+          console.log(JSON.stringify(report, null, 2));
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ui-003-home-selected-browser-audit
+          path: audit/ui-003
