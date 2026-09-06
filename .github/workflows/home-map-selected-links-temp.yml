@@ -44,8 +44,8 @@ jobs:
           const base = 'http://127.0.0.1:4321';
           const out = '/tmp/home-map-selected-links';
           const routes = [
-            { name: 'en', path: '/' },
-            { name: 'ja', path: '/ja/' },
+            { name: 'en', path: '/?tz=Asia%2FTokyo' },
+            { name: 'ja', path: '/ja/?tz=Asia%2FTokyo' },
           ];
           (async () => {
             const browser = await chromium.launch({ headless: true });
@@ -60,12 +60,16 @@ jobs:
                 const mapRoot = page.locator('[data-home-racing-map] [data-racecourse-map]').first();
                 await mapRoot.scrollIntoViewIfNeeded();
                 await page.waitForFunction(() => document.querySelector('[data-home-racing-map] [data-racecourse-map]')?.getAttribute('data-map-state') === 'ready', null, { timeout: 60000 });
-                const racecourseId = await mapRoot.evaluate((el) => {
-                  const raw = el.getAttribute('data-visible-racecourse-ids') || el.getAttribute('data-racecourse-ids') || '[]';
-                  const ids = JSON.parse(raw);
-                  return ids[0] || null;
-                });
-                if (!racecourseId) throw new Error(`${route.name}: no racecourse id available`);
+                await page.waitForFunction(() => /\d{4}-\d{2}-\d{2}/.test(document.querySelector('[data-home-map-status]')?.textContent || ''), null, { timeout: 10000 });
+
+                const displayedDate = await page.locator('[data-home-map-status]').evaluate((el) => (el.textContent || '').match(/\d{4}-\d{2}-\d{2}/)?.[0] || null);
+                const racecourseId = await page.locator('[data-home-map-records]').evaluate((el, date) => {
+                  const records = JSON.parse(el.textContent || '[]');
+                  const preferred = records.find((record) => record.hasReviewedLocation && record.sourceTimezone === 'Asia/Tokyo' && record.sourceDate === date);
+                  return preferred?.racecourseId || null;
+                }, displayedDate);
+                if (!racecourseId) throw new Error(`${route.name}: no visible reviewed Asia/Tokyo racecourse for ${displayedDate}`);
+
                 for (let i = 0; i < 10; i += 1) {
                   await mapRoot.evaluate((el, id) => {
                     el.dispatchEvent(new CustomEvent('racecourse-map:select', { bubbles: true, detail: { racecourseId: id } }));
@@ -75,7 +79,7 @@ jobs:
                 await selected.waitFor({ state: 'visible', timeout: 10000 });
                 const linkCount = await selected.locator('[data-home-map-selected-links] a').count();
                 const labels = await selected.locator('[data-home-map-selected-links] a').allTextContents();
-                const entry = { route: route.name, racecourseId, linkCount, labels, pageErrors };
+                const entry = { route: route.name, displayedDate, racecourseId, linkCount, labels, pageErrors };
                 report.push(entry);
                 console.log(JSON.stringify(entry));
                 await page.screenshot({ path: `${out}/${route.name}.png`, fullPage: true });
