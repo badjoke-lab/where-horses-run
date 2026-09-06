@@ -60,6 +60,7 @@ assert.ok(rows.every((row) => row.distance_m === null && row.surface === null &&
 const fallbackDetailUrl = 'https://www.banei-keiba.or.jp/race_program_detail.php?d=2026&n=12';
 const resilientIndexFixture = `
 <table>
+<caption>競馬番組表（2026年度）</caption>
 <tr><td>12</td><td>9月12日</td><td>～</td><td>9月21日</td><td><a href="race_program_detail.php?d=2026&amp;n=12">番組表</a></td></tr>
 </table>`;
 const resilientDetailFixture = `
