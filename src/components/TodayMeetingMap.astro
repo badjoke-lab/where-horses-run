@@ -29,7 +29,7 @@ const meetingMap = records.map((record) => ({
   racecourseSlug: racecourseById.get(record.racecourse_id)?.slug ?? null,
   hasReviewedLocation: reviewedRacecourseIds.has(record.racecourse_id),
 }));
-const meetingMapJson = JSON.stringify(meetingMap).replace(/</g, '\\u003c');
+const meetingMapJson = JSON.stringify(meetingMap).replace(/</g, '\u003c');
 const unresolvedCandidateCount = records.filter((record) => !reviewedRacecourseIds.has(record.racecourse_id)).length;
 const fallbackMessage = isJapanese
   ? 'インタラクティブ地図を読み込めません。下の開催一覧、競馬場リンク、公式リンクは引き続き利用できます。'
@@ -39,7 +39,7 @@ const fallbackMessage = isJapanese
 <section class="today-meeting-map card" aria-labelledby="today-map-title" data-today-map-sync data-lang={lang}>
   <div class="today-meeting-map__heading">
     <div>
-      <p class="today-meeting-map__eyebrow">{isJapanese ? '同じ公開開催データ' : 'Same public meeting data'}</p>
+      <p class="today-meeting-map__eyebrow">{isJapanese ? '開催マップ' : 'Meeting map'}</p>
       <h2 id="today-map-title">{isJapanese ? '今日の開催マップ' : 'Today on the map'}</h2>
     </div>
     <p class="today-meeting-map__status" data-today-map-status aria-live="polite">
@@ -49,8 +49,8 @@ const fallbackMessage = isJapanese
 
   <p>
     {isJapanese
-      ? '地図と下の開催一覧は同じ公開meeting recordを使用します。地図の地点を選ぶと対応する開催が選択され、一覧の「地図」から地点へフォーカスできます。'
-      : 'The map and meeting list below use the same public meeting records. Select a point to select its meeting, or use Map on a row to focus that venue.'}
+      ? '地図の競馬場を選ぶと対応する開催を確認できます。一覧の「地図」からも競馬場へ移動できます。'
+      : 'Select a racecourse on the map to see its meeting, or use Map on a list row to focus that venue.'}
   </p>
 
   {candidateRacecourseIds.length > 0 ? (
@@ -131,12 +131,17 @@ const fallbackMessage = isJapanese
         ));
         const statusForRow = (row) => {
           const meetingState = row.dataset.meetingState || 'unknown';
-          const dayState = row.dataset.meetingDayState || 'unknown';
+          const policy = row.dataset.meetingStatePolicy || 'day';
           if (meetingState === 'running') return { key: 'running', label: isJa ? '開催中' : 'Racing now' };
-          if ((meetingState === 'upcoming' || meetingState === 'unknown') && dayState === 'today') {
-            return { key: 'upcoming', label: isJa ? '今日これから' : 'Later today' };
+          if (meetingState === 'upcoming') {
+            return {
+              key: 'upcoming',
+              label: policy === 'day'
+                ? (isJa ? '本日開催' : 'Racing today')
+                : (isJa ? '開催前' : 'Upcoming'),
+            };
           }
-          if (meetingState === 'ended' || dayState === 'past') return { key: 'ended', label: isJa ? '終了' : 'Finished' };
+          if (meetingState === 'ended') return { key: 'ended', label: isJa ? '終了' : 'Finished' };
           return { key: 'future', label: isJa ? '開催予定' : 'Scheduled' };
         };
         const timeForRow = (row) => {
