@@ -15,6 +15,8 @@ This addendum updates the current public UI execution state after completion of 
 Current stage: reviewed_incremental_maintenance
 Primary product lane: map_first_site_ui
 Parallel data-quality lane: calendar_quality_and_coverage
+Current UI Work ID: UI-005
+Next UI Work ID: UI-006
 Automatic publication: disabled
 Human review bypass: prohibited
 ```
@@ -44,14 +46,15 @@ If UI work exposes a Calendar data defect, do not hide it with presentation-only
 
 A Calendar-lane merge may change generated/public meeting data while UI work is open. UI branches must re-read/rebase against current main as needed rather than freezing Calendar progress behind UI work.
 
-Latest parallel-lane update observed before starting `UI-004`:
+Latest parallel-lane state reviewed before advancing to `UI-005`:
 
 ```text
-dfe9f31c3e1923d610096d4a5e7ad3ef9f93f0c2  data: refresh unified official rolling timetable (full)
-aa237441e385a5f454705b865af1728ee08026d9  data: refresh Japan official timetable (full)
+83c01a6bd11d2860dcacee85a83364f3e09285a4  data: refresh unified official rolling timetable (full)
+324c4860dd863a65b174580a5a9c89c87eadf150  data: refresh Japan official timetable (full)
+ebb38931560af493e3c79416bd1faf566525074b  fix(calendar): normalize stale canonical ranks across authority window
 ```
 
-`UI-004` must therefore start from current main after those data refreshes rather than from the older `UI-003` branch base.
+The timezone UI was also bounded before `UI-005`: PR `#874`, merge commit `82bcd58d1d88a99f99c96467c1fa38d67fbb33fb`, removed full-IANA expansion and standardized six public choices with explicit UTC offsets.
 
 ## Completed map foundation
 
@@ -248,7 +251,7 @@ The temporary UI-003 browser-audit PR `#867` is closed unmerged and does not bec
 
 ## UI-004 — Today
 
-Today becomes the practical current-day surface. It must make the following states immediately legible:
+Today is the practical current-day surface and makes these states immediately legible:
 
 ```text
 racing now
@@ -256,27 +259,37 @@ later today
 finished
 ```
 
-Map/list remain synchronized. Mobile pin selection does not force an automatic jump to the list; explicit `View in list` may do so.
+Map/list remain synchronized. Mobile pin selection does not force an automatic jump to the list; explicit `View in list` performs the jump/focus.
 
-Implementation status: **active**.
+Implementation status: **complete**. PR `#875`, merge commit `c92822b610ee615c92ded605f75aea0bb3760aa6`.
 
-Required UI-004 behavior:
+Verified UI-004 evidence:
 
 ```text
-Today heading/date/timezone
-Timezone / Country / Authority / Rank controls
-map using the same filtered public meeting rows
-selected card when applicable
-meeting list grouped or clearly ordered by racing now / later today / finished
-explicit mobile View in list action
-list -> map focus action
+pre-merge Race Acquisition Check: success
+pre-merge Calendar unified official refresh: success
+EN/JA desktop browser audit: success
+EN/JA mobile browser audit: success
+exact public timezone choices: 6
+UTC offset visible in every timezone choice: success
+state summary counts = visible list rows: success
+country/authority/rank filters -> list/map synchronization: success
+timezone change -> list/map synchronization: success
+reset -> original Today set: success
+mobile pin select -> no automatic list scroll: success
+explicit Show in List -> focus: success
+list -> map focus: success
+horizontal overflow: 0px
+page errors: 0
 ```
 
-Do not create a UI-only meeting truth. Runtime state continues to derive from the same meeting rows/state calculation already used by Calendar/Map.
+Temporary browser-audit PR `#876` passed and was closed unmerged. Stale superseded implementation/audit PRs `#869` and `#870` are closed.
 
 ## UI-005 — Calendar
 
 Calendar remains selected-date authoritative.
+
+Implementation status: **current active Work ID**.
 
 Desktop supports List/Map and full useful filters. Mobile starts in List mode and shows Map only after explicit selection. Mobile filters should collapse into a compact filter control rather than reproduce a wide desktop toolbar.
 
@@ -367,10 +380,10 @@ Conversation history is not the execution authority.
 ## Current Work ID
 
 ```text
-Current UI Work ID: UI-004
-Next UI Work ID after completion: UI-005
+Current UI Work ID: UI-005
+Next UI Work ID after completion: UI-006
 Parallel Calendar lane: active independently
-Current main reviewed before UI-004: dfe9f31c3e1923d610096d4a5e7ad3ef9f93f0c2
+Current main reviewed before UI-005: c92822b610ee615c92ded605f75aea0bb3760aa6
 ```
 
 ## Completion definition

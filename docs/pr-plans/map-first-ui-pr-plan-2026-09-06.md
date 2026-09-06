@@ -20,11 +20,14 @@ Do not:
 
 When Calendar work changes main, re-read/rebase the UI branch against current public meeting/view-model behavior before merge where relevant.
 
-Latest main checked before `UI-004`:
+Latest main checked before `UI-005`:
 
 ```text
-dfe9f31c3e1923d610096d4a5e7ad3ef9f93f0c2  data: refresh unified official rolling timetable (full)
-aa237441e385a5f454705b865af1728ee08026d9  data: refresh Japan official timetable (full)
+c92822b610ee615c92ded605f75aea0bb3760aa6  feat(ui): implement UI-004 practical Today view
+82bcd58d1d88a99f99c96467c1fa38d67fbb33fb  fix(ui): curate timezone choices and show UTC offsets
+83c01a6bd11d2860dcacee85a83364f3e09285a4  data: refresh unified official rolling timetable (full)
+324c4860dd863a65b174580a5a9c89c87eadf150  data: refresh Japan official timetable (full)
+ebb38931560af493e3c79416bd1faf566525074b  fix(calendar): normalize stale canonical ranks across authority window
 ```
 
 ## PR discipline
@@ -49,6 +52,8 @@ Do not create new workflows/checkers merely to satisfy this plan when existing c
 
 ## UI-001 — shared shell
 
+Status: **complete**.
+
 Scope:
 
 - `BaseLayout` desktop primary navigation;
@@ -66,26 +71,11 @@ Desktop: Today | Calendar | Racecourses
 Mobile: Home | Today | Calendar | Racecourses | More
 ```
 
-Secondary destinations:
-
-```text
-Countries
-Racing Types
-Glossary
-Official Sources
-About
-```
-
-Completion:
-
-- EN/JA desktop and mobile shell renders without overflow;
-- primary/secondary navigation matches the canonical UI spec;
-- existing public routes remain reachable;
-- footer no longer promotes newsletter/social blocks as required product UI.
-
-Status: **complete**. Existing CI/build passed, direct Chromium checks passed for EN/JA desktop/mobile, zero horizontal overflow and zero page errors were observed, More/Timezone interactions passed, and the temporary audit PR was closed unmerged.
+Verified: existing CI/build passed; direct Chromium EN/JA desktop/mobile passed; zero horizontal overflow and page errors; More/Timezone interactions passed; temporary audit closed unmerged.
 
 ## UI-002 — Home composition
+
+Status: **complete**.
 
 Scope:
 
@@ -96,15 +86,11 @@ Scope:
 - remove/demote equal-weight legacy Home promotional cards;
 - retain map failure fallback and ordinary meeting navigation.
 
-Completion:
-
-- map is visually primary on desktop and mobile;
-- Today's Racing and Up Next remain available below the map;
-- secondary informational destinations are not equal-weight Home feature cards.
-
-Status: **complete**. Existing CI/build passed. Direct Chromium checks passed for EN/JA desktop/mobile with zero horizontal overflow and zero page errors. The Home map rendered at 638px on desktop and 422px on mobile in the audit viewports. Today/Tomorrow/Next 7 days switching passed, the legacy equal-weight Home feature grid was absent, and Today's Racing / Up Next remained below the map. The temporary audit PR was closed unmerged.
+Verified: existing CI/build passed; EN/JA desktop/mobile passed; zero overflow/page errors; period switching passed; old feature grid absent; Today's Racing / Up Next retained. Temporary audit closed unmerged.
 
 ## UI-003 — Home selected information
+
+Status: **complete**. PR `#866`, merge commit `46dc387f477ae0bb3ed2c09cca5db51f2ec5d3ca`.
 
 Scope:
 
@@ -114,28 +100,18 @@ Scope:
 - real racecourse/detail/Calendar links;
 - preserve normal-flow mobile dismissal behavior.
 
-Completion:
-
-- card shows reviewed/public values only;
-- one venue remains one point;
-- repeated selection does not duplicate content/links;
-- dismissal and scrolling remain natural on mobile.
-
-Status: **complete**. PR `#866`, merge commit `46dc387f477ae0bb3ed2c09cca5db51f2ec5d3ca`.
-
 Verified UI-003 evidence:
 
 ```text
 existing CI/build: success
-EN/JA desktop selected-card browser QA: success
-EN/JA mobile selected-card browser QA: success
+EN/JA desktop/mobile selected-card QA: success
 same venue selected 10 times: idempotent
 switching venue: selected content replaced
-Kawasaki Next-7-days case: 5 meetings -> 3 rendered + 2 remaining note
-race count shown only from public detail timetable_rows.length
-Hanshin public-detail race-count case: passed
-Mizusawa no-public-detail race-count omission: passed
-mobile normal-flow selected-card scrolling: passed
+Kawasaki Next-7-days: 5 meetings -> 3 rendered + 2 remaining
+race count from public detail timetable_rows.length only
+Hanshin count case: passed
+Mizusawa omission case: passed
+mobile normal-flow scrolling: passed
 horizontal overflow: 0px
 page errors: 0
 ```
@@ -144,27 +120,54 @@ Temporary audit PR `#867` is closed unmerged.
 
 ## UI-004 — Today
 
-Status: **current active Work ID**.
+Status: **complete**. PR `#875`, merge commit `c92822b610ee615c92ded605f75aea0bb3760aa6`.
 
 Scope:
 
 - practical current-day page hierarchy;
-- status grouping/order;
-- timezone/country/authority/rank controls where supported;
-- map/list synchronization;
-- explicit map-to-list mobile action rather than automatic scroll.
+- racing-now/later-today/finished grouping/order;
+- timezone/country/authority/rank controls;
+- map/list synchronization from the same public rows;
+- explicit map-to-list mobile action rather than automatic scroll;
+- list-to-map focus;
+- EN/JA parity.
 
-Completion:
+Public timezone contract after PR `#874`:
 
-- racing-now/later-today/finished states are immediately legible;
-- list and map use the same public meeting set/state;
-- filters affect list and map together without creating a second meeting truth;
-- list -> map focus remains available;
-- mobile map selection does not force an automatic list jump;
-- explicit `View in list` performs the jump/focus;
-- EN/JA mobile behavior passes direct browser interaction QA.
+```text
+Japan — UTC+09:00
+Korea — UTC+09:00
+Hong Kong — UTC+08:00
+UAE — UTC+04:00
+Türkiye — UTC+03:00
+UTC — UTC+00:00
+```
+
+Full browser IANA timezone expansion is prohibited by the Calendar dynamic-dates regression checker.
+
+Verified UI-004 evidence:
+
+```text
+pre-merge Race Acquisition Check: success
+pre-merge Calendar unified official refresh: success
+EN/JA desktop browser audit: success
+EN/JA mobile browser audit: success
+state summary counts = visible rows: success
+country/authority/rank filters -> list/map sync: success
+timezone change -> list/map sync: success
+reset: success
+mobile pin select no auto-scroll: success
+explicit Show in List focus: success
+list -> map focus: success
+horizontal overflow: 0px
+page errors: 0
+```
+
+Temporary audit PR `#876` passed and was closed unmerged. Superseded stale PRs `#869` and `#870` are closed.
 
 ## UI-005 — Calendar presentation
+
+Status: **current active Work ID**.
 
 Scope:
 
@@ -178,11 +181,15 @@ Scope:
 Completion:
 
 - changing date updates List and Map consistently;
-- mobile does not force the map into the initial view;
-- back/share navigation reproduces core Calendar state;
+- desktop List/Map state is explicit and usable;
+- mobile initial mode is List rather than a forced map;
+- mobile filters collapse into a compact control;
+- back/share navigation reproduces core `date`, `view`, and `tz` state;
+- stable filters are URL-backed only where they materially improve restoration/share behavior;
+- no second Calendar/map meeting truth is introduced;
 - no claim is made that Calendar coverage, acquisition quality, source reliability, or rank promotion is complete.
 
-Calendar data defects observed during this PR are filed/routed to the parallel Calendar lane instead of being cosmetically hidden in UI code.
+Calendar data defects observed during this PR are routed to the parallel Calendar lane instead of being cosmetically hidden in UI code.
 
 ## UI-006 — Racecourses index
 
@@ -255,10 +262,10 @@ Mobile: bottom nav, More, 44px controls, no sticky selected card
 ## Current execution pointer
 
 ```text
-Current UI: UI-004
-Then UI: UI-005 -> UI-006 -> UI-007 -> UI-008 -> UI-009
+Current UI: UI-005
+Then UI: UI-006 -> UI-007 -> UI-008 -> UI-009
 Parallel Calendar quality lane: active independently throughout
-Current main reviewed before UI-004: dfe9f31c3e1923d610096d4a5e7ad3ef9f93f0c2
+Current main reviewed before UI-005: c92822b610ee615c92ded605f75aea0bb3760aa6
 ```
 
 After each merge, compare the implementation with the canonical UI specification and active roadmap before starting the next Work ID. Also check current main for Calendar-lane changes that affect the public meeting/view model. If the implementation decision changes the agreed UI, update the canonical documents rather than silently allowing drift.
