@@ -6,6 +6,7 @@ import TodayFilters from '../components/TodayFilters.astro';
 import TodayMeetingMap from '../components/TodayMeetingMap.astro';
 import '../styles/today-practical.css';
 import {
+  getGroupedTimetableMeetingRows,
   getTimetableDateContext,
   getTimetableMeetingRowsForWindow,
 } from '../data/timetableMeetingRows';
@@ -15,6 +16,7 @@ const context = getTimetableDateContext();
 const candidateStart = addCalendarDays(context.today, -2);
 const candidateEndExclusive = addCalendarDays(context.today, 10);
 const meetingCandidates = getTimetableMeetingRowsForWindow(candidateStart, candidateEndExclusive);
+const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
 ---
 
 <BaseLayout
@@ -50,8 +52,7 @@ const meetingCandidates = getTimetableMeetingRowsForWindow(candidateStart, candi
         <p>Map, Home, and Calendar use the same public meeting rows and rank-aware state policy.</p>
       </div>
       <TimetableMeetingList
-        records={meetingCandidates}
-        date={context.today}
+        groups={meetingGroups}
         scope="all"
         emptyLabel="No meetings are currently listed for the selected period and display timezone. Check official sources for the latest information."
       />
