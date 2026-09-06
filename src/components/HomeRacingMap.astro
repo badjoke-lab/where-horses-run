@@ -84,7 +84,10 @@ const fallbackMessage = isJapanese
         Map: <a href="https://openfreemap.org/">OpenFreeMap</a> · Data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>
       </p>
       <article class="home-racing-map__selected" data-home-map-selected hidden>
-        <h3 data-home-map-selected-name></h3>
+        <div class="home-racing-map__selected-heading">
+          <h3 data-home-map-selected-name></h3>
+          <button type="button" class="map-selected-card__close" data-home-map-close aria-label={isJapanese ? '選択を閉じる' : 'Close selection'}>×</button>
+        </div>
         <p data-home-map-selected-meta></p>
         <ul data-home-map-selected-meetings></ul>
         <p data-home-map-selected-links></p>
@@ -120,6 +123,7 @@ const fallbackMessage = isJapanese
         const selectedMeta = root.querySelector('[data-home-map-selected-meta]');
         const selectedMeetings = root.querySelector('[data-home-map-selected-meetings]');
         const selectedLinks = root.querySelector('[data-home-map-selected-links]');
+        const closeButton = root.querySelector('[data-home-map-close]');
         if (!(timezoneSelect instanceof HTMLSelectElement) || !(dataNode instanceof HTMLScriptElement)) return;
 
         let records = [];
@@ -127,6 +131,7 @@ const fallbackMessage = isJapanese
         const isJa = root.dataset.lang === 'ja';
         let period = 'today';
         let visibleProjected = [];
+        let selectedRacecourseId = null;
 
         const isTimeZoneSupported = (timeZone) => {
           if (!timeZone) return false;
@@ -197,15 +202,30 @@ const fallbackMessage = isJapanese
           return { start: today, endExclusive: addDays(today, 1), label: today };
         };
         const clearSelected = () => {
+          selectedRacecourseId = null;
           if (selected instanceof HTMLElement) selected.hidden = true;
           if (selectedName) selectedName.textContent = '';
           if (selectedMeta) selectedMeta.textContent = '';
           if (selectedMeetings) selectedMeetings.replaceChildren();
           if (selectedLinks) selectedLinks.replaceChildren();
         };
+        const visibleIds = () => Array.from(new Set(
+          visibleProjected.filter((record) => record.hasReviewedLocation).map((record) => record.racecourseId)
+        ));
+        const clearMapSelection = (racecourseId) => {
+          if (!(mapRoot instanceof HTMLElement) || !racecourseId) return;
+          const ids = visibleIds();
+          mapRoot.dispatchEvent(new CustomEvent('racecourse-map:set-visible', {
+            detail: { racecourseIds: ids.filter((id) => id !== racecourseId), fit: false }
+          }));
+          requestAnimationFrame(() => mapRoot.dispatchEvent(new CustomEvent('racecourse-map:set-visible', {
+            detail: { racecourseIds: ids, fit: false }
+          })));
+        };
         const renderSelected = (racecourseId) => {
           const rows = visibleProjected.filter((record) => record.racecourseId === racecourseId);
           if (!rows.length) { clearSelected(); return; }
+          selectedRacecourseId = racecourseId;
           const first = rows[0];
           if (selectedName) selectedName.textContent = first.racecourseName;
           if (selectedMeta) selectedMeta.textContent = `${first.country} · ${first.authority}`;
@@ -241,13 +261,19 @@ const fallbackMessage = isJapanese
           }
           if (selected instanceof HTMLElement) selected.hidden = false;
         };
+        const updatePeriodUrl = () => {
+          const url = new URL(window.location.href);
+          if (period === 'today') url.searchParams.delete('period');
+          else url.searchParams.set('period', period);
+          window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+        };
         const apply = () => {
           const timeZone = isTimeZoneSupported(timezoneSelect.value) ? timezoneSelect.value : 'Asia/Tokyo';
           const windowRange = periodWindow(timeZone);
           visibleProjected = records
             .map((record) => project(record, timeZone))
             .filter((record) => record.projectedDate >= windowRange.start && record.projectedDate < windowRange.endExclusive);
-          const ids = Array.from(new Set(visibleProjected.filter((record) => record.hasReviewedLocation).map((record) => record.racecourseId)));
+          const ids = visibleIds();
           if (mapRoot instanceof HTMLElement) {
             mapRoot.dispatchEvent(new CustomEvent('racecourse-map:set-visible', { detail: { racecourseIds: ids, fit: true } }));
           }
@@ -267,6 +293,7 @@ const fallbackMessage = isJapanese
           button.addEventListener('click', () => {
             period = button.dataset.homeMapPeriod || 'today';
             periodButtons.forEach((candidate) => candidate.setAttribute('aria-pressed', String(candidate === button)));
+            updatePeriodUrl();
             apply();
           });
         });
@@ -277,6 +304,13 @@ const fallbackMessage = isJapanese
           window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
           apply();
         });
+        if (closeButton instanceof HTMLButtonElement) {
+          closeButton.addEventListener('click', () => {
+            const closing = selectedRacecourseId;
+            clearSelected();
+            clearMapSelection(closing);
+          });
+        }
         if (mapRoot instanceof HTMLElement) {
           mapRoot.addEventListener('racecourse-map:ready', apply);
           mapRoot.addEventListener('racecourse-map:select', (event) => {
@@ -286,9 +320,13 @@ const fallbackMessage = isJapanese
         }
 
         populateTimeZones();
-        const requestedZone = new URL(window.location.href).searchParams.get('tz');
+        const url = new URL(window.location.href);
+        const requestedZone = url.searchParams.get('tz');
+        const requestedPeriod = url.searchParams.get('period');
         const browserZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         timezoneSelect.value = isTimeZoneSupported(requestedZone) ? requestedZone : isTimeZoneSupported(browserZone) ? browserZone : 'Asia/Tokyo';
+        period = requestedPeriod === 'tomorrow' || requestedPeriod === 'next7' ? requestedPeriod : 'today';
+        periodButtons.forEach((button) => button.setAttribute('aria-pressed', String(button instanceof HTMLElement && button.dataset.homeMapPeriod === period)));
         apply();
       });
     };
