@@ -1,0 +1,245 @@
+---
+import type { TimetableMeetingRow } from '../data/timetableMeetingRows';
+
+interface Props {
+  records: TimetableMeetingRow[];
+  lang?: 'en' | 'ja';
+}
+
+const { records, lang = 'en' } = Astro.props;
+const isJapanese = lang === 'ja';
+const countries = [...new Set(records.map((record) => record.country_label))].sort((a, b) => a.localeCompare(b));
+const authorities = [...new Set(records.map((record) => record.authority_label))].sort((a, b) => a.localeCompare(b));
+const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record) => record.capability_rank === rank));
+---
+
+<section class="today-controls" data-today-controls data-lang={lang} aria-label={isJapanese ? '今日の開催フィルター' : 'Today meeting filters'}>
+  <div class="today-controls__filters">
+    <label>
+      <span>{isJapanese ? '表示タイムゾーン' : 'Display timezone'}</span>
+      <select data-today-timezone aria-label={isJapanese ? '表示タイムゾーン' : 'Display timezone'}>
+        <option value="Asia/Tokyo">Asia/Tokyo</option>
+        <option value="UTC">UTC</option>
+      </select>
+    </label>
+    <label>
+      <span>{isJapanese ? '国・地域' : 'Country'}</span>
+      <select data-today-filter="country">
+        <option value="">{isJapanese ? 'すべて' : 'All countries'}</option>
+        {countries.map((country) => <option value={country}>{country}</option>)}
+      </select>
+    </label>
+    <label>
+      <span>{isJapanese ? '主催・管轄' : 'Authority'}</span>
+      <select data-today-filter="authority">
+        <option value="">{isJapanese ? 'すべて' : 'All authorities'}</option>
+        {authorities.map((authority) => <option value={authority}>{authority}</option>)}
+      </select>
+    </label>
+    <label>
+      <span>{isJapanese ? '公開ランク' : 'Public rank'}</span>
+      <select data-today-filter="rank">
+        <option value="">{isJapanese ? 'すべて' : 'All ranks'}</option>
+        {ranks.map((rank) => <option value={rank}>{rank}</option>)}
+      </select>
+    </label>
+    <button type="button" class="today-controls__reset" data-today-filter-reset>{isJapanese ? 'リセット' : 'Reset'}</button>
+  </div>
+
+  <div class="today-state-summary" aria-live="polite">
+    <span class="today-state-summary__item today-state-summary__item--running">
+      <span aria-hidden="true"></span>{isJapanese ? '開催中' : 'Racing now'} <strong data-today-count="running">0</strong>
+    </span>
+    <span class="today-state-summary__item today-state-summary__item--upcoming">
+      <span aria-hidden="true"></span>{isJapanese ? '今日これから' : 'Later today'} <strong data-today-count="upcoming">0</strong>
+    </span>
+    <span class="today-state-summary__item today-state-summary__item--future">
+      <span aria-hidden="true"></span>{isJapanese ? '開催予定' : 'Scheduled'} <strong data-today-count="future">0</strong>
+    </span>
+    <span class="today-state-summary__item today-state-summary__item--ended">
+      <span aria-hidden="true"></span>{isJapanese ? '終了' : 'Finished'} <strong data-today-count="ended">0</strong>
+    </span>
+    <span class="today-state-summary__total"><strong data-today-visible-count>0</strong> {isJapanese ? '開催を表示' : 'meetings shown'}</span>
+  </div>
+  <p class="today-controls__empty" data-today-filter-empty hidden>
+    {isJapanese ? 'この条件に一致する今日の開催はありません。' : 'No meeting today matches these filters.'}
+  </p>
+</section>
+
+<script is:inline>
+  (() => {
+    const install = () => {
+      document.querySelectorAll('[data-today-controls]').forEach((controls) => {
+        if (!(controls instanceof HTMLElement) || controls.dataset.initialized === 'true') return;
+        controls.dataset.initialized = 'true';
+
+        const isJa = controls.dataset.lang === 'ja';
+        const timezone = controls.querySelector('[data-today-timezone]');
+        const country = controls.querySelector('[data-today-filter="country"]');
+        const authority = controls.querySelector('[data-today-filter="authority"]');
+        const rank = controls.querySelector('[data-today-filter="rank"]');
+        const reset = controls.querySelector('[data-today-filter-reset]');
+        const total = controls.querySelector('[data-today-visible-count]');
+        const empty = controls.querySelector('[data-today-filter-empty]');
+        const states = ['running', 'upcoming', 'future', 'ended'];
+        const countNodes = new Map(states.map((state) => [state, controls.querySelector(`[data-today-count="${state}"]`)]));
+        if (!(timezone instanceof HTMLSelectElement) || !(country instanceof HTMLSelectElement) || !(authority instanceof HTMLSelectElement) || !(rank instanceof HTMLSelectElement)) return;
+
+        const timezoneRoot = () => document.querySelector('[data-display-timezone-root][data-projection-scope="today"]');
+        const internalTimezone = () => timezoneRoot()?.querySelector('[data-display-timezone-select]');
+        const rows = () => Array.from(document.querySelectorAll('[data-calendar-meeting-row]')).filter((row) => row instanceof HTMLElement);
+        const mapRoot = () => document.querySelector('[data-today-map-sync] [data-racecourse-map]');
+        const mapStatus = () => document.querySelector('[data-today-map-status]');
+        const meetingMapping = () => {
+          const node = document.querySelector('[data-today-map-meeting-map]');
+          if (!(node instanceof HTMLScriptElement)) return new Map();
+          try {
+            const entries = JSON.parse(node.textContent || '[]');
+            return new Map(Array.isArray(entries) ? entries.map((entry) => [entry.meetingId, entry]) : []);
+          } catch {
+            return new Map();
+          }
+        };
+        const isSupported = (zone) => {
+          if (!zone) return false;
+          try { new Intl.DateTimeFormat('en', { timeZone: zone }).format(new Date(0)); return true; } catch { return false; }
+        };
+        const populateTimeZones = () => {
+          const zones = typeof Intl.supportedValuesOf === 'function'
+            ? Intl.supportedValuesOf('timeZone')
+            : ['UTC', 'Asia/Tokyo', 'Asia/Hong_Kong', 'Asia/Dubai', 'Europe/London', 'America/New_York', 'Australia/Sydney'];
+          const values = Array.from(new Set(['UTC', ...zones]));
+          timezone.replaceChildren(...values.map((zone) => {
+            const option = document.createElement('option');
+            option.value = zone;
+            option.textContent = zone;
+            return option;
+          }));
+        };
+        // Keep the same status taxonomy used by TodayMeetingMap / RacecourseMap.
+        const stateFor = (row) => {
+          const meetingState = row.dataset.meetingState || 'unknown';
+          const dayState = row.dataset.meetingDayState || 'unknown';
+          if (meetingState === 'running') return 'running';
+          if ((meetingState === 'upcoming' || meetingState === 'unknown') && dayState === 'today') return 'upcoming';
+          if (meetingState === 'ended' || dayState === 'past') return 'ended';
+          return 'future';
+        };
+        const stateLabel = (state) => state === 'running'
+          ? (isJa ? '開催中' : 'Racing now')
+          : state === 'upcoming'
+            ? (isJa ? '今日これから' : 'Later today')
+            : state === 'ended'
+              ? (isJa ? '終了' : 'Finished')
+              : (isJa ? '開催予定' : 'Scheduled');
+        const stateOrder = { running: 0, upcoming: 1, future: 2, ended: 3 };
+        const sortRows = (left, right) => {
+          const stateDiff = stateOrder[stateFor(left)] - stateOrder[stateFor(right)];
+          if (stateDiff !== 0) return stateDiff;
+          const leftStart = Number(left.dataset.sortStart || Number.POSITIVE_INFINITY);
+          const rightStart = Number(right.dataset.sortStart || Number.POSITIVE_INFINITY);
+          if (leftStart !== rightStart) return leftStart - rightStart;
+          return (left.dataset.racecourse || '').localeCompare(right.dataset.racecourse || '');
+        };
+        const matchesFilters = (row) => {
+          if (country.value && row.dataset.country !== country.value) return false;
+          if (authority.value && row.dataset.authority !== authority.value) return false;
+          if (rank.value && row.dataset.rank !== rank.value) return false;
+          return true;
+        };
+        const insertStateHeadings = () => {
+          document.querySelectorAll('.today-state-divider').forEach((node) => node.remove());
+          document.querySelectorAll('[data-display-timezone-root][data-projection-scope="today"] .meeting-list').forEach((list) => {
+            if (!(list instanceof HTMLElement)) return;
+            const listRows = Array.from(list.querySelectorAll('[data-calendar-meeting-row]')).filter((row) => row instanceof HTMLElement).sort(sortRows);
+            listRows.forEach((row) => list.append(row));
+            states.forEach((state) => {
+              const first = listRows.find((row) => !row.hidden && stateFor(row) === state);
+              if (!first) return;
+              const count = listRows.filter((row) => !row.hidden && stateFor(row) === state).length;
+              const divider = document.createElement('li');
+              divider.className = `today-state-divider today-state-divider--${state}`;
+              divider.dataset.todayStateDivider = state;
+              divider.setAttribute('aria-hidden', 'true');
+              divider.innerHTML = `<span></span><strong>${stateLabel(state)}</strong><small>${count}</small>`;
+              list.insertBefore(divider, first);
+            });
+          });
+        };
+        const syncMap = () => {
+          const mapping = meetingMapping();
+          const visibleMeetingIds = rows().filter((row) => !row.hidden).map((row) => row.dataset.meetingId || '');
+          const racecourseIds = Array.from(new Set(visibleMeetingIds
+            .map((meetingId) => mapping.get(meetingId))
+            .filter((entry) => entry?.hasReviewedLocation && typeof entry.racecourseId === 'string')
+            .map((entry) => entry.racecourseId)));
+          const map = mapRoot();
+          if (map instanceof HTMLElement) {
+            const selected = map.dataset.selectedRacecourseId || null;
+            map.dispatchEvent(new CustomEvent('racecourse-map:set-visible', { detail: { racecourseIds, fit: true } }));
+            if (selected && !racecourseIds.includes(selected)) {
+              map.dispatchEvent(new CustomEvent('racecourse-map:clear-selection'));
+            }
+          }
+          const status = mapStatus();
+          if (status) status.textContent = isJa ? `${racecourseIds.length}競馬場を地図表示` : `${racecourseIds.length} mapped racecourses`;
+        };
+        const applyFilters = () => {
+          const counts = { running: 0, upcoming: 0, future: 0, ended: 0 };
+          let visible = 0;
+          rows().forEach((row) => {
+            const filtered = !matchesFilters(row);
+            row.dataset.todayFilterHidden = filtered ? 'true' : 'false';
+            const hidden = row.dataset.timezoneScopeHidden === 'true' || filtered;
+            row.hidden = hidden;
+            if (!hidden) {
+              const state = stateFor(row);
+              counts[state] += 1;
+              visible += 1;
+            }
+          });
+          countNodes.forEach((node, state) => { if (node) node.textContent = String(counts[state]); });
+          if (total) total.textContent = String(visible);
+          if (empty instanceof HTMLElement) empty.hidden = visible !== 0;
+          insertStateHeadings();
+          syncMap();
+          window.dispatchEvent(new CustomEvent('whr:todayfilterchange', { detail: { visible } }));
+        };
+        const syncTimezoneFromList = () => {
+          const internal = internalTimezone();
+          if (internal instanceof HTMLSelectElement && isSupported(internal.value)) timezone.value = internal.value;
+        };
+
+        populateTimeZones();
+        requestAnimationFrame(() => {
+          syncTimezoneFromList();
+          applyFilters();
+        });
+
+        timezone.addEventListener('change', () => {
+          const internal = internalTimezone();
+          const selected = isSupported(timezone.value) ? timezone.value : 'Asia/Tokyo';
+          if (internal instanceof HTMLSelectElement) {
+            internal.value = selected;
+            internal.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        });
+        [country, authority, rank].forEach((select) => select.addEventListener('change', applyFilters));
+        if (reset instanceof HTMLButtonElement) reset.addEventListener('click', () => {
+          country.value = '';
+          authority.value = '';
+          rank.value = '';
+          applyFilters();
+        });
+        window.addEventListener('whr:timezonechange', () => requestAnimationFrame(() => {
+          syncTimezoneFromList();
+          applyFilters();
+        }));
+        window.addEventListener('whr:meetingstatechange', () => requestAnimationFrame(applyFilters));
+      });
+    };
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
+    else install();
+  })();
+</script>
