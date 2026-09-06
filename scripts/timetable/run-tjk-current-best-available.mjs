@@ -9,6 +9,7 @@ import {
   turkeyDate,
 } from './tjk-current-future-candidates.mjs';
 import { discoverAnnualFixtures } from './tjk-annual-fixture-discovery.mjs';
+import { deriveBestAvailableRank } from './best-available-rank.mjs';
 
 const TJK_RACECOURSE_IDENTITIES = new Map([
   ['1', { racecourse_id: 'adana-racecourse', name_en: 'Adana Racecourse', name_ja: 'アダナ競馬場' }],
@@ -89,12 +90,20 @@ async function enrichBestAvailableFromAnnualFixture(fixture, startDate) {
       });
     }
 
+    const firstRaceTime = detected.schedule[0].post_time_local;
+    const lastRaceTime = detected.schedule.at(-1).post_time_local;
+    const capabilityRank = deriveBestAvailableRank({
+      first_race_time_local: firstRaceTime,
+      last_race_time_local: lastRaceTime,
+      timetable_rows: detected.schedule,
+    });
+
     return bindRacecourseIdentity({
       ...fixture,
       source_url: detail.source_url,
-      capability_rank: 'A',
-      first_race_time_local: detected.schedule[0].post_time_local,
-      last_race_time_local: detected.schedule.at(-1).post_time_local,
+      capability_rank: capabilityRank,
+      first_race_time_local: firstRaceTime,
+      last_race_time_local: lastRaceTime,
       timetable_rows: detected.schedule,
       provenance: {
         ...fixture.provenance,
@@ -139,10 +148,12 @@ for (const fixture of annual.fixtures) {
   candidates.push(await enrichBestAvailableFromAnnualFixture(fixture, startDate));
 }
 
-const rankCounts = {
-  C: candidates.filter((record) => record.capability_rank === 'C').length,
-  A: candidates.filter((record) => record.capability_rank === 'A').length,
-};
+const rankCounts = Object.fromEntries(
+  ['C', 'B', 'B+', 'A', 'A+'].map((rank) => [
+    rank,
+    candidates.filter((record) => record.capability_rank === rank).length,
+  ]),
+);
 const detailStatusCounts = Object.fromEntries(
   ['available', 'not_published', 'conflict', 'source_error'].map((status) => [
     status,
@@ -157,9 +168,6 @@ const artifact = {
   timezone: TIMEZONE,
   entry_url: ENTRY_URL,
   retrieved_at: retrievedAt,
-  effective_today: startDate,
-  technical_capability_rank: 'A+',
-  publication_ceiling: 'A',
   collection_target_rank: 'best_available',
   raw_body_retained: false,
   disposition: {
