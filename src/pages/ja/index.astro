@@ -1,96 +1,62 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import HomeRacingMap from '../../components/HomeRacingMap.astro';
-import '../../styles/home-map-first.css';
-import { getRacecourses } from '../../lib/data';
+import MeetingStatePolicy from '../../components/MeetingStatePolicy.astro';
+import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
+import TodayFilters from '../../components/TodayFilters.astro';
+import TodayMeetingMap from '../../components/TodayMeetingMap.astro';
+import '../../styles/today-practical.css';
 import {
   getTimetableDateContext,
-  getTimetableMeetingRowsForDate,
   getTimetableMeetingRowsForWindow,
-  type TimetableMeetingRow,
 } from '../../data/timetableMeetingRows';
 import { addCalendarDays } from '../../lib/timetable/calendarDateContext.mjs';
 
-const allRacecourses = getRacecourses();
-const racecourseNameJaById = new Map(allRacecourses.map((track) => [track.id, track.name_ja ?? track.name_en]));
-const calendarContext = getTimetableDateContext();
-const todayPreview = getTimetableMeetingRowsForDate(calendarContext.today).slice(0, 6);
-const tomorrow = addCalendarDays(calendarContext.today, 1);
-const upNextEndExclusive = addCalendarDays(calendarContext.today, 8);
-const upNext = getTimetableMeetingRowsForWindow(tomorrow, upNextEndExclusive).slice(0, 6);
-const mapCandidateStart = addCalendarDays(calendarContext.today, -2);
-const mapCandidateEndExclusive = addCalendarDays(calendarContext.today, 9);
-const mapCandidates = getTimetableMeetingRowsForWindow(mapCandidateStart, mapCandidateEndExclusive);
-const timeRange = (meeting: TimetableMeetingRow) => {
-  if (meeting.first_race_time_local && meeting.last_race_time_local) return `${meeting.first_race_time_local}–${meeting.last_race_time_local}`;
-  return meeting.first_race_time_local ?? meeting.last_race_time_local ?? null;
-};
-const meetingRacecourseName = (meeting: TimetableMeetingRow) => racecourseNameJaById.get(meeting.racecourse_id) ?? meeting.racecourse_name;
-const meetingHref = (meeting: TimetableMeetingRow) => meeting.detail_path ? `/ja${meeting.detail_path}` : `/ja/calendar/?date=${meeting.date}`;
+const context = getTimetableDateContext();
+const candidateStart = addCalendarDays(context.today, -2);
+const candidateEndExclusive = addCalendarDays(context.today, 10);
+const meetingCandidates = getTimetableMeetingRowsForWindow(candidateStart, candidateEndExclusive);
 ---
 
 <BaseLayout
   lang="ja"
-  title="競馬どこ？ | 世界の競馬開催カレンダー・レース時刻表"
-  description="世界の競馬開催日、レース時刻、競馬場、競馬種別、公式情報源を探せます。"
+  title="競馬どこ？ | 今日・明日・7日間の世界競馬開催"
+  description="今日、明日、今後7日間の競馬開催を地図と時刻表で確認できます。公開レース時刻と公式情報源も掲載します。"
+  canonicalPath="/ja/"
+  alternatePath="/"
 >
-  <section class="hero home-hero" aria-labelledby="page-title">
-    <p class="hero__eyebrow">世界の競馬開催カレンダー</p>
-    <h1 id="page-title">今日、どこで競馬がある？</h1>
-    <p class="hero__summary">世界の競馬開催を場所と時刻から探せます。</p>
-  </section>
+  <main class="today-page" data-today-page data-home-meeting-window>
+    <MeetingStatePolicy />
 
-  <HomeRacingMap records={mapCandidates} lang="ja" />
-
-  <div class="home-primary-flow">
-    <section class="home-meeting-summary" aria-labelledby="home-today-title">
-      <div class="home-section-heading">
-        <div>
-          <p class="home-section-heading__eyebrow">今日</p>
-          <h2 id="home-today-title">今日の開催</h2>
-        </div>
-        <a href="/ja/today/">今日の開催をすべて見る</a>
-      </div>
-      {todayPreview.length > 0 ? (
-        <ul class="home-meeting-list">
-          {todayPreview.map((meeting) => (
-            <li>
-              <a href={meetingHref(meeting)}>
-                <strong>{meetingRacecourseName(meeting)}</strong>
-                <span>{meeting.country_label}</span>
-                <span>{timeRange(meeting) ?? '時刻未公表'}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>今日のレビュー済み公開開催は掲載されていません。</p>
-      )}
+    <section class="hero today-page__hero" aria-labelledby="page-title">
+      <p class="hero__eyebrow" data-window-eyebrow>今日</p>
+      <h1 id="page-title" data-window-title>今日の開催</h1>
+      <p class="today-page__context">
+        <span>今日 / 明日 / 7日間</span> · <span data-timezone-label>{context.timeZone}</span>
+      </p>
+      <p class="hero__summary">
+        今日・明日・今後7日間を、同じ地図と同じ開催一覧で切り替えます。開催一覧はカレンダーと同じ公開meeting rowと状態判定を使います。
+      </p>
     </section>
 
-    <section class="home-meeting-summary" aria-labelledby="home-up-next-title">
-      <div class="home-section-heading">
+    <TodayFilters records={meetingCandidates} lang="ja" />
+
+    <TodayMeetingMap records={meetingCandidates} date={context.today} lang="ja" />
+
+    <section class="today-page__list" aria-labelledby="home-list-title" data-today-practical-list>
+      <div class="today-page__list-heading">
         <div>
-          <p class="home-section-heading__eyebrow">次の開催</p>
-          <h2 id="home-up-next-title">このあと</h2>
+          <p class="today-page__eyebrow">開催一覧</p>
+          <h2 id="home-list-title" data-window-list-title>今日の開催一覧</h2>
         </div>
-        <a href="/ja/calendar/">カレンダーを開く</a>
+        <p>地図・トップ・カレンダーは同じ公開meeting rowとランク別状態ルールを使います。</p>
       </div>
-      {upNext.length > 0 ? (
-        <ul class="home-meeting-list home-meeting-list--up-next">
-          {upNext.map((meeting) => (
-            <li>
-              <a href={meetingHref(meeting)}>
-                <strong>{meetingRacecourseName(meeting)}</strong>
-                <span>{meeting.date}</span>
-                <span>{timeRange(meeting) ?? meeting.country_label}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>今後7日間にレビュー済み公開開催は掲載されていません。</p>
-      )}
+      <TimetableMeetingList
+        records={meetingCandidates}
+        date={context.today}
+        scope="all"
+        lang="ja"
+        emptyLabel="選択した期間と表示タイムゾーンに該当する開催情報は掲載されていません。最新情報は公式情報源で確認してください。"
+      />
     </section>
-  </div>
+  </main>
 </BaseLayout>
