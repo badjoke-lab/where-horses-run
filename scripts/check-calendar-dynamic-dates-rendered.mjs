@@ -46,12 +46,14 @@ function assertSameMeetingIds(leftName, leftHtml, rightName, rightHtml) {
 }
 
 const pages = {
+  homeEn: readHtml('dist/index.html'),
+  homeJa: readHtml('dist/ja/index.html'),
   calendarEn: readHtml('dist/calendar/index.html'),
   calendarJa: readHtml('dist/ja/calendar/index.html'),
-  todayEn: readHtml('dist/today/index.html'),
-  todayJa: readHtml('dist/ja/today/index.html'),
-  tomorrowEn: readHtml('dist/tomorrow/index.html'),
-  tomorrowJa: readHtml('dist/ja/tomorrow/index.html'),
+  retiredTodayEn: readHtml('dist/today/index.html'),
+  retiredTodayJa: readHtml('dist/ja/today/index.html'),
+  retiredTomorrowEn: readHtml('dist/tomorrow/index.html'),
+  retiredTomorrowJa: readHtml('dist/ja/tomorrow/index.html'),
 };
 
 const publicData = JSON.parse(readFileSync(path.join(root, 'data/generated/timetable/public/meeting-list.json'), 'utf8'));
@@ -68,28 +70,23 @@ const todayRecords = filterRecordsForDate(records, context.today);
 const tomorrowRecords = filterRecordsForDate(records, context.tomorrow);
 const calendarCandidateStart = addCalendarDays(context.windowStart, -2);
 const calendarCandidateEndExclusive = addCalendarDays(context.windowEndExclusive, 2);
-const dayCandidateStart = addCalendarDays(context.today, -2);
-const dayCandidateEndExclusive = addCalendarDays(context.today, 4);
-const calendarCandidates = filterRecordsForWindow(
-  records,
-  calendarCandidateStart,
-  calendarCandidateEndExclusive,
-);
-const dayCandidates = filterRecordsForWindow(
-  records,
-  dayCandidateStart,
-  dayCandidateEndExclusive,
-);
+const homeCandidateStart = addCalendarDays(context.today, -2);
+const homeCandidateEndExclusive = addCalendarDays(context.today, 10);
+const calendarCandidates = filterRecordsForWindow(records, calendarCandidateStart, calendarCandidateEndExclusive);
+const homeCandidates = filterRecordsForWindow(records, homeCandidateStart, homeCandidateEndExclusive);
 const fixedCalendarHeadings = [
   /\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}\s+Calendar\b/i,
   /\b\d{4}年(?:1[0-2]|[1-9])月\s*開催カレンダー/,
 ];
 
-for (const [name, html] of Object.entries(pages)) {
+const projectionPages = [
+  ['homeEn', pages.homeEn],
+  ['homeJa', pages.homeJa],
+  ['calendarEn', pages.calendarEn],
+  ['calendarJa', pages.calendarJa],
+];
+for (const [name, html] of projectionPages) {
   if (!html.includes(timeZone)) fail(`${name} does not show build-reference timezone ${timeZone}.`);
-  if (!html.includes(`data-calendar-data-status="${state.status}"`)) {
-    fail(`${name} must report ${state.status}.`);
-  }
   for (const pattern of fixedCalendarHeadings) {
     if (pattern.test(html)) fail(`${name} retains fixed month/year Calendar copy.`);
   }
@@ -98,30 +95,40 @@ for (const [name, html] of Object.entries(pages)) {
   }
 }
 
-if (!pages.calendarEn.includes('<h1 id="page-title">Calendar</h1>')) fail('English Calendar does not render the UI-005 Calendar heading.');
-if (!pages.calendarJa.includes('<h1 id="page-title">カレンダー</h1>')) fail('Japanese Calendar does not render the UI-005 Calendar heading.');
+for (const [name, html] of [['calendarEn', pages.calendarEn], ['calendarJa', pages.calendarJa]]) {
+  if (!html.includes(`data-calendar-data-status="${state.status}"`)) fail(`${name} must report ${state.status}.`);
+}
+if (!pages.calendarEn.includes('<h1 id="page-title">Calendar</h1>')) fail('English Calendar does not render the Calendar heading.');
+if (!pages.calendarJa.includes('<h1 id="page-title">カレンダー</h1>')) fail('Japanese Calendar does not render the Calendar heading.');
 for (const [name, html] of [['calendarEn', pages.calendarEn], ['calendarJa', pages.calendarJa]]) {
   for (const marker of ['data-calendar-date-nav', 'data-filter-date', 'data-calendar-view-list', 'data-calendar-view-map', 'data-calendar-filters', 'data-calendar-list-view']) {
-    if (!html.includes(marker)) fail(`${name} missing rendered UI-005 marker ${marker}.`);
+    if (!html.includes(marker)) fail(`${name} missing rendered Calendar marker ${marker}.`);
   }
 }
 if (!pages.calendarEn.includes(context.windowEndInclusive) || !pages.calendarJa.includes(context.windowEndInclusive)) {
   fail(`Calendar pages do not show build-reference window end ${context.windowEndInclusive}.`);
 }
-if (!pages.todayEn.includes(context.today) || !pages.todayJa.includes(context.today)) {
-  fail(`Today pages do not show build-reference date ${context.today}.`);
-}
-if (!pages.tomorrowEn.includes(context.tomorrow) || !pages.tomorrowJa.includes(context.tomorrow)) {
-  fail(`Tomorrow pages do not show build-reference date ${context.tomorrow}.`);
+
+for (const [name, html] of [['homeEn', pages.homeEn], ['homeJa', pages.homeJa]]) {
+  for (const marker of [
+    'data-home-meeting-window',
+    'data-meeting-range="today"',
+    'data-meeting-range="tomorrow"',
+    'data-meeting-range="next7"',
+    'data-today-timezone',
+    'data-today-map-sync',
+    'data-today-practical-list',
+    'data-projection-scope="all"',
+  ]) {
+    if (!html.includes(marker)) fail(`${name} missing unified Home marker ${marker}.`);
+  }
 }
 
 for (const [name, html, canonicalCandidates, candidateStart, candidateEndExclusive] of [
   ['calendarEn', pages.calendarEn, calendarCandidates, calendarCandidateStart, calendarCandidateEndExclusive],
   ['calendarJa', pages.calendarJa, calendarCandidates, calendarCandidateStart, calendarCandidateEndExclusive],
-  ['todayEn', pages.todayEn, dayCandidates, dayCandidateStart, dayCandidateEndExclusive],
-  ['todayJa', pages.todayJa, dayCandidates, dayCandidateStart, dayCandidateEndExclusive],
-  ['tomorrowEn', pages.tomorrowEn, dayCandidates, dayCandidateStart, dayCandidateEndExclusive],
-  ['tomorrowJa', pages.tomorrowJa, dayCandidates, dayCandidateStart, dayCandidateEndExclusive],
+  ['homeEn', pages.homeEn, homeCandidates, homeCandidateStart, homeCandidateEndExclusive],
+  ['homeJa', pages.homeJa, homeCandidates, homeCandidateStart, homeCandidateEndExclusive],
 ]) {
   const renderedRows = extractMeetingRows(html);
   const renderedIds = new Set(renderedRows.map((row) => row.meetingId).filter(Boolean));
@@ -144,27 +151,40 @@ for (const [name, html, canonicalCandidates, candidateStart, candidateEndExclusi
 }
 
 assertSameMeetingIds('calendarEn', pages.calendarEn, 'calendarJa', pages.calendarJa);
-assertSameMeetingIds('todayEn', pages.todayEn, 'todayJa', pages.todayJa);
-assertSameMeetingIds('tomorrowEn', pages.tomorrowEn, 'tomorrowJa', pages.tomorrowJa);
+assertSameMeetingIds('homeEn', pages.homeEn, 'homeJa', pages.homeJa);
 
 for (const [name, html, scope] of [
   ['calendarEn', pages.calendarEn, 'rolling-30'],
   ['calendarJa', pages.calendarJa, 'rolling-30'],
-  ['todayEn', pages.todayEn, 'today'],
-  ['todayJa', pages.todayJa, 'today'],
-  ['tomorrowEn', pages.tomorrowEn, 'tomorrow'],
-  ['tomorrowJa', pages.tomorrowJa, 'tomorrow'],
+  ['homeEn', pages.homeEn, 'all'],
+  ['homeJa', pages.homeJa, 'all'],
 ]) {
   if (!html.includes(`data-projection-scope="${scope}"`)) fail(`${name} missing rendered projection scope ${scope}.`);
+}
+
+const retiredRoutes = [
+  ['retiredTodayEn', pages.retiredTodayEn, 'https://whr.badjoke-lab.com/', '0;url=/'],
+  ['retiredTodayJa', pages.retiredTodayJa, 'https://whr.badjoke-lab.com/ja/', '0;url=/ja/'],
+  ['retiredTomorrowEn', pages.retiredTomorrowEn, 'https://whr.badjoke-lab.com/', '0;url=/?range=tomorrow'],
+  ['retiredTomorrowJa', pages.retiredTomorrowJa, 'https://whr.badjoke-lab.com/ja/', '0;url=/ja/?range=tomorrow'],
+];
+for (const [name, html, canonical, refresh] of retiredRoutes) {
+  if (!html.includes(`rel="canonical" href="${canonical}"`)) fail(`${name} does not canonicalize to Home.`);
+  if (!html.includes(`content="${refresh}"`)) fail(`${name} does not redirect to the unified Home view.`);
+  if (extractMeetingRows(html).length !== 0) fail(`${name} must not retain a second rendered meeting list.`);
 }
 
 const meetingListSource = readFileSync(path.join(root, 'src/components/TimetableMeetingList.astro'), 'utf8');
 for (const marker of ["scope === 'today'", "scope === 'tomorrow'", "scope === 'rolling-30'", 'formatProjectedDate(firstInstant, timeZone)', 'row.dataset.timezoneScopeHidden', 'whr:timezonechange']) {
   if (!meetingListSource.includes(marker)) fail(`projection runtime missing ${marker}.`);
 }
+const todayFiltersSource = readFileSync(path.join(root, 'src/components/TodayFilters.astro'), 'utf8');
+for (const marker of ["new Set(['today', 'tomorrow', 'next7'])", "activeRange === 'tomorrow'", "activeRange === 'next7'", "url.searchParams.set('range', activeRange)"]) {
+  if (!todayFiltersSource.includes(marker)) fail(`unified Home range runtime missing ${marker}.`);
+}
 
 if (calendarCandidates.length < windowRecords.length) fail('Calendar candidate window must include the build-reference 30-day window.');
-if (dayCandidates.length < todayRecords.length || dayCandidates.length < tomorrowRecords.length) fail('Day candidate window must include build-reference Today and Tomorrow records.');
+if (homeCandidates.length < todayRecords.length || homeCandidates.length < tomorrowRecords.length) fail('Home candidate window must include build-reference Today and Tomorrow records.');
 
 if (errors.length) {
   console.error(`CALENDAR_DYNAMIC_DATES_RENDERED: failed (${errors.length})`);
@@ -178,9 +198,10 @@ console.log(`WINDOW_MEETINGS: ${windowRecords.length}`);
 console.log(`CALENDAR_CANONICAL_CANDIDATES: ${calendarCandidates.length}`);
 console.log(`TODAY_MEETINGS: ${todayRecords.length}`);
 console.log(`TOMORROW_MEETINGS: ${tomorrowRecords.length}`);
-console.log(`DAY_CANONICAL_CANDIDATES: ${dayCandidates.length}`);
+console.log(`HOME_CANONICAL_CANDIDATES: ${homeCandidates.length}`);
 console.log(`REVIEWED_PUBLIC_EXCLUSIONS: ${reviewedPublicExcludedMeetingIds.size}`);
-console.log('BILINGUAL_CALENDAR_TODAY_TOMORROW: pass');
+console.log('BILINGUAL_HOME_CALENDAR: pass');
+console.log('RETIRED_TODAY_TOMORROW_ROUTES: pass');
 console.log('TIMEZONE_PROJECTION_CANDIDATES: pass');
-console.log('UI_005_RENDERED_CALENDAR: pass');
+console.log('UNIFIED_HOME_RENDERED_WINDOW: pass');
 console.log('FIXED_MONTH_YEAR_COPY: 0');
