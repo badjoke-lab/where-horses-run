@@ -1,0 +1,145 @@
+---
+import { addCalendarDays } from '../lib/timetable/calendarDateContext.mjs';
+
+type Props = {
+  startDate: string;
+  endDateInclusive: string;
+  today: string;
+  lang?: 'en' | 'ja';
+};
+
+const { startDate, endDateInclusive, today, lang = 'en' } = Astro.props as Props;
+const isJa = lang === 'ja';
+const dates: string[] = [];
+for (let date = startDate; date <= endDateInclusive; date = addCalendarDays(date, 1)) dates.push(date);
+---
+
+<section
+  class="calendar-date-nav"
+  data-calendar-date-nav
+  data-lang={lang}
+  data-window-start={startDate}
+  data-window-end={endDateInclusive}
+  data-today={today}
+  aria-labelledby="calendar-date-nav-title"
+>
+  <div class="calendar-date-nav__heading">
+    <div>
+      <p class="calendar-date-nav__eyebrow">{isJa ? '選択日' : 'Selected date'}</p>
+      <h2 id="calendar-date-nav-title" data-calendar-selected-date-label>{today}</h2>
+    </div>
+    <a href={isJa ? '/ja/today/' : '/today/'} data-calendar-today-page-link>{isJa ? '今日の開催ページ' : "Today's racing"}</a>
+  </div>
+
+  <div class="calendar-date-nav__controls" role="group" aria-label={isJa ? 'カレンダー日付移動' : 'Calendar date navigation'}>
+    <button type="button" data-calendar-date-prev aria-label={isJa ? '前日' : 'Previous day'}>← <span>{isJa ? '前日' : 'Previous'}</span></button>
+    <label>
+      <span>{isJa ? '日付' : 'Date'}</span>
+      <select data-filter-date aria-label={isJa ? '選択日' : 'Selected date'}>
+        {dates.map((date) => <option value={date} selected={date === today}>{date}</option>)}
+      </select>
+    </label>
+    <button type="button" data-calendar-date-next aria-label={isJa ? '翌日' : 'Next day'}><span>{isJa ? '翌日' : 'Next'}</span> →</button>
+    <button type="button" data-calendar-date-today>{isJa ? '今日' : 'Today'}</button>
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    const addDays = (dateText, days) => {
+      const date = new Date(`${dateText}T00:00:00.000Z`);
+      date.setUTCDate(date.getUTCDate() + days);
+      return date.toISOString().slice(0, 10);
+    };
+    const validDate = (value) => /^\d{4}-\d{2}-\d{2}$/.test(value || '');
+
+    const install = () => {
+      document.querySelectorAll('[data-calendar-date-nav]').forEach((root) => {
+        if (!(root instanceof HTMLElement) || root.dataset.initialized === 'true') return;
+        root.dataset.initialized = 'true';
+
+        const select = root.querySelector('[data-filter-date]');
+        const previous = root.querySelector('[data-calendar-date-prev]');
+        const next = root.querySelector('[data-calendar-date-next]');
+        const todayButton = root.querySelector('[data-calendar-date-today]');
+        const label = root.querySelector('[data-calendar-selected-date-label]');
+        if (!(select instanceof HTMLSelectElement) || !(previous instanceof HTMLButtonElement) || !(next instanceof HTMLButtonElement) || !(todayButton instanceof HTMLButtonElement)) return;
+
+        let windowStart = root.dataset.windowStart || '';
+        let windowEnd = root.dataset.windowEnd || '';
+        let today = root.dataset.today || windowStart;
+
+        const rebuildOptions = () => {
+          const current = select.value;
+          const options = [];
+          for (let date = windowStart; validDate(date) && date <= windowEnd; date = addDays(date, 1)) {
+            const option = document.createElement('option');
+            option.value = date;
+            option.textContent = date;
+            options.push(option);
+          }
+          select.replaceChildren(...options);
+          const requested = new URL(window.location.href).searchParams.get('date');
+          const preferred = validDate(requested) && requested >= windowStart && requested <= windowEnd
+            ? requested
+            : validDate(current) && current >= windowStart && current <= windowEnd
+              ? current
+              : today;
+          select.value = preferred >= windowStart && preferred <= windowEnd ? preferred : windowStart;
+        };
+
+        const notify = (updateUrl = true) => {
+          const selected = select.value;
+          if (!validDate(selected)) return;
+          if (label) label.textContent = selected;
+          previous.disabled = selected <= windowStart;
+          next.disabled = selected >= windowEnd;
+          todayButton.disabled = selected === today;
+          if (updateUrl) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('date', selected);
+            window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+          }
+          document.querySelector('[data-calendar-filters]')?.dispatchEvent(new Event('change', { bubbles: true }));
+          window.dispatchEvent(new CustomEvent('whr:calendardatechange', { detail: { date: selected } }));
+        };
+
+        const setDate = (date) => {
+          if (!validDate(date) || date < windowStart || date > windowEnd) return;
+          select.value = date;
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+        };
+
+        select.addEventListener('change', () => notify(true));
+        previous.addEventListener('click', () => setDate(addDays(select.value, -1)));
+        next.addEventListener('click', () => setDate(addDays(select.value, 1)));
+        todayButton.addEventListener('click', () => setDate(today));
+
+        window.addEventListener('whr:timezonechange', (event) => {
+          const detail = event?.detail;
+          if (validDate(detail?.windowStart) && validDate(detail?.windowEndInclusive)) {
+            windowStart = detail.windowStart;
+            windowEnd = detail.windowEndInclusive;
+            today = detail.windowStart;
+            rebuildOptions();
+            notify(true);
+          }
+        });
+
+        window.addEventListener('popstate', () => {
+          const requested = new URL(window.location.href).searchParams.get('date');
+          if (validDate(requested) && requested >= windowStart && requested <= windowEnd) {
+            select.value = requested;
+            notify(false);
+          }
+        });
+
+        rebuildOptions();
+        notify(new URL(window.location.href).searchParams.get('date') !== select.value);
+      });
+    };
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
+    else install();
+  })();
+</script>
