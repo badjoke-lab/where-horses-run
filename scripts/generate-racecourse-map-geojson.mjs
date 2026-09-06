@@ -9,6 +9,18 @@ const outputRelativePath = 'public/data/racecourse-locations-v1.geojson';
 const sourcePath = path.join(root, sourceRelativePath);
 const outputPath = path.join(root, outputRelativePath);
 const checkOnly = process.argv.includes('--check');
+const requiredTjkRacecourseIds = [
+  'adana-racecourse',
+  'ankara-racecourse',
+  'antalya-racecourse',
+  'bursa-racecourse',
+  'diyarbakir-racecourse',
+  'elazig-racecourse',
+  'istanbul-racecourse',
+  'izmir-racecourse',
+  'kocaeli-racecourse',
+  'sanliurfa-racecourse',
+];
 
 const registry = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
 
@@ -70,6 +82,11 @@ const features = registry.locations.map((entry) => {
   };
 }).sort((a, b) => a.id.localeCompare(b.id, 'en'));
 
+const missingTjkRacecourseIds = requiredTjkRacecourseIds.filter((id) => !seen.has(id));
+if (missingTjkRacecourseIds.length > 0) {
+  throw new Error(`TJK public map coverage is incomplete: ${missingTjkRacecourseIds.join(', ')}`);
+}
+
 const projection = {
   type: 'FeatureCollection',
   whr_schema_version: 'racecourse-map-geojson-v1',
@@ -86,5 +103,5 @@ if (!checkOnly) {
   console.log(`Generated ${outputRelativePath}: ${features.length} reviewed racecourse points.`);
 } else {
   JSON.parse(serialized);
-  console.log(`Racecourse map projection OK: ${features.length} reviewed racecourse points generated from ${sourceRelativePath}.`);
+  console.log(`Racecourse map projection OK: ${features.length} reviewed racecourse points generated from ${sourceRelativePath}; TJK coverage ${requiredTjkRacecourseIds.length}/${requiredTjkRacecourseIds.length}.`);
 }
