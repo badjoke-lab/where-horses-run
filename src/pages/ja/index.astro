@@ -1,18 +1,15 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import HomeRacingMap from '../../components/HomeRacingMap.astro';
+import HomeMeetingPreview from '../../components/HomeMeetingPreview.astro';
 import '../../styles/home-map-first.css';
-import { getRacecourses } from '../../lib/data';
 import {
   getTimetableDateContext,
   getTimetableMeetingRowsForDate,
   getTimetableMeetingRowsForWindow,
-  type TimetableMeetingRow,
 } from '../../data/timetableMeetingRows';
 import { addCalendarDays } from '../../lib/timetable/calendarDateContext.mjs';
 
-const allRacecourses = getRacecourses();
-const racecourseNameJaById = new Map(allRacecourses.map((track) => [track.id, track.name_ja ?? track.name_en]));
 const calendarContext = getTimetableDateContext();
 const todayPreview = getTimetableMeetingRowsForDate(calendarContext.today).slice(0, 6);
 const tomorrow = addCalendarDays(calendarContext.today, 1);
@@ -21,12 +18,6 @@ const upNext = getTimetableMeetingRowsForWindow(tomorrow, upNextEndExclusive).sl
 const mapCandidateStart = addCalendarDays(calendarContext.today, -2);
 const mapCandidateEndExclusive = addCalendarDays(calendarContext.today, 9);
 const mapCandidates = getTimetableMeetingRowsForWindow(mapCandidateStart, mapCandidateEndExclusive);
-const timeRange = (meeting: TimetableMeetingRow) => {
-  if (meeting.first_race_time_local && meeting.last_race_time_local) return `${meeting.first_race_time_local}–${meeting.last_race_time_local}`;
-  return meeting.first_race_time_local ?? meeting.last_race_time_local ?? null;
-};
-const meetingRacecourseName = (meeting: TimetableMeetingRow) => racecourseNameJaById.get(meeting.racecourse_id) ?? meeting.racecourse_name;
-const meetingHref = (meeting: TimetableMeetingRow) => meeting.detail_path ? `/ja${meeting.detail_path}` : `/ja/calendar/?date=${meeting.date}`;
 ---
 
 <BaseLayout
@@ -52,17 +43,7 @@ const meetingHref = (meeting: TimetableMeetingRow) => meeting.detail_path ? `/ja
         <a href="/ja/today/">今日の開催をすべて見る</a>
       </div>
       {todayPreview.length > 0 ? (
-        <ul class="home-meeting-list">
-          {todayPreview.map((meeting) => (
-            <li>
-              <a href={meetingHref(meeting)}>
-                <strong>{meetingRacecourseName(meeting)}</strong>
-                <span>{meeting.country_label}</span>
-                <span>{timeRange(meeting) ?? '時刻未公表'}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
+        <HomeMeetingPreview records={todayPreview} lang="ja" />
       ) : (
         <p>今日のレビュー済み公開開催は掲載されていません。</p>
       )}
@@ -77,17 +58,7 @@ const meetingHref = (meeting: TimetableMeetingRow) => meeting.detail_path ? `/ja
         <a href="/ja/calendar/">カレンダーを開く</a>
       </div>
       {upNext.length > 0 ? (
-        <ul class="home-meeting-list home-meeting-list--up-next">
-          {upNext.map((meeting) => (
-            <li>
-              <a href={meetingHref(meeting)}>
-                <strong>{meetingRacecourseName(meeting)}</strong>
-                <span>{meeting.date}</span>
-                <span>{timeRange(meeting) ?? meeting.country_label}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
+        <HomeMeetingPreview records={upNext} lang="ja" showDate={true} />
       ) : (
         <p>今後7日間にレビュー済み公開開催は掲載されていません。</p>
       )}
