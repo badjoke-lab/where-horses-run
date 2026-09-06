@@ -3,7 +3,6 @@ import fs from 'node:fs';
 import {
   generateKraPlanMeetings,
   parseKraOperationPlan,
-  parseKraRegistrationDates,
   validateKraGeneratedPlan,
 } from './timetable/kra-operation-plan-core.mjs';
 
@@ -12,7 +11,10 @@ assert.match(source, /const DETAIL_CHILD_TIMEOUT_MS = \d[\d_]*;/, 'KRA detail co
 assert.match(source, /timeout:\s*DETAIL_CHILD_TIMEOUT_MS/, 'KRA detail child process must use the bounded timeout');
 assert.match(source, /killSignal:\s*'SIGKILL'/, 'KRA detail child process must be force-terminated after the bound');
 assert.match(source, /skipped_not_published/, 'KRA artifact must expose publication-gated detail skips');
-assert.match(source, /fallback_full_detail/, 'KRA registration-probe failure must fall back to full detail collection');
+assert.match(source, /fallback_full_detail/, 'KRA published-racecard probe failure must fall back to full detail collection');
+assert.match(source, /PUBLISHED_RACECARD_URL[\s\S]*ThisWeekDetailInfoList\.do/, 'KRA detail gate must use the official published racecard page');
+assert.match(source, /parsePublishedRacecardMeetings/, 'KRA detail gate must parse racecourse/date pairs from published racecards');
+assert.doesNotMatch(source, /RegistStateList\.do/, 'KRA detail gate must not treat registration status as published racecard evidence');
 assert.doesNotMatch(source, /PLAN_2026/, 'KRA runtime must not hard-code a 2026 annual plan');
 
 const fixture = `
@@ -45,11 +47,5 @@ assert.deepEqual(validateKraGeneratedPlan(annual, plan, track), {
   yeongcheon: 12,
   jeju: 101,
 });
-
-const registrationDates = parseKraRegistrationDates(`
-<h1>출전등록현황</h1><div>경주일자</div>
-<table><tr><td>2026/09/13(일)</td></tr><tr><td>2026/09/20(일)</td></tr></table>`);
-assert.deepEqual(registrationDates, ['2026-09-13', '2026-09-20']);
-assert.throws(() => parseKraRegistrationDates('<html>layout changed</html>'), /fingerprint changed/);
 
 console.log('KRA_WINDOW_BOUNDS: pass');
