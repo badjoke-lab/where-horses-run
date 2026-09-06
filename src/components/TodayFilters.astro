@@ -58,6 +58,9 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
     </span>
     <span class="today-state-summary__total"><strong data-today-visible-count>0</strong> {isJapanese ? '開催を表示' : 'meetings shown'}</span>
   </div>
+  <p class="today-controls__empty" data-today-filter-empty hidden>
+    {isJapanese ? 'この条件に一致する今日の開催はありません。' : 'No meeting today matches these filters.'}
+  </p>
 </section>
 
 <script is:inline>
@@ -74,12 +77,25 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
         const rank = controls.querySelector('[data-today-filter="rank"]');
         const reset = controls.querySelector('[data-today-filter-reset]');
         const total = controls.querySelector('[data-today-visible-count]');
+        const empty = controls.querySelector('[data-today-filter-empty]');
         const countNodes = new Map(['running', 'upcoming', 'ended'].map((state) => [state, controls.querySelector(`[data-today-count="${state}"]`)]));
         if (!(timezone instanceof HTMLSelectElement) || !(country instanceof HTMLSelectElement) || !(authority instanceof HTMLSelectElement) || !(rank instanceof HTMLSelectElement)) return;
 
         const timezoneRoot = () => document.querySelector('[data-display-timezone-root][data-projection-scope="today"]');
         const internalTimezone = () => timezoneRoot()?.querySelector('[data-display-timezone-select]');
         const rows = () => Array.from(document.querySelectorAll('[data-calendar-meeting-row]')).filter((row) => row instanceof HTMLElement);
+        const mapRoot = () => document.querySelector('[data-today-map-sync] [data-racecourse-map]');
+        const mapStatus = () => document.querySelector('[data-today-map-status]');
+        const meetingMapping = () => {
+          const node = document.querySelector('[data-today-map-meeting-map]');
+          if (!(node instanceof HTMLScriptElement)) return new Map();
+          try {
+            const entries = JSON.parse(node.textContent || '[]');
+            return new Map(Array.isArray(entries) ? entries.map((entry) => [entry.meetingId, entry]) : []);
+          } catch {
+            return new Map();
+          }
+        };
         const isSupported = (zone) => {
           if (!zone) return false;
           try { new Intl.DateTimeFormat('en', { timeZone: zone }).format(new Date(0)); return true; } catch { return false; }
@@ -142,6 +158,24 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
             });
           });
         };
+        const syncMap = () => {
+          const mapping = meetingMapping();
+          const visibleMeetingIds = rows().filter((row) => !row.hidden).map((row) => row.dataset.meetingId || '');
+          const racecourseIds = Array.from(new Set(visibleMeetingIds
+            .map((meetingId) => mapping.get(meetingId))
+            .filter((entry) => entry?.hasReviewedLocation && typeof entry.racecourseId === 'string')
+            .map((entry) => entry.racecourseId)));
+          const map = mapRoot();
+          if (map instanceof HTMLElement) {
+            const selected = map.dataset.selectedRacecourseId || null;
+            map.dispatchEvent(new CustomEvent('racecourse-map:set-visible', { detail: { racecourseIds, fit: true } }));
+            if (selected && !racecourseIds.includes(selected)) {
+              map.dispatchEvent(new CustomEvent('racecourse-map:deselect', { bubbles: true }));
+            }
+          }
+          const status = mapStatus();
+          if (status) status.textContent = isJa ? `${racecourseIds.length}競馬場を地図表示` : `${racecourseIds.length} mapped racecourses`;
+        };
         const applyFilters = () => {
           const counts = { running: 0, upcoming: 0, ended: 0 };
           let visible = 0;
@@ -158,7 +192,9 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
           });
           countNodes.forEach((node, state) => { if (node) node.textContent = String(counts[state]); });
           if (total) total.textContent = String(visible);
+          if (empty instanceof HTMLElement) empty.hidden = visible !== 0;
           insertStateHeadings();
+          syncMap();
           window.dispatchEvent(new CustomEvent('whr:todayfilterchange', { detail: { visible } }));
         };
         const syncTimezoneFromList = () => {
