@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import {
+  assessKraWindowCoverage,
   generateKraPlanMeetings,
   parseKraOperationPlan,
   validateKraGeneratedPlan,
@@ -40,12 +41,6 @@ function seoulDate(now = new Date()) {
   }).formatToParts(now);
   const values = Object.fromEntries(parts.filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
   return `${values.year}-${values.month}-${values.day}`;
-}
-
-function plusDays(date, count) {
-  const value = new Date(`${date}T00:00:00Z`);
-  value.setUTCDate(value.getUTCDate() + count);
-  return value.toISOString().slice(0, 10);
 }
 
 function trackKey(racecourseId) {
@@ -162,12 +157,13 @@ if (!Number.isInteger(days) || days < 1 || days > 62) throw new Error('--days mu
 
 const planHtml = await fetchKraHtml(OFFICIAL_PLAN_URL);
 const plan = parseKraOperationPlan(planHtml);
-if (!startDate.startsWith(`${plan.year}-`)) {
+const windowCoverage = assessKraWindowCoverage(plan.year, startDate, days);
+if (!windowCoverage.start_year_available) {
   throw new Error(`KRA official operation plan is for ${plan.year}, not requested window ${startDate}; refusing stale-year inference`);
 }
 const annual = generateKraPlanMeetings(plan, TRACK);
 const annualCounts = validateKraGeneratedPlan(annual, plan, TRACK);
-const endDateExclusive = plusDays(startDate, days);
+const endDateExclusive = windowCoverage.end_date_exclusive;
 const windowRows = annual.filter((row) => row.date >= startDate && row.date < endDateExclusive);
 
 const sharedPublicationProbe = await publishedRacecardProbe();
@@ -244,12 +240,14 @@ const artifact = {
   authority_id: 'korea-racing-authority',
   racing_system_id: 'kra-national-racing-system',
   timezone: 'Asia/Seoul',
+  completeness: windowCoverage.status,
   discovery: {
     method: 'official_operation_plan_dynamic_week_pattern_plus_published_racecard_gated_todayrace',
     schedule_source_id: 'kra-annual-race-operation-plan',
     schedule_source_url: OFFICIAL_PLAN_URL,
     official_plan_year: plan.year,
     annual_day_counts: annualCounts,
+    window_coverage: windowCoverage,
     publication_probe_source_url: PUBLISHED_RACECARD_URL,
     publication_probe: Object.fromEntries(Object.entries(publicationProbes).map(([key, probe]) => [key, {
       status: probe.status,
@@ -269,6 +267,8 @@ console.log(JSON.stringify({
   official_plan_year: plan.year,
   start_date: startDate,
   end_date_exclusive: endDateExclusive,
+  completeness: windowCoverage.status,
+  unresolved_plan_years: windowCoverage.unresolved_plan_years,
   official_fixture_count: records.length,
   rank_counts: Object.fromEntries(['C', 'B', 'B+', 'A', 'A+'].map((rank) => [rank, records.filter((row) => row.capability_rank === rank).length])),
   publication_probe: Object.fromEntries(Object.entries(publicationProbes).map(([key, probe]) => [key, probe.status])),
