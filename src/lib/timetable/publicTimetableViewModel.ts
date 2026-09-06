@@ -127,12 +127,6 @@ const reviewedPublicCorrections = new Map<string, Partial<PublicTimetableMeeting
       source_status: 'verified',
     },
   ],
-  ['nar-mizusawa-racecourse-2026-09-06', { capability_rank: 'B+', max_public_rank: 'B+', effective_public_rank: 'B+', first_race_time_local: '12:00', last_race_time_local: '18:00', source_status: 'verified', official_source_url: 'https://www.iwatekeiba.or.jp/', last_checked_date: '2026-09-03' }],
-  ['nar-mizusawa-racecourse-2026-09-07', { capability_rank: 'B+', max_public_rank: 'B+', effective_public_rank: 'B+', first_race_time_local: '11:45', last_race_time_local: '18:15', source_status: 'verified', official_source_url: 'https://www.iwatekeiba.or.jp/', last_checked_date: '2026-09-03' }],
-  ['nar-mizusawa-racecourse-2026-09-08', { capability_rank: 'B+', max_public_rank: 'B+', effective_public_rank: 'B+', first_race_time_local: '11:45', last_race_time_local: '18:15', source_status: 'verified', official_source_url: 'https://www.iwatekeiba.or.jp/', last_checked_date: '2026-09-03' }],
-  ['nar-mizusawa-racecourse-2026-09-13', { capability_rank: 'B+', max_public_rank: 'B+', effective_public_rank: 'B+', first_race_time_local: '11:30', last_race_time_local: '18:05', source_status: 'verified', official_source_url: 'https://www.iwatekeiba.or.jp/', last_checked_date: '2026-09-03' }],
-  ['nar-mizusawa-racecourse-2026-09-14', { capability_rank: 'B+', max_public_rank: 'B+', effective_public_rank: 'B+', first_race_time_local: '11:40', last_race_time_local: '18:05', source_status: 'verified', official_source_url: 'https://www.iwatekeiba.or.jp/', last_checked_date: '2026-09-03' }],
-  ['nar-mizusawa-racecourse-2026-09-15', { capability_rank: 'B+', max_public_rank: 'B+', effective_public_rank: 'B+', first_race_time_local: '11:30', last_race_time_local: '18:00', source_status: 'verified', official_source_url: 'https://www.iwatekeiba.or.jp/', last_checked_date: '2026-09-03' }],
 ]);
 
 const reviewedPublicDetailCorrections = new Map<string, Partial<PublicTimetableMeetingDetail>>([
