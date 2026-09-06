@@ -84,7 +84,7 @@
 .today-meeting-map__selected,
 .calendar-map-switch__selected {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: var(--whr-space-3);
   padding: var(--whr-space-2) var(--whr-space-3);
@@ -98,9 +98,66 @@
   display: none;
 }
 
+.map-selected-card__body {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.map-selected-card__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: fit-content;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.map-selected-card__status::before {
+  width: 0.7rem;
+  height: 0.7rem;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px #111;
+  content: '';
+  flex: 0 0 auto;
+  background: #111;
+}
+
+.map-selected-card__status[data-status='running']::before {
+  background: #c40000;
+}
+
+.map-selected-card__status[data-status='upcoming']::before {
+  background: #d18a00;
+}
+
+.map-selected-card__status[data-status='ended']::before {
+  background: #666;
+}
+
+.map-selected-card__status[data-status='future']::before {
+  background: #111;
+}
+
+.map-selected-card__meta {
+  color: var(--whr-color-muted);
+  font-size: 0.9rem;
+}
+
+.map-selected-card__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--whr-space-2);
+  flex-wrap: wrap;
+}
+
+.map-selected-card__actions a,
 .today-meeting-map__selected button,
-.calendar-map-switch__selected button {
-  min-height: 2.25rem;
+.calendar-map-switch__selected button,
+.map-selected-card__close {
+  min-height: 44px;
   padding: 0.35rem 0.8rem;
   border: 1px solid var(--whr-color-border);
   border-radius: 999px;
@@ -108,6 +165,20 @@
   color: var(--whr-color-text);
   cursor: pointer;
   font: inherit;
+}
+
+.map-selected-card__actions a {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: underline;
+}
+
+.map-selected-card__close {
+  min-width: 44px;
+  justify-content: center;
+  padding-inline: 0.65rem;
+  font-size: 1.1rem;
+  line-height: 1;
 }
 
 .calendar-map-switch {
@@ -164,7 +235,9 @@
 
 .calendar-map-switch__buttons button:focus-visible,
 .calendar-map-switch__selected button:focus-visible,
-.today-meeting-map__selected button:focus-visible {
+.today-meeting-map__selected button:focus-visible,
+.map-selected-card__actions a:focus-visible,
+.map-selected-card__close:focus-visible {
   outline: 3px solid #111;
   outline-offset: 2px;
 }
@@ -271,6 +344,13 @@
   display: none;
 }
 
+.home-racing-map__selected-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--whr-space-2);
+}
+
 .home-racing-map__selected ul {
   display: grid;
   gap: 0.35rem;
@@ -322,6 +402,22 @@
     bottom: var(--whr-space-2);
     z-index: 3;
     box-shadow: 0 0.35rem 1.2rem rgb(0 0 0 / 0.14);
+  }
+
+  .map-selected-card__body,
+  .map-selected-card__actions {
+    width: 100%;
+  }
+
+  .map-selected-card__actions {
+    justify-content: flex-start;
+  }
+
+  .map-selected-card__actions a,
+  .map-selected-card__actions button:not(.map-selected-card__close) {
+    flex: 1 1 auto;
+    justify-content: center;
+    text-align: center;
   }
 
   .home-racing-map__periods {
