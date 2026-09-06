@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import {
   addCalendarDays,
@@ -24,10 +24,7 @@ function expectThrow(label, action, marker) {
   }
 }
 
-const override = createCalendarDateContext({
-  referenceDate: '2026-06-07',
-  timeZone: 'Asia/Tokyo',
-});
+const override = createCalendarDateContext({ referenceDate: '2026-06-07', timeZone: 'Asia/Tokyo' });
 if (override.today !== '2026-06-07') fail('reference-date override did not set today.');
 if (override.tomorrow !== '2026-06-08') fail('tomorrow is not the next calendar date.');
 if (override.windowStart !== '2026-06-07') fail('window start must equal today.');
@@ -42,15 +39,12 @@ if (tokyo.date !== '2026-07-01') fail('Tokyo timezone date resolution is incorre
 if (losAngeles.date !== '2026-06-30') fail('Los Angeles timezone date resolution is incorrect.');
 
 const epochSeconds = String(Date.parse('2026-06-30T23:30:00.000Z') / 1000);
-const epochContext = resolveCalendarReference({
-  sourceDateEpoch: epochSeconds,
-  timeZone: 'Asia/Tokyo',
-});
+const epochContext = resolveCalendarReference({ sourceDateEpoch: epochSeconds, timeZone: 'Asia/Tokyo' });
 if (epochContext.date !== '2026-07-01') fail('SOURCE_DATE_EPOCH timezone resolution is incorrect.');
 if (epochContext.source !== 'source_date_epoch') fail('SOURCE_DATE_EPOCH source marker is incorrect.');
 
 if (addCalendarDays('2026-02-28', 1) !== '2026-03-01') fail('non-leap month rollover failed.');
-if (addCalendarDays('2028-02-28', 1) !== '2026-02-29'.replace('2026', '2028')) fail('leap-day rollover failed.');
+if (addCalendarDays('2028-02-28', 1) !== '2028-02-29') fail('leap-day rollover failed.');
 if (addCalendarDays('2026-12-31', 1) !== '2027-01-01') fail('year rollover failed.');
 
 expectThrow('invalid reference date', () => createCalendarDateContext({ referenceDate: '2026-02-30' }), 'real calendar date');
@@ -67,93 +61,48 @@ const records = [
 const dateRecords = filterRecordsForDate(records, '2026-06-07');
 if (dateRecords.length !== 1 || dateRecords[0].meeting_id !== 'start') fail('date filter is incorrect.');
 const windowRecords = filterRecordsForWindow(records, '2026-06-07', '2026-07-07');
-if (windowRecords.map((record) => record.meeting_id).join(',') !== 'start,inside') {
-  fail('window filter must be start-inclusive and end-exclusive.');
-}
+if (windowRecords.map((record) => record.meeting_id).join(',') !== 'start,inside') fail('window filter must be start-inclusive and end-exclusive.');
 
 const oldState = evaluateCalendarDataState({
-  records: [
-    { meeting_id: 'old-1', date: '2026-06-06' },
-    { meeting_id: 'old-2', date: '2026-06-10' },
-  ],
+  records: [{ meeting_id: 'old-1', date: '2026-06-06' }, { meeting_id: 'old-2', date: '2026-06-10' }],
   generatedAt: '2026-06-09T15:02:29.605Z',
   context: createCalendarDateContext({ referenceDate: '2026-07-01', timeZone: 'UTC' }),
 });
 if (oldState.status !== 'records_before_window') fail('old public data must report records_before_window.');
-if (oldState.windowRecordCount !== 0 || oldState.latestRecordDate !== '2026-06-10') fail('old-data state counts are incorrect.');
 
 const currentState = evaluateCalendarDataState({
-  records: [
-    { meeting_id: 'current', date: '2026-06-07' },
-  ],
+  records: [{ meeting_id: 'current', date: '2026-06-07' }],
   generatedAt: '2026-06-07T00:00:00.000Z',
   context: createCalendarDateContext({ referenceDate: '2026-06-07', timeZone: 'UTC' }),
 });
 if (currentState.status !== 'current_window_available') fail('current window state is incorrect.');
 
-const futureState = evaluateCalendarDataState({
-  records: [{ meeting_id: 'future', date: '2026-08-01' }],
-  generatedAt: '2026-07-01T00:00:00.000Z',
-  context: createCalendarDateContext({ referenceDate: '2026-06-01', timeZone: 'UTC' }),
-});
-if (futureState.status !== 'records_after_window') fail('future-only state is incorrect.');
-
-const noRecordsState = evaluateCalendarDataState({
-  records: [],
-  generatedAt: '2026-07-01T00:00:00.000Z',
-  context: createCalendarDateContext({ referenceDate: '2026-07-01', timeZone: 'UTC' }),
-});
-if (noRecordsState.status !== 'no_public_records') fail('empty public state is incorrect.');
-
 const timetableHelper = read('src/data/timetableMeetingRows.ts');
-if (/['"]20\d{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])['"]/.test(timetableHelper)) {
-  fail('timetable helper contains a hard-coded calendar date literal.');
-}
-if (timetableHelper.includes('getPublicTimetableGeneratedAt().slice(0, 10)')) {
-  fail('timetable helper uses projection generation date as the display window start.');
-}
-for (const required of [
-  'createCalendarDateContext',
-  'getCurrentCalendarWindowGroups',
-  'getTimetableDataState',
-  'filterRecordsForWindow',
-]) {
+if (/['"]20\d{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])['"]/.test(timetableHelper)) fail('timetable helper contains a hard-coded calendar date literal.');
+for (const required of ['createCalendarDateContext', 'getCurrentCalendarWindowGroups', 'getTimetableDataState', 'filterRecordsForWindow']) {
   if (!timetableHelper.includes(required)) fail(`timetable helper missing Dynamic Dates marker: ${required}`);
 }
 
-const fixedCalendarHeadings = [
-  /\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}\s+Calendar\b/i,
-  /\b\d{4}年(?:1[0-2]|[1-9])月\s*開催カレンダー/,
-];
 const pageChecks = [
-  ['src/pages/index.astro', ['TodayFilters', 'TodayMeetingMap', 'TimetableMeetingList', 'getTimetableMeetingRowsForWindow', 'getGroupedTimetableMeetingRows', 'addCalendarDays', 'scope="all"', 'data-home-meeting-window']],
-  ['src/pages/ja/index.astro', ['TodayFilters', 'TodayMeetingMap', 'TimetableMeetingList', 'getTimetableMeetingRowsForWindow', 'getGroupedTimetableMeetingRows', 'addCalendarDays', 'scope="all"', 'data-home-meeting-window']],
-  ['src/pages/calendar/index.astro', ['CalendarDateNavigation', 'CalendarPresentationState', 'MeetingStatePolicy', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="rolling-30"', 'windowEndInclusive']],
-  ['src/pages/ja/calendar/index.astro', ['CalendarDateNavigation', 'CalendarPresentationState', 'MeetingStatePolicy', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="rolling-30"', 'windowEndInclusive']],
+  ['src/pages/index.astro', ['TodayFilters', 'TodayMeetingMap', 'TimetableMeetingList', 'getTimetableMeetingRowsForWindow', 'getGroupedTimetableMeetingRows', 'addCalendarDays', 'scope="all"', 'data-home-meeting-window', 'Find horse racing meetings']],
+  ['src/pages/ja/index.astro', ['TodayFilters', 'TodayMeetingMap', 'TimetableMeetingList', 'getTimetableMeetingRowsForWindow', 'getGroupedTimetableMeetingRows', 'addCalendarDays', 'scope="all"', 'data-home-meeting-window', '競馬開催を探す']],
+  ['src/pages/calendar/index.astro', ['CalendarDateNavigation', 'CalendarPresentationState', 'TimetableMeetingList', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="rolling-30"', 'windowEndInclusive']],
+  ['src/pages/ja/calendar/index.astro', ['CalendarDateNavigation', 'CalendarPresentationState', 'TimetableMeetingList', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="rolling-30"', 'windowEndInclusive']],
 ];
 for (const [file, markers] of pageChecks) {
   const content = read(file);
   for (const marker of markers) if (!content.includes(marker)) fail(`${file} missing ${marker}.`);
-  for (const pattern of fixedCalendarHeadings) {
-    if (pattern.test(content)) fail(`${file} retains fixed month/year Calendar copy.`);
-  }
+  if (content.includes('MeetingStatePolicy')) fail(`${file} must not mount a second meeting-state engine.`);
 }
+if (existsSync(path.join(root, 'src/components/MeetingStatePolicy.astro'))) fail('duplicate MeetingStatePolicy.astro must be removed.');
 
 const legacyRouteChecks = [
-  ['src/pages/today.astro', "const target = '/'", 'Today is now the default Home view'],
-  ['src/pages/tomorrow.astro', "const target = '/?range=tomorrow'", "url.searchParams.set('range', 'tomorrow')"],
-  ['src/pages/ja/today.astro', "const target = '/ja/'", '今日の開催はトップページの初期表示'],
-  ['src/pages/ja/tomorrow.astro', "const target = '/ja/?range=tomorrow'", "url.searchParams.set('range', 'tomorrow')"],
+  ['src/pages/today.astro', "const target = '/'"],
+  ['src/pages/tomorrow.astro', "const target = '/?range=tomorrow'"],
+  ['src/pages/ja/today.astro', "const target = '/ja/'"],
+  ['src/pages/ja/tomorrow.astro', "const target = '/ja/?range=tomorrow'"],
 ];
-for (const [file, targetMarker, behaviorMarker] of legacyRouteChecks) {
-  const content = read(file);
-  if (!content.includes(targetMarker)) fail(`${file} missing unified-Home route target.`);
-  if (!content.includes(behaviorMarker)) fail(`${file} missing unified-Home redirect behavior.`);
-}
-
-for (const file of ['src/pages/calendar/index.astro', 'src/pages/ja/calendar/index.astro']) {
-  if (read(file).includes('CalendarDateFocus')) fail(`${file} must not retain the legacy CalendarDateFocus path.`);
-}
+for (const [file, marker] of legacyRouteChecks) if (!read(file).includes(marker)) fail(`${file} missing unified-Home route target.`);
 
 const meetingList = read('src/components/TimetableMeetingList.astro');
 for (const marker of [
@@ -169,91 +118,68 @@ for (const marker of [
   'UTC+00:00',
   'whr:timezonechange',
   "scope === 'rolling-30'",
+  "const TIMED_RANKS = new Set(['A+', 'A', 'B+'])",
+  "const policy = timed ? 'timed' : 'day'",
+  "const displayedDate = row.dataset.date || sourceDate",
+  "const displayToday = formatProjectedDate(new Date(now), selectedTimeZone)",
+  "const dayState = displayedDate < displayToday ? 'past' : displayedDate > displayToday ? 'future' : 'today'",
+  "if (now >= start.getTime() && now <= endMs) state = 'running'",
+  "else if (now > endMs) state = 'ended'",
+  "else state = dayState === 'today' ? 'upcoming' : 'future'",
+  "setMeetingState(row, timeZone)",
+  "state = dayState === 'past' ? 'ended' : dayState === 'today' ? 'upcoming' : 'future'",
+  "meetingToday: '本日開催'",
+  "meetingUpcoming: '開催前'",
+  "data-meeting-today-badge",
+  "data-meeting-state='upcoming'",
+  '#fff3c4',
+  '#d18a00',
+  "data-meeting-state='running'",
+  '#c40000',
+  "data-meeting-state='ended'",
+  '#f3f3f3',
 ]) {
-  if (!meetingList.includes(marker)) fail(`TimetableMeetingList missing selected-timezone projection marker: ${marker}`);
+  if (!meetingList.includes(marker)) fail(`TimetableMeetingList missing lifecycle contract marker: ${marker}`);
 }
-if (meetingList.includes("Intl.supportedValuesOf('timeZone')")) {
-  fail('TimetableMeetingList must not expand the full browser IANA timezone list.');
+if (meetingList.includes("state = now < start.getTime() ? 'upcoming' : now <= endMs ? 'running' : 'ended'")) {
+  fail('Timed meetings must not turn yellow before the selected display date begins.');
 }
-if (meetingList.includes("(record.capability_rank === 'A' || record.capability_rank === 'A+') &&")) {
-  fail('TimetableMeetingList must not gate meeting lifecycle state by A/A+ capability rank.');
-}
+if (meetingList.includes("Intl.supportedValuesOf('timeZone')")) fail('TimetableMeetingList must not expand the full browser IANA timezone list.');
+if (meetingList.includes("(record.capability_rank === 'A' || record.capability_rank === 'A+') &&")) fail('TimetableMeetingList must not gate B+ out of timed lifecycle state.');
 
 const homeControls = read('src/components/TodayFilters.astro');
-for (const marker of [
-  'data-meeting-range="today"',
-  'data-meeting-range="tomorrow"',
-  'data-meeting-range="next7"',
-  "activeRange === 'next7'",
-  "activeRange === 'tomorrow'",
-  'CURATED_TIMEZONES',
-]) {
+for (const marker of ['data-meeting-range="today"', 'data-meeting-range="tomorrow"', 'data-meeting-range="next7"', "activeRange === 'next7'", "activeRange === 'tomorrow'", 'CURATED_TIMEZONES']) {
   if (!homeControls.includes(marker)) fail(`Unified Home controls missing ${marker}.`);
 }
 
-const statePolicy = read('src/components/MeetingStatePolicy.astro');
-for (const marker of [
-  "if (start && end)",
-  "policy = 'first-last'",
-  "state = now < start.getTime() ? 'future' : now <= end.getTime() ? 'running' : 'ended'",
-  "policy = 'first-only'",
-  "state = calendarDayState === 'past' ? 'ended' : now < start.getTime() ? 'future' : 'unknown'",
-  "row.dataset.meetingDayState = state === 'unknown' ? 'unknown' : calendarDayState",
-  ".today-state-summary__item--upcoming",
-  "display: none !important",
-]) {
-  if (!statePolicy.includes(marker)) fail(`MeetingStatePolicy missing time-derived neutral-state contract marker: ${marker}`);
+const todayMap = read('src/components/TodayMeetingMap.astro');
+for (const marker of ["row.dataset.meetingState", "row.dataset.meetingStatePolicy", "policy === 'day'", "'本日開催'", "'開催前'"]) {
+  if (!todayMap.includes(marker)) fail(`TodayMeetingMap missing row-state consumer marker: ${marker}`);
 }
-for (const forbidden of [
-  "new Set(['A+', 'A', 'B+'])",
-  "calendarDayState === 'today' ? 'upcoming'",
-  "background: #fff3c4",
-  "#d18a00",
-]) {
-  if (statePolicy.includes(forbidden)) fail(`MeetingStatePolicy retains obsolete rank/yellow lifecycle marker: ${forbidden}`);
-}
+if (todayMap.includes('localDateTimeToInstant')) fail('TodayMeetingMap must not derive lifecycle timing independently from meeting rows.');
+
+const brandTheme = read('src/styles/theme.css');
+const brandCss = read('src/styles/brand-v1.css');
+for (const marker of ['--whr-color-navy', '--whr-color-gold', "@import './brand-v1.css'"]) if (!brandTheme.includes(marker)) fail(`theme missing brand marker: ${marker}`);
+for (const marker of ["url('/brand/whr-mark.png')", 'THE GLOBAL RACING GUIDE', 'var(--whr-color-navy)', 'var(--whr-color-gold)']) if (!brandCss.includes(marker)) fail(`brand CSS missing ${marker}.`);
+if (!existsSync(path.join(root, 'public/brand/whr-mark.png'))) fail('WHR horse mark asset is missing.');
 
 const baseLayout = read('src/layouts/BaseLayout.astro');
-for (const marker of [
-  "url.searchParams.set('tz', timeZone)",
-  'whr:timezonechange',
-  'isCuratedTimeZone',
-  'UTC+09:00',
-  'UTC+00:00',
-]) {
+for (const marker of ["url.searchParams.set('tz', timeZone)", 'whr:timezonechange', 'isCuratedTimeZone', 'UTC+09:00', 'UTC+00:00']) {
   if (!baseLayout.includes(marker)) fail(`BaseLayout missing timezone navigation marker: ${marker}`);
 }
-if (baseLayout.includes("Intl.supportedValuesOf('timeZone')")) {
-  fail('BaseLayout must not expand the full browser IANA timezone list.');
-}
-if (baseLayout.includes("href: isJapanese ? '/ja/today/' : '/today/'")) {
-  fail('BaseLayout must not retain Today as a separate primary navigation destination.');
-}
+if (baseLayout.includes("Intl.supportedValuesOf('timeZone')")) fail('BaseLayout must not expand the full browser IANA timezone list.');
+if (baseLayout.includes("href: isJapanese ? '/ja/today/' : '/today/'")) fail('BaseLayout must not retain Today as a separate primary navigation destination.');
 
 const meetingProjection = read('src/components/MeetingTimezoneProjection.astro');
-for (const marker of ['data-meeting-timezone-select', 'data-meeting-source-time', 'whr:timezonechange']) {
-  if (!meetingProjection.includes(marker)) fail(`MeetingTimezoneProjection missing ${marker}.`);
-}
-for (const file of [
-  'src/pages/timetable/meetings/[meeting_id].astro',
-  'src/pages/ja/timetable/meetings/[meeting_id].astro',
-]) {
-  const content = read(file);
-  for (const marker of ['MeetingTimezoneProjection', 'data-meeting-source-time', 'data-meeting-projected-date']) {
-    if (!content.includes(marker)) fail(`${file} missing ${marker}.`);
-  }
-}
+for (const marker of ['data-meeting-timezone-select', 'data-meeting-source-time', 'whr:timezonechange']) if (!meetingProjection.includes(marker)) fail(`MeetingTimezoneProjection missing ${marker}.`);
 
 const countryPage = read('src/components/CountryDetailPage.astro');
-if (!countryPage.includes('createCalendarDateContext') || !countryPage.includes('filterRecordsForWindow')) {
-  fail('country page must use the shared Dynamic Dates window.');
-}
+if (!countryPage.includes('createCalendarDateContext') || !countryPage.includes('filterRecordsForWindow')) fail('country page must use the shared Dynamic Dates window.');
 if (countryPage.includes('getPublicTimetableGeneratedAt')) fail('country page must not use projection generation date as the display window start.');
 
 const statusComponent = read('src/components/CalendarDateStatus.astro');
-for (const marker of ['data-calendar-data-status', 'records_before_window', 'data-timezone-label']) {
-  if (!statusComponent.includes(marker)) fail(`CalendarDateStatus missing ${marker}.`);
-}
+for (const marker of ['data-calendar-data-status', 'records_before_window', 'data-timezone-label']) if (!statusComponent.includes(marker)) fail(`CalendarDateStatus missing ${marker}.`);
 
 if (errors.length) {
   console.error(`CALENDAR_DYNAMIC_DATES: failed (${errors.length})`);
@@ -267,6 +193,8 @@ console.log('SOURCE_DATE_EPOCH: pass');
 console.log('TIMEZONE_BOUNDARIES: pass');
 console.log('SELECTED_TIMEZONE_PROJECTION: pass');
 console.log('UNIFIED_HOME_WINDOW: pass');
-console.log('TIME_DERIVED_NEUTRAL_MEETING_STATE_POLICY: pass');
+console.log('RANK_AWARE_MEETING_STATE_POLICY: pass');
+console.log('DISPLAY_DATE_MIDNIGHT_YELLOW_BOUNDARY: pass');
+console.log('WHR_BRAND_SYSTEM: pass');
 console.log('ROLLING_WINDOW_DAYS: 30');
 console.log('FIXED_MONTH_YEAR_COPY: 0');

@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import MeetingStatePolicy from '../../components/MeetingStatePolicy.astro';
 import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
 import TodayFilters from '../../components/TodayFilters.astro';
 import TodayMeetingMap from '../../components/TodayMeetingMap.astro';
@@ -27,8 +26,6 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
   alternatePath="/"
 >
   <main class="today-page" data-today-page data-home-meeting-window>
-    <MeetingStatePolicy />
-
     <section class="hero today-page__hero" aria-labelledby="page-title">
       <p class="hero__eyebrow">世界の競馬開催</p>
       <h1 id="page-title">競馬開催を探す</h1>
@@ -41,7 +38,6 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
     </section>
 
     <TodayFilters records={meetingCandidates} lang="ja" />
-
     <TodayMeetingMap records={meetingCandidates} date={context.today} lang="ja" />
 
     <section class="today-page__list" aria-labelledby="home-list-title" data-today-practical-list>
