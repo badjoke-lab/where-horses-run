@@ -46,15 +46,20 @@ jobs:
           ];
           const report = [];
           const assert = (condition, message) => { if (!condition) throw new Error(message); };
+          const waitForCalendarReady = async (page) => {
+            await page.waitForFunction(() => document.querySelector('[data-calendar-filters]')?.getAttribute('data-filter-ready') === 'true', null, { timeout: 10000 });
+            await page.waitForFunction(() => document.querySelector('[data-calendar-map-switch]')?.getAttribute('data-calendar-map-initialized') === 'true', null, { timeout: 10000 });
+            await page.waitForFunction(() => document.querySelector('[data-calendar-presentation-state]')?.getAttribute('data-initialized') === 'true', null, { timeout: 10000 });
+            await page.waitForFunction(() => /^\d{4}-\d{2}-\d{2}$/.test(document.querySelector('[data-filter-date]')?.value || ''), null, { timeout: 10000 });
+            await page.waitForTimeout(150);
+          };
 
           for (const item of cases) {
             const page = await browser.newPage({ viewport: { width: item.width, height: item.height } });
             const pageErrors = [];
             page.on('pageerror', (error) => pageErrors.push(String(error)));
             await page.goto(`http://127.0.0.1:4321${item.path}`, { waitUntil: 'domcontentloaded' });
-            await page.waitForFunction(() => document.querySelector('[data-calendar-filters]')?.getAttribute('data-filter-ready') === 'true', null, { timeout: 10000 });
-            await page.waitForFunction(() => /^\d{4}-\d{2}-\d{2}$/.test(document.querySelector('[data-filter-date]')?.value || ''), null, { timeout: 10000 });
-            await page.waitForTimeout(400);
+            await waitForCalendarReady(page);
 
             const snapshot = async () => page.evaluate(() => {
               const rows = [...document.querySelectorAll('[data-calendar-meeting-row]')].filter((row) => row instanceof HTMLElement);
@@ -81,6 +86,7 @@ jobs:
             });
 
             const initial = await snapshot();
+            console.log(`${item.name} initial ${JSON.stringify(initial)}`);
             assert(initial.visibleCount > 0, `${item.name}: selected date has no visible meetings`);
             assert(initial.visibleDates.length === 1 && initial.visibleDates[0] === initial.date, `${item.name}: List is not selected-date authoritative`);
             assert(initial.params.date === initial.date, `${item.name}: URL date missing`);
@@ -152,8 +158,7 @@ jobs:
             const pathname = new URL(page.url()).pathname;
             const deepLink = `${pathname}?tz=Asia%2FTokyo&date=${encodeURIComponent(originalDate)}&view=map`;
             await page.goto(`http://127.0.0.1:4321${deepLink}`, { waitUntil: 'domcontentloaded' });
-            await page.waitForFunction(() => document.querySelector('[data-calendar-filters]')?.getAttribute('data-filter-ready') === 'true');
-            await page.waitForTimeout(300);
+            await waitForCalendarReady(page);
             const restored = await snapshot();
             assert(restored.date === originalDate, `${item.name}: deep-link date did not restore`);
             assert(restored.mapPressed && restored.params.view === 'map', `${item.name}: deep-link Map state did not restore`);
