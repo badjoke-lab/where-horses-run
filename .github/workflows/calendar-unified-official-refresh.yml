@@ -25,9 +25,12 @@ on:
       - 'scripts/timetable/enforce-reviewed-calendar-exclusions.mjs'
       - 'scripts/timetable/consolidate-official-acquisition-artifacts.mjs'
       - 'scripts/timetable/run-japan-zero-based-30d.mjs'
+      - 'scripts/timetable/japan-zero-based-30d-core.mjs'
       - 'scripts/timetable/japan-official-30d-adapters.mjs'
+      - 'scripts/timetable/banei-official-30d-discovery.mjs'
       - 'scripts/timetable/banei-detail-core.mjs'
       - 'scripts/timetable/banei-official-program-fallback.mjs'
+      - 'scripts/timetable/nar-publication-signal.mjs'
       - 'scripts/timetable/japan-mother-set-safety.mjs'
       - 'scripts/timetable/jra-official-30d-discovery.mjs'
       - 'scripts/timetable/nankankeiba-official-30d-discovery.mjs'
@@ -78,9 +81,12 @@ on:
       - 'scripts/timetable/enforce-reviewed-calendar-exclusions.mjs'
       - 'scripts/timetable/consolidate-official-acquisition-artifacts.mjs'
       - 'scripts/timetable/run-japan-zero-based-30d.mjs'
+      - 'scripts/timetable/japan-zero-based-30d-core.mjs'
       - 'scripts/timetable/japan-official-30d-adapters.mjs'
+      - 'scripts/timetable/banei-official-30d-discovery.mjs'
       - 'scripts/timetable/banei-detail-core.mjs'
       - 'scripts/timetable/banei-official-program-fallback.mjs'
+      - 'scripts/timetable/nar-publication-signal.mjs'
       - 'scripts/timetable/japan-mother-set-safety.mjs'
       - 'scripts/timetable/jra-official-30d-discovery.mjs'
       - 'scripts/timetable/nankankeiba-official-30d-discovery.mjs'
@@ -149,9 +155,12 @@ jobs:
           node --check scripts/timetable/enforce-reviewed-calendar-exclusions.mjs
           node --check scripts/timetable/consolidate-official-acquisition-artifacts.mjs
           node --check scripts/timetable/run-japan-zero-based-30d.mjs
+          node --check scripts/timetable/japan-zero-based-30d-core.mjs
           node --check scripts/timetable/japan-official-30d-adapters.mjs
+          node --check scripts/timetable/banei-official-30d-discovery.mjs
           node --check scripts/timetable/banei-detail-core.mjs
           node --check scripts/timetable/banei-official-program-fallback.mjs
+          node --check scripts/timetable/nar-publication-signal.mjs
           node --check scripts/timetable/japan-mother-set-safety.mjs
           node --check scripts/timetable/jra-official-30d-discovery.mjs
           node --check scripts/timetable/nankankeiba-official-30d-discovery.mjs
@@ -234,9 +243,12 @@ jobs:
           node --check scripts/timetable/apply-reviewed-calendar-observations.mjs
           node --check scripts/timetable/enforce-reviewed-calendar-exclusions.mjs
           node --check scripts/timetable/run-japan-zero-based-30d.mjs
+          node --check scripts/timetable/japan-zero-based-30d-core.mjs
           node --check scripts/timetable/japan-official-30d-adapters.mjs
+          node --check scripts/timetable/banei-official-30d-discovery.mjs
           node --check scripts/timetable/banei-detail-core.mjs
           node --check scripts/timetable/banei-official-program-fallback.mjs
+          node --check scripts/timetable/nar-publication-signal.mjs
           node --check scripts/timetable/japan-mother-set-safety.mjs
           node --check scripts/timetable/jra-official-30d-discovery.mjs
           node --check scripts/timetable/nankankeiba-official-30d-discovery.mjs
