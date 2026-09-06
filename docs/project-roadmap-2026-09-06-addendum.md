@@ -7,7 +7,7 @@ Base roadmap: `docs/project-roadmap.md`
 Canonical UI specification: `docs/specs/map-first-site-ui-2026-09-06.md`  
 Map decision authority: `docs/decisions/map-ui-integration-2026-09-05.md`
 
-This addendum updates the current public UI execution state after completion of the initial `MAP-001`–`MAP-010` integration lane and the subsequent map-status/mobile interaction fixes. It does not change reviewed Calendar acquisition/publication boundaries.
+This addendum is the current execution schedule for the public map-first UI lane. It does not change reviewed Calendar acquisition/publication boundaries.
 
 ## Current stage
 
@@ -15,17 +15,19 @@ This addendum updates the current public UI execution state after completion of 
 Current stage: reviewed_incremental_maintenance
 Primary product lane: map_first_site_ui
 Parallel data-quality lane: calendar_quality_and_coverage
+Current UI Work ID: UI-004
+Next UI Work ID: UI-005
 Automatic publication: disabled
 Human review bypass: prohibited
 ```
 
 ## Parallel Calendar quality lane
 
-The map-first UI lane does **not** replace, serialize, pause, or declare completion of Calendar quality work. Calendar remains a separate active lane and may proceed and merge independently while `UI-001`–`UI-009` are implemented.
+The map-first UI lane does **not** replace, pause, serialize, or declare completion of Calendar quality work. Calendar remains a separate active lane and may proceed and merge independently while `UI-001`–`UI-009` are implemented.
 
 Calendar quality/recovery continues under the canonical Calendar contracts, roadmaps, schedules, registries, acquisition-control-plane rules, and publication boundaries listed in `docs/governance/document-authority.md`.
 
-The parallel Calendar lane is responsible for data-quality work including, as applicable:
+The Calendar lane remains responsible for, as applicable:
 
 ```text
 current-to-30-day official meeting coverage
@@ -38,15 +40,13 @@ stale/false/missing meeting correction
 timezone/date/public-display correctness
 ```
 
-`UI-005` is **Calendar presentation work only**: date hierarchy, List/Map behavior, responsive filters, URL state, and interaction design. Completing `UI-005` must not be interpreted as completing Calendar coverage, acquisition quality, rank promotion, or source reliability.
+`UI-005` is Calendar **presentation work only**. Completing it must not be interpreted as completing Calendar coverage, acquisition quality, rank promotion, or source reliability.
 
-If UI work exposes a Calendar data defect, do not hide it with presentation-only data, guessed values, a second meeting truth, or a map-only override. Route the defect to the parallel Calendar lane and continue the UI lane independently where safe.
-
-A Calendar-lane merge may change generated/public meeting data while UI work is open. UI branches must re-read/rebase against current main as needed rather than freezing Calendar progress behind UI work.
+If UI work exposes a Calendar data defect, do not hide it with presentation-only data, guessed values, a second meeting truth, or a map-only override. Route it to the parallel Calendar lane. If Calendar work changes main while a UI branch is open, the UI branch must re-read/rebase against current main where relevant.
 
 ## Completed map foundation
 
-The following foundation is treated as implemented and no longer blocks the site-wide UI refactor:
+The following map foundation is treated as implemented:
 
 ```text
 MAP-001 reviewed racecourse location schema
@@ -61,22 +61,13 @@ MAP-009 mobile selected-racecourse interaction
 MAP-010 accessibility/performance/attribution/failure QA
 ```
 
-Subsequent fixes also established:
-
-- Calendar-aligned map status colors;
-- status-dependent point sizes;
-- selection ring without replacing status color;
-- clustering for dense multi-racecourse views;
-- desktop hover label support;
-- cooperative mobile gestures;
-- selected-card dismissal by close control, selected-point re-tap, empty-map tap, and Escape;
-- normal-flow mobile selected cards instead of sticky bottom-following cards.
+Subsequent fixes also established Calendar-aligned status colors, status-dependent point sizes, selection rings, dense-view clustering, desktop hover labels, cooperative mobile gestures, explicit dismissal paths, and normal-flow mobile selected cards.
 
 These are implementation facts, not permission to create a second meeting/state truth.
 
 ## Current navigation authority
 
-The primary product navigation is now:
+Primary product destinations:
 
 ```text
 Home
@@ -85,15 +76,19 @@ Calendar
 Racecourses
 ```
 
-Desktop exposes `Today | Calendar | Racecourses` as primary header destinations, with Home through brand/logo and secondary content through `More`.
+Desktop primary header:
 
-Mobile uses:
+```text
+Today | Calendar | Racecourses
+```
+
+Mobile bottom navigation:
 
 ```text
 Home | Today | Calendar | Racecourses | More
 ```
 
-Secondary destinations remain available but are not equal-weight primary navigation:
+Secondary destinations remain available through `More`/footer:
 
 ```text
 Countries
@@ -105,19 +100,19 @@ About
 
 ## Active implementation sequence
 
-The current Work IDs are:
-
-1. `UI-001` — shared BaseLayout/navigation/footer refactor;
-2. `UI-002` — Home map-first composition and removal/demotion of old equal-weight feature cards;
-3. `UI-003` — Home selected-card enrichment and Today/Up-Next summary structure;
-4. `UI-004` — Today practical-state UI and mobile map/list interaction completion;
+1. `UI-001` — shared BaseLayout/navigation/footer refactor — **complete**;
+2. `UI-002` — Home map-first composition — **complete**;
+3. `UI-003` — Home selected-card enrichment — **complete**;
+4. `UI-004` — Today practical-state UI and mobile map/list interaction completion — **active**;
 5. `UI-005` — Calendar date-driven UI, responsive filters, List-first mobile behavior, URL-state completion;
 6. `UI-006` — Racecourses primary index/search UI;
 7. `UI-007` — racecourse-detail map/Today/Next/Upcoming/Profile/Sources composition;
 8. `UI-008` — Countries and secondary reference-page simplification/demotion;
 9. `UI-009` — EN/JA desktop/tablet/mobile visual and interaction audit, then production verification.
 
-These UI Work IDs describe only the UI lane. They do not number or replace Calendar acquisition/coverage work running in parallel.
+These Work IDs describe only the UI lane and do not replace Calendar acquisition/coverage work.
+
+## Home period authority
 
 Do not create `Now` as a fourth Home period. Home periods are fixed to:
 
@@ -131,35 +126,11 @@ Current meeting status inside `Today` communicates what is happening now.
 
 ## UI-001 — shared shell
 
-Target result:
+Target: desktop primary navigation, compact mobile header, five-item mobile bottom navigation, `More`, language/timezone placement, compact footer, EN/JA parity, focus/accessibility, and 44px touch targets.
 
-```text
-desktop: logo | Today | Calendar | Racecourses | Search | Language | Timezone | More
-mobile top: compact logo/header + menu
-mobile bottom: Home | Today | Calendar | Racecourses | More
-compact footer
-```
+Status: **complete**.
 
-The shell must preserve EN/JA parity, legal/source navigation, usable non-map routes, and minimum 44px mobile targets.
-
-Implementation status: **complete**.
-
-Verified implementation evidence before merge:
-
-```text
-existing repository CI/build: success
-EN Home desktop browser QA: success
-JA Home desktop browser QA: success
-EN Today mobile browser QA: success
-JA Calendar mobile browser QA: success
-horizontal overflow in all four cases: 0px
-page errors in all four cases: 0
-mobile bottom navigation: 5 items
-secondary More links: preserved
-Timezone -> URL state: verified
-```
-
-The temporary browser-audit workflow/PR used for this visual interaction check is closed unmerged and does not become permanent CI.
+Verified before merge: existing CI/build success; EN/JA desktop/mobile Chromium success; 0px horizontal overflow; 0 page errors; five mobile nav items; `More` preserved secondary links; Timezone→URL state verified. Temporary audit PR closed unmerged.
 
 ## UI-002 — Home map-first composition
 
@@ -177,32 +148,13 @@ Up Next
 compact footer
 ```
 
-Remove or demote Home promotional blocks that make Countries, Racing Types, Glossary, Sources, newsletter, social-media promotion, or fabricated summary statistics equal-weight with the primary racing-discovery task.
+Status: **complete**.
 
-Implementation status: **verified complete for merge**.
+Verified before merge: existing CI/build success; EN/JA desktop/mobile Chromium success; 0px overflow; 0 page errors; desktop Home map 638px in audit viewport; mobile Home map 422px; period switching success; legacy equal-weight Home feature grid absent; Today's Racing and Up Next retained below the map. Temporary audit PR closed unmerged.
 
-Verified implementation evidence before merge:
+## UI-003 — Home selected information
 
-```text
-existing repository CI/build: success
-EN Home desktop browser QA: success
-JA Home desktop browser QA: success
-EN Home mobile browser QA: success
-JA Home mobile browser QA: success
-horizontal overflow in all four cases: 0px
-page errors in all four cases: 0
-desktop Home map height: 638px
-mobile Home map height: 422px
-Today / Tomorrow / Next 7 days switching: success
-legacy equal-weight Home feature grid: absent
-Today's Racing and Up Next: present below the map
-```
-
-The temporary UI-002 browser-audit workflow/PR is closed unmerged and does not become permanent CI.
-
-## UI-003 — Home information density
-
-Selected card should show public list-level meeting/racecourse information only, including where available:
+Selected card is limited to public/reviewed values and may show:
 
 ```text
 racecourse
@@ -210,17 +162,39 @@ country / authority
 state/date
 first race
 last race
-race count
+race count when public
 public rank
 meeting/detail link
 racecourse link
+Calendar link
 ```
 
-One venue remains one map point across multi-day periods.
+One venue remains one point across multi-day periods. The selected card renders a bounded maximum of three meetings and then links out instead of expanding indefinitely.
 
-## UI-004 — Today
+Status: **complete**.
 
-Today becomes the practical current-day surface. It must make the following states immediately legible:
+Verified before merge:
+
+```text
+existing repository CI/build: success
+EN Home desktop selected-card QA: success
+JA Home desktop selected-card QA: success
+EN Home mobile selected-card QA: success
+JA Home mobile selected-card QA: success
+horizontal overflow in all four cases: 0px
+page errors in all four cases: 0
+same-selection repeated 10 times: stable / no duplication
+Kawasaki Next-7-days input: 5 meetings -> 3 rendered + 2 remaining note
+Hanshin: public-detail-derived race count displayed
+Mizusawa: no public detail -> race count omitted
+mobile selected-card normal-flow scrolling: verified
+```
+
+Temporary UI-003 browser-audit PR #867 was closed unmerged.
+
+## UI-004 — Today — ACTIVE
+
+Today is the practical current-day work surface. It must make the following states immediately legible:
 
 ```text
 racing now
@@ -228,15 +202,27 @@ later today
 finished
 ```
 
-Map/list remain synchronized. Mobile pin selection does not force an automatic jump to the list; explicit `View in list` may do so.
+Required structure:
 
-## UI-005 — Calendar
+```text
+Today heading/date/timezone
+filters
+map
+selected card when applicable
+meeting list grouped or clearly ordered by state/time
+```
 
-Calendar remains selected-date authoritative.
+Relevant filters may include Timezone, Country, Authority, and Rank where supported by the same public meeting rows.
 
-Desktop supports List/Map and full useful filters. Mobile starts in List mode and shows Map only after explicit selection. Mobile filters should collapse into a compact filter control rather than reproduce a wide desktop toolbar.
+Map and list must use the same public meeting set and the same state calculation. Selecting a map point selects the racecourse context; list-to-map focuses the point. On mobile, map selection must not automatically jump to the list; only explicit `View in list` may perform the scroll/focus.
 
-Target URL-backed state includes:
+UI-004 must not patch Calendar coverage/data defects in presentation code.
+
+## UI-005 — Calendar presentation
+
+Calendar remains selected-date authoritative. Desktop supports List/Map plus useful filters. Mobile starts in List mode, renders Map only after explicit selection, and collapses filters into a compact control.
+
+Target URL-backed state:
 
 ```text
 date
@@ -244,13 +230,11 @@ view
 tz
 ```
 
-Stable/share-worthy filters may follow.
-
-`UI-005` changes Calendar presentation only. It neither certifies nor blocks the parallel Calendar data-quality lane.
+Stable/share-worthy filters may follow. Completion of UI-005 does not certify Calendar data quality.
 
 ## UI-006 — Racecourses
 
-Racecourses is elevated to a primary navigation destination. The index is search/place driven and should prefer reviewed identity, location, authority, and upcoming-meeting context over decorative imagery.
+Racecourses is a primary navigation destination. The index is search/place driven and should prefer reviewed identity, location, authority, and upcoming-meeting context over decorative imagery.
 
 ## UI-007 — racecourse detail
 
@@ -267,17 +251,15 @@ Official Sources
 secondary/related links
 ```
 
-Unknown facts are omitted rather than filled with placeholders or guesses.
+Unknown facts are omitted rather than guessed.
 
 ## UI-008 — secondary pages
 
-Countries, Racing Types, Glossary, Sources, and About remain available. Their UI should be content/reference oriented and lighter than the primary discovery surfaces.
-
-Country pages may continue to expose authorities, today's racing, upcoming meetings, racecourses, and official sources, but large decorative tourism-style heroes and unverified aggregate statistics are not requirements.
+Countries, Racing Types, Glossary, Sources, and About remain available as lighter content/reference surfaces. They do not return to equal-weight primary Home/navigation status.
 
 ## UI-009 — release verification
 
-Before declaring the UI lane complete, verify at minimum:
+Verify at minimum:
 
 ```text
 Home EN/JA desktop + tablet + mobile
@@ -288,23 +270,7 @@ representative racecourse detail EN/JA desktop + mobile
 More/secondary navigation EN/JA mobile
 ```
 
-For visible map interactions also verify:
-
-```text
-pin select
-selected pin re-tap dismissal
-empty-map dismissal
-close control dismissal
-normal page scrolling with card open
-cluster expansion
-timezone changes
-period/date changes
-list -> map focus
-map -> list explicit action
-map failure fallback where practical
-```
-
-Build-only success is insufficient for visible interaction changes.
+Visible interactions require browser-level QA, including map select/dismiss, cluster expansion, timezone/period/date changes, list↔map actions, mobile scrolling, and map failure fallback where practical.
 
 ## Current execution rule
 
@@ -312,24 +278,24 @@ Before each UI implementation PR:
 
 1. read `docs/specs/map-first-site-ui-2026-09-06.md`;
 2. read this addendum;
-3. read the specific applicable page/programme contract (Calendar/racecourse/etc.);
-4. confirm the parallel Calendar lane has not changed the relevant public meeting/view-model assumptions on current main;
-5. compare the intended code change against those documents;
-6. if the intended behavior changes the specification or schedule, update the repository documents before or in the same PR;
-7. after merge, re-read this addendum and advance the current Work ID/state if the completion conditions were actually met.
+3. read the applicable page/programme contract;
+4. confirm the parallel Calendar lane has not changed relevant public meeting/view-model assumptions on current main;
+5. compare intended code changes against those documents;
+6. update specification/schedule in the same or preceding PR if behavior changes;
+7. after merge, re-read this addendum and advance the Work ID only when completion conditions are actually met.
 
-Conversation history is not the execution authority.
+Conversation history is not execution authority.
 
 ## Current Work ID
 
 ```text
-Current UI Work ID after UI-002 merge: UI-003
-Next UI Work ID after completion: UI-004
+Current UI Work ID after UI-003 merge: UI-004
+Next UI Work ID after completion: UI-005
 Parallel Calendar lane: active independently
 ```
 
 ## Completion definition
 
-The map-first UI lane is complete only when the shared shell, Home, Today, Calendar, Racecourses, racecourse detail, secondary navigation, responsive behavior, and EN/JA visual/interaction verification are all implemented against the canonical UI specification.
+The map-first UI lane is complete only after shared shell, Home, Today, Calendar, Racecourses, racecourse detail, secondary navigation, responsive behavior, and EN/JA visual/interaction verification are all implemented against the canonical UI specification.
 
-Do not call the UI lane complete merely because the map itself works. Do not call the Calendar data-quality lane complete because `UI-005` or `UI-009` is complete.
+Do not call the UI lane complete merely because the map works. Do not call the Calendar data-quality lane complete because `UI-005` or `UI-009` is complete.
