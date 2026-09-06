@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { deriveBestAvailableRank } from './best-available-rank.mjs';
 
 const RANKS = Object.freeze(['C', 'B', 'B+', 'A', 'A+']);
 const RANK_INDEX = new Map(RANKS.map((value, index) => [value, index]));
@@ -27,7 +28,7 @@ function normalizedRows(record) {
   })).filter((row) => row.post_time_local);
 }
 function observedRank(record) {
-  return record.capability_rank ?? record.candidate_rank ?? record.observed_rank ?? record.classification?.rank ?? 'C';
+  return deriveBestAvailableRank(record, record?.timetable_rows ?? []);
 }
 function sourceUrl(record, artifact) {
   return record.official_source_url
