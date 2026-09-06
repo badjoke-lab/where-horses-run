@@ -76,6 +76,8 @@ Completion:
 - existing public routes remain reachable;
 - footer no longer promotes newsletter/social blocks as required product UI.
 
+Status: **verified complete for merge**. Existing CI/build passed, direct Chromium checks passed for EN/JA desktop/mobile, zero horizontal overflow and zero page errors were observed, More/Timezone interactions passed, and the temporary audit PR was closed unmerged.
+
 ## UI-002 — Home composition
 
 Scope:
@@ -217,8 +219,8 @@ Mobile: bottom nav, More, 44px controls, no sticky selected card
 ## Current execution pointer
 
 ```text
-Current UI: UI-001
-Then UI: UI-002 -> UI-003 -> UI-004 -> UI-005 -> UI-006 -> UI-007 -> UI-008 -> UI-009
+Current UI after UI-001 merge: UI-002
+Then UI: UI-003 -> UI-004 -> UI-005 -> UI-006 -> UI-007 -> UI-008 -> UI-009
 Parallel Calendar quality lane: active independently throughout
 ```
 
