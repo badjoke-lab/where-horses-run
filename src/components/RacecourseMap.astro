@@ -38,21 +38,148 @@ const {
 >
   <div class="racecourse-map__canvas" data-map-canvas role="region" aria-label={ariaLabel}></div>
   <p class="racecourse-map__status" data-map-status aria-live="polite">Loading interactive map…</p>
+  <div class="racecourse-map__legend" data-map-legend hidden>
+    <span class="racecourse-map__legend-title racecourse-map__legend-title--en">Meeting status</span>
+    <span class="racecourse-map__legend-title racecourse-map__legend-title--ja">開催状態</span>
+    <span class="racecourse-map__legend-item">
+      <span class="racecourse-map__legend-dot racecourse-map__legend-dot--running" aria-hidden="true"></span>
+      <span class="racecourse-map__legend-label racecourse-map__legend-label--en">Racing now</span>
+      <span class="racecourse-map__legend-label racecourse-map__legend-label--ja">開催中</span>
+    </span>
+    <span class="racecourse-map__legend-item">
+      <span class="racecourse-map__legend-dot racecourse-map__legend-dot--upcoming" aria-hidden="true"></span>
+      <span class="racecourse-map__legend-label racecourse-map__legend-label--en">Later today</span>
+      <span class="racecourse-map__legend-label racecourse-map__legend-label--ja">今日これから</span>
+    </span>
+    <span class="racecourse-map__legend-item">
+      <span class="racecourse-map__legend-dot racecourse-map__legend-dot--future" aria-hidden="true"></span>
+      <span class="racecourse-map__legend-label racecourse-map__legend-label--en">Scheduled</span>
+      <span class="racecourse-map__legend-label racecourse-map__legend-label--ja">開催予定</span>
+    </span>
+    <span class="racecourse-map__legend-item">
+      <span class="racecourse-map__legend-dot racecourse-map__legend-dot--ended" aria-hidden="true"></span>
+      <span class="racecourse-map__legend-label racecourse-map__legend-label--en">Finished</span>
+      <span class="racecourse-map__legend-label racecourse-map__legend-label--ja">終了</span>
+    </span>
+  </div>
   <noscript>
     <p class="racecourse-map__fallback">{fallbackMessage}</p>
   </noscript>
 </div>
 
+<style is:global>
+  .racecourse-map__legend {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.45rem 0.8rem;
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--whr-color-muted);
+  }
+
+  .racecourse-map__legend[hidden] {
+    display: none;
+  }
+
+  .racecourse-map__legend-title {
+    font-weight: 800;
+    color: var(--whr-color-text);
+  }
+
+  .racecourse-map__legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    white-space: nowrap;
+  }
+
+  .racecourse-map__legend-dot {
+    display: inline-block;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 999px;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px #111;
+    flex: 0 0 auto;
+  }
+
+  .racecourse-map__legend-dot--running {
+    background: #c40000;
+  }
+
+  .racecourse-map__legend-dot--upcoming {
+    background: #d18a00;
+  }
+
+  .racecourse-map__legend-dot--future {
+    background: #fff;
+  }
+
+  .racecourse-map__legend-dot--ended {
+    background: #666;
+  }
+
+  html:lang(ja) .racecourse-map__legend-title--en,
+  html:lang(ja) .racecourse-map__legend-label--en {
+    display: none;
+  }
+
+  html:not(:lang(ja)) .racecourse-map__legend-title--ja,
+  html:not(:lang(ja)) .racecourse-map__legend-label--ja {
+    display: none;
+  }
+
+  @media (max-width: 700px) {
+    .racecourse-map__canvas {
+      min-height: clamp(320px, 48vh, 420px);
+    }
+
+    .racecourse-map__legend {
+      align-items: flex-start;
+      gap: 0.4rem 0.65rem;
+    }
+
+    .racecourse-map__legend-title {
+      flex-basis: 100%;
+    }
+  }
+</style>
+
 <script is:inline type="module">
   const MAPLIBRE_MODULE_URL = 'https://unpkg.com/maplibre-gl@6.7.0/dist/maplibre-gl.mjs';
+  const MAP_SOURCE = 'racecourses';
+  const MAP_CLUSTER_LAYER = 'racecourse-clusters';
+  const MAP_CLUSTER_COUNT_LAYER = 'racecourse-cluster-count';
+  const MAP_SELECTED_RING_LAYER = 'racecourse-selected-ring';
   const MAP_POINT_LAYER = 'racecourse-points';
   const MAP_HIT_LAYER = 'racecourse-hit-targets';
   const MAP_LOAD_TIMEOUT_MS = 15000;
+  const MOBILE_BREAKPOINT = '(max-width: 700px)';
+  const FINE_POINTER = '(hover: hover) and (pointer: fine)';
+  const STATUS_REFRESH_MS = 60_000;
+
+  const STATUS_PRIORITY = {
+    ended: 1,
+    future: 2,
+    upcoming: 3,
+    running: 4
+  };
 
   const parseRacecourseIds = (value) => {
     try {
       const parsed = JSON.parse(value || '[]');
       return Array.isArray(parsed) ? parsed.filter((id) => typeof id === 'string' && id.length > 0) : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const parseJsonNode = (node) => {
+    if (!(node instanceof HTMLScriptElement)) return [];
+    try {
+      const parsed = JSON.parse(node.textContent || '[]');
+      return Array.isArray(parsed) ? parsed : [];
     } catch {
       return [];
     }
@@ -77,6 +204,127 @@ const {
     return [[minLng, minLat], [maxLng, maxLat]];
   };
 
+  const isTimeZoneSupported = (timeZone) => {
+    if (!timeZone) return false;
+    try {
+      new Intl.DateTimeFormat('en', { timeZone }).format(new Date(0));
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const dateParts = (instant, timeZone) => Object.fromEntries(new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hourCycle: 'h23'
+  }).formatToParts(instant).filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
+
+  const localDateTimeToInstant = (dateText, timeText, timeZone) => {
+    const dateMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateText || '');
+    const timeMatch = /^(\d{1,2}):(\d{2})(?::(\d{2}))?$/.exec(timeText || '');
+    if (!dateMatch || !timeMatch || !isTimeZoneSupported(timeZone)) return null;
+    const targetUtc = Date.UTC(
+      Number(dateMatch[1]),
+      Number(dateMatch[2]) - 1,
+      Number(dateMatch[3]),
+      Number(timeMatch[1]),
+      Number(timeMatch[2]),
+      Number(timeMatch[3] ?? '0')
+    );
+    let guess = targetUtc;
+    for (let pass = 0; pass < 4; pass += 1) {
+      const parts = dateParts(new Date(guess), timeZone);
+      const representedUtc = Date.UTC(
+        Number(parts.year),
+        Number(parts.month) - 1,
+        Number(parts.day),
+        Number(parts.hour),
+        Number(parts.minute),
+        Number(parts.second)
+      );
+      const correction = targetUtc - representedUtc;
+      guess += correction;
+      if (correction === 0) break;
+    }
+    return new Date(guess);
+  };
+
+  const formatDate = (instant, timeZone) => {
+    const parts = dateParts(instant, timeZone);
+    return `${parts.year}-${parts.month}-${parts.day}`;
+  };
+
+  const addDays = (dateText, days) => {
+    const date = new Date(`${dateText}T00:00:00.000Z`);
+    date.setUTCDate(date.getUTCDate() + days);
+    return date.toISOString().slice(0, 10);
+  };
+
+  const strongerStatus = (current, next) => {
+    if (!current) return next;
+    return (STATUS_PRIORITY[next] ?? 0) > (STATUS_PRIORITY[current] ?? 0) ? next : current;
+  };
+
+  const statusFromMeetingRow = (row) => {
+    const meetingState = row.dataset.meetingState || 'unknown';
+    const dayState = row.dataset.meetingDayState || 'unknown';
+    if (meetingState === 'running') return 'running';
+    if ((meetingState === 'upcoming' || meetingState === 'unknown') && dayState === 'today') return 'upcoming';
+    if (meetingState === 'ended' || dayState === 'past') return 'ended';
+    return 'future';
+  };
+
+  const homeWindow = (context, timeZone) => {
+    const selected = context.querySelector('[data-home-map-period][aria-pressed="true"]');
+    const period = selected instanceof HTMLElement ? selected.dataset.homeMapPeriod || 'today' : 'today';
+    const today = formatDate(new Date(), timeZone);
+    if (period === 'tomorrow') {
+      const start = addDays(today, 1);
+      return { start, endExclusive: addDays(start, 1) };
+    }
+    if (period === 'next7') return { start: today, endExclusive: addDays(today, 7) };
+    return { start: today, endExclusive: addDays(today, 1) };
+  };
+
+  const homeRecordProjection = (record, displayTimeZone) => {
+    const first = record.firstRaceTime
+      ? localDateTimeToInstant(record.sourceDate, record.firstRaceTime, record.sourceTimezone)
+      : null;
+    let last = record.lastRaceTime
+      ? localDateTimeToInstant(record.sourceDate, record.lastRaceTime, record.sourceTimezone)
+      : null;
+    if (first && last && last.getTime() < first.getTime()) {
+      last = new Date(last.getTime() + 86_400_000);
+    }
+    const anchor = first || last;
+    return {
+      first,
+      last,
+      projectedDate: anchor ? formatDate(anchor, displayTimeZone) : record.sourceDate
+    };
+  };
+
+  const statusFromHomeRecord = (record, projection, displayTimeZone, now) => {
+    const today = formatDate(now, displayTimeZone);
+    const { first, last, projectedDate } = projection;
+
+    if (first && last) {
+      if (now.getTime() >= first.getTime() && now.getTime() <= last.getTime()) return 'running';
+      if (now.getTime() < first.getTime()) return projectedDate === today ? 'upcoming' : 'future';
+      return 'ended';
+    }
+
+    if (projectedDate < today) return 'ended';
+    if (projectedDate === today) return 'upcoming';
+    return 'future';
+  };
+
   const initRacecourseMap = async (root) => {
     if (root.dataset.mapInitialized === 'true') return;
     root.dataset.mapInitialized = 'true';
@@ -84,21 +332,32 @@ const {
 
     const canvas = root.querySelector('[data-map-canvas]');
     const status = root.querySelector('[data-map-status]');
+    const legend = root.querySelector('[data-map-legend]');
     const fallbackMessage = root.dataset.fallbackMessage || 'Interactive map unavailable.';
     const requestedIds = parseRacecourseIds(root.dataset.racecourseIds);
     const initialVisibleIds = parseRacecourseIds(root.dataset.visibleRacecourseIds);
     const initialZoom = Number(root.dataset.initialZoom || '2');
     const geojsonUrl = root.dataset.geojsonUrl || '/data/racecourse-locations-v1.geojson';
     const styleUrl = root.dataset.styleUrl || 'https://tiles.openfreemap.org/styles/liberty';
+    const statusContext = root.closest('[data-home-racing-map], [data-today-map-sync], [data-calendar-map-switch]');
+    const useStatusPresentation = statusContext instanceof HTMLElement;
+    if (legend instanceof HTMLElement) {
+      legend.hidden = !useStatusPresentation;
+      legend.setAttribute('aria-label', document.documentElement.lang === 'ja' ? '開催状態の凡例' : 'Meeting status legend');
+    }
 
     let map = null;
     let ready = false;
     let failed = false;
     let loadTimeout = null;
+    let statusRefresh = null;
+    let hoverPopup = null;
+
     const fail = () => {
       if (ready || failed) return;
       failed = true;
       if (loadTimeout !== null) window.clearTimeout(loadTimeout);
+      if (statusRefresh !== null) window.clearInterval(statusRefresh);
       root.dataset.mapState = 'failed';
       if (canvas) canvas.hidden = true;
       if (status) {
@@ -106,10 +365,12 @@ const {
         status.textContent = fallbackMessage;
       }
       try {
+        hoverPopup?.remove();
         map?.remove();
       } catch {
         // Keep the non-map page usable even if cleanup also fails.
       }
+      hoverPopup = null;
       map = null;
     };
 
@@ -146,6 +407,8 @@ const {
       const singleCoordinates = startingFeatures.length === 1 ? startingFeatures[0]?.geometry?.coordinates : null;
       const startCenter = Array.isArray(singleCoordinates) ? singleCoordinates : [0, 20];
       const startZoom = Number.isFinite(initialZoom) ? initialZoom : 2;
+      const mobileViewport = window.matchMedia(MOBILE_BREAKPOINT).matches;
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       map = new maplibregl.Map({
         container: canvas,
@@ -153,7 +416,8 @@ const {
         center: startCenter,
         zoom: startingFeatures.length === 1 ? (features.length === 1 ? startZoom : Math.max(startZoom, 8)) : 1.5,
         attributionControl: true,
-        keyboard: true
+        keyboard: true,
+        cooperativeGestures: mobileViewport
       });
       map.addControl(new maplibregl.NavigationControl({ showCompass: false, showZoom: true }), 'top-right');
       loadTimeout = window.setTimeout(fail, MAP_LOAD_TIMEOUT_MS);
@@ -165,10 +429,10 @@ const {
         const feature = featureByRacecourseId.get(racecourseId);
         if (!feature || !visibleRacecourseIds.has(racecourseId)) return;
         if (selectedFeatureId !== null) {
-          map.setFeatureState({ source: 'racecourses', id: selectedFeatureId }, { selected: false });
+          map.setFeatureState({ source: MAP_SOURCE, id: selectedFeatureId }, { selected: false });
         }
         selectedFeatureId = feature.id;
-        map.setFeatureState({ source: 'racecourses', id: selectedFeatureId }, { selected: true });
+        map.setFeatureState({ source: MAP_SOURCE, id: selectedFeatureId }, { selected: true });
         root.dataset.selectedRacecourseId = racecourseId;
         if (emit) {
           root.dispatchEvent(new CustomEvent('racecourse-map:select', {
@@ -199,31 +463,106 @@ const {
         }
         if (visibleFeatures.length > 1) {
           const bounds = boundsForFeatures(visibleFeatures);
-          if (bounds) map.fitBounds(bounds, { padding: 48, maxZoom: 8, duration: 0 });
+          if (bounds) map.fitBounds(bounds, {
+            padding: mobileViewport ? 28 : 48,
+            maxZoom: 8,
+            duration: 0
+          });
         }
+      };
+
+      const racecourseLabelFor = (racecourseId) => {
+        if (statusContext instanceof HTMLElement) {
+          const homeRows = parseJsonNode(statusContext.querySelector('[data-home-map-records]'));
+          const homeMatch = homeRows.find((entry) => entry?.racecourseId === racecourseId);
+          if (typeof homeMatch?.racecourseName === 'string' && homeMatch.racecourseName) return homeMatch.racecourseName;
+
+          const mappingNode = statusContext.querySelector('[data-today-map-meeting-map], [data-calendar-map-meeting-map]');
+          const mapping = parseJsonNode(mappingNode);
+          const meetingIds = new Set(mapping.filter((entry) => entry?.racecourseId === racecourseId).map((entry) => entry?.meetingId));
+          for (const row of document.querySelectorAll('[data-calendar-meeting-row]')) {
+            if (!(row instanceof HTMLElement)) continue;
+            if (!meetingIds.has(row.dataset.meetingId)) continue;
+            if (row.dataset.racecourse) return row.dataset.racecourse;
+          }
+        }
+        return racecourseId.replace(/-racecourse$/, '').replaceAll('-', ' ');
+      };
+
+      const inferStatuses = () => {
+        const result = {};
+        if (!useStatusPresentation || !(statusContext instanceof HTMLElement)) return result;
+
+        if (statusContext.matches('[data-home-racing-map]')) {
+          const records = parseJsonNode(statusContext.querySelector('[data-home-map-records]'));
+          const zoneSelect = statusContext.querySelector('[data-home-map-timezone]');
+          const displayTimeZone = zoneSelect instanceof HTMLSelectElement && isTimeZoneSupported(zoneSelect.value)
+            ? zoneSelect.value
+            : 'Asia/Tokyo';
+          const windowRange = homeWindow(statusContext, displayTimeZone);
+          const now = new Date();
+
+          records.forEach((record) => {
+            if (!visibleRacecourseIds.has(record?.racecourseId)) return;
+            const projected = homeRecordProjection(record, displayTimeZone);
+            if (projected.projectedDate < windowRange.start || projected.projectedDate >= windowRange.endExclusive) return;
+            const next = statusFromHomeRecord(record, projected, displayTimeZone, now);
+            result[record.racecourseId] = strongerStatus(result[record.racecourseId], next);
+          });
+          return result;
+        }
+
+        const mappingNode = statusContext.querySelector('[data-today-map-meeting-map], [data-calendar-map-meeting-map]');
+        const mapping = parseJsonNode(mappingNode);
+        const racecourseByMeetingId = new Map(mapping.map((entry) => [entry?.meetingId, entry?.racecourseId]));
+        document.querySelectorAll('[data-calendar-meeting-row]').forEach((row) => {
+          if (!(row instanceof HTMLElement) || row.hidden || row.dataset.timezoneScopeHidden === 'true') return;
+          const racecourseId = racecourseByMeetingId.get(row.dataset.meetingId || '');
+          if (typeof racecourseId !== 'string' || !visibleRacecourseIds.has(racecourseId)) return;
+          const next = statusFromMeetingRow(row);
+          result[racecourseId] = strongerStatus(result[racecourseId], next);
+        });
+        return result;
+      };
+
+      const applyStatuses = () => {
+        if (!ready || !map.getSource(MAP_SOURCE)) return;
+        const inferred = inferStatuses();
+        visibleRacecourseIds.forEach((racecourseId) => {
+          const feature = featureByRacecourseId.get(racecourseId);
+          if (!feature) return;
+          const meetingStatus = useStatusPresentation ? inferred[racecourseId] || 'future' : 'neutral';
+          map.setFeatureState({ source: MAP_SOURCE, id: feature.id }, { meetingStatus });
+        });
       };
 
       const applyVisibleIds = (ids, fit = true) => {
         const nextIds = Array.from(new Set(ids)).filter((id) => featureByRacecourseId.has(id));
-        visibleRacecourseIds = new Set(nextIds);
-        const filter = nextIds.length > 0
-          ? ['in', ['get', 'racecourse_id'], ['literal', nextIds]]
-          : ['==', 1, 0];
-        map.setFilter(MAP_POINT_LAYER, filter);
-        map.setFilter(MAP_HIT_LAYER, filter);
 
         const selectedRacecourseId = root.dataset.selectedRacecourseId;
-        if (selectedRacecourseId && !visibleRacecourseIds.has(selectedRacecourseId)) {
+        if (selectedRacecourseId && !nextIds.includes(selectedRacecourseId)) {
           if (selectedFeatureId !== null) {
-            map.setFeatureState({ source: 'racecourses', id: selectedFeatureId }, { selected: false });
+            try {
+              map.setFeatureState({ source: MAP_SOURCE, id: selectedFeatureId }, { selected: false });
+            } catch {
+              // The selected feature may already have left the source after a visibility update.
+            }
           }
           selectedFeatureId = null;
           delete root.dataset.selectedRacecourseId;
         }
 
+        visibleRacecourseIds = new Set(nextIds);
         const visibleFeatures = nextIds.map((id) => featureByRacecourseId.get(id)).filter(Boolean);
+        const source = map.getSource(MAP_SOURCE);
+        source?.setData({
+          ...projection,
+          features: visibleFeatures
+        });
+
         if (fit) fitVisible(visibleFeatures);
         root.dataset.visibleRacecourseCount = String(visibleFeatures.length);
+        window.requestAnimationFrame(applyStatuses);
         root.dispatchEvent(new CustomEvent('racecourse-map:visiblechange', {
           bubbles: true,
           detail: { racecourseIds: nextIds }
@@ -238,41 +577,146 @@ const {
         }
         if (canvas) canvas.hidden = false;
 
-        map.addSource('racecourses', {
+        map.addSource(MAP_SOURCE, {
           type: 'geojson',
           data: {
             ...projection,
-            features
-          }
+            features: startingFeatures
+          },
+          cluster: features.length > 1,
+          clusterMaxZoom: 9,
+          clusterRadius: 44
         });
+
         map.addLayer({
-          id: MAP_HIT_LAYER,
+          id: MAP_CLUSTER_LAYER,
           type: 'circle',
-          source: 'racecourses',
+          source: MAP_SOURCE,
+          filter: ['has', 'point_count'],
           paint: {
-            'circle-radius': 22,
-            'circle-color': '#111111',
-            'circle-opacity': 0.01
-          }
-        });
-        map.addLayer({
-          id: MAP_POINT_LAYER,
-          type: 'circle',
-          source: 'racecourses',
-          paint: {
-            'circle-radius': ['case', ['boolean', ['feature-state', 'selected'], false], 10, 7],
+            'circle-radius': [
+              'step',
+              ['get', 'point_count'],
+              17,
+              10, 20,
+              25, 23
+            ],
             'circle-color': '#111111',
             'circle-stroke-color': '#ffffff',
             'circle-stroke-width': 2
           }
         });
 
-        map.on('mouseenter', MAP_HIT_LAYER, () => {
-          map.getCanvas().style.cursor = 'pointer';
+        map.addLayer({
+          id: MAP_CLUSTER_COUNT_LAYER,
+          type: 'symbol',
+          source: MAP_SOURCE,
+          filter: ['has', 'point_count'],
+          layout: {
+            'text-field': ['get', 'point_count_abbreviated'],
+            'text-size': 12
+          },
+          paint: {
+            'text-color': '#ffffff'
+          }
+        });
+
+        map.addLayer({
+          id: MAP_SELECTED_RING_LAYER,
+          type: 'circle',
+          source: MAP_SOURCE,
+          filter: ['!', ['has', 'point_count']],
+          paint: {
+            'circle-radius': ['case', ['boolean', ['feature-state', 'selected'], false], 14, 0],
+            'circle-color': '#111111',
+            'circle-opacity': ['case', ['boolean', ['feature-state', 'selected'], false], 1, 0]
+          }
+        });
+
+        map.addLayer({
+          id: MAP_HIT_LAYER,
+          type: 'circle',
+          source: MAP_SOURCE,
+          filter: ['!', ['has', 'point_count']],
+          paint: {
+            'circle-radius': 22,
+            'circle-color': '#111111',
+            'circle-opacity': 0.01
+          }
+        });
+
+        map.addLayer({
+          id: MAP_POINT_LAYER,
+          type: 'circle',
+          source: MAP_SOURCE,
+          filter: ['!', ['has', 'point_count']],
+          paint: {
+            'circle-radius': ['case', ['boolean', ['feature-state', 'selected'], false], 9, 7],
+            'circle-color': [
+              'match',
+              ['feature-state', 'meetingStatus'],
+              'running', '#c40000',
+              'upcoming', '#d18a00',
+              'ended', '#666666',
+              'future', '#ffffff',
+              '#111111'
+            ],
+            'circle-stroke-color': [
+              'case',
+              ['boolean', ['feature-state', 'selected'], false],
+              '#ffffff',
+              ['==', ['feature-state', 'meetingStatus'], 'future'],
+              '#111111',
+              '#ffffff'
+            ],
+            'circle-stroke-width': ['case', ['boolean', ['feature-state', 'selected'], false], 4, 2]
+          }
+        });
+
+        const setPointerCursor = (enabled) => {
+          map.getCanvas().style.cursor = enabled ? 'pointer' : '';
+        };
+
+        map.on('mouseenter', MAP_CLUSTER_LAYER, () => setPointerCursor(true));
+        map.on('mouseleave', MAP_CLUSTER_LAYER, () => setPointerCursor(false));
+        map.on('mouseenter', MAP_HIT_LAYER, (event) => {
+          setPointerCursor(true);
+          if (!window.matchMedia(FINE_POINTER).matches) return;
+          const feature = event.features?.[0];
+          const racecourseId = feature?.properties?.racecourse_id;
+          const coordinates = feature?.geometry?.coordinates;
+          if (typeof racecourseId !== 'string' || !Array.isArray(coordinates)) return;
+          hoverPopup?.remove();
+          hoverPopup = new maplibregl.Popup({
+            closeButton: false,
+            closeOnClick: false,
+            offset: 12
+          })
+            .setLngLat(coordinates)
+            .setText(racecourseLabelFor(racecourseId))
+            .addTo(map);
         });
         map.on('mouseleave', MAP_HIT_LAYER, () => {
-          map.getCanvas().style.cursor = '';
+          setPointerCursor(false);
+          hoverPopup?.remove();
+          hoverPopup = null;
         });
+
+        map.on('click', MAP_CLUSTER_LAYER, async (event) => {
+          const cluster = event.features?.[0];
+          const clusterId = cluster?.properties?.cluster_id;
+          const coordinates = cluster?.geometry?.coordinates;
+          if (!Number.isInteger(clusterId) || !Array.isArray(coordinates)) return;
+          const source = map.getSource(MAP_SOURCE);
+          if (!source || typeof source.getClusterExpansionZoom !== 'function') return;
+          const zoom = await source.getClusterExpansionZoom(clusterId);
+          map.easeTo({
+            center: coordinates,
+            zoom,
+            duration: reducedMotion ? 0 : 240
+          });
+        });
+
         map.on('click', MAP_HIT_LAYER, (event) => {
           const racecourseId = event.features?.[0]?.properties?.racecourse_id;
           if (typeof racecourseId === 'string') setSelected(racecourseId, true);
@@ -297,6 +741,11 @@ const {
         ready = true;
         root.dataset.mapState = 'ready';
         if (status) status.hidden = true;
+        applyStatuses();
+        statusRefresh = window.setInterval(applyStatuses, STATUS_REFRESH_MS);
+        window.addEventListener('whr:meetingstatechange', applyStatuses);
+        window.addEventListener('whr:timezonechange', applyStatuses);
+
         root.dispatchEvent(new CustomEvent('racecourse-map:ready', {
           bubbles: true,
           detail: { featureCount: features.length, visibleFeatureCount: visibleRacecourseIds.size }
