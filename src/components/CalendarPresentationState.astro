@@ -1,0 +1,53 @@
+---
+type Props = { lang?: 'en' | 'ja' };
+const { lang = 'en' } = Astro.props as Props;
+---
+
+<div class="sr-only" data-calendar-presentation-state data-lang={lang} aria-hidden="true"></div>
+
+<script is:inline>
+  (() => {
+    const install = () => {
+      const marker = document.querySelector('[data-calendar-presentation-state]');
+      if (!(marker instanceof HTMLElement) || marker.dataset.initialized === 'true') return;
+      marker.dataset.initialized = 'true';
+
+      const listButton = document.querySelector('[data-calendar-view-list]');
+      const mapButton = document.querySelector('[data-calendar-view-map]');
+      const dateSelect = document.querySelector('[data-filter-date]');
+      if (!(listButton instanceof HTMLButtonElement) || !(mapButton instanceof HTMLButtonElement) || !(dateSelect instanceof HTMLSelectElement)) return;
+
+      const normalizeUrl = () => {
+        const url = new URL(window.location.href);
+        const view = mapButton.getAttribute('aria-pressed') === 'true' ? 'map' : 'list';
+        url.searchParams.set('view', view);
+        if (/^\d{4}-\d{2}-\d{2}$/.test(dateSelect.value)) url.searchParams.set('date', dateSelect.value);
+        window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+      };
+
+      listButton.addEventListener('click', () => requestAnimationFrame(normalizeUrl));
+      mapButton.addEventListener('click', () => requestAnimationFrame(normalizeUrl));
+      dateSelect.addEventListener('change', () => requestAnimationFrame(normalizeUrl));
+      window.addEventListener('whr:timezonechange', () => requestAnimationFrame(normalizeUrl));
+      window.addEventListener('whr:calendardatechange', () => requestAnimationFrame(normalizeUrl));
+
+      window.addEventListener('popstate', () => {
+        const params = new URL(window.location.href).searchParams;
+        const requestedView = params.get('view') === 'map' ? 'map' : 'list';
+        const requestedDate = params.get('date');
+        if (requestedDate && [...dateSelect.options].some((option) => option.value === requestedDate) && dateSelect.value !== requestedDate) {
+          dateSelect.value = requestedDate;
+          dateSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        const mapPressed = mapButton.getAttribute('aria-pressed') === 'true';
+        if (requestedView === 'map' && !mapPressed) mapButton.click();
+        if (requestedView === 'list' && mapPressed) listButton.click();
+      });
+
+      requestAnimationFrame(normalizeUrl);
+    };
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
+    else install();
+  })();
+</script>
