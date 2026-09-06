@@ -98,8 +98,13 @@ for (const [name, html] of Object.entries(pages)) {
   }
 }
 
-if (!pages.calendarEn.includes('30-day racing calendar')) fail('English Calendar title is not dynamic.');
-if (!pages.calendarJa.includes('30日間の開催カレンダー')) fail('Japanese Calendar title is not dynamic.');
+if (!pages.calendarEn.includes('<h1 id="page-title">Calendar</h1>')) fail('English Calendar does not render the UI-005 Calendar heading.');
+if (!pages.calendarJa.includes('<h1 id="page-title">カレンダー</h1>')) fail('Japanese Calendar does not render the UI-005 Calendar heading.');
+for (const [name, html] of [['calendarEn', pages.calendarEn], ['calendarJa', pages.calendarJa]]) {
+  for (const marker of ['data-calendar-date-nav', 'data-filter-date', 'data-calendar-view-list', 'data-calendar-view-map', 'data-calendar-filters', 'data-calendar-list-view']) {
+    if (!html.includes(marker)) fail(`${name} missing rendered UI-005 marker ${marker}.`);
+  }
+}
 if (!pages.calendarEn.includes(context.windowEndInclusive) || !pages.calendarJa.includes(context.windowEndInclusive)) {
   fail(`Calendar pages do not show build-reference window end ${context.windowEndInclusive}.`);
 }
@@ -177,4 +182,5 @@ console.log(`DAY_CANONICAL_CANDIDATES: ${dayCandidates.length}`);
 console.log(`REVIEWED_PUBLIC_EXCLUSIONS: ${reviewedPublicExcludedMeetingIds.size}`);
 console.log('BILINGUAL_CALENDAR_TODAY_TOMORROW: pass');
 console.log('TIMEZONE_PROJECTION_CANDIDATES: pass');
+console.log('UI_005_RENDERED_CALENDAR: pass');
 console.log('FIXED_MONTH_YEAR_COPY: 0');
