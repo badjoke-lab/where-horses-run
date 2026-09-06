@@ -50,6 +50,7 @@ for (const authorityId of ['hkjc', 'emirates-racing-authority', 'korea-racing-au
 const applySource = fs.readFileSync('scripts/timetable/apply-official-rolling-observations.mjs', 'utf8');
 assert.match(applySource, /deriveBestAvailableRank\(record, record\?\.timetable_rows \?\? \[\]\)/, 'non-Japan apply layer must derive rank from observation evidence');
 assert.match(applySource, /normalizeStoredCanonical/, 'non-Japan apply layer must re-derive legacy stored canonical rank before higher-rank protection');
+assert.match(applySource, /targetAuthorityIds/, 'non-Japan apply layer must normalize stored rows for the whole authority, not only meetings in the incoming artifact');
 assert.match(applySource, /public_reprojected/, 'non-Japan apply layer must reproject existing public rows against the current policy');
 assert.match(applySource, /storedEvidenceRank\(meeting, detail\)/, 'public rank must be projected from stored evidence rather than a stale capability label');
 assert.doesNotMatch(applySource, /return record\.capability_rank \?\? record\.candidate_rank/, 'non-Japan apply layer must not trust collector rank as canonical rank');
@@ -84,6 +85,12 @@ try {
   fs.writeFileSync(canonicalPath, `${JSON.stringify({
     schema_version: 'canonical-timetable-v0', generated_at: generatedAt, meetings: [
       {
+        meeting_id: 'kra-seoul-racecourse-2026-09-05', country_id: 'south-korea', authority_id: 'korea-racing-authority',
+        racing_system_id: 'kra-national-racing-system', racecourse_id: 'seoul-racecourse', date: '2026-09-05', timezone: 'Asia/Seoul',
+        capability_rank: 'A+', display_status: 'displayable', first_race_time_local: '12:55', last_race_time_local: '19:55',
+        source_trace: sourceTrace('https://race.kra.co.kr/prior-example'), freshness,
+      },
+      {
         meeting_id: 'kra-busan-gyeongnam-racecourse-2026-09-06', country_id: 'south-korea', authority_id: 'korea-racing-authority',
         racing_system_id: 'kra-national-racing-system', racecourse_id: 'busan-gyeongnam-racecourse', date: '2026-09-06', timezone: 'Asia/Seoul',
         capability_rank: 'A+', display_status: 'displayable', first_race_time_local: '11:25', last_race_time_local: '12:25',
@@ -101,6 +108,11 @@ try {
   fs.writeFileSync(canonicalDetailsPath, `${JSON.stringify({
     schema_version: 'canonical-meeting-details-v0', generated_at: generatedAt, details: [
       {
+        meeting_id: 'kra-seoul-racecourse-2026-09-05', country_id: 'south-korea', authority_id: 'korea-racing-authority',
+        racecourse_id: 'seoul-racecourse', date: '2026-09-05', timezone: 'Asia/Seoul', capability_rank: 'A+',
+        source_trace: sourceTrace('https://race.kra.co.kr/prior-example'), freshness, timetable_rows: kraRows,
+      },
+      {
         meeting_id: 'kra-busan-gyeongnam-racecourse-2026-09-06', country_id: 'south-korea', authority_id: 'korea-racing-authority',
         racecourse_id: 'busan-gyeongnam-racecourse', date: '2026-09-06', timezone: 'Asia/Seoul', capability_rank: 'A+',
         source_trace: sourceTrace('https://race.kra.co.kr/example'), freshness, timetable_rows: kraRows,
@@ -113,16 +125,17 @@ try {
     ],
   }, null, 2)}\n`);
 
-  const stalePublic = (meetingId, countryId, authorityId, racecourseId, timezone, first, last, oldPolicy) => ({
-    meeting_id: meetingId, country_id: countryId, authority_id: authorityId, racecourse_id: racecourseId, date: '2026-09-06', timezone,
+  const stalePublic = (meetingId, countryId, authorityId, racecourseId, date, timezone, first, last, oldPolicy) => ({
+    meeting_id: meetingId, country_id: countryId, authority_id: authorityId, racecourse_id: racecourseId, date, timezone,
     capability_rank: authorityId === 'korea-racing-authority' ? 'A+' : 'A', max_public_rank: 'A', effective_public_rank: 'A',
     first_race_time_local: first, last_race_time_local: last, policy_id: oldPolicy, source_status: 'verified',
     official_source_url: authorityId === 'korea-racing-authority' ? 'https://race.kra.co.kr/example' : 'https://www.tjk.org/example',
     last_checked_date: '2026-09-06', detail_path: `/timetable/meetings/${meetingId}/`, show_live_label: false, show_replay_label: false,
   });
-  const kraPublic = stalePublic('kra-busan-gyeongnam-racecourse-2026-09-06', 'south-korea', 'korea-racing-authority', 'busan-gyeongnam-racecourse', 'Asia/Seoul', '11:25', '12:25', 'kra-reviewed-a');
-  const tjkPublic = stalePublic('tjk-ankara-racecourse-2026-09-06', 'turkey', 'turkiye-jokey-kulubu', 'ankara-racecourse', 'Europe/Istanbul', '14:30', '15:00', 'tjk-reviewed-a');
-  fs.writeFileSync(publicPath, `${JSON.stringify({ schema_version: 'public-timetable-meeting-list-v0', generated_at: generatedAt, meetings: [kraPublic, tjkPublic] }, null, 2)}\n`);
+  const kraPriorPublic = stalePublic('kra-seoul-racecourse-2026-09-05', 'south-korea', 'korea-racing-authority', 'seoul-racecourse', '2026-09-05', 'Asia/Seoul', '12:55', '19:55', 'kra-reviewed-a');
+  const kraPublic = stalePublic('kra-busan-gyeongnam-racecourse-2026-09-06', 'south-korea', 'korea-racing-authority', 'busan-gyeongnam-racecourse', '2026-09-06', 'Asia/Seoul', '11:25', '12:25', 'kra-reviewed-a');
+  const tjkPublic = stalePublic('tjk-ankara-racecourse-2026-09-06', 'turkey', 'turkiye-jokey-kulubu', 'ankara-racecourse', '2026-09-06', 'Europe/Istanbul', '14:30', '15:00', 'tjk-reviewed-a');
+  fs.writeFileSync(publicPath, `${JSON.stringify({ schema_version: 'public-timetable-meeting-list-v0', generated_at: generatedAt, meetings: [kraPriorPublic, kraPublic, tjkPublic] }, null, 2)}\n`);
   fs.writeFileSync(publicDetailsPath, `${JSON.stringify({ schema_version: 'public-timetable-meeting-details-v0', generated_at: generatedAt, details: [] }, null, 2)}\n`);
 
   fs.writeFileSync(artifactPath, `${JSON.stringify({
@@ -144,6 +157,7 @@ try {
     `--public=${publicPath}`,
     `--public-details=${publicDetailsPath}`,
     '--policies=src/data/publicationDisplayPolicies.json',
+    '--authority-id=korea-racing-authority',
   ], { cwd: process.cwd(), encoding: 'utf8' });
   assert.equal(applied.status, 0, `persistence regression fixture failed: ${applied.stderr || applied.stdout}`);
 
@@ -155,6 +169,16 @@ try {
   const detailsById = new Map(canonicalDetailsAfter.details.map((row) => [row.meeting_id, row]));
   const publicById = new Map(publicAfter.meetings.map((row) => [row.meeting_id, row]));
   const publicDetailsById = new Map(publicDetailsAfter.details.map((row) => [row.meeting_id, row]));
+
+  const priorKraCanonical = canonicalById.get('kra-seoul-racecourse-2026-09-05');
+  const priorKraDetail = detailsById.get('kra-seoul-racecourse-2026-09-05');
+  const priorKraPublished = publicById.get('kra-seoul-racecourse-2026-09-05');
+  assert.equal(priorKraCanonical.capability_rank, 'A', 'stored KRA row omitted from the incoming artifact must self-heal from stale A+ to evidence-derived A');
+  assert.equal(priorKraDetail.capability_rank, 'A', 'stored KRA detail omitted from the incoming artifact must self-heal to evidence-derived A');
+  assert.equal(priorKraPublished.capability_rank, 'A', 'public projection for an omitted stored KRA row must follow normalized canonical evidence');
+  assert.equal(priorKraPublished.max_public_rank, 'A+', 'omitted stored KRA row must still use the current A+ publication policy');
+  assert.equal(priorKraPublished.effective_public_rank, 'A', 'omitted stored KRA row with incomplete A+ evidence must remain public A');
+  assert.equal(priorKraPublished.policy_id, 'kra-reviewed-a-plus', 'omitted stored KRA row must not retain the old A policy id');
 
   const kraCanonical = canonicalById.get('kra-busan-gyeongnam-racecourse-2026-09-06');
   const kraDetail = detailsById.get('kra-busan-gyeongnam-racecourse-2026-09-06');

@@ -253,6 +253,25 @@ const publicDetailsById = new Map((publicDetails.details ?? []).map((row) => [ro
 const outcomes = { add: 0, update: 0, no_op: 0, protected_higher_rank: 0, normalized_stored_rank: 0, public_reprojected: 0, ignored: 0 };
 let changed = false;
 
+// A rolling source may omit previously observed meetings even while their stored evidence remains valid.
+// Normalize every stored canonical row for the authority being applied, not only rows present in this artifact,
+// so stale capability labels cannot survive indefinitely just because the current observation window skipped them.
+const targetAuthorityIds = new Set([
+  ...(defaults.authority_id ? [defaults.authority_id] : []),
+  ...records.map((record) => record?.authority_id).filter(Boolean),
+]);
+for (const [meetingId, storedMeeting] of [...canonicalById.entries()]) {
+  if (!targetAuthorityIds.has(storedMeeting?.authority_id)) continue;
+  const storedDetail = detailsById.get(meetingId) ?? null;
+  const normalizedStored = normalizeStoredCanonical(storedMeeting, storedDetail);
+  if (!normalizedStored.changed) continue;
+  canonicalById.set(meetingId, normalizedStored.meeting);
+  if (normalizedStored.detail) detailsById.set(meetingId, normalizedStored.detail);
+  else detailsById.delete(meetingId);
+  changed = true;
+  outcomes.normalized_stored_rank += 1;
+}
+
 for (const record of records) {
   if (!record?.meeting_id) { outcomes.ignored += 1; continue; }
   const observed = observedRank(record);
