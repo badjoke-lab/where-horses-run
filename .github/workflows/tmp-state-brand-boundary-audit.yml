@@ -1,0 +1,137 @@
+name: Temporary state and brand browser audit
+
+on:
+  pull_request:
+    branches:
+      - fix/state-single-source-brand-v2-20260907
+
+permissions:
+  contents: read
+
+jobs:
+  browser-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+      - run: npm install
+      - run: npm run build
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Start static server
+        run: |
+          python3 -m http.server 4321 --directory dist > /tmp/whr-state-brand-audit.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4321/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/whr-state-brand-audit.log
+          exit 1
+      - name: Audit lifecycle boundaries and brand UI
+        run: |
+          mkdir -p audit/state-brand-boundary
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { chromium } from 'playwright';
+
+          const browser = await chromium.launch({ headless: true });
+          const cases = [
+            { name: 'en-desktop', path: '/?tz=Asia%2FTokyo', width: 1440, height: 1100, lang: 'en' },
+            { name: 'ja-desktop', path: '/ja/?tz=Asia%2FTokyo', width: 1440, height: 1100, lang: 'ja' },
+            { name: 'en-mobile', path: '/?tz=Asia%2FTokyo', width: 390, height: 844, lang: 'en' },
+            { name: 'ja-mobile', path: '/ja/?tz=Asia%2FTokyo', width: 390, height: 844, lang: 'ja' },
+          ];
+          const failures = [];
+          const report = [];
+          const assert = (condition, message) => { if (!condition) throw new Error(message); };
+          const dateIn = (timeZone) => {
+            const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date()).filter((p) => p.type !== 'literal').map((p) => [p.type, p.value]));
+            return `${parts.year}-${parts.month}-${parts.day}`;
+          };
+
+          for (const item of cases) {
+            const page = await browser.newPage({ viewport: { width: item.width, height: item.height } });
+            const pageErrors = [];
+            page.on('pageerror', (error) => pageErrors.push(String(error)));
+            try {
+              await page.goto(`http://127.0.0.1:4321${item.path}`, { waitUntil: 'domcontentloaded' });
+              await page.waitForFunction(() => document.querySelector('[data-meeting-range="today"]')?.getAttribute('aria-pressed') === 'true');
+              await page.waitForTimeout(300);
+
+              const today = dateIn('Asia/Tokyo');
+              const rows = await page.evaluate((today) => [...document.querySelectorAll('[data-calendar-meeting-row]')]
+                .filter((row) => row instanceof HTMLElement && !row.hidden)
+                .map((row) => ({
+                  id: row.dataset.meetingId,
+                  rank: row.dataset.rank,
+                  date: row.dataset.date,
+                  state: row.dataset.meetingState,
+                  policy: row.dataset.meetingStatePolicy,
+                  background: getComputedStyle(row).backgroundColor,
+                })), today);
+
+              const sameDayTimed = rows.filter((row) => ['A+', 'A', 'B+'].includes(row.rank || '') && row.date === today);
+              assert(sameDayTimed.length > 0, `${item.name}: no same-day A+/A/B+ rows`);
+              assert(sameDayTimed.every((row) => ['upcoming','running','ended'].includes(row.state)), `${item.name}: timed same-day state invalid ${JSON.stringify(sameDayTimed)}`);
+              const beforeStart = sameDayTimed.filter((row) => row.state === 'upcoming');
+              assert(beforeStart.length > 0, `${item.name}: no same-day before-start row to verify yellow`);
+              assert(beforeStart.every((row) => row.policy === 'timed' && row.background === 'rgb(255, 243, 196)'), `${item.name}: timed same-day pre-start is not yellow ${JSON.stringify(beforeStart)}`);
+
+              const sameDayDayPolicy = rows.filter((row) => ['B','C'].includes(row.rank || '') && row.date === today);
+              assert(sameDayDayPolicy.length > 0, `${item.name}: no same-day B/C rows`);
+              assert(sameDayDayPolicy.every((row) => row.state === 'upcoming' && row.policy === 'day' && row.background === 'rgb(255, 243, 196)'), `${item.name}: B/C same-day yellow failed ${JSON.stringify(sameDayDayPolicy.slice(0,5))}`);
+
+              await page.locator('[data-meeting-range="next7"]').click();
+              await page.waitForTimeout(150);
+              const futureTimed = await page.evaluate((today) => [...document.querySelectorAll('[data-calendar-meeting-row]')]
+                .filter((row) => row instanceof HTMLElement && !row.hidden && ['A+','A','B+'].includes(row.dataset.rank || '') && (row.dataset.date || '') > today)
+                .map((row) => ({ id: row.dataset.meetingId, date: row.dataset.date, state: row.dataset.meetingState, background: getComputedStyle(row).backgroundColor })), today);
+              assert(futureTimed.every((row) => row.state === 'future' && row.background === 'rgb(255, 255, 255)'), `${item.name}: future timed row incorrectly yellow ${JSON.stringify(futureTimed)}`);
+
+              const brand = await page.evaluate(() => {
+                const brand = document.querySelector('.site-brand');
+                const footer = document.querySelector('.site-footer');
+                const selected = document.querySelector('[data-meeting-range="next7"]');
+                if (!(brand instanceof HTMLElement) || !(footer instanceof HTMLElement) || !(selected instanceof HTMLElement)) return null;
+                return {
+                  brandBackground: getComputedStyle(brand).backgroundImage,
+                  brandColor: getComputedStyle(brand).color,
+                  brandFont: getComputedStyle(brand).fontFamily,
+                  footerBackground: getComputedStyle(footer).backgroundColor,
+                  selectedBackground: getComputedStyle(selected).backgroundColor,
+                  bodyText: document.body.innerText,
+                };
+              });
+              assert(brand, `${item.name}: brand elements missing`);
+              assert(brand.brandBackground.includes('/brand/whr-mark.png'), `${item.name}: horse mark missing ${brand.brandBackground}`);
+              assert(brand.brandColor === 'rgb(7, 35, 69)', `${item.name}: brand navy missing ${brand.brandColor}`);
+              assert(brand.footerBackground === 'rgb(7, 35, 69)', `${item.name}: footer navy missing ${brand.footerBackground}`);
+              assert(brand.selectedBackground === 'rgb(7, 35, 69)', `${item.name}: selected range navy missing ${brand.selectedBackground}`);
+              assert(!brand.bodyText.includes(item.lang === 'ja' ? '今日これから' : 'Later today'), `${item.name}: obsolete wording remains`);
+
+              const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+              assert(overflow <= 1, `${item.name}: horizontal overflow ${overflow}px`);
+              assert(pageErrors.length === 0, `${item.name}: page errors ${pageErrors.join(' | ')}`);
+              await page.screenshot({ path: `audit/state-brand-boundary/${item.name}.png`, fullPage: true });
+              report.push({ name: item.name, today, beforeStart: beforeStart.length, sameDayDayPolicy: sameDayDayPolicy.length, futureTimed: futureTimed.length, brand, ok: true });
+            } catch (error) {
+              failures.push({ name: item.name, error: error instanceof Error ? error.stack || error.message : String(error), pageErrors, url: page.url() });
+              try { await page.screenshot({ path: `audit/state-brand-boundary/${item.name}-failure.png`, fullPage: true }); } catch {}
+            } finally {
+              await page.close();
+            }
+          }
+
+          await browser.close();
+          fs.writeFileSync('audit/state-brand-boundary/report.json', JSON.stringify(report, null, 2));
+          fs.writeFileSync('audit/state-brand-boundary/failures.json', JSON.stringify(failures, null, 2));
+          if (failures.length) throw new Error(`State/brand audit failed: ${failures.map((f) => f.name).join(', ')}`);
+          NODE
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: state-brand-boundary-audit
+          path: audit/state-brand-boundary
