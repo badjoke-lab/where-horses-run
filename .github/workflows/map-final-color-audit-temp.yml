@@ -1,0 +1,135 @@
+name: Temporary map final color browser audit
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install and build exact audit branch
+        run: |
+          npm install --no-audit --no-fund
+          npm run build
+      - name: Start built site
+        shell: bash
+        run: |
+          nohup npm run preview -- --host 127.0.0.1 --port 4321 >/tmp/whr-preview.log 2>&1 &
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:4321/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/whr-preview.log
+          exit 1
+      - name: Audit final map presentation on desktop and mobile
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/map-final-color-audit /tmp/pw-map-final-color-audit
+          cd /tmp/pw-map-final-color-audit
+          npm init -y >/dev/null 2>&1
+          npm install --no-audit --no-fund playwright@1.55.0 >/dev/null
+          npx playwright install --with-deps chromium >/dev/null
+          node <<'NODE'
+          const fs = require('node:fs');
+          const { chromium, devices } = require('playwright');
+          const base = 'http://127.0.0.1:4321';
+          const out = '/tmp/map-final-color-audit';
+          const routes = [
+            { name: 'home-ja', path: '/ja/?tz=Asia%2FTokyo', root: '[data-home-racing-map] [data-racecourse-map]', legend: true, home: true },
+            { name: 'today-ja', path: '/ja/today/?tz=Asia%2FTokyo', root: '[data-today-map-sync] [data-racecourse-map]', legend: true },
+            { name: 'calendar-ja', path: '/ja/calendar/?tz=Asia%2FTokyo', root: '[data-calendar-map-switch] [data-racecourse-map]', legend: true, calendar: true },
+            { name: 'track-ja', path: '/ja/tracks/tokyo-racecourse/', root: '[data-racecourse-map]', legend: false },
+          ];
+          const modes = [
+            { name: 'desktop', options: { viewport: { width: 1440, height: 1000 } } },
+            { name: 'mobile', options: { ...devices['iPhone 13'] } },
+          ];
+
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            const report = [];
+            try {
+              for (const mode of modes) {
+                const context = await browser.newContext(mode.options);
+                for (const route of routes) {
+                  const page = await context.newPage();
+                  const pageErrors = [];
+                  page.on('pageerror', (error) => pageErrors.push(String(error)));
+                  const response = await page.goto(base + route.path, { waitUntil: 'domcontentloaded', timeout: 60000 });
+                  if (!response || response.status() !== 200) throw new Error(`${route.name}/${mode.name}: HTTP ${response?.status()}`);
+
+                  if (route.calendar) {
+                    const dateSelect = page.locator('[data-filter-date]');
+                    await dateSelect.waitFor({ state: 'visible', timeout: 30000 });
+                    const values = await dateSelect.locator('option').evaluateAll((options) => options.map((o) => o.value).filter(Boolean));
+                    if (!values.length) throw new Error(`${route.name}: no selectable date options`);
+                    await dateSelect.selectOption(values[0]);
+                    await page.locator('[data-calendar-view-map]').click();
+                  }
+
+                  const root = page.locator(route.root).first();
+                  await root.scrollIntoViewIfNeeded();
+                  await page.waitForFunction(
+                    (selector) => document.querySelector(selector)?.getAttribute('data-map-state') === 'ready',
+                    route.root,
+                    { timeout: 60000 }
+                  );
+                  await page.waitForTimeout(1500);
+
+                  if (route.home) {
+                    await page.waitForFunction(() => /\d{4}-\d{2}-\d{2}/.test(document.querySelector('[data-home-map-status]')?.textContent || ''), null, { timeout: 10000 });
+                    const displayedDate = await page.locator('[data-home-map-status]').evaluate((el) => (el.textContent || '').match(/\d{4}-\d{2}-\d{2}/)?.[0] || null);
+                    const racecourseId = await page.locator('[data-home-map-records]').evaluate((el, date) => {
+                      const records = JSON.parse(el.textContent || '[]');
+                      return records.find((record) => record.hasReviewedLocation && record.sourceTimezone === 'Asia/Tokyo' && record.sourceDate === date)?.racecourseId || null;
+                    }, displayedDate);
+                    if (racecourseId) {
+                      for (let i = 0; i < 10; i += 1) {
+                        await root.evaluate((el, id) => el.dispatchEvent(new CustomEvent('racecourse-map:select', { bubbles: true, detail: { racecourseId: id } })), racecourseId);
+                      }
+                      const linkCount = await page.locator('[data-home-map-selected-links] a').count();
+                      if (linkCount !== 2) throw new Error(`${route.name}/${mode.name}: selected links=${linkCount}`);
+                    }
+                  }
+
+                  const legendHidden = await root.locator('[data-map-legend]').getAttribute('hidden');
+                  const canvasCount = await root.locator('.maplibregl-canvas').count();
+                  const canvasHeight = await root.locator('[data-map-canvas]').evaluate((el) => Math.round(el.getBoundingClientRect().height));
+                  const visibleCount = await root.getAttribute('data-visible-racecourse-count');
+                  const entry = { route: route.name, mode: mode.name, canvasCount, canvasHeight, visibleCount, legendHidden, pageErrors };
+                  report.push(entry);
+                  console.log(JSON.stringify(entry));
+                  await page.screenshot({ path: `${out}/${route.name}-${mode.name}.png`, fullPage: true });
+
+                  if (canvasCount !== 1) throw new Error(`${route.name}/${mode.name}: expected one canvas`);
+                  if (route.legend && legendHidden !== null) throw new Error(`${route.name}/${mode.name}: legend hidden`);
+                  if (!route.legend && legendHidden === null) throw new Error(`${route.name}/${mode.name}: track legend visible`);
+                  if (mode.name === 'mobile' && (canvasHeight < 320 || canvasHeight > 430)) throw new Error(`${route.name}/${mode.name}: mobile height=${canvasHeight}`);
+                  if (pageErrors.length) throw new Error(`${route.name}/${mode.name}: ${pageErrors.join(' | ')}`);
+                  await page.close();
+                }
+                await context.close();
+              }
+            } finally {
+              await browser.close();
+            }
+            fs.writeFileSync(`${out}/report.json`, JSON.stringify(report, null, 2));
+          })().catch((error) => { console.error(error); process.exit(1); });
+          NODE
+      - name: Upload audit artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: map-final-color-browser-audit
+          path: /tmp/map-final-color-audit
+          if-no-files-found: error
+          retention-days: 1
