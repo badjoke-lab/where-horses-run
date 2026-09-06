@@ -142,7 +142,7 @@ compact footer
 
 The shell must preserve EN/JA parity, legal/source navigation, usable non-map routes, and minimum 44px mobile targets.
 
-Implementation status: **complete when the UI-001 implementation PR is merged**.
+Implementation status: **complete**.
 
 Verified implementation evidence before merge:
 
@@ -178,6 +178,27 @@ compact footer
 ```
 
 Remove or demote Home promotional blocks that make Countries, Racing Types, Glossary, Sources, newsletter, social-media promotion, or fabricated summary statistics equal-weight with the primary racing-discovery task.
+
+Implementation status: **verified complete for merge**.
+
+Verified implementation evidence before merge:
+
+```text
+existing repository CI/build: success
+EN Home desktop browser QA: success
+JA Home desktop browser QA: success
+EN Home mobile browser QA: success
+JA Home mobile browser QA: success
+horizontal overflow in all four cases: 0px
+page errors in all four cases: 0
+desktop Home map height: 638px
+mobile Home map height: 422px
+Today / Tomorrow / Next 7 days switching: success
+legacy equal-weight Home feature grid: absent
+Today's Racing and Up Next: present below the map
+```
+
+The temporary UI-002 browser-audit workflow/PR is closed unmerged and does not become permanent CI.
 
 ## UI-003 — Home information density
 
@@ -302,8 +323,8 @@ Conversation history is not the execution authority.
 ## Current Work ID
 
 ```text
-Current UI Work ID after UI-001 merge: UI-002
-Next UI Work ID after completion: UI-003
+Current UI Work ID after UI-002 merge: UI-003
+Next UI Work ID after completion: UI-004
 Parallel Calendar lane: active independently
 ```
 

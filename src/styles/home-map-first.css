@@ -1,0 +1,173 @@
+.home-hero {
+  gap: var(--whr-space-2);
+  padding-block: var(--whr-space-3) var(--whr-space-4);
+  border-bottom: 0;
+}
+
+.home-hero h1 {
+  max-width: 24ch;
+  font-size: clamp(1.8rem, 3.4vw, 2.7rem);
+}
+
+.home-hero .hero__summary {
+  max-width: 48rem;
+  color: var(--whr-color-muted);
+}
+
+.home-racing-map.card {
+  margin-block: var(--whr-space-2) var(--whr-space-5);
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.home-racing-map .racecourse-map__canvas {
+  min-height: clamp(500px, 58vh, 680px);
+  border-radius: 1rem;
+}
+
+.home-racing-map__periods button,
+.home-racing-map__timezone select {
+  min-height: 44px;
+}
+
+.home-primary-flow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--whr-space-5);
+  margin-block: var(--whr-space-5);
+}
+
+.home-meeting-summary {
+  min-width: 0;
+  padding-block-start: var(--whr-space-3);
+  border-top: 2px solid var(--whr-color-text);
+}
+
+.home-section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--whr-space-3);
+  margin-block-end: var(--whr-space-3);
+}
+
+.home-section-heading h2,
+.home-section-heading p {
+  margin: 0;
+}
+
+.home-section-heading h2 {
+  margin-block-start: 0.2rem;
+  font-size: clamp(1.25rem, 2vw, 1.6rem);
+}
+
+.home-section-heading__eyebrow {
+  color: var(--whr-color-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.home-section-heading > a {
+  flex: 0 0 auto;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.home-meeting-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid var(--whr-color-border);
+}
+
+.home-meeting-list li {
+  border-top: 1px solid var(--whr-color-border);
+}
+
+.home-meeting-list a {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.85fr) auto;
+  align-items: baseline;
+  gap: var(--whr-space-2);
+  min-height: 52px;
+  padding-block: 0.75rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.home-meeting-list a:hover strong,
+.home-meeting-list a:focus-visible strong {
+  text-decoration: underline;
+}
+
+.home-meeting-list a:focus-visible {
+  outline: 3px solid #111;
+  outline-offset: 2px;
+}
+
+.home-meeting-list span {
+  min-width: 0;
+  color: var(--whr-color-muted);
+  font-size: 0.9rem;
+}
+
+.home-meeting-list span:last-child {
+  text-align: right;
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .home-primary-flow {
+    grid-template-columns: 1fr;
+    gap: var(--whr-space-4);
+  }
+}
+
+@media (max-width: 700px) {
+  .home-hero {
+    padding-block-start: var(--whr-space-2);
+    padding-block-end: var(--whr-space-3);
+  }
+
+  .home-hero h1 {
+    font-size: clamp(1.65rem, 8vw, 2.15rem);
+  }
+
+  .home-racing-map.card {
+    margin-block-start: 0;
+    margin-block-end: var(--whr-space-4);
+  }
+
+  .home-racing-map .racecourse-map__canvas {
+    min-height: clamp(360px, 50vh, 460px);
+    border-radius: 0.75rem;
+  }
+
+  .home-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--whr-space-1);
+  }
+
+  .home-section-heading > a {
+    width: 100%;
+  }
+
+  .home-meeting-list a {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.25rem var(--whr-space-2);
+    min-height: 64px;
+  }
+
+  .home-meeting-list strong {
+    grid-column: 1 / -1;
+  }
+
+  .home-meeting-list span:last-child {
+    text-align: right;
+  }
+}
