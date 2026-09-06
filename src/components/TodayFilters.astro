@@ -58,7 +58,10 @@ const timeZoneOptions = [
       <span aria-hidden="true"></span>{isJapanese ? '開催中' : 'Racing now'} <strong data-today-count="running">0</strong>
     </span>
     <span class="today-state-summary__item today-state-summary__item--upcoming">
-      <span aria-hidden="true"></span>{isJapanese ? '今日これから' : 'Later today'} <strong data-today-count="upcoming">0</strong>
+      <span aria-hidden="true"></span>{isJapanese ? '開催前' : 'Upcoming'} <strong data-today-count="upcoming">0</strong>
+    </span>
+    <span class="today-state-summary__item today-state-summary__item--today">
+      <span aria-hidden="true"></span>{isJapanese ? '本日開催' : 'Racing today'} <strong data-today-count="today">0</strong>
     </span>
     <span class="today-state-summary__item today-state-summary__item--ended">
       <span aria-hidden="true"></span>{isJapanese ? '終了' : 'Finished'} <strong data-today-count="ended">0</strong>
@@ -86,7 +89,7 @@ const timeZoneOptions = [
         const reset = controls.querySelector('[data-today-filter-reset]');
         const total = controls.querySelector('[data-today-visible-count]');
         const empty = controls.querySelector('[data-today-filter-empty]');
-        const countNodes = new Map(['running', 'upcoming', 'ended'].map((state) => [state, controls.querySelector(`[data-today-count="${state}"]`)]));
+        const countNodes = new Map(['running', 'upcoming', 'today', 'ended'].map((state) => [state, controls.querySelector(`[data-today-count="${state}"]`)]));
         if (!(timezone instanceof HTMLSelectElement) || !(country instanceof HTMLSelectElement) || !(authority instanceof HTMLSelectElement) || !(rank instanceof HTMLSelectElement)) return;
 
         const timezoneRoot = () => document.querySelector('[data-display-timezone-root][data-projection-scope="today"]');
@@ -106,17 +109,20 @@ const timeZoneOptions = [
         };
         const stateFor = (row) => {
           const meetingState = row.dataset.meetingState || 'unknown';
-          const dayState = row.dataset.meetingDayState || 'unknown';
           if (meetingState === 'running') return 'running';
-          if (meetingState === 'ended' || dayState === 'past') return 'ended';
+          if (meetingState === 'upcoming') return 'upcoming';
+          if (meetingState === 'today') return 'today';
+          if (meetingState === 'ended' || row.dataset.meetingDayState === 'past') return 'ended';
           return 'upcoming';
         };
         const stateLabel = (state) => state === 'running'
           ? (isJa ? '開催中' : 'Racing now')
-          : state === 'ended'
-            ? (isJa ? '終了' : 'Finished')
-            : (isJa ? '今日これから' : 'Later today');
-        const stateOrder = { running: 0, upcoming: 1, ended: 2 };
+          : state === 'upcoming'
+            ? (isJa ? '開催前' : 'Upcoming')
+            : state === 'today'
+              ? (isJa ? '本日開催' : 'Racing today')
+              : (isJa ? '終了' : 'Finished');
+        const stateOrder = { running: 0, upcoming: 1, today: 2, ended: 3 };
         const sortRows = (left, right) => {
           const stateDiff = stateOrder[stateFor(left)] - stateOrder[stateFor(right)];
           if (stateDiff !== 0) return stateDiff;
@@ -137,7 +143,7 @@ const timeZoneOptions = [
             if (!(list instanceof HTMLElement)) return;
             const listRows = Array.from(list.querySelectorAll('[data-calendar-meeting-row]')).filter((row) => row instanceof HTMLElement).sort(sortRows);
             listRows.forEach((row) => list.append(row));
-            ['running', 'upcoming', 'ended'].forEach((state) => {
+            ['running', 'upcoming', 'today', 'ended'].forEach((state) => {
               const first = listRows.find((row) => !row.hidden && stateFor(row) === state);
               if (!first) return;
               const count = listRows.filter((row) => !row.hidden && stateFor(row) === state).length;
@@ -169,7 +175,7 @@ const timeZoneOptions = [
           if (status) status.textContent = isJa ? `${racecourseIds.length}競馬場を地図表示` : `${racecourseIds.length} mapped racecourses`;
         };
         const applyFilters = () => {
-          const counts = { running: 0, upcoming: 0, ended: 0 };
+          const counts = { running: 0, upcoming: 0, today: 0, ended: 0 };
           let visible = 0;
           rows().forEach((row) => {
             const filtered = !matchesFilters(row);
