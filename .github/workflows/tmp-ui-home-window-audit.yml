@@ -1,0 +1,253 @@
+name: Temporary unified Home window audit
+
+on:
+  pull_request:
+    branches:
+      - fix/ui-home-as-today-window-20260906
+
+permissions:
+  contents: read
+
+jobs:
+  browser-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+      - run: npm install
+      - run: npm run build
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Start static server
+        run: |
+          python3 -m http.server 4321 --directory dist > /tmp/whr-home-window-server.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4321/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/whr-home-window-server.log
+          exit 1
+      - name: Audit unified Home interactions
+        run: |
+          mkdir -p audit/ui-home-window
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { chromium } from 'playwright';
+
+          const browser = await chromium.launch({ headless: true });
+          const cases = [
+            { name: 'en-desktop', path: '/?tz=Asia%2FTokyo', width: 1440, height: 1100, lang: 'en' },
+            { name: 'ja-desktop', path: '/ja/?tz=Asia%2FTokyo', width: 1440, height: 1100, lang: 'ja' },
+            { name: 'en-mobile', path: '/?tz=Asia%2FTokyo', width: 390, height: 844, lang: 'en' },
+            { name: 'ja-mobile', path: '/ja/?tz=Asia%2FTokyo', width: 390, height: 844, lang: 'ja' },
+          ];
+          const failures = [];
+          const report = [];
+          const assert = (condition, message) => { if (!condition) throw new Error(message); };
+
+          const snapshot = async (page) => page.evaluate(() => {
+            const rows = [...document.querySelectorAll('[data-calendar-meeting-row]')].filter((row) => row instanceof HTMLElement);
+            const visibleRows = rows.filter((row) => !row.hidden);
+            const rangeButtons = [...document.querySelectorAll('[data-meeting-range]')].filter((node) => node instanceof HTMLButtonElement);
+            const mappingNode = document.querySelector('[data-today-map-meeting-map]');
+            let mapping = [];
+            try { mapping = JSON.parse(mappingNode?.textContent || '[]'); } catch {}
+            const byMeeting = new Map(mapping.map((entry) => [entry.meetingId, entry]));
+            const mappedRacecourses = [...new Set(visibleRows
+              .map((row) => byMeeting.get(row.dataset.meetingId || ''))
+              .filter((entry) => entry?.hasReviewedLocation)
+              .map((entry) => entry.racecourseId))];
+            const timezone = document.querySelector('[data-today-timezone]');
+            return {
+              activeRange: rangeButtons.find((button) => button.getAttribute('aria-pressed') === 'true')?.dataset.meetingRange || '',
+              ranges: rangeButtons.map((button) => button.dataset.meetingRange),
+              visibleCount: visibleRows.length,
+              visibleDates: [...new Set(visibleRows.map((row) => row.dataset.date || row.dataset.sourceDate || ''))].filter(Boolean).sort(),
+              visibleStates: visibleRows.map((row) => ({
+                id: row.dataset.meetingId || '',
+                rank: row.dataset.rank || '',
+                state: row.dataset.meetingState || '',
+                policy: row.dataset.meetingStatePolicy || '',
+                sourceDate: row.dataset.sourceDate || '',
+                sourceTimezone: row.dataset.sourceTimezone || '',
+                first: row.dataset.firstRaceTime || '',
+                last: row.dataset.lastRaceTime || '',
+                background: getComputedStyle(row).backgroundColor,
+              })),
+              timezone: timezone instanceof HTMLSelectElement ? timezone.value : '',
+              timezoneOptions: timezone instanceof HTMLSelectElement ? [...timezone.options].map((option) => option.value) : [],
+              mapStatus: document.querySelector('[data-today-map-status]')?.textContent?.trim() || '',
+              mappedRacecourseCount: mappedRacecourses.length,
+              dateHeadingCount: [...document.querySelectorAll('.timetable-date-group')].filter((section) => section instanceof HTMLElement && !section.hidden && section.querySelector('h2')).length,
+              navTodayLinks: [...document.querySelectorAll('header a, .mobile-bottom-nav a')].filter((anchor) => /\/today\/?(?:\?|$)/.test(anchor.getAttribute('href') || '')).length,
+              url: location.pathname + location.search,
+            };
+          });
+
+          const validateStates = async (page, name) => {
+            const mismatches = await page.evaluate(() => {
+              const TIMED = new Set(['A+', 'A', 'B+']);
+              const dateParts = (instant, timeZone) => Object.fromEntries(new Intl.DateTimeFormat('en-US', {
+                timeZone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
+              }).formatToParts(instant).filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
+              const dateInZone = (instant, timeZone) => {
+                const parts = dateParts(instant, timeZone);
+                return `${parts.year}-${parts.month}-${parts.day}`;
+              };
+              const localInstant = (dateText, timeText, timeZone) => {
+                const d = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateText || '');
+                const t = /^(\d{1,2}):(\d{2})(?::(\d{2}))?$/.exec(timeText || '');
+                if (!d || !t) return null;
+                const targetUtc = Date.UTC(+d[1], +d[2] - 1, +d[3], +t[1], +t[2], +(t[3] || 0));
+                let guess = targetUtc;
+                for (let pass = 0; pass < 4; pass += 1) {
+                  const parts = dateParts(new Date(guess), timeZone);
+                  const represented = Date.UTC(+parts.year, +parts.month - 1, +parts.day, +parts.hour, +parts.minute, +parts.second);
+                  const correction = targetUtc - represented;
+                  guess += correction;
+                  if (!correction) break;
+                }
+                return guess;
+              };
+              const colors = {
+                upcoming: 'rgb(255, 243, 196)',
+                running: 'rgb(255, 240, 239)',
+                ended: 'rgb(243, 243, 243)',
+                future: 'rgb(255, 255, 255)',
+              };
+              const now = Date.now();
+              const result = [];
+              document.querySelectorAll('[data-calendar-meeting-row]').forEach((row) => {
+                if (!(row instanceof HTMLElement)) return;
+                const rank = row.dataset.rank || '';
+                const sourceDate = row.dataset.sourceDate || '';
+                const zone = row.dataset.sourceTimezone || '';
+                const first = row.dataset.firstRaceTime || '';
+                const last = row.dataset.lastRaceTime || '';
+                const today = dateInZone(new Date(now), zone);
+                const day = sourceDate < today ? 'past' : sourceDate > today ? 'future' : 'today';
+                const timed = TIMED.has(rank) && Boolean(first && last);
+                let expected = day === 'past' ? 'ended' : day === 'today' ? 'upcoming' : 'future';
+                if (timed) {
+                  const start = localInstant(sourceDate, first, zone);
+                  let end = localInstant(sourceDate, last, zone);
+                  if (start !== null && end !== null) {
+                    if (end < start) end += 86_400_000;
+                    expected = now < start ? 'upcoming' : now <= end ? 'running' : 'ended';
+                  }
+                }
+                const actual = row.dataset.meetingState || '';
+                const policy = row.dataset.meetingStatePolicy || '';
+                const background = getComputedStyle(row).backgroundColor;
+                if (actual !== expected || policy !== (timed ? 'timed' : 'day') || background !== colors[expected]) {
+                  result.push({ id: row.dataset.meetingId, rank, sourceDate, expected, actual, policy, background, expectedBackground: colors[expected] });
+                }
+              });
+              return result;
+            });
+            assert(mismatches.length === 0, `${name}: rank/color state mismatch ${JSON.stringify(mismatches.slice(0, 5))}`);
+          };
+
+          for (const item of cases) {
+            const page = await browser.newPage({ viewport: { width: item.width, height: item.height } });
+            const pageErrors = [];
+            let checkpoint = 'open';
+            page.on('pageerror', (error) => pageErrors.push(String(error)));
+            try {
+              await page.goto(`http://127.0.0.1:4321${item.path}`, { waitUntil: 'domcontentloaded' });
+              await page.waitForFunction(() => document.querySelector('[data-meeting-range="today"]')?.getAttribute('aria-pressed') === 'true', null, { timeout: 10000 });
+              await page.waitForTimeout(250);
+
+              checkpoint = 'default-today';
+              const initial = await snapshot(page);
+              assert(initial.ranges.join(',') === 'today,tomorrow,next7', `${item.name}: range controls wrong`);
+              assert(initial.activeRange === 'today', `${item.name}: default is not Today`);
+              assert(initial.visibleCount > 0, `${item.name}: Today has no visible rows`);
+              assert(initial.visibleDates.length === 1, `${item.name}: Today spans ${initial.visibleDates.length} dates`);
+              assert(initial.timezoneOptions.join(',') === 'Asia/Tokyo,Asia/Seoul,Asia/Hong_Kong,Asia/Dubai,Europe/Istanbul,UTC', `${item.name}: timezone choices changed`);
+              assert(initial.navTodayLinks === 0, `${item.name}: redundant Today nav link remains`);
+              assert(initial.mapStatus.startsWith(String(initial.mappedRacecourseCount)), `${item.name}: map/list visible set count diverges`);
+              await validateStates(page, item.name);
+
+              checkpoint = 'tomorrow';
+              await page.locator('[data-meeting-range="tomorrow"]').click();
+              await page.waitForTimeout(250);
+              const tomorrow = await snapshot(page);
+              assert(tomorrow.activeRange === 'tomorrow', `${item.name}: Tomorrow switch failed`);
+              assert(tomorrow.visibleCount > 0, `${item.name}: Tomorrow has no visible rows`);
+              assert(tomorrow.visibleDates.length === 1, `${item.name}: Tomorrow spans ${tomorrow.visibleDates.length} dates`);
+              assert(new URL(`http://x${tomorrow.url}`).searchParams.get('range') === 'tomorrow', `${item.name}: Tomorrow URL state missing`);
+              assert(tomorrow.mapStatus.startsWith(String(tomorrow.mappedRacecourseCount)), `${item.name}: Tomorrow map/list count diverges`);
+
+              checkpoint = 'seven-days';
+              await page.locator('[data-meeting-range="next7"]').click();
+              await page.waitForTimeout(250);
+              const seven = await snapshot(page);
+              assert(seven.activeRange === 'next7', `${item.name}: 7 days switch failed`);
+              assert(seven.visibleCount > 0, `${item.name}: 7 days has no visible rows`);
+              assert(seven.visibleDates.length >= 2 && seven.visibleDates.length <= 7, `${item.name}: 7-day visible date count ${seven.visibleDates.length}`);
+              assert(seven.dateHeadingCount >= seven.visibleDates.length, `${item.name}: 7-day date headings missing`);
+              assert(new URL(`http://x${seven.url}`).searchParams.get('range') === 'next7', `${item.name}: 7-day URL state missing`);
+              assert(seven.mapStatus.startsWith(String(seven.mappedRacecourseCount)), `${item.name}: 7-day map/list count diverges`);
+
+              checkpoint = 'timezone';
+              await page.locator('[data-today-timezone]').selectOption('UTC');
+              await page.waitForFunction(() => new URL(location.href).searchParams.get('tz') === 'UTC', null, { timeout: 5000 });
+              await page.waitForTimeout(250);
+              const utc = await snapshot(page);
+              assert(utc.timezone === 'UTC', `${item.name}: UTC switch failed`);
+              assert(utc.activeRange === 'next7', `${item.name}: range lost after timezone switch`);
+              await validateStates(page, `${item.name}-utc`);
+
+              checkpoint = 'overflow-errors';
+              const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+              assert(overflow <= 1, `${item.name}: horizontal overflow ${overflow}px`);
+              assert(pageErrors.length === 0, `${item.name}: page errors ${pageErrors.join(' | ')}`);
+              await page.screenshot({ path: `audit/ui-home-window/${item.name}.png`, fullPage: true });
+              report.push({ name: item.name, initial, tomorrow, seven, utc, overflow, pageErrors, ok: true });
+            } catch (error) {
+              const failure = { name: item.name, checkpoint, url: page.url(), pageErrors, error: error instanceof Error ? error.stack || error.message : String(error) };
+              failures.push(failure);
+              report.push({ ...failure, ok: false });
+              try { await page.screenshot({ path: `audit/ui-home-window/${item.name}-failure.png`, fullPage: true }); } catch {}
+              try { fs.writeFileSync(`audit/ui-home-window/${item.name}-failure.html`, await page.content()); } catch {}
+              console.error(`HOME WINDOW FAILURE ${JSON.stringify(failure)}`);
+            } finally {
+              await page.close();
+            }
+          }
+
+          const legacy = [
+            { path: '/today/?tz=Asia%2FTokyo', expected: '/?tz=Asia%2FTokyo', range: 'today' },
+            { path: '/tomorrow/?tz=Asia%2FTokyo', expected: '/?tz=Asia%2FTokyo&range=tomorrow', range: 'tomorrow' },
+            { path: '/ja/today/?tz=Asia%2FTokyo', expected: '/ja/?tz=Asia%2FTokyo', range: 'today' },
+            { path: '/ja/tomorrow/?tz=Asia%2FTokyo', expected: '/ja/?tz=Asia%2FTokyo&range=tomorrow', range: 'tomorrow' },
+          ];
+          for (const item of legacy) {
+            const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+            try {
+              await page.goto(`http://127.0.0.1:4321${item.path}`, { waitUntil: 'domcontentloaded' });
+              await page.waitForFunction(() => location.pathname === '/' || location.pathname === '/ja/', null, { timeout: 5000 });
+              await page.waitForTimeout(150);
+              const state = await snapshot(page);
+              assert(state.activeRange === item.range, `${item.path}: redirected range ${state.activeRange}`);
+            } catch (error) {
+              failures.push({ name: `legacy-${item.path}`, error: error instanceof Error ? error.message : String(error), url: page.url() });
+            } finally {
+              await page.close();
+            }
+          }
+
+          await browser.close();
+          fs.writeFileSync('audit/ui-home-window/report.json', JSON.stringify(report, null, 2));
+          fs.writeFileSync('audit/ui-home-window/failures.json', JSON.stringify(failures, null, 2));
+          if (failures.length) throw new Error(`unified Home audit failed: ${failures.map((f) => f.name).join(', ')}`);
+          NODE
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unified-home-window-audit
+          path: audit/ui-home-window
