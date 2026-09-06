@@ -113,7 +113,7 @@ const {
   }
 
   .racecourse-map__legend-dot--future {
-    background: #fff;
+    background: #111;
   }
 
   .racecourse-map__legend-dot--ended {
@@ -648,13 +648,28 @@ const {
           }
         });
 
+        const pointBaseRadius = [
+          'match',
+          ['get', 'meeting_status'],
+          'running', 10,
+          'upcoming', 10,
+          'ended', 9,
+          'future', 7,
+          7
+        ];
+
         map.addLayer({
           id: MAP_SELECTED_RING_LAYER,
           type: 'circle',
           source: MAP_SOURCE,
           filter: ['!', ['has', 'point_count']],
           paint: {
-            'circle-radius': ['case', ['boolean', ['feature-state', 'selected'], false], 14, 0],
+            'circle-radius': [
+              'case',
+              ['boolean', ['feature-state', 'selected'], false],
+              ['+', pointBaseRadius, 8],
+              0
+            ],
             'circle-color': '#111111',
             'circle-opacity': ['case', ['boolean', ['feature-state', 'selected'], false], 1, 0]
           }
@@ -678,24 +693,21 @@ const {
           source: MAP_SOURCE,
           filter: ['!', ['has', 'point_count']],
           paint: {
-            'circle-radius': ['case', ['boolean', ['feature-state', 'selected'], false], 9, 7],
+            'circle-radius': [
+              '+',
+              pointBaseRadius,
+              ['case', ['boolean', ['feature-state', 'selected'], false], 3, 0]
+            ],
             'circle-color': [
               'match',
               ['get', 'meeting_status'],
               'running', '#c40000',
               'upcoming', '#d18a00',
               'ended', '#666666',
-              'future', '#ffffff',
+              'future', '#111111',
               '#111111'
             ],
-            'circle-stroke-color': [
-              'case',
-              ['boolean', ['feature-state', 'selected'], false],
-              '#ffffff',
-              ['==', ['get', 'meeting_status'], 'future'],
-              '#111111',
-              '#ffffff'
-            ],
+            'circle-stroke-color': '#ffffff',
             'circle-stroke-width': ['case', ['boolean', ['feature-state', 'selected'], false], 4, 2]
           }
         });
