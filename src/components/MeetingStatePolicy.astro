@@ -53,6 +53,13 @@
       return new Date(guess);
     };
 
+    const displayTimeZoneForRow = (row) => {
+      const root = row.closest('[data-display-timezone-root]');
+      const select = root?.querySelector('[data-display-timezone-select]');
+      if (select instanceof HTMLSelectElement && isTimeZoneSupported(select.value)) return select.value;
+      return isTimeZoneSupported(row.dataset.sourceTimezone) ? row.dataset.sourceTimezone : 'Asia/Tokyo';
+    };
+
     const setBadges = (row, state, policy) => {
       const root = row.closest('[data-display-timezone-root]');
       const isJa = root?.dataset.lang === 'ja';
@@ -78,8 +85,10 @@
       const lastTime = row.dataset.lastRaceTime || '';
       if (!sourceDate || !isTimeZoneSupported(sourceTimeZone)) return;
 
-      const currentDate = formatDate(new Date(now), sourceTimeZone);
-      const calendarDayState = sourceDate < currentDate ? 'past' : sourceDate > currentDate ? 'future' : 'today';
+      const displayTimeZone = displayTimeZoneForRow(row);
+      const displayedDate = row.dataset.date || sourceDate;
+      const currentDisplayDate = formatDate(new Date(now), displayTimeZone);
+      const calendarDayState = displayedDate < currentDisplayDate ? 'past' : displayedDate > currentDisplayDate ? 'future' : 'today';
       row.dataset.meetingCalendarDayState = calendarDayState;
 
       const timed = TIMED_RANKS.has(rank) && Boolean(firstTime && lastTime);
@@ -103,9 +112,6 @@
 
       row.dataset.meetingState = state;
       row.dataset.meetingStatePolicy = policy;
-
-      // RacecourseMap's existing status adapter only paints upcoming amber when dayState=today.
-      // Keep the true calendar-day state separately above, while exposing the established visual state here.
       row.dataset.meetingDayState = state === 'upcoming' ? 'today' : calendarDayState;
       setBadges(row, state, policy);
     };
