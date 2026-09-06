@@ -255,13 +255,15 @@ export async function discoverNankankeibaOfficial30d({ dates, fetchImpl = fetch 
         try {
           const programme = await fetchHtml(link.url, fetchImpl);
           const year = Number(link.programme_key.slice(0, 4));
-          const programmeDays = parseNankankeibaProgrammeDates(programme.body, year)
-            .map((date, index) => ({ date, day_number: index + 1 }))
-            .filter((row) => allowed.has(row.date));
-          if (!programmeDays.length) {
+          const programmeDates = parseNankankeibaProgrammeDates(programme.body, year);
+          if (!programmeDates.length) {
             supplementalFailures.push({ source_url: programme.url, reason: 'programme_dates_incomplete' });
             continue;
           }
+          const programmeDays = programmeDates
+            .map((date, index) => ({ date, day_number: index + 1 }))
+            .filter((row) => allowed.has(row.date));
+          if (!programmeDays.length) continue;
           for (const row of programmeDays) {
             const detailUrl = nankankeibaProgramUrl(row.date, link.programme_key, row.day_number, programme.url);
             meetings.push(meetingRow(link.venue, row.date, programme.url, detailUrl));
