@@ -45,21 +45,27 @@ jobs:
             { name: 'ja-mobile', path: '/ja/calendar/?tz=Asia%2FTokyo', width: 390, height: 844, mobile: true },
           ];
           const report = [];
+          const failures = [];
           const assert = (condition, message) => { if (!condition) throw new Error(message); };
           const waitForCalendarReady = async (page) => {
             await page.waitForFunction(() => document.querySelector('[data-calendar-filters]')?.getAttribute('data-filter-ready') === 'true', null, { timeout: 10000 });
             await page.waitForFunction(() => document.querySelector('[data-calendar-map-switch]')?.getAttribute('data-calendar-map-initialized') === 'true', null, { timeout: 10000 });
             await page.waitForFunction(() => document.querySelector('[data-calendar-presentation-state]')?.getAttribute('data-initialized') === 'true', null, { timeout: 10000 });
-            await page.waitForFunction(() => /^\d{4}-\d{2}-\d{2}$/.test(document.querySelector('[data-filter-date]')?.value || ''), null, { timeout: 10000 });
+            await page.waitForFunction(() => /^\\d{4}-\\d{2}-\\d{2}$/.test(document.querySelector('[data-filter-date]')?.value || ''), null, { timeout: 10000 });
             await page.waitForTimeout(150);
           };
 
           for (const item of cases) {
             const page = await browser.newPage({ viewport: { width: item.width, height: item.height } });
             const pageErrors = [];
+            let checkpoint = 'open-page';
+            let initial;
+            let mapMode;
+            let listMode;
+            let utc;
+            let restored;
+            let overflow;
             page.on('pageerror', (error) => pageErrors.push(String(error)));
-            await page.goto(`http://127.0.0.1:4321${item.path}`, { waitUntil: 'domcontentloaded' });
-            await waitForCalendarReady(page);
 
             const snapshot = async () => page.evaluate(() => {
               const rows = [...document.querySelectorAll('[data-calendar-meeting-row]')].filter((row) => row instanceof HTMLElement);
@@ -85,98 +91,132 @@ jobs:
               };
             });
 
-            const initial = await snapshot();
-            console.log(`${item.name} initial ${JSON.stringify(initial)}`);
-            assert(initial.visibleCount > 0, `${item.name}: selected date has no visible meetings`);
-            assert(initial.visibleDates.length === 1 && initial.visibleDates[0] === initial.date, `${item.name}: List is not selected-date authoritative`);
-            assert(initial.params.date === initial.date, `${item.name}: URL date missing`);
-            assert(initial.params.view === 'list', `${item.name}: default URL view is not list`);
-            assert(initial.params.tz === 'Asia/Tokyo', `${item.name}: URL timezone missing`);
-            assert(initial.listPressed && !initial.mapPressed && !initial.listHidden && initial.mapHidden, `${item.name}: initial mode is not List-first`);
-            assert(item.mobile ? initial.filtersOpen === false : initial.filtersOpen === true, `${item.name}: filter expansion state wrong`);
+            try {
+              await page.goto(`http://127.0.0.1:4321${item.path}`, { waitUntil: 'domcontentloaded' });
+              checkpoint = 'calendar-ready';
+              await waitForCalendarReady(page);
 
-            if (initial.countries.length > 0) {
-              await page.locator('[data-filter-country]').selectOption(initial.countries[0]);
-              await page.waitForTimeout(200);
-              const filtered = await snapshot();
-              assert(filtered.visibleCount > 0, `${item.name}: country filter unexpectedly empty`);
-              assert(filtered.visibleDates.length === 1 && filtered.visibleDates[0] === filtered.date, `${item.name}: country filter escaped selected date`);
-              const countries = await page.evaluate(() => [...document.querySelectorAll('[data-calendar-meeting-row]')]
-                .filter((row) => row instanceof HTMLElement && !row.hidden)
-                .map((row) => row.dataset.country));
-              assert(countries.every((country) => country === initial.countries[0]), `${item.name}: country filter mismatch`);
-              await page.locator('[data-filter-reset]').click();
-              await page.waitForTimeout(150);
-            }
+              checkpoint = 'initial-list-first';
+              initial = await snapshot();
+              console.log(`${item.name} initial ${JSON.stringify(initial)}`);
+              assert(initial.visibleCount > 0, `${item.name}: selected date has no visible meetings`);
+              assert(initial.visibleDates.length === 1 && initial.visibleDates[0] === initial.date, `${item.name}: List is not selected-date authoritative`);
+              assert(initial.params.date === initial.date, `${item.name}: URL date missing`);
+              assert(initial.params.view === 'list', `${item.name}: default URL view is not list`);
+              assert(initial.params.tz === 'Asia/Tokyo', `${item.name}: URL timezone missing`);
+              assert(initial.listPressed && !initial.mapPressed && !initial.listHidden && initial.mapHidden, `${item.name}: initial mode is not List-first`);
+              assert(item.mobile ? initial.filtersOpen === false : initial.filtersOpen === true, `${item.name}: filter expansion state wrong`);
 
-            const originalDate = (await snapshot()).date;
-            const nextDisabled = await page.locator('[data-calendar-date-next]').isDisabled();
-            if (!nextDisabled) {
-              await page.locator('[data-calendar-date-next]').click();
-              await page.waitForTimeout(200);
-              const next = await snapshot();
-              assert(next.date !== originalDate, `${item.name}: Next did not change date`);
-              assert(next.params.date === next.date, `${item.name}: Next did not persist URL date`);
-              assert(next.visibleDates.every((date) => date === next.date), `${item.name}: Next left another date visible`);
-              await page.locator('[data-calendar-date-prev]').click();
-              await page.waitForTimeout(200);
-              assert((await snapshot()).date === originalDate, `${item.name}: Previous did not restore date`);
-            }
+              checkpoint = 'country-filter';
+              if (initial.countries.length > 0) {
+                await page.locator('[data-filter-country]').selectOption(initial.countries[0]);
+                await page.waitForTimeout(200);
+                const filtered = await snapshot();
+                assert(filtered.visibleCount > 0, `${item.name}: country filter unexpectedly empty`);
+                assert(filtered.visibleDates.length === 1 && filtered.visibleDates[0] === filtered.date, `${item.name}: country filter escaped selected date`);
+                const countries = await page.evaluate(() => [...document.querySelectorAll('[data-calendar-meeting-row]')]
+                  .filter((row) => row instanceof HTMLElement && !row.hidden)
+                  .map((row) => row.dataset.country));
+                assert(countries.every((country) => country === initial.countries[0]), `${item.name}: country filter mismatch`);
+                await page.locator('[data-filter-reset]').click();
+                await page.waitForTimeout(150);
+              }
 
-            await page.locator('[data-calendar-view-map]').click();
-            await page.waitForTimeout(250);
-            const mapMode = await snapshot();
-            assert(mapMode.mapPressed && !mapMode.listPressed && mapMode.listHidden && !mapMode.mapHidden, `${item.name}: Map switch failed`);
-            assert(mapMode.params.view === 'map', `${item.name}: Map view not persisted in URL`);
-            await page.waitForFunction(() => ['ready', 'error'].includes(document.querySelector('[data-racecourse-map]')?.getAttribute('data-map-state') || ''), null, { timeout: 20000 });
+              checkpoint = 'date-navigation';
+              const originalDate = (await snapshot()).date;
+              const nextDisabled = await page.locator('[data-calendar-date-next]').isDisabled();
+              if (!nextDisabled) {
+                await page.locator('[data-calendar-date-next]').click();
+                await page.waitForTimeout(200);
+                const next = await snapshot();
+                assert(next.date !== originalDate, `${item.name}: Next did not change date`);
+                assert(next.params.date === next.date, `${item.name}: Next did not persist URL date`);
+                assert(next.visibleDates.every((date) => date === next.date), `${item.name}: Next left another date visible`);
+                await page.locator('[data-calendar-date-prev]').click();
+                await page.waitForTimeout(200);
+                assert((await snapshot()).date === originalDate, `${item.name}: Previous did not restore date`);
+              }
 
-            const visibleFocusButtons = page.locator('[data-calendar-meeting-row]:not([hidden]) [data-calendar-row-map-focus]');
-            if (await visibleFocusButtons.count() > 0) {
+              checkpoint = 'map-switch';
+              await page.locator('[data-calendar-view-map]').click();
+              await page.waitForTimeout(250);
+              mapMode = await snapshot();
+              assert(mapMode.mapPressed && !mapMode.listPressed && mapMode.listHidden && !mapMode.mapHidden, `${item.name}: Map switch failed`);
+              assert(mapMode.params.view === 'map', `${item.name}: Map view not persisted in URL`);
+              await page.waitForFunction(() => ['ready', 'error'].includes(document.querySelector('[data-racecourse-map]')?.getAttribute('data-map-state') || ''), null, { timeout: 20000 });
+
+              checkpoint = 'list-to-map-focus';
+              const visibleFocusButtons = page.locator('[data-calendar-meeting-row]:not([hidden]) [data-calendar-row-map-focus]');
+              if (await visibleFocusButtons.count() > 0) {
+                await page.locator('[data-calendar-view-list]').click();
+                await page.waitForTimeout(100);
+                await visibleFocusButtons.first().click();
+                await page.waitForTimeout(400);
+                assert((await snapshot()).mapPressed, `${item.name}: list-to-map action did not switch to Map`);
+              }
+
+              checkpoint = 'list-restore';
               await page.locator('[data-calendar-view-list]').click();
-              await page.waitForTimeout(100);
-              await visibleFocusButtons.first().click();
-              await page.waitForTimeout(400);
-              assert((await snapshot()).mapPressed, `${item.name}: list-to-map action did not switch to Map`);
+              await page.waitForTimeout(150);
+              listMode = await snapshot();
+              assert(listMode.params.view === 'list' && listMode.listPressed && !listMode.listHidden, `${item.name}: List view not restored/persisted`);
+
+              checkpoint = 'timezone-utc';
+              await page.locator('[data-display-timezone-select]').evaluate((select) => {
+                select.value = 'UTC';
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+              });
+              await page.waitForFunction(() => new URL(location.href).searchParams.get('tz') === 'UTC', null, { timeout: 5000 });
+              await page.waitForTimeout(250);
+              utc = await snapshot();
+              assert(utc.timezone === 'UTC', `${item.name}: timezone projection did not switch to UTC`);
+              assert(utc.params.tz === 'UTC', `${item.name}: UTC not persisted in URL`);
+              assert(utc.visibleDates.every((date) => date === utc.date), `${item.name}: UTC projection escaped selected date`);
+
+              checkpoint = 'deep-link';
+              const pathname = new URL(page.url()).pathname;
+              const deepLink = `${pathname}?tz=Asia%2FTokyo&date=${encodeURIComponent(originalDate)}&view=map`;
+              await page.goto(`http://127.0.0.1:4321${deepLink}`, { waitUntil: 'domcontentloaded' });
+              await waitForCalendarReady(page);
+              restored = await snapshot();
+              assert(restored.date === originalDate, `${item.name}: deep-link date did not restore`);
+              assert(restored.mapPressed && restored.params.view === 'map', `${item.name}: deep-link Map state did not restore`);
+              assert(restored.params.tz === 'Asia/Tokyo', `${item.name}: deep-link timezone did not restore`);
+
+              checkpoint = 'overflow-and-page-errors';
+              overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+              assert(overflow <= 1, `${item.name}: horizontal overflow ${overflow}px`);
+              assert(pageErrors.length === 0, `${item.name}: page errors ${pageErrors.join(' | ')}`);
+              await page.screenshot({ path: `audit/ui-005/${item.name}.png`, fullPage: true });
+              report.push({ name: item.name, initial, mapMode, listMode, utc, restored, overflow, pageErrors, ok: true });
+            } catch (error) {
+              const message = error instanceof Error ? error.stack || error.message : String(error);
+              let failureSnapshot = null;
+              try { failureSnapshot = await snapshot(); } catch {}
+              let url = '';
+              try { url = page.url(); } catch {}
+              try { await page.screenshot({ path: `audit/ui-005/${item.name}-failure.png`, fullPage: true }); } catch {}
+              try { fs.writeFileSync(`audit/ui-005/${item.name}-failure.html`, await page.content()); } catch {}
+              const failure = { name: item.name, checkpoint, url, error: message, snapshot: failureSnapshot, pageErrors };
+              failures.push(failure);
+              report.push({ ...failure, ok: false });
+              fs.writeFileSync(`audit/ui-005/${item.name}-failure.json`, JSON.stringify(failure, null, 2));
+              console.error(`UI-005 FAILURE ${JSON.stringify(failure)}`);
+            } finally {
+              await page.close();
             }
-
-            await page.locator('[data-calendar-view-list]').click();
-            await page.waitForTimeout(150);
-            const listMode = await snapshot();
-            assert(listMode.params.view === 'list' && listMode.listPressed && !listMode.listHidden, `${item.name}: List view not restored/persisted`);
-
-            await page.locator('[data-display-timezone-select]').evaluate((select) => {
-              select.value = 'UTC';
-              select.dispatchEvent(new Event('change', { bubbles: true }));
-            });
-            await page.waitForFunction(() => new URL(location.href).searchParams.get('tz') === 'UTC', null, { timeout: 5000 });
-            await page.waitForTimeout(250);
-            const utc = await snapshot();
-            assert(utc.timezone === 'UTC', `${item.name}: timezone projection did not switch to UTC`);
-            assert(utc.params.tz === 'UTC', `${item.name}: UTC not persisted in URL`);
-            assert(utc.visibleDates.every((date) => date === utc.date), `${item.name}: UTC projection escaped selected date`);
-
-            const pathname = new URL(page.url()).pathname;
-            const deepLink = `${pathname}?tz=Asia%2FTokyo&date=${encodeURIComponent(originalDate)}&view=map`;
-            await page.goto(`http://127.0.0.1:4321${deepLink}`, { waitUntil: 'domcontentloaded' });
-            await waitForCalendarReady(page);
-            const restored = await snapshot();
-            assert(restored.date === originalDate, `${item.name}: deep-link date did not restore`);
-            assert(restored.mapPressed && restored.params.view === 'map', `${item.name}: deep-link Map state did not restore`);
-            assert(restored.params.tz === 'Asia/Tokyo', `${item.name}: deep-link timezone did not restore`);
-
-            const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-            assert(overflow <= 1, `${item.name}: horizontal overflow ${overflow}px`);
-            assert(pageErrors.length === 0, `${item.name}: page errors ${pageErrors.join(' | ')}`);
-            await page.screenshot({ path: `audit/ui-005/${item.name}.png`, fullPage: true });
-            report.push({ name: item.name, initial, mapMode, listMode, utc, restored, overflow, pageErrors, ok: true });
-            await page.close();
           }
 
           await browser.close();
           fs.writeFileSync('audit/ui-005/report.json', JSON.stringify(report, null, 2));
+          fs.writeFileSync('audit/ui-005/failures.json', JSON.stringify(failures, null, 2));
           console.log(JSON.stringify(report, null, 2));
+          if (failures.length > 0) {
+            throw new Error(`UI-005 browser audit failed in ${failures.length} case(s): ${failures.map((failure) => `${failure.name}@${failure.checkpoint}`).join(', ')}`);
+          }
           NODE
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: ui-005-calendar-clean-browser-audit
           path: audit/ui-005
