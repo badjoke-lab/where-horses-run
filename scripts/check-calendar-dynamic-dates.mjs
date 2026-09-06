@@ -128,10 +128,10 @@ const fixedCalendarHeadings = [
 const pageChecks = [
   ['src/pages/today.astro', ['CalendarDateStatus', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="today"', 'data-timezone-target-date']],
   ['src/pages/tomorrow.astro', ['CalendarDateStatus', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="tomorrow"', 'data-timezone-target-date']],
-  ['src/pages/calendar/index.astro', ['30-day racing calendar', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="rolling-30"', 'windowEndInclusive']],
+  ['src/pages/calendar/index.astro', ['CalendarDateNavigation', 'CalendarPresentationState', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="rolling-30"', 'windowEndInclusive']],
   ['src/pages/ja/today.astro', ['CalendarDateStatus', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="today"', 'data-timezone-target-date']],
   ['src/pages/ja/tomorrow.astro', ['CalendarDateStatus', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="tomorrow"', 'data-timezone-target-date']],
-  ['src/pages/ja/calendar/index.astro', ['30日間の開催カレンダー', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="rolling-30"', 'windowEndInclusive']],
+  ['src/pages/ja/calendar/index.astro', ['CalendarDateNavigation', 'CalendarPresentationState', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="rolling-30"', 'windowEndInclusive']],
 ];
 for (const [file, markers] of pageChecks) {
   const content = read(file);
@@ -139,6 +139,10 @@ for (const [file, markers] of pageChecks) {
   for (const pattern of fixedCalendarHeadings) {
     if (pattern.test(content)) fail(`${file} retains fixed month/year Calendar copy.`);
   }
+}
+
+for (const file of ['src/pages/calendar/index.astro', 'src/pages/ja/calendar/index.astro']) {
+  if (read(file).includes('CalendarDateFocus')) fail(`${file} must not retain the legacy CalendarDateFocus path.`);
 }
 
 const meetingList = read('src/components/TimetableMeetingList.astro');
