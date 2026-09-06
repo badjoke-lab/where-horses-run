@@ -64,6 +64,10 @@ for (const [label, source] of [
 requireText(today, 'data-today-map-selected', 'Today persistent selected-racecourse card');
 requireText(calendar, 'data-calendar-map-selected', 'Calendar persistent selected-racecourse card');
 requireText(home, 'data-home-map-selected', 'Home persistent selected-racecourse card');
+const homeSelectedLinkResets = home.match(/selectedLinks\.replaceChildren\(\);/g) ?? [];
+if (homeSelectedLinkResets.length < 2) {
+  fail(`Home selected-link rendering must reset links both when clearing and before re-rendering; found ${homeSelectedLinkResets.length} reset(s)`);
+}
 requireText(css, 'position: sticky', 'mobile selected-card presentation');
 
 for (const token of ['MapLibre', 'OpenFreeMap', 'attribution', 'API key', 'Failure boundary']) {
@@ -81,5 +85,5 @@ for (const token of [
 ]) requireText(touchQa, token, 'map touch-target QA styles');
 
 if (!process.exitCode) {
-  console.log('MAP-010 map UI contract OK: lazy runtime, timeout-only load failure, local racing projection, touch targets, attribution, failure fallback, and selected-card boundaries verified.');
+  console.log('MAP-010 map UI contract OK: lazy runtime, timeout-only load failure, local racing projection, touch targets, attribution, failure fallback, and idempotent selected-card boundaries verified.');
 }
