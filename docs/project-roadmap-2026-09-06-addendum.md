@@ -142,6 +142,25 @@ compact footer
 
 The shell must preserve EN/JA parity, legal/source navigation, usable non-map routes, and minimum 44px mobile targets.
 
+Implementation status: **complete when the UI-001 implementation PR is merged**.
+
+Verified implementation evidence before merge:
+
+```text
+existing repository CI/build: success
+EN Home desktop browser QA: success
+JA Home desktop browser QA: success
+EN Today mobile browser QA: success
+JA Calendar mobile browser QA: success
+horizontal overflow in all four cases: 0px
+page errors in all four cases: 0
+mobile bottom navigation: 5 items
+secondary More links: preserved
+Timezone -> URL state: verified
+```
+
+The temporary browser-audit workflow/PR used for this visual interaction check is closed unmerged and does not become permanent CI.
+
 ## UI-002 — Home map-first composition
 
 Target order:
@@ -283,8 +302,8 @@ Conversation history is not the execution authority.
 ## Current Work ID
 
 ```text
-Current UI Work ID: UI-001
-Next UI Work ID after completion: UI-002
+Current UI Work ID after UI-001 merge: UI-002
+Next UI Work ID after completion: UI-003
 Parallel Calendar lane: active independently
 ```
 
