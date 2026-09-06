@@ -30,6 +30,9 @@ function normalizedRows(record) {
 function observedRank(record) {
   return deriveBestAvailableRank(record, record?.timetable_rows ?? []);
 }
+function storedEvidenceRank(meeting, detail) {
+  return deriveBestAvailableRank(meeting, detail?.timetable_rows ?? []);
+}
 function sourceUrl(record, artifact) {
   return record.official_source_url
     ?? record.source_url
@@ -78,6 +81,25 @@ function validIdentity(record, defaults, previous) {
     authority_id: record.authority_id ?? previous?.authority_id ?? defaults.authority_id,
     racing_system_id: record.racing_system_id ?? previous?.racing_system_id ?? defaults.racing_system_id,
     timezone: record.timezone ?? previous?.timezone ?? defaults.timezone,
+  };
+}
+function normalizeStoredCanonical(meeting, detail) {
+  if (!meeting) return { meeting: null, detail, changed: false };
+  const evidenceRank = storedEvidenceRank(meeting, detail);
+  const nextMeeting = meeting.capability_rank === evidenceRank
+    ? meeting
+    : {
+        ...meeting,
+        capability_rank: evidenceRank,
+        display_status: evidenceRank === 'C' ? 'partial' : 'displayable',
+      };
+  const nextDetail = ['A', 'A+'].includes(evidenceRank) && detail
+    ? (detail.capability_rank === evidenceRank ? detail : { ...detail, capability_rank: evidenceRank })
+    : null;
+  return {
+    meeting: nextMeeting,
+    detail: nextDetail,
+    changed: nextMeeting !== meeting || nextDetail !== detail,
   };
 }
 function makeCanonical(record, artifact, checkedAt, defaults, previous) {
@@ -141,7 +163,8 @@ function makeCanonicalDetail(meeting, record, previousDetail) {
 }
 function makePublicMeeting(meeting, detail, policy, previousPublic) {
   const ceiling = policy.max_public_rank ?? 'C';
-  let effective = capRank(meeting.capability_rank, ceiling);
+  const evidenceRank = storedEvidenceRank(meeting, detail);
+  let effective = capRank(evidenceRank, ceiling);
   if (rank(effective) >= rank('A') && (!detail || !completeRankA(detail.timetable_rows ?? []))) {
     effective = meeting.first_race_time_local && meeting.last_race_time_local ? 'B+' : meeting.first_race_time_local ? 'B' : 'C';
   }
@@ -152,7 +175,7 @@ function makePublicMeeting(meeting, detail, policy, previousPublic) {
     racecourse_id: meeting.racecourse_id,
     date: meeting.date,
     timezone: meeting.timezone,
-    capability_rank: meeting.capability_rank,
+    capability_rank: evidenceRank,
     max_public_rank: ceiling,
     effective_public_rank: effective,
     first_race_time_local: meeting.first_race_time_local ?? null,
@@ -178,7 +201,7 @@ function makePublicDetail(meeting, detail, listRow, policy, previousPublicDetail
     racecourse_id: meeting.racecourse_id,
     date: meeting.date,
     timezone: meeting.timezone,
-    capability_rank: meeting.capability_rank,
+    capability_rank: listRow.capability_rank,
     max_public_rank: listRow.max_public_rank,
     effective_public_rank: listRow.effective_public_rank,
     policy_id: listRow.policy_id,
@@ -227,7 +250,7 @@ const canonicalById = new Map((canonical.meetings ?? []).map((row) => [row.meeti
 const detailsById = new Map((canonicalDetails.details ?? []).map((row) => [row.meeting_id, row]));
 const publicById = new Map((publicList.meetings ?? []).map((row) => [row.meeting_id, row]));
 const publicDetailsById = new Map((publicDetails.details ?? []).map((row) => [row.meeting_id, row]));
-const outcomes = { add: 0, update: 0, no_op: 0, protected_higher_rank: 0, ignored: 0 };
+const outcomes = { add: 0, update: 0, no_op: 0, protected_higher_rank: 0, normalized_stored_rank: 0, public_reprojected: 0, ignored: 0 };
 let changed = false;
 
 for (const record of records) {
@@ -235,7 +258,18 @@ for (const record of records) {
   const observed = observedRank(record);
   if (!RANK_INDEX.has(observed)) { outcomes.ignored += 1; continue; }
   if (record.detail_observation?.status === 'conflict') { outcomes.ignored += 1; continue; }
-  const previous = canonicalById.get(record.meeting_id) ?? null;
+  let previous = canonicalById.get(record.meeting_id) ?? null;
+  let previousDetail = detailsById.get(record.meeting_id) ?? null;
+  const normalizedStored = normalizeStoredCanonical(previous, previousDetail);
+  if (normalizedStored.changed) {
+    previous = normalizedStored.meeting;
+    previousDetail = normalizedStored.detail;
+    canonicalById.set(previous.meeting_id, previous);
+    if (previousDetail) detailsById.set(previous.meeting_id, previousDetail);
+    else detailsById.delete(previous.meeting_id);
+    changed = true;
+    outcomes.normalized_stored_rank += 1;
+  }
   const correction = record.official_correction === true;
   if (previous && rank(previous.capability_rank) > rank(observed) && !correction) {
     outcomes.protected_higher_rank += 1;
@@ -243,7 +277,6 @@ for (const record of records) {
   }
   const checkedAt = artifact.generated_at ?? artifact.retrieved_at ?? new Date().toISOString();
   const draft = makeCanonical(record, artifact, checkedAt, defaults, previous);
-  const previousDetail = detailsById.get(record.meeting_id) ?? null;
   let draftDetail = makeCanonicalDetail(draft, record, previousDetail);
   if (correction && rank(observed) < rank('A')) draftDetail = null;
   const substantiveChanged = !previous || !sameSubstance(previous, draft)
@@ -279,6 +312,27 @@ for (const record of records) {
   if (detailRow) publicDetailsById.set(next.meeting_id, detailRow);
   else publicDetailsById.delete(next.meeting_id);
   outcomes[previous ? 'update' : 'add'] += 1;
+}
+
+// Public output is a projection of canonical evidence plus the current display policy.
+// Recompute existing public rows even when the collector observation was a canonical no-op,
+// so policy changes and stricter evidence-derived ranks cannot remain stale indefinitely.
+for (const [meetingId, previousPublic] of [...publicById.entries()]) {
+  const meeting = canonicalById.get(meetingId);
+  if (!meeting) continue;
+  const detail = detailsById.get(meetingId) ?? null;
+  const policy = choosePolicy(meeting.authority_id, policyDataset);
+  const nextPublic = makePublicMeeting(meeting, detail, policy, previousPublic);
+  const previousPublicDetail = publicDetailsById.get(meetingId) ?? null;
+  const nextPublicDetail = makePublicDetail(meeting, detail, nextPublic, policy, previousPublicDetail);
+  const listChanged = JSON.stringify(previousPublic) !== JSON.stringify(nextPublic);
+  const detailChanged = JSON.stringify(previousPublicDetail) !== JSON.stringify(nextPublicDetail);
+  if (!listChanged && !detailChanged) continue;
+  publicById.set(meetingId, nextPublic);
+  if (nextPublicDetail) publicDetailsById.set(meetingId, nextPublicDetail);
+  else publicDetailsById.delete(meetingId);
+  changed = true;
+  outcomes.public_reprojected += 1;
 }
 
 if (changed) {
