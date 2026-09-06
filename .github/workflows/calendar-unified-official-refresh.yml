@@ -190,6 +190,7 @@ jobs:
             echo "No verified Japan timetable change to persist."
           else
             git commit -m "data: refresh Japan official timetable (${{ steps.scope.outputs.scope }})"
+            git pull --rebase origin main
             git push origin HEAD:main
           fi
       - name: Collect HKJC official window
@@ -267,6 +268,7 @@ jobs:
             exit 0
           fi
           git commit -m "data: refresh unified official rolling timetable (${{ steps.scope.outputs.scope }})"
+          git pull --rebase origin main
           git push origin HEAD:main
       - uses: actions/upload-artifact@v4
         if: always()
