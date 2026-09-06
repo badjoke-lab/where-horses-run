@@ -20,6 +20,13 @@ Do not:
 
 When Calendar work changes main, re-read/rebase the UI branch against current public meeting/view-model behavior before merge where relevant.
 
+Latest main checked before `UI-004`:
+
+```text
+dfe9f31c3e1923d610096d4a5e7ad3ef9f93f0c2  data: refresh unified official rolling timetable (full)
+aa237441e385a5f454705b865af1728ee08026d9  data: refresh Japan official timetable (full)
+```
+
 ## PR discipline
 
 Every UI PR must state:
@@ -95,7 +102,7 @@ Completion:
 - Today's Racing and Up Next remain available below the map;
 - secondary informational destinations are not equal-weight Home feature cards.
 
-Status: **verified complete for merge**. Existing CI/build passed. Direct Chromium checks passed for EN/JA desktop/mobile with zero horizontal overflow and zero page errors. The Home map rendered at 638px on desktop and 422px on mobile in the audit viewports. Today/Tomorrow/Next 7 days switching passed, the legacy equal-weight Home feature grid was absent, and Today's Racing / Up Next remained below the map. The temporary audit PR was closed unmerged.
+Status: **complete**. Existing CI/build passed. Direct Chromium checks passed for EN/JA desktop/mobile with zero horizontal overflow and zero page errors. The Home map rendered at 638px on desktop and 422px on mobile in the audit viewports. Today/Tomorrow/Next 7 days switching passed, the legacy equal-weight Home feature grid was absent, and Today's Racing / Up Next remained below the map. The temporary audit PR was closed unmerged.
 
 ## UI-003 — Home selected information
 
@@ -114,7 +121,30 @@ Completion:
 - repeated selection does not duplicate content/links;
 - dismissal and scrolling remain natural on mobile.
 
+Status: **complete**. PR `#866`, merge commit `46dc387f477ae0bb3ed2c09cca5db51f2ec5d3ca`.
+
+Verified UI-003 evidence:
+
+```text
+existing CI/build: success
+EN/JA desktop selected-card browser QA: success
+EN/JA mobile selected-card browser QA: success
+same venue selected 10 times: idempotent
+switching venue: selected content replaced
+Kawasaki Next-7-days case: 5 meetings -> 3 rendered + 2 remaining note
+race count shown only from public detail timetable_rows.length
+Hanshin public-detail race-count case: passed
+Mizusawa no-public-detail race-count omission: passed
+mobile normal-flow selected-card scrolling: passed
+horizontal overflow: 0px
+page errors: 0
+```
+
+Temporary audit PR `#867` is closed unmerged.
+
 ## UI-004 — Today
+
+Status: **current active Work ID**.
 
 Scope:
 
@@ -128,6 +158,10 @@ Completion:
 
 - racing-now/later-today/finished states are immediately legible;
 - list and map use the same public meeting set/state;
+- filters affect list and map together without creating a second meeting truth;
+- list -> map focus remains available;
+- mobile map selection does not force an automatic list jump;
+- explicit `View in list` performs the jump/focus;
 - EN/JA mobile behavior passes direct browser interaction QA.
 
 ## UI-005 — Calendar presentation
@@ -221,9 +255,10 @@ Mobile: bottom nav, More, 44px controls, no sticky selected card
 ## Current execution pointer
 
 ```text
-Current UI after UI-002 merge: UI-003
-Then UI: UI-004 -> UI-005 -> UI-006 -> UI-007 -> UI-008 -> UI-009
+Current UI: UI-004
+Then UI: UI-005 -> UI-006 -> UI-007 -> UI-008 -> UI-009
 Parallel Calendar quality lane: active independently throughout
+Current main reviewed before UI-004: dfe9f31c3e1923d610096d4a5e7ad3ef9f93f0c2
 ```
 
 After each merge, compare the implementation with the canonical UI specification and active roadmap before starting the next Work ID. Also check current main for Calendar-lane changes that affect the public meeting/view model. If the implementation decision changes the agreed UI, update the canonical documents rather than silently allowing drift.
