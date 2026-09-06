@@ -93,6 +93,34 @@ assert.deepEqual(discovered.meetings.map((row) => row.meeting_id), [
   'nar-kawasaki-racecourse-2026-09-11',
 ]);
 
+const pastProgrammeCells = Array.from({ length: 30 }, blank);
+pastProgrammeCells[0] = '<td><a href="/bangumi/20262008.do">番組</a></td>';
+const calendarWithPastProgramme = `<nav><a>9月</a><a>10月</a></nav>
+<h3>9月</h3><div class="calendar"><table>
+${venueRow('浦和', Array.from({ length: 30 }, blank))}
+${venueRow('船橋', Array.from({ length: 30 }, blank))}
+${venueRow('大井', pastProgrammeCells)}
+${venueRow('川崎', Array.from({ length: 30 }, blank))}
+</table></div><footer><a>10月</a></footer>`;
+const pastProgrammeFixture = '<table><tr><th>1日目</th><th>2日目</th><th>3日目</th><th>4日目</th><th>5日目</th></tr><tr><th>8月31日（月）</th><th>9月1日（火）</th><th>9月2日（水）</th><th>9月3日（木）</th><th>9月4日（金）</th></tr></table>';
+const outOfWindowProgramme = await discoverNankankeibaOfficial30d({
+  dates: ['2026-09-07', '2026-09-08'],
+  fetchImpl: async (url) => new Response(url.includes('/bangumi/') ? pastProgrammeFixture : calendarWithPastProgramme, { status: 200 }),
+});
+assert.equal(outOfWindowProgramme.completeness.completeness, 'complete');
+assert.equal(outOfWindowProgramme.completeness.failure_count, 0);
+assert.equal(outOfWindowProgramme.completeness.supplemental_failure_count, 0);
+assert.equal(outOfWindowProgramme.meetings.length, 0);
+
+const unparseableProgramme = await discoverNankankeibaOfficial30d({
+  dates: ['2026-09-07', '2026-09-08'],
+  fetchImpl: async (url) => new Response(url.includes('/bangumi/') ? '<table><tr><th>日付不明</th></tr></table>' : calendarFixture, { status: 200 }),
+});
+assert.equal(unparseableProgramme.completeness.completeness, 'complete');
+assert.equal(unparseableProgramme.completeness.failure_count, 0);
+assert.equal(unparseableProgramme.completeness.supplemental_failure_count, 1);
+assert.equal(unparseableProgramme.completeness.supplemental_failures[0].reason, 'programme_dates_incomplete');
+
 const supplementalFailure = await discoverNankankeibaOfficial30d({
   dates: ['2026-09-07', '2026-09-08'],
   fetchImpl: async (url) => url.includes('/bangumi/')
