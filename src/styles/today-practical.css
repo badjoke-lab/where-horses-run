@@ -113,6 +113,11 @@
   background: #666;
 }
 
+.today-state-summary__item--scheduled > span:first-child,
+.today-state-divider--scheduled > span:first-child {
+  background: #111;
+}
+
 .today-state-summary__total {
   margin-inline-start: auto;
   border-style: dashed;
@@ -187,6 +192,19 @@
   border: 0;
 }
 
+[data-home-meeting-window] .today-page__list .timetable-date-group > h2 {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0.35rem 0.55rem;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  border-bottom: 1px solid var(--whr-color-border);
+  font-size: 1rem;
+}
+
 .today-state-divider {
   display: flex;
   align-items: center;
@@ -245,7 +263,7 @@
 
   .today-state-summary {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.4rem;
   }
 
