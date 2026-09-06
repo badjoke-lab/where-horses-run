@@ -204,22 +204,26 @@ The map and list use the same public meeting set and the same state calculation.
 
 ### 8.1 Role
 
-Calendar is date-driven discovery.
+Calendar is date-driven discovery across the current rolling 30-day public window.
 
 ### 8.2 Structure
 
 ```text
 Calendar heading
-selected date navigation
+rolling 30-day range / optional date focus
 Today shortcut
 List | Map switch
 Timezone / Country / Authority / Rank filters
-selected-date content
+rolling 30-day content, optionally focused to one date
 ```
 
 ### 8.3 Authority
 
-The selected Calendar date and active public filters determine the meeting set. List and Map are two presentations of that same set.
+The default Calendar meeting set is the current rolling 30-day public window after active public filters. A selected date is optional, not required.
+
+`date=YYYY-MM-DD` narrows that same rolling-window set to one day for a focused view. Clearing the date returns to the full rolling 30-day view. Home or other pages may link into Calendar with a date focus, but that must not change the default Calendar contract.
+
+List and Map are two presentations of the same currently filtered meeting set. Do not create a separate selected-date-only Calendar truth or force an initial `date` parameter when none was requested.
 
 ### 8.4 Mobile
 
@@ -370,9 +374,9 @@ tz=<IANA timezone>
 Calendar target state:
 
 ```text
-date=YYYY-MM-DD
 view=list|map
 tz=<IANA timezone>
+date=YYYY-MM-DD   # optional one-day focus; absent = rolling 30-day view
 ```
 
 Additional filters may be URL-backed when they are stable/share-worthy and do not complicate the public data model.

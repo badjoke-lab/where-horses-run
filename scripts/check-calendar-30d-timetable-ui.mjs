@@ -54,22 +54,24 @@ for (const [label, page] of [[englishPath, englishPage], [japanesePath, japanese
 }
 
 for (const marker of [
-  'title="Racing calendar | Where Horses Run"',
+  'title="30-day racing calendar | Where Horses Run"',
   'groups={groups}',
   'canonicalPath="/calendar/"',
   'alternatePath="/ja/calendar/"',
-  'Selected-date meeting list',
+  'Rolling 30-day meeting list',
+  'default List and Map cover the full rolling window',
   'data-timezone-window-start',
   'data-timezone-window-end',
 ]) requireIncludes(englishPage, marker, englishPath);
 
 for (const marker of [
-  'title="開催カレンダー | 競馬どこ？"',
+  'title="30日開催カレンダー | 競馬どこ？"',
   'groups={groupedCalendarRecords}',
   'lang="ja"',
   'canonicalPath="/ja/calendar/"',
   'alternatePath="/calendar/"',
-  '選択日の開催一覧',
+  '30日間の開催一覧',
+  '初期状態で30日全体を表示',
   'data-timezone-window-start',
   'data-timezone-window-end',
 ]) requireIncludes(japanesePage, marker, japanesePath);
@@ -80,7 +82,9 @@ for (const marker of [
   'data-calendar-date-prev',
   'data-calendar-date-next',
   'data-calendar-date-today',
-  "url.searchParams.set('date', selected)",
+  "all.value = ''",
+  "all.textContent = isJa ? '30日すべて' : 'All 30 days'",
+  "url.searchParams.delete('date')",
   'whr:calendardatechange',
   'whr:timezonechange',
 ]) requireIncludes(dateNav, marker, dateNavPath);
@@ -89,7 +93,7 @@ for (const marker of [
   'data-calendar-filters',
   'HTMLDetailsElement',
   "window.matchMedia('(max-width: 700px)').matches",
-  "row.dataset.date === date.value",
+  "(!date.value || row.dataset.date === date.value)",
   'data-filter-country',
   'data-filter-authority',
   'data-filter-rank',
@@ -108,7 +112,6 @@ for (const marker of [
 for (const marker of [
   'data-calendar-presentation-state',
   "url.searchParams.set('view', view)",
-  "url.searchParams.set('date', dateSelect.value)",
   'popstate',
 ]) requireIncludes(presentation, marker, presentationPath);
 
@@ -165,13 +168,14 @@ for (const forbidden of [
 }
 
 if (errors.length) {
-  console.error('Calendar date-driven timetable UI check failed:');
+  console.error('Calendar rolling 30-day timetable UI check failed:');
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
 
-console.log('Calendar date-driven timetable UI check passed.');
-console.log('SELECTED_DATE_AUTHORITY: pass');
+console.log('Calendar rolling 30-day timetable UI check passed.');
+console.log('ROLLING_30_DAY_DEFAULT: pass');
+console.log('OPTIONAL_DATE_FOCUS: pass');
 console.log('LIST_MAP_SHARED_ROWS: pass');
 console.log('MOBILE_FILTER_COLLAPSE: pass');
 console.log('URL_DATE_VIEW_STATE: pass');
