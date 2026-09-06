@@ -21,7 +21,13 @@ const timeZoneOptions = [
 ];
 ---
 
-<section class="today-controls" data-today-controls data-lang={lang} aria-label={isJapanese ? '今日の開催フィルター' : 'Today meeting filters'}>
+<section class="today-controls" data-today-controls data-lang={lang} aria-label={isJapanese ? '開催期間と絞り込み' : 'Meeting window and filters'}>
+  <div class="today-controls__period" role="group" aria-label={isJapanese ? '表示期間' : 'Display period'}>
+    <button type="button" data-meeting-range="today" aria-pressed="true">{isJapanese ? '今日' : 'Today'}</button>
+    <button type="button" data-meeting-range="tomorrow" aria-pressed="false">{isJapanese ? '明日' : 'Tomorrow'}</button>
+    <button type="button" data-meeting-range="next7" aria-pressed="false">{isJapanese ? '7日間' : '7 days'}</button>
+  </div>
+
   <div class="today-controls__filters">
     <label>
       <span>{isJapanese ? '表示タイムゾーン' : 'Display timezone'}</span>
@@ -50,7 +56,7 @@ const timeZoneOptions = [
         {ranks.map((rank) => <option value={rank}>{rank}</option>)}
       </select>
     </label>
-    <button type="button" class="today-controls__reset" data-today-filter-reset>{isJapanese ? 'リセット' : 'Reset'}</button>
+    <button type="button" class="today-controls__reset" data-today-filter-reset>{isJapanese ? '絞り込み解除' : 'Reset filters'}</button>
   </div>
 
   <div class="today-state-summary" aria-live="polite">
@@ -58,21 +64,43 @@ const timeZoneOptions = [
       <span aria-hidden="true"></span>{isJapanese ? '開催中' : 'Racing now'} <strong data-today-count="running">0</strong>
     </span>
     <span class="today-state-summary__item today-state-summary__item--upcoming">
-      <span aria-hidden="true"></span>{isJapanese ? '今日これから' : 'Later today'} <strong data-today-count="upcoming">0</strong>
+      <span aria-hidden="true"></span>{isJapanese ? '開催前・本日開催' : 'Upcoming / racing today'} <strong data-today-count="upcoming">0</strong>
     </span>
     <span class="today-state-summary__item today-state-summary__item--ended">
       <span aria-hidden="true"></span>{isJapanese ? '終了' : 'Finished'} <strong data-today-count="ended">0</strong>
     </span>
+    <span class="today-state-summary__item today-state-summary__item--scheduled">
+      <span aria-hidden="true"></span>{isJapanese ? '今後の開催' : 'Scheduled'} <strong data-today-count="scheduled">0</strong>
+    </span>
     <span class="today-state-summary__total"><strong data-today-visible-count>0</strong> {isJapanese ? '開催を表示' : 'meetings shown'}</span>
   </div>
+
   <p class="today-controls__empty" data-today-filter-empty hidden>
-    {isJapanese ? 'この条件に一致する今日の開催はありません。' : 'No meeting today matches these filters.'}
+    {isJapanese ? 'この期間・条件に一致する開催はありません。' : 'No meeting matches this period and filters.'}
   </p>
 </section>
 
 <script is:inline>
   (() => {
     const CURATED_TIMEZONES = new Set(['Asia/Tokyo', 'Asia/Seoul', 'Asia/Hong_Kong', 'Asia/Dubai', 'Europe/Istanbul', 'UTC']);
+    const VALID_RANGES = new Set(['today', 'tomorrow', 'next7']);
+
+    const addDateDays = (dateText, days) => {
+      const date = new Date(`${dateText}T00:00:00.000Z`);
+      date.setUTCDate(date.getUTCDate() + days);
+      return date.toISOString().slice(0, 10);
+    };
+
+    const dateInTimeZone = (timeZone) => {
+      const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {
+        timeZone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }).formatToParts(new Date()).filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
+      return `${parts.year}-${parts.month}-${parts.day}`;
+    };
+
     const install = () => {
       document.querySelectorAll('[data-today-controls]').forEach((controls) => {
         if (!(controls instanceof HTMLElement) || controls.dataset.initialized === 'true') return;
@@ -86,10 +114,11 @@ const timeZoneOptions = [
         const reset = controls.querySelector('[data-today-filter-reset]');
         const total = controls.querySelector('[data-today-visible-count]');
         const empty = controls.querySelector('[data-today-filter-empty]');
-        const countNodes = new Map(['running', 'upcoming', 'ended'].map((state) => [state, controls.querySelector(`[data-today-count="${state}"]`)]));
+        const rangeButtons = Array.from(controls.querySelectorAll('[data-meeting-range]'));
+        const countNodes = new Map(['running', 'upcoming', 'ended', 'scheduled'].map((state) => [state, controls.querySelector(`[data-today-count="${state}"]`)]));
         if (!(timezone instanceof HTMLSelectElement) || !(country instanceof HTMLSelectElement) || !(authority instanceof HTMLSelectElement) || !(rank instanceof HTMLSelectElement)) return;
 
-        const timezoneRoot = () => document.querySelector('[data-display-timezone-root][data-projection-scope="today"]');
+        const timezoneRoot = () => document.querySelector('[data-display-timezone-root][data-projection-scope="all"]');
         const internalTimezone = () => timezoneRoot()?.querySelector('[data-display-timezone-select]');
         const rows = () => Array.from(document.querySelectorAll('[data-calendar-meeting-row]')).filter((row) => row instanceof HTMLElement);
         const mapRoot = () => document.querySelector('[data-today-map-sync] [data-racecourse-map]');
@@ -104,19 +133,28 @@ const timeZoneOptions = [
             return new Map();
           }
         };
+
+        const requestedRange = new URL(window.location.href).searchParams.get('range');
+        let activeRange = VALID_RANGES.has(requestedRange) ? requestedRange : 'today';
+
         const stateFor = (row) => {
-          const meetingState = row.dataset.meetingState || 'unknown';
-          const dayState = row.dataset.meetingDayState || 'unknown';
+          const meetingState = row.dataset.meetingState || 'future';
           if (meetingState === 'running') return 'running';
-          if (meetingState === 'ended' || dayState === 'past') return 'ended';
-          return 'upcoming';
+          if (meetingState === 'ended') return 'ended';
+          if (meetingState === 'upcoming' || meetingState === 'day-today') return 'upcoming';
+          return 'scheduled';
         };
+
         const stateLabel = (state) => state === 'running'
           ? (isJa ? '開催中' : 'Racing now')
           : state === 'ended'
             ? (isJa ? '終了' : 'Finished')
-            : (isJa ? '今日これから' : 'Later today');
-        const stateOrder = { running: 0, upcoming: 1, ended: 2 };
+            : state === 'scheduled'
+              ? (isJa ? '今後の開催' : 'Scheduled')
+              : (isJa ? '開催前・本日開催' : 'Upcoming / racing today');
+
+        const stateOrder = { running: 0, upcoming: 1, scheduled: 2, ended: 3 };
+
         const sortRows = (left, right) => {
           const stateDiff = stateOrder[stateFor(left)] - stateOrder[stateFor(right)];
           if (stateDiff !== 0) return stateDiff;
@@ -125,19 +163,38 @@ const timeZoneOptions = [
           if (leftStart !== rightStart) return leftStart - rightStart;
           return (left.dataset.racecourse || '').localeCompare(right.dataset.racecourse || '');
         };
+
+        const rangeBounds = () => {
+          const selectedTimeZone = CURATED_TIMEZONES.has(timezone.value) ? timezone.value : 'Asia/Tokyo';
+          const today = dateInTimeZone(selectedTimeZone);
+          if (activeRange === 'tomorrow') {
+            const start = addDateDays(today, 1);
+            return { start, endExclusive: addDateDays(start, 1) };
+          }
+          if (activeRange === 'next7') return { start: today, endExclusive: addDateDays(today, 7) };
+          return { start: today, endExclusive: addDateDays(today, 1) };
+        };
+
         const matchesFilters = (row) => {
           if (country.value && row.dataset.country !== country.value) return false;
           if (authority.value && row.dataset.authority !== authority.value) return false;
           if (rank.value && row.dataset.rank !== rank.value) return false;
           return true;
         };
+
+        const matchesRange = (row) => {
+          const { start, endExclusive } = rangeBounds();
+          const date = row.dataset.date || row.dataset.sourceDate || '';
+          return date >= start && date < endExclusive;
+        };
+
         const insertStateHeadings = () => {
           document.querySelectorAll('.today-state-divider').forEach((node) => node.remove());
-          document.querySelectorAll('[data-display-timezone-root][data-projection-scope="today"] .meeting-list').forEach((list) => {
+          document.querySelectorAll('[data-display-timezone-root][data-projection-scope="all"] .meeting-list').forEach((list) => {
             if (!(list instanceof HTMLElement)) return;
             const listRows = Array.from(list.querySelectorAll('[data-calendar-meeting-row]')).filter((row) => row instanceof HTMLElement).sort(sortRows);
             listRows.forEach((row) => list.append(row));
-            ['running', 'upcoming', 'ended'].forEach((state) => {
+            ['running', 'upcoming', 'scheduled', 'ended'].forEach((state) => {
               const first = listRows.find((row) => !row.hidden && stateFor(row) === state);
               if (!first) return;
               const count = listRows.filter((row) => !row.hidden && stateFor(row) === state).length;
@@ -150,6 +207,17 @@ const timeZoneOptions = [
             });
           });
         };
+
+        const syncSections = () => {
+          document.querySelectorAll('[data-display-timezone-root][data-projection-scope="all"] .timetable-date-group').forEach((section) => {
+            if (!(section instanceof HTMLElement)) return;
+            const visibleRows = Array.from(section.querySelectorAll('[data-calendar-meeting-row]')).filter((row) => row instanceof HTMLElement && !row.hidden);
+            section.hidden = visibleRows.length === 0;
+            const small = section.querySelector('h2 small');
+            if (small) small.textContent = ` · ${visibleRows.length} ${isJa ? '開催' : 'meetings'}`;
+          });
+        };
+
         const syncMap = () => {
           const mapping = meetingMapping();
           const visibleMeetingIds = rows().filter((row) => !row.hidden).map((row) => row.dataset.meetingId || '');
@@ -161,20 +229,40 @@ const timeZoneOptions = [
           if (map instanceof HTMLElement) {
             const selected = map.dataset.selectedRacecourseId || null;
             map.dispatchEvent(new CustomEvent('racecourse-map:set-visible', { detail: { racecourseIds, fit: true } }));
-            if (selected && !racecourseIds.includes(selected)) {
-              map.dispatchEvent(new CustomEvent('racecourse-map:deselect', { bubbles: true }));
-            }
+            if (selected && !racecourseIds.includes(selected)) map.dispatchEvent(new CustomEvent('racecourse-map:deselect', { bubbles: true }));
           }
           const status = mapStatus();
           if (status) status.textContent = isJa ? `${racecourseIds.length}競馬場を地図表示` : `${racecourseIds.length} mapped racecourses`;
         };
+
+        const rangeText = () => activeRange === 'tomorrow'
+          ? { eyebrow: isJa ? '明日' : 'Tomorrow', title: isJa ? '明日の開催' : 'Tomorrow’s racing', map: isJa ? '明日の開催マップ' : 'Tomorrow on the map', list: isJa ? '明日の開催一覧' : 'Tomorrow’s meetings' }
+          : activeRange === 'next7'
+            ? { eyebrow: isJa ? '7日間' : '7 days', title: isJa ? '今後7日間の開催' : 'Racing over the next 7 days', map: isJa ? '7日間の開催マップ' : '7-day meeting map', list: isJa ? '7日間の開催一覧' : '7-day meeting list' }
+            : { eyebrow: isJa ? '今日' : 'Today', title: isJa ? '今日の開催' : 'Today’s racing', map: isJa ? '今日の開催マップ' : 'Today on the map', list: isJa ? '今日の開催一覧' : 'Today’s meetings' };
+
+        const syncRangeCopy = () => {
+          const copy = rangeText();
+          const eyebrow = document.querySelector('[data-window-eyebrow]');
+          const title = document.querySelector('[data-window-title]');
+          const mapTitle = document.querySelector('#today-map-title');
+          const listTitle = document.querySelector('[data-window-list-title]');
+          if (eyebrow) eyebrow.textContent = copy.eyebrow;
+          if (title) title.textContent = copy.title;
+          if (mapTitle) mapTitle.textContent = copy.map;
+          if (listTitle) listTitle.textContent = copy.list;
+          rangeButtons.forEach((button) => {
+            if (!(button instanceof HTMLButtonElement)) return;
+            button.setAttribute('aria-pressed', button.dataset.meetingRange === activeRange ? 'true' : 'false');
+          });
+        };
+
         const applyFilters = () => {
-          const counts = { running: 0, upcoming: 0, ended: 0 };
+          const counts = { running: 0, upcoming: 0, ended: 0, scheduled: 0 };
           let visible = 0;
           rows().forEach((row) => {
-            const filtered = !matchesFilters(row);
-            row.dataset.todayFilterHidden = filtered ? 'true' : 'false';
-            const hidden = row.dataset.timezoneScopeHidden === 'true' || filtered;
+            const hidden = !matchesRange(row) || !matchesFilters(row);
+            row.dataset.todayFilterHidden = hidden ? 'true' : 'false';
             row.hidden = hidden;
             if (!hidden) {
               const state = stateFor(row);
@@ -185,10 +273,13 @@ const timeZoneOptions = [
           countNodes.forEach((node, state) => { if (node) node.textContent = String(counts[state]); });
           if (total) total.textContent = String(visible);
           if (empty instanceof HTMLElement) empty.hidden = visible !== 0;
+          syncSections();
           insertStateHeadings();
           syncMap();
-          window.dispatchEvent(new CustomEvent('whr:todayfilterchange', { detail: { visible } }));
+          syncRangeCopy();
+          window.dispatchEvent(new CustomEvent('whr:todayfilterchange', { detail: { visible, range: activeRange } }));
         };
+
         const syncTimezoneFromList = () => {
           const internal = internalTimezone();
           if (internal instanceof HTMLSelectElement && CURATED_TIMEZONES.has(internal.value)) timezone.value = internal.value;
@@ -199,6 +290,17 @@ const timeZoneOptions = [
           applyFilters();
         });
 
+        rangeButtons.forEach((button) => button.addEventListener('click', () => {
+          const next = button.dataset.meetingRange;
+          if (!VALID_RANGES.has(next)) return;
+          activeRange = next;
+          const url = new URL(window.location.href);
+          if (activeRange === 'today') url.searchParams.delete('range');
+          else url.searchParams.set('range', activeRange);
+          window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+          applyFilters();
+        }));
+
         timezone.addEventListener('change', () => {
           const internal = internalTimezone();
           const selected = CURATED_TIMEZONES.has(timezone.value) ? timezone.value : 'Asia/Tokyo';
@@ -207,6 +309,7 @@ const timeZoneOptions = [
             internal.dispatchEvent(new Event('change', { bubbles: true }));
           }
         });
+
         [country, authority, rank].forEach((select) => select.addEventListener('change', applyFilters));
         if (reset instanceof HTMLButtonElement) reset.addEventListener('click', () => {
           country.value = '';
@@ -214,6 +317,7 @@ const timeZoneOptions = [
           rank.value = '';
           applyFilters();
         });
+
         window.addEventListener('whr:timezonechange', () => requestAnimationFrame(() => {
           syncTimezoneFromList();
           applyFilters();
@@ -226,3 +330,31 @@ const timeZoneOptions = [
     else install();
   })();
 </script>
+
+<style>
+  .today-controls__period {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .45rem;
+    margin-block-end: .85rem;
+  }
+
+  .today-controls__period button {
+    border: 1px solid var(--whr-color-border);
+    border-radius: 999px;
+    background: #fff;
+    cursor: pointer;
+    font-weight: 800;
+    min-height: 44px;
+    padding: .5rem .9rem;
+  }
+
+  .today-controls__period button[aria-pressed='true'] {
+    background: #111;
+    color: #fff;
+  }
+
+  .today-state-summary__item--scheduled > span {
+    background: #111;
+  }
+</style>
