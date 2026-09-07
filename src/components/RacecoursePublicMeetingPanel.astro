@@ -29,15 +29,17 @@ const locationContext = racecourse
   : undefined;
 ---
 
-<RacecoursePublicMeetingPanelCore
-  state={state}
-  lang={lang}
-  officialScheduleUrl={officialScheduleUrl}
-/>
+<div class="racecourse-public-primary" data-racecourse-public-primary>
+  <RacecourseLocationMapSection
+    racecourseId={state.racecourse_id}
+    racecourseName={racecourseName}
+    contextText={locationContext}
+    lang={lang}
+  />
 
-<RacecourseLocationMapSection
-  racecourseId={state.racecourse_id}
-  racecourseName={racecourseName}
-  contextText={locationContext}
-  lang={lang}
-/>
+  <RacecoursePublicMeetingPanelCore
+    state={state}
+    lang={lang}
+    officialScheduleUrl={officialScheduleUrl}
+  />
+</div>
