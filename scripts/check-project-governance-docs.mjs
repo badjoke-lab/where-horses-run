@@ -47,8 +47,8 @@ requirePhrases('AGENTS.md', [
 ]);
 requirePhrases('START-HERE.md', [
   'docs/project-roadmap-2026-09-08-addendum.md',
+  'docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md',
   'WHR-CAL-PRESENTATION-STATE-001',
-  'Representative Visual Audit',
 ]);
 requirePhrases('docs/governance/document-authority.md', [
   'docs/project-roadmap-2026-09-08-addendum.md',
