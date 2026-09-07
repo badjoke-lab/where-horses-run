@@ -24,7 +24,15 @@
     if (!(row instanceof HTMLElement)) return;
     const sourceDate = row.dataset.sourceDate || '';
     const sourceTimeZone = row.dataset.sourceTimezone || '';
-    if (!sourceDate || !isTimeZoneSupported(sourceTimeZone)) return;
+    if (!sourceDate || !isTimeZoneSupported(sourceTimeZone)) {
+      row.dataset.meetingCalendarDayState = 'unknown';
+      row.dataset.meetingDayState = 'unknown';
+      row.dataset.meetingState = 'unknown';
+      row.dataset.meetingStatePolicy = 'invalid';
+      delete row.dataset.sortStart;
+      setBadges(row, 'unknown');
+      return;
+    }
 
     const displayTimeZone = displayTimeZoneForRow(row);
     const displayedDate = row.dataset.date || sourceDate;
@@ -38,6 +46,8 @@
       nowMs: now,
     });
 
+    // Day relation follows the selected presentation timezone. Lifecycle truth
+    // follows the reviewed source/venue-local instants inside the shared helper.
     row.dataset.meetingCalendarDayState = result.calendarDayState;
     row.dataset.meetingDayState = result.calendarDayState;
     row.dataset.meetingState = result.state;
@@ -59,10 +69,10 @@
       ? (isJa ? '開催中' : 'Racing now')
       : state === 'upcoming' && dayState === 'today'
         ? (isJa ? '今日これから' : 'Later today')
-        : state === 'ended'
-          ? (isJa ? '終了' : 'Finished')
-          : state === 'future'
-            ? (isJa ? '開催予定' : 'Scheduled')
+        : state === 'upcoming'
+          ? (isJa ? '開催前' : 'Upcoming')
+          : state === 'ended'
+            ? (isJa ? '終了' : 'Finished')
             : (isJa ? '時刻未確認' : 'Time not confirmed');
   };
 
@@ -100,14 +110,14 @@
     opacity: .68 !important;
   }
 
-  .meeting-row[data-meeting-state='future'],
   .meeting-row[data-meeting-state='unknown'] {
     background: #fff !important;
     box-shadow: none !important;
     opacity: 1 !important;
   }
 
-  .meeting-row[data-stream-state='unknown'] [data-live-link] {
+  .meeting-row[data-stream-state='unknown'] [data-live-link],
+  .meeting-row[data-stream-state='known'] [data-live-link] {
     background: transparent !important;
     border-radius: 0 !important;
     color: inherit !important;
