@@ -1,0 +1,102 @@
+name: Representative Visual Audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Optional deployed base URL. Leave empty to capture this commit from Astro preview.
+        required: false
+        default: ''
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'public/brand/**'
+      - 'data/static/racecourse-locations-v1.json'
+      - 'data/static/racecourse-location-evidence-v1.json'
+      - 'scripts/capture-representative-visuals.mjs'
+      - '.github/workflows/representative-visual-audit.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'public/brand/**'
+      - 'data/static/racecourse-locations-v1.json'
+      - 'data/static/racecourse-location-evidence-v1.json'
+      - 'scripts/capture-representative-visuals.mjs'
+      - '.github/workflows/representative-visual-audit.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: representative-visual-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  representative-visuals:
+    name: Desktop + mobile representative screenshots
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.22.0
+          cache: npm
+
+      - name: Install project dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Install pinned Playwright for visual audit
+        run: |
+          npm install --no-save --package-lock=false playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Build representative site
+        run: npm run build
+
+      - name: Resolve screenshot target
+        id: target
+        env:
+          REQUESTED_BASE_URL: ${{ inputs.base_url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "${REQUESTED_BASE_URL:-}" ]]; then
+            echo "base_url=${REQUESTED_BASE_URL%/}" >> "$GITHUB_OUTPUT"
+            echo "Using deployed screenshot target: ${REQUESTED_BASE_URL%/}"
+            exit 0
+          fi
+
+          nohup npm run preview -- --host 127.0.0.1 --port 4321 > /tmp/whr-preview.log 2>&1 &
+          echo $! > /tmp/whr-preview.pid
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent --show-error http://127.0.0.1:4321/ > /dev/null; then
+              echo "base_url=http://127.0.0.1:4321" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/whr-preview.log || true
+          echo "Astro preview did not become ready" >&2
+          exit 1
+
+      - name: Capture and validate representative visuals
+        env:
+          WHR_SCREENSHOT_BASE_URL: ${{ steps.target.outputs.base_url }}
+        run: node scripts/capture-representative-visuals.mjs
+
+      - name: Upload desktop and mobile visual evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: whr-representative-visuals-${{ github.run_id }}
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            artifacts/representative-visual-audit/**
+            /tmp/whr-preview.log
