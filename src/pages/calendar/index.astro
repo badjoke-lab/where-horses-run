@@ -62,8 +62,6 @@ const groups = getGroupedTimetableMeetingRows(candidateRecords);
       today={context.today}
     />
 
-    <CalendarMeetingMap records={candidateRecords} />
-    <CalendarSelectedCardEnhancer />
     <CalendarFilters records={candidateRecords} />
     <CalendarLivePlayers />
 
@@ -74,6 +72,9 @@ const groups = getGroupedTimetableMeetingRows(candidateRecords);
         emptyLabel="No meetings are currently listed in the selected 30-day display window or active filters. Check official sources for the latest information."
       />
     </section>
+
+    <CalendarMeetingMap records={candidateRecords} />
+    <CalendarSelectedCardEnhancer />
 
     <section class="calendar-page__secondary" aria-labelledby="calendar-data-title">
       <h2 id="calendar-data-title">Calendar data coverage</h2>
