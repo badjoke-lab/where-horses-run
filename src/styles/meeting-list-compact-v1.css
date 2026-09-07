@@ -1,0 +1,135 @@
+.timetable-timezone-projection .meeting-list {
+  gap: 0;
+}
+
+.timetable-timezone-projection .meeting-row {
+  min-height: 0 !important;
+  padding: 0.5rem 0.65rem !important;
+  gap: 0.2rem 0.7rem !important;
+  border-inline-start: 0 !important;
+  box-shadow: none !important;
+}
+
+.timetable-timezone-projection .meeting-row[data-meeting-state='running'],
+.timetable-timezone-projection .meeting-row[data-meeting-state='upcoming'][data-meeting-day-state='today'] {
+  box-shadow: none !important;
+}
+
+.timetable-timezone-projection .meeting-row__identity {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.timetable-timezone-projection .meeting-row__identity strong {
+  min-width: 0;
+}
+
+.timetable-timezone-projection .meeting-row__map-focus {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: auto !important;
+  min-width: 0 !important;
+  min-height: 28px !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0.18rem 0.48rem !important;
+  border: 1px solid var(--whr-color-border) !important;
+  border-radius: 0.4rem !important;
+  background: #fff !important;
+  color: var(--whr-color-navy) !important;
+  font: inherit !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  box-shadow: none !important;
+}
+
+.timetable-timezone-projection .meeting-row__rank {
+  min-height: 0 !important;
+  padding: 0.08rem 0.38rem !important;
+  font-size: 0.7rem !important;
+  line-height: 1.35 !important;
+}
+
+.timetable-timezone-projection .meeting-row__links {
+  gap: 0.3rem 0.4rem !important;
+}
+
+.timetable-timezone-projection .meeting-row__links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0.16rem 0.42rem;
+  border-radius: 0.38rem;
+  background: color-mix(in srgb, var(--whr-color-navy) 5%, #fff);
+  color: var(--whr-color-navy);
+  font-weight: 700;
+  line-height: 1.2;
+  text-decoration: none !important;
+}
+
+.timetable-timezone-projection .meeting-row__links a[data-live-link] {
+  background: color-mix(in srgb, var(--whr-color-gold) 13%, #fff);
+}
+
+.timetable-timezone-projection .meeting-row[data-stream-state='live'] .meeting-row__links a[data-live-link] {
+  background: #fff0ef;
+  color: #9d0000;
+}
+
+.timetable-timezone-projection .meeting-row__links a:focus-visible,
+.timetable-timezone-projection .meeting-row__map-focus:focus-visible {
+  outline: 3px solid var(--whr-color-navy);
+  outline-offset: 2px;
+}
+
+@media (max-width: 760px) {
+  .timetable-timezone-projection .meeting-row {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    grid-template-rows: auto auto auto !important;
+    align-items: center !important;
+    padding: 0.48rem 0.55rem !important;
+    gap: 0.18rem 0.55rem !important;
+  }
+
+  .timetable-timezone-projection .meeting-row__identity {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .timetable-timezone-projection .meeting-row__rank {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  .timetable-timezone-projection .meeting-row__system {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .timetable-timezone-projection .meeting-row__time {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+    white-space: nowrap;
+  }
+
+  .timetable-timezone-projection .meeting-row__links {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    justify-content: flex-start !important;
+    margin-block-start: 0.12rem;
+    white-space: normal !important;
+  }
+
+  .timetable-timezone-projection .meeting-row__meeting-badge,
+  .timetable-timezone-projection .meeting-row__stream-live-badge {
+    padding: 0.12rem 0.36rem !important;
+    font-size: 0.68rem !important;
+  }
+}
