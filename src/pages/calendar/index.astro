@@ -41,6 +41,9 @@ const groups = getGroupedTimetableMeetingRows(candidateRecords);
       <p class="hero__summary">
         Explore race meetings by date. Switch between List, Month, and Map views; times and date grouping use <span data-timezone-label>{context.timeZone}</span>.
       </p>
+      <p class="calendar-page__window">
+        <span data-timezone-window-start>{context.windowStart}</span> – <span data-timezone-window-end>{context.windowEndInclusive}</span>
+      </p>
     </section>
 
     <CalendarViewControls
