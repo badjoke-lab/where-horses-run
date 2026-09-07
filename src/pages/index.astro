@@ -43,8 +43,6 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
 
     <TodayFilters records={meetingCandidates} />
 
-    <TodayMeetingMap records={meetingCandidates} date={context.today} />
-
     <section class="today-page__list" aria-labelledby="home-list-title" data-today-practical-list>
       <div class="today-page__list-heading">
         <div>
@@ -59,5 +57,7 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
         emptyLabel="No meetings are currently listed for the selected period and display timezone. Check official sources for the latest information."
       />
     </section>
+
+    <TodayMeetingMap records={meetingCandidates} date={context.today} />
   </main>
 </BaseLayout>
