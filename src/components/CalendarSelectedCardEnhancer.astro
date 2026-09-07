@@ -1,0 +1,65 @@
+<script is:inline>
+  (() => {
+    const install = () => {
+      const calendar = document.querySelector('[data-calendar-map-switch]');
+      if (!(calendar instanceof HTMLElement) || calendar.dataset.selectedCardEnhanced === 'true') return;
+      calendar.dataset.selectedCardEnhanced = 'true';
+
+      const selectedCard = calendar.querySelector('[data-calendar-map-selected]');
+      const actions = selectedCard?.querySelector('.map-selected-card__actions');
+      if (!(selectedCard instanceof HTMLElement) || !(actions instanceof HTMLElement)) return;
+
+      let detailLink = actions.querySelector('[data-calendar-map-meeting-details]');
+      if (!(detailLink instanceof HTMLAnchorElement)) {
+        detailLink = document.createElement('a');
+        detailLink.dataset.calendarMapMeetingDetails = 'true';
+        detailLink.textContent = document.documentElement.lang === 'ja' ? '開催詳細' : 'Meeting details';
+        detailLink.hidden = true;
+        actions.prepend(detailLink);
+      }
+
+      const sync = () => {
+        const row = document.querySelector('.meeting-row--map-selected:not([hidden])');
+        if (!(row instanceof HTMLElement)) {
+          detailLink.hidden = true;
+          detailLink.removeAttribute('href');
+          return;
+        }
+        const candidate = Array.from(row.querySelectorAll('.meeting-row__links a')).find((anchor) => {
+          if (!(anchor instanceof HTMLAnchorElement)) return false;
+          try {
+            const url = new URL(anchor.href, window.location.origin);
+            return url.origin === window.location.origin && /\/timetable\/meetings\//.test(url.pathname);
+          } catch {
+            return false;
+          }
+        });
+        if (candidate instanceof HTMLAnchorElement) {
+          detailLink.href = candidate.href;
+          detailLink.hidden = false;
+        } else {
+          detailLink.hidden = true;
+          detailLink.removeAttribute('href');
+        }
+      };
+
+      const mapRoot = calendar.querySelector('[data-racecourse-map]');
+      if (mapRoot instanceof HTMLElement) {
+        mapRoot.addEventListener('racecourse-map:select', () => requestAnimationFrame(sync));
+        mapRoot.addEventListener('racecourse-map:deselect', () => requestAnimationFrame(sync));
+      }
+      window.addEventListener('whr:calendarfilterchange', () => requestAnimationFrame(sync));
+      window.addEventListener('whr:calendardatechange', () => requestAnimationFrame(sync));
+      document.addEventListener('click', (event) => {
+        const target = event.target;
+        if (target instanceof Element && target.closest('[data-calendar-row-map-focus]')) {
+          requestAnimationFrame(() => requestAnimationFrame(sync));
+        }
+      });
+      sync();
+    };
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
+    else install();
+  })();
+</script>
