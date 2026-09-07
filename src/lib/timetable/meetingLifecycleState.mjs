@@ -71,8 +71,7 @@ export function deriveMeetingLifecycleState({
   lastTime = '',
   nowMs = Date.now(),
 }) {
-  const currentDisplayDate = formatDateInTimeZone(new Date(nowMs), displayTimeZone);
-  if (!displayedDate || !currentDisplayDate || !sourceDate || !isTimeZoneSupported(sourceTimeZone)) {
+  if (!sourceDate || !isTimeZoneSupported(sourceTimeZone)) {
     return {
       calendarDayState: 'unknown',
       state: 'unknown',
@@ -81,40 +80,40 @@ export function deriveMeetingLifecycleState({
     };
   }
 
-  const calendarDayState = displayedDate < currentDisplayDate
-    ? 'past'
-    : displayedDate > currentDisplayDate
-      ? 'future'
-      : 'today';
+  // Calendar-day relation is presentation context only. It may move when the
+  // selected display timezone changes, but it is never allowed to decide the
+  // meeting lifecycle truth.
+  const effectiveDisplayTimeZone = isTimeZoneSupported(displayTimeZone) ? displayTimeZone : sourceTimeZone;
+  const currentDisplayDate = formatDateInTimeZone(new Date(nowMs), effectiveDisplayTimeZone);
+  const effectiveDisplayedDate = displayedDate || sourceDate;
+  const calendarDayState = !currentDisplayDate
+    ? 'unknown'
+    : effectiveDisplayedDate < currentDisplayDate
+      ? 'past'
+      : effectiveDisplayedDate > currentDisplayDate
+        ? 'future'
+        : 'today';
 
   const start = firstTime ? localDateTimeToInstant(sourceDate, firstTime, sourceTimeZone) : null;
-  const rawEnd = lastTime ? localDateTimeToInstant(sourceDate, lastTime, sourceTimeZone) : null;
-  let end = rawEnd;
-  if (start && end && end.getTime() < start.getTime()) {
-    end = new Date(end.getTime() + 86_400_000);
-  }
+  const parsedEnd = lastTime ? localDateTimeToInstant(sourceDate, lastTime, sourceTimeZone) : null;
+  const ambiguousCrossMidnight = Boolean(start && parsedEnd && parsedEnd.getTime() < start.getTime());
+  const end = ambiguousCrossMidnight ? null : parsedEnd;
 
-  const policy = start && end
-    ? 'first-last'
-    : start
-      ? 'first-only'
-      : end
-        ? 'last-only'
-        : 'untimed';
-
-  // Calendar-day relation is authoritative. Timing only refines meetings that are
-  // actually on the current day in the selected display timezone.
-  if (calendarDayState === 'past') {
-    return { calendarDayState, state: 'ended', policy, sortStartMs: start?.getTime() ?? null };
-  }
-  if (calendarDayState === 'future') {
-    return { calendarDayState, state: 'future', policy, sortStartMs: start?.getTime() ?? null };
-  }
+  const policy = ambiguousCrossMidnight
+    ? 'cross-midnight-ambiguous'
+    : start && end
+      ? 'first-last'
+      : start
+        ? 'first-only'
+        : end
+          ? 'last-only'
+          : 'untimed';
 
   let state = 'unknown';
   if (start && end) {
     state = nowMs < start.getTime() ? 'upcoming' : nowMs <= end.getTime() ? 'running' : 'ended';
   } else if (start) {
+    // A missing/ambiguous end instant cannot safely prove running or finished.
     state = nowMs < start.getTime() ? 'upcoming' : 'unknown';
   } else if (end) {
     state = nowMs > end.getTime() ? 'ended' : 'unknown';
