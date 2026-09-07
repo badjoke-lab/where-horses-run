@@ -44,8 +44,6 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
 
     <TodayFilters records={meetingCandidates} lang="ja" />
 
-    <TodayMeetingMap records={meetingCandidates} date={context.today} lang="ja" />
-
     <section class="today-page__list" aria-labelledby="home-list-title" data-today-practical-list>
       <div class="today-page__list-heading">
         <div>
@@ -61,5 +59,7 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
         emptyLabel="選択した期間と表示タイムゾーンに該当する開催情報は掲載されていません。最新情報は公式情報源で確認してください。"
       />
     </section>
+
+    <TodayMeetingMap records={meetingCandidates} date={context.today} lang="ja" />
   </main>
 </BaseLayout>
