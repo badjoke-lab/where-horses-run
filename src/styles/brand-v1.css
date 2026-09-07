@@ -1,0 +1,190 @@
+body {
+  background: #f8f9fb;
+  color: var(--whr-color-text);
+}
+
+.site-shell {
+  background: #fff;
+}
+
+.site-header {
+  background: rgba(255, 255, 255, .97);
+  border-block-end: 1px solid rgba(7, 35, 69, .16);
+  box-shadow: 0 1px 0 rgba(184, 146, 63, .12);
+}
+
+.site-header__inner {
+  min-height: 68px;
+}
+
+.site-brand {
+  align-items: center;
+  background: url('/brand/whr-mark.png') left center / 52px auto no-repeat;
+  color: var(--whr-color-navy) !important;
+  display: inline-flex;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.22rem;
+  font-weight: 700;
+  letter-spacing: -.015em;
+  min-height: 54px;
+  padding: .1rem 0 .92rem 61px;
+  position: relative;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.site-brand::after {
+  bottom: .48rem;
+  color: var(--whr-color-gold-dark);
+  content: 'THE GLOBAL RACING GUIDE';
+  font-family: var(--whr-font-family);
+  font-size: .43rem;
+  font-weight: 700;
+  left: 61px;
+  letter-spacing: .14em;
+  position: absolute;
+}
+
+.desktop-primary-nav a,
+.desktop-utility-nav a,
+.site-nav a,
+.mobile-bottom-nav a {
+  color: var(--whr-color-navy);
+}
+
+.desktop-primary-nav a[aria-current='page'],
+.desktop-utility-nav a[aria-current='page'] {
+  border-block-end: 2px solid var(--whr-color-gold);
+  color: var(--whr-color-navy);
+}
+
+.hero__eyebrow,
+.today-page__eyebrow {
+  color: var(--whr-color-gold-dark);
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.hero h1,
+.today-page h1,
+.calendar-page h1 {
+  color: var(--whr-color-navy);
+  font-family: Georgia, 'Times New Roman', serif;
+  letter-spacing: -.025em;
+}
+
+button,
+select,
+input {
+  border-color: var(--whr-color-border);
+}
+
+button:focus-visible,
+a:focus-visible,
+select:focus-visible,
+input:focus-visible,
+summary:focus-visible {
+  outline: 3px solid rgba(184, 146, 63, .42);
+  outline-offset: 2px;
+}
+
+.today-controls__period button[aria-pressed='true'],
+.calendar-presentation button[aria-pressed='true'],
+.calendar-presentation [aria-pressed='true'] {
+  background: var(--whr-color-navy) !important;
+  border-color: var(--whr-color-navy) !important;
+  color: #fff !important;
+}
+
+.today-controls__reset,
+button:not([aria-pressed]):hover {
+  border-color: var(--whr-color-gold);
+}
+
+a {
+  text-decoration-color: rgba(184, 146, 63, .72);
+  text-underline-offset: .16em;
+}
+
+a:hover {
+  color: var(--whr-color-navy-light);
+  text-decoration-color: var(--whr-color-gold);
+}
+
+.today-page__map,
+.today-page__list,
+.calendar-page section,
+.racecourse-map-shell,
+.today-controls {
+  border-color: rgba(7, 35, 69, .18);
+}
+
+.racecourse-map__panel,
+.leaflet-control-zoom a {
+  border-color: rgba(7, 35, 69, .18) !important;
+}
+
+.meeting-row__rank {
+  border-color: rgba(7, 35, 69, .24) !important;
+  color: var(--whr-color-navy);
+}
+
+/* Yellow has two explicit meanings: timed ranks are before start; B/C are racing today. */
+.racecourse-map__legend-dot--upcoming ~ .racecourse-map__legend-label--en,
+.racecourse-map__legend-dot--upcoming ~ .racecourse-map__legend-label--ja {
+  font-size: 0;
+}
+
+.racecourse-map__legend-dot--upcoming ~ .racecourse-map__legend-label--en::after {
+  content: 'Upcoming / racing today';
+  font-size: .78rem;
+}
+
+.racecourse-map__legend-dot--upcoming ~ .racecourse-map__legend-label--ja::after {
+  content: '開催前 / 本日開催';
+  font-size: .78rem;
+}
+
+.site-footer {
+  background: var(--whr-color-navy);
+  border-block-start: 3px solid var(--whr-color-gold);
+  color: rgba(255, 255, 255, .9);
+}
+
+.site-footer a {
+  color: #fff;
+  text-decoration-color: rgba(216, 184, 111, .72);
+}
+
+.site-footer__brand {
+  color: #fff !important;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.08rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+@media (max-width: 760px) {
+  .site-header__inner {
+    min-height: 60px;
+  }
+
+  .site-brand {
+    background-size: 44px auto;
+    font-size: 1.04rem;
+    min-height: 48px;
+    padding-left: 51px;
+    padding-bottom: .8rem;
+  }
+
+  .site-brand::after {
+    bottom: .42rem;
+    font-size: .36rem;
+    left: 51px;
+  }
+
+  .mobile-bottom-nav {
+    border-block-start-color: rgba(7, 35, 69, .18);
+  }
+}
