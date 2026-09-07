@@ -24,6 +24,7 @@ const dateNavPath = 'src/components/CalendarDateNavigation.astro';
 const filtersPath = 'src/components/CalendarFilters.astro';
 const mapPath = 'src/components/CalendarMeetingMap.astro';
 const presentationPath = 'src/components/CalendarPresentationState.astro';
+const viewControlsPath = 'src/components/CalendarViewControls.astro';
 const englishPage = read(englishPath);
 const japanesePage = read(japanesePath);
 const meetingList = read(listPath);
@@ -32,24 +33,43 @@ const dateNav = read(dateNavPath);
 const filters = read(filtersPath);
 const calendarMap = read(mapPath);
 const presentation = read(presentationPath);
+const viewControls = read(viewControlsPath);
+
+for (const marker of [
+  'CalendarDateNavigation',
+  'CalendarMeetingMap',
+  'CalendarFilters',
+  'CalendarViewControls',
+  'CalendarDateStatus',
+  'TimetableMeetingList',
+  'getTimetableMeetingRowsForWindow',
+  'getTimetableDataState',
+  'getTimetableDateContext',
+  'addCalendarDays',
+  'context.windowStart',
+  'context.windowEndInclusive',
+  'scope="rolling-30"',
+  'data-calendar-list-view',
+]) requireIncludes(englishPage, marker, englishPath);
+
+for (const marker of [
+  'CalendarDateNavigation',
+  'CalendarMeetingMap',
+  'CalendarFilters',
+  'CalendarPresentationState',
+  'CalendarDateStatus',
+  'TimetableMeetingList',
+  'getTimetableMeetingRowsForWindow',
+  'getTimetableDataState',
+  'getTimetableDateContext',
+  'addCalendarDays',
+  'context.windowStart',
+  'context.windowEndInclusive',
+  'scope="rolling-30"',
+  'data-calendar-list-view',
+]) requireIncludes(japanesePage, marker, japanesePath);
 
 for (const [label, page] of [[englishPath, englishPage], [japanesePath, japanesePage]]) {
-  for (const marker of [
-    'CalendarDateNavigation',
-    'CalendarMeetingMap',
-    'CalendarFilters',
-    'CalendarPresentationState',
-    'CalendarDateStatus',
-    'TimetableMeetingList',
-    'getTimetableMeetingRowsForWindow',
-    'getTimetableDataState',
-    'getTimetableDateContext',
-    'addCalendarDays',
-    'context.windowStart',
-    'context.windowEndInclusive',
-    'scope="rolling-30"',
-    'data-calendar-list-view',
-  ]) requireIncludes(page, marker, label);
   if (page.includes('CalendarDateFocus')) fail(`${label}: legacy CalendarDateFocus must not remain`);
 }
 
@@ -59,7 +79,6 @@ for (const marker of [
   'canonicalPath="/calendar/"',
   'alternatePath="/ja/calendar/"',
   'Rolling 30-day meeting list',
-  'default List and Map cover the full rolling window',
   'data-timezone-window-start',
   'data-timezone-window-end',
 ]) requireIncludes(englishPage, marker, englishPath);
@@ -110,6 +129,18 @@ for (const marker of [
 ]) requireIncludes(calendarMap, marker, mapPath);
 
 for (const marker of [
+  'data-calendar-view-control="list"',
+  'data-calendar-view-control="month"',
+  'data-calendar-view-control="map"',
+  'data-calendar-month-view',
+  'data-calendar-month-date',
+  "url.searchParams.set('view', view)",
+  'popstate',
+  'internalList.click()',
+  'internalMap.click()',
+]) requireIncludes(viewControls, marker, viewControlsPath);
+
+for (const marker of [
   'data-calendar-presentation-state',
   "url.searchParams.set('view', view)",
   'popstate',
@@ -152,7 +183,7 @@ for (const marker of [
   'no_public_records',
 ]) requireIncludes(dateStatus, marker, statusPath);
 
-const combined = `${englishPage}\n${japanesePage}\n${meetingList}\n${dateStatus}\n${dateNav}\n${filters}\n${calendarMap}\n${presentation}`;
+const combined = `${englishPage}\n${japanesePage}\n${meetingList}\n${dateStatus}\n${dateNav}\n${filters}\n${calendarMap}\n${presentation}\n${viewControls}`;
 const fixedCalendarHeadings = [
   /\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}\s+Calendar\b/i,
   /\b\d{4}年(?:1[0-2]|[1-9])月\s*開催カレンダー/,
@@ -176,7 +207,7 @@ if (errors.length) {
 console.log('Calendar rolling 30-day timetable UI check passed.');
 console.log('ROLLING_30_DAY_DEFAULT: pass');
 console.log('OPTIONAL_DATE_FOCUS: pass');
-console.log('LIST_MAP_SHARED_ROWS: pass');
+console.log('LIST_MONTH_MAP_SHARED_ROWS: pass');
 console.log('MOBILE_FILTER_COLLAPSE: pass');
 console.log('URL_DATE_VIEW_STATE: pass');
 console.log('ONE_MEETING_PER_LIST_ROW: pass');

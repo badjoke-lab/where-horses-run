@@ -5,7 +5,7 @@ import CalendarDateNavigation from '../../components/CalendarDateNavigation.astr
 import CalendarDateStatus from '../../components/CalendarDateStatus.astro';
 import CalendarFilters from '../../components/CalendarFilters.astro';
 import CalendarMeetingMap from '../../components/CalendarMeetingMap.astro';
-import CalendarPresentationState from '../../components/CalendarPresentationState.astro';
+import CalendarViewControls from '../../components/CalendarViewControls.astro';
 import MeetingStatePolicy from '../../components/MeetingStatePolicy.astro';
 import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
 import {
@@ -16,6 +16,7 @@ import {
 } from '../../data/timetableMeetingRows';
 import { addCalendarDays } from '../../lib/timetable/calendarDateContext.mjs';
 import '../../styles/calendar-presentation.css';
+import '../../styles/calendar-mock-v1.css';
 
 const context = getTimetableDateContext();
 const dataState = getTimetableDataState(context);
@@ -27,7 +28,7 @@ const groups = getGroupedTimetableMeetingRows(candidateRecords);
 
 <BaseLayout
   title="30-day racing calendar | Where Horses Run"
-  description={`Browse racing listed from ${context.windowStart} through ${context.windowEndInclusive}. Optionally focus one date without replacing the rolling 30-day list.`}
+  description={`Browse racing listed from ${context.windowStart} through ${context.windowEndInclusive} by list, month, or map.`}
   canonicalPath="/calendar/"
   alternatePath="/ja/calendar/"
 >
@@ -38,18 +39,28 @@ const groups = getGroupedTimetableMeetingRows(candidateRecords);
       <p class="hero__eyebrow">Racing calendar</p>
       <h1 id="page-title">Calendar</h1>
       <p class="hero__summary">
-        Browse meetings from <span data-timezone-window-start>{context.windowStart}</span> through <span data-timezone-window-end>{context.windowEndInclusive}</span>. The default List and Map cover the full rolling window; choose a date only when you want to focus one day. Times and date grouping use <span data-timezone-label>{context.timeZone}</span>.
+        Explore race meetings by date. Switch between List, Month, and Map views; times and date grouping use <span data-timezone-label>{context.timeZone}</span>.
+      </p>
+      <p class="calendar-page__window">
+        <span data-timezone-window-start>{context.windowStart}</span> – <span data-timezone-window-end>{context.windowEndInclusive}</span>
       </p>
     </section>
+
+    <CalendarViewControls
+      startDate={context.windowStart}
+      endDateInclusive={context.windowEndInclusive}
+      today={context.today}
+      records={candidateRecords}
+    />
 
     <CalendarDateNavigation
       startDate={context.windowStart}
       endDateInclusive={context.windowEndInclusive}
       today={context.today}
     />
+
     <CalendarMeetingMap records={candidateRecords} />
     <CalendarFilters records={candidateRecords} />
-    <CalendarPresentationState />
 
     <section aria-label="Rolling 30-day meeting list" data-calendar-list-view>
       <TimetableMeetingList
