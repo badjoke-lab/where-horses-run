@@ -155,37 +155,138 @@
 
 @media (max-width: 900px) {
   .today-page {
-    padding-inline: 1rem;
+    padding-inline: 0;
+    gap: 0.7rem;
   }
 
   .today-page__hero {
-    padding-block: 1.5rem .5rem;
+    padding-block: 0.45rem 0.15rem;
   }
 
   .today-page__hero h1 {
-    max-width: 10ch;
-    font-size: clamp(2.5rem, 11vw, 4rem);
+    max-width: 12ch;
+    font-size: clamp(2rem, 9vw, 3.1rem);
+    line-height: 1;
+  }
+
+  .today-page__hero .today-page__context {
+    margin-block-start: 0.45rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.055em;
+  }
+
+  .today-page__hero .hero__summary {
+    display: -webkit-box;
+    margin-block: 0.45rem 0;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    font-size: 0.88rem;
+    line-height: 1.4;
+  }
+
+  .today-controls {
+    gap: 0.5rem;
+  }
+
+  .today-controls__period button {
+    min-height: 42px;
+    padding-inline: 0.35rem;
+    font-size: 0.78rem;
+  }
+
+  .today-controls__filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  .today-controls__filters label {
+    gap: 0.18rem;
+    font-size: 0.7rem;
+  }
+
+  .today-controls__filters select,
+  .today-controls__reset {
+    min-height: 42px;
+    padding-block: 0.35rem;
+    font-size: 0.78rem;
+  }
+
+  .today-controls__reset {
+    padding-inline: 0.5rem;
   }
 
   .today-state-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.3rem;
+  }
+
+  .today-state-summary__item,
+  .today-state-summary__total {
+    min-height: 30px;
+    padding: 0.2rem 0.42rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+  }
+
+  .today-page__list {
+    gap: 0.5rem;
+    margin-block: 0;
+  }
+
+  .today-page__list-heading {
+    gap: 0.25rem;
+    padding-block-start: 0.45rem;
+  }
+
+  .today-page__list-heading h2 {
+    font-size: 1.35rem;
+    line-height: 1.05;
+  }
+
+  .today-page__list-heading > p {
+    display: none;
+  }
+
+  .today-page__eyebrow {
+    font-size: 0.68rem;
+  }
+
+  .today-page .today-meeting-map.card {
+    margin-block-start: 0.55rem;
+    padding-block-start: 0.45rem;
+    border-top: 2px solid var(--whr-color-text);
+  }
+
+  .today-page .today-meeting-map > p {
+    margin-block: 0 0.35rem;
+    color: var(--whr-color-muted);
+    font-size: 0.74rem;
+    line-height: 1.35;
   }
 
   .today-page .racecourse-map__canvas {
-    min-height: 390px;
+    min-height: 260px;
+    border-radius: 0.55rem;
+  }
+
+  .today-page .racecourse-map__attribution,
+  .today-page .racecourse-map__meta {
+    font-size: 0.65rem;
+    line-height: 1.3;
   }
 }
 
 @media (max-width: 560px) {
   .today-controls__filters {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .today-controls__filters label:first-child {
-    grid-column: auto;
+    grid-column: 1 / -1;
   }
 
   .today-state-summary__item {
-    min-height: 58px;
+    min-height: 30px;
   }
 }

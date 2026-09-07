@@ -63,8 +63,6 @@ const groupedCalendarRecords = getGroupedTimetableMeetingRows(candidateRecords);
       lang="ja"
     />
 
-    <CalendarMeetingMap records={candidateRecords} lang="ja" />
-    <CalendarSelectedCardEnhancer />
     <CalendarFilters records={candidateRecords} lang="ja" />
     <CalendarLivePlayers />
     <CalendarPresentationState lang="ja" />
@@ -77,6 +75,9 @@ const groupedCalendarRecords = getGroupedTimetableMeetingRows(candidateRecords);
         emptyLabel="現在の30日表示範囲または選択中の絞り込み条件に該当する開催情報は掲載されていません。最新情報は公式情報源で確認してください。"
       />
     </section>
+
+    <CalendarMeetingMap records={candidateRecords} lang="ja" />
+    <CalendarSelectedCardEnhancer />
 
     <section class="calendar-page__secondary" aria-labelledby="calendar-data-title">
       <h2 id="calendar-data-title">カレンダーデータの掲載状況</h2>
