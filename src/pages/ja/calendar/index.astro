@@ -4,8 +4,11 @@ import CalendarCoverageDashboard from '../../../components/CalendarCoverageDashb
 import CalendarDateNavigation from '../../../components/CalendarDateNavigation.astro';
 import CalendarDateStatus from '../../../components/CalendarDateStatus.astro';
 import CalendarFilters from '../../../components/CalendarFilters.astro';
+import CalendarLivePlayers from '../../../components/CalendarLivePlayers.astro';
 import CalendarMeetingMap from '../../../components/CalendarMeetingMap.astro';
 import CalendarPresentationState from '../../../components/CalendarPresentationState.astro';
+import CalendarSelectedCardEnhancer from '../../../components/CalendarSelectedCardEnhancer.astro';
+import CalendarViewControls from '../../../components/CalendarViewControls.astro';
 import MeetingStatePolicy from '../../../components/MeetingStatePolicy.astro';
 import TimetableMeetingList from '../../../components/TimetableMeetingList.astro';
 import {
@@ -16,6 +19,8 @@ import {
 } from '../../../data/timetableMeetingRows';
 import { addCalendarDays } from '../../../lib/timetable/calendarDateContext.mjs';
 import '../../../styles/calendar-presentation.css';
+import '../../../styles/calendar-mock-v1.css';
+import '../../../styles/racecourse-detail-mock-v1.css';
 
 const context = getTimetableDateContext();
 const dataState = getTimetableDataState(context);
@@ -27,7 +32,7 @@ const groupedCalendarRecords = getGroupedTimetableMeetingRows(candidateRecords);
 
 <BaseLayout
   title="30日開催カレンダー | 競馬どこ？"
-  description={`${context.windowStart}から${context.windowEndInclusive}までの開催を30日一覧で確認し、必要な場合だけ1日へ絞り込めます。`}
+  description={`${context.windowStart}から${context.windowEndInclusive}までの開催をList・Month・Mapで確認できます。`}
   lang="ja"
   canonicalPath="/ja/calendar/"
   alternatePath="/calendar/"
@@ -39,9 +44,17 @@ const groupedCalendarRecords = getGroupedTimetableMeetingRows(candidateRecords);
       <p class="hero__eyebrow">開催カレンダー</p>
       <h1 id="page-title">カレンダー</h1>
       <p class="hero__summary">
-        <span data-timezone-window-start>{context.windowStart}</span>から<span data-timezone-window-end>{context.windowEndInclusive}</span>までの開催を一覧できます。ListとMapは初期状態で30日全体を表示し、必要な場合だけ日付を選んで1日に絞り込みます。表示タイムゾーンは<span data-timezone-label>{context.timeZone}</span>です。
+        初期状態で30日全体を表示します。<span data-timezone-window-start>{context.windowStart}</span>から<span data-timezone-window-end>{context.windowEndInclusive}</span>までの開催を、List・Month・Mapで切り替えて確認できます。表示タイムゾーンは<span data-timezone-label>{context.timeZone}</span>です。
       </p>
     </section>
+
+    <CalendarViewControls
+      startDate={context.windowStart}
+      endDateInclusive={context.windowEndInclusive}
+      today={context.today}
+      records={candidateRecords}
+      lang="ja"
+    />
 
     <CalendarDateNavigation
       startDate={context.windowStart}
@@ -49,8 +62,11 @@ const groupedCalendarRecords = getGroupedTimetableMeetingRows(candidateRecords);
       today={context.today}
       lang="ja"
     />
+
     <CalendarMeetingMap records={candidateRecords} lang="ja" />
+    <CalendarSelectedCardEnhancer />
     <CalendarFilters records={candidateRecords} lang="ja" />
+    <CalendarLivePlayers />
     <CalendarPresentationState lang="ja" />
 
     <section aria-label="30日間の開催一覧" data-calendar-list-view>

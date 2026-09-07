@@ -1,0 +1,131 @@
+<script is:inline>
+  (() => {
+    const icon = (name) => {
+      const common = 'viewBox="0 0 24 24" aria-hidden="true" focusable="false"';
+      if (name === 'home') return `<svg ${common}><path d="M3 10.5 12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H4.5A1.5 1.5 0 0 1 3 19.5v-9Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>`;
+      if (name === 'today') return `<svg ${common}><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.5 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+      if (name === 'calendar') return `<svg ${common}><rect x="3.5" y="5.5" width="17" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7 3v5M17 3v5M3.5 10h17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+      if (name === 'countries') return `<svg ${common}><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.8 12h16.4M12 3.5c2.1 2.3 3.2 5.1 3.2 8.5S14.1 18.2 12 20.5C9.9 18.2 8.8 15.4 8.8 12S9.9 5.8 12 3.5Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>`;
+      if (name === 'racecourses') return `<svg ${common}><path d="M4 17c2.7-4.8 7-7.7 13.7-8.9l2.3 2.2-3.5 1.5 1 2.5-3.2.5-2.2 3.4-2.2-2.7L6 19Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M6 20h12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+      if (name === 'more') return `<svg ${common}><circle cx="5" cy="12" r="1.7" fill="currentColor"/><circle cx="12" cy="12" r="1.7" fill="currentColor"/><circle cx="19" cy="12" r="1.7" fill="currentColor"/></svg>`;
+      return '';
+    };
+
+    const install = () => {
+      const lang = document.documentElement.lang === 'ja' ? 'ja' : 'en';
+      const homePath = lang === 'ja' ? '/ja/' : '/';
+      const withCurrentTimezone = (href) => {
+        const url = new URL(href, window.location.origin);
+        const tz = new URL(window.location.href).searchParams.get('tz');
+        if (tz) url.searchParams.set('tz', tz);
+        return `${url.pathname}${url.search}${url.hash}`;
+      };
+      const links = {
+        home: { href: homePath, label: lang === 'ja' ? 'ホーム' : 'Home', icon: 'home' },
+        today: { href: `${homePath}?range=today`, label: lang === 'ja' ? '今日' : 'Today', icon: 'today' },
+        calendar: { href: `${lang === 'ja' ? '/ja' : ''}/calendar/`, label: lang === 'ja' ? 'カレンダー' : 'Calendar', icon: 'calendar' },
+        countries: { href: `${lang === 'ja' ? '/ja' : ''}/countries/`, label: lang === 'ja' ? '国・地域' : 'Countries', icon: 'countries' },
+        racecourses: { href: `${lang === 'ja' ? '/ja' : ''}/tracks/`, label: lang === 'ja' ? '競馬場' : 'Racecourses', icon: 'racecourses' },
+      };
+      const currentUrl = new URL(window.location.href);
+      const isCurrent = (key) => {
+        const target = new URL(links[key].href, window.location.origin);
+        if (key === 'home') return currentUrl.pathname === homePath && !currentUrl.searchParams.has('range');
+        if (key === 'today') return currentUrl.pathname === homePath && currentUrl.searchParams.get('range') === 'today';
+        return currentUrl.pathname === target.pathname || currentUrl.pathname.startsWith(target.pathname);
+      };
+      const makeAnchor = (key, includeIcon = false) => {
+        const item = links[key];
+        const anchor = document.createElement('a');
+        anchor.href = withCurrentTimezone(item.href);
+        anchor.dataset.shellNav = key;
+        if (isCurrent(key)) anchor.setAttribute('aria-current', 'page');
+        if (includeIcon) anchor.innerHTML = `${icon(item.icon)}<span>${item.label}</span>`;
+        else anchor.textContent = item.label;
+        return anchor;
+      };
+
+      const desktopList = document.querySelector('.desktop-primary-nav__list');
+      if (desktopList instanceof HTMLUListElement) {
+        desktopList.replaceChildren(...['today', 'calendar', 'countries', 'racecourses'].map((key) => {
+          const li = document.createElement('li');
+          li.append(makeAnchor(key));
+          return li;
+        }));
+      }
+
+      const bottomNav = document.querySelector('.mobile-bottom-nav');
+      if (bottomNav instanceof HTMLElement) {
+        const more = bottomNav.querySelector('.mobile-bottom-more');
+        const bottomLinks = ['home', 'today', 'calendar', 'countries'].map((key) => makeAnchor(key, true));
+        bottomNav.querySelectorAll(':scope > a').forEach((node) => node.remove());
+        bottomLinks.forEach((anchor) => bottomNav.insertBefore(anchor, more));
+        const moreSummary = more?.querySelector('.mobile-bottom-more__summary');
+        if (moreSummary instanceof HTMLElement) {
+          moreSummary.innerHTML = `${icon('more')}<span>${lang === 'ja' ? 'その他' : 'More'}</span>`;
+        }
+        const moreList = more?.querySelector('.mobile-bottom-more__panel ul');
+        if (moreList instanceof HTMLUListElement) {
+          const existingByPath = new Map(Array.from(moreList.querySelectorAll('a[href]')).map((anchor) => {
+            const url = new URL(anchor.href, window.location.origin);
+            return [url.pathname, anchor];
+          }));
+          const racecourseLi = document.createElement('li');
+          racecourseLi.append(makeAnchor('racecourses'));
+          const utilityPaths = [
+            lang === 'ja' ? '/ja/search/' : '/search/',
+            lang === 'ja' ? '/ja/types/' : '/types/',
+            lang === 'ja' ? '/ja/glossary/' : '/glossary/',
+            lang === 'ja' ? '/ja/sources/' : '/sources/',
+            lang === 'ja' ? '/ja/about/' : '/about/',
+          ];
+          const rebuilt = [racecourseLi];
+          utilityPaths.forEach((path) => {
+            const existing = existingByPath.get(path);
+            if (!existing) return;
+            const li = document.createElement('li');
+            existing.href = withCurrentTimezone(path);
+            li.append(existing);
+            rebuilt.push(li);
+          });
+          const languageLink = Array.from(moreList.querySelectorAll('a[hreflang]')).find((node) => node instanceof HTMLAnchorElement);
+          if (languageLink instanceof HTMLAnchorElement) {
+            const li = document.createElement('li');
+            li.append(languageLink);
+            rebuilt.push(li);
+          }
+          moreList.replaceChildren(...rebuilt);
+        }
+      }
+
+      const topMenuList = document.querySelector('.site-navigation .site-nav__list');
+      if (topMenuList instanceof HTMLUListElement) {
+        const existing = Array.from(topMenuList.children);
+        const utility = existing.filter((li) => {
+          const anchor = li.querySelector('a[href]');
+          if (!(anchor instanceof HTMLAnchorElement)) return false;
+          const path = new URL(anchor.href, window.location.origin).pathname;
+          return [
+            lang === 'ja' ? '/ja/search/' : '/search/',
+            lang === 'ja' ? '/ja/types/' : '/types/',
+            lang === 'ja' ? '/ja/glossary/' : '/glossary/',
+            lang === 'ja' ? '/ja/sources/' : '/sources/',
+            lang === 'ja' ? '/ja/about/' : '/about/',
+          ].includes(path) || anchor.hasAttribute('hreflang');
+        });
+        const timezoneLi = existing.find((li) => li.classList.contains('site-nav__utility'));
+        const mainItems = ['today', 'calendar', 'racecourses', 'countries'].map((key) => {
+          const li = document.createElement('li');
+          li.append(makeAnchor(key));
+          return li;
+        });
+        topMenuList.replaceChildren(...mainItems, ...utility, ...(timezoneLi ? [timezoneLi] : []));
+      }
+
+      document.querySelectorAll('.site-header').forEach((header) => header.setAttribute('data-mobile-navigation-links', '5'));
+    };
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
+    else install();
+  })();
+</script>

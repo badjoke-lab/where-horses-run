@@ -1,0 +1,90 @@
+<script is:inline>
+  (() => {
+    const SAFE_VIDEO_ID = /^[A-Za-z0-9_-]{11}$/;
+    let timer = null;
+
+    const rows = () => [...document.querySelectorAll('[data-calendar-meeting-row]')]
+      .filter((row) => row instanceof HTMLElement && row.dataset.liveAvailable === 'true');
+
+    const resetRows = () => {
+      rows().forEach((row) => {
+        row.dataset.streamState = 'unknown';
+        const badge = row.querySelector('[data-stream-live-badge]');
+        if (badge instanceof HTMLElement) badge.hidden = true;
+        const link = row.querySelector('[data-live-link]');
+        if (link instanceof HTMLAnchorElement) {
+          const defaultHref = link.dataset.liveDefaultHref;
+          if (defaultHref) link.href = defaultHref;
+        }
+      });
+    };
+
+    const applyPayload = (payload) => {
+      const statuses = Array.isArray(payload?.statuses) ? payload.statuses : [];
+      const byDetectorId = new Map(
+        statuses
+          .filter((entry) => entry && typeof entry.detector_id === 'string')
+          .map((entry) => [entry.detector_id, entry]),
+      );
+
+      rows().forEach((row) => {
+        const detectorId = row.dataset.liveDetectorId || '';
+        const entry = detectorId ? byDetectorId.get(detectorId) : null;
+        const rawState = ['live', 'upcoming', 'ended', 'offline'].includes(entry?.status) ? entry.status : 'unknown';
+        const sourceDate = row.dataset.sourceDate || row.dataset.date || '';
+        const eventSpecific = rawState === 'live' || rawState === 'upcoming' || rawState === 'ended';
+        const dateMatches = typeof entry?.event_date === 'string' && entry.event_date === sourceDate;
+        const state = eventSpecific && !dateMatches ? 'unknown' : rawState;
+        row.dataset.streamState = state;
+
+        const badge = row.querySelector('[data-stream-live-badge]');
+        if (badge instanceof HTMLElement) badge.hidden = state !== 'live';
+
+        const link = row.querySelector('[data-live-link]');
+        if (link instanceof HTMLAnchorElement) {
+          const defaultHref = link.dataset.liveDefaultHref || link.href;
+          const videoId = typeof entry?.video_id === 'string' && SAFE_VIDEO_ID.test(entry.video_id) ? entry.video_id : null;
+          const useWatchPage = dateMatches && videoId && (state === 'live' || state === 'upcoming');
+          link.href = useWatchPage ? `https://www.youtube.com/watch?v=${videoId}` : defaultHref;
+        }
+      });
+      window.dispatchEvent(new CustomEvent('whr:streamstatechange'));
+    };
+
+    const schedule = (seconds) => {
+      if (timer !== null) window.clearTimeout(timer);
+      timer = window.setTimeout(refresh, Math.max(60, Math.min(3600, seconds || 300)) * 1000);
+    };
+
+    const refresh = async () => {
+      if (!rows().some((row) => row.dataset.liveDetectorId)) {
+        resetRows();
+        return;
+      }
+      try {
+        const response = await fetch(new URL('/api/live-status', location.origin), {
+          headers: { accept: 'application/json' },
+          cache: 'no-store',
+        });
+        if (!response.ok) throw new Error(`live status ${response.status}`);
+        const payload = await response.json();
+        if (payload?.configured !== true) throw new Error('live status not configured');
+        applyPayload(payload);
+        schedule(Number(payload?.refresh_after_seconds) || 900);
+      } catch {
+        resetRows();
+        schedule(300);
+      }
+    };
+
+    const install = () => {
+      resetRows();
+      refresh();
+      window.addEventListener('whr:timezonechange', refresh);
+      window.addEventListener('whr:todayfilterchange', () => window.dispatchEvent(new CustomEvent('whr:streamstatechange')));
+    };
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
+    else install();
+  })();
+</script>

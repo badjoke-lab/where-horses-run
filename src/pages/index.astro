@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import MeetingLiveStatusRuntime from '../components/MeetingLiveStatusRuntime.astro';
 import MeetingStatePolicy from '../components/MeetingStatePolicy.astro';
 import TimetableMeetingList from '../components/TimetableMeetingList.astro';
 import TodayFilters from '../components/TodayFilters.astro';
@@ -27,6 +28,7 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
 >
   <main class="today-page" data-today-page data-home-meeting-window>
     <MeetingStatePolicy />
+    <MeetingLiveStatusRuntime />
 
     <section class="hero today-page__hero" aria-labelledby="page-title">
       <p class="hero__eyebrow">Global horse racing</p>

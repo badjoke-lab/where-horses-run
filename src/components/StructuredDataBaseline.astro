@@ -1,4 +1,6 @@
 ---
+import SiteShellNavigationRuntime from './SiteShellNavigationRuntime.astro';
+
 interface Props {
   title: string;
   description: string;
@@ -42,3 +44,4 @@ const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c
   data-structured-data-baseline="website-webpage-v1"
   set:html={structuredDataJson}
 ></script>
+<SiteShellNavigationRuntime />

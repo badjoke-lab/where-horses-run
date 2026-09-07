@@ -1,0 +1,96 @@
+name: Representative Visual Audit
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'data/static/racecourses*.json'
+      - 'scripts/visual-audit-representative.mjs'
+      - '.github/workflows/representative-visual-audit.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'data/static/racecourses*.json'
+      - 'scripts/visual-audit-representative.mjs'
+      - '.github/workflows/representative-visual-audit.yml'
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'Optional deployed base URL. Leave blank to audit the locally built site.'
+        required: false
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  representative-visual-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BASE_URL: ${{ inputs.base_url || '' }}
+      VISUAL_AUDIT_OUTPUT: artifacts/representative-visual-audit
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+
+      - name: Install site dependencies
+        run: npm install --package-lock=false
+
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save --package-lock=false playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Build local site
+        if: ${{ env.BASE_URL == '' }}
+        run: npm run build
+
+      - name: Start local preview
+        if: ${{ env.BASE_URL == '' }}
+        run: |
+          nohup npm run preview -- --host 127.0.0.1 --port 4321 > /tmp/whr-preview.log 2>&1 &
+          echo $! > /tmp/whr-preview.pid
+          for attempt in $(seq 1 40); do
+            if curl --fail --silent --show-error http://127.0.0.1:4321/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/whr-preview.log
+          exit 1
+
+      - name: Capture and inspect representative pages
+        id: visual-audit
+        run: |
+          if [ -z "$BASE_URL" ]; then
+            export BASE_URL='http://127.0.0.1:4321'
+          fi
+          node scripts/visual-audit-representative.mjs
+
+      - name: Upload representative screenshots and manifest
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: representative-visual-audit-${{ github.run_id }}
+          path: artifacts/representative-visual-audit
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Show preview log on failure
+        if: ${{ failure() && env.BASE_URL == '' }}
+        run: cat /tmp/whr-preview.log || true
