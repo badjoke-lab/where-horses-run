@@ -2,9 +2,12 @@ import fs from 'node:fs';
 
 const errors = [];
 const requiredFiles = [
+  'AGENTS.md',
   'START-HERE.md',
   'docs/project-roadmap.md',
+  'docs/project-roadmap-2026-09-08-addendum.md',
   'docs/governance/document-authority.md',
+  'docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md',
   'docs/calendar/README.md',
   'docs/calendar/machine-readable-contracts.md',
   'docs/calendar/incremental-coverage-contract.md',
@@ -35,6 +38,39 @@ const requirePhrases = (file, phrases) => {
     if (!text.includes(phrase)) errors.push(`${file} missing current contract marker: ${phrase}`);
   }
 };
+
+requirePhrases('AGENTS.md', [
+  'START-HERE.md',
+  'before merge',
+  'Conversation history',
+  'docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md',
+]);
+requirePhrases('START-HERE.md', [
+  'docs/project-roadmap-2026-09-08-addendum.md',
+  'WHR-CAL-PRESENTATION-STATE-001',
+  'Representative Visual Audit',
+]);
+requirePhrases('docs/governance/document-authority.md', [
+  'docs/project-roadmap-2026-09-08-addendum.md',
+  'docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md',
+  'Visible UI/interaction work requires actual browser output',
+]);
+requirePhrases('docs/project-roadmap-2026-09-08-addendum.md', [
+  'WHR-CAL-PRESENTATION-STATE-001',
+  'specification/governance update',
+  'meeting lifecycle correction',
+  'official stream-state correction',
+  'Representative Visual Audit',
+]);
+requirePhrases('docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md', [
+  'Venue/source-local canonical time',
+  'display timezone',
+  'Meeting state and stream state are independent dimensions.',
+  'rolling 30-day',
+  'one-day-at-a-time',
+  'List | Month | Map',
+  'Representative Visual Audit',
+]);
 
 requirePhrases('docs/calendar/incremental-coverage-contract.md', [
   'partial',
@@ -95,5 +131,7 @@ if (errors.length) {
 console.log('PROJECT_GOVERNANCE_DOCS: pass');
 console.log(`CURRENT_REQUIRED_FILES: ${requiredFiles.length}`);
 console.log(`ACQUISITION_PROFILES: ${registry.records.length}`);
+console.log('ACTIVE_PROJECT_ADDENDUM: docs/project-roadmap-2026-09-08-addendum.md');
+console.log('ACTIVE_CALENDAR_PRESENTATION_SPEC: docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md');
 console.log('HISTORICAL_FIXED_COUNTS_REQUIRED: false');
 console.log('COMPLETED_STAGE_TEXT_REQUIRED: false');
