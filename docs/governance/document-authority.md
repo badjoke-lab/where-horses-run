@@ -1,7 +1,7 @@
 # Documentation authority
 
 Status: active canonical governance policy  
-Last reviewed: 2026-08-25
+Last reviewed: 2026-09-08
 
 ## Authority order
 
@@ -18,18 +18,26 @@ When repository documents conflict, use this order:
 9. PR plans;
 10. historical or superseded specifications.
 
+`AGENTS.md` and `START-HERE.md` are mandatory execution entry instructions. They point agents to the authority order above but do not override higher-authority contracts, schemas, or roadmaps.
+
 Conversation history and PR numbers do not replace canonical repository documents.
 
 The current adopted top-level execution addendum is:
 
 ```text
-docs/project-roadmap-2026-08-25-addendum.md
+docs/project-roadmap-2026-09-08-addendum.md
 ```
 
-The current adopted Calendar implementation addendum is:
+The current adopted Calendar implementation addendum remains:
 
 ```text
 docs/calendar/implementation-roadmap-2026-08-09-addendum.md
+```
+
+The current Calendar presentation/state authority is:
+
+```text
+docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md
 ```
 
 ## Document classes
@@ -47,9 +55,16 @@ docs/calendar/implementation-roadmap-2026-08-09-addendum.md
 Overall:
 
 - `docs/project-roadmap.md`
-- `docs/project-roadmap-2026-08-25-addendum.md`
+- `docs/project-roadmap-2026-09-08-addendum.md`
+- `docs/specs/map-first-site-ui-2026-09-06.md`
+- `docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md`
 - this policy
 - `docs/operations/deployment-and-ci-policy.md`
+
+Execution entry instructions:
+
+- `AGENTS.md`
+- `START-HERE.md`
 
 Country pages:
 
@@ -59,6 +74,7 @@ Country pages:
 
 Calendar human-readable contracts:
 
+- `docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md`
 - `docs/calendar/source-test-v2-contract.md`
 - `docs/calendar/calendar-readiness-contract.md`
 - `docs/calendar/machine-readable-contracts.md`
@@ -216,11 +232,16 @@ Early `docs/specs/timetable-data-flow-and-display-contract.md`, `docs/specs/race
 
 Before work begins:
 
-1. assign or confirm the stable Work ID;
-2. read the applicable canonical documents and the latest adopted roadmap addenda;
-3. for Calendar work, read `docs/calendar/incremental-coverage-contract.md`, `docs/calendar/acquisition-control-plane-contract.md`, `docs/calendar/implementation-roadmap-2026-08-09-addendum.md`, and the applicable machine-readable contract;
-4. confirm tracker, Registry, source-test/readiness, and source implementation-status state;
-5. record whether Cloudflare is required.
+1. start from `AGENTS.md` and `START-HERE.md`;
+2. assign or confirm the stable Work ID;
+3. read the applicable canonical documents and the latest adopted roadmap addenda;
+4. for Calendar work, read `docs/calendar/incremental-coverage-contract.md`, `docs/calendar/acquisition-control-plane-contract.md`, `docs/calendar/implementation-roadmap-2026-08-09-addendum.md`, the applicable machine-readable contract, and `docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md` when presentation/state/timezone/stream/view behavior is involved;
+5. confirm tracker, Registry, source-test/readiness, and source implementation-status state;
+6. record whether Cloudflare is required.
+
+Re-read the applicable canonical specification and active roadmap/addendum whenever scope or acceptance criteria change, after relevant movement on `main`, before opening/materially updating a PR, before merge, and after merge before starting the next Work ID.
+
+If intended runtime behavior conflicts with repository authority, update the specification/schedule first or in a preceding documentation PR. Do not silently implement a conversation-only rule.
 
 For `WHR-CAL-DAILY-ACQUISITION`, also read the daily acquisition contract, implementation schedule, roadmap addendum, operations document, reviewed season-state file, current-horizon audit, and daily execution policy before changing workflow, policy, season state, runner, draft-PR, or publication behavior.
 
@@ -234,24 +255,30 @@ Every substantive PR records:
 Work ID
 Programme
 Canonical documents reviewed
+Specification/schedule changes
 Tracker or registry changes
 Runtime behaviour changes
 Public display boundary
 Calendar readiness changes
 Coverage and completion-claim changes
 Deployment and preview requirement
+Validation performed
+Visible browser/screenshot evidence when UI changes
 Completion conditions
 Next Work ID
 ```
 
+Visible UI/interaction work requires actual browser output and representative screenshot inspection before merge. A green build or CI run alone is not completion evidence.
+
 ## Public repository boundary
 
-The public repository may contain reviewed facts, schemas, code, hashes, and public-safe summaries. Raw local captures, credentials, restricted access details, private workflow notes, and prohibited participant or betting data remain outside it.
+The public repository may contain reviewed facts, schemas, code, tests, hashes, and public-safe summaries. Raw local captures, credentials, restricted access details, private workflow notes, internal-only strategy material, and prohibited participant or betting data remain outside it.
 
 ## Maintenance
 
 - check active roadmaps and their latest adopted addenda after every merge;
 - update trackers, Registry/source implementation state, and roadmaps in every relevant PR;
+- re-read applicable authority at the checkpoints defined above;
 - review canonical links regularly;
 - label historical and superseded documents clearly;
 - reverify external platform/source facts before changing operations because of them.
