@@ -5,6 +5,7 @@ import CalendarDateNavigation from '../../components/CalendarDateNavigation.astr
 import CalendarDateStatus from '../../components/CalendarDateStatus.astro';
 import CalendarFilters from '../../components/CalendarFilters.astro';
 import CalendarMeetingMap from '../../components/CalendarMeetingMap.astro';
+import CalendarSelectedCardEnhancer from '../../components/CalendarSelectedCardEnhancer.astro';
 import CalendarViewControls from '../../components/CalendarViewControls.astro';
 import MeetingStatePolicy from '../../components/MeetingStatePolicy.astro';
 import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
@@ -17,6 +18,7 @@ import {
 import { addCalendarDays } from '../../lib/timetable/calendarDateContext.mjs';
 import '../../styles/calendar-presentation.css';
 import '../../styles/calendar-mock-v1.css';
+import '../../styles/racecourse-detail-mock-v1.css';
 
 const context = getTimetableDateContext();
 const dataState = getTimetableDataState(context);
@@ -60,6 +62,7 @@ const groups = getGroupedTimetableMeetingRows(candidateRecords);
     />
 
     <CalendarMeetingMap records={candidateRecords} />
+    <CalendarSelectedCardEnhancer />
     <CalendarFilters records={candidateRecords} />
 
     <section aria-label="Rolling 30-day meeting list" data-calendar-list-view>
