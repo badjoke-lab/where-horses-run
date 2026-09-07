@@ -45,11 +45,10 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.22.0
-          cache: npm
+          node-version: 22.12.0
 
       - name: Install project dependencies
-        run: npm ci --no-audit --no-fund
+        run: npm install --no-audit --no-fund
 
       - name: Install pinned Playwright for visual audit
         run: |
