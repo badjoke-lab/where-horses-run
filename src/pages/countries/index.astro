@@ -1,6 +1,7 @@
 ---
 import CountryDirectoryPage from '../../components/CountryDirectoryPage.astro';
 import { getCountryFilterOptions, getCountryFilterRecords } from '../../lib/country-filter-data';
+import '../../styles/countries-mock-v1.css';
 
 const records = getCountryFilterRecords('en');
 const options = getCountryFilterOptions(records);
