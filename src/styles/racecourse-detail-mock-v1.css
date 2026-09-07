@@ -1,0 +1,205 @@
+.racecourse-public-primary {
+  display: grid;
+  gap: 1rem;
+  margin-block: 1rem 1.5rem;
+}
+
+.racecourse-location-section {
+  gap: 0.75rem;
+  padding: 1rem;
+  border-color: color-mix(in srgb, var(--whr-color-gold) 26%, var(--whr-color-border));
+  box-shadow: 0 0.8rem 2rem rgb(7 35 69 / 0.08);
+}
+
+.racecourse-location-section__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.racecourse-location-section__heading h2 {
+  margin: 0;
+  color: var(--whr-color-navy);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+}
+
+.racecourse-location-section__directions {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--whr-color-border);
+  border-radius: 0.6rem;
+  background: #fff;
+  color: var(--whr-color-navy);
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.racecourse-location-section__directions:hover,
+.racecourse-location-section__directions:focus-visible {
+  border-color: var(--whr-color-gold);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.racecourse-location-section .racecourse-map__canvas {
+  min-height: clamp(420px, 58vh, 640px);
+  border-color: color-mix(in srgb, var(--whr-color-gold) 25%, var(--whr-color-border));
+  border-radius: 0.85rem;
+}
+
+.racecourse-location-section__address {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 0.65rem;
+  border-block: 1px solid var(--whr-color-border);
+}
+
+.racecourse-location-section__address p {
+  margin: 0;
+}
+
+.racecourse-meeting-panel {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--whr-color-border);
+  border-radius: 0.85rem;
+  background: #fff;
+}
+
+.racecourse-meeting-panel__heading h2,
+.racecourse-meeting-panel__grid h3,
+.racecourse-meeting-panel > article h3 {
+  color: var(--whr-color-navy);
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.racecourse-meeting-panel__eyebrow {
+  color: var(--whr-color-gold-dark);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.racecourse-meeting-panel__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.racecourse-meeting-panel__grid > .card,
+.racecourse-meeting-panel > .card {
+  border-color: color-mix(in srgb, var(--whr-color-gold) 18%, var(--whr-color-border));
+  box-shadow: none;
+}
+
+.calendar-map-switch__panel {
+  position: relative;
+}
+
+.calendar-map-switch__selected {
+  position: absolute;
+  z-index: 6;
+  inset-inline-start: 50%;
+  inset-block-end: 2.9rem;
+  width: min(34rem, calc(100% - 2rem));
+  transform: translateX(-50%);
+  padding: 1rem;
+  border-color: color-mix(in srgb, var(--whr-color-gold) 40%, var(--whr-color-border));
+  border-radius: 0.85rem;
+  background: rgb(255 255 255 / 0.98);
+  box-shadow: 0 1rem 2.6rem rgb(7 35 69 / 0.24);
+  backdrop-filter: blur(10px);
+}
+
+.calendar-map-switch__selected .map-selected-card__body > strong {
+  color: var(--whr-color-navy);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.15rem;
+}
+
+.calendar-map-switch__selected .map-selected-card__actions a[data-calendar-map-meeting-details] {
+  border-color: var(--whr-color-navy);
+  background: var(--whr-color-navy);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 800;
+}
+
+.calendar-map-switch__selected .map-selected-card__actions a[data-calendar-map-meeting-details]:hover,
+.calendar-map-switch__selected .map-selected-card__actions a[data-calendar-map-meeting-details]:focus-visible {
+  background: var(--whr-color-navy-light);
+}
+
+@media (max-width: 700px) {
+  .racecourse-location-section {
+    padding: 0.75rem;
+  }
+
+  .racecourse-location-section__heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .racecourse-location-section__directions {
+    width: 100%;
+  }
+
+  .racecourse-location-section .racecourse-map__canvas {
+    min-height: clamp(330px, 48vh, 440px);
+  }
+
+  .racecourse-location-section__address {
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .racecourse-meeting-panel {
+    padding: 0.75rem;
+  }
+
+  .racecourse-meeting-panel__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .calendar-map-switch__selected {
+    position: absolute;
+    inset-inline: 0.4rem;
+    inset-block-end: 2.4rem;
+    width: auto;
+    max-height: min(48vh, 23rem);
+    overflow: auto;
+    transform: none;
+    flex-direction: column;
+    border-radius: 0.9rem;
+  }
+
+  .calendar-map-switch__selected .map-selected-card__actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .calendar-map-switch__selected .map-selected-card__actions a,
+  .calendar-map-switch__selected .map-selected-card__actions button {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .calendar-map-switch__selected .map-selected-card__close {
+    position: absolute;
+    inset-block-start: 0.6rem;
+    inset-inline-end: 0.6rem;
+    width: 44px;
+  }
+}

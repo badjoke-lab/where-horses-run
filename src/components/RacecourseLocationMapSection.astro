@@ -1,6 +1,7 @@
 ---
 import RacecourseMap from './RacecourseMap.astro';
 import locationRegistry from '../../data/static/racecourse-locations-v1.json';
+import '../styles/racecourse-detail-mock-v1.css';
 
 interface Props {
   racecourseId: string;
@@ -20,9 +21,10 @@ const entry = (locationRegistry as any).locations?.find((candidate: any) => cand
 const location = entry?.location ?? null;
 const isJapanese = lang === 'ja';
 const title = isJapanese ? '所在地 / 地図' : 'Location / Map';
-const addressLabel = isJapanese ? '確認済み住所' : 'Verified address';
+const addressLabel = isJapanese ? '住所' : 'Address';
 const pointLabel = isJapanese ? '確認済み地点' : 'Verified venue point';
 const checkedLabel = isJapanese ? '位置情報の最終確認' : 'Location last checked';
+const directionsLabel = isJapanese ? '経路を開く ↗' : 'Directions ↗';
 const pendingText = isJapanese
   ? '位置情報は確認中です。確認済みの住所・座標が登録されるまで地図上の地点は表示しません。'
   : 'Location verification is pending. No map point is shown until a reviewed address and coordinates are registered.';
@@ -32,25 +34,40 @@ const fallbackMessage = isJapanese
 const mapAriaLabel = isJapanese
   ? `${racecourseName}の確認済み所在地を示す地図`
   : `Map showing the reviewed location of ${racecourseName}`;
+const directionsDestination = location
+  ? (location.address || `${location.latitude},${location.longitude}`)
+  : null;
+const directionsHref = directionsDestination
+  ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(directionsDestination)}`
+  : null;
 ---
 
-<section class="card racecourse-location-section" aria-labelledby={`location-map-${racecourseId}`}>
-  <h2 id={`location-map-${racecourseId}`}>{title}</h2>
+<section class="card racecourse-location-section" aria-labelledby={`location-map-${racecourseId}`} data-racecourse-location-section>
+  <div class="racecourse-location-section__heading">
+    <h2 id={`location-map-${racecourseId}`}>{title}</h2>
+    {directionsHref ? (
+      <a class="racecourse-location-section__directions" href={directionsHref} target="_blank" rel="noopener noreferrer">
+        {directionsLabel}
+      </a>
+    ) : null}
+  </div>
 
   {location ? (
     <>
-      <p>
-        <strong>{location.address ? `${addressLabel}:` : `${pointLabel}:`}</strong>{' '}
-        {location.address ?? `${location.latitude}, ${location.longitude}`}
-      </p>
-      {contextText ? <p><strong>{isJapanese ? '地域' : 'Context'}:</strong> {contextText}</p> : null}
-
       <RacecourseMap
         racecourseIds={[racecourseId]}
         ariaLabel={mapAriaLabel}
         initialZoom={16.5}
         fallbackMessage={fallbackMessage}
       />
+
+      <div class="racecourse-location-section__address">
+        <p>
+          <strong>{location.address ? `${addressLabel}:` : `${pointLabel}:`}</strong>{' '}
+          {location.address ?? `${location.latitude}, ${location.longitude}`}
+        </p>
+        {contextText ? <p><strong>{isJapanese ? '地域' : 'Context'}:</strong> {contextText}</p> : null}
+      </div>
 
       <p class="racecourse-map__meta">
         {checkedLabel}: {location.location_last_checked} · {location.precision} · {location.verification_state}
