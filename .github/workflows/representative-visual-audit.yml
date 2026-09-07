@@ -97,6 +97,4 @@ jobs:
           name: whr-representative-visuals-${{ github.run_id }}
           if-no-files-found: warn
           retention-days: 14
-          path: |
-            artifacts/representative-visual-audit/**
-            /tmp/whr-preview.log
+          path: artifacts/representative-visual-audit/**
