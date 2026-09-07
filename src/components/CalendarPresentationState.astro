@@ -15,30 +15,49 @@ const { lang = 'en' } = Astro.props as Props;
       const listButton = document.querySelector('[data-calendar-view-list]');
       const mapButton = document.querySelector('[data-calendar-view-map]');
       const dateSelect = document.querySelector('[data-filter-date]');
+      const viewController = document.querySelector('[data-calendar-view-controller]');
       if (!(listButton instanceof HTMLButtonElement) || !(mapButton instanceof HTMLButtonElement) || !(dateSelect instanceof HTMLSelectElement)) return;
+
+      const activeView = () => {
+        if (viewController instanceof HTMLElement) {
+          const view = viewController.dataset.calendarView;
+          if (view === 'list' || view === 'month' || view === 'map') return view;
+        }
+        return mapButton.getAttribute('aria-pressed') === 'true' ? 'map' : 'list';
+      };
 
       const normalizeUrl = () => {
         const url = new URL(window.location.href);
-        const view = mapButton.getAttribute('aria-pressed') === 'true' ? 'map' : 'list';
-        url.searchParams.set('view', view);
+        url.searchParams.set('view', activeView());
         if (/^\d{4}-\d{2}-\d{2}$/.test(dateSelect.value)) url.searchParams.set('date', dateSelect.value);
         window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
       };
 
       listButton.addEventListener('click', () => requestAnimationFrame(normalizeUrl));
       mapButton.addEventListener('click', () => requestAnimationFrame(normalizeUrl));
+      viewController?.querySelectorAll('[data-calendar-view-control]').forEach((button) => {
+        button.addEventListener('click', () => requestAnimationFrame(normalizeUrl));
+      });
       dateSelect.addEventListener('change', () => requestAnimationFrame(normalizeUrl));
       window.addEventListener('whr:timezonechange', () => requestAnimationFrame(normalizeUrl));
       window.addEventListener('whr:calendardatechange', () => requestAnimationFrame(normalizeUrl));
 
       window.addEventListener('popstate', () => {
         const params = new URL(window.location.href).searchParams;
-        const requestedView = params.get('view') === 'map' ? 'map' : 'list';
+        const requested = params.get('view');
+        const requestedView = requested === 'map' || requested === 'month' ? requested : 'list';
         const requestedDate = params.get('date');
         if (requestedDate && [...dateSelect.options].some((option) => option.value === requestedDate) && dateSelect.value !== requestedDate) {
           dateSelect.value = requestedDate;
           dateSelect.dispatchEvent(new Event('change', { bubbles: true }));
         }
+
+        const outerButton = viewController?.querySelector(`[data-calendar-view-control="${requestedView}"]`);
+        if (outerButton instanceof HTMLButtonElement) {
+          if (activeView() !== requestedView) outerButton.click();
+          return;
+        }
+
         const mapPressed = mapButton.getAttribute('aria-pressed') === 'true';
         if (requestedView === 'map' && !mapPressed) mapButton.click();
         if (requestedView === 'list' && mapPressed) listButton.click();
