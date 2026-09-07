@@ -1,0 +1,400 @@
+[data-country-directory],
+.country-page {
+  display: grid;
+  gap: 1rem;
+}
+
+[data-country-directory] > .hero,
+.country-hero {
+  padding-block: 0.8rem 0.35rem;
+}
+
+[data-country-directory] > .hero h1,
+.country-hero h1 {
+  color: var(--whr-color-navy);
+  font-family: Georgia, 'Times New Roman', serif;
+  line-height: 1.04;
+}
+
+[data-country-directory] > .hero h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.country-hero h1 {
+  font-size: clamp(2rem, 4vw, 3.1rem);
+}
+
+[data-country-directory] > .hero .hero__summary,
+.country-hero .hero__summary {
+  max-width: 48rem;
+  color: var(--whr-color-muted);
+}
+
+[data-region-filter-navigation] {
+  display: grid;
+  gap: 0.55rem;
+  padding-block: 0.35rem;
+  border-block: 1px solid var(--whr-color-border);
+}
+
+[data-region-filter-navigation] > h2 {
+  margin: 0;
+  color: var(--whr-color-navy);
+  font-size: 0.85rem;
+}
+
+[data-region-filter-navigation] > .section-grid {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  padding-block-end: 0.2rem;
+  scrollbar-width: thin;
+}
+
+[data-region-filter-card] {
+  flex: 0 0 auto;
+  min-width: 8.5rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+[data-region-filter-card] h3,
+[data-region-filter-card] p {
+  margin: 0;
+}
+
+[data-region-filter-card] a {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--whr-color-border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--whr-color-navy);
+  font-size: 0.82rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+[data-region-filter-card] a[aria-current='page'] {
+  border-color: var(--whr-color-navy);
+  background: var(--whr-color-navy);
+  color: #fff;
+}
+
+[data-region-filter-card] p {
+  display: none;
+}
+
+[data-country-directory] > section.card[aria-labelledby='country-filter-heading'] {
+  padding: 0.8rem;
+  border-color: color-mix(in srgb, var(--whr-color-gold) 24%, var(--whr-color-border));
+  border-radius: 0.8rem;
+}
+
+[data-country-directory] > section.card[aria-labelledby='country-filter-heading'] > h2 {
+  margin-block-start: 0;
+  color: var(--whr-color-navy);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.1rem;
+}
+
+[data-country-filter-form] {
+  display: grid;
+  grid-template-columns: minmax(12rem, 2fr) minmax(9rem, 1fr) minmax(10rem, 1fr) auto;
+  align-items: end;
+  gap: 0.55rem;
+}
+
+[data-country-filter-form] p {
+  margin: 0;
+}
+
+[data-country-filter-form] input,
+[data-country-filter-form] select,
+[data-country-filter-form] button {
+  min-height: 44px;
+  width: 100%;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--whr-color-border);
+  border-radius: 0.55rem;
+  background: #fff;
+  color: var(--whr-color-text);
+  font: inherit;
+}
+
+[data-country-filter-form] button {
+  width: auto;
+  color: var(--whr-color-navy);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+[data-country-filter-count] {
+  margin-block-end: 0;
+  color: var(--whr-color-muted);
+  font-size: 0.82rem;
+}
+
+[data-country-filter-results] {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid var(--whr-color-border);
+  border-radius: 0.85rem;
+  background: #fff;
+}
+
+[data-country-record] {
+  display: grid;
+  grid-template-columns: minmax(11rem, 0.8fr) minmax(0, 1.8fr) minmax(10rem, 0.8fr);
+  align-items: center;
+  gap: 0.7rem 1rem;
+  padding: 0.75rem 0.9rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+[data-country-record] + [data-country-record] {
+  border-block-start: 1px solid var(--whr-color-border);
+}
+
+[data-country-record][hidden] {
+  display: none;
+}
+
+[data-country-record] h2 {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  margin: 0;
+  font-size: 1rem;
+}
+
+[data-country-record] h2 a {
+  color: var(--whr-color-navy);
+  text-decoration: none;
+}
+
+[data-country-record] h2 a:hover,
+[data-country-record] h2 a:focus-visible {
+  color: var(--whr-color-gold-dark);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+[data-country-record] p {
+  margin: 0;
+  color: var(--whr-color-muted);
+  font-size: 0.8rem;
+}
+
+[data-country-record] p:nth-of-type(1) {
+  grid-column: 2;
+}
+
+[data-country-record] p:nth-last-of-type(2),
+[data-country-record] p:last-of-type {
+  grid-column: 3;
+}
+
+.country-jump-nav {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  margin-block-start: 0.7rem;
+}
+
+.country-jump-nav a {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--whr-color-border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--whr-color-navy);
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.country-section {
+  display: grid;
+  gap: 0.75rem;
+  padding-block: 0.65rem;
+}
+
+.country-section__title {
+  margin: 0;
+  padding-block-end: 0.4rem;
+  border-block-end: 1px solid color-mix(in srgb, var(--whr-color-gold) 34%, var(--whr-color-border));
+  color: var(--whr-color-navy);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.25rem, 2.4vw, 1.8rem);
+}
+
+.country-card {
+  border-color: color-mix(in srgb, var(--whr-color-gold) 16%, var(--whr-color-border));
+  box-shadow: none;
+}
+
+.country-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.country-facts > div {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.55rem;
+  border: 1px solid var(--whr-color-border);
+  border-radius: 0.55rem;
+}
+
+.country-facts dt {
+  color: var(--whr-color-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.country-facts dd {
+  margin: 0;
+  color: var(--whr-color-navy);
+  font-weight: 700;
+}
+
+.country-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--whr-color-border);
+  border-radius: 0.75rem;
+}
+
+.country-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+.country-table :is(th, td) {
+  padding: 0.62rem 0.7rem;
+  border-block-end: 1px solid var(--whr-color-border);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.country-table th {
+  color: var(--whr-color-muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.country-table td {
+  font-size: 0.84rem;
+}
+
+.country-table a {
+  color: var(--whr-color-navy);
+  font-weight: 700;
+}
+
+#upcoming-meetings,
+#racecourses,
+#official-sources {
+  scroll-margin-top: 6rem;
+}
+
+@media (max-width: 760px) {
+  [data-country-directory] > .hero h1,
+  .country-hero h1 {
+    font-size: 2rem;
+  }
+
+  [data-country-filter-form] {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  [data-country-filter-form] p:first-child,
+  [data-country-filter-form] p:last-child {
+    grid-column: 1 / -1;
+  }
+
+  [data-country-filter-results] {
+    border-radius: 0.75rem;
+  }
+
+  [data-country-record] {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.3rem 0.75rem;
+    padding: 0.7rem 0.75rem;
+  }
+
+  [data-country-record] h2 {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  [data-country-record] p {
+    grid-column: 1 !important;
+  }
+
+  [data-country-record] p:last-of-type {
+    grid-column: 2 !important;
+    grid-row: 1 / span 2;
+    max-width: 9rem;
+    text-align: right;
+  }
+
+  .country-facts {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .country-grid,
+  .country-grid--2,
+  .country-grid--3 {
+    grid-template-columns: 1fr;
+  }
+
+  .country-table,
+  .country-table tbody,
+  .country-table tr,
+  .country-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .country-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .country-table tr {
+    padding: 0.55rem 0.65rem;
+    border-block-end: 1px solid var(--whr-color-border);
+  }
+
+  .country-table td {
+    display: grid;
+    grid-template-columns: minmax(7rem, 0.75fr) minmax(0, 1.25fr);
+    gap: 0.6rem;
+    padding: 0.25rem 0;
+    border: 0;
+  }
+
+  .country-table td::before {
+    content: attr(data-label);
+    color: var(--whr-color-muted);
+    font-size: 0.72rem;
+    font-weight: 800;
+  }
+}

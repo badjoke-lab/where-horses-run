@@ -1,6 +1,7 @@
 ---
 import CountryDetailPage from '../../components/CountryDetailPage.astro';
 import { getCountries, getCountryBySlug } from '../../lib/data';
+import '../../styles/countries-mock-v1.css';
 
 export function getStaticPaths() {
   return getCountries().map((country) => ({ params: { slug: country.slug } }));
