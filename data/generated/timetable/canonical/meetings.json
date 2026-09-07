@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-07T08:14:47.788Z",
+  "generated_at": "2026-09-07T08:21:35.670Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -11877,15 +11877,15 @@
         "source_id": "tjk-annual-programme",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=4&QueryParameter_Tarih=07%2F09%2F2026&SehirAdi=Bursa&Era=tomorrow",
+        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=4&QueryParameter_Tarih=07%2F09%2F2026&SehirAdi=Bursa&Era=today",
         "source_label": null,
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-06",
-        "generated_at": "2026-09-06T05:49:14.006Z",
+        "last_checked_date": "2026-09-07",
+        "generated_at": "2026-09-07T08:21:35.670Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
@@ -11906,15 +11906,15 @@
         "source_id": "tjk-annual-programme",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=7&QueryParameter_Tarih=07%2F09%2F2026&SehirAdi=Elaz%C4%B1%C4%9F&Era=tomorrow",
+        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=7&QueryParameter_Tarih=07%2F09%2F2026&SehirAdi=Elaz%C4%B1%C4%9F&Era=today",
         "source_label": null,
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-06",
-        "generated_at": "2026-09-06T05:49:14.006Z",
+        "last_checked_date": "2026-09-07",
+        "generated_at": "2026-09-07T08:21:35.670Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
@@ -12155,15 +12155,15 @@
         "source_id": "tjk-annual-programme",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=5&QueryParameter_Tarih=08%2F09%2F2026&SehirAdi=Ankara&Era=nextWeek",
+        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=5&QueryParameter_Tarih=08%2F09%2F2026&SehirAdi=Ankara&Era=tomorrow",
         "source_label": null,
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-06",
-        "generated_at": "2026-09-06T09:07:03.459Z",
+        "last_checked_date": "2026-09-07",
+        "generated_at": "2026-09-07T08:21:35.670Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
@@ -12184,15 +12184,15 @@
         "source_id": "tjk-annual-programme",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=9&QueryParameter_Tarih=08%2F09%2F2026&SehirAdi=Kocaeli&Era=nextWeek",
+        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=9&QueryParameter_Tarih=08%2F09%2F2026&SehirAdi=Kocaeli&Era=tomorrow",
         "source_label": null,
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-06",
-        "generated_at": "2026-09-06T09:07:03.459Z",
+        "last_checked_date": "2026-09-07",
+        "generated_at": "2026-09-07T08:21:35.670Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
@@ -12204,23 +12204,23 @@
       "racecourse_id": "happy-valley-racecourse",
       "date": "2026-09-09",
       "timezone": "Asia/Hong_Kong",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "19:05",
+      "last_race_time_local": "21:45",
       "source_trace": {
-        "source_id": "hkjc-fixture-list",
+        "source_id": "hkjc-racecard-public-timetable",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=09&CalYear=2026",
+        "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/09/09&Racecourse=HV&RaceNo=1",
         "source_label": "Hong Kong Jockey Club",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:33:07.548Z",
+        "last_checked_date": "2026-09-07",
+        "generated_at": "2026-09-07T08:21:01.000Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -12411,23 +12411,23 @@
       "timezone": "Europe/Istanbul",
       "racecourse_id": "elazig-racecourse",
       "date": "2026-09-09",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "17:45",
+      "last_race_time_local": "21:30",
       "source_trace": {
         "source_id": "tjk-annual-programme",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?SehirId=7&QueryParameter_Tarih=09%2F09%2F2026&SehirAdi=Elaz%C4%B1%C4%9F",
+        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=7&QueryParameter_Tarih=09%2F09%2F2026&SehirAdi=Elaz%C4%B1%C4%9F&Era=nextWeek",
         "source_label": null,
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-07",
+        "generated_at": "2026-09-07T08:21:35.670Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
@@ -12440,23 +12440,23 @@
       "timezone": "Europe/Istanbul",
       "racecourse_id": "istanbul-racecourse",
       "date": "2026-09-09",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "13:30",
+      "last_race_time_local": "18:00",
       "source_trace": {
         "source_id": "tjk-annual-programme",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?SehirId=3&QueryParameter_Tarih=09%2F09%2F2026&SehirAdi=%C4%B0stanbul",
+        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=3&QueryParameter_Tarih=09%2F09%2F2026&SehirAdi=%C4%B0stanbul&Era=nextWeek",
         "source_label": null,
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-07",
+        "generated_at": "2026-09-07T08:21:35.670Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
@@ -12731,23 +12731,23 @@
       "timezone": "Asia/Seoul",
       "racecourse_id": "jeju-racecourse",
       "date": "2026-09-11",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "10:50",
+      "last_race_time_local": "16:30",
       "source_trace": {
-        "source_id": "kra-annual-race-operation-plan",
+        "source_id": "kra-today-race",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://race.kra.co.kr/raceoper/RaceoperView.do?Sub=1&meet=1",
+        "official_source_url": "https://race.kra.co.kr/thisweekrace/ThisWeekBaljuTime.do",
         "source_label": null,
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.716Z",
+        "last_checked_date": "2026-09-07",
+        "generated_at": "2026-09-07T08:21:35.619Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
@@ -13064,23 +13064,23 @@
       "timezone": "Asia/Seoul",
       "racecourse_id": "jeju-racecourse",
       "date": "2026-09-12",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "11:00",
+      "last_race_time_local": "16:30",
       "source_trace": {
-        "source_id": "kra-annual-race-operation-plan",
+        "source_id": "kra-today-race",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://race.kra.co.kr/raceoper/RaceoperView.do?Sub=1&meet=1",
+        "official_source_url": "https://race.kra.co.kr/thisweekrace/ThisWeekBaljuTime.do",
         "source_label": null,
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.716Z",
+        "last_checked_date": "2026-09-07",
+        "generated_at": "2026-09-07T08:21:35.619Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
@@ -19962,6 +19962,64 @@
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
       "notes": "Deterministic public-safe timetable fields reconciled from the official source."
+    },
+    {
+      "meeting_id": "tjk-adana-racecourse-2026-10-06",
+      "country_id": "turkey",
+      "authority_id": "turkiye-jokey-kulubu",
+      "racing_system_id": "tjk-national-racing-system",
+      "timezone": "Europe/Istanbul",
+      "racecourse_id": "adana-racecourse",
+      "date": "2026-10-06",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "tjk-annual-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?SehirId=1&QueryParameter_Tarih=06%2F10%2F2026&SehirAdi=Adana",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-07",
+        "generated_at": "2026-09-07T08:21:35.670Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
+      "meeting_id": "tjk-kocaeli-racecourse-2026-10-06",
+      "country_id": "turkey",
+      "authority_id": "turkiye-jokey-kulubu",
+      "racing_system_id": "tjk-national-racing-system",
+      "timezone": "Europe/Istanbul",
+      "racecourse_id": "kocaeli-racecourse",
+      "date": "2026-10-06",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "tjk-annual-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?SehirId=9&QueryParameter_Tarih=06%2F10%2F2026&SehirAdi=Kocaeli",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-07",
+        "generated_at": "2026-09-07T08:21:35.670Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
     }
   ]
 }
