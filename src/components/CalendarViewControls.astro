@@ -1,0 +1,179 @@
+---
+import { addCalendarDays } from '../lib/timetable/calendarDateContext.mjs';
+import type { TimetableMeetingRow } from '../data/timetableMeetingRows';
+
+type Props = {
+  startDate: string;
+  endDateInclusive: string;
+  today: string;
+  records: TimetableMeetingRow[];
+  lang?: 'en' | 'ja';
+};
+
+const { startDate, endDateInclusive, today, records, lang = 'en' } = Astro.props as Props;
+const isJa = lang === 'ja';
+const counts = new Map<string, number>();
+for (const record of records) counts.set(record.date, (counts.get(record.date) ?? 0) + 1);
+
+const months = new Map<string, string[]>();
+for (let date = startDate; date <= endDateInclusive; date = addCalendarDays(date, 1)) {
+  const key = date.slice(0, 7);
+  const monthDates = months.get(key) ?? [];
+  monthDates.push(date);
+  months.set(key, monthDates);
+}
+
+const monthLabel = (key: string) => {
+  const [year, month] = key.split('-').map(Number);
+  return new Intl.DateTimeFormat(isJa ? 'ja-JP' : 'en-US', {
+    year: 'numeric',
+    month: 'long',
+    timeZone: 'UTC',
+  }).format(new Date(Date.UTC(year, month - 1, 1)));
+};
+const weekdayLabels = isJa ? ['日', '月', '火', '水', '木', '金', '土'] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+---
+
+<section class="calendar-view-controller" data-calendar-view-controller data-today={today} data-lang={lang}>
+  <div class="calendar-view-controller__bar">
+    <div>
+      <p class="calendar-view-controller__eyebrow">{isJa ? '表示' : 'View'}</p>
+      <strong>{isJa ? '開催の見方を切り替える' : 'Choose how to browse meetings'}</strong>
+    </div>
+    <div class="calendar-view-controller__buttons" role="group" aria-label={isJa ? 'カレンダー表示切替' : 'Calendar view'}>
+      <button type="button" data-calendar-view-control="list" aria-pressed="true">{isJa ? '一覧' : 'List view'}</button>
+      <button type="button" data-calendar-view-control="month" aria-pressed="false">{isJa ? '月' : 'Month view'}</button>
+      <button type="button" data-calendar-view-control="map" aria-pressed="false">{isJa ? '地図' : 'Map view'}</button>
+    </div>
+  </div>
+
+  <div class="calendar-month-view" data-calendar-month-view hidden>
+    {[...months.entries()].map(([key, dates]) => {
+      const first = dates[0];
+      const firstWeekday = new Date(`${first}T00:00:00Z`).getUTCDay();
+      return (
+        <section class="calendar-month" aria-label={monthLabel(key)}>
+          <h2>{monthLabel(key)}</h2>
+          <div class="calendar-month__weekdays" aria-hidden="true">
+            {weekdayLabels.map((label) => <span>{label}</span>)}
+          </div>
+          <div class="calendar-month__grid">
+            {Array.from({ length: firstWeekday }).map(() => <span class="calendar-month__blank" aria-hidden="true"></span>)}
+            {dates.map((date) => (
+              <button
+                type="button"
+                class:list={['calendar-month__day', date === today && 'calendar-month__day--today']}
+                data-calendar-month-date={date}
+                aria-label={`${date} · ${counts.get(date) ?? 0} ${isJa ? '開催' : 'meetings'}`}
+              >
+                <span>{Number(date.slice(8, 10))}</span>
+                <small>{counts.get(date) ?? 0}</small>
+              </button>
+            ))}
+          </div>
+        </section>
+      );
+    })}
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    const install = () => {
+      document.querySelectorAll('[data-calendar-view-controller]').forEach((root) => {
+        if (!(root instanceof HTMLElement) || root.dataset.initialized === 'true') return;
+        root.dataset.initialized = 'true';
+
+        const controls = new Map(Array.from(root.querySelectorAll('[data-calendar-view-control]'))
+          .filter((node) => node instanceof HTMLButtonElement)
+          .map((node) => [node.dataset.calendarViewControl, node]));
+        const monthPanel = root.querySelector('[data-calendar-month-view]');
+        const internalList = document.querySelector('[data-calendar-view-list]');
+        const internalMap = document.querySelector('[data-calendar-view-map]');
+        const listView = document.querySelector('[data-calendar-list-view]');
+        const dateSelect = document.querySelector('[data-filter-date]');
+        if (!(monthPanel instanceof HTMLElement) || !(internalList instanceof HTMLButtonElement) ||
+            !(internalMap instanceof HTMLButtonElement) || !(listView instanceof HTMLElement) ||
+            !(dateSelect instanceof HTMLSelectElement)) return;
+
+        const validViews = new Set(['list', 'month', 'map']);
+        let activeView = 'list';
+
+        const syncSelectedDate = () => {
+          root.querySelectorAll('[data-calendar-month-date]').forEach((button) => {
+            if (!(button instanceof HTMLButtonElement)) return;
+            const selected = button.dataset.calendarMonthDate === dateSelect.value;
+            button.setAttribute('aria-pressed', String(selected));
+            if (selected) button.setAttribute('aria-current', 'date');
+            else button.removeAttribute('aria-current');
+          });
+        };
+
+        const setPressed = (view) => {
+          controls.forEach((button, key) => button.setAttribute('aria-pressed', String(key === view)));
+          root.dataset.calendarView = view;
+        };
+
+        const normalizeUrl = (view) => {
+          const url = new URL(window.location.href);
+          url.searchParams.set('view', view);
+          window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+        };
+
+        const ensureDate = () => {
+          if (/^\d{4}-\d{2}-\d{2}$/.test(dateSelect.value)) return;
+          const today = root.dataset.today || '';
+          if ([...dateSelect.options].some((option) => option.value === today)) {
+            dateSelect.value = today;
+            dateSelect.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        };
+
+        const activate = (requestedView, updateUrl = true) => {
+          const view = validViews.has(requestedView) ? requestedView : 'list';
+          activeView = view;
+          if (view === 'map') {
+            ensureDate();
+            monthPanel.hidden = true;
+            internalMap.click();
+          } else if (view === 'month') {
+            internalList.click();
+            listView.hidden = true;
+            monthPanel.hidden = false;
+          } else {
+            monthPanel.hidden = true;
+            internalList.click();
+          }
+          setPressed(view);
+          syncSelectedDate();
+          if (updateUrl) requestAnimationFrame(() => normalizeUrl(view));
+        };
+
+        controls.forEach((button, view) => button.addEventListener('click', () => activate(view)));
+        root.querySelectorAll('[data-calendar-month-date]').forEach((button) => {
+          if (!(button instanceof HTMLButtonElement)) return;
+          button.addEventListener('click', () => {
+            const date = button.dataset.calendarMonthDate || '';
+            if (![...dateSelect.options].some((option) => option.value === date)) return;
+            dateSelect.value = date;
+            dateSelect.dispatchEvent(new Event('change', { bubbles: true }));
+            syncSelectedDate();
+          });
+        });
+        dateSelect.addEventListener('change', syncSelectedDate);
+        window.addEventListener('whr:calendardatechange', syncSelectedDate);
+        window.addEventListener('whr:timezonechange', syncSelectedDate);
+        window.addEventListener('popstate', () => {
+          const requested = new URL(window.location.href).searchParams.get('view') || 'list';
+          activate(requested, false);
+        });
+
+        const requested = new URL(window.location.href).searchParams.get('view') || 'list';
+        activate(requested, false);
+      });
+    };
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
+    else install();
+  })();
+</script>
