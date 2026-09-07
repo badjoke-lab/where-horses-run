@@ -87,6 +87,47 @@
   outline-offset: 2px;
 }
 
+.today-state-summary {
+  display: flex !important;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem !important;
+}
+
+.today-state-summary__item,
+.today-state-summary__total {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: flex-start !important;
+  width: auto !important;
+  min-height: 34px !important;
+  padding: 0.28rem 0.58rem !important;
+  gap: 0.35rem !important;
+  text-align: left !important;
+}
+
+.today-state-summary__item strong,
+.today-state-summary__total strong {
+  margin-inline-start: 0.05rem;
+}
+
+.today-state-summary__total {
+  grid-column: auto !important;
+  margin-inline-start: 0 !important;
+}
+
+.today-state-divider {
+  min-height: 36px !important;
+  margin-block-start: 0.7rem !important;
+  padding: 0.38rem 0.55rem !important;
+  gap: 0.4rem !important;
+}
+
+.today-state-divider small {
+  margin-inline-start: 0.1rem !important;
+  font-weight: 700;
+}
+
 @media (max-width: 760px) {
   .timetable-timezone-projection .meeting-row {
     grid-template-columns: minmax(0, 1fr) auto !important;
@@ -131,5 +172,14 @@
   .timetable-timezone-projection .meeting-row__stream-live-badge {
     padding: 0.12rem 0.36rem !important;
     font-size: 0.68rem !important;
+  }
+
+  .today-state-summary {
+    display: flex !important;
+  }
+
+  .today-state-summary__item,
+  .today-state-summary__total {
+    flex: 0 1 auto;
   }
 }
