@@ -1,14 +1,18 @@
 # Where Horses Run — current development entry point
 
 Status: active entry point  
-Last reviewed: 2026-09-05
+Last reviewed: 2026-09-08
+
+`AGENTS.md` is the mandatory repository execution instruction. Read it before using this entry point.
 
 ## Required reading
 
 ```text
+AGENTS.md
 docs/governance/document-authority.md
 docs/project-roadmap.md
-docs/project-roadmap-2026-09-05-addendum.md
+docs/project-roadmap-2026-09-08-addendum.md
+docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md
 docs/decisions/map-ui-integration-2026-09-05.md
 docs/operations/deployment-and-ci-policy.md
 docs/calendar/README.md
@@ -50,6 +54,8 @@ docs/calendar/dynamic-dates-release-gate.md
 docs/calendar/operations-v1-release-gate.md
 docs/calendar/public-v1-release-decision.md
 ```
+
+Re-read the applicable specification and active roadmap/addendum whenever scope or acceptance criteria change, after relevant movement on `main`, before opening or materially updating a PR, before merge, and after merge before beginning the next Work ID. Conversation history and PR numbers do not replace canonical repository documents.
 
 ## Active Calendar model
 
@@ -368,8 +374,13 @@ Completed implementation unit: `RACECOURSE-PAGE-BILINGUAL-QA-01`
 Completed implementation unit: `GLOSSARY-SCHEMA-EXTENSION-01`
 Completed implementation unit: `GLOSSARY-QA-RELEASE-01`
 Current stage: `reviewed_incremental_maintenance`
-Active product/UI lane: `map_ui_integration`
-Current state authority: `docs/project-roadmap-2026-09-05-addendum.md`
+Active product/UI lane: `map_first_site_ui`
+Current UI Work ID: `UI-006`
+Next UI Work ID: `UI-007`
+Parallel Calendar quality lane: `calendar_quality_and_coverage`
+Active Calendar presentation correction: `WHR-CAL-PRESENTATION-STATE-001`
+Current state authority: `docs/project-roadmap-2026-09-08-addendum.md`
+Current Calendar presentation authority: `docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md`
 Current map/UI decision authority: `docs/decisions/map-ui-integration-2026-09-05.md`
 
 Current NAR status:
@@ -391,7 +402,7 @@ The 71 C meetings are published schedule identities, not A+ detail-complete meet
 
 ## Completed glossary sequence
 
-The former glossary active sequence is complete through `GLOSSARY-QA-RELEASE-01`. Current execution is `reviewed_incremental_maintenance`; use `docs/project-roadmap-2026-09-05-addendum.md` for the live maintenance lanes, map/UI lane, and source gates.
+The former glossary active sequence is complete through `GLOSSARY-QA-RELEASE-01`. Current execution is `reviewed_incremental_maintenance`; use `docs/project-roadmap-2026-09-08-addendum.md` for the live maintenance lanes, map/UI lane, Calendar presentation correction, and source gates.
 
 The Acquisition Control Plane foundation, Actions/local multi-job runners, Review Queue, Rank-aware Retry Queue, review cohort planning, review PR package preparation, Due-job planning, artifact-only scheduled planning, and Operations v2 are already implemented. Scheduled acquisition execution and unattended publication remain disabled.
 
