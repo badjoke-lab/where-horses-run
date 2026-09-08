@@ -1,0 +1,86 @@
+---
+import type { PublicRacecourseMeetingState } from '../lib/racecourses/publicRacecourseMeetingState';
+import type { PublicTimetableMeetingRow } from '../lib/timetable/publicTimetableViewModel';
+
+interface Props {
+  state: PublicRacecourseMeetingState;
+  lang?: 'en' | 'ja';
+  officialScheduleUrl?: string;
+}
+
+const { state, lang = 'en', officialScheduleUrl } = Astro.props;
+const isJapanese = lang === 'ja';
+const calendarBase = isJapanese ? '/ja/calendar/' : '/calendar/';
+const detailPath = (meeting: PublicTimetableMeetingRow) => {
+  if (!meeting.detail_path) return null;
+  return isJapanese ? `/ja${meeting.detail_path}` : meeting.detail_path;
+};
+const timeRange = (meeting: PublicTimetableMeetingRow) => {
+  if (meeting.first_race_time_local && meeting.last_race_time_local) {
+    return `${meeting.first_race_time_local}–${meeting.last_race_time_local}`;
+  }
+  return meeting.first_race_time_local ?? meeting.last_race_time_local ?? null;
+};
+const calendarDateHref = (date: string) => `${calendarBase}?date=${encodeURIComponent(date)}`;
+const primaryMeeting = state.today_meetings[0] ?? state.next_meetings[0] ?? null;
+const isToday = Boolean(state.today_meetings.length);
+const upcoming = state.upcoming_meetings
+  .filter((meeting) => !primaryMeeting || meeting.meeting_id !== primaryMeeting.meeting_id)
+  .slice(0, 6);
+---
+
+<section class="racecourse-meeting-summary" aria-labelledby="racecourse-meeting-summary-heading" data-racecourse-meeting-summary>
+  <div class="racecourse-detail-v2__section-heading">
+    <p class="racecourse-detail-v2__eyebrow">{isJapanese ? '公開カレンダー' : 'Public Calendar'}</p>
+    <h2 id="racecourse-meeting-summary-heading">{isJapanese ? '開催情報' : 'Meeting information'}</h2>
+  </div>
+
+  {primaryMeeting ? (
+    <article class="racecourse-meeting-summary__primary" data-racecourse-primary-meeting>
+      <div>
+        <p class="racecourse-meeting-summary__state">{isToday ? (isJapanese ? '本日開催' : 'Racing today') : (isJapanese ? '次回開催' : 'Next meeting')}</p>
+        <h3><a href={calendarDateHref(primaryMeeting.date)}>{primaryMeeting.date}</a></h3>
+        <p class="racecourse-meeting-summary__facts">
+          {timeRange(primaryMeeting) ? <span>{isJapanese ? '現地時刻 ' : 'Local time '}{timeRange(primaryMeeting)}</span> : null}
+          <span>{isJapanese ? '公開ランク' : 'Public rank'} {primaryMeeting.effective_public_rank}</span>
+          <span>{primaryMeeting.timezone}</span>
+        </p>
+      </div>
+      <div class="racecourse-meeting-summary__actions">
+        {detailPath(primaryMeeting) ? <a class="button-like" href={detailPath(primaryMeeting)!}>{isJapanese ? '開催詳細' : 'Meeting details'}</a> : null}
+        <a href={primaryMeeting.official_source_url}>{isJapanese ? '公式ソース ↗' : 'Official source ↗'}</a>
+      </div>
+    </article>
+  ) : (
+    <div class="racecourse-meeting-summary__empty" data-racecourse-no-current-window-meeting>
+      <p>{isJapanese
+        ? '現在の公開30日窓には、この競馬場の確認済み開催がありません。'
+        : 'No reviewed meeting for this racecourse is listed in the current public 30-day window.'}</p>
+      <p>
+        <a href={calendarBase}>{isJapanese ? 'カレンダーを見る' : 'Open Calendar'} →</a>
+        {officialScheduleUrl ? <><span>{' · '}</span><a href={officialScheduleUrl}>{isJapanese ? '公式開催予定 ↗' : 'Official schedule ↗'}</a></> : null}
+      </p>
+    </div>
+  )}
+
+  {upcoming.length ? (
+    <div class="racecourse-meeting-summary__upcoming" data-racecourse-upcoming-meetings>
+      <h3>{isJapanese ? '今後の開催' : 'Upcoming meetings'}</h3>
+      <ul>
+        {upcoming.map((meeting) => (
+          <li>
+            <a href={calendarDateHref(meeting.date)}>{meeting.date}</a>
+            {timeRange(meeting) ? <span>{timeRange(meeting)}</span> : null}
+            <span>{meeting.effective_public_rank}</span>
+            {detailPath(meeting) ? <a href={detailPath(meeting)!}>{isJapanese ? '詳細' : 'Details'}</a> : null}
+          </li>
+        ))}
+      </ul>
+    </div>
+  ) : null}
+
+  <p class="racecourse-meeting-summary__footer">
+    <a href={calendarBase}>{isJapanese ? 'すべての開催をカレンダーで見る' : 'View all meetings in Calendar'} →</a>
+    {officialScheduleUrl ? <><span>{' · '}</span><a href={officialScheduleUrl}>{isJapanese ? '公式開催予定 ↗' : 'Official schedule ↗'}</a></> : null}
+  </p>
+</section>
