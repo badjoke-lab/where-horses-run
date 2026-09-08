@@ -1,3 +1,11 @@
+[data-today-controls]:has([data-meeting-range='today'][aria-pressed='true']) [data-today-summary-state='future'] {
+  display: none !important;
+}
+
+[data-today-controls]:has([data-meeting-range='tomorrow'][aria-pressed='true']) [data-today-summary-state]:not([data-today-summary-state='future']) {
+  display: none !important;
+}
+
 @media (max-width: 700px) {
   .today-page {
     gap: 0.5rem;
