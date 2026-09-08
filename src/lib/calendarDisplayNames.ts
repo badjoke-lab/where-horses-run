@@ -1,7 +1,7 @@
 import racecourseDisplayRegistry from '../../data/static/racecourse-display-names-v1.json';
-import { getCountries, getRacecourses, type Locale } from './data';
+import { getCountries, getRacecourses } from './data';
 
-export type CalendarDisplayLocale = Locale;
+export type CalendarDisplayLocale = 'en' | 'ja';
 
 type ReviewedJapaneseNameStatus = 'established' | 'reviewed_transliteration' | 'none';
 type RacecourseDisplayRegistryEntry = {
