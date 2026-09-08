@@ -1,0 +1,249 @@
+.secondary-reference {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.secondary-reference__hero {
+  padding-block: clamp(1.1rem, 2vw, 1.8rem);
+}
+
+.secondary-reference__hero .hero__summary {
+  max-width: 68ch;
+  margin-bottom: 0;
+}
+
+.reference-toolbar {
+  display: grid;
+  gap: .85rem;
+  padding: 1rem;
+  border: 1px solid var(--whr-color-border, #d8dde5);
+  border-radius: .85rem;
+  background: var(--whr-color-surface, #fff);
+}
+
+.reference-toolbar__heading {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.reference-toolbar form {
+  display: grid;
+  grid-template-columns: minmax(15rem, 2fr) repeat(2, minmax(10rem, 1fr)) auto;
+  gap: .7rem;
+  align-items: end;
+}
+
+.reference-toolbar form > p {
+  margin: 0;
+}
+
+.reference-toolbar input,
+.reference-toolbar select,
+.reference-toolbar button {
+  min-height: 44px;
+}
+
+.reference-toolbar input,
+.reference-toolbar select {
+  width: 100%;
+}
+
+.reference-toolbar__actions {
+  display: flex;
+  gap: .45rem;
+  flex-wrap: wrap;
+}
+
+.reference-toolbar__count {
+  margin: 0;
+  color: var(--whr-color-muted, #5f6875);
+  font-size: .9rem;
+}
+
+.reference-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reference-chips a,
+.reference-chips button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: .35rem .65rem;
+  border: 1px solid var(--whr-color-border, #d8dde5);
+  border-radius: 999px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+}
+
+.reference-chips a[aria-current='page'],
+.reference-chips button[aria-pressed='true'] {
+  border-color: #111827;
+  background: #f3f4f6;
+}
+
+.reference-list {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--whr-color-border, #d8dde5);
+}
+
+.reference-row {
+  display: grid;
+  grid-template-columns: minmax(13rem, 1.1fr) minmax(16rem, 2fr) auto;
+  gap: .85rem 1.15rem;
+  align-items: start;
+  padding: .95rem 0;
+  border-bottom: 1px solid var(--whr-color-border, #d8dde5);
+}
+
+.reference-row[hidden] {
+  display: none;
+}
+
+.reference-row__identity h2,
+.reference-row__identity h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.reference-row__identity p,
+.reference-row__body p,
+.reference-row__meta p {
+  margin: .25rem 0 0;
+}
+
+.reference-row__body {
+  min-width: 0;
+}
+
+.reference-row__summary {
+  max-width: 72ch;
+}
+
+.reference-row__meta {
+  color: var(--whr-color-muted, #5f6875);
+  font-size: .88rem;
+}
+
+.reference-row__action {
+  white-space: nowrap;
+  font-weight: 700;
+}
+
+.reference-section {
+  display: grid;
+  gap: .7rem;
+}
+
+.reference-section > h2 {
+  margin-bottom: 0;
+}
+
+.reference-prose {
+  max-width: 76ch;
+}
+
+.reference-definition-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--whr-color-border, #d8dde5);
+}
+
+.reference-definition-list > div {
+  display: grid;
+  grid-template-columns: minmax(8rem, .8fr) minmax(0, 1.2fr);
+  gap: .65rem;
+  padding: .7rem 0;
+  border-bottom: 1px solid var(--whr-color-border, #d8dde5);
+}
+
+.reference-definition-list dt {
+  font-weight: 700;
+}
+
+.reference-definition-list dd {
+  margin: 0;
+}
+
+.reference-back {
+  margin: 0;
+  font-size: .9rem;
+}
+
+.reference-note {
+  padding: .8rem 1rem;
+  border-left: 3px solid #9ca3af;
+  background: #f8f9fb;
+}
+
+.reference-note p {
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .reference-toolbar form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .reference-toolbar__actions {
+    grid-column: 1 / -1;
+  }
+
+  .reference-row {
+    grid-template-columns: minmax(12rem, .9fr) minmax(0, 1.5fr);
+  }
+
+  .reference-row__action {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 700px) {
+  .secondary-reference {
+    gap: .9rem;
+  }
+
+  .secondary-reference__hero {
+    padding-block: .65rem;
+  }
+
+  .reference-toolbar {
+    padding: .8rem;
+  }
+
+  .reference-toolbar form,
+  .reference-row,
+  .reference-definition-list,
+  .reference-definition-list > div {
+    grid-template-columns: 1fr;
+  }
+
+  .reference-row {
+    gap: .35rem;
+    padding: .8rem 0;
+  }
+
+  .reference-row__action {
+    grid-column: 1;
+  }
+
+  .reference-chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: .2rem;
+    scrollbar-width: thin;
+  }
+
+  .reference-chips li {
+    flex: 0 0 auto;
+  }
+}
