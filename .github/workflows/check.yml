@@ -41,6 +41,9 @@ jobs:
       - name: Check meeting stream state
         run: node scripts/check-meeting-stream-state.mjs
 
+      - name: Check Calendar display names
+        run: node scripts/check-calendar-display-names.mjs
+
       - name: Check map UI contract
         run: node scripts/check-map-ui-contract.mjs
 
