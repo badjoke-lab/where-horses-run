@@ -59,18 +59,21 @@ const timeZoneOptions = [
     <button type="button" class="today-controls__reset" data-today-filter-reset>{isJapanese ? '絞り込み解除' : 'Reset filters'}</button>
   </div>
 
-  <div class="today-state-summary" aria-live="polite">
-    <span class="today-state-summary__item today-state-summary__item--running">
+  <div class="today-state-summary" aria-live="polite" data-today-state-summary>
+    <span class="today-state-summary__item today-state-summary__item--running" data-today-summary-state="running">
       <span aria-hidden="true"></span>{isJapanese ? '開催中' : 'Racing now'} <strong data-today-count="running">0</strong>
     </span>
-    <span class="today-state-summary__item today-state-summary__item--upcoming">
-      <span aria-hidden="true"></span>{isJapanese ? '開催前・本日開催' : 'Upcoming / racing today'} <strong data-today-count="upcoming">0</strong>
+    <span class="today-state-summary__item today-state-summary__item--upcoming" data-today-summary-state="upcoming">
+      <span aria-hidden="true"></span>{isJapanese ? '開催前' : 'Upcoming'} <strong data-today-count="upcoming">0</strong>
     </span>
-    <span class="today-state-summary__item today-state-summary__item--ended">
+    <span class="today-state-summary__item today-state-summary__item--today" data-today-summary-state="today">
+      <span aria-hidden="true"></span>{isJapanese ? '本日開催' : 'Today meeting'} <strong data-today-count="today">0</strong>
+    </span>
+    <span class="today-state-summary__item today-state-summary__item--ended" data-today-summary-state="ended">
       <span aria-hidden="true"></span>{isJapanese ? '終了' : 'Finished'} <strong data-today-count="ended">0</strong>
     </span>
-    <span class="today-state-summary__item today-state-summary__item--scheduled">
-      <span aria-hidden="true"></span>{isJapanese ? '今後の開催' : 'Scheduled'} <strong data-today-count="scheduled">0</strong>
+    <span class="today-state-summary__item today-state-summary__item--future" data-today-summary-state="future">
+      <span aria-hidden="true"></span>{isJapanese ? '開催予定' : 'Scheduled'} <strong data-today-count="future">0</strong>
     </span>
     <span class="today-state-summary__total"><strong data-today-visible-count>0</strong> {isJapanese ? '開催を表示' : 'meetings shown'}</span>
   </div>
@@ -84,6 +87,8 @@ const timeZoneOptions = [
   (() => {
     const CURATED_TIMEZONES = new Set(['Asia/Tokyo', 'Asia/Seoul', 'Asia/Hong_Kong', 'Asia/Dubai', 'Europe/Istanbul', 'UTC']);
     const VALID_RANGES = new Set(['today', 'tomorrow', 'next7']);
+    const PRESENTATION_STATES = ['running', 'upcoming', 'today', 'ended', 'future'];
+    const STATE_ORDER = { running: 0, upcoming: 1, today: 2, ended: 3, future: 4, unknown: 5 };
 
     const addDateDays = (dateText, days) => {
       const date = new Date(`${dateText}T00:00:00.000Z`);
@@ -115,7 +120,8 @@ const timeZoneOptions = [
         const total = controls.querySelector('[data-today-visible-count]');
         const empty = controls.querySelector('[data-today-filter-empty]');
         const rangeButtons = Array.from(controls.querySelectorAll('[data-meeting-range]'));
-        const countNodes = new Map(['running', 'upcoming', 'ended', 'scheduled'].map((state) => [state, controls.querySelector(`[data-today-count="${state}"]`)]));
+        const summaryItems = new Map(PRESENTATION_STATES.map((state) => [state, controls.querySelector(`[data-today-summary-state="${state}"]`)]));
+        const countNodes = new Map(PRESENTATION_STATES.map((state) => [state, controls.querySelector(`[data-today-count="${state}"]`)]));
         if (!(timezone instanceof HTMLSelectElement) || !(country instanceof HTMLSelectElement) || !(authority instanceof HTMLSelectElement) || !(rank instanceof HTMLSelectElement)) return;
 
         const timezoneRoot = () => document.querySelector('[data-display-timezone-root][data-projection-scope="all"]');
@@ -138,25 +144,30 @@ const timeZoneOptions = [
         let activeRange = VALID_RANGES.has(requestedRange) ? requestedRange : 'today';
 
         const stateFor = (row) => {
-          const meetingState = row.dataset.meetingState || 'future';
-          if (meetingState === 'running') return 'running';
-          if (meetingState === 'ended') return 'ended';
-          if (meetingState === 'upcoming' || meetingState === 'day-today') return 'upcoming';
-          return 'scheduled';
+          const state = row.dataset.meetingPresentationState || 'unknown';
+          return PRESENTATION_STATES.includes(state) ? state : 'unknown';
         };
 
         const stateLabel = (state) => state === 'running'
           ? (isJa ? '開催中' : 'Racing now')
-          : state === 'ended'
-            ? (isJa ? '終了' : 'Finished')
-            : state === 'scheduled'
-              ? (isJa ? '今後の開催' : 'Scheduled')
-              : (isJa ? '開催前・本日開催' : 'Upcoming / racing today');
+          : state === 'upcoming'
+            ? (isJa ? '開催前' : 'Upcoming')
+            : state === 'today'
+              ? (isJa ? '本日開催' : 'Today meeting')
+              : state === 'ended'
+                ? (isJa ? '終了' : 'Finished')
+                : state === 'future'
+                  ? (isJa ? '開催予定' : 'Scheduled')
+                  : (isJa ? '状態未確認' : 'State not confirmed');
 
-        const stateOrder = { running: 0, upcoming: 1, scheduled: 2, ended: 3 };
+        const validSummaryStates = () => activeRange === 'today'
+          ? new Set(['running', 'upcoming', 'today', 'ended'])
+          : activeRange === 'tomorrow'
+            ? new Set(['future'])
+            : new Set(PRESENTATION_STATES);
 
         const sortRows = (left, right) => {
-          const stateDiff = stateOrder[stateFor(left)] - stateOrder[stateFor(right)];
+          const stateDiff = (STATE_ORDER[stateFor(left)] ?? 9) - (STATE_ORDER[stateFor(right)] ?? 9);
           if (stateDiff !== 0) return stateDiff;
           const leftStart = Number(left.dataset.sortStart || Number.POSITIVE_INFINITY);
           const rightStart = Number(right.dataset.sortStart || Number.POSITIVE_INFINITY);
@@ -194,7 +205,7 @@ const timeZoneOptions = [
             if (!(list instanceof HTMLElement)) return;
             const listRows = Array.from(list.querySelectorAll('[data-calendar-meeting-row]')).filter((row) => row instanceof HTMLElement).sort(sortRows);
             listRows.forEach((row) => list.append(row));
-            ['running', 'upcoming', 'scheduled', 'ended'].forEach((state) => {
+            PRESENTATION_STATES.forEach((state) => {
               const first = listRows.find((row) => !row.hidden && stateFor(row) === state);
               if (!first) return;
               const count = listRows.filter((row) => !row.hidden && stateFor(row) === state).length;
@@ -257,8 +268,19 @@ const timeZoneOptions = [
           });
         };
 
+        const syncSummary = (counts) => {
+          const valid = validSummaryStates();
+          summaryItems.forEach((item, state) => {
+            if (!(item instanceof HTMLElement)) return;
+            item.hidden = !valid.has(state) || counts[state] === 0;
+          });
+          countNodes.forEach((node, state) => {
+            if (node) node.textContent = String(counts[state]);
+          });
+        };
+
         const applyFilters = () => {
-          const counts = { running: 0, upcoming: 0, ended: 0, scheduled: 0 };
+          const counts = { running: 0, upcoming: 0, today: 0, ended: 0, future: 0 };
           let visible = 0;
           rows().forEach((row) => {
             const hidden = !matchesRange(row) || !matchesFilters(row);
@@ -266,11 +288,11 @@ const timeZoneOptions = [
             row.hidden = hidden;
             if (!hidden) {
               const state = stateFor(row);
-              counts[state] += 1;
+              if (state in counts) counts[state] += 1;
               visible += 1;
             }
           });
-          countNodes.forEach((node, state) => { if (node) node.textContent = String(counts[state]); });
+          syncSummary(counts);
           if (total) total.textContent = String(visible);
           if (empty instanceof HTMLElement) empty.hidden = visible !== 0;
           syncSections();
@@ -285,10 +307,10 @@ const timeZoneOptions = [
           if (internal instanceof HTMLSelectElement && CURATED_TIMEZONES.has(internal.value)) timezone.value = internal.value;
         };
 
-        requestAnimationFrame(() => {
+        requestAnimationFrame(() => requestAnimationFrame(() => {
           syncTimezoneFromList();
           applyFilters();
-        });
+        }));
 
         rangeButtons.forEach((button) => button.addEventListener('click', () => {
           const next = button.dataset.meetingRange;
@@ -354,7 +376,7 @@ const timeZoneOptions = [
     color: #fff;
   }
 
-  .today-state-summary__item--scheduled > span {
+  .today-state-summary__item--future > span {
     background: #111;
   }
 </style>
