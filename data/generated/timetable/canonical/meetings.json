@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-08T08:08:09.377Z",
+  "generated_at": "2026-09-08T08:16:04.287Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -12645,23 +12645,23 @@
       "timezone": "Europe/Istanbul",
       "racecourse_id": "ankara-racecourse",
       "date": "2026-09-10",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "14:30",
+      "last_race_time_local": "18:00",
       "source_trace": {
         "source_id": "tjk-annual-programme",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?SehirId=5&QueryParameter_Tarih=10%2F09%2F2026&SehirAdi=Ankara",
+        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=5&QueryParameter_Tarih=10%2F09%2F2026&SehirAdi=Ankara&Era=nextWeek",
         "source_label": null,
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-08",
+        "generated_at": "2026-09-08T08:16:04.287Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
@@ -12674,23 +12674,23 @@
       "timezone": "Europe/Istanbul",
       "racecourse_id": "izmir-racecourse",
       "date": "2026-09-10",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "17:15",
+      "last_race_time_local": "21:30",
       "source_trace": {
         "source_id": "tjk-annual-programme",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?SehirId=2&QueryParameter_Tarih=10%2F09%2F2026&SehirAdi=%C4%B0zmir",
+        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=2&QueryParameter_Tarih=10%2F09%2F2026&SehirAdi=%C4%B0zmir&Era=nextWeek",
         "source_label": null,
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-08",
+        "generated_at": "2026-09-08T08:16:04.287Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
