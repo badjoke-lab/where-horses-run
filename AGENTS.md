@@ -36,7 +36,9 @@ Before Calendar presentation, meeting-state, timezone, map/list/month, or offici
 
 ```text
 docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md
+docs/specs/calendar-row-rank-live-localization-2026-09-08.md
 docs/specs/map-first-site-ui-2026-09-06.md
+docs/calendar/calendar-presentation-state-001-display-correction-schedule.md
 docs/calendar/incremental-coverage-contract.md
 docs/calendar/acquisition-control-plane-contract.md
 docs/calendar/implementation-roadmap.md
