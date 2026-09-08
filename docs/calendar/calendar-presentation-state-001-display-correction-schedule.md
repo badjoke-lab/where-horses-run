@@ -1,15 +1,15 @@
 # Calendar presentation/state display-correction schedule
 
-Status: base correction complete; color-state amendment active  
+Status: complete execution record  
 Adopted: 2026-09-08  
-Base completed: 2026-09-08  
+Completed: 2026-09-08  
 Base Work ID: `WHR-CAL-PRESENTATION-STATE-001`  
-Active amendment Work ID: `WHR-CAL-PRESENTATION-COLOR-001`  
+Completed amendment Work ID: `WHR-CAL-PRESENTATION-COLOR-001`  
 Canonical parent schedule: `docs/project-roadmap-2026-09-08-addendum.md`  
 Canonical presentation specification: `docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md`  
 Canonical display refinement: `docs/specs/calendar-row-rank-live-localization-2026-09-08.md`
 
-This schedule records the completed presentation corrections discovered after the initial Calendar state/view merge and the bounded color-state amendment that keeps `Today meeting / 本日開催` distinct from precise `Upcoming / 開催前` in both List and Map. It is presentation-only work, not a new acquisition/data-quality programme.
+This schedule records the completed presentation corrections discovered after the initial Calendar state/view merge and the completed bounded color-state amendment that keeps `Today meeting / 本日開催` distinct from precise `Upcoming / 開催前` in both List and Map. It is presentation-only work, not a new acquisition/data-quality programme.
 
 ## 1. Required execution order
 
@@ -43,19 +43,16 @@ Color-state amendment:
 8. verify exact merge SHA after merge
 ```
 
-The amendment is complete only when all eight steps are demonstrated.
+All eight amendment steps are complete.
 
 ## 2. Authority/specification sync
 
-Base completed outcome:
+Completed outcome:
 
 - `docs/specs/calendar-row-rank-live-localization-2026-09-08.md` is present and active;
 - `AGENTS.md` points Calendar presentation agents to the refinement and this schedule;
 - implementation PRs list both documents under canonical documents reviewed;
-- conversation-only rules are not used as execution authority.
-
-Amendment requirement:
-
+- conversation-only rules are not used as execution authority;
 - the refinement explicitly fixes `#fff9e9` for precise current-day `Upcoming / 開催前`;
 - it fixes `#fffcf4` for day-only B/C `Today meeting / 本日開催`;
 - it requires the same distinction on Calendar Map and forbids collapsing `today` into `upcoming`.
@@ -100,7 +97,7 @@ B / C current-day:
   no precise upcoming/running/finished inference from incomplete timing
 ```
 
-Color-state amendment:
+Implemented color-state amendment:
 
 ```text
 Calendar List
@@ -176,7 +173,7 @@ Map selected/popup content
 selected card
 ```
 
-The same presentation-state model must drive List and Calendar Map. Map may not invent or collapse a state solely for marker convenience.
+The same presentation-state model drives List and Calendar Map. Map does not invent or collapse a state solely for marker convenience.
 
 Known UI labels on `/ja/` are Japanese; proper nouns/recognized abbreviations may remain Latin.
 
@@ -217,7 +214,7 @@ selected Map card keeps the same presentation-state label as List
 
 ## 9. Browser and visual acceptance
 
-Base representative matrix:
+Representative matrix covered:
 
 ```text
 EN desktop List
@@ -232,15 +229,16 @@ running + verified-live presentation path
 future/non-live example
 ```
 
-Color-state amendment acceptance must explicitly inspect List and Map at desktop and 393×852 where representative current-day states exist. The reviewer must verify:
+The color-state amendment was inspected in the Representative Visual Audit before merge and again on the exact merge SHA. Verified observations:
 
-- `Today meeting / 本日開催` uses the new pale `#fffcf4` treatment and is not visually conflated with precise upcoming;
-- precise `Upcoming / 開催前` retains the stronger `#fff9e9` List treatment and orange Map marker;
-- Map legend/pins show both states independently;
-- the near-white Map marker remains visible because of its dark warm outline/ring;
+- precise `Upcoming / 開催前` and day-only `Today meeting / 本日開催` are independent presentation states;
+- precise upcoming retains the stronger `#fff9e9` List treatment and orange Map marker;
+- day-only today uses the paler `#fffcf4` treatment and distinct Map key/marker outline;
+- Map legend/pins preserve both states independently;
 - running/ended/neutral colors retain their established meanings;
-- no horizontal overflow at 393×852;
-- an actual meeting row remains in the first mobile List viewport when meetings exist.
+- no horizontal overflow was observed at 393×852;
+- an actual meeting row remains in the first mobile List viewport when meetings exist;
+- the old triple-emphasis live presentation does not return.
 
 ## 10. Merge gate
 
@@ -260,14 +258,17 @@ The base display-correction unit is complete:
 - PR #920 merged as `b6879d0074d06f8e4aadbb7f31138634208757cd`;
 - exact merge SHA post-merge validation and Cloudflare Pages deployment passed.
 
-The `WHR-CAL-PRESENTATION-COLOR-001` amendment must not be marked complete until:
+The `WHR-CAL-PRESENTATION-COLOR-001` amendment is complete:
 
 - canonical refinement contains the exact List/Map color split;
 - runtime List and Map use distinct `upcoming` and `today` states;
-- regression validation passes;
-- Representative Visual Audit passes and the relevant screenshots are inspected;
-- exact PR head is used for merge;
-- exact merge SHA post-merge validation/deployment is verified.
+- regression validation passed;
+- PR #923 exact head `932bb4147c52fba2990751fdbd58b68a4c30cb4b` passed Race Acquisition Check, Calendar unified official refresh, and Representative Visual Audit before merge;
+- PR #923 was squash merged as `305f8fa80ee1d1b5a232387049c38c2de0c38fcb`;
+- exact merge-SHA Race Acquisition Check run `34203474219` completed successfully;
+- exact merge-SHA Representative Visual Audit run `34203474118` completed successfully and artifact `10046820939` was inspected;
+- Cloudflare Pages check `101987713045` deployed exact commit `305f8fa` successfully with deployment id `1ebbcd9c-96f6-455a-ab87-994f96e1f2d8` and preview `https://1ebbcd9c.where-horses-run.pages.dev`;
+- subsequent generated timetable refreshes remain a separate Calendar data lane and do not reopen this presentation amendment.
 
 ## 11. Ongoing agent rule
 
