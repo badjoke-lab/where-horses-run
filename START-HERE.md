@@ -10,6 +10,7 @@ Last reviewed: 2026-09-08
 ```text
 AGENTS.md
 docs/governance/document-authority.md
+docs/governance/parallel-work-lanes-2026-09-08.md
 docs/project-roadmap.md
 docs/project-roadmap-2026-09-08-addendum.md
 docs/specs/map-first-site-ui-2026-09-06.md
@@ -17,6 +18,8 @@ docs/operations/deployment-and-ci-policy.md
 ```
 
 Re-read the applicable canonical specification and active roadmap/addendum whenever scope or acceptance criteria change, after relevant movement on `main`, before opening or materially updating a PR, before merge, and after merge before beginning the next Work ID. Conversation history and PR numbers do not replace canonical repository documents.
+
+The active parallel-lane contract is mandatory. Calendar presentation correction, Calendar country/authority coverage expansion, and all-tier racecourse inventory/ledger work may proceed simultaneously. Do not serialize one behind another unless there is a real shared-file/shared-schema conflict.
 
 ## Calendar-visible work: mandatory additional reading
 
@@ -85,7 +88,7 @@ Rules that remain unchanged:
 
 ## Current execution state
 
-Use `docs/project-roadmap-2026-09-08-addendum.md` as the current top-level execution authority.
+Use `docs/project-roadmap-2026-09-08-addendum.md` as the current top-level execution authority and `docs/governance/parallel-work-lanes-2026-09-08.md` as the active concurrency contract.
 
 ```text
 Current stage: reviewed_incremental_maintenance
@@ -95,6 +98,8 @@ Completed UI Work ID: UI-007
 Current UI Work ID: UI-008 [runtime paused during bounded Calendar correction]
 Next UI Work ID: UI-009
 Parallel Calendar quality lane: calendar_quality_and_coverage
+Active Calendar country/authority coverage expansion: continues independently
+Active all-tier racecourse inventory/ledger lane: continues independently
 Completed Calendar presentation correction: WHR-CAL-PRESENTATION-STATE-001
 Completed Calendar color-state amendment: WHR-CAL-PRESENTATION-COLOR-001
 Active Calendar context-state amendment: WHR-CAL-PRESENTATION-CONTEXT-001
@@ -105,6 +110,8 @@ Execution priority before UI-008 resumes:
 ```text
 WHR-CAL-PRESENTATION-CONTEXT-001
 ```
+
+That priority applies only to the UI lane. It does **not** pause Calendar country/authority coverage expansion or the all-tier racecourse inventory/ledger lane. Those two lanes continue in parallel and reconcile against current `main` before PR update/merge.
 
 The active Calendar context-state contract requires Today/Calendar/List/Map to agree on the same presentation state for the same meeting and date context.
 
@@ -200,12 +207,26 @@ Map selected card
 
 These surfaces must not independently reinterpret the same meeting.
 
+## Parallel-lane identity rule
+
+The active lanes integrate through reviewed IDs, not by copying each other's provisional data:
+
+```text
+Calendar meeting -> authority_id
+Calendar meeting -> racecourse_id
+racecourse_id -> reviewed physical-racecourse ledger identity
+Map -> reviewed racecourse location only
+presentation -> public meeting + reviewed identity only
+```
+
+Calendar country expansion may continue even when racecourse enrichment is incomplete; unresolved enrichment remains ledger work rather than a reason to drop the meeting. Racecourse ledger expansion may continue even when a venue has no current Calendar meeting.
+
 ## PR discipline
 
 Every substantive PR must state at minimum:
 
 ```text
-Work ID
+Work ID or active lane
 Canonical documents reviewed
 Specification/schedule changes
 Runtime behavior changes
@@ -214,8 +235,10 @@ Public display boundary changes, or none
 Validation performed
 Visible browser/screenshot evidence when UI changes
 Completion conditions
-Next Work ID
+Next Work ID / lane continuation
 ```
+
+Before PR material update and immediately before merge, each active lane must re-read current `main`, inspect shared-file changes since its branch base, preserve compatible changes from the other lanes, and rerun its gates on the reconciled exact head.
 
 Visible UI/interaction work requires actual browser output and representative screenshot inspection. A green build or CI run alone is not completion evidence.
 
@@ -230,7 +253,9 @@ Only public-safe specifications, reviewed facts, schemas, code, tests, hashes, a
 After `WHR-CAL-PRESENTATION-CONTEXT-001` merges and exact-SHA CI/Cloudflare verification passes:
 
 1. re-read `AGENTS.md`;
-2. re-read this file;
+2. re-read this file and `docs/governance/parallel-work-lanes-2026-09-08.md`;
 3. re-read governance and the active top-level roadmap addendum;
 4. confirm the Calendar amendment is marked complete;
-5. then resume `UI-008` from current `main` rather than from a stale pre-Calendar branch.
+5. resume `UI-008` from current `main` rather than from a stale pre-Calendar branch.
+
+Calendar country/authority coverage expansion and all-tier racecourse inventory/ledger work do not wait for this resume rule; they remain active throughout.
