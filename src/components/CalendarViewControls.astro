@@ -38,12 +38,12 @@ const weekdayLabels = isJa ? ['日', '月', '火', '水', '木', '金', '土'] :
   <div class="calendar-view-controller__bar">
     <div>
       <p class="calendar-view-controller__eyebrow">{isJa ? '表示' : 'View'}</p>
-      <strong>{isJa ? '開催の見方を切り替える' : 'Choose how to browse meetings'}</strong>
+      <strong>{isJa ? '一覧・月・地図' : 'List, Month, or Map'}</strong>
     </div>
     <div class="calendar-view-controller__buttons" role="group" aria-label={isJa ? 'カレンダー表示切替' : 'Calendar view'}>
-      <button type="button" data-calendar-view-control="list" aria-pressed="true">{isJa ? '一覧' : 'List view'}</button>
-      <button type="button" data-calendar-view-control="month" aria-pressed="false">{isJa ? '月' : 'Month view'}</button>
-      <button type="button" data-calendar-view-control="map" aria-pressed="false">{isJa ? '地図' : 'Map view'}</button>
+      <button type="button" data-calendar-view-control="list" aria-pressed="true">{isJa ? '一覧' : 'List'}</button>
+      <button type="button" data-calendar-view-control="month" aria-pressed="false">{isJa ? '月' : 'Month'}</button>
+      <button type="button" data-calendar-view-control="map" aria-pressed="false">{isJa ? '地図' : 'Map'}</button>
     </div>
   </div>
 
@@ -117,23 +117,14 @@ const weekdayLabels = isJa ? ['日', '月', '火', '水', '木', '金', '土'] :
         const normalizeUrl = (view) => {
           const url = new URL(window.location.href);
           url.searchParams.set('view', view);
+          if (/^\d{4}-\d{2}-\d{2}$/.test(dateSelect.value)) url.searchParams.set('date', dateSelect.value);
           window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
-        };
-
-        const ensureDate = () => {
-          if (/^\d{4}-\d{2}-\d{2}$/.test(dateSelect.value)) return;
-          const today = root.dataset.today || '';
-          if ([...dateSelect.options].some((option) => option.value === today)) {
-            dateSelect.value = today;
-            dateSelect.dispatchEvent(new Event('change', { bubbles: true }));
-          }
         };
 
         const activate = (requestedView, updateUrl = true) => {
           const view = validViews.has(requestedView) ? requestedView : 'list';
           activeView = view;
           if (view === 'map') {
-            ensureDate();
             monthPanel.hidden = true;
             internalMap.click();
           } else if (view === 'month') {
@@ -157,7 +148,7 @@ const weekdayLabels = isJa ? ['日', '月', '火', '水', '木', '金', '土'] :
             if (![...dateSelect.options].some((option) => option.value === date)) return;
             dateSelect.value = date;
             dateSelect.dispatchEvent(new Event('change', { bubbles: true }));
-            syncSelectedDate();
+            activate('list');
           });
         });
         dateSelect.addEventListener('change', syncSelectedDate);
