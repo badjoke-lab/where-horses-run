@@ -1,0 +1,82 @@
+@media (max-width: 700px) {
+  .today-page {
+    gap: 0.5rem;
+  }
+
+  .today-page__hero {
+    gap: 0.25rem;
+    padding-block: 0.25rem 0;
+  }
+
+  .today-page__hero h1 {
+    margin-block: 0;
+    font-size: 1.7rem;
+    line-height: 1.08;
+  }
+
+  .today-page__hero .hero__summary {
+    display: none;
+  }
+
+  .today-page__context {
+    margin-block: 0.2rem 0;
+    font-size: 0.74rem;
+  }
+
+  .today-controls {
+    gap: 0.5rem;
+    padding-block: 0.5rem;
+  }
+
+  .today-controls__period {
+    gap: 0.25rem;
+    margin-block-end: 0 !important;
+  }
+
+  .today-controls__filters {
+    gap: 0.4rem;
+  }
+
+  .today-controls__filters label {
+    gap: 0.12rem;
+    font-size: 0.75rem;
+  }
+
+  .today-state-summary {
+    gap: 0.25rem;
+  }
+
+  .today-state-summary__item {
+    min-height: 30px;
+    padding: 0.15rem 0.32rem;
+    font-size: 0.75rem;
+  }
+
+  .today-state-summary__total {
+    display: none;
+  }
+
+  .today-page__list {
+    gap: 0.45rem;
+  }
+
+  .today-page__list-heading {
+    gap: 0.15rem;
+    padding-block-start: 0.4rem;
+  }
+
+  .today-page__list-heading > p {
+    display: none;
+  }
+
+  [data-home-meeting-window] .today-page__list .timetable-date-group > h2 {
+    padding: 0.25rem 0.4rem;
+    font-size: 0.9rem;
+  }
+
+  .today-state-divider {
+    min-height: 36px;
+    margin-block-start: 0.4rem;
+    padding: 0.35rem 0.45rem;
+  }
+}
