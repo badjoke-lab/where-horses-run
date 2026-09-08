@@ -7,7 +7,7 @@ Base roadmap: `docs/project-roadmap.md`
 Parent UI specification: `docs/specs/map-first-site-ui-2026-09-06.md`  
 Calendar presentation authority: `docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md`
 
-This addendum preserves the map-first site programme and the independent Calendar quality/coverage lane while inserting a bounded Calendar presentation/state correction before further Calendar-visible behavior is treated as stable.
+This addendum preserves the map-first site programme and the independent Calendar quality/coverage lane. The bounded Calendar presentation/state correction is complete; current primary UI execution has returned to `UI-006`.
 
 It does not change acquisition authority, reviewed public ranks, source promotion rules, racecourse coordinates, or automatic-publication policy.
 
@@ -19,12 +19,12 @@ Primary product/UI lane: map_first_site_ui
 Current UI Work ID: UI-006
 Next UI Work ID: UI-007
 Parallel Calendar quality lane: calendar_quality_and_coverage
-Active Calendar presentation correction: WHR-CAL-PRESENTATION-STATE-001
+Completed Calendar presentation correction: WHR-CAL-PRESENTATION-STATE-001
 Automatic publication: disabled
 Human review bypass: prohibited
 ```
 
-`UI-006` remains the current primary UI Work ID. This addendum does not renumber Racecourses/racecourse-detail work. The Calendar correction is a bounded parallel lane because the defect affects shared Calendar/Today meeting-state and stream semantics and must be fixed against canonical specification rather than conversation memory.
+`UI-006` is the current primary UI Work ID. This addendum does not renumber Racecourses/racecourse-detail work. The completed Calendar correction remains authoritative for Calendar/Today meeting-state, stream presentation, rank-aware current-day state, and reviewed locale-display behavior.
 
 ## Why this addendum exists
 
@@ -34,11 +34,11 @@ The 2026-09-06 UI specification correctly established a rolling 30-day Calendar 
 2. official-stream state must be explicitly separated from meeting lifecycle state and bound fail-closed to the expected event/date identity;
 3. a rolling 30-day browsing scope does not require the List view to render the entire 30-day set at once; List is now one-day-at-a-time, with Month providing compact date overview/navigation and Map remaining geographic discovery.
 
-The canonical correction is `docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md`.
+The canonical correction is `docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md`; the display refinement is `docs/specs/calendar-row-rank-live-localization-2026-09-08.md`.
 
 ## Required execution order
 
-Do not skip directly to CSS or a visual-only patch. Execute this Work ID in this order:
+The completed Calendar Work ID was executed in this order:
 
 ```text
 1. specification/governance update
@@ -52,7 +52,7 @@ Do not skip directly to CSS or a visual-only patch. Execute this Work ID in this
 9. merge only after acceptance conditions are demonstrated
 ```
 
-The documentation/governance step is a preceding docs change. Code implementation begins only after that authority is merged.
+The documentation/governance step preceded runtime implementation.
 
 ## Step 1 — specification/governance update
 
@@ -161,19 +161,21 @@ Also verify view switching, date focus, timezone change, filters, map/list synch
 
 ## Step 9 — merge gate
 
-`WHR-CAL-PRESENTATION-STATE-001` is complete only when all of the following are true:
+`WHR-CAL-PRESENTATION-STATE-001` is complete. Completion evidence includes:
 
-- canonical spec and active schedule are merged and referenced by repository agent instructions;
-- implementation audit is recorded;
-- lifecycle truth is independent of display timezone;
-- stream state is independent of lifecycle state and fail-closed on detector mismatch/staleness;
-- List is one-day-at-a-time while rolling 30 days remains the Calendar browsing scope;
-- Month is present as the compact overview/date-navigation role;
-- state × stream × timezone regression tests pass;
-- EN/JA desktop/mobile browser interaction checks pass;
-- Representative Visual Audit screenshots have been manually inspected;
-- 393×852 List first viewport shows an actual meeting row when meetings exist;
-- acquisition/canonical/rank/coordinate/publication boundaries were not silently changed.
+- canonical spec and active schedule merged and referenced by repository agent instructions;
+- lifecycle truth independent of display timezone;
+- stream state independent of lifecycle state and fail-closed on detector mismatch/staleness;
+- List one-day-at-a-time while rolling 30 days remains the Calendar browsing scope;
+- Month present as compact overview/date-navigation;
+- B+ evidence boundary and B/C `Today meeting / 本日開催` presentation tested;
+- redundant standalone stream-live badge removed;
+- exact verified-live link copy reduced to `● Live now` / `● 公式配信中`;
+- reviewed locale-aware racecourse/country/authority display shared across Calendar surfaces;
+- EN/JA desktop/mobile browser checks and Representative Visual Audit passed;
+- 393×852 List first viewport contains an actual meeting row when meetings exist;
+- acquisition/canonical/rank/coordinate/publication boundaries were preserved;
+- PR #920 merged as `b6879d0074d06f8e4aadbb7f31138634208757cd` and exact-SHA post-merge validation/deployment passed.
 
 ## Ongoing agent execution rule
 
@@ -191,10 +193,10 @@ Conversation history is not execution authority.
 
 ## Next work
 
-After `WHR-CAL-PRESENTATION-STATE-001` completes, the primary UI lane remains:
+The primary UI lane is now:
 
 ```text
-UI-006 — Racecourses primary index/search UI
+UI-006 — Racecourses primary index/search UI  [current]
 UI-007 — racecourse-detail composition
 UI-008 — secondary reference-page simplification
 UI-009 — EN/JA responsive release verification
