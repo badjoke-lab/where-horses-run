@@ -1,17 +1,17 @@
 # Calendar presentation/state display-correction schedule
 
-Status: active execution schedule  
+Status: completed execution schedule; retained as active regression authority  
 Adopted: 2026-09-08  
 Base Work ID: `WHR-CAL-PRESENTATION-STATE-001` — complete  
 Completed amendment Work ID: `WHR-CAL-PRESENTATION-COLOR-001`  
-Active amendment Work ID: `WHR-CAL-PRESENTATION-CONTEXT-001`  
+Completed amendment Work ID: `WHR-CAL-PRESENTATION-CONTEXT-001`  
 Canonical parent schedule: `docs/project-roadmap-2026-09-08-addendum.md`  
 Canonical presentation specification: `docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md`  
 Canonical display/context refinement: `docs/specs/calendar-row-rank-live-localization-2026-09-08.md`
 
-This schedule governs the active Calendar presentation correction discovered after the color-state amendment: Today summary/grouping and shared Map presentation still used legacy mixed buckets even though row-level `Upcoming / 開催前` and `Today meeting / 本日開催` had already been separated. The active amendment must make Today, Calendar List, Map, legend, counts, and selected cards consume the same context-aware presentation state.
+This schedule governed the Calendar presentation correction discovered after the color-state amendment: Today summary/grouping and shared Map presentation still used legacy mixed buckets even though row-level `Upcoming / 開催前` and `Today meeting / 本日開催` had already been separated. `WHR-CAL-PRESENTATION-CONTEXT-001` is now complete; the rules below remain mandatory regression authority for later UI and Calendar work.
 
-This remains presentation-only work. It does not change acquisition, canonical meeting truth, public rank evidence, source authority, coordinates, race-level publication, or stream-detector truth.
+This remains presentation-only authority. It does not change acquisition, canonical meeting truth, public rank evidence, source authority, coordinates, race-level publication, or stream-detector truth.
 
 ## 1. Previous completed work
 
@@ -26,11 +26,11 @@ stream badge simplification
 reviewed EN/JA display-name layer
 ```
 
-The earlier completion record did not cover Today range grouping/context semantics sufficiently. `WHR-CAL-PRESENTATION-CONTEXT-001` closes that gap.
+The earlier completion record did not cover Today range grouping/context semantics sufficiently. `WHR-CAL-PRESENTATION-CONTEXT-001` closed that gap.
 
-## 2. Active defect set
+## 2. Defect set closed by WHR-CAL-PRESENTATION-CONTEXT-001
 
-The current public implementation must be treated as defective while any of these remain:
+The amendment was required to close all of these defects:
 
 ```text
 Today summary combines upcoming and day-only today as `Upcoming / racing today`
@@ -44,9 +44,11 @@ Today / Tomorrow / 7 days do not have an explicit context contract
 Calendar selected-today and selected-future presentation are not explicitly separated end-to-end
 ```
 
-## 3. Required execution order
+These combinations remain forbidden regressions.
 
-The active amendment is executed in this order:
+## 3. Completed execution order
+
+The amendment was executed in this order:
 
 ```text
 1. re-read AGENTS / START-HERE / governance / roadmap / Calendar specs
@@ -70,7 +72,7 @@ The active amendment is executed in this order:
 19. re-read authority before resuming UI-008
 ```
 
-Do not proceed by cosmetically changing labels while leaving the bucket model unchanged.
+Do not regress by cosmetically changing labels while leaving the bucket model inconsistent.
 
 ## 4. Current-day presentation contract
 
@@ -225,7 +227,7 @@ Existing stream, locale-name, direct-watch-URL, same-href stream/site, and B+ bo
 
 ## 12. Browser and visual acceptance
 
-Minimum screenshot/browser matrix:
+Minimum screenshot/browser matrix retained for regression checking:
 
 ```text
 EN desktop Today List
@@ -256,7 +258,7 @@ actual meeting rows remain reachable in first Today/Calendar List viewport where
 
 ## 13. Documentation/re-read discipline
 
-For this amendment and all later Calendar-visible work:
+For this completed amendment and all later Calendar-visible work:
 
 1. begin with `AGENTS.md` and `START-HERE.md`;
 2. re-read governance, top-level roadmap/addendum, parent Calendar spec, this refinement, and this schedule;
@@ -265,13 +267,13 @@ For this amendment and all later Calendar-visible work:
 5. re-read immediately before PR creation/material update and before merge;
 6. after merge, re-read the current Work ID and next Work ID before continuing.
 
-## 14. Completion gate for WHR-CAL-PRESENTATION-CONTEXT-001
+## 14. Completion evidence for WHR-CAL-PRESENTATION-CONTEXT-001
 
-Do not mark the amendment complete until all are true:
+All completion conditions were satisfied:
 
 ```text
 canonical docs merged first
-START-HERE/current authority pointers are synchronized
+START-HERE/current authority pointers synchronized
 runtime uses the shared context-aware presentation state
 Today mixed upcoming/today heading removed
 Today current-day Scheduled fallback removed
@@ -280,10 +282,19 @@ Calendar today/future behavior matches the contract
 List/Map/legend/selected card agree
 validators lock forbidden combinations
 Representative Visual Audit passes
-screenshots are manually inspected
+screenshots manually inspected
 exact PR head used for merge
 exact merge SHA checks pass
 Cloudflare deploys the exact merge commit successfully
 ```
 
-UI-008 remains the current primary UI lane but runtime work on it is paused while this bounded Calendar correction is active. Resume UI-008 only after re-reading the merged completion state.
+Accepted runtime head: `ab86cbc532755b093c6ac07bef63aa75f0611190`.  
+PR-head Race Acquisition Check: `34228907381` — success.  
+PR-head Representative Visual Audit: `34228907434` — success.  
+Accepted screenshot artifact: `10057027665` — manually inspected for EN/JA desktop and 393×852 Today/Calendar List/Map semantics.  
+Squash merge: PR #927 -> `cf1a010765e9d012f40b168506ae3d7f6959d65b`.  
+Post-merge Race Acquisition Check: `34229426401` — success.  
+Post-merge Representative Visual Audit: `34229426431` — success.  
+Cloudflare Pages deployment: `bdb0222f-f0c3-43d2-88f3-ea96c902bdd6` — success for exact merge commit.
+
+`UI-008` is unblocked. Resume it from current `main` after this completion-state synchronization, while Calendar country/authority coverage expansion and all-tier racecourse inventory/ledger work continue independently.
