@@ -10,6 +10,7 @@ on:
       - 'scripts/check-calendar-context-visual.mjs'
       - 'scripts/check-calendar-context-acceptance.mjs'
       - 'scripts/check-calendar-legend-rendered-text.mjs'
+      - 'scripts/check-calendar-all-stream-links-visual.mjs'
       - '.github/workflows/representative-visual-audit.yml'
   push:
     branches:
@@ -22,6 +23,7 @@ on:
       - 'scripts/check-calendar-context-visual.mjs'
       - 'scripts/check-calendar-context-acceptance.mjs'
       - 'scripts/check-calendar-legend-rendered-text.mjs'
+      - 'scripts/check-calendar-all-stream-links-visual.mjs'
       - '.github/workflows/representative-visual-audit.yml'
   workflow_dispatch:
     inputs:
@@ -108,6 +110,13 @@ jobs:
             export BASE_URL='http://127.0.0.1:4321'
           fi
           node scripts/check-calendar-legend-rendered-text.mjs
+
+      - name: Inspect all Calendar official-stream links
+        run: |
+          if [ -z "$BASE_URL" ]; then
+            export BASE_URL='http://127.0.0.1:4321'
+          fi
+          node scripts/check-calendar-all-stream-links-visual.mjs
 
       - name: Upload representative screenshots and manifest
         if: ${{ always() }}
