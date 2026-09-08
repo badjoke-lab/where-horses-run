@@ -8,7 +8,7 @@ import {
   getCalendarRacecourseDisplayName,
   getCalendarRacecourseDisplayNames,
 } from '../lib/calendarDisplayNames';
-import { getCountries, getGlossaryEntries, siteData } from '../lib/data';
+import { getCountries, getGlossaryEntries } from '../lib/data';
 import { getPublicRacecourseMeetingState } from '../lib/racecourses/publicRacecourseMeetingState';
 import { getRacingTypeById } from '../lib/racingTypes';
 import '../styles/racecourse-detail-v2.css';
@@ -32,14 +32,16 @@ const publicMeetingState = getPublicRacecourseMeetingState(track.id, track.timez
 const currentAuthorityRows = Array.isArray(publicMeetingState.timezone_candidate_meetings)
   ? publicMeetingState.timezone_candidate_meetings
   : [];
-const authorityLabels = [...new Map(
-  currentAuthorityRows
-    .filter((meeting: any) => typeof meeting?.authority_id === 'string' && meeting.authority_id)
-    .map((meeting: any) => [
-      meeting.authority_id,
-      getCalendarAuthorityDisplayName(meeting.authority_id, meeting.authority_id, locale),
-    ]),
-).values()];
+const authorityLabelById = new Map<string, string>();
+for (const meeting of currentAuthorityRows as any[]) {
+  if (typeof meeting?.authority_id !== 'string' || !meeting.authority_id) continue;
+  if (authorityLabelById.has(meeting.authority_id)) continue;
+  authorityLabelById.set(
+    meeting.authority_id,
+    getCalendarAuthorityDisplayName(meeting.authority_id, meeting.authority_id, locale),
+  );
+}
+const authorityLabels = [...authorityLabelById.values()];
 const profile = track as any;
 const operator = profile?.operator && typeof profile.operator === 'object' ? profile.operator : {};
 const operatorName = typeof operator?.name === 'string' && operator.name.trim() ? operator.name.trim() : null;
@@ -167,7 +169,7 @@ const pageDescription = isJapanese
       <a href={tracksHref}>← {isJapanese ? '競馬場一覧' : 'All racecourses'}</a>
     </nav>
 
-    <header class="racecourse-detail-v2__hero">
+    <header class="racecourse-detail-v2__hero" data-racecourse-detail-identity>
       <div>
         <p class="racecourse-detail-v2__eyebrow">{isJapanese ? '競馬場' : 'Racecourse'}</p>
         <h1>{racecourseName}</h1>
