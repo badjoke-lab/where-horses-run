@@ -39,9 +39,6 @@ for (const [id, expectedJa] of [
   assert.equal(byId.get(id)?.name_ja, expectedJa, `${id}: reviewed Japanese display name changed unexpectedly`);
 }
 
-// Kocaeli deliberately has no reviewed Japanese entry. The shared resolver must
-// therefore fall back to the complete English/Latin name instead of synthesizing
-// Katakana or a mixed Latin+Japanese form.
 assert.equal(byId.has('kocaeli-racecourse'), false, 'Kocaeli must remain English/Latin fallback until a Japanese name is explicitly reviewed');
 
 const resolverSource = readFileSync(new URL('../src/lib/calendarDisplayNames.ts', import.meta.url), 'utf8');
@@ -49,6 +46,8 @@ const listSource = readFileSync(new URL('../src/components/TimetableMeetingList.
 const filtersSource = readFileSync(new URL('../src/components/CalendarFilters.astro', import.meta.url), 'utf8');
 const mapSource = readFileSync(new URL('../src/components/CalendarMeetingMap.astro', import.meta.url), 'utf8');
 const jaPageSource = readFileSync(new URL('../src/pages/ja/calendar/index.astro', import.meta.url), 'utf8');
+const directoryDataSource = readFileSync(new URL('../src/lib/racecourse-filter-data.ts', import.meta.url), 'utf8');
+const directoryPageSource = readFileSync(new URL('../src/components/RacecourseDirectoryPage.astro', import.meta.url), 'utf8');
 
 for (const marker of [
   'racecourse-display-names-v1.json',
@@ -91,8 +90,39 @@ for (const obsoletePattern of [
   assert.doesNotMatch(combinedCalendarSource, obsoletePattern, `Calendar retains obsolete presentation pattern ${obsoletePattern}`);
 }
 
+for (const marker of [
+  'getCalendarRacecourseDisplayName',
+  'getCalendarRacecourseDisplayNames',
+  'getCalendarCountryDisplayName',
+  'getCalendarAuthorityDisplayName',
+  'getCurrentCalendarWindowMeetingRows',
+  'reviewedNames.aliases',
+]) {
+  assert.match(directoryDataSource, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `Racecourses directory data missing shared reviewed marker ${marker}`);
+}
+assert.doesNotMatch(directoryDataSource, /const name = isJapanese \? racecourse\.name_ja/, 'Racecourses directory must not bypass the reviewed JA display resolver');
+assert.doesNotMatch(directoryDataSource, /toKana|kuroshiro|wanakana/i, 'Racecourses directory must not add runtime transliteration');
+
+for (const marker of [
+  'data-racecourse-filter-query',
+  'data-racecourse-filter-country',
+  'data-racecourse-filter-authority',
+  'data-racecourse-filter-racing-type',
+  'data-racecourse-filter-toggle',
+  'data-racecourse-authorities',
+  'data-racecourse-search-text',
+  'record.calendarMeeting',
+  "isJapanese ? '競馬場を見る' : 'View racecourse'",
+]) {
+  assert.match(directoryPageSource, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `Racecourses directory page missing UI-006 marker ${marker}`);
+}
+assert.doesNotMatch(directoryPageSource, /record\.alternateName/, 'Racecourses compact results must expose one primary display name rather than visible alias clutter');
+assert.doesNotMatch(directoryPageSource, /record\.localName/, 'Racecourses compact results must keep local/search aliases out of the primary result row');
+
 console.log('CALENDAR_DISPLAY_NAMES: pass');
 console.log('REVIEWED_JAPANESE_NAME_STATUS: pass');
 console.log('NO_RUNTIME_KATAKANA_TRANSLITERATION: pass');
 console.log('LATIN_FALLBACK_FOR_UNREVIEWED_FOREIGN_RACECOURSE: pass');
 console.log('CALENDAR_SHARED_DISPLAY_RESOLVER: pass');
+console.log('RACECOURSE_DIRECTORY_SHARED_DISPLAY_RESOLVER: pass');
+console.log('UI_006_DENSE_DISCOVERY_MARKERS: pass');
