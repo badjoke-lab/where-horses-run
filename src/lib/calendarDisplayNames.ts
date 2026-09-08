@@ -1,9 +1,24 @@
+import racecourseDisplayRegistry from '../../data/static/racecourse-display-names-v1.json';
 import { getCountries, getRacecourses, type Locale } from './data';
 
 export type CalendarDisplayLocale = Locale;
 
+type ReviewedJapaneseNameStatus = 'established' | 'reviewed_transliteration' | 'none';
+type RacecourseDisplayRegistryEntry = {
+  racecourse_id: string;
+  name_en: string;
+  name_local: string | null;
+  name_ja: string | null;
+  name_ja_status: ReviewedJapaneseNameStatus;
+  search_aliases: string[];
+};
+
 const countryById = new Map(getCountries().map((country) => [country.id, country] as const));
 const racecourseById = new Map(getRacecourses().map((racecourse) => [racecourse.id, racecourse] as const));
+const displayEntryByRacecourseId = new Map(
+  (racecourseDisplayRegistry.entries as RacecourseDisplayRegistryEntry[])
+    .map((entry) => [entry.racecourse_id, entry] as const),
+);
 
 const authorityCompactLabelById: Record<string, string> = {
   jra: 'JRA',
@@ -52,23 +67,30 @@ export function getCalendarRacecourseDisplayNames(
   nameEn: string;
   nameJa: string | null;
   nameLocal: string | null;
+  nameJaStatus: ReviewedJapaneseNameStatus;
   aliases: string[];
 } {
   const racecourse = racecourseById.get(racecourseId) as {
     name_en?: string;
-    name_ja?: string;
     name_local?: string;
   } | undefined;
+  const reviewed = displayEntryByRacecourseId.get(racecourseId);
 
-  const nameEn = normalizeNonEmpty(racecourse?.name_en) ?? fallbackEnglish;
-  // Repository racecourse identity records are the reviewed presentation source.
-  // If a reviewed Japanese name is absent, Japanese Calendar deliberately falls
-  // back to the complete English/Latin name instead of synthesizing Katakana.
-  const nameJa = normalizeNonEmpty(racecourse?.name_ja);
-  const nameLocal = normalizeNonEmpty(racecourse?.name_local);
-  const aliases = [...new Set([nameEn, nameJa, nameLocal, fallbackEnglish].filter((value): value is string => Boolean(value)))];
+  const nameEn = normalizeNonEmpty(reviewed?.name_en) ?? normalizeNonEmpty(racecourse?.name_en) ?? fallbackEnglish;
+  const nameLocal = normalizeNonEmpty(reviewed?.name_local) ?? normalizeNonEmpty(racecourse?.name_local);
+  const nameJaStatus: ReviewedJapaneseNameStatus = reviewed?.name_ja_status ?? 'none';
+  const nameJa = nameJaStatus === 'established' || nameJaStatus === 'reviewed_transliteration'
+    ? normalizeNonEmpty(reviewed?.name_ja)
+    : null;
+  const aliases = [...new Set([
+    nameEn,
+    nameJa,
+    nameLocal,
+    fallbackEnglish,
+    ...(reviewed?.search_aliases ?? []),
+  ].filter((value): value is string => Boolean(value)))];
 
-  return { nameEn, nameJa, nameLocal, aliases };
+  return { nameEn, nameJa, nameLocal, nameJaStatus, aliases };
 }
 
 export function getCalendarRacecourseDisplayName(
