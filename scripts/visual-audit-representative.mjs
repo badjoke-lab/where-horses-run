@@ -18,6 +18,7 @@ const pages = [
   { id: 'countries', path: '/countries/', kind: 'countries' },
   { id: 'country-japan', path: '/countries/japan/', kind: 'country' },
   { id: 'racecourse-tokyo', path: '/tracks/tokyo-racecourse/', kind: 'racecourse' },
+  { id: 'racecourse-tokyo-ja', path: '/ja/tracks/tokyo-racecourse/', kind: 'racecourse', lang: 'ja' },
 ];
 
 const viewports = [
@@ -194,6 +195,46 @@ const inspectPage = async (page, spec, viewport) => {
         if (visible(filterFields)) failures.push('Racecourses mobile filter fields must start collapsed');
       }
       if (!mobile && !visible(filterFields)) failures.push('Racecourses desktop filter fields are not visible');
+    }
+
+    if (kind === 'racecourse') {
+      const root = document.querySelector('[data-racecourse-detail-v2]');
+      const identity = document.querySelector('[data-racecourse-detail-identity]');
+      const locationSection = document.querySelector('[data-racecourse-location-section]');
+      const meetingSummary = document.querySelector('[data-racecourse-meeting-summary]');
+      const sources = document.querySelector('[data-racecourse-detail-sources]');
+      checks.racecourse_detail_v2 = visible(root);
+      checks.racecourse_detail_identity = visible(identity);
+      checks.racecourse_detail_location = visible(locationSection);
+      checks.racecourse_detail_meeting = visible(meetingSummary);
+      checks.racecourse_detail_sources = visible(sources);
+      if (!visible(root)) failures.push('racecourse detail v2 root is not visible');
+      if (!visible(identity)) failures.push('racecourse detail identity is not visible');
+      if (!visible(locationSection)) failures.push('racecourse reviewed location section is not visible');
+      if (!visible(meetingSummary)) failures.push('racecourse meeting summary is not visible');
+      if (!visible(sources)) failures.push('racecourse official sources are not visible');
+
+      if (identity instanceof HTMLElement && locationSection instanceof HTMLElement && meetingSummary instanceof HTMLElement && sources instanceof HTMLElement) {
+        const ordered = identity.compareDocumentPosition(locationSection) & Node.DOCUMENT_POSITION_FOLLOWING
+          && locationSection.compareDocumentPosition(meetingSummary) & Node.DOCUMENT_POSITION_FOLLOWING
+          && meetingSummary.compareDocumentPosition(sources) & Node.DOCUMENT_POSITION_FOLLOWING;
+        checks.racecourse_detail_order = Boolean(ordered);
+        if (!ordered) failures.push('racecourse detail composition order is not identity -> location -> meeting -> sources');
+      }
+
+      const pageText = normalize(root?.textContent);
+      const obsoletePlaceholders = lang === 'ja'
+        ? ['未掲載', '今後追加します']
+        : ['Not listed yet', 'will be added later'];
+      const leakedPlaceholder = obsoletePlaceholders.find((text) => pageText.includes(text));
+      checks.racecourse_detail_placeholder_leak = leakedPlaceholder || '';
+      if (leakedPlaceholder) failures.push(`racecourse detail exposes unknown-field placeholder copy: ${leakedPlaceholder}`);
+
+      if (mobile && locationSection instanceof HTMLElement) {
+        const locationTop = locationSection.getBoundingClientRect().top;
+        checks.racecourse_location_top_px = Math.round(locationTop);
+        if (locationTop > mobileContentBottom + 80) failures.push('racecourse mobile location/map begins too far below the first viewport');
+      }
     }
 
     return { checks, failures };

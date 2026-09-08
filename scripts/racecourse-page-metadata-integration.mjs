@@ -59,10 +59,6 @@ function stripTags(value) {
   return decodeHtml(value.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim());
 }
 
-function escapePattern(value) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
 function extractAttribute(html, tagPattern, name, file) {
   const tag = html.match(tagPattern)?.[0];
   const value = tag?.match(new RegExp(`${name}="([^"]*)"`, 'i'))?.[1];
@@ -76,18 +72,11 @@ function extractText(html, pattern, label, file) {
   return stripTags(value);
 }
 
-function extractStrongParagraph(html, label, file) {
-  const escaped = escapePattern(label);
-  const pattern = new RegExp(`<p>\\s*<strong>\\s*${escaped}\\s*<\\/strong>\\s*([\\s\\S]*?)<\\/p>`, 'i');
-  return extractText(html, pattern, label, file);
-}
-
-function extractStrongParagraphHref(html, label, file) {
-  const escaped = escapePattern(label);
-  const pattern = new RegExp(`<p>\\s*<strong>\\s*${escaped}\\s*<\\/strong>\\s*<a\\s+[^>]*href="([^"]+)"`, 'i');
+function extractOptionalText(html, pattern) {
   const value = html.match(pattern)?.[1];
-  if (!value) throw new Error(`Missing visible ${label} link in ${file}`);
-  return decodeHtml(value);
+  if (!value) return null;
+  const text = stripTags(value);
+  return text || null;
 }
 
 function parseRoute(outputDirectory, file) {
@@ -102,14 +91,9 @@ function parseRoute(outputDirectory, file) {
 }
 
 function visibleAddress(value) {
+  if (!value) return null;
   const parts = value.split('/').map((part) => part.trim()).filter(Boolean);
   return parts.length > 0 && parts.some((part) => !PLACEHOLDERS.has(part)) ? value : null;
-}
-
-function localNameFromHero(summary) {
-  if (!summary.includes(' · ')) return null;
-  const value = summary.split(' · ', 1)[0].trim();
-  return value || null;
 }
 
 async function parsePage(outputDirectory, file, route) {
@@ -143,13 +127,22 @@ async function parsePage(outputDirectory, file, route) {
     route.relative,
   );
   const name = extractText(html, /<h1[^>]*id="page-title"[^>]*>([\s\S]*?)<\/h1>/i, 'racecourse heading', route.relative);
-  const heroSummary = extractText(html, /<p[^>]*class="hero__summary"[^>]*>([\s\S]*?)<\/p>/i, 'racecourse hero summary', route.relative);
-  const localName = localNameFromHero(heroSummary);
-  const countryLabel = route.locale === 'ja' ? '国:' : 'Country:';
-  const locationLabel = route.locale === 'ja' ? '都市 / 地域:' : 'City / region:';
-  const countryHref = extractStrongParagraphHref(html, countryLabel, route.relative);
-  const countryName = extractStrongParagraph(html, countryLabel, route.relative);
-  const addressText = visibleAddress(extractStrongParagraph(html, locationLabel, route.relative));
+  const localName = extractOptionalText(
+    html,
+    /<p[^>]*data-racecourse-local-name[^>]*>([\s\S]*?)<\/p>/i,
+  );
+  const countryTagPattern = /<a\s+[^>]*data-racecourse-country[^>]*>/i;
+  const countryHref = extractAttribute(html, countryTagPattern, 'href', route.relative);
+  const countryName = extractText(
+    html,
+    /<a\s+[^>]*data-racecourse-country[^>]*>([\s\S]*?)<\/a>/i,
+    'racecourse country',
+    route.relative,
+  );
+  const addressText = visibleAddress(extractOptionalText(
+    html,
+    /<span[^>]*data-racecourse-location[^>]*>([\s\S]*?)<\/span>/i,
+  ));
 
   const expectedCountryPattern = route.locale === 'ja'
     ? /^\/ja\/countries\/[^/]+\/$/
