@@ -3,10 +3,12 @@ import { readFileSync } from 'node:fs';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const todayFilters = read('src/components/TodayFilters.astro');
+const calendarFilters = read('src/components/CalendarFilters.astro');
 const meetingStatePolicy = read('src/components/MeetingStatePolicy.astro');
 const todayMap = read('src/components/TodayMeetingMap.astro');
 const calendarMap = read('src/components/CalendarMeetingMap.astro');
 const sharedMap = read('src/components/RacecourseMap.astro');
+const todayRangeMapAccessibility = read('src/components/TodayRangeMapAccessibility.astro');
 const todayCss = read('src/styles/today-practical.css');
 const presentationHelper = read('src/lib/timetable/meetingPresentationState.mjs');
 
@@ -34,6 +36,9 @@ assert.match(todayFilters, /activeRange === 'tomorrow'[\s\S]*new Set\(\['future'
 assert.match(todayFilters, /PRESENTATION_STATES\.forEach/,
   'List dividers must use the shared presentation-state list');
 
+assert.match(calendarFilters, /<option value="future">\{isJa \? '開催予定' : 'Scheduled'\}<\/option>/,
+  'Calendar meeting-state filter must expose future/Scheduled explicitly');
+
 assert.match(presentationHelper, /calendarDayState === 'future'\) return 'future'/,
   'future Calendar days must derive future/Scheduled presentation state');
 assert.match(presentationHelper, /DAY_ONLY_RANKS\.has\(rank\)\) return 'today'/,
@@ -48,6 +53,10 @@ assert.match(meetingStatePolicy, /#fffcf4/,
   'day-only Today meeting must use #fffcf4');
 assert.match(meetingStatePolicy, /data-meeting-presentation-state='future'[\s\S]*background: #fff/,
   'future Scheduled rows must remain neutral white');
+assert.match(meetingStatePolicy, /map-selected-card__status\[data-status='today'\]::before[\s\S]*background: #fffcf4/,
+  'selected Map card must preserve the Today meeting pale warm state');
+assert.match(meetingStatePolicy, /map-selected-card__status\[data-status='today'\]::before[\s\S]*border-color: #7a5a00/,
+  'selected Map card Today meeting state must keep a dark warm outline');
 
 assert.match(todayCss, /today-state-summary__item--today[\s\S]*#fffcf4/,
   'Today meeting summary/list divider marker must use the pale warm state');
@@ -86,11 +95,24 @@ assert.match(sharedMap, /'upcoming', '#d18a00'/);
 assert.match(sharedMap, /'today', '#fffcf4'/);
 assert.match(sharedMap, /'future', '#111111'/);
 
+assert.match(todayRangeMapAccessibility, /meetings tomorrow/,
+  'Tomorrow range must expose a Tomorrow-specific Map aria-label');
+assert.match(todayRangeMapAccessibility, /meetings over the next 7 days/,
+  '7-day range must expose a 7-day-specific Map aria-label');
+assert.match(todayRangeMapAccessibility, /明日の確認済み開催競馬場マップ/,
+  'JA Tomorrow Map aria-label must be localized');
+assert.match(todayRangeMapAccessibility, /今後7日間の確認済み開催競馬場マップ/,
+  'JA 7-day Map aria-label must be localized');
+assert.match(todayRangeMapAccessibility, /whr:todayfilterchange/,
+  'Map accessibility label must follow the active Today range state');
+
 console.log('CALENDAR_CONTEXT_STATE: pass');
 console.log('TODAY_GROUPS_SPLIT: pass');
 console.log('TODAY_CURRENT_DAY_SCHEDULED_FALLBACK: prohibited');
 console.log('TODAY_TOMORROW_7DAY_CONTEXT: pass');
 console.log('LIST_MAP_PRESENTATION_STATE_PARITY: pass');
 console.log('MAP_CONTEXT_LEGEND: pass');
+console.log('MAP_SELECTED_TODAY_STATE: pass');
+console.log('TODAY_MAP_RANGE_ACCESSIBILITY: pass');
 console.log('UPCOMING_COLOR: #fff9e9');
 console.log('TODAY_MEETING_COLOR: #fffcf4');
