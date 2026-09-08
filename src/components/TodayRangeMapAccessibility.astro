@@ -1,0 +1,40 @@
+<script is:inline>
+  (() => {
+    const VALID_RANGES = new Set(['today', 'tomorrow', 'next7']);
+
+    const install = () => {
+      const controls = document.querySelector('[data-today-controls]');
+      const map = document.querySelector('[data-today-map-sync] [data-racecourse-map]');
+      const canvas = map?.querySelector('[data-map-canvas]');
+      if (!(controls instanceof HTMLElement) || !(canvas instanceof HTMLElement)) return;
+
+      const isJa = controls.dataset.lang === 'ja';
+      const labelFor = (range) => range === 'tomorrow'
+        ? (isJa ? '明日の確認済み開催競馬場マップ' : 'Map of reviewed racecourses with meetings tomorrow')
+        : range === 'next7'
+          ? (isJa ? '今後7日間の確認済み開催競馬場マップ' : 'Map of reviewed racecourses with meetings over the next 7 days')
+          : (isJa ? '今日の確認済み開催競馬場マップ' : 'Map of reviewed racecourses with meetings today');
+
+      const activeRange = () => {
+        const pressed = controls.querySelector('[data-meeting-range][aria-pressed="true"]');
+        if (pressed instanceof HTMLElement && VALID_RANGES.has(pressed.dataset.meetingRange)) return pressed.dataset.meetingRange;
+        const requested = new URL(window.location.href).searchParams.get('range');
+        return VALID_RANGES.has(requested) ? requested : 'today';
+      };
+
+      const sync = () => canvas.setAttribute('aria-label', labelFor(activeRange()));
+
+      controls.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof Element) || !target.closest('[data-meeting-range]')) return;
+        requestAnimationFrame(sync);
+      });
+      window.addEventListener('popstate', () => requestAnimationFrame(sync));
+      window.addEventListener('whr:todayfilterchange', () => requestAnimationFrame(sync));
+      sync();
+    };
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
+    else install();
+  })();
+</script>
