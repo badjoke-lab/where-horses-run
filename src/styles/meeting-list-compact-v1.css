@@ -13,9 +13,26 @@
   box-shadow: none !important;
 }
 
-.timetable-timezone-projection .meeting-row[data-meeting-presentation-state='running'],
-.timetable-timezone-projection .meeting-row[data-meeting-presentation-state='upcoming'][data-meeting-day-state='today'],
+.timetable-timezone-projection .meeting-row[data-meeting-presentation-state='running'][data-meeting-day-state='today'] {
+  background: #fff7f6 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+.timetable-timezone-projection .meeting-row[data-meeting-presentation-state='upcoming'][data-meeting-day-state='today'] {
+  background: #fff9e9 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
 .timetable-timezone-projection .meeting-row[data-meeting-presentation-state='today'][data-meeting-day-state='today'] {
+  background: #fffcf4 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+.timetable-timezone-projection .meeting-row[data-meeting-presentation-state='ended'] {
+  background: #f6f7f8 !important;
   box-shadow: none !important;
 }
 
