@@ -46,35 +46,47 @@ body {
 }
 
 html:lang(ja) .site-brand {
+  align-content: center;
+  align-items: start;
+  display: inline-grid;
   font-family: var(--whr-font-family);
   font-size: 0;
   font-weight: 800;
+  gap: .12rem;
+  grid-template-columns: max-content;
+  grid-template-rows: auto auto;
+  justify-items: start;
   letter-spacing: 0;
-  padding-block: .1rem;
+  min-width: 0;
+  padding: .1rem 0 .1rem 61px;
+  width: auto;
 }
 
 html:lang(ja) .site-brand::before {
   color: var(--whr-color-navy);
   content: '競馬どこ？';
+  display: block;
   font-family: var(--whr-font-family);
   font-size: 1.16rem;
   font-weight: 800;
-  left: 61px;
+  grid-row: 1;
   line-height: 1.05;
-  position: absolute;
-  top: .45rem;
+  position: static;
 }
 
 html:lang(ja) .site-brand::after {
-  bottom: .43rem;
+  bottom: auto;
   color: var(--whr-color-gold-dark);
   content: 'Where Horses Run';
+  display: block;
   font-family: var(--whr-font-family);
   font-size: .66rem;
   font-weight: 700;
-  left: 61px;
+  grid-row: 2;
+  left: auto;
   letter-spacing: .015em;
   line-height: 1.05;
+  position: static;
 }
 
 .desktop-primary-nav a,
@@ -201,19 +213,18 @@ a:hover {
   }
 
   html:lang(ja) .site-brand {
-    padding-block: .08rem;
+    gap: .08rem;
+    padding: .08rem 0 .08rem 51px;
   }
 
   html:lang(ja) .site-brand::before {
     font-size: 1rem;
-    left: 51px;
-    top: .36rem;
   }
 
   html:lang(ja) .site-brand::after {
-    bottom: .36rem;
+    bottom: auto;
     font-size: .58rem;
-    left: 51px;
+    left: auto;
   }
 
   .mobile-bottom-nav {
