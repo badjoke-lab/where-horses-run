@@ -48,9 +48,27 @@
     "id": "morocco-faras-programme",
     "country_id": "morocco",
     "source_type": "official",
-    "url": "https://www.sorec.ma/en/racing-and-racecourses/",
+    "url": "https://sorec.ma/courses-hippiques",
     "data_type": "link_only",
     "auto_level": "C",
-    "notes": "Official SOREC racing and racecourse route used as the public confirmation link. It does not establish verified timetable capability."
+    "notes": "Legacy Morocco country-page source id retained for compatibility; official SOREC institutional racecourse overview."
+  },
+  {
+    "id": "morocco-sorec-home",
+    "country_id": "morocco",
+    "source_type": "official",
+    "url": "https://sorec.ma/courses-hippiques",
+    "data_type": "link_only",
+    "auto_level": "C",
+    "notes": "Official SOREC institutional racecourse overview confirming the seven-racecourse authority scope."
+  },
+  {
+    "id": "sorec-programme-reunion",
+    "country_id": "morocco",
+    "source_type": "official",
+    "url": "https://www.sorec-galop.ma/pages/programmeReunion/programmeReunion.jsf",
+    "data_type": "meeting_identity",
+    "auto_level": "C",
+    "notes": "Official SOREC Programme Réunion route. Use date and racecourse pairings only for Rank C meeting identity; do not infer complete 30-day coverage or race-level detail from this index."
   }
 ]
