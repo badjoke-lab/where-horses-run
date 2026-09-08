@@ -1,0 +1,278 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RacecourseLocationMapSection from './RacecourseLocationMapSection.astro';
+import RacecourseMeetingSummary from './RacecourseMeetingSummary.astro';
+import {
+  getCalendarAuthorityDisplayName,
+  getCalendarCountryDisplayName,
+  getCalendarRacecourseDisplayName,
+  getCalendarRacecourseDisplayNames,
+} from '../lib/calendarDisplayNames';
+import { getCountries, getGlossaryEntries, siteData } from '../lib/data';
+import { getPublicRacecourseMeetingState } from '../lib/racecourses/publicRacecourseMeetingState';
+import { getRacingTypeById } from '../lib/racingTypes';
+import '../styles/racecourse-detail-v2.css';
+
+interface Props {
+  track: any;
+  locale?: 'en' | 'ja';
+}
+
+const { track, locale = 'en' } = Astro.props;
+const isJapanese = locale === 'ja';
+const country = getCountries().find((entry) => entry.id === track.country_id) as any;
+const countryFallback = country?.name_en ?? track.country_id;
+const countryName = getCalendarCountryDisplayName(track.country_id, countryFallback, locale);
+const racecourseNames = getCalendarRacecourseDisplayNames(track.id, track.name_en);
+const racecourseName = getCalendarRacecourseDisplayName(track.id, track.name_en, locale);
+const secondaryName = isJapanese
+  ? racecourseNames.nameEn
+  : racecourseNames.nameLocal ?? racecourseNames.nameJa;
+const publicMeetingState = getPublicRacecourseMeetingState(track.id, track.timezone);
+const currentAuthorityRows = Array.isArray(publicMeetingState.timezone_candidate_meetings)
+  ? publicMeetingState.timezone_candidate_meetings
+  : [];
+const authorityLabels = [...new Map(
+  currentAuthorityRows
+    .filter((meeting: any) => typeof meeting?.authority_id === 'string' && meeting.authority_id)
+    .map((meeting: any) => [
+      meeting.authority_id,
+      getCalendarAuthorityDisplayName(meeting.authority_id, meeting.authority_id, locale),
+    ]),
+).values()];
+const profile = track as any;
+const operator = profile?.operator && typeof profile.operator === 'object' ? profile.operator : {};
+const operatorName = typeof operator?.name === 'string' && operator.name.trim() ? operator.name.trim() : null;
+const countryHref = country
+  ? `${isJapanese ? '/ja' : ''}/countries/${country.slug}/`
+  : `${isJapanese ? '/ja' : ''}/countries/`;
+const calendarHref = `${isJapanese ? '/ja' : ''}/calendar/`;
+const tracksHref = `${isJapanese ? '/ja' : ''}/tracks/`;
+const glossaryById = new Map(getGlossaryEntries().map((entry) => [entry.id, entry]));
+const surfaceGlossaryIds: Record<string, string> = {
+  turf: 'turf',
+  dirt: 'dirt',
+  'all-weather': 'all-weather',
+  'jump-course': 'jump-course',
+};
+const directionGlossaryIds: Record<string, string> = {
+  'left-handed': 'left-handed-course',
+  'right-handed': 'right-handed-course',
+  'both-directions': 'both-directions-course',
+  straight: 'straight-course',
+};
+const directionLabelsEn: Record<string, string> = {
+  'left-handed': 'Left-handed',
+  'right-handed': 'Right-handed',
+  'both-directions': 'Both directions',
+  straight: 'Straight',
+};
+const directionLabelsJa: Record<string, string> = {
+  'left-handed': '左回り',
+  'right-handed': '右回り',
+  'both-directions': '両回り',
+  straight: '直線',
+};
+const surfaceLabelsJa: Record<string, string> = {
+  turf: '芝',
+  dirt: 'ダート',
+  'all-weather': 'オールウェザー',
+  'jump-course': '障害',
+  sand: '砂',
+};
+const formatMeters = (value: unknown) => typeof value === 'number'
+  ? `${value.toLocaleString(isJapanese ? 'ja-JP' : 'en-US')}m`
+  : null;
+const nonempty = (value: unknown): value is string => typeof value === 'string' && value.trim().length > 0;
+const locality = [track.city, track.region].filter(nonempty).join(' / ');
+const mapContext = [locality, countryName].filter(nonempty).join(' / ');
+const overview = isJapanese
+  ? profile.overview_ja ?? track.course_profile?.course_notes_ja ?? null
+  : profile.overview_en ?? track.course_profile?.course_notes_en ?? null;
+const direction = nonempty(track.direction) && track.direction !== 'unknown' ? track.direction : null;
+const directionLabel = direction
+  ? (isJapanese ? directionLabelsJa[direction] : directionLabelsEn[direction]) ?? direction
+  : null;
+const directionGlossary = direction ? glossaryById.get(directionGlossaryIds[direction]) as any : null;
+const surfaceRows = (Array.isArray(track.surfaces) ? track.surfaces : [])
+  .filter((surface: unknown): surface is string => nonempty(surface))
+  .map((surface: string) => ({
+    id: surface,
+    label: isJapanese ? surfaceLabelsJa[surface] ?? surface : surface.replaceAll('-', ' '),
+    glossary: glossaryById.get(surfaceGlossaryIds[surface]) as any,
+  }));
+const racingTypeRows = (Array.isArray(track.racing_types) ? track.racing_types : [])
+  .map((typeId: string) => {
+    const type = getRacingTypeById(typeId);
+    if (!type) return null;
+    return {
+      id: typeId,
+      label: isJapanese ? type.name_ja : type.name_en,
+      href: `${isJapanese ? '/ja' : ''}/types/${type.slug}/`,
+    };
+  })
+  .filter(Boolean) as Array<{ id: string; label: string; href: string }>;
+const courseFacts = [
+  {
+    label: isJapanese ? '芝1周' : 'Turf circumference',
+    value: formatMeters(track.course_profile?.turf_circumference_m),
+  },
+  {
+    label: isJapanese ? 'ダート1周' : 'Dirt circumference',
+    value: formatMeters(track.course_profile?.dirt_circumference_m),
+  },
+  {
+    label: isJapanese ? '直線' : 'Home straight',
+    value: formatMeters(profile.course_layout?.home_straight_m ?? track.course_profile?.home_straight_m),
+  },
+].filter((row) => row.value);
+const notableRaces = (Array.isArray(track.notable_races) ? track.notable_races : [])
+  .map((race: any) => ({
+    name: isJapanese ? race?.name_ja ?? race?.name_en ?? race?.name : race?.name_en ?? race?.name,
+    url: race?.source_url ?? race?.official_link ?? race?.url ?? null,
+  }))
+  .filter((race: any) => nonempty(race.name));
+const officialLinks = (Array.isArray(track.official_links) ? track.official_links : [])
+  .map((link: any) => ({
+    label: isJapanese ? link?.label_ja ?? link?.label_en : link?.label_en ?? link?.label_ja,
+    url: link?.url,
+  }))
+  .filter((link: any) => nonempty(link.label) && nonempty(link.url));
+const primaryScheduleUrl = (Array.isArray(track.official_links) ? track.official_links : [])
+  .find((link: any) => link?.link_type === 'schedule')?.url
+  ?? officialLinks[0]?.url;
+const profileHasContent = Boolean(
+  overview
+  || courseFacts.length
+  || directionLabel
+  || surfaceRows.length
+  || racingTypeRows.length
+  || notableRaces.length
+);
+const pageTitle = isJapanese ? `${racecourseName} | 競馬場 | 競馬どこ？` : `${racecourseName} | Racecourses`;
+const pageDescription = isJapanese
+  ? `${racecourseName}の所在地、確認済み開催、コース情報、公式情報源をまとめた競馬場ページです。`
+  : `Reviewed location, current meeting context, course information, and official sources for ${racecourseName}.`;
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  lang={locale}
+  canonicalPath={`${isJapanese ? '/ja' : ''}/tracks/${track.slug}/`}
+  alternatePath={`${isJapanese ? '' : '/ja'}/tracks/${track.slug}/`}
+>
+  <main class="racecourse-detail-v2" data-racecourse-detail-v2 data-racecourse-id={track.id}>
+    <nav class="racecourse-detail-v2__back" aria-label={isJapanese ? '競馬場一覧へ戻る' : 'Back to racecourses'}>
+      <a href={tracksHref}>← {isJapanese ? '競馬場一覧' : 'All racecourses'}</a>
+    </nav>
+
+    <header class="racecourse-detail-v2__hero">
+      <div>
+        <p class="racecourse-detail-v2__eyebrow">{isJapanese ? '競馬場' : 'Racecourse'}</p>
+        <h1>{racecourseName}</h1>
+        {secondaryName && secondaryName !== racecourseName ? (
+          <p class="racecourse-detail-v2__secondary-name">{secondaryName}</p>
+        ) : null}
+      </div>
+      <div class="racecourse-detail-v2__identity" aria-label={isJapanese ? '競馬場の基本情報' : 'Racecourse identity'}>
+        <a href={countryHref}>{countryName}</a>
+        {locality ? <span>{locality}</span> : null}
+        {track.timezone ? <span>{track.timezone}</span> : null}
+        {authorityLabels.map((label) => <span>{label}</span>)}
+        {!authorityLabels.length && operatorName ? <span>{operatorName}</span> : null}
+      </div>
+    </header>
+
+    <RacecourseLocationMapSection
+      racecourseId={track.id}
+      racecourseName={racecourseName}
+      contextText={mapContext || undefined}
+      lang={locale}
+    />
+
+    <RacecourseMeetingSummary
+      state={publicMeetingState}
+      lang={locale}
+      officialScheduleUrl={primaryScheduleUrl}
+    />
+
+    {profileHasContent ? (
+      <section class="racecourse-detail-v2__section" aria-labelledby="racecourse-profile-heading" data-racecourse-detail-profile>
+        <div class="racecourse-detail-v2__section-heading">
+          <p class="racecourse-detail-v2__eyebrow">{isJapanese ? '確認済み情報' : 'Reviewed information'}</p>
+          <h2 id="racecourse-profile-heading">{isJapanese ? 'コース・プロフィール' : 'Course & profile'}</h2>
+        </div>
+
+        {overview ? <p class="racecourse-detail-v2__overview">{overview}</p> : null}
+
+        {(surfaceRows.length || racingTypeRows.length || directionLabel) ? (
+          <div class="racecourse-detail-v2__meta-groups">
+            {racingTypeRows.length ? (
+              <div>
+                <h3>{isJapanese ? '競馬種別' : 'Racing types'}</h3>
+                <div class="racecourse-detail-v2__chips">
+                  {racingTypeRows.map((row) => <a href={row.href}>{row.label}</a>)}
+                </div>
+              </div>
+            ) : null}
+            {surfaceRows.length ? (
+              <div>
+                <h3>{isJapanese ? '馬場' : 'Surfaces'}</h3>
+                <div class="racecourse-detail-v2__chips">
+                  {surfaceRows.map((row) => row.glossary
+                    ? <a href={`${isJapanese ? '/ja' : ''}/glossary/${row.glossary.slug}/`}>{row.label}</a>
+                    : <span>{row.label}</span>)}
+                </div>
+              </div>
+            ) : null}
+            {directionLabel ? (
+              <div>
+                <h3>{isJapanese ? '回り' : 'Direction'}</h3>
+                <div class="racecourse-detail-v2__chips">
+                  {directionGlossary
+                    ? <a href={`${isJapanese ? '/ja' : ''}/glossary/${directionGlossary.slug}/`}>{directionLabel}</a>
+                    : <span>{directionLabel}</span>}
+                </div>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+
+        {courseFacts.length ? (
+          <dl class="racecourse-detail-v2__facts">
+            {courseFacts.map((row) => <><dt>{row.label}</dt><dd>{row.value}</dd></>)}
+          </dl>
+        ) : null}
+
+        {notableRaces.length ? (
+          <div class="racecourse-detail-v2__subsection">
+            <h3>{isJapanese ? '主なレース' : 'Notable races'}</h3>
+            <ul class="racecourse-detail-v2__link-list">
+              {notableRaces.map((race: any) => (
+                <li>{race.url ? <a href={race.url}>{race.name}</a> : race.name}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+      </section>
+    ) : null}
+
+    <section class="racecourse-detail-v2__section" aria-labelledby="official-sources-heading" data-racecourse-detail-sources>
+      <div class="racecourse-detail-v2__section-heading">
+        <p class="racecourse-detail-v2__eyebrow">{isJapanese ? '確認先' : 'Verification'}</p>
+        <h2 id="official-sources-heading">{isJapanese ? '公式情報源' : 'Official sources'}</h2>
+      </div>
+      {officialLinks.length ? (
+        <ul class="racecourse-detail-v2__source-list">
+          {officialLinks.map((link: any) => <li><a href={link.url}>{link.label} ↗</a></li>)}
+        </ul>
+      ) : (
+        <p>{isJapanese ? 'この競馬場に紐づく公式リンクは現在公開していません。' : 'No racecourse-specific official link is currently published.'}</p>
+      )}
+      <p class="racecourse-detail-v2__calendar-link">
+        <a href={calendarHref}>{isJapanese ? 'カレンダーで開催を見る' : 'View meetings in Calendar'} →</a>
+      </p>
+    </section>
+  </main>
+</BaseLayout>
