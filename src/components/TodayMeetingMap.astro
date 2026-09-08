@@ -130,19 +130,13 @@ const fallbackMessage = isJapanese
             .map((entry) => entry.racecourseId)
         ));
         const statusForRow = (row) => {
-          const meetingState = row.dataset.meetingState || 'unknown';
-          const policy = row.dataset.meetingStatePolicy || 'day';
-          if (meetingState === 'running') return { key: 'running', label: isJa ? '開催中' : 'Racing now' };
-          if (meetingState === 'upcoming') {
-            return {
-              key: 'upcoming',
-              label: policy === 'day'
-                ? (isJa ? '本日開催' : 'Racing today')
-                : (isJa ? '開催前' : 'Upcoming'),
-            };
-          }
-          if (meetingState === 'ended') return { key: 'ended', label: isJa ? '終了' : 'Finished' };
-          return { key: 'future', label: isJa ? '開催予定' : 'Scheduled' };
+          const state = row.dataset.meetingPresentationState || 'unknown';
+          if (state === 'running') return { key: 'running', label: isJa ? '開催中' : 'Racing now' };
+          if (state === 'upcoming') return { key: 'upcoming', label: isJa ? '開催前' : 'Upcoming' };
+          if (state === 'today') return { key: 'today', label: isJa ? '本日開催' : 'Today meeting' };
+          if (state === 'ended') return { key: 'ended', label: isJa ? '終了' : 'Finished' };
+          if (state === 'future') return { key: 'future', label: isJa ? '開催予定' : 'Scheduled' };
+          return { key: 'unknown', label: isJa ? '状態未確認' : 'State not confirmed' };
         };
         const timeForRow = (row) => {
           const first = row.querySelector('[data-race-time="first"]')?.textContent?.trim() || '';
@@ -269,9 +263,8 @@ const fallbackMessage = isJapanese
         if (showListButton instanceof HTMLButtonElement) showListButton.addEventListener('click', showSelectedInList);
         if (closeButton instanceof HTMLButtonElement) {
           closeButton.addEventListener('click', () => {
-            const closing = selectedRacecourseId;
             hideSelected();
-            clearMapSelection(closing);
+            clearMapSelection();
           });
         }
         window.addEventListener('whr:timezonechange', () => requestAnimationFrame(syncVisible));
