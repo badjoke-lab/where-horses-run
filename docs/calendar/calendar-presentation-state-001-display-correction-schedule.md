@@ -1,16 +1,19 @@
 # Calendar presentation/state display-correction schedule
 
-Status: complete execution record  
+Status: base correction complete; color-state amendment active  
 Adopted: 2026-09-08  
-Completed: 2026-09-08  
-Work ID: `WHR-CAL-PRESENTATION-STATE-001`  
+Base completed: 2026-09-08  
+Base Work ID: `WHR-CAL-PRESENTATION-STATE-001`  
+Active amendment Work ID: `WHR-CAL-PRESENTATION-COLOR-001`  
 Canonical parent schedule: `docs/project-roadmap-2026-09-08-addendum.md`  
 Canonical presentation specification: `docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md`  
 Canonical display refinement: `docs/specs/calendar-row-rank-live-localization-2026-09-08.md`
 
-This schedule records the completed presentation corrections discovered after the initial Calendar state/view merge. It is a bounded continuation of `WHR-CAL-PRESENTATION-STATE-001`, not a new acquisition/data-quality programme.
+This schedule records the completed presentation corrections discovered after the initial Calendar state/view merge and the bounded color-state amendment that keeps `Today meeting / 本日開催` distinct from precise `Upcoming / 開催前` in both List and Map. It is presentation-only work, not a new acquisition/data-quality programme.
 
 ## 1. Required execution order
+
+Base correction:
 
 ```text
 1. authority/specification sync
@@ -25,16 +28,37 @@ This schedule records the completed presentation corrections discovered after th
 10. merge and post-merge verification
 ```
 
-All ten steps are complete. Agents must continue to re-read the canonical files after any scope or acceptance change and before PR/merge.
+All ten base steps are complete. Agents must continue to re-read the canonical files after any scope or acceptance change and before PR/merge.
+
+Color-state amendment:
+
+```text
+1. update canonical display refinement with distinct List/Map state colors
+2. split Calendar List `upcoming` and `today` selectors
+3. preserve Calendar Map `today` as a first-class status key
+4. add `Today meeting / 本日開催` Map legend and marker treatment
+5. lock List + Map behavior with regression validation
+6. inspect EN/JA desktop + 393×852 List/Map screenshots
+7. merge only after exact-head CI and visual acceptance
+8. verify exact merge SHA after merge
+```
+
+The amendment is complete only when all eight steps are demonstrated.
 
 ## 2. Authority/specification sync
 
-Completed outcome:
+Base completed outcome:
 
 - `docs/specs/calendar-row-rank-live-localization-2026-09-08.md` is present and active;
 - `AGENTS.md` points Calendar presentation agents to the refinement and this schedule;
 - implementation PRs list both documents under canonical documents reviewed;
 - conversation-only rules are not used as execution authority.
+
+Amendment requirement:
+
+- the refinement explicitly fixes `#fff9e9` for precise current-day `Upcoming / 開催前`;
+- it fixes `#fffcf4` for day-only B/C `Today meeting / 本日開催`;
+- it requires the same distinction on Calendar Map and forbids collapsing `today` into `upcoming`.
 
 ## 3. Current-main audit
 
@@ -45,9 +69,11 @@ src/components/TimetableMeetingList.astro
 src/components/MeetingStatePolicy.astro
 src/components/CalendarFilters.astro
 src/components/CalendarMeetingMap.astro
+src/components/RacecourseMap.astro
 src/components/CalendarViewControls.astro
 src/data/timetableMeetingRows.ts
 src/lib/timetable/meetingLifecycleState.mjs
+src/lib/timetable/meetingPresentationState.mjs
 src/lib/timetable/meetingStreamState.mjs
 src/lib/timetable/publicCoverageState.mjs
 src/styles/calendar-presentation.css
@@ -57,11 +83,11 @@ relevant EN/JA Calendar pages
 relevant Calendar visual-audit/check scripts
 ```
 
-Correct source-local lifecycle and exact-date stream-detector behavior were preserved.
+Correct source-local lifecycle and exact-date stream-detector behavior are preserved. The amendment audit found two presentation defects only: List used one warm-yellow selector for `upcoming` and `today`, and Map collapsed `today` into the `upcoming` status key.
 
 ## 4. B+ evidence-boundary state correction
 
-Implemented canonical rank boundary:
+Canonical rank boundary remains:
 
 ```text
 B+ / A / A+ current-day with sufficient first/last evidence:
@@ -74,17 +100,27 @@ B / C current-day:
   no precise upcoming/running/finished inference from incomplete timing
 ```
 
-Implemented presentation colors:
+Color-state amendment:
 
 ```text
-B+/A/A+ before first -> warm yellow
-B/C current-day -> warm yellow
-B+/A/A+ running -> warm red
-B+/A/A+ finished -> gray
-unknown/unsupported -> neutral
+Calendar List
+B+/A/A+ current day, before first -> #fff9e9
+B/C current-day                  -> #fffcf4
+B+/A/A+ running                  -> #fff7f6
+B+/A/A+ finished                 -> #f6f7f8, attenuated
+unknown/unsupported              -> #ffffff
+
+Calendar Map
+running       -> #c40000
+upcoming      -> #d18a00
+Today meeting -> #fffcf4 with dark warm outline/ring
+future        -> #111111
+ended         -> #666666
 ```
 
-The text label distinguishes `開催前` from `本日開催`; yellow is not a rank color.
+`Today meeting / 本日開催` is not an alias of `Upcoming / 開催前`. It is a separate presentation state in List selectors, Map state keys, legend, and selected-card status. These colors are not rank colors.
+
+A future/generic lifecycle value of `upcoming` does not by itself authorize the `#fff9e9` List background; the current-day relation is also required.
 
 ## 5. Stream-row simplification
 
@@ -140,11 +176,13 @@ Map selected/popup content
 selected card
 ```
 
+The same presentation-state model must drive List and Calendar Map. Map may not invent or collapse a state solely for marker convenience.
+
 Known UI labels on `/ja/` are Japanese; proper nouns/recognized abbreviations may remain Latin.
 
 ## 8. Regression tests
 
-Regression coverage includes:
+Base regression coverage includes:
 
 ```text
 A+/B+ current-day upcoming/running/finished
@@ -164,9 +202,22 @@ JA Latin fallback for unreviewed foreign venue
 List/Filters/Map naming parity
 ```
 
+The color-state amendment additionally locks:
+
+```text
+List upcoming + today -> #fff9e9
+List day-only today -> #fffcf4
+List future/generic upcoming is not highlighted solely from lifecycle
+Map day-only today -> distinct `today` key
+Map today marker -> #fffcf4 + dark warm outline/ring
+Map upcoming marker -> #d18a00
+Map legend contains both Today meeting / 本日開催 and Upcoming / 開催前
+selected Map card keeps the same presentation-state label as List
+```
+
 ## 9. Browser and visual acceptance
 
-Completed representative matrix:
+Base representative matrix:
 
 ```text
 EN desktop List
@@ -181,20 +232,19 @@ running + verified-live presentation path
 future/non-live example
 ```
 
-Verified visual observations:
+Color-state amendment acceptance must explicitly inspect List and Map at desktop and 393×852 where representative current-day states exist. The reviewer must verify:
 
-- no `Racing now / Official stream live / Live now` triple emphasis;
-- B/C current-day uses `Today meeting / 本日開催`;
-- B+ or higher before first uses `Upcoming / 開催前`;
-- running remains visually distinct;
-- Japanese UI labels/country names are localized;
-- reviewed racecourse naming follows the canonical fallback order;
+- `Today meeting / 本日開催` uses the new pale `#fffcf4` treatment and is not visually conflated with precise upcoming;
+- precise `Upcoming / 開催前` retains the stronger `#fff9e9` List treatment and orange Map marker;
+- Map legend/pins show both states independently;
+- the near-white Map marker remains visible because of its dark warm outline/ring;
+- running/ended/neutral colors retain their established meanings;
 - no horizontal overflow at 393×852;
 - an actual meeting row remains in the first mobile List viewport when meetings exist.
 
 ## 10. Merge gate
 
-This display-correction unit is complete:
+The base display-correction unit is complete:
 
 - canonical refinement and schedule merged;
 - implementation preserved acquisition/canonical/rank/source/coordinate boundaries;
@@ -210,6 +260,15 @@ This display-correction unit is complete:
 - PR #920 merged as `b6879d0074d06f8e4aadbb7f31138634208757cd`;
 - exact merge SHA post-merge validation and Cloudflare Pages deployment passed.
 
+The `WHR-CAL-PRESENTATION-COLOR-001` amendment must not be marked complete until:
+
+- canonical refinement contains the exact List/Map color split;
+- runtime List and Map use distinct `upcoming` and `today` states;
+- regression validation passes;
+- Representative Visual Audit passes and the relevant screenshots are inspected;
+- exact PR head is used for merge;
+- exact merge SHA post-merge validation/deployment is verified.
+
 ## 11. Ongoing agent rule
 
 For every subsequent Calendar-visible PR:
@@ -217,7 +276,7 @@ For every subsequent Calendar-visible PR:
 1. begin with `AGENTS.md` and `START-HERE.md`;
 2. re-read `docs/governance/document-authority.md`;
 3. re-read `docs/project-roadmap-2026-09-08-addendum.md`;
-4. re-read both Calendar presentation specifications and this completed execution record when Calendar-visible behavior is affected;
+4. re-read both Calendar presentation specifications and this execution record when Calendar-visible behavior is affected;
 5. inspect current `main` before editing;
 6. if behavior/acceptance changes, update canonical authority first;
 7. re-read the documents before opening/updating a PR and before merge;
