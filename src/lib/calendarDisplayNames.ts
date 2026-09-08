@@ -2,8 +2,8 @@ import { getCountries, getRacecourses, type Locale } from './data';
 
 export type CalendarDisplayLocale = Locale;
 
-const countryById = new Map(getCountries().map((country) => [country.id, country]));
-const racecourseById = new Map(getRacecourses().map((racecourse) => [racecourse.id, racecourse]));
+const countryById = new Map(getCountries().map((country) => [country.id, country] as const));
+const racecourseById = new Map(getRacecourses().map((racecourse) => [racecourse.id, racecourse] as const));
 
 const authorityCompactLabelById: Record<string, string> = {
   jra: 'JRA',
