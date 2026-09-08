@@ -4,9 +4,7 @@ import CalendarCoverageDashboard from '../../../components/CalendarCoverageDashb
 import CalendarDateNavigation from '../../../components/CalendarDateNavigation.astro';
 import CalendarDateStatus from '../../../components/CalendarDateStatus.astro';
 import CalendarFilters from '../../../components/CalendarFilters.astro';
-import CalendarLivePlayers from '../../../components/CalendarLivePlayers.astro';
 import CalendarMeetingMap from '../../../components/CalendarMeetingMap.astro';
-import CalendarPresentationState from '../../../components/CalendarPresentationState.astro';
 import CalendarSelectedCardEnhancer from '../../../components/CalendarSelectedCardEnhancer.astro';
 import CalendarViewControls from '../../../components/CalendarViewControls.astro';
 import MeetingStatePolicy from '../../../components/MeetingStatePolicy.astro';
@@ -31,8 +29,8 @@ const groupedCalendarRecords = getGroupedTimetableMeetingRows(candidateRecords);
 ---
 
 <BaseLayout
-  title="30日開催カレンダー | 競馬どこ？"
-  description={`${context.windowStart}から${context.windowEndInclusive}までの開催をList・Month・Mapで確認できます。`}
+  title="開催カレンダー | 競馬どこ？"
+  description={`${context.windowStart}から${context.windowEndInclusive}までの開催を日別・月表示・地図で確認できます。`}
   lang="ja"
   canonicalPath="/ja/calendar/"
   alternatePath="/calendar/"
@@ -44,7 +42,10 @@ const groupedCalendarRecords = getGroupedTimetableMeetingRows(candidateRecords);
       <p class="hero__eyebrow">開催カレンダー</p>
       <h1 id="page-title">カレンダー</h1>
       <p class="hero__summary">
-        初期状態で30日全体を表示します。<span data-timezone-window-start>{context.windowStart}</span>から<span data-timezone-window-end>{context.windowEndInclusive}</span>までの開催を、List・Month・Mapで切り替えて確認できます。表示タイムゾーンは<span data-timezone-label>{context.timeZone}</span>です。
+        一覧は1日ずつ、月表示では30日全体、地図では選択日の開催地を確認できます。時刻は<span data-timezone-label>{context.timeZone}</span>表示です。
+      </p>
+      <p class="calendar-page__window">
+        <span data-timezone-window-start>{context.windowStart}</span> – <span data-timezone-window-end>{context.windowEndInclusive}</span>
       </p>
     </section>
 
@@ -64,25 +65,25 @@ const groupedCalendarRecords = getGroupedTimetableMeetingRows(candidateRecords);
     />
 
     <CalendarFilters records={candidateRecords} lang="ja" />
-    <CalendarLivePlayers />
-    <CalendarPresentationState lang="ja" />
 
-    <section aria-label="30日間の開催一覧" data-calendar-list-view>
+    <section aria-label="選択日の開催一覧" data-calendar-list-view>
       <TimetableMeetingList
         groups={groupedCalendarRecords}
         scope="rolling-30"
         lang="ja"
-        emptyLabel="現在の30日表示範囲または選択中の絞り込み条件に該当する開催情報は掲載されていません。最新情報は公式情報源で確認してください。"
+        emptyLabel="選択日または現在の絞り込み条件に該当する開催情報は掲載されていません。最新情報は公式情報源で確認してください。"
       />
     </section>
 
     <CalendarMeetingMap records={candidateRecords} lang="ja" />
     <CalendarSelectedCardEnhancer />
 
-    <section class="calendar-page__secondary" aria-labelledby="calendar-data-title">
-      <h2 id="calendar-data-title">カレンダーデータの掲載状況</h2>
-      <CalendarDateStatus context={context} dataState={dataState} lang="ja" />
-      <CalendarCoverageDashboard lang="ja" />
-    </section>
+    <details class="calendar-page__secondary">
+      <summary>データ掲載状況と鮮度</summary>
+      <div class="calendar-page__secondary-content">
+        <CalendarDateStatus context={context} dataState={dataState} lang="ja" />
+        <CalendarCoverageDashboard lang="ja" />
+      </div>
+    </details>
   </div>
 </BaseLayout>
