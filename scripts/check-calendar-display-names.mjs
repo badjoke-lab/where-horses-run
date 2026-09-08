@@ -48,6 +48,10 @@ const mapSource = readFileSync(new URL('../src/components/CalendarMeetingMap.ast
 const jaPageSource = readFileSync(new URL('../src/pages/ja/calendar/index.astro', import.meta.url), 'utf8');
 const directoryDataSource = readFileSync(new URL('../src/lib/racecourse-filter-data.ts', import.meta.url), 'utf8');
 const directoryPageSource = readFileSync(new URL('../src/components/RacecourseDirectoryPage.astro', import.meta.url), 'utf8');
+const detailPageSource = readFileSync(new URL('../src/components/RacecourseDetailPage.astro', import.meta.url), 'utf8');
+const detailMeetingSource = readFileSync(new URL('../src/components/RacecourseMeetingSummary.astro', import.meta.url), 'utf8');
+const detailEnRouteSource = readFileSync(new URL('../src/pages/tracks/[slug].astro', import.meta.url), 'utf8');
+const detailJaRouteSource = readFileSync(new URL('../src/pages/ja/tracks/[slug].astro', import.meta.url), 'utf8');
 
 for (const marker of [
   'racecourse-display-names-v1.json',
@@ -119,6 +123,47 @@ for (const marker of [
 assert.doesNotMatch(directoryPageSource, /record\.alternateName/, 'Racecourses compact results must expose one primary display name rather than visible alias clutter');
 assert.doesNotMatch(directoryPageSource, /record\.localName/, 'Racecourses compact results must keep local/search aliases out of the primary result row');
 
+for (const marker of [
+  'getCalendarRacecourseDisplayName',
+  'getCalendarRacecourseDisplayNames',
+  'getCalendarCountryDisplayName',
+  'getCalendarAuthorityDisplayName',
+  'data-racecourse-detail-v2',
+  'data-racecourse-detail-identity',
+  'RacecourseLocationMapSection',
+  'RacecourseMeetingSummary',
+  'data-racecourse-detail-profile',
+  'data-racecourse-detail-sources',
+]) {
+  assert.match(detailPageSource, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `Racecourse detail UI-007 missing ${marker}`);
+}
+assert.doesNotMatch(detailPageSource, /toKana|kuroshiro|wanakana/i, 'Racecourse detail must not add runtime transliteration');
+assert.doesNotMatch(detailPageSource, /<h1>\{track\.name_ja\}/, 'Racecourse detail must not bypass reviewed JA display-name resolver for the primary heading');
+for (const obsoleteDetailCopy of [
+  'Not listed yet',
+  'Details will be added later.',
+  'Notable races will be added',
+  'Course layout details will be added later.',
+]) {
+  assert.doesNotMatch(detailPageSource, new RegExp(obsoleteDetailCopy.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `UI-007 detail must omit unknown placeholder copy: ${obsoleteDetailCopy}`);
+}
+for (const marker of [
+  'data-racecourse-meeting-summary',
+  'data-racecourse-primary-meeting',
+  'state.today_meetings[0] ?? state.next_meetings[0]',
+  '.slice(0, 6)',
+]) {
+  assert.match(detailMeetingSource, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `Racecourse meeting summary missing UI-007 marker ${marker}`);
+}
+assert.doesNotMatch(detailMeetingSource, /data-racecourse-timezone-select/, 'UI-007 racecourse detail must not reintroduce an independent full-browser timezone selector');
+for (const [label, routeSource, locale] of [
+  ['EN', detailEnRouteSource, 'en'],
+  ['JA', detailJaRouteSource, 'ja'],
+]) {
+  assert.match(routeSource, /RacecourseDetailPage/, `${label} racecourse detail route must use the shared UI-007 component`);
+  assert.match(routeSource, new RegExp(`locale="${locale}"`), `${label} racecourse detail route locale changed unexpectedly`);
+}
+
 console.log('CALENDAR_DISPLAY_NAMES: pass');
 console.log('REVIEWED_JAPANESE_NAME_STATUS: pass');
 console.log('NO_RUNTIME_KATAKANA_TRANSLITERATION: pass');
@@ -126,3 +171,5 @@ console.log('LATIN_FALLBACK_FOR_UNREVIEWED_FOREIGN_RACECOURSE: pass');
 console.log('CALENDAR_SHARED_DISPLAY_RESOLVER: pass');
 console.log('RACECOURSE_DIRECTORY_SHARED_DISPLAY_RESOLVER: pass');
 console.log('UI_006_DENSE_DISCOVERY_MARKERS: pass');
+console.log('UI_007_RACECOURSE_DETAIL_COMPOSITION: pass');
+console.log('UI_007_UNKNOWN_FIELDS_OMITTED: pass');
