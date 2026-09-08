@@ -48,8 +48,13 @@ const {
     </span>
     <span class="racecourse-map__legend-item">
       <span class="racecourse-map__legend-dot racecourse-map__legend-dot--upcoming" aria-hidden="true"></span>
-      <span class="racecourse-map__legend-label racecourse-map__legend-label--en">Later today</span>
-      <span class="racecourse-map__legend-label racecourse-map__legend-label--ja">今日これから</span>
+      <span class="racecourse-map__legend-label racecourse-map__legend-label--en">Upcoming</span>
+      <span class="racecourse-map__legend-label racecourse-map__legend-label--ja">開催前</span>
+    </span>
+    <span class="racecourse-map__legend-item">
+      <span class="racecourse-map__legend-dot racecourse-map__legend-dot--today" aria-hidden="true"></span>
+      <span class="racecourse-map__legend-label racecourse-map__legend-label--en">Today meeting</span>
+      <span class="racecourse-map__legend-label racecourse-map__legend-label--ja">本日開催</span>
     </span>
     <span class="racecourse-map__legend-item">
       <span class="racecourse-map__legend-dot racecourse-map__legend-dot--future" aria-hidden="true"></span>
@@ -112,6 +117,12 @@ const {
     background: #d18a00;
   }
 
+  .racecourse-map__legend-dot--today {
+    background: #fffcf4;
+    border-color: #7a5a00;
+    box-shadow: none;
+  }
+
   .racecourse-map__legend-dot--future {
     background: #111;
   }
@@ -162,8 +173,9 @@ const {
   const STATUS_PRIORITY = {
     ended: 1,
     future: 2,
-    upcoming: 3,
-    running: 4
+    today: 3,
+    upcoming: 4,
+    running: 5
   };
 
   const parseRacecourseIds = (value) => {
@@ -272,10 +284,16 @@ const {
   };
 
   const statusFromMeetingRow = (row) => {
+    const presentationState = row.dataset.meetingPresentationState || 'unknown';
+    if (presentationState === 'running') return 'running';
+    if (presentationState === 'upcoming') return 'upcoming';
+    if (presentationState === 'today') return 'today';
+    if (presentationState === 'ended') return 'ended';
+
     const meetingState = row.dataset.meetingState || 'unknown';
     const dayState = row.dataset.meetingDayState || 'unknown';
     if (meetingState === 'running') return 'running';
-    if ((meetingState === 'upcoming' || meetingState === 'unknown') && dayState === 'today') return 'upcoming';
+    if (meetingState === 'upcoming' && dayState === 'today') return 'upcoming';
     if (meetingState === 'ended' || dayState === 'past') return 'ended';
     return 'future';
   };
@@ -676,6 +694,7 @@ const {
           ['get', 'meeting_status'],
           'running', 10,
           'upcoming', 10,
+          'today', 9,
           'ended', 9,
           'future', 7,
           7
@@ -726,12 +745,25 @@ const {
               ['get', 'meeting_status'],
               'running', '#c40000',
               'upcoming', '#d18a00',
+              'today', '#fffcf4',
               'ended', '#666666',
               'future', '#111111',
               '#111111'
             ],
-            'circle-stroke-color': '#ffffff',
-            'circle-stroke-width': ['case', ['boolean', ['feature-state', 'selected'], false], 4, 2]
+            'circle-stroke-color': [
+              'case',
+              ['==', ['get', 'meeting_status'], 'today'],
+              '#7a5a00',
+              '#ffffff'
+            ],
+            'circle-stroke-width': [
+              'case',
+              ['boolean', ['feature-state', 'selected'], false],
+              4,
+              ['==', ['get', 'meeting_status'], 'today'],
+              3,
+              2
+            ]
           }
         });
 

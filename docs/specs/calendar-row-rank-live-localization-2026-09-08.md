@@ -53,23 +53,37 @@ Do not derive `Racing now` from a B first-race time alone. Do not derive `Finish
 
 For non-current dates, presentation may state the date/scheduled meeting context but must not fabricate a precise intraday lifecycle for B/C.
 
-## 2. Row-background semantics
+## 2. Row-background and Map-status semantics
 
-Row color is a presentation of current-day meeting state, not a raw rank color.
+State color is a presentation of reviewed current-day meeting state, not a raw rank color. `Upcoming / 開催前` and `Today meeting / 本日開催` are deliberately separate presentation states and must not share one selector or one Map status key.
 
-For the current Calendar day:
+For Calendar List:
 
 ```text
-B+/A/A+ before first race -> yellow/warm upcoming row + Upcoming / 開催前
-B/C current-day meeting   -> yellow/warm today row + Today meeting / 本日開催
-B+/A/A+ running           -> red/warm live-racing row + Racing now / 開催中
-B+/A/A+ finished          -> gray finished row + Finished / 終了
-unknown/unsupported       -> neutral row
+B+/A/A+ current day, before first race -> #fff9e9  + Upcoming / 開催前
+B/C current-day meeting                -> #fffcf4  + Today meeting / 本日開催
+B+/A/A+ running                        -> #fff7f6  + Racing now / 開催中
+B+/A/A+ finished                       -> #f6f7f8  + Finished / 終了, attenuated
+unknown / unsupported                  -> #ffffff  + neutral state
 ```
 
-Do not interpret yellow as simply `rank >= B+`. Do not interpret yellow as simply `upcoming`. The text label must disambiguate `開催前` from `本日開催`.
+The pale `#fffcf4` state exists specifically so day-only B/C evidence does not visually imply the more precise `Upcoming / 開催前` state. Do not interpret either warm color as a direct rank color.
 
-The rank badge remains visible independently of row-state color.
+A generic/future meeting must not receive the `#fff9e9` upcoming background merely because its lifecycle value is `upcoming`; that List background requires both the precise `upcoming` presentation state and `today` day relation.
+
+Calendar Map must preserve the same state split from the same meeting rows:
+
+```text
+running       -> red marker       #c40000
+upcoming      -> orange marker    #d18a00
+Today meeting -> pale warm marker #fffcf4 with a dark warm outline/ring
+future        -> neutral black    #111111
+ended         -> gray             #666666
+```
+
+Map legend and selected-card status must expose `Today meeting / 本日開催` independently from `Upcoming / 開催前`. Map code must not collapse the `today` presentation state into the `upcoming` Map key.
+
+The rank badge remains visible independently of List/Map state color. Day relation follows the selected presentation/display timezone; precise lifecycle truth remains source/venue-local-time authoritative.
 
 ## 3. Official-stream presentation
 
@@ -256,7 +270,9 @@ Map selected/popup content
 selected-card content
 ```
 
-Do not maintain separate naming dictionaries that allow List to show Japanese while Map or Filters fall back to unrelated English labels for the same reviewed entity.
+The same presentation-state resolver must also feed List and Map. In particular, B/C current-day `Today meeting / 本日開催` remains `today` on Map; it must not be rewritten to `upcoming` merely to reuse the orange marker.
+
+Do not maintain separate naming or state dictionaries that allow List and Map to disagree for the same reviewed meeting.
 
 ## 13. Responsive behavior
 
@@ -275,12 +291,15 @@ At 393×852:
 At minimum lock these cases:
 
 ```text
-current day + A+ before first -> 開催前 / Upcoming, warm yellow row
-current day + B+ running -> 開催中 / Racing now, red row
-current day + B+ after last -> 終了 / Finished, gray row
-current day + B -> 本日開催 / Today meeting, no precise running/finished inference
-current day + C -> 本日開催 / Today meeting, no precise running/finished inference
+current day + A+ before first -> 開催前 / Upcoming, List #fff9e9, Map upcoming #d18a00
+current day + B+ running -> 開催中 / Racing now, List #fff7f6, Map running #c40000
+current day + B+ after last -> 終了 / Finished, List #f6f7f8, Map ended #666666
+current day + B -> 本日開催 / Today meeting, List #fffcf4, Map today #fffcf4 + dark outline
+current day + C -> 本日開催 / Today meeting, List #fffcf4, Map today #fffcf4 + dark outline
+future/generic upcoming -> not yellow solely because lifecycle is upcoming
 B/C first-time presence does not authorize `running`
+Map today presentation state is not collapsed to upcoming
+Map legend distinguishes Today meeting / 本日開催 from Upcoming / 開催前
 verified stream live -> ● Live now / ● 公式配信中
 known stream not live -> Official stream / 公式配信
 no standalone `Official stream live` badge
@@ -304,13 +323,14 @@ EN mobile 393×852 List
 JA mobile 393×852 List
 Month
 Map
-current-day B/C example with Today meeting / 本日開催
-current-day B+ or higher upcoming example with Upcoming / 開催前
+current-day B/C example with Today meeting / 本日開催 and #fffcf4 treatment
+current-day B+ or higher upcoming example with Upcoming / 開催前 and #fff9e9 List treatment
+Map legend/pin distinction between Today meeting and Upcoming
 running + verified-live example
 future/non-live example
 ```
 
-The reviewer must verify that the old `Racing now / Official stream live / Live now` triple emphasis no longer appears and that `本日開催` versus `開催前` follows the B+ evidence boundary.
+The reviewer must verify that the old `Racing now / Official stream live / Live now` triple emphasis no longer appears, that `本日開催` versus `開催前` follows the B+ evidence boundary, and that the two warm current-day states remain visibly and semantically distinct in both List and Map.
 
 ## 16. Scope boundary
 

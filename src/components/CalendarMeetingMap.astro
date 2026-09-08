@@ -140,7 +140,7 @@ const fallbackMessage = isJapanese
         const statusForRow = (row) => {
           const presentationState = row.dataset.meetingPresentationState || 'unknown';
           if (presentationState === 'running') return { key: 'running', label: isJa ? '開催中' : 'Racing now' };
-          if (presentationState === 'today') return { key: 'upcoming', label: isJa ? '本日開催' : 'Today meeting' };
+          if (presentationState === 'today') return { key: 'today', label: isJa ? '本日開催' : 'Today meeting' };
           if (presentationState === 'upcoming') return { key: 'upcoming', label: isJa ? '開催前' : 'Upcoming' };
           if (presentationState === 'ended') return { key: 'ended', label: isJa ? '終了' : 'Finished' };
           return { key: 'future', label: isJa ? '開催予定' : 'Scheduled' };
