@@ -25,23 +25,22 @@ for (let date = startDate; date <= endDateInclusive; date = addCalendarDays(date
 >
   <div class="calendar-date-nav__heading">
     <div>
-      <p class="calendar-date-nav__eyebrow">{isJa ? '表示範囲' : 'Display range'}</p>
-      <h2 id="calendar-date-nav-title" data-calendar-selected-date-label>{isJa ? '30日表示' : '30-day view'}</h2>
+      <p class="calendar-date-nav__eyebrow">{isJa ? '日付' : 'Date'}</p>
+      <h2 id="calendar-date-nav-title" data-calendar-selected-date-label>{today}</h2>
     </div>
-    <a href={isJa ? '/ja/today/' : '/today/'} data-calendar-today-page-link>{isJa ? '今日の開催ページ' : "Today's racing"}</a>
+    <a href={isJa ? '/ja/today/' : '/today/'} data-calendar-today-page-link>{isJa ? '今日の開催' : "Today's racing"}</a>
   </div>
 
   <div class="calendar-date-nav__controls" role="group" aria-label={isJa ? 'カレンダー日付移動' : 'Calendar date navigation'}>
-    <button type="button" data-calendar-date-prev aria-label={isJa ? '前日' : 'Previous day'} disabled>← <span>{isJa ? '前日' : 'Previous'}</span></button>
+    <button type="button" data-calendar-date-prev aria-label={isJa ? '前日' : 'Previous day'}>← <span>{isJa ? '前日' : 'Previous'}</span></button>
     <label>
-      <span>{isJa ? '日付' : 'Date'}</span>
-      <select data-filter-date aria-label={isJa ? '日付で絞り込む' : 'Filter by date'}>
-        <option value="" selected>{isJa ? '30日すべて' : 'All 30 days'}</option>
-        {dates.map((date) => <option value={date}>{date}</option>)}
+      <span>{isJa ? '表示日' : 'Browse date'}</span>
+      <select data-filter-date aria-label={isJa ? '表示する日付' : 'Date to browse'}>
+        {dates.map((date) => <option value={date} selected={date === today}>{date}</option>)}
       </select>
     </label>
-    <button type="button" data-calendar-date-next aria-label={isJa ? '翌日' : 'Next day'} disabled><span>{isJa ? '翌日' : 'Next'}</span> →</button>
-    <button type="button" data-calendar-date-today>{isJa ? '今日だけ表示' : 'Show today'}</button>
+    <button type="button" data-calendar-date-next aria-label={isJa ? '翌日' : 'Next day'}><span>{isJa ? '翌日' : 'Next'}</span> →</button>
+    <button type="button" data-calendar-date-today>{isJa ? '今日' : 'Today'}</button>
   </div>
 </section>
 
@@ -66,17 +65,16 @@ for (let date = startDate; date <= endDateInclusive; date = addCalendarDays(date
         const label = root.querySelector('[data-calendar-selected-date-label]');
         if (!(select instanceof HTMLSelectElement) || !(previous instanceof HTMLButtonElement) || !(next instanceof HTMLButtonElement) || !(todayButton instanceof HTMLButtonElement)) return;
 
-        const isJa = root.dataset.lang === 'ja';
         let windowStart = root.dataset.windowStart || '';
         let windowEnd = root.dataset.windowEnd || '';
         let today = root.dataset.today || windowStart;
 
+        const isInWindow = (value) => validDate(value) && value >= windowStart && value <= windowEnd;
+        const fallbackDate = () => isInWindow(today) ? today : windowStart;
+
         const rebuildOptions = () => {
           const current = select.value;
-          const all = document.createElement('option');
-          all.value = '';
-          all.textContent = isJa ? '30日すべて' : 'All 30 days';
-          const options = [all];
+          const options = [];
           for (let date = windowStart; validDate(date) && date <= windowEnd; date = addDays(date, 1)) {
             const option = document.createElement('option');
             option.value = date;
@@ -85,41 +83,34 @@ for (let date = startDate; date <= endDateInclusive; date = addCalendarDays(date
           }
           select.replaceChildren(...options);
           const requested = new URL(window.location.href).searchParams.get('date');
-          if (validDate(requested) && requested >= windowStart && requested <= windowEnd) select.value = requested;
-          else if (validDate(current) && current >= windowStart && current <= windowEnd) select.value = current;
-          else select.value = '';
+          select.value = isInWindow(requested) ? requested : isInWindow(current) ? current : fallbackDate();
         };
 
         const notify = (updateUrl = true) => {
-          const selected = select.value;
-          const focused = validDate(selected);
-          if (label) label.textContent = focused ? selected : (isJa ? '30日表示' : '30-day view');
-          previous.disabled = !focused || selected <= windowStart;
-          next.disabled = !focused || selected >= windowEnd;
-          todayButton.disabled = focused && selected === today;
+          const selected = isInWindow(select.value) ? select.value : fallbackDate();
+          if (select.value !== selected) select.value = selected;
+          if (label) label.textContent = selected;
+          previous.disabled = selected <= windowStart;
+          next.disabled = selected >= windowEnd;
+          todayButton.disabled = selected === today;
           if (updateUrl) {
             const url = new URL(window.location.href);
-            if (focused) url.searchParams.set('date', selected);
-            else url.searchParams.delete('date');
+            url.searchParams.set('date', selected);
             window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
           }
           document.querySelector('[data-calendar-filters]')?.dispatchEvent(new Event('change', { bubbles: true }));
-          window.dispatchEvent(new CustomEvent('whr:calendardatechange', { detail: { date: focused ? selected : '' } }));
+          window.dispatchEvent(new CustomEvent('whr:calendardatechange', { detail: { date: selected } }));
         };
 
         const setDate = (date) => {
-          if (!validDate(date) || date < windowStart || date > windowEnd) return;
+          if (!isInWindow(date)) return;
           select.value = date;
           select.dispatchEvent(new Event('change', { bubbles: true }));
         };
 
         select.addEventListener('change', () => notify(true));
-        previous.addEventListener('click', () => {
-          if (validDate(select.value)) setDate(addDays(select.value, -1));
-        });
-        next.addEventListener('click', () => {
-          if (validDate(select.value)) setDate(addDays(select.value, 1));
-        });
+        previous.addEventListener('click', () => setDate(addDays(select.value, -1)));
+        next.addEventListener('click', () => setDate(addDays(select.value, 1)));
         todayButton.addEventListener('click', () => setDate(today));
 
         window.addEventListener('whr:timezonechange', (event) => {
@@ -135,13 +126,12 @@ for (let date = startDate; date <= endDateInclusive; date = addCalendarDays(date
 
         window.addEventListener('popstate', () => {
           const requested = new URL(window.location.href).searchParams.get('date');
-          if (validDate(requested) && requested >= windowStart && requested <= windowEnd) select.value = requested;
-          else select.value = '';
+          select.value = isInWindow(requested) ? requested : fallbackDate();
           notify(false);
         });
 
         rebuildOptions();
-        notify(false);
+        notify(true);
       });
     };
 

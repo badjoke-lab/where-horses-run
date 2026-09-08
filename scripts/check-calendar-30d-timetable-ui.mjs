@@ -23,8 +23,8 @@ const statusPath = 'src/components/CalendarDateStatus.astro';
 const dateNavPath = 'src/components/CalendarDateNavigation.astro';
 const filtersPath = 'src/components/CalendarFilters.astro';
 const mapPath = 'src/components/CalendarMeetingMap.astro';
-const presentationPath = 'src/components/CalendarPresentationState.astro';
 const viewControlsPath = 'src/components/CalendarViewControls.astro';
+const streamStatePath = 'src/lib/timetable/meetingStreamState.mjs';
 const englishPage = read(englishPath);
 const japanesePage = read(japanesePath);
 const meetingList = read(listPath);
@@ -32,8 +32,8 @@ const dateStatus = read(statusPath);
 const dateNav = read(dateNavPath);
 const filters = read(filtersPath);
 const calendarMap = read(mapPath);
-const presentation = read(presentationPath);
 const viewControls = read(viewControlsPath);
+const streamState = read(streamStatePath);
 
 for (const marker of [
   'CalendarDateNavigation',
@@ -56,7 +56,7 @@ for (const marker of [
   'CalendarDateNavigation',
   'CalendarMeetingMap',
   'CalendarFilters',
-  'CalendarPresentationState',
+  'CalendarViewControls',
   'CalendarDateStatus',
   'TimetableMeetingList',
   'getTimetableMeetingRowsForWindow',
@@ -71,26 +71,28 @@ for (const marker of [
 
 for (const [label, page] of [[englishPath, englishPage], [japanesePath, japanesePage]]) {
   if (page.includes('CalendarDateFocus')) fail(`${label}: legacy CalendarDateFocus must not remain`);
+  if (page.includes('CalendarPresentationState')) fail(`${label}: duplicate CalendarPresentationState must not remain`);
+  if (page.includes('CalendarLivePlayers')) fail(`${label}: Calendar must not render embedded live-player UI`);
 }
 
 for (const marker of [
-  'title="30-day racing calendar | Where Horses Run"',
+  'title="Racing calendar | Where Horses Run"',
   'groups={groups}',
   'canonicalPath="/calendar/"',
   'alternatePath="/ja/calendar/"',
-  'Rolling 30-day meeting list',
+  'Selected-day meeting list',
   'data-timezone-window-start',
   'data-timezone-window-end',
 ]) requireIncludes(englishPage, marker, englishPath);
 
 for (const marker of [
-  'title="30日開催カレンダー | 競馬どこ？"',
+  'title="開催カレンダー | 競馬どこ？"',
   'groups={groupedCalendarRecords}',
   'lang="ja"',
   'canonicalPath="/ja/calendar/"',
   'alternatePath="/calendar/"',
-  '30日間の開催一覧',
-  '初期状態で30日全体を表示',
+  '選択日の開催一覧',
+  '一覧は1日ずつ',
   'data-timezone-window-start',
   'data-timezone-window-end',
 ]) requireIncludes(japanesePage, marker, japanesePath);
@@ -101,21 +103,24 @@ for (const marker of [
   'data-calendar-date-prev',
   'data-calendar-date-next',
   'data-calendar-date-today',
-  "all.value = ''",
-  "all.textContent = isJa ? '30日すべて' : 'All 30 days'",
-  "url.searchParams.delete('date')",
+  'fallbackDate',
+  "url.searchParams.set('date', selected)",
   'whr:calendardatechange',
   'whr:timezonechange',
 ]) requireIncludes(dateNav, marker, dateNavPath);
+if (dateNav.includes('All 30 days') || dateNav.includes('30日すべて')) {
+  fail(`${dateNavPath}: List must not restore the all-30-days option`);
+}
 
 for (const marker of [
   'data-calendar-filters',
   'HTMLDetailsElement',
-  "window.matchMedia('(max-width: 700px)').matches",
+  'root.open = false',
   "(!date.value || row.dataset.date === date.value)",
   'data-filter-country',
   'data-filter-authority',
   'data-filter-rank',
+  'deriveMeetingStreamState',
   'whr:calendardatechange',
 ]) requireIncludes(filters, marker, filtersPath);
 
@@ -138,13 +143,15 @@ for (const marker of [
   'popstate',
   'internalList.click()',
   'internalMap.click()',
+  "activate('list')",
 ]) requireIncludes(viewControls, marker, viewControlsPath);
 
 for (const marker of [
-  'data-calendar-presentation-state',
-  "url.searchParams.set('view', view)",
-  'popstate',
-]) requireIncludes(presentation, marker, presentationPath);
+  'deriveMeetingStreamState',
+  'matchingEvent',
+  'MEETING_STREAM_STATES.LIVE',
+  'MEETING_STREAM_STATES.KNOWN',
+]) requireIncludes(streamState, marker, streamStatePath);
 
 for (const marker of [
   'groups.map((group) => (',
@@ -183,7 +190,7 @@ for (const marker of [
   'no_public_records',
 ]) requireIncludes(dateStatus, marker, statusPath);
 
-const combined = `${englishPage}\n${japanesePage}\n${meetingList}\n${dateStatus}\n${dateNav}\n${filters}\n${calendarMap}\n${presentation}\n${viewControls}`;
+const combined = `${englishPage}\n${japanesePage}\n${meetingList}\n${dateStatus}\n${dateNav}\n${filters}\n${calendarMap}\n${viewControls}`;
 const fixedCalendarHeadings = [
   /\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}\s+Calendar\b/i,
   /\b\d{4}年(?:1[0-2]|[1-9])月\s*開催カレンダー/,
@@ -205,11 +212,12 @@ if (errors.length) {
 }
 
 console.log('Calendar rolling 30-day timetable UI check passed.');
-console.log('ROLLING_30_DAY_DEFAULT: pass');
-console.log('OPTIONAL_DATE_FOCUS: pass');
+console.log('ROLLING_30_DAY_BROWSING_SCOPE: pass');
+console.log('ONE_DAY_LIST_FOCUS: pass');
 console.log('LIST_MONTH_MAP_SHARED_ROWS: pass');
-console.log('MOBILE_FILTER_COLLAPSE: pass');
+console.log('FILTERS_COLLAPSED_BY_DEFAULT: pass');
 console.log('URL_DATE_VIEW_STATE: pass');
+console.log('FAIL_CLOSED_STREAM_STATE: pass');
 console.log('ONE_MEETING_PER_LIST_ROW: pass');
 console.log('TIMEZONE_PROJECTED_WINDOW: pass');
 console.log('CURRENT_MEETING_ROW_CONTRACT: pass');

@@ -4,7 +4,6 @@ import CalendarCoverageDashboard from '../../components/CalendarCoverageDashboar
 import CalendarDateNavigation from '../../components/CalendarDateNavigation.astro';
 import CalendarDateStatus from '../../components/CalendarDateStatus.astro';
 import CalendarFilters from '../../components/CalendarFilters.astro';
-import CalendarLivePlayers from '../../components/CalendarLivePlayers.astro';
 import CalendarMeetingMap from '../../components/CalendarMeetingMap.astro';
 import CalendarSelectedCardEnhancer from '../../components/CalendarSelectedCardEnhancer.astro';
 import CalendarViewControls from '../../components/CalendarViewControls.astro';
@@ -30,8 +29,8 @@ const groups = getGroupedTimetableMeetingRows(candidateRecords);
 ---
 
 <BaseLayout
-  title="30-day racing calendar | Where Horses Run"
-  description={`Browse racing listed from ${context.windowStart} through ${context.windowEndInclusive} by list, month, or map.`}
+  title="Racing calendar | Where Horses Run"
+  description={`Browse race meetings from ${context.windowStart} through ${context.windowEndInclusive} by day, month, or map.`}
   canonicalPath="/calendar/"
   alternatePath="/ja/calendar/"
 >
@@ -42,7 +41,7 @@ const groups = getGroupedTimetableMeetingRows(candidateRecords);
       <p class="hero__eyebrow">Racing calendar</p>
       <h1 id="page-title">Calendar</h1>
       <p class="hero__summary">
-        Explore race meetings by date. Switch between List, Month, and Map views; times and date grouping use <span data-timezone-label>{context.timeZone}</span>.
+        Browse one day at a time in List view, use Month for the 30-day overview, or switch to Map for the selected day. Times use <span data-timezone-label>{context.timeZone}</span>.
       </p>
       <p class="calendar-page__window">
         <span data-timezone-window-start>{context.windowStart}</span> – <span data-timezone-window-end>{context.windowEndInclusive}</span>
@@ -63,23 +62,24 @@ const groups = getGroupedTimetableMeetingRows(candidateRecords);
     />
 
     <CalendarFilters records={candidateRecords} />
-    <CalendarLivePlayers />
 
-    <section aria-label="Rolling 30-day meeting list" data-calendar-list-view>
+    <section aria-label="Selected-day meeting list" data-calendar-list-view>
       <TimetableMeetingList
         groups={groups}
         scope="rolling-30"
-        emptyLabel="No meetings are currently listed in the selected 30-day display window or active filters. Check official sources for the latest information."
+        emptyLabel="No meetings are currently listed for the selected date or active filters. Check official sources for the latest information."
       />
     </section>
 
     <CalendarMeetingMap records={candidateRecords} />
     <CalendarSelectedCardEnhancer />
 
-    <section class="calendar-page__secondary" aria-labelledby="calendar-data-title">
-      <h2 id="calendar-data-title">Calendar data coverage</h2>
-      <CalendarDateStatus context={context} dataState={dataState} />
-      <CalendarCoverageDashboard />
-    </section>
+    <details class="calendar-page__secondary">
+      <summary>Data coverage and freshness</summary>
+      <div class="calendar-page__secondary-content">
+        <CalendarDateStatus context={context} dataState={dataState} />
+        <CalendarCoverageDashboard />
+      </div>
+    </details>
   </div>
 </BaseLayout>
