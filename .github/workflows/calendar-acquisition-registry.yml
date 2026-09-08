@@ -5,6 +5,7 @@ on:
     paths:
       - 'data/static/calendar-acquisition-registry.schema.json'
       - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-acquisition-tier-control.json'
       - 'data/static/calendar-readiness-japan-v2.json'
       - 'data/static/japan-a-plus-policy.json'
       - 'data/static/authority-source-inventory*.json'
@@ -14,6 +15,7 @@ on:
       - 'data/candidates/japan-jra-candidates.json'
       - 'data/candidates/japan-banei-candidates.json'
       - 'data/fixtures/calendar-hkjc-detail-reviewed-import-fixtures-v1.json'
+      - 'docs/country-pages/98-country-tracker.tsv'
       - 'scripts/timetable/load-calendar-acquisition-registry.mjs'
       - 'scripts/timetable/load-authority-source-inventory.mjs'
       - 'scripts/timetable/five-rank-classifier.mjs'
@@ -25,6 +27,7 @@ on:
       - 'scripts/timetable/extract-hkjc-detail-reviewed-import-artifacts.mjs'
       - 'scripts/check-authority-source-inventory-schema.mjs'
       - 'scripts/check-calendar-acquisition-registry.mjs'
+      - 'scripts/check-calendar-acquisition-tier-control.mjs'
       - 'scripts/check-calendar-five-rank-classifier.mjs'
       - 'scripts/check-calendar-hkjc-detail-reviewed-import.mjs'
       - 'scripts/check-calendar-route-runner-policy.mjs'
@@ -36,12 +39,14 @@ on:
       - 'docs/calendar/machine-readable-contracts.md'
       - 'docs/calendar/README.md'
       - '.github/workflows/calendar-acquisition-registry.yml'
+      - '.github/workflows/calendar-unified-official-refresh.yml'
   push:
     branches:
       - main
     paths:
       - 'data/static/calendar-acquisition-registry.schema.json'
       - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-acquisition-tier-control.json'
       - 'data/static/calendar-readiness-japan-v2.json'
       - 'data/static/japan-a-plus-policy.json'
       - 'data/static/authority-source-inventory*.json'
@@ -51,6 +56,7 @@ on:
       - 'data/candidates/japan-jra-candidates.json'
       - 'data/candidates/japan-banei-candidates.json'
       - 'data/fixtures/calendar-hkjc-detail-reviewed-import-fixtures-v1.json'
+      - 'docs/country-pages/98-country-tracker.tsv'
       - 'scripts/timetable/load-calendar-acquisition-registry.mjs'
       - 'scripts/timetable/load-authority-source-inventory.mjs'
       - 'scripts/timetable/five-rank-classifier.mjs'
@@ -62,6 +68,7 @@ on:
       - 'scripts/timetable/extract-hkjc-detail-reviewed-import-artifacts.mjs'
       - 'scripts/check-authority-source-inventory-schema.mjs'
       - 'scripts/check-calendar-acquisition-registry.mjs'
+      - 'scripts/check-calendar-acquisition-tier-control.mjs'
       - 'scripts/check-calendar-five-rank-classifier.mjs'
       - 'scripts/check-calendar-hkjc-detail-reviewed-import.mjs'
       - 'scripts/check-calendar-route-runner-policy.mjs'
@@ -73,6 +80,7 @@ on:
       - 'docs/calendar/machine-readable-contracts.md'
       - 'docs/calendar/README.md'
       - '.github/workflows/calendar-acquisition-registry.yml'
+      - '.github/workflows/calendar-unified-official-refresh.yml'
 
 permissions:
   contents: read
@@ -99,12 +107,16 @@ jobs:
           node --check scripts/timetable/build-hkjc-detail-reviewed-import-package.mjs
           node --check scripts/timetable/extract-hkjc-detail-reviewed-import-artifacts.mjs
           node --check scripts/check-calendar-acquisition-registry.mjs
+          node --check scripts/check-calendar-acquisition-tier-control.mjs
           node --check scripts/check-calendar-five-rank-classifier.mjs
           node --check scripts/check-calendar-hkjc-detail-reviewed-import.mjs
           node --check scripts/check-calendar-contracts.mjs
 
       - name: Validate Acquisition Registry contract and current profiles
         run: node scripts/check-calendar-acquisition-registry.mjs
+
+      - name: Validate 98-tier acquisition deployment control
+        run: node scripts/check-calendar-acquisition-tier-control.mjs
 
       - name: Validate five-rank acquisition classifier
         run: node scripts/check-calendar-five-rank-classifier.mjs
