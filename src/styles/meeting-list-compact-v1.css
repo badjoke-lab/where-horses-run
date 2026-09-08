@@ -77,12 +77,17 @@
 }
 
 .timetable-timezone-projection .meeting-row__links a[data-live-link] {
-  background: color-mix(in srgb, var(--whr-color-gold) 13%, #fff);
+  background: transparent;
+  border-radius: 0;
+  color: inherit;
+  padding-inline: 0;
 }
 
 .timetable-timezone-projection .meeting-row[data-stream-state='live'] .meeting-row__links a[data-live-link] {
   background: #fff0ef;
+  border-radius: 0.38rem;
   color: #9d0000;
+  padding-inline: 0.42rem;
 }
 
 .timetable-timezone-projection .meeting-row__links a:focus-visible,
@@ -197,6 +202,14 @@
     min-height: 24px;
     padding: 0.08rem 0.28rem;
     font-size: 0.65rem;
+  }
+
+  .timetable-timezone-projection .meeting-row__links a[data-live-link] {
+    padding-inline: 0;
+  }
+
+  .timetable-timezone-projection .meeting-row[data-stream-state='live'] .meeting-row__links a[data-live-link] {
+    padding-inline: 0.28rem;
   }
 
   .timetable-timezone-projection .meeting-row__meeting-badge {
