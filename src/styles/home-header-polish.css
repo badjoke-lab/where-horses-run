@@ -38,12 +38,46 @@ html:lang(ja) :is(h1, h2, h3, h4, h5, h6) {
     line-height: 1.2;
     white-space: nowrap;
   }
+
+  /*
+   * JA wordmark text is rendered with positioned pseudo-elements. Without an explicit
+   * inline size those visible words do not contribute to grid sizing, so navigation
+   * can start underneath the wordmark. Reserve the real visual width and keep the
+   * three desktop zones (brand / primary nav / utilities) on one row.
+   */
+  html:lang(ja) .site-brand {
+    width: 13.25rem;
+    min-width: 13.25rem;
+  }
+
+  html:lang(ja) .desktop-shell-nav {
+    min-width: 0;
+    gap: clamp(.8rem, 1.5vw, 1.5rem);
+  }
+
+  html:lang(ja) .desktop-primary-nav__list,
+  html:lang(ja) .desktop-utility-nav__list {
+    flex-wrap: nowrap;
+    gap: clamp(.25rem, .65vw, .7rem);
+  }
+
+  html:lang(ja) .desktop-primary-nav a,
+  html:lang(ja) .desktop-utility-nav__list > li > a,
+  html:lang(ja) .desktop-timezone__summary,
+  html:lang(ja) .desktop-more__summary {
+    white-space: nowrap;
+  }
 }
 
 @media (min-width: 960px) {
-  /* Keep the wordmark visually separate from the navigation while the primary nav is still short. */
+  /* Keep the English wordmark visually separate from the navigation while its primary nav is short. */
   .site-header__inner {
     grid-template-columns: max-content minmax(0, 1fr);
     column-gap: clamp(3rem, 5vw, 5rem);
+  }
+
+  /* JA needs less dead gap because its reserved wordmark box is wider than the English text wordmark. */
+  html:lang(ja) .site-header__inner {
+    column-gap: clamp(1.75rem, 2.5vw, 2.75rem);
   }
 }
