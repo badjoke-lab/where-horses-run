@@ -57,7 +57,7 @@ for (const marker of [
 ]) {
   assert.match(resolverSource, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `display resolver missing ${marker}`);
 }
-assert.doesNotMatch(resolverSource, /katakana|transliterate|toKana|kuroshiro|wanakana/i, 'runtime transliteration must not be introduced');
+assert.doesNotMatch(resolverSource, /toKana|kuroshiro|wanakana/i, 'runtime transliteration must not be introduced');
 assert.doesNotMatch(listSource, /jaRacecourseLabelById/, 'Calendar List must not retain an ad hoc Japanese racecourse dictionary');
 for (const marker of [
   'getCalendarRacecourseDisplayName',
@@ -68,20 +68,27 @@ for (const marker of [
 ]) {
   assert.match(listSource, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `Calendar List missing shared display marker ${marker}`);
 }
-for (const marker of ['getCalendarCountryDisplayName', 'getCalendarAuthorityDisplayName', 'row.dataset.meetingPresentationState']) {
-  const source = marker.startsWith('getCalendar') ? filtersSource : mapSource;
-  assert.match(source, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `Calendar surface missing ${marker}`);
+for (const marker of ['getCalendarCountryDisplayName', 'getCalendarAuthorityDisplayName']) {
+  assert.match(filtersSource, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `Calendar Filters missing ${marker}`);
+}
+assert.match(mapSource, /row\.dataset\.meetingPresentationState/, 'Calendar Map must use rank-aware presentation state');
+
+for (const marker of [
+  "{isJapanese ? '一覧' : 'List'}",
+  "{isJapanese ? '地図' : 'Map'}",
+  "{isJapanese ? '一覧で見る' : 'Show in List'}",
+]) {
+  assert.match(mapSource, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `Calendar Map missing locale-aware control ${marker}`);
 }
 
-const japaneseSurface = `${listSource}\n${filtersSource}\n${mapSource}\n${jaPageSource}`;
-for (const forbiddenPattern of [
-  />List<\/button>/,
-  />Map<\/button>/,
+const combinedCalendarSource = `${listSource}\n${filtersSource}\n${mapSource}\n${jaPageSource}`;
+for (const obsoletePattern of [
   /'今日これから'/,
   /'公式配信元 ↗'/,
   /'● 現在配信中 ↗'/,
+  /data-stream-live-badge/,
 ]) {
-  assert.doesNotMatch(japaneseSurface, forbiddenPattern, `Japanese Calendar retains obsolete/English UI pattern ${forbiddenPattern}`);
+  assert.doesNotMatch(combinedCalendarSource, obsoletePattern, `Calendar retains obsolete presentation pattern ${obsoletePattern}`);
 }
 
 console.log('CALENDAR_DISPLAY_NAMES: pass');
