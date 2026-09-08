@@ -108,6 +108,19 @@ function isoDate(value) {
   return value;
 }
 
+export function japanLocalDateFromInstant(value) {
+  const instant = new Date(value);
+  if (Number.isNaN(instant.getTime())) throw new Error(`invalid Japan freshness instant: ${value}`);
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Tokyo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(instant);
+  const fields = Object.fromEntries(parts.filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
+  return `${fields.year}-${fields.month}-${fields.day}`;
+}
+
 export function japan30DayRange(executionDate) {
   const start = isoDate(executionDate);
   const cursor = new Date(`${start}T00:00:00Z`);
@@ -160,7 +173,7 @@ function safeMeeting(meeting, checkedAt, previous = null) {
     source_trace: sourceTrace(meeting, base.source_trace),
     freshness: {
       ...(base.freshness ?? {}),
-      last_checked_date: checkedAt.slice(0, 10),
+      last_checked_date: japanLocalDateFromInstant(checkedAt),
       generated_at: checkedAt,
       stale_after_date: null,
       freshness_note: 'Deterministically reconciled from the official Japan 30-day acquisition run.',
