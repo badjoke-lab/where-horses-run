@@ -47,10 +47,7 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
 </details>
 
 <script>
-  import {
-    canUseEventSpecificStreamUrl,
-    deriveMeetingStreamState,
-  } from '../lib/timetable/meetingStreamState.mjs';
+  import { deriveMeetingStreamState } from '../lib/timetable/meetingStreamState.mjs';
 
   const init = () => {
     const root = document.querySelector('[data-calendar-filters]');
@@ -145,9 +142,7 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
         const link = row.querySelector('[data-live-link]');
         if (link instanceof HTMLAnchorElement) {
           const defaultHref = link.dataset.liveDefaultHref || link.href;
-          const videoId = typeof entry?.video_id === 'string' ? entry.video_id : '';
-          const eventSpecific = canUseEventSpecificStreamUrl({ detectorStatus, eventDate, sourceDate, videoId });
-          link.href = eventSpecific ? `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}` : defaultHref;
+          link.href = defaultHref;
           link.textContent = state === 'live'
             ? (isJa ? '● 現在配信中 ↗' : '● Live now ↗')
             : (isJa ? '公式配信元 ↗' : 'Official stream ↗');
