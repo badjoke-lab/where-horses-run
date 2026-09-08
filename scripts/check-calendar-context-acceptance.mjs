@@ -50,6 +50,52 @@ const firstVisibleMeetingInViewport = async (page) => page.evaluate(() => {
   };
 });
 
+const legendSnapshot = async (page) => page.evaluate(() => {
+  const items = [...document.querySelectorAll('[data-map-legend-state]')]
+    .filter((node) => node instanceof HTMLElement && !node.hidden && getComputedStyle(node).display !== 'none');
+  return {
+    states: items.map((node) => node.dataset.mapLegendState || ''),
+    labels: items.map((node) => {
+      const en = node.querySelector('.racecourse-map__legend-label--en');
+      const ja = node.querySelector('.racecourse-map__legend-label--ja');
+      const label = document.documentElement.lang === 'ja' ? ja : en;
+      return label?.textContent?.replace(/\s+/g, ' ').trim() || '';
+    }),
+    pageText: document.body.innerText.replace(/\s+/g, ' '),
+  };
+});
+
+const assertLegend = (snapshot, expectedStates, expectedLabels, context, failures) => {
+  if (JSON.stringify(snapshot.states) !== JSON.stringify(expectedStates)) {
+    failures.push(`${context} legend states mismatch: ${snapshot.states.join(', ')}`);
+  }
+  if (JSON.stringify(snapshot.labels) !== JSON.stringify(expectedLabels)) {
+    failures.push(`${context} legend labels mismatch: ${snapshot.labels.join(' | ')}`);
+  }
+  if (snapshot.pageText.includes('Upcoming / racing today') || snapshot.pageText.includes('開催前・本日開催')) {
+    failures.push(`${context} still exposes a combined Upcoming/Today label`);
+  }
+};
+
+const todayUnmappedSnapshot = async (page) => page.evaluate(() => {
+  const root = document.querySelector('[data-today-map-sync]');
+  const dataNode = root?.querySelector('[data-today-map-meeting-map]');
+  const meta = root?.querySelector('.racecourse-map__meta');
+  let entries = [];
+  try { entries = JSON.parse(dataNode?.textContent || '[]'); } catch { entries = []; }
+  const byMeeting = new Map(Array.isArray(entries) ? entries.map((entry) => [entry.meetingId, entry]) : []);
+  const rows = [...document.querySelectorAll('[data-calendar-meeting-row]')]
+    .filter((row) => row instanceof HTMLElement && !row.hidden && row.dataset.timezoneScopeHidden !== 'true' && getComputedStyle(row).display !== 'none');
+  const expected = rows.filter((row) => {
+    const entry = byMeeting.get(row.dataset.meetingId || '');
+    return entry && !entry.hasReviewedLocation;
+  }).length;
+  return {
+    expected,
+    text: meta instanceof HTMLElement && !meta.hidden ? meta.textContent?.replace(/\s+/g, ' ').trim() || '' : '',
+  };
+});
+
 const captureToday = async (page, viewport, lang) => {
   const failures = [];
   const checks = {};
@@ -82,7 +128,23 @@ const captureToday = async (page, viewport, lang) => {
   const mapSection = page.locator('[data-today-map-sync]');
   if (await visible(mapSection)) {
     await mapSection.scrollIntoViewIfNeeded();
-    await page.waitForTimeout(450);
+    await page.waitForTimeout(650);
+    const legend = await legendSnapshot(page);
+    checks.map_legend_states = legend.states;
+    checks.map_legend_labels = legend.labels;
+    assertLegend(
+      legend,
+      ['running', 'upcoming', 'today', 'ended'],
+      lang === 'ja' ? ['開催中', '開催前', '本日開催', '終了'] : ['Racing now', 'Upcoming', 'Today meeting', 'Finished'],
+      'Today Map',
+      failures,
+    );
+    const unmapped = await todayUnmappedSnapshot(page);
+    checks.unmapped = unmapped;
+    if (unmapped.expected > 0 && !unmapped.text.includes(String(unmapped.expected))) {
+      failures.push(`Today Map unmapped count is stale: expected ${unmapped.expected}, text=${unmapped.text}`);
+    }
+    if (unmapped.expected === 0 && unmapped.text) failures.push(`Today Map shows an unmapped warning when expected count is 0: ${unmapped.text}`);
     checks.map_screenshot = await screenshot(page, `${prefix}-map`);
   } else {
     failures.push('Today Map section is not visible');
@@ -117,19 +179,24 @@ const captureCalendar = async (page, viewport, lang) => {
   }
 
   await page.click('[data-calendar-view-control="map"]');
-  await page.waitForTimeout(500);
+  await page.waitForTimeout(650);
   const mapPanel = page.locator('[data-calendar-map-panel]');
   if (await visible(mapPanel)) {
     await mapPanel.scrollIntoViewIfNeeded();
-    await page.waitForTimeout(450);
+    await page.waitForTimeout(650);
     checks.today_map_screenshot = await screenshot(page, `${prefix}-today-map`);
   } else failures.push('Calendar selected-today Map panel is not visible');
 
-  const todayLegend = await page.evaluate(() => [...document.querySelectorAll('[data-map-legend-state]')]
-    .filter((node) => node instanceof HTMLElement && !node.hidden && getComputedStyle(node).display !== 'none')
-    .map((node) => node.dataset.mapLegendState));
-  checks.today_map_legend = todayLegend;
-  if (todayLegend.includes('future')) failures.push(`Calendar selected-today Map legend exposes Scheduled: ${todayLegend.join(', ')}`);
+  const todayLegend = await legendSnapshot(page);
+  checks.today_map_legend = todayLegend.states;
+  checks.today_map_legend_labels = todayLegend.labels;
+  assertLegend(
+    todayLegend,
+    ['running', 'upcoming', 'today', 'ended'],
+    lang === 'ja' ? ['開催中', '開催前', '本日開催', '終了'] : ['Racing now', 'Upcoming', 'Today meeting', 'Finished'],
+    'Calendar selected-today Map',
+    failures,
+  );
 
   await page.click('[data-calendar-view-control="list"]');
   await setFutureCalendarDate(page);
@@ -141,18 +208,23 @@ const captureCalendar = async (page, viewport, lang) => {
   if (futureStates.some((state) => state !== 'future')) failures.push(`Calendar future List exposes non-Scheduled state: ${futureStates.join(', ')}`);
 
   await page.click('[data-calendar-view-control="map"]');
-  await page.waitForTimeout(500);
+  await page.waitForTimeout(650);
   if (await visible(mapPanel)) {
     await mapPanel.scrollIntoViewIfNeeded();
-    await page.waitForTimeout(450);
+    await page.waitForTimeout(650);
     checks.future_map_screenshot = await screenshot(page, `${prefix}-future-map`);
   } else failures.push('Calendar future Map panel is not visible');
 
-  const futureLegend = await page.evaluate(() => [...document.querySelectorAll('[data-map-legend-state]')]
-    .filter((node) => node instanceof HTMLElement && !node.hidden && getComputedStyle(node).display !== 'none')
-    .map((node) => node.dataset.mapLegendState));
-  checks.future_map_legend = futureLegend;
-  if (futureLegend.some((state) => state !== 'future')) failures.push(`Calendar future Map legend exposes current-day state: ${futureLegend.join(', ')}`);
+  const futureLegend = await legendSnapshot(page);
+  checks.future_map_legend = futureLegend.states;
+  checks.future_map_legend_labels = futureLegend.labels;
+  assertLegend(
+    futureLegend,
+    ['future'],
+    [lang === 'ja' ? '開催予定' : 'Scheduled'],
+    'Calendar future Map',
+    failures,
+  );
 
   record(prefix, checks, failures);
 };
