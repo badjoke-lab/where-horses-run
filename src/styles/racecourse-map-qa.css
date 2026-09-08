@@ -3,6 +3,12 @@
   min-height: 44px;
 }
 
+.map-selected-card__status[data-status='today']::before {
+  background: #fffcf4;
+  border-color: #7a5a00;
+  box-shadow: none;
+}
+
 .meeting-row__map-focus,
 .calendar-map-switch__buttons button,
 .calendar-map-switch__selected button,
