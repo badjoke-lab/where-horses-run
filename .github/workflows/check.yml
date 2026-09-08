@@ -38,6 +38,9 @@ jobs:
       - name: Check Calendar context state
         run: node scripts/check-calendar-context-state.mjs
 
+      - name: Check Calendar stream and brand regressions
+        run: node scripts/check-calendar-stream-brand-regressions.mjs
+
       - name: Check Japan freshness local date
         run: node scripts/check-japan-freshness-local-date.mjs
 
