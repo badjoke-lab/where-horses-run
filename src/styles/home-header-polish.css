@@ -25,6 +25,57 @@ html:lang(ja) :is(h1, h2, h3, h4, h5, h6) {
     row-gap: 1.25rem;
     padding-block: clamp(1.75rem, 3vw, 3rem) 4rem;
   }
+
+  .today-controls {
+    gap: .8rem;
+  }
+
+  .today-controls__filters {
+    gap: .55rem .65rem;
+  }
+
+  .today-controls__filters label {
+    font-size: .78rem;
+  }
+
+  /* Reset is a secondary action, not the primary call-to-action on the page. */
+  .today-controls__reset {
+    background: #fff !important;
+    border-color: var(--whr-color-border) !important;
+    color: var(--whr-color-navy) !important;
+  }
+
+  .today-controls__reset:hover,
+  .today-controls__reset:focus-visible {
+    background: #fff !important;
+    border-color: var(--whr-color-gold) !important;
+  }
+
+  /* Keep state counts readable without a second row of heavy pills under the filters. */
+  .today-state-summary {
+    gap: .35rem .9rem;
+  }
+
+  .today-state-summary__item,
+  .today-state-summary__total {
+    min-height: auto;
+    padding: .12rem 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .today-state-summary__total {
+    margin-inline-start: auto;
+  }
+
+  .today-page .today-meeting-map > p:first-of-type {
+    max-width: 46rem;
+    margin-block: .2rem .65rem;
+    color: var(--whr-color-muted);
+    font-size: .88rem;
+    line-height: 1.45;
+  }
 }
 
 @media (min-width: 721px) {
