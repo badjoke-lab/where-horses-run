@@ -51,19 +51,20 @@ assert.doesNotMatch(
 
 assert.match(
   calendarMap,
-  /presentationState === 'today'\) return \{ key: 'today', label:/,
+  /const state = row\.dataset\.meetingPresentationState[\s\S]*?state === 'today'\) return \{ key: 'today', label:/,
   'Calendar selected-card Map state must preserve today as its own key',
 );
 assert.doesNotMatch(
   calendarMap,
-  /presentationState === 'today'\) return \{ key: 'upcoming'/,
+  /state === 'today'\) return \{ key: 'upcoming'/,
   'Calendar Map must not collapse today into upcoming',
 );
 
 assert.match(racecourseMap, /racecourse-map__legend-dot--today/, 'Map legend must expose a today marker');
 assert.match(racecourseMap, />Today meeting</, 'English Map legend must label the day-only today state');
 assert.match(racecourseMap, />本日開催</, 'Japanese Map legend must label the day-only today state');
-assert.match(racecourseMap, /presentationState === 'today'\) return 'today';/, 'Map status inference must preserve presentation today');
+assert.match(racecourseMap, /PUBLIC_STATUS_KEYS\.has\(presentationState\) \? presentationState : 'neutral'/,
+  'Map status inference must preserve reviewed public presentation-state keys without reinterpreting lifecycle state');
 assert.match(racecourseMap, /'today', '#fffcf4'/, 'Map today marker fill must be #fffcf4');
 assert.match(racecourseMap, /'#7a5a00'/, 'Near-white Map today marker must have a dark warm outline');
 assert.match(racecourseMap, /'upcoming', '#d18a00'/, 'Map precise upcoming marker must remain orange');
