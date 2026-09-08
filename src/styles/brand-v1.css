@@ -45,6 +45,38 @@ body {
   position: absolute;
 }
 
+html:lang(ja) .site-brand {
+  font-family: var(--whr-font-family);
+  font-size: 0;
+  font-weight: 800;
+  letter-spacing: 0;
+  padding-block: .1rem;
+}
+
+html:lang(ja) .site-brand::before {
+  color: var(--whr-color-navy);
+  content: '競馬どこ？';
+  font-family: var(--whr-font-family);
+  font-size: 1.16rem;
+  font-weight: 800;
+  left: 61px;
+  line-height: 1.05;
+  position: absolute;
+  top: .45rem;
+}
+
+html:lang(ja) .site-brand::after {
+  bottom: .43rem;
+  color: var(--whr-color-gold-dark);
+  content: 'Where Horses Run';
+  font-family: var(--whr-font-family);
+  font-size: .66rem;
+  font-weight: 700;
+  left: 61px;
+  letter-spacing: .015em;
+  line-height: 1.05;
+}
+
 .desktop-primary-nav a,
 .desktop-utility-nav a,
 .site-nav a,
@@ -130,22 +162,6 @@ a:hover {
   color: var(--whr-color-navy);
 }
 
-/* Yellow has two explicit meanings: timed ranks are before start; B/C are racing today. */
-.racecourse-map__legend-dot--upcoming ~ .racecourse-map__legend-label--en,
-.racecourse-map__legend-dot--upcoming ~ .racecourse-map__legend-label--ja {
-  font-size: 0;
-}
-
-.racecourse-map__legend-dot--upcoming ~ .racecourse-map__legend-label--en::after {
-  content: 'Upcoming / racing today';
-  font-size: .78rem;
-}
-
-.racecourse-map__legend-dot--upcoming ~ .racecourse-map__legend-label--ja::after {
-  content: '開催前 / 本日開催';
-  font-size: .78rem;
-}
-
 .site-footer {
   background: var(--whr-color-navy);
   border-block-start: 3px solid var(--whr-color-gold);
@@ -181,6 +197,22 @@ a:hover {
   .site-brand::after {
     bottom: .42rem;
     font-size: .36rem;
+    left: 51px;
+  }
+
+  html:lang(ja) .site-brand {
+    padding-block: .08rem;
+  }
+
+  html:lang(ja) .site-brand::before {
+    font-size: 1rem;
+    left: 51px;
+    top: .36rem;
+  }
+
+  html:lang(ja) .site-brand::after {
+    bottom: .36rem;
+    font-size: .58rem;
     left: 51px;
   }
 

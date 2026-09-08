@@ -13,9 +13,26 @@
   box-shadow: none !important;
 }
 
-.timetable-timezone-projection .meeting-row[data-meeting-presentation-state='running'],
-.timetable-timezone-projection .meeting-row[data-meeting-presentation-state='upcoming'][data-meeting-day-state='today'],
+.timetable-timezone-projection .meeting-row[data-meeting-presentation-state='running'][data-meeting-day-state='today'] {
+  background: #fff7f6 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+.timetable-timezone-projection .meeting-row[data-meeting-presentation-state='upcoming'][data-meeting-day-state='today'] {
+  background: #fff9e9 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
 .timetable-timezone-projection .meeting-row[data-meeting-presentation-state='today'][data-meeting-day-state='today'] {
+  background: #fffcf4 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+.timetable-timezone-projection .meeting-row[data-meeting-presentation-state='ended'] {
+  background: #f6f7f8 !important;
   box-shadow: none !important;
 }
 
@@ -77,12 +94,17 @@
 }
 
 .timetable-timezone-projection .meeting-row__links a[data-live-link] {
-  background: color-mix(in srgb, var(--whr-color-gold) 13%, #fff);
+  background: transparent;
+  border-radius: 0;
+  color: inherit;
+  padding-inline: 0;
 }
 
 .timetable-timezone-projection .meeting-row[data-stream-state='live'] .meeting-row__links a[data-live-link] {
   background: #fff0ef;
+  border-radius: 0.38rem;
   color: #9d0000;
+  padding-inline: 0.42rem;
 }
 
 .timetable-timezone-projection .meeting-row__links a:focus-visible,
@@ -197,6 +219,14 @@
     min-height: 24px;
     padding: 0.08rem 0.28rem;
     font-size: 0.65rem;
+  }
+
+  .timetable-timezone-projection .meeting-row__links a[data-live-link] {
+    padding-inline: 0;
+  }
+
+  .timetable-timezone-projection .meeting-row[data-stream-state='live'] .meeting-row__links a[data-live-link] {
+    padding-inline: 0.28rem;
   }
 
   .timetable-timezone-projection .meeting-row__meeting-badge {
