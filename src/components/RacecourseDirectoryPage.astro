@@ -23,14 +23,6 @@ const surfaceLabelsJa: Record<string, string> = {
   sand: '砂',
 };
 
-const directionLabelsJa: Record<string, string> = {
-  'left-handed': '左回り',
-  'right-handed': '右回り',
-  'both-directions': '両回り',
-  straight: '直線',
-  unknown: '未確認',
-};
-
 function humanize(value: string): string {
   return value
     .split('-')
@@ -42,81 +34,139 @@ function surfaceLabel(value: string): string {
   return isJapanese ? surfaceLabelsJa[value] ?? 'その他' : humanize(value);
 }
 
-function directionLabel(value: string): string {
-  return isJapanese ? directionLabelsJa[value] ?? '未確認' : humanize(value);
+function meetingDateLabel(value: string): string {
+  return new Intl.DateTimeFormat(isJapanese ? 'ja-JP' : 'en-GB', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(`${value}T12:00:00Z`));
+}
+
+function meetingTimeLabel(record: RacecourseFilterRecord): string {
+  const meeting = record.calendarMeeting;
+  if (!meeting) return '';
+  if (meeting.firstRaceTimeLocal && meeting.lastRaceTimeLocal) {
+    return `${meeting.firstRaceTimeLocal}–${meeting.lastRaceTimeLocal}`;
+  }
+  if (meeting.firstRaceTimeLocal) return `${meeting.firstRaceTimeLocal}–`;
+  return '';
+}
+
+function locationLabel(record: RacecourseFilterRecord): string {
+  return [record.city, record.region].filter(Boolean).join(' · ');
 }
 ---
 
 <BaseLayout
   title={isJapanese ? '競馬場から探す | 競馬どこ？' : 'Racecourses | Where Horses Run'}
   description={isJapanese
-    ? '競馬場を名称、国・地域、競馬種別、馬場から探せます。'
-    : 'Find racecourses by name, country or region, racing type, and surface.'}
+    ? '競馬場を名称、国・地域、主催、競馬種別から探せます。'
+    : 'Find racecourses by name, country or region, authority, and racing type.'}
   lang={locale}
   canonicalPath={isJapanese ? '/ja/tracks/' : '/tracks/'}
   alternatePath={isJapanese ? '/tracks/' : '/ja/tracks/'}
 >
   <div
+    class="racecourse-directory"
     data-racecourse-directory
+    data-filters-open="false"
     data-racecourse-records={records.length}
     data-racecourse-country-options={options.countries.length}
+    data-racecourse-authority-options={options.authorities.length}
     data-racecourse-racing-type-options={options.racingTypes.length}
     data-racecourse-surface-options={options.surfaces.length}
   >
-    <section class="hero" aria-labelledby="page-title">
-      <p class="hero__eyebrow">{isJapanese ? '世界の競馬場' : 'Racecourses worldwide'}</p>
-      <h1 id="page-title">{isJapanese ? '競馬場から探す' : 'Racecourses'}</h1>
-      <p class="hero__summary">
-        {isJapanese
-          ? '名称、国・地域、競馬種別、馬場から競馬場を探し、各競馬場の情報へ進めます。'
-          : 'Browse racecourses by name, country or region, racing type, and surface, then open a racecourse for more information.'}
-      </p>
-      <p>{isJapanese ? `${records.length}競馬場を掲載しています。` : `${records.length} racecourses are listed.`}</p>
-    </section>
+    <header class="directory-hero" aria-labelledby="page-title">
+      <p class="directory-eyebrow">{isJapanese ? '世界の競馬場' : 'Racecourses worldwide'}</p>
+      <div class="directory-hero-row">
+        <div>
+          <h1 id="page-title">{isJapanese ? '競馬場から探す' : 'Racecourses'}</h1>
+          <p>{isJapanese
+            ? '名前や場所から競馬場を探し、各競馬場のページへ進めます。'
+            : 'Find a racecourse by name or place, then open its venue page.'}</p>
+        </div>
+        <strong class="directory-total">{isJapanese ? `${records.length}競馬場` : `${records.length} racecourses`}</strong>
+      </div>
+    </header>
 
-    <section class="card" aria-labelledby="racecourse-filter-heading">
-      <h2 id="racecourse-filter-heading">{isJapanese ? '競馬場を絞り込む' : 'Filter racecourses'}</h2>
+    <section class="directory-search" aria-labelledby="racecourse-search-heading">
+      <h2 id="racecourse-search-heading" class="sr-only">{isJapanese ? '競馬場を検索' : 'Search racecourses'}</h2>
       <form data-racecourse-filter-form role="search">
-        <p>
-          <label for="racecourse-filter-query"><strong>{isJapanese ? '名称・キーワード' : 'Name or keyword'}</strong></label><br />
-          <input
-            id="racecourse-filter-query"
-            name="q"
-            type="search"
-            autocomplete="off"
-            placeholder={isJapanese ? '例：東京、芝、障害' : 'Example: Tokyo, turf, jump'}
-            data-racecourse-filter-query
-          />
-        </p>
-        <p>
-          <label for="racecourse-filter-country"><strong>{isJapanese ? '国・地域' : 'Country or region'}</strong></label><br />
-          <select id="racecourse-filter-country" name="country" data-racecourse-filter-country>
-            <option value="all">{isJapanese ? 'すべての国・地域' : 'All countries and regions'}</option>
-            {options.countries.map((country) => <option value={country.id}>{country.label}</option>)}
-          </select>
-        </p>
-        <p>
-          <label for="racecourse-filter-racing-type"><strong>{isJapanese ? '競馬種別' : 'Racing type'}</strong></label><br />
-          <select id="racecourse-filter-racing-type" name="racing_type" data-racecourse-filter-racing-type>
-            <option value="all">{isJapanese ? 'すべての競馬種別' : 'All racing types'}</option>
-            {options.racingTypes.map((type) => <option value={type.id}>{type.label}</option>)}
-          </select>
-        </p>
-        <p>
-          <label for="racecourse-filter-surface"><strong>{isJapanese ? '馬場' : 'Surface'}</strong></label><br />
-          <select id="racecourse-filter-surface" name="surface" data-racecourse-filter-surface>
-            <option value="all">{isJapanese ? 'すべての馬場' : 'All surfaces'}</option>
-            {options.surfaces.map((surface) => <option value={surface}>{surfaceLabel(surface)}</option>)}
-          </select>
-        </p>
-        <p>
-          <button type="submit">{isJapanese ? '適用' : 'Apply filters'}</button>{' '}
-          <button type="button" data-racecourse-filter-reset>{isJapanese ? '条件を解除' : 'Clear filters'}</button>
-        </p>
+        <div class="directory-search-row">
+          <label class="directory-query">
+            <span class="sr-only">{isJapanese ? '競馬場名・場所・キーワード' : 'Racecourse, place, or keyword'}</span>
+            <input
+              id="racecourse-filter-query"
+              name="q"
+              type="search"
+              autocomplete="off"
+              placeholder={isJapanese ? '競馬場名・場所を検索' : 'Search racecourse or place'}
+              data-racecourse-filter-query
+            />
+          </label>
+          <button
+            type="button"
+            class="directory-filter-toggle"
+            data-racecourse-filter-toggle
+            aria-expanded="false"
+            aria-controls="racecourse-filter-fields"
+          >
+            {isJapanese ? '絞り込み' : 'Filters'}
+          </button>
+          <button type="button" class="directory-clear" data-racecourse-filter-reset>
+            {isJapanese ? '解除' : 'Clear'}
+          </button>
+        </div>
+
+        <div id="racecourse-filter-fields" class="directory-filter-fields" data-racecourse-filter-fields>
+          <label>
+            <span>{isJapanese ? '国・地域' : 'Country or region'}</span>
+            <select id="racecourse-filter-country" name="country" data-racecourse-filter-country>
+              <option value="all">{isJapanese ? 'すべて' : 'All'}</option>
+              {options.countries.map((country) => <option value={country.id}>{country.label}</option>)}
+            </select>
+          </label>
+
+          <label>
+            <span>{isJapanese ? '主催' : 'Authority'}</span>
+            <select id="racecourse-filter-authority" name="authority" data-racecourse-filter-authority>
+              <option value="all">{isJapanese ? 'すべて' : 'All'}</option>
+              {options.authorities.map((authority) => <option value={authority.id}>{authority.label}</option>)}
+            </select>
+          </label>
+
+          <label>
+            <span>{isJapanese ? '競馬種別' : 'Racing type'}</span>
+            <select id="racecourse-filter-racing-type" name="racing_type" data-racecourse-filter-racing-type>
+              <option value="all">{isJapanese ? 'すべて' : 'All'}</option>
+              {options.racingTypes.map((type) => <option value={type.id}>{type.label}</option>)}
+            </select>
+          </label>
+
+          <label>
+            <span>{isJapanese ? '馬場' : 'Surface'}</span>
+            <select id="racecourse-filter-surface" name="surface" data-racecourse-filter-surface>
+              <option value="all">{isJapanese ? 'すべて' : 'All'}</option>
+              {options.surfaces.map((surface) => <option value={surface}>{surfaceLabel(surface)}</option>)}
+            </select>
+          </label>
+
+          {options.authorities.length > 0 && (
+            <p class="directory-filter-note">
+              {isJapanese
+                ? '主催の絞り込みは、現在の30日カレンダーで確認済みの開催に基づきます。'
+                : 'Authority filtering uses reviewed meetings in the current 30-day Calendar window.'}
+            </p>
+          )}
+        </div>
       </form>
-      <p aria-live="polite" data-racecourse-filter-count>
-        {isJapanese ? `${records.length}件を表示中` : `Showing ${records.length} records`}
-      </p>
+
+      <div class="directory-result-summary">
+        <strong aria-live="polite" data-racecourse-filter-count>
+          {isJapanese ? `${records.length}件` : `${records.length} results`}
+        </strong>
+      </div>
       <noscript>
         <p>{isJapanese
           ? 'JavaScriptが無効な場合も、下の一覧から競馬場を選べます。'
@@ -124,68 +174,99 @@ function directionLabel(value: string): string {
       </noscript>
     </section>
 
-    <section class="section-grid" aria-label={isJapanese ? '競馬場一覧' : 'Racecourse list'} data-racecourse-filter-results>
-      {records.map((record) => (
-        <article
-          class="card"
-          data-racecourse-record
-          data-racecourse-id={record.id}
-          data-racecourse-country={record.countryId}
-          data-racecourse-racing-types={record.racingTypes.map((type) => type.id).join('|') || 'none'}
-          data-racecourse-surfaces={record.surfaces.join('|') || 'none'}
-          data-racecourse-search-text={record.searchText}
-        >
-          <h2><a href={record.href}>{record.name}</a></h2>
-          {record.alternateName && record.alternateName !== record.name && (
-            <p><strong>{isJapanese ? '別名' : 'Alternate name'}:</strong> {record.alternateName}</p>
-          )}
-          {record.localName && ![record.name, record.alternateName].includes(record.localName) && (
-            <p><strong>{isJapanese ? '現地表記' : 'Local name'}:</strong> {record.localName}</p>
-          )}
-          <p>
-            <strong>{isJapanese ? '国・地域' : 'Country or region'}:</strong>{' '}
-            {record.countryHref ? <a href={record.countryHref}>{record.countryName}</a> : record.countryName}
-          </p>
-          <p><strong>{isJapanese ? '所在地' : 'Location'}:</strong> {[record.city, record.region].filter(Boolean).join(' / ') || (isJapanese ? '未確認' : 'Not confirmed')}</p>
-          <p><strong>{isJapanese ? '馬場' : 'Surfaces'}:</strong> {record.surfaces.length ? record.surfaces.map(surfaceLabel).join(' · ') : (isJapanese ? '未確認' : 'Not confirmed')}</p>
-          <p><strong>{isJapanese ? '競馬種別' : 'Racing types'}:</strong></p>
-          {record.racingTypes.length ? (
-            <ul>
-              {record.racingTypes.map((type) => (
-                <li>{type.href ? <a href={type.href}>{type.label}</a> : type.label}</li>
-              ))}
-            </ul>
-          ) : <p>{isJapanese ? '未分類' : 'Not classified'}</p>}
-          <p><strong>{isJapanese ? '回り方向' : 'Direction'}:</strong> {directionLabel(record.direction)}</p>
-        </article>
-      ))}
+    <section aria-label={isJapanese ? '競馬場一覧' : 'Racecourse list'} data-racecourse-filter-results>
+      <div class="directory-results">
+        {records.map((record) => {
+          const location = locationLabel(record);
+          const meetingTime = meetingTimeLabel(record);
+          return (
+            <article
+              class="racecourse-result"
+              data-racecourse-record
+              data-racecourse-id={record.id}
+              data-racecourse-country={record.countryId}
+              data-racecourse-authorities={record.authorities.map((authority) => authority.id).join('|') || 'none'}
+              data-racecourse-racing-types={record.racingTypes.map((type) => type.id).join('|') || 'none'}
+              data-racecourse-surfaces={record.surfaces.join('|') || 'none'}
+              data-racecourse-search-text={record.searchText}
+            >
+              <div class="racecourse-result-main">
+                <h2><a href={record.href}>{record.name}</a></h2>
+                <p class="racecourse-result-place">
+                  {record.countryHref
+                    ? <a href={record.countryHref}>{record.countryName}</a>
+                    : record.countryName}
+                  {location && <><span aria-hidden="true"> · </span><span>{location}</span></>}
+                </p>
+                {(record.authorities.length > 0 || record.racingTypes.length > 0) && (
+                  <p class="racecourse-result-meta">
+                    {record.authorities.length > 0 && (
+                      <span>{record.authorities.map((authority) => authority.label).join(' · ')}</span>
+                    )}
+                    {record.authorities.length > 0 && record.racingTypes.length > 0 && <span aria-hidden="true"> · </span>}
+                    {record.racingTypes.length > 0 && (
+                      <span>{record.racingTypes.map((type) => type.label).join(' · ')}</span>
+                    )}
+                  </p>
+                )}
+              </div>
+
+              {record.calendarMeeting && (
+                <div class="racecourse-result-calendar">
+                  <span class="racecourse-result-calendar-label">{isJapanese ? 'カレンダー' : 'Calendar'}</span>
+                  <a href={record.calendarMeeting.href}>{meetingDateLabel(record.calendarMeeting.date)}</a>
+                  {meetingTime && <span>{meetingTime}</span>}
+                  <span class="racecourse-rank" aria-label={`${isJapanese ? '公開ランク' : 'Public rank'} ${record.calendarMeeting.rank}`}>
+                    {record.calendarMeeting.rank}
+                  </span>
+                </div>
+              )}
+
+              <a class="racecourse-result-open" href={record.href}>
+                {isJapanese ? '競馬場を見る' : 'View racecourse'} <span aria-hidden="true">→</span>
+              </a>
+            </article>
+          );
+        })}
+      </div>
     </section>
 
-    <section class="card" data-racecourse-filter-empty hidden>
+    <section class="directory-empty" data-racecourse-filter-empty hidden>
       <h2>{isJapanese ? '該当する競馬場がありません' : 'No matching racecourses'}</h2>
       <p>{isJapanese
-        ? 'キーワードを短くするか、いずれかの条件を「すべて」に戻してください。'
-        : 'Try a shorter keyword or reset one or more filters to All.'}</p>
+        ? '検索語を短くするか、絞り込み条件を解除してください。'
+        : 'Try a shorter search or clear one or more filters.'}</p>
     </section>
   </div>
 
   <script is:inline>
     (() => {
       const root = document.querySelector('[data-racecourse-directory]');
-      if (!root) return;
+      if (!(root instanceof HTMLElement)) return;
 
       const form = root.querySelector('[data-racecourse-filter-form]');
       const queryInput = root.querySelector('[data-racecourse-filter-query]');
       const countrySelect = root.querySelector('[data-racecourse-filter-country]');
+      const authoritySelect = root.querySelector('[data-racecourse-filter-authority]');
       const racingTypeSelect = root.querySelector('[data-racecourse-filter-racing-type]');
       const surfaceSelect = root.querySelector('[data-racecourse-filter-surface]');
+      const toggleButton = root.querySelector('[data-racecourse-filter-toggle]');
       const resetButton = root.querySelector('[data-racecourse-filter-reset]');
       const count = root.querySelector('[data-racecourse-filter-count]');
       const empty = root.querySelector('[data-racecourse-filter-empty]');
       const records = [...root.querySelectorAll('[data-racecourse-record]')];
       const isJapanese = document.documentElement.lang === 'ja';
 
-      if (!form || !queryInput || !countrySelect || !racingTypeSelect || !surfaceSelect || !resetButton || !count || !empty) return;
+      if (!(form instanceof HTMLFormElement) ||
+          !(queryInput instanceof HTMLInputElement) ||
+          !(countrySelect instanceof HTMLSelectElement) ||
+          !(authoritySelect instanceof HTMLSelectElement) ||
+          !(racingTypeSelect instanceof HTMLSelectElement) ||
+          !(surfaceSelect instanceof HTMLSelectElement) ||
+          !(toggleButton instanceof HTMLButtonElement) ||
+          !(resetButton instanceof HTMLButtonElement) ||
+          !(count instanceof HTMLElement) ||
+          !(empty instanceof HTMLElement)) return;
 
       const normalize = (value) => value
         .normalize('NFKC')
@@ -201,38 +282,53 @@ function directionLabel(value: string): string {
         if ([...select.options].some((option) => option.value === requested)) select.value = requested;
       };
       restoreSelect(countrySelect, 'country');
+      restoreSelect(authoritySelect, 'authority');
       restoreSelect(racingTypeSelect, 'racing_type');
       restoreSelect(surfaceSelect, 'surface');
+
+      const readList = (record, key) => (record.dataset[key] ?? '')
+        .split('|')
+        .filter((value) => value && value !== 'none');
 
       const apply = () => {
         const query = normalize(queryInput.value);
         const country = countrySelect.value;
+        const authority = authoritySelect.value;
         const racingType = racingTypeSelect.value;
         const surface = surfaceSelect.value;
         let visible = 0;
 
         for (const record of records) {
-          const racingTypes = (record.dataset.racecourseRacingTypes ?? '').split('|').filter((value) => value && value !== 'none');
-          const surfaces = (record.dataset.racecourseSurfaces ?? '').split('|').filter((value) => value && value !== 'none');
+          if (!(record instanceof HTMLElement)) continue;
+          const authorities = readList(record, 'racecourseAuthorities');
+          const racingTypes = readList(record, 'racecourseRacingTypes');
+          const surfaces = readList(record, 'racecourseSurfaces');
           const show =
             (!query || (record.dataset.racecourseSearchText ?? '').includes(query)) &&
             (country === 'all' || record.dataset.racecourseCountry === country) &&
+            (authority === 'all' || authorities.includes(authority)) &&
             (racingType === 'all' || racingTypes.includes(racingType)) &&
             (surface === 'all' || surfaces.includes(surface));
           record.hidden = !show;
           if (show) visible += 1;
         }
 
-        count.textContent = isJapanese ? `${visible}件を表示中` : `Showing ${visible} records`;
+        count.textContent = isJapanese ? `${visible}件` : `${visible} results`;
         empty.hidden = visible !== 0;
 
         const next = new URLSearchParams();
         if (queryInput.value.trim()) next.set('q', queryInput.value.trim());
         if (country !== 'all') next.set('country', country);
+        if (authority !== 'all') next.set('authority', authority);
         if (racingType !== 'all') next.set('racing_type', racingType);
         if (surface !== 'all') next.set('surface', surface);
         const nextUrl = `${window.location.pathname}${next.size ? `?${next}` : ''}`;
         window.history.replaceState(null, '', nextUrl);
+      };
+
+      const setFiltersOpen = (open) => {
+        root.dataset.filtersOpen = open ? 'true' : 'false';
+        toggleButton.setAttribute('aria-expanded', open ? 'true' : 'false');
       };
 
       form.addEventListener('submit', (event) => {
@@ -241,11 +337,14 @@ function directionLabel(value: string): string {
       });
       queryInput.addEventListener('input', apply);
       countrySelect.addEventListener('change', apply);
+      authoritySelect.addEventListener('change', apply);
       racingTypeSelect.addEventListener('change', apply);
       surfaceSelect.addEventListener('change', apply);
+      toggleButton.addEventListener('click', () => setFiltersOpen(root.dataset.filtersOpen !== 'true'));
       resetButton.addEventListener('click', () => {
         queryInput.value = '';
         countrySelect.value = 'all';
+        authoritySelect.value = 'all';
         racingTypeSelect.value = 'all';
         surfaceSelect.value = 'all';
         apply();
@@ -254,4 +353,393 @@ function directionLabel(value: string): string {
       apply();
     })();
   </script>
+
+  <style>
+    .racecourse-directory {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 24px 0 56px;
+    }
+
+    .directory-hero {
+      padding: 8px 0 18px;
+      border-bottom: 1px solid #d8dbe2;
+    }
+
+    .directory-eyebrow {
+      margin: 0 0 4px;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #596273;
+    }
+
+    .directory-hero-row {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .directory-hero h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.04;
+    }
+
+    .directory-hero p:not(.directory-eyebrow) {
+      margin: 8px 0 0;
+      max-width: 680px;
+      color: #4d5565;
+    }
+
+    .directory-total {
+      flex: 0 0 auto;
+      padding-bottom: 3px;
+      color: #4d5565;
+    }
+
+    .directory-search {
+      padding: 16px 0 10px;
+      border-bottom: 1px solid #d8dbe2;
+    }
+
+    .directory-search-row {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .directory-query input,
+    .directory-filter-fields select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid #aeb5c2;
+      border-radius: 8px;
+      background: #fff;
+      color: #111827;
+      font: inherit;
+    }
+
+    .directory-query input {
+      padding: 10px 14px;
+      font-size: 1rem;
+    }
+
+    .directory-clear,
+    .directory-filter-toggle {
+      min-height: 44px;
+      padding: 0 14px;
+      border: 1px solid #aeb5c2;
+      border-radius: 8px;
+      background: #fff;
+      color: #17213a;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .directory-filter-toggle {
+      display: none;
+    }
+
+    .directory-filter-fields {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .directory-filter-fields label {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+      font-size: .8rem;
+      font-weight: 700;
+      color: #4d5565;
+    }
+
+    .directory-filter-fields select {
+      padding: 8px 32px 8px 10px;
+      font-size: .92rem;
+    }
+
+    .directory-filter-note {
+      grid-column: 1 / -1;
+      margin: 0;
+      font-size: .76rem;
+      color: #697386;
+    }
+
+    .directory-result-summary {
+      display: flex;
+      justify-content: flex-end;
+      padding-top: 8px;
+      font-size: .85rem;
+      color: #596273;
+    }
+
+    .directory-results {
+      display: grid;
+      gap: 0;
+    }
+
+    .racecourse-result {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(220px, .8fr) auto;
+      gap: 20px;
+      align-items: center;
+      padding: 15px 4px;
+      border-bottom: 1px solid #e0e3e8;
+    }
+
+    .racecourse-result h2 {
+      margin: 0;
+      font-size: 1.06rem;
+      line-height: 1.25;
+    }
+
+    .racecourse-result h2 a,
+    .racecourse-result-open,
+    .racecourse-result-calendar a {
+      color: #12213f;
+      font-weight: 700;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    .racecourse-result-place,
+    .racecourse-result-meta {
+      margin: 4px 0 0;
+      color: #596273;
+      font-size: .86rem;
+      line-height: 1.35;
+    }
+
+    .racecourse-result-place a {
+      color: inherit;
+    }
+
+    .racecourse-result-calendar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 5px 9px;
+      font-size: .84rem;
+      color: #4d5565;
+    }
+
+    .racecourse-result-calendar-label {
+      width: 100%;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: #697386;
+    }
+
+    .racecourse-rank {
+      display: inline-flex;
+      min-width: 30px;
+      min-height: 26px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 6px;
+      border: 1px solid #c7ccd5;
+      border-radius: 999px;
+      background: #f7f8fa;
+      color: #333b4d;
+      font-size: .75rem;
+      font-weight: 800;
+    }
+
+    .racecourse-result-open {
+      white-space: nowrap;
+      font-size: .86rem;
+    }
+
+    .directory-empty {
+      margin-top: 18px;
+      padding: 22px;
+      border: 1px solid #d8dbe2;
+      border-radius: 10px;
+      background: #fafafa;
+    }
+
+    .directory-empty h2,
+    .directory-empty p {
+      margin: 0;
+    }
+
+    .directory-empty p {
+      margin-top: 6px;
+      color: #596273;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 860px) {
+      .racecourse-result {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px 16px;
+      }
+
+      .racecourse-result-calendar {
+        grid-column: 1;
+      }
+
+      .racecourse-result-open {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .racecourse-directory {
+        width: calc(100% - 20px);
+        padding: 10px 0 42px;
+      }
+
+      .directory-hero {
+        padding: 3px 0 10px;
+      }
+
+      .directory-eyebrow {
+        display: none;
+      }
+
+      .directory-hero-row {
+        display: block;
+      }
+
+      .directory-hero h1 {
+        font-size: 1.7rem;
+      }
+
+      .directory-hero p:not(.directory-eyebrow) {
+        margin-top: 4px;
+        font-size: .86rem;
+        line-height: 1.35;
+      }
+
+      .directory-total {
+        display: block;
+        margin-top: 4px;
+        padding: 0;
+        font-size: .78rem;
+      }
+
+      .directory-search {
+        padding: 10px 0 7px;
+      }
+
+      .directory-search-row {
+        grid-template-columns: minmax(0, 1fr) auto auto;
+        gap: 6px;
+      }
+
+      .directory-query input {
+        min-height: 44px;
+        padding-inline: 10px;
+      }
+
+      .directory-filter-toggle {
+        display: inline-flex;
+        align-items: center;
+      }
+
+      .directory-clear,
+      .directory-filter-toggle {
+        padding-inline: 10px;
+        font-size: .82rem;
+      }
+
+      .directory-filter-fields {
+        display: none;
+        grid-template-columns: 1fr 1fr;
+        margin-top: 8px;
+      }
+
+      .racecourse-directory[data-filters-open='true'] .directory-filter-fields {
+        display: grid;
+      }
+
+      .directory-filter-note {
+        font-size: .72rem;
+      }
+
+      .directory-result-summary {
+        padding-top: 5px;
+      }
+
+      .racecourse-result {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 7px;
+        padding: 12px 2px;
+      }
+
+      .racecourse-result h2 {
+        font-size: 1rem;
+      }
+
+      .racecourse-result-place,
+      .racecourse-result-meta {
+        margin-top: 3px;
+        font-size: .8rem;
+      }
+
+      .racecourse-result-calendar,
+      .racecourse-result-open {
+        grid-column: 1;
+        grid-row: auto;
+      }
+
+      .racecourse-result-calendar {
+        gap: 4px 7px;
+        padding-top: 1px;
+      }
+
+      .racecourse-result-calendar-label {
+        width: auto;
+      }
+
+      .racecourse-result-open {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+      }
+    }
+
+    @media (max-width: 390px) {
+      .directory-search-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+      }
+
+      .directory-clear {
+        grid-column: 2;
+      }
+
+      .directory-filter-toggle {
+        grid-column: 2;
+        grid-row: 1;
+      }
+
+      .directory-query {
+        grid-row: 1 / span 2;
+      }
+    }
+  </style>
 </BaseLayout>

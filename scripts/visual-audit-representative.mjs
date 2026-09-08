@@ -13,6 +13,8 @@ const pages = [
   { id: 'calendar-month', path: '/calendar/?view=month', kind: 'calendar', view: 'month' },
   { id: 'calendar-map', path: '/calendar/?view=map', kind: 'calendar', view: 'map' },
   { id: 'calendar-ja', path: '/ja/calendar/?view=list', kind: 'calendar', view: 'list', lang: 'ja' },
+  { id: 'racecourses', path: '/tracks/', kind: 'racecourse-directory' },
+  { id: 'racecourses-ja', path: '/ja/tracks/', kind: 'racecourse-directory', lang: 'ja' },
   { id: 'countries', path: '/countries/', kind: 'countries' },
   { id: 'country-japan', path: '/countries/japan/', kind: 'country' },
   { id: 'racecourse-tokyo', path: '/tracks/tokyo-racecourse/', kind: 'racecourse' },
@@ -60,7 +62,7 @@ const selectRelativeCalendarDate = async (page, offset) => {
 };
 
 const inspectPage = async (page, spec, viewport) => {
-  const result = await page.evaluate(({ expectedDesktopNav, expectedMobileNav, view, mobile, lang }) => {
+  const result = await page.evaluate(({ expectedDesktopNav, expectedMobileNav, view, mobile, lang, kind }) => {
     const visible = (element) => {
       if (!(element instanceof HTMLElement)) return false;
       const style = getComputedStyle(element);
@@ -106,8 +108,6 @@ const inspectPage = async (page, spec, viewport) => {
     checks.desktop_primary_nav = desktopNav;
     checks.mobile_bottom_nav = mobileNav;
 
-    // English shell text is a stable regression contract. JA pages share the
-    // same shell structure but localized labels are allowed to differ.
     if (lang !== 'ja') {
       if (mobile) {
         if (JSON.stringify(mobileNav) !== JSON.stringify(expectedMobileNav)) {
@@ -174,6 +174,28 @@ const inspectPage = async (page, spec, viewport) => {
       }
     }
 
+    if (kind === 'racecourse-directory') {
+      const query = document.querySelector('[data-racecourse-filter-query]');
+      const resultRows = [...document.querySelectorAll('[data-racecourse-record]')].filter(visible);
+      const toggle = document.querySelector('[data-racecourse-filter-toggle]');
+      const filterFields = document.querySelector('[data-racecourse-filter-fields]');
+      checks.racecourse_search_visible = visible(query);
+      checks.racecourse_visible_results = resultRows.length;
+      checks.racecourse_filter_toggle_visible = visible(toggle);
+      checks.racecourse_filter_fields_visible = visible(filterFields);
+      if (!visible(query)) failures.push('Racecourses search is not visible');
+      if (resultRows.length === 0) failures.push('Racecourses has no visible result rows');
+      if (mobile && resultRows.length > 0) {
+        const first = resultRows[0].getBoundingClientRect();
+        const inFirstViewport = first.bottom > 0 && first.top < mobileContentBottom;
+        checks.racecourse_result_in_first_mobile_viewport = inFirstViewport;
+        if (!inFirstViewport) failures.push('Racecourses mobile first viewport does not reach an actual result');
+        if (!visible(toggle)) failures.push('Racecourses mobile filter toggle is not visible');
+        if (visible(filterFields)) failures.push('Racecourses mobile filter fields must start collapsed');
+      }
+      if (!mobile && !visible(filterFields)) failures.push('Racecourses desktop filter fields are not visible');
+    }
+
     return { checks, failures };
   }, {
     expectedDesktopNav,
@@ -181,9 +203,68 @@ const inspectPage = async (page, spec, viewport) => {
     view: spec.view || null,
     mobile: viewport.mobile,
     lang: spec.lang || 'en',
+    kind: spec.kind,
   });
 
   return result;
+};
+
+const exerciseRacecourseDirectory = async (page, spec, viewport) => {
+  const failures = [];
+  const checks = {};
+  const query = spec.lang === 'ja' ? '東京' : 'Tokyo';
+
+  if (viewport.mobile) {
+    await page.click('[data-racecourse-filter-toggle]');
+    const filterOpened = await page.isVisible('[data-racecourse-filter-fields]');
+    checks.mobile_filter_toggle_opens = filterOpened;
+    if (!filterOpened) failures.push('mobile Racecourses filter toggle did not open filters');
+  }
+
+  await page.fill('[data-racecourse-filter-query]', query);
+  await page.waitForTimeout(80);
+  const queryState = await page.evaluate(() => ({
+    visible: [...document.querySelectorAll('[data-racecourse-record]')].filter((record) => record instanceof HTMLElement && !record.hidden).length,
+    q: new URLSearchParams(location.search).get('q'),
+  }));
+  checks.alias_query_visible_results = queryState.visible;
+  checks.alias_query_url = queryState.q;
+  if (queryState.visible < 1) failures.push(`Racecourses reviewed alias query ${query} returned no result`);
+  if (queryState.q !== query) failures.push('Racecourses search query did not persist to URL state');
+
+  await page.click('[data-racecourse-filter-reset]');
+  await page.waitForTimeout(50);
+
+  for (const [selector, parameter, label] of [
+    ['[data-racecourse-filter-country]', 'country', 'country'],
+    ['[data-racecourse-filter-authority]', 'authority', 'authority'],
+    ['[data-racecourse-filter-racing-type]', 'racing_type', 'racing type'],
+  ]) {
+    const optionCount = await page.locator(`${selector} option`).count();
+    if (optionCount <= 1) continue;
+    const value = await page.locator(`${selector} option`).nth(1).getAttribute('value');
+    if (!value) continue;
+    await page.selectOption(selector, value);
+    await page.waitForTimeout(50);
+    const state = await page.evaluate((param) => ({
+      visible: [...document.querySelectorAll('[data-racecourse-record]')].filter((record) => record instanceof HTMLElement && !record.hidden).length,
+      value: new URLSearchParams(location.search).get(param),
+    }), parameter);
+    checks[`${label.replace(/\s+/g, '_')}_filter_visible_results`] = state.visible;
+    if (state.visible < 1) failures.push(`Racecourses ${label} filter returned no result`);
+    if (state.value !== value) failures.push(`Racecourses ${label} filter did not persist to URL state`);
+    await page.click('[data-racecourse-filter-reset]');
+    await page.waitForTimeout(50);
+  }
+
+  if (viewport.mobile) {
+    await page.click('[data-racecourse-filter-toggle]');
+    const filterClosed = !(await page.isVisible('[data-racecourse-filter-fields]'));
+    checks.mobile_filter_toggle_closes = filterClosed;
+    if (!filterClosed) failures.push('mobile Racecourses filter toggle did not close filters');
+  }
+
+  return { checks, failures };
 };
 
 try {
@@ -195,7 +276,6 @@ try {
     });
     const page = await context.newPage();
 
-    // External map tiles/media must not determine whether the UI audit passes.
     page.on('pageerror', (error) => console.warn(`[pageerror] ${error.message}`));
 
     for (const spec of pages) {
@@ -226,6 +306,12 @@ try {
         const inspected = await inspectPage(page, spec, viewport);
         entry.checks = inspected.checks;
         entry.failures.push(...inspected.failures);
+
+        if (spec.kind === 'racecourse-directory') {
+          const exercised = await exerciseRacecourseDirectory(page, spec, viewport);
+          entry.checks = { ...entry.checks, ...exercised.checks };
+          entry.failures.push(...exercised.failures);
+        }
 
         await page.screenshot({
           path: path.join(outputDir, entry.screenshot),
