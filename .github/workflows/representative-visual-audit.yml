@@ -7,6 +7,7 @@ on:
       - 'public/**'
       - 'data/static/racecourses*.json'
       - 'scripts/visual-audit-representative.mjs'
+      - 'scripts/check-calendar-context-visual.mjs'
       - '.github/workflows/representative-visual-audit.yml'
   push:
     branches:
@@ -16,6 +17,7 @@ on:
       - 'public/**'
       - 'data/static/racecourses*.json'
       - 'scripts/visual-audit-representative.mjs'
+      - 'scripts/check-calendar-context-visual.mjs'
       - '.github/workflows/representative-visual-audit.yml'
   workflow_dispatch:
     inputs:
@@ -81,6 +83,13 @@ jobs:
             export BASE_URL='http://127.0.0.1:4321'
           fi
           node scripts/visual-audit-representative.mjs
+
+      - name: Inspect Calendar context semantics
+        run: |
+          if [ -z "$BASE_URL" ]; then
+            export BASE_URL='http://127.0.0.1:4321'
+          fi
+          node scripts/check-calendar-context-visual.mjs
 
       - name: Upload representative screenshots and manifest
         if: ${{ always() }}
