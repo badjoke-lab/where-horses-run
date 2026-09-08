@@ -207,6 +207,16 @@
   box-shadow: none;
 }
 
+.calendar-page:not([data-calendar-active-view='map']) > .calendar-map-switch {
+  display: none;
+}
+
+.calendar-page[data-calendar-active-view='month'] > .calendar-date-nav,
+.calendar-page[data-calendar-active-view='month'] > .calendar-filters,
+.calendar-page[data-calendar-active-view='month'] > [data-calendar-list-view] {
+  display: none !important;
+}
+
 .calendar-map-switch__heading,
 .calendar-map-switch__hint {
   position: absolute;
