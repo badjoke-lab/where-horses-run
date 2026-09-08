@@ -5,57 +5,33 @@ Last reviewed: 2026-09-08
 
 `AGENTS.md` is the mandatory repository execution instruction. Read it before using this entry point.
 
-## Required reading
+## Required reading for all work
 
 ```text
 AGENTS.md
 docs/governance/document-authority.md
 docs/project-roadmap.md
 docs/project-roadmap-2026-09-08-addendum.md
-docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md
-docs/decisions/map-ui-integration-2026-09-05.md
+docs/specs/map-first-site-ui-2026-09-06.md
 docs/operations/deployment-and-ci-policy.md
-docs/calendar/README.md
-docs/calendar/source-test-v2-contract.md
-docs/calendar/calendar-readiness-contract.md
-docs/calendar/machine-readable-contracts.md
-docs/calendar/incremental-coverage-contract.md
-docs/calendar/coverage-observation-schema.md
-docs/calendar/validation-responsibility-contract.md
-docs/calendar/acquisition-control-plane-contract.md
-docs/calendar/acquisition-control-plane-implementation-plan.md
-docs/calendar/collection-result-manifest.md
-docs/calendar/review-queue.md
-docs/calendar/rank-aware-retry-queue.md
-docs/calendar/runner-compatibility.md
-docs/calendar/actions-multi-job-runner.md
-docs/calendar/local-multi-job-runner.md
-docs/calendar/review-cohort-planner.md
-docs/calendar/review-pr-preparation.md
-docs/calendar/due-job-planner.md
-docs/calendar/implementation-roadmap.md
-docs/calendar/japan-a-plus-reconciliation-plan.md
-docs/calendar/japan-full-month-scope-policy.md
-docs/calendar/jra-a-plus-pilot-completion.md
-docs/calendar/nar-a-plus-pilot-plan.md
-docs/calendar/nar-a-plus-source-architecture.md
-docs/calendar/nar-fixture-probe.md
-docs/calendar/nar-candidate-adapter.md
-docs/calendar/nar-14-racecourse-compatibility-audit.md
-docs/calendar/manual-nar-fixture-collection.md
-docs/calendar/nar-monthly-collection-contract.md
-docs/calendar/manual-nar-incremental-collection.md
-docs/calendar/manual-nar-monthly-collection.md
-docs/calendar/banei-a-plus-full-month-plan.md
-docs/calendar/current-baseline-audit.md
-docs/calendar/baseline-reconciliation-map.md
-docs/calendar/pipeline-v1-release-gate.md
-docs/calendar/dynamic-dates-release-gate.md
-docs/calendar/operations-v1-release-gate.md
-docs/calendar/public-v1-release-decision.md
 ```
 
-Re-read the applicable specification and active roadmap/addendum whenever scope or acceptance criteria change, after relevant movement on `main`, before opening or materially updating a PR, before merge, and after merge before beginning the next Work ID. Conversation history and PR numbers do not replace canonical repository documents.
+Re-read the applicable canonical specification and active roadmap/addendum whenever scope or acceptance criteria change, after relevant movement on `main`, before opening or materially updating a PR, before merge, and after merge before beginning the next Work ID. Conversation history and PR numbers do not replace canonical repository documents.
+
+## Calendar-visible work: mandatory additional reading
+
+Before changing Calendar, Today, meeting-state, timezone, List/Month/Map, stream presentation, Calendar naming/localization, or shared Calendar map behavior, also read:
+
+```text
+docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md
+docs/specs/calendar-row-rank-live-localization-2026-09-08.md
+docs/calendar/calendar-presentation-state-001-display-correction-schedule.md
+docs/calendar/incremental-coverage-contract.md
+docs/calendar/acquisition-control-plane-contract.md
+docs/calendar/implementation-roadmap.md
+```
+
+For acquisition/control-plane work, continue into the source-specific and machine-readable contracts linked from `docs/calendar/README.md`, `docs/calendar/machine-readable-contracts.md`, and `docs/governance/document-authority.md`.
 
 ## Active Calendar model
 
@@ -69,7 +45,7 @@ Coverage Observation
 Acquisition Control Plane
 ```
 
-Validation roles:
+Validation roles remain:
 
 ```text
 Batch Validation
@@ -78,7 +54,7 @@ Coverage Audit
 Completion Audit
 ```
 
-Operational flow:
+Operational flow remains:
 
 ```text
 Collection Plan
@@ -97,334 +73,164 @@ Collection Plan
 -> public projection
 ```
 
-Rules:
+Rules that remain unchanged:
 
-- operator runs may be irregular;
-- windows may vary, overlap, cross month boundaries, or target selected meetings;
-- one campaign may contain multiple systems with different date ranges;
-- shorter source horizons and valid partial batches are allowed;
 - meetings may enter at C, B, B+, A, or A+ according to reviewed evidence;
-- direct promotion may skip intermediate ranks when evidence supports a higher rank;
 - B and B+ are first-class operational states;
-- absence from one run is not deletion or cancellation;
+- absence from one run is not deletion/cancellation;
 - normal promotion rejects rank regression;
-- corrective downgrade is a separate explicit reviewed path;
-- runner choice does not change batch, rank, coverage, review, or promotion semantics;
-- month or season completeness belongs only to explicit Completion Audit;
+- corrective downgrade is a separate reviewed path;
+- runner choice does not change batch/rank/coverage/review/promotion semantics;
 - unattended publication remains disabled unless separately approved.
 
-## Runner model
+## Current execution state
 
-Runner routing is system/source/adapter specific, not country-only.
-
-Initial operating direction:
+Use `docs/project-roadmap-2026-09-08-addendum.md` as the current top-level execution authority.
 
 ```text
-JRA
-primary runner: local
-
-NAR
-primary runner: github_actions
-fallback runner: local
-formal workflow_dispatch operator: active
-scheduled publication: disabled
+Current stage: reviewed_incremental_maintenance
+Active product/UI lane: map_first_site_ui
+Completed UI Work ID: UI-006
+Completed UI Work ID: UI-007
+Current UI Work ID: UI-008 [runtime paused during bounded Calendar correction]
+Next UI Work ID: UI-009
+Parallel Calendar quality lane: calendar_quality_and_coverage
+Completed Calendar presentation correction: WHR-CAL-PRESENTATION-STATE-001
+Completed Calendar color-state amendment: WHR-CAL-PRESENTATION-COLOR-001
+Active Calendar context-state amendment: WHR-CAL-PRESENTATION-CONTEXT-001
 ```
 
-Do not manage future systems by operator memory. The Acquisition Registry is the routing source of truth, and the runner compatibility foundation validates that supported runner paths converge on common Coverage Observation and Result Manifest semantics. The required first Runner Gate is complete across NAR Actions semantics, NAR local fallback semantics, and the JRA shared local Job path.
-
-## Shared implemented machine-readable references
+Execution priority before UI-008 resumes:
 
 ```text
-data/static/authority-source-inventory.json
-data/static/authority-source-inventory-japan-v2.json
-data/static/source-test-v2.schema.json
-data/static/calendar-readiness.schema.json
-data/static/calendar-readiness-registry.json
-data/static/calendar-readiness-japan-v2.json
-data/static/calendar-coverage-observation.schema.json
-data/static/calendar-validation-responsibilities-v1.json
-data/static/calendar-acquisition-registry.schema.json
-data/static/calendar-acquisition-registry.json
-data/static/timetable-candidate-v1.schema.json
-data/static/japan-a-plus-policy.json
-data/static/japan-a-plus-runtime-control.json
-data/static/local-racing-pilot-control-v2.json
-data/static/banei-pilot-control.json
-data/audits/calendar-baseline-migration-map.json
-data/audits/calendar-pipeline-v1-release-gate.json
-data/audits/calendar-dynamic-dates-release-gate.json
-data/audits/calendar-operations-v1-release-gate.json
-data/audits/calendar-public-v1-surface-audit-v1.json
-data/audits/calendar-public-v1-pilot-record-reconciliation-v1.json
-data/audits/calendar-public-v1-operations-presentation-v1.json
-data/audits/calendar-public-v1-navigation-qa-v1.json
-data/audits/calendar-public-v1-release-decision-v1.json
-data/audits/japan-a-plus-reconciliation-completion.json
-data/audits/calendar-jra-a-plus-pilot-completion.json
-data/static/calendar-operations-control.json
-data/static/calendar-operations-seasonal-policy.json
-data/generated/timetable/operations-status.json
-data/generated/timetable/operations-review-package.json
-scripts/timetable/coverage-observation-validation.mjs
-scripts/timetable/pipeline-v1/promotion-core.mjs
-scripts/check-calendar-coverage-observation-schema.mjs
-scripts/check-calendar-validation-responsibilities.mjs
-scripts/timetable/load-calendar-acquisition-registry.mjs
-scripts/check-calendar-acquisition-registry.mjs
-.github/workflows/calendar-acquisition-registry.yml
-data/static/calendar-collection-job.schema.json
-data/fixtures/calendar-collection-jobs-v1.json
-data/fixtures/calendar-collection-job-invalid-cases-v1.json
-scripts/timetable/collection-job-validation.mjs
-scripts/check-calendar-collection-job.mjs
-.github/workflows/calendar-collection-job.yml
-data/static/calendar-collection-plan.schema.json
-data/fixtures/calendar-collection-plans-v1.json
-data/fixtures/calendar-collection-plan-invalid-cases-v1.json
-scripts/timetable/collection-plan-validation.mjs
-scripts/check-calendar-collection-plan.mjs
-.github/workflows/calendar-collection-plan.yml
-data/static/calendar-five-rank-classifier-contract-v1.json
-data/fixtures/calendar-five-rank-classifier-fixtures-v1.json
-data/static/calendar-collection-result-manifest.schema.json
-data/fixtures/calendar-collection-result-manifests-v1.json
-data/fixtures/calendar-collection-result-manifest-invalid-cases-v1.json
-data/static/calendar-review-queue.schema.json
-data/fixtures/calendar-review-queue-v1.json
-data/fixtures/calendar-review-queue-invalid-cases-v1.json
-data/static/calendar-rank-aware-retry-queue.schema.json
-data/fixtures/calendar-rank-aware-retry-queue-fixtures-v1.json
-data/fixtures/calendar-rank-aware-retry-queue-invalid-cases-v1.json
-data/static/calendar-runner-compatibility-contract-v1.json
-data/fixtures/calendar-runner-compatibility-fixtures-v1.json
-data/fixtures/calendar-runner-compatibility-invalid-cases-v1.json
-data/fixtures/calendar-local-multi-job-fixtures-v1.json
-data/static/calendar-review-cohort-plan.schema.json
-data/fixtures/calendar-review-cohort-planner-fixtures-v1.json
-data/fixtures/calendar-review-cohort-planner-invalid-cases-v1.json
-data/static/calendar-review-pr-package.schema.json
-data/fixtures/calendar-review-pr-preparation-fixtures-v1.json
-data/fixtures/calendar-review-pr-preparation-invalid-cases-v1.json
-data/static/calendar-due-job-policy-v1.json
-data/static/calendar-due-job-plan.schema.json
-data/fixtures/calendar-due-job-planner-fixtures-v1.json
-data/fixtures/calendar-due-job-planner-invalid-cases-v1.json
-scripts/timetable/five-rank-classifier.mjs
-scripts/check-calendar-five-rank-classifier.mjs
-scripts/timetable/collection-result-manifest-validation.mjs
-scripts/check-calendar-collection-result-manifest.mjs
-scripts/timetable/review-queue-validation.mjs
-scripts/check-calendar-review-queue.mjs
-scripts/timetable/rank-aware-retry-queue-validation.mjs
-scripts/check-calendar-rank-aware-retry-queue.mjs
-scripts/timetable/runner-compatibility.mjs
-scripts/check-calendar-runner-compatibility.mjs
-scripts/timetable/actions-multi-job-core.mjs
-scripts/timetable/plan-actions-multi-job.mjs
-scripts/timetable/run-calendar-actions-job.mjs
-scripts/timetable/run-hkjc-bounded-generator-job.mjs
-scripts/timetable/summarize-actions-multi-job.mjs
-scripts/check-calendar-actions-multi-job.mjs
-scripts/timetable/local-multi-job-core.mjs
-scripts/timetable/run-jra-local-review-job.mjs
-scripts/timetable/run-calendar-local-plan.mjs
-scripts/check-calendar-local-multi-job.mjs
-scripts/timetable/review-cohort-planner.mjs
-scripts/check-calendar-review-cohort-planner.mjs
-scripts/timetable/review-pr-preparation.mjs
-scripts/timetable/prepare-calendar-review-pr-packages.mjs
-scripts/check-calendar-review-pr-preparation.mjs
-scripts/timetable/due-job-planner.mjs
-scripts/timetable/plan-calendar-due-jobs.mjs
-scripts/check-calendar-due-job-planner.mjs
-.github/workflows/calendar-actions-multi-job.yml
-.github/workflows/calendar-local-multi-job.yml
-.github/workflows/calendar-review-cohort-planner.yml
-.github/workflows/calendar-review-pr-preparation.yml
-.github/workflows/calendar-due-job-planner.yml
-.github/workflows/calendar-five-rank-classifier.yml
-.github/workflows/calendar-collection-result-manifest.yml
-.github/workflows/calendar-review-queue.yml
-.github/workflows/calendar-rank-aware-retry-queue.yml
-.github/workflows/calendar-runner-compatibility.yml
-scripts/check-calendar-contracts.mjs
-scripts/check-calendar-baseline-reconciliation.mjs
-scripts/check-calendar-pipeline-v1-release-gate.mjs
-scripts/check-calendar-dynamic-dates-release-gate.mjs
-scripts/check-calendar-operations-v1-release-gate.mjs
-scripts/check-calendar-public-v1-surface-audit.mjs
-scripts/check-calendar-public-v1-pilot-record-reconciliation.mjs
-scripts/check-calendar-public-v1-operations-presentation.mjs
-scripts/check-calendar-public-v1-navigation-qa.mjs
-scripts/check-calendar-public-v1-release-decision.mjs
-scripts/check-japan-a-plus-reconciliation-completion.mjs
-scripts/check-calendar-jra-pilot-completion.mjs
-scripts/check-project-governance-docs.mjs
+WHR-CAL-PRESENTATION-CONTEXT-001
 ```
 
-## Planned control-plane machine-readable references
+The active Calendar context-state contract requires Today/Calendar/List/Map to agree on the same presentation state for the same meeting and date context.
 
-Implementation must create canonical schemas/validators for:
+## Active Today / Calendar presentation rules
+
+Current-day precise state requires B+ or higher with sufficient reviewed first/last timing:
 
 ```text
-control-plane release gate
+before first -> Upcoming / 開催前
+within window -> Racing now / 開催中
+after last -> Finished / 終了
 ```
 
-Do not create parallel ad hoc job/queue formats outside the control-plane contract.
-
-## NAR ordinary operator references
+B/C or day-level-only reviewed current-day meeting:
 
 ```text
-scripts/timetable/nar-incremental-core.mjs
-scripts/timetable/collect-nar-incremental.mjs
-scripts/timetable/run-nar-incremental-local.mjs
-scripts/check-calendar-nar-incremental-core.mjs
-scripts/check-calendar-nar-incremental.mjs
-
-scripts/timetable/nar-incremental-v2-core.mjs
-scripts/timetable/nar-incremental-v2-reconcile.mjs
-scripts/timetable/normalize-nar-schedule-aware-month.mjs
-scripts/timetable/collect-nar-incremental-v2.mjs
-scripts/timetable/collect-nar-incremental-v2-reconciled.mjs
-scripts/timetable/run-nar-incremental-v2-local.mjs
-scripts/timetable/nar-incremental-v2-actions-core.mjs
-scripts/timetable/run-nar-incremental-v2-actions.mjs
-scripts/check-calendar-nar-incremental-v2-core.mjs
-scripts/check-calendar-nar-incremental-v2.mjs
-scripts/check-calendar-nar-incremental-v2-actions-operator.mjs
-.github/workflows/calendar-nar-incremental-v2-operator.yml
+Today meeting / 本日開催
 ```
 
-Future ordinary NAR collection uses v2 immutable batch paths. The old fixed-path v1 incremental artifacts remain historical evidence for the reviewed July 5–7 batch and must not be overwritten.
-
-The formal NAR Actions workflow-dispatch path is active as the primary operator entry point. The local v2 runner remains the fallback and development path. Temporary diagnostic workflows are closed and are not part of normal operation.
-
-## NAR compatibility and audit references
+Today range valid groups:
 
 ```text
-data/static/nar-source-route-architecture-v1.json
-data/static/nar-venue-code-research-seed-v1.json
-data/static/nar-flat-racecourse-compatibility-v1.json
-data/static/nar-monthly-collection-policy-v1.json
-data/fixtures/timetable/nar/route-probe-v1.json
-data/fixtures/timetable/nar/complete-meetings/
-data/candidates/nar-route-probe-candidates.json
-data/candidates/nar-monthly-meeting-candidates.json
-data/candidates/nar-monthly-2026-07-full-month-candidates.json
-data/generated/timetable/nar-monthly-collection-report.json
-data/generated/timetable/nar-monthly-2026-07-full-month-collection-report.json
-data/audits/nar-legacy-pr281-migration.json
-data/audits/nar-fixture-probe-v1.json
-data/audits/nar-candidate-adapter-v1.json
-data/audits/nar-14-racecourse-compatibility-v1.json
-collect-nar-fixtures-manual
-collect-nar-monthly-manual
-collect-nar-full-month-manual
-scripts/timetable/build-nar-route-probe-candidates.mjs
-scripts/timetable/build-nar-monthly-schedule-plan.mjs
-scripts/timetable/collect-nar-complete-fixtures.mjs
-scripts/timetable/collect-nar-complete-fixtures-v2.mjs
-scripts/timetable/collect-nar-monthly-candidates.mjs
-scripts/timetable/parse-nar-monthly-schedule-grid.mjs
-scripts/timetable/normalize-nar-full-month-schedule-fetch.mjs
-scripts/timetable/manual-collect-nar-fixtures.mjs
-scripts/timetable/manual-collect-nar-monthly.mjs
-scripts/timetable/manual-collect-nar-full-month.mjs
-scripts/check-calendar-nar-source-architecture.mjs
-scripts/check-calendar-nar-fixture-probe.mjs
-scripts/check-calendar-nar-candidate-adapter.mjs
-scripts/check-calendar-nar-14-racecourse-compatibility.mjs
-scripts/check-calendar-nar-monthly-collection-policy.mjs
-scripts/check-calendar-nar-complete-fixture-set.mjs
-scripts/check-calendar-nar-fixture-operator.mjs
-scripts/check-calendar-nar-monthly-candidate-set.mjs
-scripts/check-calendar-nar-monthly-operator.mjs
-scripts/check-calendar-nar-full-month-parser.mjs
-scripts/check-calendar-nar-full-month-candidate-set.mjs
+Racing now / 開催中
+Upcoming / 開催前
+Today meeting / 本日開催
+Finished / 終了
 ```
 
-The July full-month NAR path is a bounded Completion Audit, not the ordinary update contract.
-
-## Current work
-
-Completed implementation Work IDs:
+Forbidden on Today range:
 
 ```text
-WHR-CAL-PIPELINE-V1
-WHR-CAL-DYNAMIC-DATES
-WHR-CAL-OPS-V1
-WHR-CAL-JAPAN-JRA
-WHR-CAL-JAPAN-A-PLUS-RECONCILE
-WHR-CAL-JAPAN-JRA-A-PLUS
+Upcoming / racing today
+開催前・本日開催
+Scheduled / 開催予定 as a current-day fallback
 ```
 
-Completed Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
-Completed Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
-Completed Work ID: `WHR-CAL-JAPAN-BANEI-A-PLUS`
-Completed Work ID: `WHR-CAL-HONG-KONG-HKJC`
-Completed Work ID: `WHR-CAL-UAE-ERA`
-Completed Work ID: `WHR-CAL-PUBLIC-V1`
-Completed Work ID: `WHR-RACECOURSE-PAGES-V1`
-Completed Work ID: `WHR-GLOSSARY-DICTIONARY-V1`
-Completed implementation unit: `RACECOURSE-PAGE-IDENTITY-RECONCILIATION-01`
-Completed implementation unit: `RACECOURSE-PAGE-PUBLIC-TIMETABLE-CONNECTION-01`
-Completed implementation unit: `RACECOURSE-PAGE-PROFILE-EVIDENCE-01`
-Completed implementation unit: `RACECOURSE-PAGE-LINK-ARCHITECTURE-01`
-Completed implementation unit: `RACECOURSE-PAGE-BILINGUAL-QA-01`
-Completed implementation unit: `GLOSSARY-SCHEMA-EXTENSION-01`
-Completed implementation unit: `GLOSSARY-QA-RELEASE-01`
-Current stage: `reviewed_incremental_maintenance`
-Active product/UI lane: `map_first_site_ui`
-Current UI Work ID: `UI-006`
-Next UI Work ID: `UI-007`
-Parallel Calendar quality lane: `calendar_quality_and_coverage`
-Active Calendar presentation correction: `WHR-CAL-PRESENTATION-STATE-001`
-Current state authority: `docs/project-roadmap-2026-09-08-addendum.md`
-Current Calendar presentation authority: `docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md`
-Current map/UI decision authority: `docs/decisions/map-ui-integration-2026-09-05.md`
+Tomorrow meetings use `Scheduled / 開催予定`.
 
-Current NAR status:
+Seven-day range uses current-day states for today and `Scheduled / 開催予定` for later dates.
+
+Calendar selected today uses the four current-day states. Calendar selected future date uses `Scheduled / 開催予定`.
+
+## Active List / Map state colors
+
+List:
 
 ```text
-published schedule coverage through 2026-07-31
-July 8–31 reviewed batch: published
-schedule-confirmed: 82
-A+: 11
-C: 71
-schedule errors: 0
-coverage: source_window_complete
-pending detail retries: 71
-primary runner: github_actions
-fallback runner: local
+running   #fff7f6
+upcoming  #fff9e9
+today     #fffcf4
+ended     #f6f7f8
+future    #ffffff
+unknown   #ffffff
 ```
 
-The 71 C meetings are published schedule identities, not A+ detail-complete meetings. They remain explicit retry work.
+Map:
 
-## Completed glossary sequence
+```text
+running   #c40000
+upcoming  #d18a00
+today     #fffcf4 + dark warm outline/ring
+future    #111111
+ended     #666666
+```
 
-The former glossary active sequence is complete through `GLOSSARY-QA-RELEASE-01`. Current execution is `reviewed_incremental_maintenance`; use `docs/project-roadmap-2026-09-08-addendum.md` for the live maintenance lanes, map/UI lane, Calendar presentation correction, and source gates.
+Today Map and Calendar Map with today selected must not show a `Scheduled / 開催予定` legend item. Future-date Calendar Map uses `Scheduled / 開催予定` and does not show current-day legend states.
 
-The Acquisition Control Plane foundation, Actions/local multi-job runners, Review Queue, Rank-aware Retry Queue, review cohort planning, review PR package preparation, Due-job planning, artifact-only scheduled planning, and Operations v2 are already implemented. Scheduled acquisition execution and unattended publication remain disabled.
+## State-separation rule
 
-## Completed Public v1 transition
+Calendar implementation must preserve these separate dimensions:
 
-> Current Work ID: `WHR-CAL-PUBLIC-V1`  
-> Next Work ID: `WHR-RACECOURSE-PAGES-V1`
+```text
+acquisition/review/publication rank
+meeting lifecycle state
+selected display timezone
+official stream state
+Calendar/Today presentation state
+```
 
-Completed implementation unit: `PUBLIC-V1-RELEASE-DECISION-01`
+Do not fix a presentation defect by inventing a second meeting truth, guessed race time, guessed stream state, map-only override, or unreviewed public field.
 
-## Historical compatibility markers
+The shared presentation-state consumer set includes:
 
-> Current Work ID: `WHR-CAL-JAPAN-A-PLUS-RECONCILE`  
-> Next Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`
+```text
+Today summary counts
+Today/List group headings
+row badge/background
+Calendar List
+Map marker
+Map legend
+Map selected card
+```
 
-> Current Work ID: `WHR-CAL-JAPAN-JRA-A-PLUS`  
-> Next Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
+These surfaces must not independently reinterpret the same meeting.
 
-> Current Work ID: `WHR-CAL-JAPAN-NAR-A-PLUS`
-> Next Work ID: `WHR-CAL-ACQUISITION-CONTROL-PLANE`
+## PR discipline
 
-Previous completed implementation Work ID: `WHR-CAL-JAPAN-JRA`
+Every substantive PR must state at minimum:
 
-- `WHR-CAL-JAPAN-NAR`
-- `WHR-CAL-JAPAN-BANEI`
+```text
+Work ID
+Canonical documents reviewed
+Specification/schedule changes
+Runtime behavior changes
+Tracker/registry/data changes, or none
+Public display boundary changes, or none
+Validation performed
+Visible browser/screenshot evidence when UI changes
+Completion conditions
+Next Work ID
+```
+
+Visible UI/interaction work requires actual browser output and representative screenshot inspection. A green build or CI run alone is not completion evidence.
+
+## Public repository boundary
+
+Never commit internal-only strategy notes, private workflow notes, credentials, raw restricted captures, non-public source material, or other material classified as internal-only by repository governance.
+
+Only public-safe specifications, reviewed facts, schemas, code, tests, hashes, and public-safe operational summaries belong here.
+
+## Resume rule
+
+After `WHR-CAL-PRESENTATION-CONTEXT-001` merges and exact-SHA CI/Cloudflare verification passes:
+
+1. re-read `AGENTS.md`;
+2. re-read this file;
+3. re-read governance and the active top-level roadmap addendum;
+4. confirm the Calendar amendment is marked complete;
+5. then resume `UI-008` from current `main` rather than from a stale pre-Calendar branch.
