@@ -23,6 +23,8 @@ const timeRange = (meeting: PublicTimetableMeetingRow) => {
 };
 const calendarDateHref = (date: string) => `${calendarBase}?date=${encodeURIComponent(date)}`;
 const primaryMeeting = state.today_meetings[0] ?? state.next_meetings[0] ?? null;
+const primaryDetailPath = primaryMeeting ? detailPath(primaryMeeting) : null;
+const primaryTimeRange = primaryMeeting ? timeRange(primaryMeeting) : null;
 const isToday = Boolean(state.today_meetings.length);
 const upcoming = state.upcoming_meetings
   .filter((meeting) => !primaryMeeting || meeting.meeting_id !== primaryMeeting.meeting_id)
@@ -41,13 +43,13 @@ const upcoming = state.upcoming_meetings
         <p class="racecourse-meeting-summary__state">{isToday ? (isJapanese ? '本日開催' : 'Racing today') : (isJapanese ? '次回開催' : 'Next meeting')}</p>
         <h3><a href={calendarDateHref(primaryMeeting.date)}>{primaryMeeting.date}</a></h3>
         <p class="racecourse-meeting-summary__facts">
-          {timeRange(primaryMeeting) ? <span>{isJapanese ? '現地時刻 ' : 'Local time '}{timeRange(primaryMeeting)}</span> : null}
+          {primaryTimeRange ? <span>{isJapanese ? '現地時刻 ' : 'Local time '}{primaryTimeRange}</span> : null}
           <span>{isJapanese ? '公開ランク' : 'Public rank'} {primaryMeeting.effective_public_rank}</span>
           <span>{primaryMeeting.timezone}</span>
         </p>
       </div>
       <div class="racecourse-meeting-summary__actions">
-        {detailPath(primaryMeeting) ? <a class="button-like" href={detailPath(primaryMeeting)!}>{isJapanese ? '開催詳細' : 'Meeting details'}</a> : null}
+        {primaryDetailPath ? <a class="button-like" href={primaryDetailPath}>{isJapanese ? '開催詳細' : 'Meeting details'}</a> : null}
         <a href={primaryMeeting.official_source_url}>{isJapanese ? '公式ソース ↗' : 'Official source ↗'}</a>
       </div>
     </article>
@@ -67,14 +69,18 @@ const upcoming = state.upcoming_meetings
     <div class="racecourse-meeting-summary__upcoming" data-racecourse-upcoming-meetings>
       <h3>{isJapanese ? '今後の開催' : 'Upcoming meetings'}</h3>
       <ul>
-        {upcoming.map((meeting) => (
-          <li>
-            <a href={calendarDateHref(meeting.date)}>{meeting.date}</a>
-            {timeRange(meeting) ? <span>{timeRange(meeting)}</span> : null}
-            <span>{meeting.effective_public_rank}</span>
-            {detailPath(meeting) ? <a href={detailPath(meeting)!}>{isJapanese ? '詳細' : 'Details'}</a> : null}
-          </li>
-        ))}
+        {upcoming.map((meeting) => {
+          const meetingTimeRange = timeRange(meeting);
+          const meetingDetailPath = detailPath(meeting);
+          return (
+            <li>
+              <a href={calendarDateHref(meeting.date)}>{meeting.date}</a>
+              {meetingTimeRange ? <span>{meetingTimeRange}</span> : null}
+              <span>{meeting.effective_public_rank}</span>
+              {meetingDetailPath ? <a href={meetingDetailPath}>{isJapanese ? '詳細' : 'Details'}</a> : null}
+            </li>
+          );
+        })}
       </ul>
     </div>
   ) : null}
