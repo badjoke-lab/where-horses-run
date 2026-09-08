@@ -20,7 +20,8 @@ assert.match(todayFilters, /data-today-summary-state="running"/);
 assert.match(todayFilters, /data-today-summary-state="upcoming"/);
 assert.match(todayFilters, /data-today-summary-state="today"/);
 assert.match(todayFilters, /data-today-summary-state="ended"/);
-assert.match(todayFilters, /data-today-summary-state="future"/);
+assert.match(todayFilters, /data-today-summary-state="future" hidden/,
+  'Today initial markup must keep Scheduled hidden until a non-today range explicitly activates it');
 assert.match(todayFilters, /Today meeting/);
 assert.match(todayFilters, /本日開催/);
 assert.match(todayFilters, /Scheduled/);
@@ -109,6 +110,7 @@ assert.match(todayRangeMapAccessibility, /whr:todayfilterchange/,
 console.log('CALENDAR_CONTEXT_STATE: pass');
 console.log('TODAY_GROUPS_SPLIT: pass');
 console.log('TODAY_CURRENT_DAY_SCHEDULED_FALLBACK: prohibited');
+console.log('TODAY_INITIAL_SCHEDULED_FLASH: prohibited');
 console.log('TODAY_TOMORROW_7DAY_CONTEXT: pass');
 console.log('LIST_MAP_PRESENTATION_STATE_PARITY: pass');
 console.log('MAP_CONTEXT_LEGEND: pass');
