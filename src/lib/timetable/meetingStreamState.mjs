@@ -20,14 +20,3 @@ export function deriveMeetingStreamState({
   // None of those conditions are evidence of a current live broadcast.
   return MEETING_STREAM_STATES.KNOWN;
 }
-
-export function canUseEventSpecificStreamUrl({
-  detectorStatus = 'unknown',
-  eventDate = '',
-  sourceDate = '',
-  videoId = '',
-} = {}) {
-  const matchingEvent = Boolean(sourceDate && eventDate && sourceDate === eventDate);
-  const validVideoId = /^[A-Za-z0-9_-]{11}$/.test(videoId || '');
-  return matchingEvent && validVideoId && (detectorStatus === 'live' || detectorStatus === 'upcoming');
-}
