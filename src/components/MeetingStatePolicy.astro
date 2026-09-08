@@ -104,9 +104,115 @@
     target.textContent = presentationLabel(state, isJa);
   };
 
+  const LEGEND_COPY = {
+    running: { en: 'Racing now', ja: '開催中' },
+    upcoming: { en: 'Upcoming', ja: '開催前' },
+    today: { en: 'Today meeting', ja: '本日開催' },
+    future: { en: 'Scheduled', ja: '開催予定' },
+    ended: { en: 'Finished', ja: '終了' },
+  };
+  const CURRENT_DAY_LEGEND = ['running', 'upcoming', 'today', 'ended'];
+  const ALL_CONTEXT_LEGEND = ['running', 'upcoming', 'today', 'future', 'ended'];
+  const observedMapRoots = new WeakSet();
+
+  const visibleRows = () => [...document.querySelectorAll('[data-calendar-meeting-row]')]
+    .filter((row) => row instanceof HTMLElement)
+    .filter((row) => !row.hidden && row.dataset.timezoneScopeHidden !== 'true' && getComputedStyle(row).display !== 'none');
+
+  const normalizeLegendCopy = (legend) => {
+    Object.entries(LEGEND_COPY).forEach(([state, copy]) => {
+      const item = legend.querySelector(`[data-map-legend-state="${state}"]`);
+      if (!(item instanceof HTMLElement)) return;
+      const en = item.querySelector('.racecourse-map__legend-label--en');
+      const ja = item.querySelector('.racecourse-map__legend-label--ja');
+      if (en && en.textContent !== copy.en) en.textContent = copy.en;
+      if (ja && ja.textContent !== copy.ja) ja.textContent = copy.ja;
+    });
+  };
+
+  const allowedLegendStates = (mapRoot) => {
+    const todayContext = mapRoot.closest('[data-today-map-sync]');
+    if (todayContext instanceof HTMLElement) {
+      const rows = visibleRows();
+      if (rows.length === 0) return [];
+      const selected = document.querySelector('[data-today-controls] [data-meeting-range][aria-pressed="true"]');
+      const range = selected instanceof HTMLElement ? selected.dataset.meetingRange || 'today' : 'today';
+      if (range === 'tomorrow') return ['future'];
+      if (range === 'next7') return ALL_CONTEXT_LEGEND;
+      return CURRENT_DAY_LEGEND;
+    }
+
+    const calendarContext = mapRoot.closest('[data-calendar-map-switch]');
+    if (calendarContext instanceof HTMLElement) {
+      const select = document.querySelector('[data-filter-date]');
+      const selectedDate = select instanceof HTMLSelectElement ? select.value : '';
+      const rows = visibleRows().filter((row) => row.dataset.date === selectedDate);
+      if (rows.length === 0) return [];
+      return rows.every((row) => row.dataset.meetingPresentationState === 'future')
+        ? ['future']
+        : CURRENT_DAY_LEGEND;
+    }
+
+    return [];
+  };
+
+  const syncLegendForRoot = (mapRoot) => {
+    if (!(mapRoot instanceof HTMLElement) || mapRoot.dataset.mapState !== 'ready') return;
+    const legend = mapRoot.querySelector('[data-map-legend]');
+    if (!(legend instanceof HTMLElement)) return;
+    normalizeLegendCopy(legend);
+    const allowed = new Set(allowedLegendStates(mapRoot));
+    legend.querySelectorAll('[data-map-legend-state]').forEach((item) => {
+      if (!(item instanceof HTMLElement)) return;
+      const shouldHide = !allowed.has(item.dataset.mapLegendState || '');
+      if (item.hidden !== shouldHide) item.hidden = shouldHide;
+    });
+    const shouldHideLegend = allowed.size === 0;
+    if (legend.hidden !== shouldHideLegend) legend.hidden = shouldHideLegend;
+  };
+
+  const syncTodayMapUnmappedCount = () => {
+    const root = document.querySelector('[data-today-map-sync]');
+    if (!(root instanceof HTMLElement)) return;
+    const meta = root.querySelector('.racecourse-map__meta');
+    const dataNode = root.querySelector('[data-today-map-meeting-map]');
+    if (!(meta instanceof HTMLElement) || !(dataNode instanceof HTMLScriptElement)) return;
+    let entries = [];
+    try { entries = JSON.parse(dataNode.textContent || '[]'); } catch { entries = []; }
+    const byMeeting = new Map(Array.isArray(entries) ? entries.map((entry) => [entry.meetingId, entry]) : []);
+    const missing = visibleRows().filter((row) => {
+      const entry = byMeeting.get(row.dataset.meetingId || '');
+      return entry && !entry.hasReviewedLocation;
+    }).length;
+    meta.hidden = missing === 0;
+    if (missing > 0) {
+      const isJa = document.documentElement.lang === 'ja';
+      meta.textContent = isJa
+        ? `位置未確認の開催 ${missing}件は、開催一覧には残し、地図には推測表示しません。`
+        : `${missing} meeting(s) without a reviewed venue location remain in the list and are not guessed onto the map.`;
+    }
+  };
+
+  const syncMapPresentation = () => {
+    document.querySelectorAll('[data-racecourse-map]').forEach((mapRoot) => {
+      syncLegendForRoot(mapRoot);
+      if (!(mapRoot instanceof HTMLElement) || observedMapRoots.has(mapRoot)) return;
+      observedMapRoots.add(mapRoot);
+      const legend = mapRoot.querySelector('[data-map-legend]');
+      if (legend instanceof HTMLElement) {
+        const legendObserver = new MutationObserver(() => queueMicrotask(() => syncLegendForRoot(mapRoot)));
+        legendObserver.observe(legend, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['hidden'] });
+      }
+      const rootObserver = new MutationObserver(() => queueMicrotask(() => syncLegendForRoot(mapRoot)));
+      rootObserver.observe(mapRoot, { attributes: true, attributeFilter: ['data-map-state'] });
+    });
+    syncTodayMapUnmappedCount();
+  };
+
   const applyAll = () => {
     document.querySelectorAll('[data-calendar-meeting-row]').forEach((row) => applyToRow(row));
     syncSelectedMapStatus();
+    requestAnimationFrame(syncMapPresentation);
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyAll, { once: true });
@@ -115,6 +221,8 @@
   window.addEventListener('whr:meetingstatechange', applyAll);
   window.addEventListener('whr:timezonechange', applyAll);
   window.addEventListener('whr:todayfilterchange', applyAll);
+  window.addEventListener('whr:calendarfilterchange', () => requestAnimationFrame(syncMapPresentation));
+  window.addEventListener('whr:calendardatechange', () => requestAnimationFrame(syncMapPresentation));
   document.addEventListener('racecourse-map:select', () => requestAnimationFrame(syncSelectedMapStatus));
   window.setInterval(applyAll, 60_000);
 </script>
