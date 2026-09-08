@@ -5,7 +5,9 @@ import MeetingStatePolicy from '../../components/MeetingStatePolicy.astro';
 import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
 import TodayFilters from '../../components/TodayFilters.astro';
 import TodayMeetingMap from '../../components/TodayMeetingMap.astro';
+import TodayRangeMapAccessibility from '../../components/TodayRangeMapAccessibility.astro';
 import '../../styles/today-practical.css';
+import '../../styles/today-context-correction.css';
 import {
   getGroupedTimetableMeetingRows,
   getTimetableDateContext,
@@ -30,6 +32,7 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
   <main class="today-page" data-today-page data-home-meeting-window>
     <MeetingStatePolicy />
     <MeetingLiveStatusRuntime />
+    <TodayRangeMapAccessibility />
 
     <section class="hero today-page__hero" aria-labelledby="page-title">
       <p class="hero__eyebrow">世界の競馬開催</p>

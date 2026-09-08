@@ -41,27 +41,27 @@ const {
   <div class="racecourse-map__legend" data-map-legend hidden>
     <span class="racecourse-map__legend-title racecourse-map__legend-title--en">Meeting status</span>
     <span class="racecourse-map__legend-title racecourse-map__legend-title--ja">開催状態</span>
-    <span class="racecourse-map__legend-item">
+    <span class="racecourse-map__legend-item" data-map-legend-state="running">
       <span class="racecourse-map__legend-dot racecourse-map__legend-dot--running" aria-hidden="true"></span>
       <span class="racecourse-map__legend-label racecourse-map__legend-label--en">Racing now</span>
       <span class="racecourse-map__legend-label racecourse-map__legend-label--ja">開催中</span>
     </span>
-    <span class="racecourse-map__legend-item">
+    <span class="racecourse-map__legend-item" data-map-legend-state="upcoming">
       <span class="racecourse-map__legend-dot racecourse-map__legend-dot--upcoming" aria-hidden="true"></span>
       <span class="racecourse-map__legend-label racecourse-map__legend-label--en">Upcoming</span>
       <span class="racecourse-map__legend-label racecourse-map__legend-label--ja">開催前</span>
     </span>
-    <span class="racecourse-map__legend-item">
+    <span class="racecourse-map__legend-item" data-map-legend-state="today">
       <span class="racecourse-map__legend-dot racecourse-map__legend-dot--today" aria-hidden="true"></span>
       <span class="racecourse-map__legend-label racecourse-map__legend-label--en">Today meeting</span>
       <span class="racecourse-map__legend-label racecourse-map__legend-label--ja">本日開催</span>
     </span>
-    <span class="racecourse-map__legend-item">
+    <span class="racecourse-map__legend-item" data-map-legend-state="future">
       <span class="racecourse-map__legend-dot racecourse-map__legend-dot--future" aria-hidden="true"></span>
       <span class="racecourse-map__legend-label racecourse-map__legend-label--en">Scheduled</span>
       <span class="racecourse-map__legend-label racecourse-map__legend-label--ja">開催予定</span>
     </span>
-    <span class="racecourse-map__legend-item">
+    <span class="racecourse-map__legend-item" data-map-legend-state="ended">
       <span class="racecourse-map__legend-dot racecourse-map__legend-dot--ended" aria-hidden="true"></span>
       <span class="racecourse-map__legend-label racecourse-map__legend-label--en">Finished</span>
       <span class="racecourse-map__legend-label racecourse-map__legend-label--ja">終了</span>
@@ -83,7 +83,8 @@ const {
     color: var(--whr-color-muted);
   }
 
-  .racecourse-map__legend[hidden] {
+  .racecourse-map__legend[hidden],
+  .racecourse-map__legend-item[hidden] {
     display: none;
   }
 
@@ -169,8 +170,10 @@ const {
   const MOBILE_BREAKPOINT = '(max-width: 700px)';
   const FINE_POINTER = '(hover: hover) and (pointer: fine)';
   const STATUS_REFRESH_MS = 60_000;
+  const PUBLIC_STATUS_KEYS = new Set(['running', 'upcoming', 'today', 'future', 'ended']);
 
   const STATUS_PRIORITY = {
+    neutral: 0,
     ended: 1,
     future: 2,
     today: 3,
@@ -285,17 +288,7 @@ const {
 
   const statusFromMeetingRow = (row) => {
     const presentationState = row.dataset.meetingPresentationState || 'unknown';
-    if (presentationState === 'running') return 'running';
-    if (presentationState === 'upcoming') return 'upcoming';
-    if (presentationState === 'today') return 'today';
-    if (presentationState === 'ended') return 'ended';
-
-    const meetingState = row.dataset.meetingState || 'unknown';
-    const dayState = row.dataset.meetingDayState || 'unknown';
-    if (meetingState === 'running') return 'running';
-    if (meetingState === 'upcoming' && dayState === 'today') return 'upcoming';
-    if (meetingState === 'ended' || dayState === 'past') return 'ended';
-    return 'future';
+    return PUBLIC_STATUS_KEYS.has(presentationState) ? presentationState : 'neutral';
   };
 
   const homeWindow = (context, timeZone) => {
@@ -360,7 +353,7 @@ const {
     const statusContext = root.closest('[data-home-racing-map], [data-today-map-sync], [data-calendar-map-switch]');
     const useStatusPresentation = statusContext instanceof HTMLElement;
     if (legend instanceof HTMLElement) {
-      legend.hidden = !useStatusPresentation;
+      legend.hidden = true;
       legend.setAttribute('aria-label', document.documentElement.lang === 'ja' ? '開催状態の凡例' : 'Meeting status legend');
     }
 
@@ -378,6 +371,7 @@ const {
       if (statusRefresh !== null) window.clearInterval(statusRefresh);
       root.dataset.mapState = 'failed';
       if (canvas) canvas.hidden = true;
+      if (legend instanceof HTMLElement) legend.hidden = true;
       if (status) {
         status.hidden = false;
         status.textContent = fallbackMessage;
@@ -566,28 +560,37 @@ const {
         return result;
       };
 
-      const presentedFeatures = () => {
-        const inferred = inferStatuses();
-        return [...visibleRacecourseIds]
-          .map((id) => featureByRacecourseId.get(id))
-          .filter(Boolean)
-          .map((feature) => ({
-            ...feature,
-            properties: {
-              ...feature.properties,
-              meeting_status: useStatusPresentation
-                ? inferred[feature?.properties?.racecourse_id] || 'future'
-                : 'neutral'
-            }
-          }));
+      const syncLegend = (inferred) => {
+        if (!(legend instanceof HTMLElement) || !useStatusPresentation) return;
+        const active = new Set(Object.values(inferred).filter((state) => PUBLIC_STATUS_KEYS.has(state)));
+        legend.querySelectorAll('[data-map-legend-state]').forEach((item) => {
+          if (!(item instanceof HTMLElement)) return;
+          item.hidden = !active.has(item.dataset.mapLegendState || '');
+        });
+        legend.hidden = active.size === 0;
       };
+
+      const presentedFeatures = (inferred) => [...visibleRacecourseIds]
+        .map((id) => featureByRacecourseId.get(id))
+        .filter(Boolean)
+        .map((feature) => ({
+          ...feature,
+          properties: {
+            ...feature.properties,
+            meeting_status: useStatusPresentation
+              ? inferred[feature?.properties?.racecourse_id] || 'neutral'
+              : 'neutral'
+          }
+        }));
 
       const refreshSourceData = () => {
         const source = map.getSource(MAP_SOURCE);
         if (!source || typeof source.setData !== 'function') return;
+        const inferred = inferStatuses();
+        syncLegend(inferred);
         source.setData({
           ...projection,
-          features: presentedFeatures()
+          features: presentedFeatures(inferred)
         });
         if (selectedFeatureId !== null) {
           try {
@@ -647,7 +650,7 @@ const {
               ...feature,
               properties: {
                 ...feature.properties,
-                meeting_status: useStatusPresentation ? 'future' : 'neutral'
+                meeting_status: 'neutral'
               }
             }))
           },
@@ -697,6 +700,7 @@ const {
           'today', 9,
           'ended', 9,
           'future', 7,
+          'neutral', 7,
           7
         ];
 
@@ -748,12 +752,14 @@ const {
               'today', '#fffcf4',
               'ended', '#666666',
               'future', '#111111',
-              '#111111'
+              'neutral', '#ffffff',
+              '#ffffff'
             ],
             'circle-stroke-color': [
-              'case',
-              ['==', ['get', 'meeting_status'], 'today'],
-              '#7a5a00',
+              'match',
+              ['get', 'meeting_status'],
+              'today', '#7a5a00',
+              'neutral', '#777777',
               '#ffffff'
             ],
             'circle-stroke-width': [
@@ -852,6 +858,7 @@ const {
         statusRefresh = window.setInterval(applyStatuses, STATUS_REFRESH_MS);
         window.addEventListener('whr:meetingstatechange', applyStatuses);
         window.addEventListener('whr:timezonechange', applyStatuses);
+        window.addEventListener('whr:todayfilterchange', applyStatuses);
 
         root.dispatchEvent(new CustomEvent('racecourse-map:ready', {
           bubbles: true,

@@ -87,6 +87,10 @@
   font-size: 0.86rem;
 }
 
+.today-state-summary__item[hidden] {
+  display: none;
+}
+
 .today-state-summary__item > span:first-child,
 .today-state-divider > span:first-child {
   display: inline-block;
@@ -108,13 +112,20 @@
   background: #d18a00;
 }
 
+.today-state-summary__item--today > span:first-child,
+.today-state-divider--today > span:first-child {
+  background: #fffcf4;
+  border-color: #7a5a00;
+  box-shadow: none;
+}
+
 .today-state-summary__item--ended > span:first-child,
 .today-state-divider--ended > span:first-child {
   background: #666;
 }
 
-.today-state-summary__item--scheduled > span:first-child,
-.today-state-divider--scheduled > span:first-child {
+.today-state-summary__item--future > span:first-child,
+.today-state-divider--future > span:first-child {
   background: #111;
 }
 

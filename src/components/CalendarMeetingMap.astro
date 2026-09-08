@@ -26,7 +26,7 @@ const meetingMap = records.map((record) => ({
   racecourseSlug: racecourseById.get(record.racecourse_id)?.slug ?? null,
   hasReviewedLocation: reviewedRacecourseIds.has(record.racecourse_id),
 }));
-const meetingMapJson = JSON.stringify(meetingMap).replace(/</g, '\\u003c');
+const meetingMapJson = JSON.stringify(meetingMap).replace(/</g, '\u003c');
 const fallbackMessage = isJapanese
   ? 'インタラクティブ地図を読み込めません。一覧表示の開催情報と公式リンクは引き続き利用できます。'
   : 'Interactive map unavailable. Calendar List view and official links remain available.';
@@ -138,12 +138,13 @@ const fallbackMessage = isJapanese
             .map((entry) => entry.racecourseId)
         ));
         const statusForRow = (row) => {
-          const presentationState = row.dataset.meetingPresentationState || 'unknown';
-          if (presentationState === 'running') return { key: 'running', label: isJa ? '開催中' : 'Racing now' };
-          if (presentationState === 'today') return { key: 'today', label: isJa ? '本日開催' : 'Today meeting' };
-          if (presentationState === 'upcoming') return { key: 'upcoming', label: isJa ? '開催前' : 'Upcoming' };
-          if (presentationState === 'ended') return { key: 'ended', label: isJa ? '終了' : 'Finished' };
-          return { key: 'future', label: isJa ? '開催予定' : 'Scheduled' };
+          const state = row.dataset.meetingPresentationState || 'unknown';
+          if (state === 'running') return { key: 'running', label: isJa ? '開催中' : 'Racing now' };
+          if (state === 'today') return { key: 'today', label: isJa ? '本日開催' : 'Today meeting' };
+          if (state === 'upcoming') return { key: 'upcoming', label: isJa ? '開催前' : 'Upcoming' };
+          if (state === 'ended') return { key: 'ended', label: isJa ? '終了' : 'Finished' };
+          if (state === 'future') return { key: 'future', label: isJa ? '開催予定' : 'Scheduled' };
+          return { key: 'unknown', label: isJa ? '状態未確認' : 'State not confirmed' };
         };
         const timeForRow = (row) => {
           const first = row.querySelector('[data-race-time="first"]')?.textContent?.trim() || '';

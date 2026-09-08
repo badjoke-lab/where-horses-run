@@ -34,10 +34,11 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
         <strong>{isJa ? '開催状態' : 'Meeting state'}</strong>
         <select data-filter-meeting-state>
           <option value="">{isJa ? 'すべて' : 'All'}</option>
-          <option value="today">{isJa ? '本日開催' : 'Today meeting'}</option>
-          <option value="upcoming">{isJa ? '開催前' : 'Upcoming'}</option>
           <option value="running">{isJa ? '開催中' : 'Racing now'}</option>
+          <option value="upcoming">{isJa ? '開催前' : 'Upcoming'}</option>
+          <option value="today">{isJa ? '本日開催' : 'Today meeting'}</option>
           <option value="ended">{isJa ? '終了' : 'Finished'}</option>
+          <option value="future">{isJa ? '開催予定' : 'Scheduled'}</option>
         </select>
       </label>
       <label>
