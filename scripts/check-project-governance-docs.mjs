@@ -8,6 +8,8 @@ const requiredFiles = [
   'docs/project-roadmap-2026-09-08-addendum.md',
   'docs/governance/document-authority.md',
   'docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md',
+  'docs/specs/calendar-row-rank-live-localization-2026-09-08.md',
+  'docs/calendar/calendar-presentation-state-001-display-correction-schedule.md',
   'docs/calendar/README.md',
   'docs/calendar/machine-readable-contracts.md',
   'docs/calendar/incremental-coverage-contract.md',
@@ -44,11 +46,17 @@ requirePhrases('AGENTS.md', [
   'before merge',
   'Conversation history',
   'docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md',
+  'docs/specs/calendar-row-rank-live-localization-2026-09-08.md',
+  'docs/calendar/calendar-presentation-state-001-display-correction-schedule.md',
 ]);
 requirePhrases('START-HERE.md', [
   'docs/project-roadmap-2026-09-08-addendum.md',
   'docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md',
+  'docs/specs/calendar-row-rank-live-localization-2026-09-08.md',
   'WHR-CAL-PRESENTATION-STATE-001',
+  'WHR-CAL-PRESENTATION-CONTEXT-001',
+  'Upcoming / racing today',
+  'Scheduled / 開催予定 as a current-day fallback',
 ]);
 requirePhrases('docs/governance/document-authority.md', [
   'docs/project-roadmap-2026-09-08-addendum.md',
@@ -57,9 +65,10 @@ requirePhrases('docs/governance/document-authority.md', [
 ]);
 requirePhrases('docs/project-roadmap-2026-09-08-addendum.md', [
   'WHR-CAL-PRESENTATION-STATE-001',
-  'specification/governance update',
-  'meeting lifecycle correction',
-  'official stream-state correction',
+  'WHR-CAL-PRESENTATION-CONTEXT-001',
+  'specification/governance/state-pointer update',
+  'Upcoming / racing today',
+  'Calendar selected future date',
   'Representative Visual Audit',
 ]);
 requirePhrases('docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md', [
@@ -70,6 +79,26 @@ requirePhrases('docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md'
   'one-day-at-a-time',
   'List | Month | Map',
   'Representative Visual Audit',
+]);
+requirePhrases('docs/specs/calendar-row-rank-live-localization-2026-09-08.md', [
+  'Presentation-state authority',
+  'Today range',
+  'Upcoming / racing today',
+  '開催前・本日開催',
+  'Calendar with a future date selected',
+  '#fff9e9',
+  '#fffcf4',
+  'Today Map legend',
+  'Map selected card',
+]);
+requirePhrases('docs/calendar/calendar-presentation-state-001-display-correction-schedule.md', [
+  'WHR-CAL-PRESENTATION-CONTEXT-001',
+  'Active defect set',
+  'Today range contract',
+  'Tomorrow and seven-day contract',
+  'Calendar date-focus contract',
+  'Today Map legend excludes Scheduled',
+  'Completion gate for WHR-CAL-PRESENTATION-CONTEXT-001',
 ]);
 
 requirePhrases('docs/calendar/incremental-coverage-contract.md', [
@@ -133,5 +162,7 @@ console.log(`CURRENT_REQUIRED_FILES: ${requiredFiles.length}`);
 console.log(`ACQUISITION_PROFILES: ${registry.records.length}`);
 console.log('ACTIVE_PROJECT_ADDENDUM: docs/project-roadmap-2026-09-08-addendum.md');
 console.log('ACTIVE_CALENDAR_PRESENTATION_SPEC: docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md');
+console.log('ACTIVE_CALENDAR_DISPLAY_CONTEXT_SPEC: docs/specs/calendar-row-rank-live-localization-2026-09-08.md');
+console.log('ACTIVE_CALENDAR_PRESENTATION_WORK: WHR-CAL-PRESENTATION-CONTEXT-001');
 console.log('HISTORICAL_FIXED_COUNTS_REQUIRED: false');
 console.log('COMPLETED_STAGE_TEXT_REQUIRED: false');
