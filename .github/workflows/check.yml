@@ -35,6 +35,9 @@ jobs:
       - name: Check meeting lifecycle state
         run: node scripts/check-meeting-lifecycle-state.mjs
 
+      - name: Check Japan freshness local date
+        run: node scripts/check-japan-freshness-local-date.mjs
+
       - name: Check meeting stream state
         run: node scripts/check-meeting-stream-state.mjs
 
