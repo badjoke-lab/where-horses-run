@@ -1,0 +1,48 @@
+/* Home/header polish adopted from the 2026-09-09 desktop review. */
+
+/* Japanese pages use the shared gothic/sans stack for headings. English keeps its existing serif/sans mix. */
+html:lang(ja) :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--whr-font-family) !important;
+}
+
+/* The three range choices are individual controls; do not frame them a second time as one field. */
+.today-controls__period {
+  gap: .45rem;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+}
+
+.today-controls__period button,
+.today-controls__period button:last-child {
+  border: 1px solid var(--whr-color-border);
+  border-radius: .6rem;
+}
+
+/* Bring the first meeting content closer to the header without changing the map-first structure. */
+@media (min-width: 901px) {
+  .today-page {
+    row-gap: 1.25rem;
+    padding-block: clamp(1.75rem, 3vw, 3rem) 4rem;
+  }
+}
+
+@media (min-width: 721px) {
+  /* Search/language are navigation links, so they share the primary-nav text treatment. */
+  .desktop-utility-nav__list > li > a {
+    min-height: 44px;
+    padding-inline: .45rem;
+    color: var(--whr-color-navy);
+    font-size: .88rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+}
+
+@media (min-width: 960px) {
+  /* Keep the wordmark visually separate from the navigation while the primary nav is still short. */
+  .site-header__inner {
+    grid-template-columns: max-content minmax(0, 1fr);
+    column-gap: clamp(3rem, 5vw, 5rem);
+  }
+}
