@@ -23,7 +23,7 @@ assert.equal(deriveMeetingPresentationState({
   rank: 'A+',
   calendarDayState: 'future',
   lifecycleState: 'upcoming',
-}), 'upcoming', 'presentation state and day relation remain independent inputs');
+}), 'future', 'future Calendar-day context must present as Scheduled rather than current-day Upcoming');
 
 const [policy, calendarMap, racecourseMap, spec, schedule] = await Promise.all([
   read('src/components/MeetingStatePolicy.astro'),
