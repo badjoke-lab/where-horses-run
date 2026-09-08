@@ -1,10 +1,13 @@
 <script is:inline>
   (() => {
-    const SAFE_VIDEO_ID = /^[A-Za-z0-9_-]{11}$/;
     let timer = null;
 
     const rows = () => [...document.querySelectorAll('[data-calendar-meeting-row]')]
       .filter((row) => row instanceof HTMLElement && row.dataset.liveAvailable === 'true');
+
+    const streamLabel = (live = false) => document.documentElement.lang === 'ja'
+      ? (live ? '● 公式配信中 ↗' : '公式配信 ↗')
+      : (live ? '● Live now ↗' : 'Official stream ↗');
 
     const resetRows = () => {
       rows().forEach((row) => {
@@ -15,6 +18,7 @@
         if (link instanceof HTMLAnchorElement) {
           const defaultHref = link.dataset.liveDefaultHref;
           if (defaultHref) link.href = defaultHref;
+          link.textContent = streamLabel(false);
         }
       });
     };
@@ -43,9 +47,8 @@
         const link = row.querySelector('[data-live-link]');
         if (link instanceof HTMLAnchorElement) {
           const defaultHref = link.dataset.liveDefaultHref || link.href;
-          const videoId = typeof entry?.video_id === 'string' && SAFE_VIDEO_ID.test(entry.video_id) ? entry.video_id : null;
-          const useWatchPage = dateMatches && videoId && (state === 'live' || state === 'upcoming');
-          link.href = useWatchPage ? `https://www.youtube.com/watch?v=${videoId}` : defaultHref;
+          link.href = defaultHref;
+          link.textContent = streamLabel(state === 'live' && dateMatches);
         }
       });
       window.dispatchEvent(new CustomEvent('whr:streamstatechange'));
