@@ -18,7 +18,8 @@ const base = {
   lastTime: '18:15',
 };
 
-// Future meetings with published times are future, never "upcoming/today".
+// Calendar-day relation and meeting lifecycle are separate. A future display
+// day can contain a source-local meeting whose lifecycle is simply "upcoming".
 for (const rank of ['B+', 'A', 'A+']) {
   const result = deriveMeetingLifecycleState({
     ...base,
@@ -28,7 +29,7 @@ for (const rank of ['B+', 'A', 'A+']) {
     nowMs: instant('2026-09-07', '12:00'),
   });
   assert.equal(result.calendarDayState, 'future', `${rank}: tomorrow must remain a future calendar day`);
-  assert.equal(result.state, 'future', `${rank}: published future times must not produce upcoming`);
+  assert.equal(result.state, 'upcoming', `${rank}: source-local lifecycle before start must be upcoming`);
 }
 
 const beforeStart = deriveMeetingLifecycleState({
@@ -58,14 +59,20 @@ const finishedToday = deriveMeetingLifecycleState({
 assert.equal(finishedToday.calendarDayState, 'today');
 assert.equal(finishedToday.state, 'ended');
 
-const past = deriveMeetingLifecycleState({
-  ...base,
-  displayedDate: '2026-09-06',
-  sourceDate: '2026-09-06',
-  nowMs: instant('2026-09-07', '12:00'),
+// Display timezone movement must not rewrite lifecycle truth. A source-local
+// meeting that already finished remains ended even if projection groups it on
+// another calendar date.
+const projected = deriveMeetingLifecycleState({
+  displayTimeZone: 'UTC',
+  sourceTimeZone: 'Asia/Tokyo',
+  displayedDate: '2026-09-07',
+  sourceDate: '2026-09-08',
+  firstTime: '01:00',
+  lastTime: '03:00',
+  nowMs: Date.parse('2026-09-07T19:00:00Z'),
 });
-assert.equal(past.calendarDayState, 'past');
-assert.equal(past.state, 'ended');
+assert.equal(projected.calendarDayState, 'today');
+assert.equal(projected.state, 'ended');
 
 const untimedFuture = deriveMeetingLifecycleState({
   displayTimeZone: 'Asia/Tokyo',
@@ -75,37 +82,36 @@ const untimedFuture = deriveMeetingLifecycleState({
   nowMs: instant('2026-09-07', '12:00'),
 });
 assert.equal(untimedFuture.calendarDayState, 'future');
-assert.equal(untimedFuture.state, 'future');
+assert.equal(untimedFuture.state, 'unknown');
 
-// Projection can move a source-date meeting onto "today" in another display timezone.
-// 2026-09-08 01:00 JST is 2026-09-07 16:00 UTC.
-const projectedToday = deriveMeetingLifecycleState({
-  displayTimeZone: 'UTC',
-  sourceTimeZone: 'Asia/Tokyo',
-  displayedDate: '2026-09-07',
-  sourceDate: '2026-09-08',
-  firstTime: '01:00',
-  lastTime: '03:00',
-  nowMs: Date.parse('2026-09-07T15:00:00Z'),
+// A time-only cross-midnight shape is ambiguous without an explicit end date.
+// Do not manufacture a +1-day meeting lifecycle fact.
+const crossMidnight = deriveMeetingLifecycleState({
+  displayTimeZone: 'Europe/Istanbul',
+  sourceTimeZone: 'Europe/Istanbul',
+  displayedDate: '2026-09-09',
+  sourceDate: '2026-09-09',
+  firstTime: '23:45',
+  lastTime: '03:30',
+  nowMs: instant('2026-09-09', '23:55', 'Europe/Istanbul'),
 });
-assert.equal(projectedToday.calendarDayState, 'today');
-assert.equal(projectedToday.state, 'upcoming');
+assert.equal(crossMidnight.policy, 'cross-midnight-ambiguous');
+assert.equal(crossMidnight.state, 'unknown');
 
 const statePolicySource = readFileSync(new URL('../src/components/MeetingStatePolicy.astro', import.meta.url), 'utf8');
 const meetingListSource = readFileSync(new URL('../src/components/TimetableMeetingList.astro', import.meta.url), 'utf8');
 for (const marker of [
   'deriveMeetingLifecycleState',
-  'row.dataset.meetingDayState = result.calendarDayState',
-  "state !== 'upcoming'",
+  'row.dataset.meetingCalendarDayState = result.calendarDayState',
+  'row.dataset.meetingState = result.state',
   ".meeting-row[data-meeting-state='upcoming'][data-meeting-day-state='today']",
-  ".meeting-row[data-meeting-state='future']",
 ]) {
   assert.match(statePolicySource, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `MeetingStatePolicy missing ${marker}`);
 }
-assert.doesNotMatch(statePolicySource, /removeYellowLifecyclePresentation/, 'today-upcoming presentation must not be globally suppressed');
+assert.match(statePolicySource, /data-stream-state='known'/, 'non-live official stream destinations must render neutrally');
 assert.match(meetingListSource, /window\.dispatchEvent\(new CustomEvent\('whr:meetingstatechange'\)\)/, 'timezone projection must trigger authoritative lifecycle recomputation');
 
 console.log('MEETING_LIFECYCLE_STATE: pass');
-console.log('FUTURE_TIMED_ROWS_STAY_FUTURE: pass');
-console.log('TODAY_UPCOMING_RUNNING_ENDED: pass');
-console.log('DISPLAY_TIMEZONE_DAY_BOUNDARY: pass');
+console.log('SOURCE_LOCAL_LIFECYCLE: pass');
+console.log('DISPLAY_TIMEZONE_IS_PRESENTATION_ONLY: pass');
+console.log('CROSS_MIDNIGHT_AMBIGUITY_FAILS_CLOSED: pass');
