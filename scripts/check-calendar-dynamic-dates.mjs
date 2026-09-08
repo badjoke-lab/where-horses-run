@@ -116,7 +116,7 @@ const pageChecks = [
   ['src/pages/index.astro', ['TodayFilters', 'TodayMeetingMap', 'TimetableMeetingList', 'getTimetableMeetingRowsForWindow', 'getGroupedTimetableMeetingRows', 'addCalendarDays', 'scope="all"', 'data-home-meeting-window']],
   ['src/pages/ja/index.astro', ['TodayFilters', 'TodayMeetingMap', 'TimetableMeetingList', 'getTimetableMeetingRowsForWindow', 'getGroupedTimetableMeetingRows', 'addCalendarDays', 'scope="all"', 'data-home-meeting-window']],
   ['src/pages/calendar/index.astro', ['CalendarDateNavigation', 'CalendarViewControls', 'MeetingStatePolicy', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="rolling-30"', 'windowEndInclusive']],
-  ['src/pages/ja/calendar/index.astro', ['CalendarDateNavigation', 'CalendarPresentationState', 'MeetingStatePolicy', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="rolling-30"', 'windowEndInclusive']],
+  ['src/pages/ja/calendar/index.astro', ['CalendarDateNavigation', 'CalendarViewControls', 'MeetingStatePolicy', 'getTimetableMeetingRowsForWindow', 'addCalendarDays', 'scope="rolling-30"', 'windowEndInclusive']],
 ];
 for (const [file, markers] of pageChecks) {
   const content = read(file);
@@ -133,8 +133,17 @@ for (const marker of [
   'data-filter-date',
   'whr:calendardatechange',
   "url.searchParams.set('view', view)",
+  "activate('list')",
 ]) {
   if (!calendarViewControls.includes(marker)) fail(`CalendarViewControls missing ${marker}.`);
+}
+
+const dateNavigation = read('src/components/CalendarDateNavigation.astro');
+for (const marker of ['data-calendar-date-prev', 'data-calendar-date-next', 'data-calendar-date-today', 'data-filter-date', 'fallbackDate']) {
+  if (!dateNavigation.includes(marker)) fail(`CalendarDateNavigation missing one-day List marker: ${marker}.`);
+}
+if (dateNavigation.includes('All 30 days') || dateNavigation.includes('30日すべて')) {
+  fail('CalendarDateNavigation must not restore the old all-30-days List option.');
 }
 
 const legacyRouteChecks = [
@@ -150,7 +159,9 @@ for (const [file, targetMarker, behaviorMarker] of legacyRouteChecks) {
 }
 
 for (const file of ['src/pages/calendar/index.astro', 'src/pages/ja/calendar/index.astro']) {
-  if (read(file).includes('CalendarDateFocus')) fail(`${file} must not retain the legacy CalendarDateFocus path.`);
+  const content = read(file);
+  if (content.includes('CalendarDateFocus')) fail(`${file} must not retain the legacy CalendarDateFocus path.`);
+  if (content.includes('CalendarPresentationState')) fail(`${file} must not retain the duplicate CalendarPresentationState layer.`);
 }
 
 const meetingList = read('src/components/TimetableMeetingList.astro');
@@ -184,7 +195,7 @@ for (const marker of [
   ".meeting-row[data-meeting-state='running']",
   ".meeting-row[data-meeting-state='upcoming']",
   ".meeting-row[data-meeting-state='ended']",
-  ".meeting-row[data-meeting-state='future']",
+  "[data-stream-state='known']",
 ]) {
   if (!statePolicy.includes(marker)) fail(`MeetingStatePolicy missing delegated lifecycle marker: ${marker}`);
 }
@@ -192,8 +203,9 @@ for (const marker of [
 const lifecycleHelper = read('src/lib/timetable/meetingLifecycleState.mjs');
 for (const marker of [
   'export function deriveMeetingLifecycleState',
-  "calendarDayState === 'past'",
-  "calendarDayState === 'future'",
+  'effectiveDisplayTimeZone',
+  'effectiveDisplayedDate',
+  'cross-midnight-ambiguous',
   "? 'first-last'",
   "? 'first-only'",
   "? 'last-only'",
@@ -207,6 +219,11 @@ for (const forbidden of ["new Set(['A+', 'A', 'B+'])", "capability_rank === 'A'"
   if (statePolicy.includes(forbidden) || lifecycleHelper.includes(forbidden)) {
     fail(`meeting lifecycle state must not be gated by capability rank: ${forbidden}`);
   }
+}
+
+const streamHelper = read('src/lib/timetable/meetingStreamState.mjs');
+for (const marker of ['deriveMeetingStreamState', 'matchingEvent', 'MEETING_STREAM_STATES.LIVE', 'MEETING_STREAM_STATES.KNOWN']) {
+  if (!streamHelper.includes(marker)) fail(`meetingStreamState missing fail-closed stream marker: ${marker}`);
 }
 
 const baseLayout = read('src/layouts/BaseLayout.astro');
@@ -252,7 +269,8 @@ console.log('SOURCE_DATE_EPOCH: pass');
 console.log('TIMEZONE_BOUNDARIES: pass');
 console.log('SELECTED_TIMEZONE_PROJECTION: pass');
 console.log('UNIFIED_HOME_WINDOW: pass');
-console.log('DELEGATED_MEETING_LIFECYCLE_STATE: pass');
-console.log('CALENDAR_LIST_MONTH_MAP: pass');
+console.log('SOURCE_LOCAL_MEETING_LIFECYCLE_STATE: pass');
+console.log('FAIL_CLOSED_STREAM_STATE: pass');
+console.log('CALENDAR_ONE_DAY_LIST_MONTH_MAP: pass');
 console.log('ROLLING_WINDOW_DAYS: 30');
 console.log('FIXED_MONTH_YEAR_COPY: 0');
