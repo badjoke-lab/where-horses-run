@@ -19,7 +19,7 @@ docs/operations/deployment-and-ci-policy.md
 
 Re-read the applicable canonical specification and active roadmap/addendum whenever scope or acceptance criteria change, after relevant movement on `main`, before opening or materially updating a PR, before merge, and after merge before beginning the next Work ID. Conversation history and PR numbers do not replace canonical repository documents.
 
-The active parallel-lane contract is mandatory. Calendar presentation correction, Calendar country/authority coverage expansion, and all-tier racecourse inventory/ledger work may proceed simultaneously. Do not serialize one behind another unless there is a real shared-file/shared-schema conflict.
+The active parallel-lane contract is mandatory. Calendar country/authority coverage expansion and all-tier racecourse inventory/ledger work continue independently of the product/UI lane. The bounded Calendar presentation-context correction is complete and remains a regression contract, not an active blocker.
 
 ## Calendar-visible work: mandatory additional reading
 
@@ -95,25 +95,21 @@ Current stage: reviewed_incremental_maintenance
 Active product/UI lane: map_first_site_ui
 Completed UI Work ID: UI-006
 Completed UI Work ID: UI-007
-Current UI Work ID: UI-008 [runtime paused during bounded Calendar correction]
+Current UI Work ID: UI-008 [active]
 Next UI Work ID: UI-009
 Parallel Calendar quality lane: calendar_quality_and_coverage
 Active Calendar country/authority coverage expansion: continues independently
 Active all-tier racecourse inventory/ledger lane: continues independently
 Completed Calendar presentation correction: WHR-CAL-PRESENTATION-STATE-001
 Completed Calendar color-state amendment: WHR-CAL-PRESENTATION-COLOR-001
-Active Calendar context-state amendment: WHR-CAL-PRESENTATION-CONTEXT-001
+Completed Calendar context-state amendment: WHR-CAL-PRESENTATION-CONTEXT-001
 ```
 
-Execution priority before UI-008 resumes:
+`WHR-CAL-PRESENTATION-CONTEXT-001` is complete. Runtime PR #927 merged as `cf1a010765e9d012f40b168506ae3d7f6959d65b`; exact merge-SHA Race Acquisition Check `34229426401`, Representative Visual Audit `34229426431`, and Cloudflare Pages deployment `bdb0222f-f0c3-43d2-88f3-ea96c902bdd6` succeeded. UI-008 is therefore unblocked and resumes from current `main`, not from a pre-correction branch.
 
-```text
-WHR-CAL-PRESENTATION-CONTEXT-001
-```
+That completion changes only the UI-lane blocker. Calendar country/authority coverage expansion and the all-tier racecourse inventory/ledger lane continue independently and reconcile against current `main` before PR update/merge.
 
-That priority applies only to the UI lane. It does **not** pause Calendar country/authority coverage expansion or the all-tier racecourse inventory/ledger lane. Those two lanes continue in parallel and reconcile against current `main` before PR update/merge.
-
-The active Calendar context-state contract requires Today/Calendar/List/Map to agree on the same presentation state for the same meeting and date context.
+The completed Calendar context-state contract remains mandatory: Today/Calendar/List/Map must agree on the same presentation state for the same meeting and date context.
 
 ## Active Today / Calendar presentation rules
 
@@ -250,12 +246,6 @@ Only public-safe specifications, reviewed facts, schemas, code, tests, hashes, a
 
 ## Resume rule
 
-After `WHR-CAL-PRESENTATION-CONTEXT-001` merges and exact-SHA CI/Cloudflare verification passes:
+The resume gate for `WHR-CAL-PRESENTATION-CONTEXT-001` has been satisfied: the correction merged, exact-SHA CI and Cloudflare verification passed, completion state is synchronized, and `UI-008` is active from current `main`.
 
-1. re-read `AGENTS.md`;
-2. re-read this file and `docs/governance/parallel-work-lanes-2026-09-08.md`;
-3. re-read governance and the active top-level roadmap addendum;
-4. confirm the Calendar amendment is marked complete;
-5. resume `UI-008` from current `main` rather than from a stale pre-Calendar branch.
-
-Calendar country/authority coverage expansion and all-tier racecourse inventory/ledger work do not wait for this resume rule; they remain active throughout.
+Before UI-008 changes, continue to follow the normal work-start re-read gate and the `UI-008` scope in the active map-first UI specification/roadmap. Calendar country/authority coverage expansion and all-tier racecourse inventory/ledger work remain active in parallel.
