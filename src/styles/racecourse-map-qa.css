@@ -3,6 +3,15 @@
   min-height: 44px;
 }
 
+/* Calendar state names are canonical DOM text. Do not let legacy/global
+   pseudo-content append a second state label to a Map legend item. */
+.racecourse-map__legend-item::before,
+.racecourse-map__legend-item::after,
+.racecourse-map__legend-label::before,
+.racecourse-map__legend-label::after {
+  content: none !important;
+}
+
 .map-selected-card__status[data-status='today']::before {
   background: #fffcf4;
   border-color: #7a5a00;
