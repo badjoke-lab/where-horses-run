@@ -12,15 +12,31 @@
     return isTimeZoneSupported(row.dataset.sourceTimezone) ? row.dataset.sourceTimezone : 'Asia/Tokyo';
   };
 
+  const ensureFutureBadge = (row) => {
+    const existing = row.querySelector('[data-meeting-future-badge]');
+    if (existing instanceof HTMLElement) return existing;
+    const links = row.querySelector('.meeting-row__links');
+    if (!(links instanceof HTMLElement)) return null;
+    const badge = document.createElement('span');
+    badge.className = 'meeting-row__meeting-badge meeting-row__meeting-badge--future';
+    badge.dataset.meetingFutureBadge = 'true';
+    badge.textContent = document.documentElement.lang === 'ja' ? '開催予定' : 'Scheduled';
+    badge.hidden = true;
+    links.prepend(badge);
+    return badge;
+  };
+
   const setBadges = (row, presentationState) => {
     const today = row.querySelector('[data-meeting-today-badge]');
     const upcoming = row.querySelector('[data-meeting-upcoming-badge]');
     const running = row.querySelector('[data-meeting-running-badge]');
     const ended = row.querySelector('[data-meeting-ended-badge]');
+    const future = ensureFutureBadge(row);
     if (today instanceof HTMLElement) today.hidden = presentationState !== 'today';
     if (upcoming instanceof HTMLElement) upcoming.hidden = presentationState !== 'upcoming';
     if (running instanceof HTMLElement) running.hidden = presentationState !== 'running';
     if (ended instanceof HTMLElement) ended.hidden = presentationState !== 'ended';
+    if (future instanceof HTMLElement) future.hidden = presentationState !== 'future';
   };
 
   const applyToRow = (row, now = Date.now()) => {
@@ -66,6 +82,18 @@
     setBadges(row, row.dataset.meetingPresentationState);
   };
 
+  const presentationLabel = (state, isJa) => state === 'running'
+    ? (isJa ? '開催中' : 'Racing now')
+    : state === 'today'
+      ? (isJa ? '本日開催' : 'Today meeting')
+      : state === 'upcoming'
+        ? (isJa ? '開催前' : 'Upcoming')
+        : state === 'ended'
+          ? (isJa ? '終了' : 'Finished')
+          : state === 'future'
+            ? (isJa ? '開催予定' : 'Scheduled')
+            : (isJa ? '時刻未確認' : 'Time not confirmed');
+
   const syncSelectedMapStatus = () => {
     const selected = document.querySelector('.meeting-row--map-selected:not([hidden])');
     const target = document.querySelector('[data-today-map-selected-status]');
@@ -73,15 +101,7 @@
     const isJa = document.documentElement.lang === 'ja';
     const state = selected.dataset.meetingPresentationState || 'unknown';
     target.dataset.status = state;
-    target.textContent = state === 'running'
-      ? (isJa ? '開催中' : 'Racing now')
-      : state === 'today'
-        ? (isJa ? '本日開催' : 'Today meeting')
-        : state === 'upcoming'
-          ? (isJa ? '開催前' : 'Upcoming')
-          : state === 'ended'
-            ? (isJa ? '終了' : 'Finished')
-            : (isJa ? '時刻未確認' : 'Time not confirmed');
+    target.textContent = presentationLabel(state, isJa);
   };
 
   const applyAll = () => {
@@ -124,6 +144,7 @@
     opacity: .68 !important;
   }
 
+  .meeting-row[data-meeting-presentation-state='future'],
   .meeting-row[data-meeting-presentation-state='unknown'] {
     background: #fff !important;
     box-shadow: none !important;
