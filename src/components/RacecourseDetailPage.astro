@@ -172,14 +172,14 @@ const pageDescription = isJapanese
     <header class="racecourse-detail-v2__hero" data-racecourse-detail-identity>
       <div>
         <p class="racecourse-detail-v2__eyebrow">{isJapanese ? '競馬場' : 'Racecourse'}</p>
-        <h1>{racecourseName}</h1>
+        <h1 id="page-title">{racecourseName}</h1>
         {secondaryName && secondaryName !== racecourseName ? (
-          <p class="racecourse-detail-v2__secondary-name">{secondaryName}</p>
+          <p class="racecourse-detail-v2__secondary-name" data-racecourse-local-name>{secondaryName}</p>
         ) : null}
       </div>
       <div class="racecourse-detail-v2__identity" aria-label={isJapanese ? '競馬場の基本情報' : 'Racecourse identity'}>
-        <a href={countryHref}>{countryName}</a>
-        {locality ? <span>{locality}</span> : null}
+        <a href={countryHref} data-racecourse-country>{countryName}</a>
+        {locality ? <span data-racecourse-location>{locality}</span> : null}
         {track.timezone ? <span>{track.timezone}</span> : null}
         {authorityLabels.map((label) => <span>{label}</span>)}
         {!authorityLabels.length && operatorName ? <span>{operatorName}</span> : null}
