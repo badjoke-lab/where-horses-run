@@ -9,8 +9,10 @@ const pages = [
   { id: 'home', path: '/', kind: 'home' },
   { id: 'today', path: '/?range=today', kind: 'home' },
   { id: 'calendar-list', path: '/calendar/?view=list', kind: 'calendar', view: 'list' },
+  { id: 'calendar-next-day', path: '/calendar/?view=list', kind: 'calendar', view: 'list', dateOffset: 1 },
   { id: 'calendar-month', path: '/calendar/?view=month', kind: 'calendar', view: 'month' },
   { id: 'calendar-map', path: '/calendar/?view=map', kind: 'calendar', view: 'map' },
+  { id: 'calendar-ja', path: '/ja/calendar/?view=list', kind: 'calendar', view: 'list', lang: 'ja' },
   { id: 'countries', path: '/countries/', kind: 'countries' },
   { id: 'country-japan', path: '/countries/japan/', kind: 'country' },
   { id: 'racecourse-tokyo', path: '/tracks/tokyo-racecourse/', kind: 'racecourse' },
@@ -36,8 +38,6 @@ const manifest = {
   failures: [],
 };
 
-const normalizeText = (text) => String(text || '').replace(/\s+/g, ' ').trim();
-
 const waitForShell = async (page) => {
   await page.waitForFunction(() => {
     const header = document.querySelector('[data-mobile-navigation]');
@@ -46,8 +46,21 @@ const waitForShell = async (page) => {
   }, null, { timeout: 7000 }).catch(() => {});
 };
 
+const selectRelativeCalendarDate = async (page, offset) => {
+  if (!Number.isInteger(offset) || offset === 0) return;
+  await page.evaluate((delta) => {
+    const select = document.querySelector('[data-filter-date]');
+    if (!(select instanceof HTMLSelectElement) || select.options.length === 0) return;
+    const nextIndex = Math.min(select.options.length - 1, Math.max(0, select.selectedIndex + delta));
+    if (nextIndex === select.selectedIndex) return;
+    select.selectedIndex = nextIndex;
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+  }, offset);
+  await page.waitForTimeout(300);
+};
+
 const inspectPage = async (page, spec, viewport) => {
-  const result = await page.evaluate(({ expectedDesktopNav, expectedMobileNav, view, mobile }) => {
+  const result = await page.evaluate(({ expectedDesktopNav, expectedMobileNav, view, mobile, lang }) => {
     const visible = (element) => {
       if (!(element instanceof HTMLElement)) return false;
       const style = getComputedStyle(element);
@@ -93,17 +106,23 @@ const inspectPage = async (page, spec, viewport) => {
     checks.desktop_primary_nav = desktopNav;
     checks.mobile_bottom_nav = mobileNav;
 
-    if (mobile) {
-      if (JSON.stringify(mobileNav) !== JSON.stringify(expectedMobileNav)) {
-        failures.push(`mobile nav mismatch: ${JSON.stringify(mobileNav)}`);
+    // English shell text is a stable regression contract. JA pages share the
+    // same shell structure but localized labels are allowed to differ.
+    if (lang !== 'ja') {
+      if (mobile) {
+        if (JSON.stringify(mobileNav) !== JSON.stringify(expectedMobileNav)) {
+          failures.push(`mobile nav mismatch: ${JSON.stringify(mobileNav)}`);
+        }
+      } else if (JSON.stringify(desktopNav) !== JSON.stringify(expectedDesktopNav)) {
+        failures.push(`desktop nav mismatch: ${JSON.stringify(desktopNav)}`);
       }
-    } else if (JSON.stringify(desktopNav) !== JSON.stringify(expectedDesktopNav)) {
-      failures.push(`desktop nav mismatch: ${JSON.stringify(desktopNav)}`);
     }
 
     const bottomNav = document.querySelector('.mobile-bottom-nav');
+    let mobileContentBottom = window.innerHeight;
     if (mobile && bottomNav instanceof HTMLElement) {
       const navRect = bottomNav.getBoundingClientRect();
+      mobileContentBottom = navRect.top;
       checks.mobile_bottom_nav_top = Math.round(navRect.top);
       if (!visible(bottomNav)) failures.push('mobile bottom nav is not visible');
       if (navRect.bottom > window.innerHeight + 2) failures.push('mobile bottom nav extends below viewport');
@@ -117,16 +136,52 @@ const inspectPage = async (page, spec, viewport) => {
 
       const month = document.querySelector('[data-calendar-month-view]');
       const list = document.querySelector('[data-calendar-list-view]');
-      const map = document.querySelector('[data-calendar-meeting-map], [data-calendar-view-map-panel], .calendar-meeting-map');
+      const mapPanel = document.querySelector('[data-calendar-map-panel]');
       checks.calendar_month_visible = visible(month);
       checks.calendar_list_visible = visible(list);
-      checks.calendar_map_visible = visible(map);
+      checks.calendar_map_visible = visible(mapPanel);
       if (view === 'month' && !visible(month)) failures.push('month panel is not visible');
       if (view === 'list' && !visible(list)) failures.push('list panel is not visible');
+      if (view === 'map' && !visible(mapPanel)) failures.push('map panel is not visible');
+
+      const selectedDate = document.querySelector('[data-filter-date]');
+      checks.calendar_selected_date = selectedDate instanceof HTMLSelectElement ? selectedDate.value : '';
+
+      if (view === 'list') {
+        const visibleRows = [...document.querySelectorAll('[data-calendar-meeting-row]')]
+          .filter((row) => row instanceof HTMLElement && visible(row));
+        checks.calendar_visible_meeting_rows = visibleRows.length;
+        if (mobile && visibleRows.length > 0) {
+          const rowInFirstViewport = visibleRows.some((row) => {
+            const rect = row.getBoundingClientRect();
+            return rect.bottom > 0 && rect.top < mobileContentBottom;
+          });
+          checks.calendar_row_in_first_mobile_viewport = rowInFirstViewport;
+          if (!rowInFirstViewport) failures.push('calendar mobile List has meetings but no meeting row in the first viewport');
+        }
+
+        const coloredNonLiveLinks = visibleRows.flatMap((row) => {
+          if (row.dataset.streamState === 'live') return [];
+          const link = row.querySelector('[data-live-link]');
+          if (!(link instanceof HTMLElement) || !visible(link)) return [];
+          const background = getComputedStyle(link).backgroundColor;
+          return background === 'rgba(0, 0, 0, 0)' || background === 'transparent'
+            ? []
+            : [`${normalize(row.dataset.racecourse)}:${row.dataset.streamState || 'unset'}:${background}`];
+        });
+        checks.calendar_colored_non_live_stream_links = coloredNonLiveLinks;
+        if (coloredNonLiveLinks.length) failures.push(`non-live stream links have status color: ${coloredNonLiveLinks.join(' | ')}`);
+      }
     }
 
     return { checks, failures };
-  }, { expectedDesktopNav, expectedMobileNav, view: spec.view || null, mobile: viewport.mobile });
+  }, {
+    expectedDesktopNav,
+    expectedMobileNav,
+    view: spec.view || null,
+    mobile: viewport.mobile,
+    lang: spec.lang || 'en',
+  });
 
   return result;
 };
@@ -166,6 +221,7 @@ try {
 
         await waitForShell(page);
         await page.waitForTimeout(spec.kind === 'calendar' || spec.kind === 'home' ? 1600 : 800);
+        await selectRelativeCalendarDate(page, spec.dateOffset || 0);
 
         const inspected = await inspectPage(page, spec, viewport);
         entry.checks = inspected.checks;
