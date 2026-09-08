@@ -13,8 +13,9 @@
   box-shadow: none !important;
 }
 
-.timetable-timezone-projection .meeting-row[data-meeting-state='running'],
-.timetable-timezone-projection .meeting-row[data-meeting-state='upcoming'][data-meeting-day-state='today'] {
+.timetable-timezone-projection .meeting-row[data-meeting-presentation-state='running'],
+.timetable-timezone-projection .meeting-row[data-meeting-presentation-state='upcoming'][data-meeting-day-state='today'],
+.timetable-timezone-projection .meeting-row[data-meeting-presentation-state='today'][data-meeting-day-state='today'] {
   box-shadow: none !important;
 }
 
@@ -198,8 +199,7 @@
     font-size: 0.65rem;
   }
 
-  .timetable-timezone-projection .meeting-row__meeting-badge,
-  .timetable-timezone-projection .meeting-row__stream-live-badge {
+  .timetable-timezone-projection .meeting-row__meeting-badge {
     padding: 0.08rem 0.28rem !important;
     font-size: 0.62rem !important;
   }

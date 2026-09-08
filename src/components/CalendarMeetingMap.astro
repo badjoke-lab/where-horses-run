@@ -28,7 +28,7 @@ const meetingMap = records.map((record) => ({
 }));
 const meetingMapJson = JSON.stringify(meetingMap).replace(/</g, '\\u003c');
 const fallbackMessage = isJapanese
-  ? 'インタラクティブ地図を読み込めません。List表示の開催情報と公式リンクは引き続き利用できます。'
+  ? 'インタラクティブ地図を読み込めません。一覧表示の開催情報と公式リンクは引き続き利用できます。'
   : 'Interactive map unavailable. Calendar List view and official links remain available.';
 ---
 
@@ -36,17 +36,17 @@ const fallbackMessage = isJapanese
   <div class="calendar-map-switch__heading">
     <div>
       <p class="calendar-map-switch__eyebrow">{isJapanese ? '表示切替' : 'Calendar view'}</p>
-      <h2 id="calendar-view-title">List / Map</h2>
+      <h2 id="calendar-view-title">{isJapanese ? '一覧 / 地図' : 'List / Map'}</h2>
     </div>
     <div class="calendar-map-switch__buttons" role="group" aria-label={isJapanese ? 'カレンダー表示' : 'Calendar view'}>
-      <button type="button" data-calendar-view-list aria-pressed="true">List</button>
-      <button type="button" data-calendar-view-map aria-pressed="false">Map</button>
+      <button type="button" data-calendar-view-list aria-pressed="true">{isJapanese ? '一覧' : 'List'}</button>
+      <button type="button" data-calendar-view-map aria-pressed="false">{isJapanese ? '地図' : 'Map'}</button>
     </div>
   </div>
 
   <p class="calendar-map-switch__hint">
     {isJapanese
-      ? 'Mapは日付を1日選んだ時だけ表示します。国・主催・Rankなどの絞り込み結果も同じmeeting行から地図へ反映します。'
+      ? '地図は日付を1日選んだ時だけ表示します。国・主催・公開ランクなどの絞り込み結果も同じ開催行から地図へ反映します。'
       : 'Map view requires one selected date. Country, authority, rank, and other filters are reflected from the same meeting rows.'}
   </p>
 
@@ -65,7 +65,7 @@ const fallbackMessage = isJapanese
           fallbackMessage={fallbackMessage}
         />
         <p class="racecourse-map__attribution">
-          Map: <a href="https://openfreemap.org/">OpenFreeMap</a> · Data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>
+          {isJapanese ? '地図' : 'Map'}: <a href="https://openfreemap.org/">OpenFreeMap</a> · Data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>
         </p>
         <div class="calendar-map-switch__selected map-selected-card" data-calendar-map-selected hidden>
           <div class="map-selected-card__body">
@@ -75,7 +75,7 @@ const fallbackMessage = isJapanese
           </div>
           <div class="map-selected-card__actions">
             <a data-calendar-map-selected-track hidden>{isJapanese ? '競馬場ページ' : 'Racecourse page'}</a>
-            <button type="button" data-calendar-map-show-list>{isJapanese ? 'Listで見る' : 'Show in List'}</button>
+            <button type="button" data-calendar-map-show-list>{isJapanese ? '一覧で見る' : 'Show in List'}</button>
             <button type="button" class="map-selected-card__close" data-calendar-map-close aria-label={isJapanese ? '選択を閉じる' : 'Close selection'}>×</button>
           </div>
         </div>
@@ -138,13 +138,11 @@ const fallbackMessage = isJapanese
             .map((entry) => entry.racecourseId)
         ));
         const statusForRow = (row) => {
-          const meetingState = row.dataset.meetingState || 'unknown';
-          const dayState = row.dataset.meetingDayState || 'unknown';
-          if (meetingState === 'running') return { key: 'running', label: isJa ? '開催中' : 'Racing now' };
-          if ((meetingState === 'upcoming' || meetingState === 'unknown') && dayState === 'today') {
-            return { key: 'upcoming', label: isJa ? '今日これから' : 'Later today' };
-          }
-          if (meetingState === 'ended' || dayState === 'past') return { key: 'ended', label: isJa ? '終了' : 'Finished' };
+          const presentationState = row.dataset.meetingPresentationState || 'unknown';
+          if (presentationState === 'running') return { key: 'running', label: isJa ? '開催中' : 'Racing now' };
+          if (presentationState === 'today') return { key: 'upcoming', label: isJa ? '本日開催' : 'Today meeting' };
+          if (presentationState === 'upcoming') return { key: 'upcoming', label: isJa ? '開催前' : 'Upcoming' };
+          if (presentationState === 'ended') return { key: 'ended', label: isJa ? '終了' : 'Finished' };
           return { key: 'future', label: isJa ? '開催予定' : 'Scheduled' };
         };
         const timeForRow = (row) => {
@@ -303,15 +301,14 @@ const fallbackMessage = isJapanese
         }
         if (closeButton instanceof HTMLButtonElement) {
           closeButton.addEventListener('click', () => {
-            const closing = selectedRacecourseId;
             hideSelected();
-            clearMapSelection(closing);
+            clearMapSelection();
           });
         }
         if (mapRoot instanceof HTMLElement) {
           mapRoot.addEventListener('racecourse-map:ready', syncMap);
           mapRoot.addEventListener('racecourse-map:deselect', hideSelected);
-        mapRoot.addEventListener('racecourse-map:select', (event) => {
+          mapRoot.addEventListener('racecourse-map:select', (event) => {
             const racecourseId = event?.detail?.racecourseId;
             if (typeof racecourseId === 'string') selectRacecourse(racecourseId);
           });

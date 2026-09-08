@@ -3,6 +3,7 @@
     deriveMeetingLifecycleState,
     isTimeZoneSupported,
   } from '../lib/timetable/meetingLifecycleState.mjs';
+  import { deriveMeetingPresentationState } from '../lib/timetable/meetingPresentationState.mjs';
 
   const displayTimeZoneForRow = (row) => {
     const root = row.closest('[data-display-timezone-root]');
@@ -11,13 +12,15 @@
     return isTimeZoneSupported(row.dataset.sourceTimezone) ? row.dataset.sourceTimezone : 'Asia/Tokyo';
   };
 
-  const setBadges = (row, state) => {
+  const setBadges = (row, presentationState) => {
+    const today = row.querySelector('[data-meeting-today-badge]');
     const upcoming = row.querySelector('[data-meeting-upcoming-badge]');
     const running = row.querySelector('[data-meeting-running-badge]');
     const ended = row.querySelector('[data-meeting-ended-badge]');
-    if (upcoming instanceof HTMLElement) upcoming.hidden = state !== 'upcoming';
-    if (running instanceof HTMLElement) running.hidden = state !== 'running';
-    if (ended instanceof HTMLElement) ended.hidden = state !== 'ended';
+    if (today instanceof HTMLElement) today.hidden = presentationState !== 'today';
+    if (upcoming instanceof HTMLElement) upcoming.hidden = presentationState !== 'upcoming';
+    if (running instanceof HTMLElement) running.hidden = presentationState !== 'running';
+    if (ended instanceof HTMLElement) ended.hidden = presentationState !== 'ended';
   };
 
   const applyToRow = (row, now = Date.now()) => {
@@ -28,6 +31,7 @@
       row.dataset.meetingCalendarDayState = 'unknown';
       row.dataset.meetingDayState = 'unknown';
       row.dataset.meetingState = 'unknown';
+      row.dataset.meetingPresentationState = 'unknown';
       row.dataset.meetingStatePolicy = 'invalid';
       delete row.dataset.sortStart;
       setBadges(row, 'unknown');
@@ -52,9 +56,14 @@
     row.dataset.meetingDayState = result.calendarDayState;
     row.dataset.meetingState = result.state;
     row.dataset.meetingStatePolicy = result.policy;
+    row.dataset.meetingPresentationState = deriveMeetingPresentationState({
+      rank: row.dataset.rank || '',
+      calendarDayState: result.calendarDayState,
+      lifecycleState: result.state,
+    });
     if (result.sortStartMs === null) delete row.dataset.sortStart;
     else row.dataset.sortStart = String(result.sortStartMs);
-    setBadges(row, result.state);
+    setBadges(row, row.dataset.meetingPresentationState);
   };
 
   const syncSelectedMapStatus = () => {
@@ -62,13 +71,12 @@
     const target = document.querySelector('[data-today-map-selected-status]');
     if (!(selected instanceof HTMLElement) || !(target instanceof HTMLElement)) return;
     const isJa = document.documentElement.lang === 'ja';
-    const state = selected.dataset.meetingState || 'unknown';
-    const dayState = selected.dataset.meetingDayState || 'unknown';
+    const state = selected.dataset.meetingPresentationState || 'unknown';
     target.dataset.status = state;
     target.textContent = state === 'running'
       ? (isJa ? '開催中' : 'Racing now')
-      : state === 'upcoming' && dayState === 'today'
-        ? (isJa ? '今日これから' : 'Later today')
+      : state === 'today'
+        ? (isJa ? '本日開催' : 'Today meeting')
         : state === 'upcoming'
           ? (isJa ? '開催前' : 'Upcoming')
           : state === 'ended'
@@ -92,25 +100,26 @@
 </script>
 
 <style is:global>
-  .meeting-row[data-meeting-state='running'][data-meeting-day-state='today'] {
+  .meeting-row[data-meeting-presentation-state='running'][data-meeting-day-state='today'] {
     background: #fff7f6 !important;
     box-shadow: none !important;
     opacity: 1 !important;
   }
 
-  .meeting-row[data-meeting-state='upcoming'][data-meeting-day-state='today'] {
+  .meeting-row[data-meeting-presentation-state='upcoming'][data-meeting-day-state='today'],
+  .meeting-row[data-meeting-presentation-state='today'][data-meeting-day-state='today'] {
     background: #fff9e9 !important;
     box-shadow: none !important;
     opacity: 1 !important;
   }
 
-  .meeting-row[data-meeting-state='ended'] {
+  .meeting-row[data-meeting-presentation-state='ended'] {
     background: #f6f7f8 !important;
     box-shadow: none !important;
     opacity: .68 !important;
   }
 
-  .meeting-row[data-meeting-state='unknown'] {
+  .meeting-row[data-meeting-presentation-state='unknown'] {
     background: #fff !important;
     box-shadow: none !important;
     opacity: 1 !important;

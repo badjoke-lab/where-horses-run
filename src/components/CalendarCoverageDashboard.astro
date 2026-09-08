@@ -27,7 +27,7 @@ const copy = lang === 'ja'
       eventRows: 'レース',
       timeMeetings: '時刻掲載あり',
       structuredRows: '詳細掲載あり',
-      liveAvailable: '公式ライブを見る',
+      liveAvailable: '公式配信を見る',
       note: '掲載件数はサイト上に現在登録されている開催情報の集計です。最新の変更は各開催の公式情報源でも確認してください。',
     }
   : {
@@ -69,8 +69,8 @@ const copy = lang === 'ja'
             <p>
               <button
                 type="button"
-                data-coverage-filter-country={country.country_label}
-                data-coverage-filter-live={media.hasYouTube ? 'youtube' : 'available'}
+                data-coverage-filter-country={country.country_id}
+                data-coverage-filter-live="available"
               >
                 ▶ {media.hasYouTube ? 'YouTube' : copy.liveAvailable}
               </button>

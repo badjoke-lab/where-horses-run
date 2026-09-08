@@ -174,7 +174,7 @@ for (const marker of [
 }
 if (meetingList.includes("Intl.supportedValuesOf('timeZone')")) fail('TimetableMeetingList must not expand the full browser IANA timezone list.');
 if (meetingList.includes("(record.capability_rank === 'A' || record.capability_rank === 'A+') &&")) {
-  fail('TimetableMeetingList must not gate meeting lifecycle state by A/A+ capability rank.');
+  fail('TimetableMeetingList must not gate underlying meeting lifecycle state by A/A+ capability rank.');
 }
 
 const homeControls = read('src/components/TodayFilters.astro');
@@ -188,16 +188,26 @@ for (const marker of [
 const statePolicy = read('src/components/MeetingStatePolicy.astro');
 for (const marker of [
   'deriveMeetingLifecycleState',
+  'deriveMeetingPresentationState',
   'row.dataset.meetingCalendarDayState = result.calendarDayState',
   'row.dataset.meetingDayState = result.calendarDayState',
   'row.dataset.meetingState = result.state',
   'row.dataset.meetingStatePolicy = result.policy',
-  ".meeting-row[data-meeting-state='running']",
-  ".meeting-row[data-meeting-state='upcoming']",
-  ".meeting-row[data-meeting-state='ended']",
+  'row.dataset.meetingPresentationState',
+  'setBadges(row, row.dataset.meetingPresentationState)',
+  ".meeting-row[data-meeting-presentation-state='running']",
+  ".meeting-row[data-meeting-presentation-state='upcoming']",
+  ".meeting-row[data-meeting-presentation-state='today']",
+  ".meeting-row[data-meeting-presentation-state='ended']",
   "[data-stream-state='known']",
 ]) {
-  if (!statePolicy.includes(marker)) fail(`MeetingStatePolicy missing delegated lifecycle marker: ${marker}`);
+  if (!statePolicy.includes(marker)) fail(`MeetingStatePolicy missing delegated lifecycle/presentation marker: ${marker}`);
+}
+if (!statePolicy.includes('rank: row.dataset.rank')) {
+  fail('MeetingStatePolicy must pass public rank only to the separate presentation-state resolver.');
+}
+if (!statePolicy.includes('lifecycleState: result.state')) {
+  fail('MeetingStatePolicy presentation state must derive from, not replace, the authoritative lifecycle result.');
 }
 
 const lifecycleHelper = read('src/lib/timetable/meetingLifecycleState.mjs');
@@ -215,10 +225,20 @@ for (const marker of [
 ]) {
   if (!lifecycleHelper.includes(marker)) fail(`meetingLifecycleState missing lifecycle contract marker: ${marker}`);
 }
-for (const forbidden of ["new Set(['A+', 'A', 'B+'])", "capability_rank === 'A'"]) {
-  if (statePolicy.includes(forbidden) || lifecycleHelper.includes(forbidden)) {
-    fail(`meeting lifecycle state must not be gated by capability rank: ${forbidden}`);
+for (const forbidden of ['capability_rank', 'effective_public_rank', 'rankWeight', "new Set(['A+', 'A', 'B+'])"]) {
+  if (lifecycleHelper.includes(forbidden)) {
+    fail(`underlying meeting lifecycle helper must remain rank-independent: ${forbidden}`);
   }
+}
+
+const presentationHelper = read('src/lib/timetable/meetingPresentationState.mjs');
+for (const marker of [
+  "new Set(['B+', 'A', 'A+'])",
+  "new Set(['C', 'B'])",
+  "calendarDayState === 'today' && DAY_ONLY_RANKS.has(rank)",
+  "return 'today'",
+]) {
+  if (!presentationHelper.includes(marker)) fail(`meetingPresentationState missing B+ display-boundary marker: ${marker}`);
 }
 
 const streamHelper = read('src/lib/timetable/meetingStreamState.mjs');
@@ -270,6 +290,8 @@ console.log('TIMEZONE_BOUNDARIES: pass');
 console.log('SELECTED_TIMEZONE_PROJECTION: pass');
 console.log('UNIFIED_HOME_WINDOW: pass');
 console.log('SOURCE_LOCAL_MEETING_LIFECYCLE_STATE: pass');
+console.log('B_PLUS_PRESENTATION_BOUNDARY: pass');
+console.log('B_C_TODAY_MEETING_PRESENTATION: pass');
 console.log('FAIL_CLOSED_STREAM_STATE: pass');
 console.log('CALENDAR_ONE_DAY_LIST_MONTH_MAP: pass');
 console.log('ROLLING_WINDOW_DAYS: 30');

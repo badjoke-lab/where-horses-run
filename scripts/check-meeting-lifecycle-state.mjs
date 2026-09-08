@@ -4,6 +4,7 @@ import {
   deriveMeetingLifecycleState,
   localDateTimeToInstant,
 } from '../src/lib/timetable/meetingLifecycleState.mjs';
+import { deriveMeetingPresentationState } from '../src/lib/timetable/meetingPresentationState.mjs';
 
 const instant = (date, time, timeZone = 'Asia/Tokyo') => {
   const value = localDateTimeToInstant(date, time, timeZone);
@@ -18,12 +19,9 @@ const base = {
   lastTime: '18:15',
 };
 
-// Calendar-day relation and meeting lifecycle are separate. A future display
-// day can contain a source-local meeting whose lifecycle is simply "upcoming".
 for (const rank of ['B+', 'A', 'A+']) {
   const result = deriveMeetingLifecycleState({
     ...base,
-    rank,
     displayedDate: '2026-09-08',
     sourceDate: '2026-09-08',
     nowMs: instant('2026-09-07', '12:00'),
@@ -40,6 +38,7 @@ const beforeStart = deriveMeetingLifecycleState({
 });
 assert.equal(beforeStart.calendarDayState, 'today');
 assert.equal(beforeStart.state, 'upcoming');
+assert.equal(deriveMeetingPresentationState({ rank: 'B+', calendarDayState: 'today', lifecycleState: beforeStart.state }), 'upcoming');
 
 const running = deriveMeetingLifecycleState({
   ...base,
@@ -49,6 +48,7 @@ const running = deriveMeetingLifecycleState({
 });
 assert.equal(running.calendarDayState, 'today');
 assert.equal(running.state, 'running');
+assert.equal(deriveMeetingPresentationState({ rank: 'A+', calendarDayState: 'today', lifecycleState: running.state }), 'running');
 
 const finishedToday = deriveMeetingLifecycleState({
   ...base,
@@ -58,10 +58,23 @@ const finishedToday = deriveMeetingLifecycleState({
 });
 assert.equal(finishedToday.calendarDayState, 'today');
 assert.equal(finishedToday.state, 'ended');
+assert.equal(deriveMeetingPresentationState({ rank: 'A', calendarDayState: 'today', lifecycleState: finishedToday.state }), 'ended');
 
-// Display timezone movement must not rewrite lifecycle truth. A source-local
-// meeting that already finished remains ended even if projection groups it on
-// another calendar date.
+// B/C do not have sufficient reviewed end-time evidence for a precise
+// intraday lifecycle. Current-day public presentation is day-level only.
+for (const rank of ['B', 'C']) {
+  assert.equal(
+    deriveMeetingPresentationState({ rank, calendarDayState: 'today', lifecycleState: rank === 'B' ? 'upcoming' : 'unknown' }),
+    'today',
+    `${rank}: current-day presentation must be Today meeting rather than a guessed precise lifecycle`,
+  );
+  assert.equal(
+    deriveMeetingPresentationState({ rank, calendarDayState: 'future', lifecycleState: 'upcoming' }),
+    'unknown',
+    `${rank}: non-current dates must not fabricate a precise intraday lifecycle`,
+  );
+}
+
 const projected = deriveMeetingLifecycleState({
   displayTimeZone: 'UTC',
   sourceTimeZone: 'Asia/Tokyo',
@@ -84,8 +97,6 @@ const untimedFuture = deriveMeetingLifecycleState({
 assert.equal(untimedFuture.calendarDayState, 'future');
 assert.equal(untimedFuture.state, 'unknown');
 
-// A time-only cross-midnight shape is ambiguous without an explicit end date.
-// Do not manufacture a +1-day meeting lifecycle fact.
 const crossMidnight = deriveMeetingLifecycleState({
   displayTimeZone: 'Europe/Istanbul',
   sourceTimeZone: 'Europe/Istanbul',
@@ -102,16 +113,23 @@ const statePolicySource = readFileSync(new URL('../src/components/MeetingStatePo
 const meetingListSource = readFileSync(new URL('../src/components/TimetableMeetingList.astro', import.meta.url), 'utf8');
 for (const marker of [
   'deriveMeetingLifecycleState',
+  'deriveMeetingPresentationState',
   'row.dataset.meetingCalendarDayState = result.calendarDayState',
   'row.dataset.meetingState = result.state',
-  ".meeting-row[data-meeting-state='upcoming'][data-meeting-day-state='today']",
+  'row.dataset.meetingPresentationState',
+  ".meeting-row[data-meeting-presentation-state='today'][data-meeting-day-state='today']",
 ]) {
   assert.match(statePolicySource, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `MeetingStatePolicy missing ${marker}`);
 }
+assert.match(meetingListSource, /data-meeting-today-badge/, 'B/C current-day rows need a Today meeting / 本日開催 badge');
+assert.match(meetingListSource, /Today meeting/, 'English B/C current-day label must be present');
+assert.match(meetingListSource, /本日開催/, 'Japanese B/C current-day label must be present');
 assert.match(statePolicySource, /data-stream-state='known'/, 'non-live official stream destinations must render neutrally');
 assert.match(meetingListSource, /window\.dispatchEvent\(new CustomEvent\('whr:meetingstatechange'\)\)/, 'timezone projection must trigger authoritative lifecycle recomputation');
 
 console.log('MEETING_LIFECYCLE_STATE: pass');
 console.log('SOURCE_LOCAL_LIFECYCLE: pass');
+console.log('B_PLUS_PRESENTATION_BOUNDARY: pass');
+console.log('B_C_TODAY_MEETING_PRESENTATION: pass');
 console.log('DISPLAY_TIMEZONE_IS_PRESENTATION_ONLY: pass');
 console.log('CROSS_MIDNIGHT_AMBIGUITY_FAILS_CLOSED: pass');
