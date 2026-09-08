@@ -2,17 +2,17 @@
 
 Status: active execution coordination  
 Adopted: 2026-09-08  
-Applies to: simultaneous Calendar presentation correction, Calendar country/authority coverage expansion, and all-tier racecourse inventory/ledger work
+Applies to: completed Calendar presentation correction, active Calendar country/authority coverage expansion, active all-tier racecourse inventory/ledger work, and the resumed UI lane
 
-This document exists to prevent one active lane from being serialized behind another or from overwriting another lane's work. These lanes are independent and may proceed at the same time. A lane may pause only for a real shared-file/shared-schema conflict, not merely because another lane is active.
+This document exists to prevent active lanes from being serialized behind one another or from overwriting another lane's work. The bounded Calendar presentation-context correction is complete. Calendar country/authority coverage expansion, all-tier racecourse inventory/ledger work, and the resumed product/UI lane may continue independently. A lane may pause only for a real shared-file/shared-schema conflict, not merely because another lane is active.
 
-## Active parallel lanes
+## Parallel lane state
 
-### Lane A — Calendar presentation context correction
+### Lane A — Calendar presentation context correction [complete]
 
-Current bounded Work ID: `WHR-CAL-PRESENTATION-CONTEXT-001`.
+Completed bounded Work ID: `WHR-CAL-PRESENTATION-CONTEXT-001`.
 
-Scope:
+Delivered scope:
 
 ```text
 Today / Calendar presentation-state semantics
@@ -25,9 +25,11 @@ EN/JA presentation parity
 semantic visual regression coverage
 ```
 
-This lane does not own Calendar acquisition routes, country/authority coverage expansion, canonical timetable truth, racecourse inventory membership, or reviewed racecourse coordinates.
+Completion evidence: PR #927 merged as `cf1a010765e9d012f40b168506ae3d7f6959d65b`; post-merge Race Acquisition Check `34229426401`, Representative Visual Audit `34229426431`, and Cloudflare Pages deployment `bdb0222f-f0c3-43d2-88f3-ea96c902bdd6` succeeded.
 
-### Lane B — Calendar country/authority coverage expansion
+The completed lane still defines regression boundaries but no longer blocks `UI-008`. It does not own Calendar acquisition routes, country/authority coverage expansion, canonical timetable truth, racecourse inventory membership, or reviewed racecourse coordinates.
+
+### Lane B — Calendar country/authority coverage expansion [active]
 
 This lane continues independently under the Calendar acquisition, incremental coverage, and control-plane contracts.
 
@@ -43,9 +45,9 @@ review / promotion inputs for newly covered meetings
 
 This lane must not rewrite Calendar presentation semantics, List/Map state labels, display colors, or UI-only state classification in order to make new data appear.
 
-### Lane C — all-tier racecourse inventory / ledger
+### Lane C — all-tier racecourse inventory / ledger [active]
 
-This lane is active independently of both Calendar presentation and Calendar acquisition coverage expansion.
+This lane is active independently of Calendar acquisition coverage expansion and the UI lane.
 
 Scope:
 
@@ -63,9 +65,15 @@ ledger completeness / unresolved-state tracking
 
 Club/source labels must not be silently promoted to physical racecourses. New racecourse identities are reviewable ledger additions, not presentation guesses.
 
+### Product/UI lane — map_first_site_ui [active]
+
+Current Work ID: `UI-008`.
+
+Scope is governed by the active map-first UI specification and roadmap addendum. `UI-008` simplifies/demotes Countries and secondary reference pages while preserving reviewed useful content. It must not overwrite Lane B/C data or weaken the completed Calendar presentation regression contract.
+
 ## Shared identity boundary
 
-The three lanes meet only through reviewed stable identifiers and public projection contracts.
+The lanes meet only through reviewed stable identifiers and public projection contracts.
 
 ```text
 Calendar meeting -> racecourse_id -> reviewed racecourse ledger identity
@@ -82,7 +90,7 @@ Likewise, racecourse ledger expansion must not wait for Calendar acquisition cov
 
 To reduce collisions, use these ownership boundaries unless a shared change is genuinely required.
 
-### Lane A normally owns
+### Completed Lane A regression-owned surfaces
 
 ```text
 src/components/TodayFilters.astro
@@ -93,6 +101,8 @@ presentation-only portions of src/components/RacecourseMap.astro
 src/lib/timetable/meetingPresentationState.mjs
 presentation regression / visual-audit scripts
 ```
+
+Later edits to these surfaces must preserve the completed Calendar presentation contract and rerun its gates.
 
 ### Lane B normally owns
 
@@ -115,11 +125,22 @@ reviewed racecourse location/address fields
 inventory completeness validators
 ```
 
+### UI-008 normally owns
+
+```text
+Countries and country-detail presentation
+Racing Types presentation
+Glossary presentation
+Sources presentation
+About presentation
+shared secondary-page styling/components when needed
+```
+
 Shared files such as `RacecourseMap.astro`, common validators, top-level roadmap files, or generated projections require current-main reconciliation immediately before PR update/merge.
 
 ## Concurrent-main rule
 
-Each lane must assume `main` can move because of the other two lanes.
+Each active lane must assume `main` can move because of the other lanes.
 
 Before opening/materially updating a PR and again immediately before merge:
 
@@ -135,7 +156,7 @@ A green run from an older head is not sufficient after relevant `main` movement.
 
 ## Merge-order rule
 
-No fixed merge order is imposed between these three lanes.
+No fixed merge order is imposed between active lanes.
 
 The first lane that becomes merge-ready may merge first if:
 
@@ -153,13 +174,13 @@ After any lane merges, the other active lanes continue; they do not restart from
 The following are explicitly prohibited:
 
 ```text
-pausing Calendar country expansion because presentation correction is active
-pausing racecourse inventory work because Calendar country expansion is active
-pausing either data lane because UI-008 is paused
+pausing Calendar country expansion because UI-008 is active
+pausing racecourse inventory work because Calendar country expansion or UI-008 is active
 using incomplete racecourse enrichment as a reason to discard a reviewed Calendar meeting
 using missing current Calendar meetings as a reason to omit a physical racecourse from the all-tier mother set
-changing presentation semantics to accommodate one newly added country
+changing completed presentation semantics to accommodate one newly added country
 changing canonical acquisition truth to make a presentation test pass
+using secondary-page UI work to rewrite provisional Lane B/C data
 ```
 
 ## Completion reporting
@@ -172,5 +193,6 @@ For shared integration, the final state is valid only when:
 new Calendar coverage resolves through stable authority/racecourse identifiers where reviewed
 racecourse ledger contains the corresponding physical venues or explicit unresolved mapping states
 Today/Calendar/List/Map consume those public identities without inventing state or location
+secondary pages consume reviewed public identities without inventing aggregates or facts
 all applicable exact-head validators remain green after the latest main reconciliation
 ```
