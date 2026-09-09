@@ -1,0 +1,27 @@
+concept_id	category_id	category_ja	canonical_en	preferred_ja	working_definition_ja	concept_kind	priority	jurisdiction_scope	discipline_scope	translation_status	verification_status	source_required	public_ready	notes
+RTYPE-058	RTYPE	レースの種類・格・条件	Newcomer race (Japan)	新馬競走	JRAで初出走馬のみを対象として行うデビュー競走。現在は「メイクデビュー○○」の愛称でも行われる。	concept	P0	Japan/JRA	Flat	descriptive_translation	source_verified	yes	no	JP-SRC-008/009. Do not assume exact equivalence with every jurisdiction's newcomer/maiden concept.
+RTYPE-059	RTYPE	レースの種類・格・条件	1-win class	1勝クラス	JRAの収得賞金による条件クラスの一つ。2019年夏季から現行呼称へ変更され、2021年から新呼称のみを使用。	concept	P0	Japan/JRA	Flat	literal_or_descriptive_translation	source_verified	yes	no	JP-SRC-001.
+RTYPE-060	RTYPE	レースの種類・格・条件	2-win class	2勝クラス	JRAの収得賞金による条件クラスの一つ。	concept	P0	Japan/JRA	Flat	literal_or_descriptive_translation	source_verified	yes	no	JP-SRC-001.
+RTYPE-061	RTYPE	レースの種類・格・条件	3-win class	3勝クラス	JRAの収得賞金による条件クラスの一つで、オープンクラス直前の条件区分。	concept	P0	Japan/JRA	Flat	literal_or_descriptive_translation	source_verified	yes	no	JP-SRC-001.
+RTYPE-062	RTYPE	レースの種類・格・条件	General race (JRA)	一般競走	JRAで特別競走以外の競走を指す公式分類。平場戦とも呼ばれる。	concept	P1	Japan/JRA	ALL	descriptive_translation	source_verified	yes	no	JP-SRC-002.
+RTYPE-063	RTYPE	レースの種類・格・条件	Special race (JRA)	特別競走	JRAで特別登録を必要とし、現在はすべてレース名が付される競走。重賞競走もこの分類に含まれる。	concept	P1	Japan/JRA	ALL	descriptive_translation	source_verified	yes	no	JP-SRC-002.
+RTYPE-064	RTYPE	レースの種類・格・条件	Condition-class race (JRA)	条件レース	JRAで収得賞金によるクラス分けの結果、1勝・2勝・3勝クラスに区分された競走を指す用語。	concept	P1	Japan/JRA	Flat	descriptive_translation	source_verified	yes	no	JP-SRC-002. Not automatically equivalent to generic Conditions Race in other jurisdictions.
+RTYPE-065	RTYPE	レースの種類・格・条件	Open special race (JRA)	オープン特別	JRAのオープンクラスに属する、重賞・リステッド以外の特別競走を指す実務上の区分。	concept	P1	Japan/JRA	Flat	descriptive_translation	source_verified	yes	no	JP-SRC-001 class hierarchy.
+RTYPE-066	RTYPE	レースの種類・格・条件	Graded major race (Japan)	重賞競走	JRA等で賞金・歴史・競走内容などにより重要な意義を持ち格付けされる主要競走を指す日本の公式分類。	concept	P0	Japan	ALL	descriptive_translation	source_verified	yes	no	JP-SRC-002. Do not flatten to generic Stakes Race.
+RTYPE-067	RTYPE	レースの種類・格・条件	Dirt graded race (Japan)	ダートグレード競走	日本の中央・地方を横断して体系化・格付けされるダートの主要競走群。	concept	P0	Japan/JRA/NAR	Flat	descriptive_translation	source_verified	yes	no	JP-SRC-012/013.
+RTYPE-068	RTYPE	レースの種類・格・条件	Inter-authority exchange race (Japan)	交流競走	所属地区や中央・地方の枠を越えて競走馬・騎手が対戦する日本の交流競走。	concept	P1	Japan/NAR/JRA	Flat	descriptive_translation	source_verified	yes	no	JP-SRC-012.
+RTYPE-069	RTYPE	レースの種類・格・条件	JpnI	JpnI	日本の格付け体系でJpnIとして表示される国内格付けの最高位区分。	concept	P0	Japan/JRA/NAR	Flat	not_applicable	source_verified	yes	no	JP-SRC-013 current 2026 programme.
+RTYPE-070	RTYPE	レースの種類・格・条件	JpnII	JpnII	日本の格付け体系でJpnIIとして表示される国内格付け区分。	concept	P1	Japan/JRA/NAR	Flat	not_applicable	source_verified	yes	no	JP-SRC-013 current 2026 programme.
+RTYPE-071	RTYPE	レースの種類・格・条件	JpnIII	JpnIII	日本の格付け体系でJpnIIIとして表示される国内格付け区分。	concept	P1	Japan/JRA/NAR	Flat	not_applicable	source_verified	yes	no	JP-SRC-013 current 2026 programme.
+SURF-037	SURF	走路・馬場状態	Ryō (Japan track condition)	良	JRAの芝・ダート共通4段階馬場状態のうち、最も水分が少なく乾燥している側の区分。	concept	P0	Japan/JRA	Flat	no_direct_equivalent	source_verified	yes	no	JP-SRC-003. Do not declare exact equivalence with foreign Good/Firm/Fast labels.
+SURF-038	SURF	走路・馬場状態	Yaya-omo (Japan track condition)	稍重	JRAの芝・ダート共通4段階馬場状態で、良より水分が多く重より軽い中間区分。	concept	P0	Japan/JRA	Flat	no_direct_equivalent	source_verified	yes	no	JP-SRC-003.
+SURF-039	SURF	走路・馬場状態	Omo (Japan track condition)	重	JRAの芝・ダート共通4段階馬場状態で、表面に水は浮かないが踏みしめると水が染み出る等の状態を示す区分。	concept	P0	Japan/JRA	Flat	no_direct_equivalent	source_verified	yes	no	JP-SRC-003.
+SURF-040	SURF	走路・馬場状態	Furyō (Japan track condition)	不良	JRAの芝・ダート共通4段階馬場状態で、表面や足跡に水が浮く状態を示す最も湿った側の区分。	concept	P0	Japan/JRA	Flat	no_direct_equivalent	source_verified	yes	no	JP-SRC-003.
+SURF-041	SURF	走路・馬場状態	Cushion value (JRA)	クッション値	JRAが芝馬場のクッション性を数値で示すために公表する測定指標。	concept	P1	Japan/JRA	Flat	descriptive_translation	source_verified	yes	no	JP-SRC-004.
+SURF-042	SURF	走路・馬場状態	Moisture content (JRA track)	含水率	JRAが芝・ダート馬場の水分量把握のため測定・公表する指標。	concept	P1	Japan/JRA	Flat	descriptive_translation	source_verified	yes	no	JP-SRC-004.
+SURF-043	SURF	走路・馬場状態	Michiwaru	道悪	JRAの厩舎ことばで、馬場状態が重以上である状態をまとめて指す口語的概念。	concept	P2	Japan/JRA	Flat	transliteration	source_verified	yes	no	JP-SRC-007. Colloquial aggregate, not an official fifth track-condition grade.
+PRIZE-011	PRIZE	賞金・競走価値	Class-determining earnings (JRA)	収得賞金	JRAで競走条件・クラスを区分するために用いる賞金計算上の指標。実際の獲得賞金総額とは別概念。	concept	P0	Japan/JRA	ALL	descriptive_translation	source_verified	yes	no	JP-SRC-010.
+PRIZE-012	PRIZE	賞金・競走価値	Field-selection earnings (JRA)	出走馬決定賞金	JRAで特定競走の出走馬決定順に用いる賞金計算上の指標。	concept	P1	Japan/JRA	ALL	descriptive_translation	source_verified	yes	no	JP-SRC-011. Separate from 収得賞金 though it can include it in calculations.
+WEIGHT-028	WEIGHT	重量・ハンデ	Bettei weight system	別定	JRAで競走ごとの基準により基本重量を定め、収得賞金や勝利度数などに応じて増減する負担重量方式。	concept	P0	Japan/JRA	ALL	transliteration	source_verified	yes	no	JP-SRC-005. Do not collapse into AU Set Weights or Set Weights and Penalties.
+WEIGHT-029	WEIGHT	重量・ハンデ	Teiryō weight system	定量	JRAで別定のうち、収得賞金に関係なく馬の年齢・性別を基準に一定の負担重量を定める方式。	concept	P0	Japan/JRA	ALL	transliteration	source_verified	yes	no	JP-SRC-005/002.
+WEIGHT-030	WEIGHT	重量・ハンデ	Bareijūryō (JRA age weight)	馬齢重量	JRAで主に同一年齢馬の2歳・3歳競走に用いる年齢・性別基準の負担重量方式。	concept	P1	Japan/JRA	Flat	transliteration	source_verified	yes	no	JP-SRC-005. Not assumed identical to every international Weight-for-Age system.
