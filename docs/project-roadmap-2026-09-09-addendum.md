@@ -21,8 +21,8 @@ UI-008A — Calendar-supported Country public gate [complete: main a2d8b88802e54
 UI-008B — Japan Country reference page [complete: main cf0ff0da47143bd73179403698f8365351ce91e3]
 UI-008C — Tokyo Racecourse reference page [complete: main 31be082d2c91c0579d1f33cd18a5b56bd31396ed]
 UI-008D — project current Calendar-supported countries and active racecourses into shared layouts [complete: main f29b994bcb8696b8758698a3cf083b5f25e866e7]
-UI-008E — make future country expansion a vertical Calendar + Country + Racecourse + Map package [current]
-UI-009  — EN/JA responsive and navigation release verification after the supported set is projected [next]
+UI-008E — make future country expansion a vertical Calendar + Country + Racecourse + Map package [complete: main c7ac07819e22bb2de72e7adedcf8d9d8aa09ca45]
+UI-009  — EN/JA responsive and navigation release verification after the supported set is projected [current]
 ```
 
 Calendar country/authority acquisition expansion and all-tier racecourse inventory research continue in parallel. They must not be serialized behind UI work unless a real schema/shared-file dependency exists.
@@ -144,11 +144,11 @@ Racecourse page
   -> RacecourseHubPage for every active racecourse passing the public gate
 ```
 
-## Future country-expansion package — UI-008E current
+## Future country-expansion package — UI-008E complete
 
-UI-008E turns the generic runtime projection above into the mandatory repeatable expansion path for every future Calendar country.
+UI-008E is merged at `c7ac07819e22bb2de72e7adedcf8d9d8aa09ca45`.
 
-Operational authority:
+The repeatable operational authority is:
 
 ```text
 docs/runbooks/country-racecourse-publication-package.md
@@ -168,9 +168,35 @@ official acquisition source established
 + EN/JA package checked
 ```
 
-The implementation must reuse the generic gates and shared Country/Racecourse components. Do not create a second hard-coded country list, Racecourse allowlist, meeting truth, or publication-rank interpretation to ship a new country.
+`AGENTS.md`, `START-HERE.md`, and `docs/governance/document-authority.md` now point future Country/Racecourse work to the integrated specification, this roadmap, and the package runbook. New country work must reuse the generic gates/shared components rather than create a second hard-coded country list, Racecourse allowlist, meeting truth, or publication-rank interpretation.
 
 The runbook also defines rollback/preservation behavior: removing normal public support changes the reviewed support state; it does not delete canonical country or racecourse history.
+
+## UI-009 — EN/JA responsive and navigation release verification [current]
+
+UI-009 is the release-verification pass for the integrated public set. It does not broaden the publication gate or add new racing facts.
+
+Required verification scope:
+
+```text
+EN Countries directory
+JA Countries directory
+representative EN/JA Country hubs
+EN Racecourses directory
+JA Racecourses directory
+representative EN/JA Racecourse hubs
+Country <-> Racecourse <-> Calendar links
+search projection
+sitemap/generated-route projection
+reviewed Map presence/fallback behavior
+mobile and desktop layout behavior
+```
+
+At minimum, verify one representative page from each currently supported country where public racecourse data exists, plus the Japan/Tokyo reference pages. Confirm that unsupported countries and non-active/unsupported-country racecourses are not exposed as normal public routes/search results.
+
+Visible UI acceptance requires actual browser output at representative desktop/mobile widths. Repository/code inspection alone must not be recorded as visual acceptance.
+
+UI-009 completion must record any discovered data gaps separately from layout/runtime defects. Missing reviewed optional data must stay absent/pending rather than being filled with guessed values.
 
 ## Historical racecourse lane
 
@@ -182,7 +208,7 @@ This lane is also the foundation for future discontinued/renamed/moved graded-ra
 
 ## Completion conditions for UI-008
 
-`UI-008` is complete when:
+`UI-008` is complete:
 
 - public Countries exposure is derived from stable Calendar support rather than all canonical countries;
 - Japan demonstrates the shared Country composition;
@@ -191,8 +217,9 @@ This lane is also the foundation for future discontinued/renamed/moved graded-ra
 - active racecourses in those supported countries are projected through the shared Racecourse layout or explicitly blocked by known data gaps;
 - primary Racecourses/search/generated routes use the same active supported-country gate;
 - the repeatable future-country package runbook is adopted by `AGENTS.md`, `START-HERE.md`, and governance authority;
-- EN/JA links and reviewed Map/Calendar connections remain consistent;
-- future agents use the integrated publication specification, runbook, and this roadmap before continuing Country/Racecourse expansion.
+- future agents are required to use the integrated publication specification, runbook, and this roadmap before continuing Country/Racecourse expansion.
+
+EN/JA visible responsive/navigation acceptance is intentionally carried by UI-009.
 
 ## Agent execution rule
 
