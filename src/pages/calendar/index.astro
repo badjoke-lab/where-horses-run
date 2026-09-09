@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CalendarRuntimeBootstrap from '../../components/CalendarRuntimeBootstrap.astro';
 import CalendarCoverageDashboard from '../../components/CalendarCoverageDashboard.astro';
 import CalendarDateNavigation from '../../components/CalendarDateNavigation.astro';
 import CalendarDateStatus from '../../components/CalendarDateStatus.astro';
@@ -34,7 +35,13 @@ const groups = getGroupedTimetableMeetingRows(candidateRecords);
   canonicalPath="/calendar/"
   alternatePath="/ja/calendar/"
 >
-  <div class="calendar-page">
+  <CalendarRuntimeBootstrap
+    mode="calendar"
+    serverToday={context.today}
+    windowStart={context.windowStart}
+    windowEndInclusive={context.windowEndInclusive}
+  />
+  <div class="calendar-page" data-calendar-runtime-sensitive>
     <MeetingStatePolicy />
 
     <section class="hero" aria-labelledby="page-title">
