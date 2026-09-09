@@ -30,3 +30,17 @@ a:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 3px;
 }
+
+/* Country pages server-render a build-time 30-day table, then BaseLayout reprojects it
+ * into the selected/browser timezone. When scripting is enabled, do not expose the
+ * build-time table before that runtime projection has replaced it. No-JS keeps the
+ * server-rendered fallback visible because this media query does not apply. */
+@media (scripting: enabled) {
+  #upcoming-meetings {
+    visibility: hidden;
+  }
+
+  #upcoming-meetings:has([data-country-timezone-generated]) {
+    visibility: visible;
+  }
+}
