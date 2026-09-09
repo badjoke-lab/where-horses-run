@@ -28,7 +28,11 @@ jobs:
           const fs = require('node:fs');
           const file = '.github/workflows/calendar-unified-official-refresh.yml';
           let text = fs.readFileSync(file, 'utf8');
+          const expr = '$' + '{{ steps.scope.outputs.days }}';
 
+          function lines(items) {
+            return items.join('\n');
+          }
           function replaceExact(before, after, expectedCount, label) {
             const parts = text.split(before);
             const count = parts.length - 1;
@@ -38,52 +42,48 @@ jobs:
             text = parts.join(after);
           }
 
-          replaceExact(
-`          node scripts/timetable/run-tjk-current-best-available.mjs \\
-            --days="\${{ steps.scope.outputs.days }}" \\
-            --output=.calendar-unified/tjk.json`,
-`          node scripts/timetable/run-tjk-current-best-available.mjs \\
-            --days="\${{ steps.scope.outputs.days }}" \\
-            --output=.calendar-unified/tjk.json
-          node scripts/timetable/run-sorec-official-window.mjs \\
-            --days="\${{ steps.scope.outputs.days }}" \\
-            --output=.calendar-unified/sorec.json`,
-            2,
-            'collector wiring',
-          );
+          const tjkCollect = lines([
+            '          node scripts/timetable/run-tjk-current-best-available.mjs \\',
+            `            --days="${expr}" \\`,
+            '            --output=.calendar-unified/tjk.json',
+          ]);
+          const tjkAndSorecCollect = lines([
+            tjkCollect,
+            '          node scripts/timetable/run-sorec-official-window.mjs \\',
+            `            --days="${expr}" \\`,
+            '            --output=.calendar-unified/sorec.json',
+          ]);
+          replaceExact(tjkCollect, tjkAndSorecCollect, 2, 'collector wiring');
 
-          replaceExact(
-`            --artifact=.calendar-unified/kra.json \\
-            --artifact=.calendar-unified/tjk.json`,
-`            --artifact=.calendar-unified/kra.json \\
-            --artifact=.calendar-unified/tjk.json \\
-            --artifact=.calendar-unified/sorec.json`,
-            2,
-            'exclusion wiring',
-          );
+          const exclusionTail = lines([
+            '            --artifact=.calendar-unified/kra.json \\',
+            '            --artifact=.calendar-unified/tjk.json',
+          ]);
+          const exclusionTailWithSorec = lines([
+            '            --artifact=.calendar-unified/kra.json \\',
+            '            --artifact=.calendar-unified/tjk.json \\',
+            '            --artifact=.calendar-unified/sorec.json',
+          ]);
+          replaceExact(exclusionTail, exclusionTailWithSorec, 2, 'exclusion wiring');
 
-          replaceExact(
-`          node scripts/timetable/apply-official-rolling-observations.mjs \\
-            --artifact=.calendar-unified/tjk.json \\
-            --country-id=turkey \\
-            --authority-id=turkiye-jokey-kulubu \\
-            --racing-system-id=tjk-national-racing-system \\
-            --timezone=Europe/Istanbul`,
-`          node scripts/timetable/apply-official-rolling-observations.mjs \\
-            --artifact=.calendar-unified/tjk.json \\
-            --country-id=turkey \\
-            --authority-id=turkiye-jokey-kulubu \\
-            --racing-system-id=tjk-national-racing-system \\
-            --timezone=Europe/Istanbul
-          node scripts/timetable/apply-official-rolling-observations.mjs \\
-            --artifact=.calendar-unified/sorec.json \\
-            --country-id=morocco \\
-            --authority-id=sorec \\
-            --racing-system-id=sorec-racing-information-system \\
-            --timezone=Africa/Casablanca`,
-            2,
-            'apply wiring',
-          );
+          const tjkApply = lines([
+            '          node scripts/timetable/apply-official-rolling-observations.mjs \\',
+            '            --artifact=.calendar-unified/tjk.json \\',
+            '            --country-id=turkey \\',
+            '            --authority-id=turkiye-jokey-kulubu \\',
+            '            --racing-system-id=tjk-national-racing-system \\',
+            '            --timezone=Europe/Istanbul',
+          ]);
+          const tjkAndSorecApply = lines([
+            tjkApply,
+            '          node scripts/timetable/apply-official-rolling-observations.mjs \\',
+            '            --artifact=.calendar-unified/sorec.json \\',
+            '            --country-id=morocco \\',
+            '            --authority-id=sorec \\',
+            '            --racing-system-id=sorec-racing-information-system \\',
+            '            --timezone=Africa/Casablanca',
+          ]);
+          replaceExact(tjkApply, tjkAndSorecApply, 2, 'apply wiring');
 
           replaceExact(
             '      - name: Collect TJK official window',
