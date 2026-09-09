@@ -4,7 +4,7 @@ import sitemapRobotsIntegration from './scripts/sitemap-robots-integration.mjs';
 import countryPageMetadataIntegration from './scripts/country-page-metadata-integration.mjs';
 import racecoursePageMetadataIntegration from './scripts/racecourse-page-metadata-integration.mjs';
 import glossaryPageMetadataIntegration from './scripts/glossary-page-metadata-integration.mjs';
-import socialCardIntegration from './scripts/social-card-integration.mjs';
+import brandMetadataIntegration from './scripts/brand-metadata-integration.mjs';
 import titleDescriptionNormalizationIntegration from './scripts/title-description-normalization-integration.mjs';
 import entityStructuredDataIntegration from './scripts/entity-structured-data-integration.mjs';
 
@@ -20,7 +20,7 @@ export default defineConfig({
     countryPageMetadataIntegration(),
     racecoursePageMetadataIntegration(),
     glossaryPageMetadataIntegration(),
-    socialCardIntegration(),
+    brandMetadataIntegration(),
     titleDescriptionNormalizationIntegration(),
     entityStructuredDataIntegration()
   )
