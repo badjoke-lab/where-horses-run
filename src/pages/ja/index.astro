@@ -11,6 +11,7 @@ import TodayRangeMapAccessibility from '../../components/TodayRangeMapAccessibil
 import '../../styles/today-practical.css';
 import '../../styles/today-context-correction.css';
 import '../../styles/home-filter-live.css';
+import '../../styles/home-intro-structural.css';
 import {
   getGroupedTimetableMeetingRows,
   getTimetableDateContext,
@@ -33,24 +34,25 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
   alternatePath="/"
 >
   <CalendarRuntimeBootstrap mode="home" serverToday={context.today} />
+
+  <section class="hero today-page__hero home-page__intro" aria-labelledby="page-title">
+    <p class="hero__eyebrow">世界の競馬開催</p>
+    <h1 id="page-title">競馬開催を探す</h1>
+    <p class="today-page__context">
+      <span>今日 / 明日 / 7日間</span> · <span data-timezone-label>{context.timeZone}</span>
+    </p>
+    <p class="hero__summary">
+      今日・明日・今後7日間の競馬開催を、地図と一覧で確認できます。期間、タイムゾーン、国・地域、主催・管轄、公開ランクで絞り込めます。
+    </p>
+    <p class="hero__summary">
+      <a href="/ja/calendar/">30日間の競馬開催カレンダー</a>、<a href="/ja/tracks/">競馬場一覧</a>、<a href="/ja/countries/">国・地域別の索引</a>からも探せます。開催詳細ページには、掲載日程の確認に使った公式情報源へのリンクを掲載します。
+    </p>
+  </section>
+
   <div class="today-page" data-today-page data-home-meeting-window data-calendar-runtime-sensitive>
     <MeetingStatePolicy />
     <MeetingLiveStatusRuntime />
     <TodayRangeMapAccessibility />
-
-    <section class="hero today-page__hero" aria-labelledby="page-title">
-      <p class="hero__eyebrow">世界の競馬開催</p>
-      <h1 id="page-title">競馬開催を探す</h1>
-      <p class="today-page__context">
-        <span>今日 / 明日 / 7日間</span> · <span data-timezone-label>{context.timeZone}</span>
-      </p>
-      <p class="hero__summary">
-        今日・明日・今後7日間の競馬開催を、地図と一覧で確認できます。期間、タイムゾーン、国・地域、主催・管轄、公開ランクで絞り込めます。
-      </p>
-      <p class="hero__summary">
-        <a href="/ja/calendar/">30日間の競馬開催カレンダー</a>、<a href="/ja/tracks/">競馬場一覧</a>、<a href="/ja/countries/">国・地域別の索引</a>からも探せます。開催詳細ページには、掲載日程の確認に使った公式情報源へのリンクを掲載します。
-      </p>
-    </section>
 
     <TodayFilters records={meetingCandidates} lang="ja" />
     <TodayFilterOptionRuntime records={meetingCandidates} lang="ja" />

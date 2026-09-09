@@ -11,6 +11,7 @@ import TodayRangeMapAccessibility from '../components/TodayRangeMapAccessibility
 import '../styles/today-practical.css';
 import '../styles/today-context-correction.css';
 import '../styles/home-filter-live.css';
+import '../styles/home-intro-structural.css';
 import {
   getGroupedTimetableMeetingRows,
   getTimetableDateContext,
@@ -32,24 +33,25 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
   alternatePath="/ja/"
 >
   <CalendarRuntimeBootstrap mode="home" serverToday={context.today} />
+
+  <section class="hero today-page__hero home-page__intro" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Global horse racing</p>
+    <h1 id="page-title">Where is racing today?</h1>
+    <p class="today-page__context">
+      <span>Today / Tomorrow / 7 days</span> · <span data-timezone-label>{context.timeZone}</span>
+    </p>
+    <p class="hero__summary">
+      Your global guide to racecourses, calendars and racing times from around the world. Explore current and upcoming meetings on the map and timetable.
+    </p>
+    <p class="hero__summary">
+      Open the <a href="/calendar/">30-day horse racing calendar</a>, browse <a href="/tracks/">racecourse profiles</a>, or find meetings by <a href="/countries/">country and region</a>. Meeting pages link back to the official source used for the published schedule.
+    </p>
+  </section>
+
   <div class="today-page" data-today-page data-home-meeting-window data-calendar-runtime-sensitive>
     <MeetingStatePolicy />
     <MeetingLiveStatusRuntime />
     <TodayRangeMapAccessibility />
-
-    <section class="hero today-page__hero" aria-labelledby="page-title">
-      <p class="hero__eyebrow">Global horse racing</p>
-      <h1 id="page-title">Where is racing today?</h1>
-      <p class="today-page__context">
-        <span>Today / Tomorrow / 7 days</span> · <span data-timezone-label>{context.timeZone}</span>
-      </p>
-      <p class="hero__summary">
-        Your global guide to racecourses, calendars and racing times from around the world. Explore current and upcoming meetings on the map and timetable.
-      </p>
-      <p class="hero__summary">
-        Open the <a href="/calendar/">30-day horse racing calendar</a>, browse <a href="/tracks/">racecourse profiles</a>, or find meetings by <a href="/countries/">country and region</a>. Meeting pages link back to the official source used for the published schedule.
-      </p>
-    </section>
 
     <TodayFilters records={meetingCandidates} />
     <TodayFilterOptionRuntime records={meetingCandidates} />

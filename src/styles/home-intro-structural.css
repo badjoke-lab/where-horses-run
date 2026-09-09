@@ -1,0 +1,22 @@
+.home-page__intro {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+}
+
+@media (min-width: 901px) {
+  .home-page__intro {
+    padding-block: 0 1.5rem;
+  }
+
+  .home-page__intro .hero__summary {
+    max-width: 64rem;
+  }
+
+  .today-page {
+    grid-template-areas:
+      'controls map'
+      'list list';
+    padding-block: 0 4rem;
+  }
+}
