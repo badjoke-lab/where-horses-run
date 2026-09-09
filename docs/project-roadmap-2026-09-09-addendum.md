@@ -196,10 +196,11 @@ At minimum, verify one representative page from each currently supported country
 
 ### Current repository-level findings and corrections
 
-The first UI-009 repository pass found two integration inconsistencies after the public gate was narrowed:
+The UI-009 repository pass has found these integration inconsistencies after the public gate was narrowed:
 
-- Countries and Racecourses directory copy still described worldwide/broad coverage even though the runtime now exposes only Calendar-supported countries and active/current racecourses in those countries. Directory descriptions and hero copy are being corrected to state the actual public scope.
-- Morocco is part of the reviewed Calendar-supported set, but the shared shell curated display-timezone list omitted `Africa/Casablanca`. The shared server-rendered and client-side timezone option lists are being corrected together so Morocco is selectable without introducing a second timezone truth.
+- Countries and Racecourses directory copy still described worldwide/broad coverage even though the runtime now exposes only Calendar-supported countries and active/current racecourses in those countries. Directory descriptions and hero copy were corrected to state the actual public scope.
+- Morocco is part of the reviewed Calendar-supported set, but the shared shell curated display-timezone list omitted `Africa/Casablanca`. The shared server-rendered and client-side timezone option lists were corrected together so Morocco is selectable without introducing a second timezone truth.
+- Country hubs preferred older enrichment-profile hero text ahead of the compact country record. Morocco's older profile still described its timetable source as unverified even after Calendar support had advanced. Country hubs now prefer the current compact country summary, then fall back to enrichment-profile text; enrichment fields such as systems/racing types remain additive.
 
 These are repository/runtime corrections, not visual acceptance. UI-009 remains current until the representative EN/JA desktop/mobile browser pass is actually completed.
 
