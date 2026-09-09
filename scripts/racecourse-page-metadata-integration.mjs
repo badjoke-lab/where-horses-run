@@ -21,6 +21,9 @@ const RACECOURSE_DATA_FILES = [
   'data/static/country-page-racecourses-11-oman.json',
   'data/static/country-page-racecourses-12-zimbabwe.json',
 ];
+const CALENDAR_PUBLIC_COUNTRY_SUPPORT_FILE = 'data/static/calendar-public-country-support-v1.json';
+const RACECOURSE_PROFILE_OVERRIDES_FILE = 'data/static/racecourse-profile-overrides.json';
+const PUBLIC_ACTIVE_STATUSES = new Set(['active', 'current']);
 
 async function walk(directory) {
   const entries = await fs.readdir(directory, { withFileTypes: true });
@@ -33,20 +36,41 @@ async function walk(directory) {
   return files;
 }
 
+async function readJson(relativePath) {
+  return JSON.parse(await fs.readFile(path.join(process.cwd(), relativePath), 'utf8'));
+}
+
 async function loadExpectedRacecourseSlugs() {
+  const supportRegistry = await readJson(CALENDAR_PUBLIC_COUNTRY_SUPPORT_FILE);
+  const supportedCountryIds = new Set(
+    (supportRegistry.countries ?? [])
+      .filter((record) => record?.calendar_supported)
+      .map((record) => record.country_id),
+  );
+  const overrides = await readJson(RACECOURSE_PROFILE_OVERRIDES_FILE);
+  if (!Array.isArray(overrides)) throw new Error(`Racecourse overrides must be an array: ${RACECOURSE_PROFILE_OVERRIDES_FILE}`);
+  const overrideById = new Map(overrides.map((record) => [record.id, record]));
+
   const ids = [];
   for (const file of RACECOURSE_DATA_FILES) {
-    const content = await fs.readFile(path.join(process.cwd(), file), 'utf8');
-    const records = JSON.parse(content);
+    const records = await readJson(file);
     if (!Array.isArray(records)) throw new Error(`Racecourse registry must be an array: ${file}`);
     for (const record of records) {
       if (!record?.id || !record?.slug) throw new Error(`Racecourse registry identity missing in ${file}`);
       if (record.id !== record.slug) throw new Error(`Racecourse registry id/slug differs in ${file}: ${record.id} / ${record.slug}`);
-      ids.push(record.slug);
+      const effectiveRecord = { ...record, ...(overrideById.get(record.id) ?? {}) };
+      if (
+        typeof effectiveRecord.country_id === 'string'
+        && supportedCountryIds.has(effectiveRecord.country_id)
+        && typeof effectiveRecord.status === 'string'
+        && PUBLIC_ACTIVE_STATUSES.has(effectiveRecord.status)
+      ) {
+        ids.push(record.slug);
+      }
     }
   }
   const unique = new Set(ids);
-  if (unique.size !== ids.length) throw new Error(`Duplicate racecourse slug in registry: ${ids.length} records / ${unique.size} unique slugs`);
+  if (unique.size !== ids.length) throw new Error(`Duplicate public racecourse slug in registry: ${ids.length} records / ${unique.size} unique slugs`);
   return unique;
 }
 
@@ -248,7 +272,7 @@ export default function racecoursePageMetadataIntegration() {
         if (missingSlugs.length || unexpectedSlugs.length || pages.length !== expectedSlugs.size * 2) {
           throw new Error(
             `Racecourse metadata scope differs: ${renderedSlugs.size} slugs / ${pages.length} pages; `
-            + `registry ${expectedSlugs.size} slugs; missing [${missingSlugs.join(', ')}]; unexpected [${unexpectedSlugs.join(', ')}]`,
+            + `public active registry ${expectedSlugs.size} slugs; missing [${missingSlugs.join(', ')}]; unexpected [${unexpectedSlugs.join(', ')}]`,
           );
         }
 
