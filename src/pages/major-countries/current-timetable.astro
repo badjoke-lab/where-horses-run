@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CalendarRuntimeBootstrap from '../../components/CalendarRuntimeBootstrap.astro';
 import TimetableMeetingList from '../../components/TimetableMeetingList.astro';
 import {
   getGroupedTimetableMeetingRows,
@@ -21,19 +22,27 @@ const windowLabel = `${dateContext.windowStart}–${dateContext.windowEndInclusi
   description={`A date-first 30-day meeting list for ${windowLabel}, with one official source link per meeting and race timetable links only where race-by-race times are available.`}
   canonicalPath="/major-countries/current-timetable/"
 >
-  <section class="hero" aria-labelledby="page-title">
-    <p class="hero__eyebrow">Current timetable</p>
-    <h1 id="page-title">Current 30-day timetable</h1>
-    <p class="hero__summary">
-      <span data-timezone-window-start>{dateContext.windowStart}</span>–<span data-timezone-window-end>{dateContext.windowEndInclusive}</span>. Meetings are grouped by the selected display timezone, <span data-timezone-label>{dateContext.timeZone}</span>. Rank controls how much timing detail is shown.
-    </p>
-  </section>
+  <CalendarRuntimeBootstrap
+    mode="rolling-30"
+    serverToday={dateContext.today}
+    windowStart={dateContext.windowStart}
+    windowEndInclusive={dateContext.windowEndInclusive}
+  />
+  <div data-calendar-runtime-sensitive>
+    <section class="hero" aria-labelledby="page-title">
+      <p class="hero__eyebrow">Current timetable</p>
+      <h1 id="page-title">Current 30-day timetable</h1>
+      <p class="hero__summary">
+        <span data-timezone-window-start>{dateContext.windowStart}</span>–<span data-timezone-window-end>{dateContext.windowEndInclusive}</span>. Meetings are grouped by the selected display timezone, <span data-timezone-label>{dateContext.timeZone}</span>. Rank controls how much timing detail is shown.
+      </p>
+    </section>
 
-  <section aria-label={`Current timetable by date for ${windowLabel}`}>
-    <TimetableMeetingList
-      groups={groupedTimetableRecords}
-      scope="rolling-30"
-      emptyLabel="No timetable meetings are listed in the selected 30-day display window. Use official source links for final confirmation."
-    />
-  </section>
+    <section aria-label={`Current timetable by date for ${windowLabel}`}>
+      <TimetableMeetingList
+        groups={groupedTimetableRecords}
+        scope="rolling-30"
+        emptyLabel="No timetable meetings are listed in the selected 30-day display window. Use official source links for final confirmation."
+      />
+    </section>
+  </div>
 </BaseLayout>

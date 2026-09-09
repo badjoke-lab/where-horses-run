@@ -1,0 +1,40 @@
+name: Calendar First Paint Consistency
+
+on:
+  pull_request:
+    paths:
+      - 'src/components/CalendarRuntimeBootstrap.astro'
+      - 'src/components/CalendarDateNavigation.astro'
+      - 'src/components/TodayFilters.astro'
+      - 'src/components/TimetableMeetingList.astro'
+      - 'src/components/CalendarViewControls.astro'
+      - 'src/components/CalendarFilters.astro'
+      - 'src/components/MeetingTimezoneProjection.astro'
+      - 'src/pages/index.astro'
+      - 'src/pages/ja/index.astro'
+      - 'src/pages/calendar/**'
+      - 'src/pages/ja/calendar/**'
+      - 'src/pages/major-countries/current-timetable.astro'
+      - 'src/pages/ja/major-countries/current-timetable.astro'
+      - 'src/pages/timetable/meetings/**'
+      - 'src/pages/ja/timetable/meetings/**'
+      - 'scripts/check-calendar-first-paint-consistency.mjs'
+      - '.github/workflows/calendar-first-paint-consistency.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies without lockfile mutation
+        run: npm install --package-lock=false
+      - run: npm run build
+      - run: node scripts/check-calendar-first-paint-consistency.mjs

@@ -1,0 +1,178 @@
+---
+type RuntimeMode = 'home' | 'calendar' | 'rolling-30' | 'country' | 'meeting-detail';
+
+type Props = {
+  mode: RuntimeMode;
+  serverToday?: string;
+  windowStart?: string;
+  windowEndInclusive?: string;
+};
+
+const {
+  mode,
+  serverToday = '',
+  windowStart = '',
+  windowEndInclusive = '',
+} = Astro.props as Props;
+---
+
+<script is:inline define:vars={{ mode, serverToday, windowStart, windowEndInclusive }}>
+  (() => {
+    const html = document.documentElement;
+    const VALID_RANGES = new Set(['today', 'tomorrow', 'next7']);
+    const VALID_VIEWS = new Set(['list', 'month', 'map']);
+    const CURATED_TIMEZONES = new Set([
+      'Asia/Tokyo',
+      'Asia/Seoul',
+      'Asia/Hong_Kong',
+      'Asia/Dubai',
+      'Europe/Istanbul',
+      'UTC',
+    ]);
+    const isTimeZoneSupported = (timeZone) => {
+      if (!timeZone) return false;
+      try {
+        new Intl.DateTimeFormat('en', { timeZone }).format(new Date(0));
+        return true;
+      } catch {
+        return false;
+      }
+    };
+    const params = new URL(window.location.href).searchParams;
+    const browserTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const requestedTimeZone = params.get('tz');
+    const timeZone = mode === 'meeting-detail'
+      ? isTimeZoneSupported(requestedTimeZone)
+        ? requestedTimeZone
+        : isTimeZoneSupported(browserTimeZone)
+          ? browserTimeZone
+          : 'Asia/Tokyo'
+      : CURATED_TIMEZONES.has(requestedTimeZone)
+        ? requestedTimeZone
+        : CURATED_TIMEZONES.has(browserTimeZone)
+          ? browserTimeZone
+          : 'Asia/Tokyo';
+    const dateInTimeZone = (instant, zone) => {
+      const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {
+        timeZone: zone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }).formatToParts(instant).filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
+      return `${parts.year}-${parts.month}-${parts.day}`;
+    };
+    const addDays = (dateText, days) => {
+      const date = new Date(`${dateText}T00:00:00.000Z`);
+      date.setUTCDate(date.getUTCDate() + days);
+      return date.toISOString().slice(0, 10);
+    };
+    const validDate = (value) => /^\d{4}-\d{2}-\d{2}$/.test(value || '');
+    const today = dateInTimeZone(new Date(), timeZone);
+    const runtimeWindowStart = mode === 'calendar' || mode === 'rolling-30' ? today : (windowStart || today);
+    const runtimeWindowEndInclusive = mode === 'calendar' || mode === 'rolling-30'
+      ? addDays(runtimeWindowStart, 29)
+      : (windowEndInclusive || addDays(runtimeWindowStart, 29));
+    const requestedDate = params.get('date');
+    const selectedDate = validDate(requestedDate)
+      && requestedDate >= runtimeWindowStart
+      && requestedDate <= runtimeWindowEndInclusive
+      ? requestedDate
+      : today >= runtimeWindowStart && today <= runtimeWindowEndInclusive
+        ? today
+        : runtimeWindowStart;
+    const requestedRange = params.get('range');
+    const range = VALID_RANGES.has(requestedRange) ? requestedRange : 'today';
+    const requestedView = params.get('view');
+    const view = VALID_VIEWS.has(requestedView) ? requestedView : 'list';
+
+    window.__WHR_CALENDAR_RUNTIME__ = {
+      mode,
+      timeZone,
+      today,
+      tomorrow: addDays(today, 1),
+      windowStart: runtimeWindowStart,
+      windowEndInclusive: runtimeWindowEndInclusive,
+      windowEndExclusive: addDays(runtimeWindowEndInclusive, 1),
+      selectedDate,
+      range,
+      view,
+      serverToday,
+    };
+
+    html.dataset.calendarRuntimePending = 'true';
+    html.dataset.calendarRuntimeMode = mode;
+
+    let revealed = false;
+    let calendarDateReady = mode !== 'calendar';
+    let calendarViewReady = mode !== 'calendar';
+    const projectedTimeZoneReady = () => {
+      const listSelect = document.querySelector('[data-display-timezone-select]');
+      if (!(listSelect instanceof HTMLSelectElement)) return true;
+      return listSelect.value === window.__WHR_CALENDAR_RUNTIME__?.timeZone;
+    };
+    const reveal = () => {
+      if (revealed || !projectedTimeZoneReady()) return;
+      revealed = true;
+      delete html.dataset.calendarRuntimePending;
+      html.dataset.calendarRuntimeReady = 'true';
+      window.dispatchEvent(new CustomEvent('whr:calendarfirstpaintready', {
+        detail: window.__WHR_CALENDAR_RUNTIME__,
+      }));
+    };
+    const maybeRevealCalendar = () => {
+      if (calendarDateReady && calendarViewReady) reveal();
+    };
+    const checkCalendarView = () => {
+      if (mode !== 'calendar') return;
+      const expected = window.__WHR_CALENDAR_RUNTIME__?.view || 'list';
+      const page = document.querySelector('.calendar-page');
+      if (page instanceof HTMLElement && page.dataset.calendarActiveView === expected) {
+        calendarViewReady = true;
+        maybeRevealCalendar();
+      }
+    };
+
+    if (mode === 'home') {
+      window.addEventListener('whr:todayfilterchange', (event) => {
+        const expectedRange = window.__WHR_CALENDAR_RUNTIME__?.range || 'today';
+        if (event?.detail?.range !== expectedRange || !projectedTimeZoneReady()) return;
+        reveal();
+      });
+    } else if (mode === 'calendar') {
+      window.addEventListener('whr:calendarfilterchange', (event) => {
+        const expected = window.__WHR_CALENDAR_RUNTIME__?.selectedDate;
+        if ((!expected || event?.detail?.date === expected) && projectedTimeZoneReady()) {
+          calendarDateReady = true;
+          checkCalendarView();
+          requestAnimationFrame(checkCalendarView);
+        }
+      });
+      const observeCalendarView = () => {
+        const page = document.querySelector('.calendar-page');
+        if (!(page instanceof HTMLElement)) return;
+        const observer = new MutationObserver(checkCalendarView);
+        observer.observe(page, { attributes: true, attributeFilter: ['data-calendar-active-view'] });
+        checkCalendarView();
+      };
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', observeCalendarView, { once: true });
+      else observeCalendarView();
+    } else {
+      window.addEventListener('whr:timezonechange', (event) => {
+        if (event?.detail?.scope === mode && event?.detail?.timeZone === window.__WHR_CALENDAR_RUNTIME__?.timeZone) reveal();
+      });
+    }
+
+    window.setTimeout(() => {
+      if (!revealed) {
+        delete html.dataset.calendarRuntimePending;
+        html.dataset.calendarRuntimeFallback = 'true';
+      }
+    }, 4000);
+  })();
+</script>
+
+<style is:global>
+  html[data-calendar-runtime-pending='true'] [data-calendar-runtime-sensitive] {
+    visibility: hidden !important;
+  }
+</style>

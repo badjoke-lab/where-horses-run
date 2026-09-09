@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CalendarRuntimeBootstrap from '../../../components/CalendarRuntimeBootstrap.astro';
 import MeetingTimezoneProjection from '../../../components/MeetingTimezoneProjection.astro';
 import {
   getPublicTimetableMeetingDetail,
@@ -77,76 +78,79 @@ const timeCoverageNoteByRank: Record<string, string> = {
   canonicalPath={`/timetable/meetings/${meeting.meeting_id}/`}
   alternatePath={`/ja/timetable/meetings/${meeting.meeting_id}/`}
 >
-  <nav class="detail-nav" aria-label="Meeting detail navigation">
-    <a href="/calendar/">← Calendar</a>
-    <a href="/today/">← Today</a>
-    <a href="/major-countries/current-timetable/">← Current Timetable</a>
-  </nav>
+  <CalendarRuntimeBootstrap mode="meeting-detail" />
+  <div data-calendar-runtime-sensitive>
+    <nav class="detail-nav" aria-label="Meeting detail navigation">
+      <a href="/calendar/">← Calendar</a>
+      <a href="/today/">← Today</a>
+      <a href="/major-countries/current-timetable/">← Current Timetable</a>
+    </nav>
 
-  <section aria-labelledby="page-title">
-    <p class="eyebrow">{pageKind}</p>
-    <h1 id="page-title"><a href={trackPath}>{racecourseName}</a></h1>
-    <p><span data-meeting-projected-date>{meeting.date}</span></p>
-    <p>{authorityName} · <a href={countryPath}>{countryName}</a></p>
-    <p>Venue timezone: {detail.timezone}</p>
-    <p>Display timezone: <strong data-timezone-label>{detail.timezone}</strong></p>
-    <p>Capability rank: {detail.capability_rank}</p>
-    <p>Public rank: {detail.effective_public_rank}</p>
-    <p>Publication policy: {detail.policy_id}</p>
-    <p>Source status: {detail.source_status}</p>
-    <MeetingTimezoneProjection sourceDate={detail.date} sourceTimeZone={detail.timezone} />
-  </section>
-
-  <section aria-labelledby="coverage-title">
-    <h2 id="coverage-title">Time coverage</h2>
-    <p>{timeCoverageNoteByRank[detail.effective_public_rank]}</p>
-    <p>Where Horses Run does not reproduce entries, runners, odds, results, payouts, predictions, tips, raw source text, or full racecards.</p>
-  </section>
-
-  {hasRaceRows && (
-    <section aria-labelledby="race-timetable-title">
-      <h2 id="race-timetable-title">{pageKind}</h2>
-      <p>{detail.timetable_rows.length} public-safe timetable rows.</p>
-      <div class="table-scroll" role="region" aria-label="Public-safe race timetable" tabindex="0">
-        <table>
-          <thead>
-            <tr>
-              <th>Race</th>
-              <th>Post date &amp; time</th>
-              {hasRaceName && <th>Race name</th>}
-              {hasDistance && <th>Distance</th>}
-              {hasSurface && <th>Surface</th>}
-              {hasCourse && <th>Course</th>}
-            </tr>
-          </thead>
-          <tbody>
-            {detail.timetable_rows.map((row) => (
-              <tr>
-                <td>{row.label}</td>
-                <td><time data-meeting-source-time={row.post_time_local}>{meeting.date} {row.post_time_local}</time></td>
-                {hasRaceName && <td>{displayValue(row.race_name)}</td>}
-                {hasDistance && <td>{row.distance_m ? `${row.distance_m}m` : 'Not displayed'}</td>}
-                {hasSurface && <td>{displayValue(row.surface)}</td>}
-                {hasCourse && <td>{displayValue(row.course_label)}</td>}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+    <section aria-labelledby="page-title">
+      <p class="eyebrow">{pageKind}</p>
+      <h1 id="page-title"><a href={trackPath}>{racecourseName}</a></h1>
+      <p><span data-meeting-projected-date>{meeting.date}</span></p>
+      <p>{authorityName} · <a href={countryPath}>{countryName}</a></p>
+      <p>Venue timezone: {detail.timezone}</p>
+      <p>Display timezone: <strong data-timezone-label>{detail.timezone}</strong></p>
+      <p>Capability rank: {detail.capability_rank}</p>
+      <p>Public rank: {detail.effective_public_rank}</p>
+      <p>Publication policy: {detail.policy_id}</p>
+      <p>Source status: {detail.source_status}</p>
+      <MeetingTimezoneProjection sourceDate={detail.date} sourceTimeZone={detail.timezone} />
     </section>
-  )}
 
-  <section aria-labelledby="official-source-title">
-    <h2 id="official-source-title">Official source</h2>
-    <p><a href={detail.official_source_url}>Open official source</a></p>
-    <p>Last checked: {displayValue(detail.last_checked_date)}</p>
-  </section>
+    <section aria-labelledby="coverage-title">
+      <h2 id="coverage-title">Time coverage</h2>
+      <p>{timeCoverageNoteByRank[detail.effective_public_rank]}</p>
+      <p>Where Horses Run does not reproduce entries, runners, odds, results, payouts, predictions, tips, raw source text, or full racecards.</p>
+    </section>
 
-  <section aria-labelledby="boundary-title">
-    <h2 id="boundary-title">Publication boundary</h2>
-    <p>This page uses the public meeting detail dataset. A details show only race label and post time. A+ details show only policy-approved programme summary fields.</p>
-    <p>Complete official information should be confirmed at the official source.</p>
-  </section>
+    {hasRaceRows && (
+      <section aria-labelledby="race-timetable-title">
+        <h2 id="race-timetable-title">{pageKind}</h2>
+        <p>{detail.timetable_rows.length} public-safe timetable rows.</p>
+        <div class="table-scroll" role="region" aria-label="Public-safe race timetable" tabindex="0">
+          <table>
+            <thead>
+              <tr>
+                <th>Race</th>
+                <th>Post date &amp; time</th>
+                {hasRaceName && <th>Race name</th>}
+                {hasDistance && <th>Distance</th>}
+                {hasSurface && <th>Surface</th>}
+                {hasCourse && <th>Course</th>}
+              </tr>
+            </thead>
+            <tbody>
+              {detail.timetable_rows.map((row) => (
+                <tr>
+                  <td>{row.label}</td>
+                  <td><time data-meeting-source-time={row.post_time_local}>{meeting.date} {row.post_time_local}</time></td>
+                  {hasRaceName && <td>{displayValue(row.race_name)}</td>}
+                  {hasDistance && <td>{row.distance_m ? `${row.distance_m}m` : 'Not displayed'}</td>}
+                  {hasSurface && <td>{displayValue(row.surface)}</td>}
+                  {hasCourse && <td>{displayValue(row.course_label)}</td>}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    )}
+
+    <section aria-labelledby="official-source-title">
+      <h2 id="official-source-title">Official source</h2>
+      <p><a href={detail.official_source_url}>Open official source</a></p>
+      <p>Last checked: {displayValue(detail.last_checked_date)}</p>
+    </section>
+
+    <section aria-labelledby="boundary-title">
+      <h2 id="boundary-title">Publication boundary</h2>
+      <p>This page uses the public meeting detail dataset. A details show only race label and post time. A+ details show only policy-approved programme summary fields.</p>
+      <p>Complete official information should be confirmed at the official source.</p>
+    </section>
+  </div>
 </BaseLayout>
 
 <style>

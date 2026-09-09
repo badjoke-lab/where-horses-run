@@ -18,6 +18,7 @@ export type PublicRacecourseMeetingState = {
   readonly next_meetings: readonly PublicTimetableMeetingRow[];
   readonly upcoming_meetings: readonly PublicTimetableMeetingRow[];
   readonly timezone_candidate_meetings: readonly PublicTimetableMeetingRow[];
+  readonly runtime_candidate_meetings: readonly PublicTimetableMeetingRow[];
 };
 
 const byDateAndId = (left: PublicTimetableMeetingRow, right: PublicTimetableMeetingRow) =>
@@ -57,5 +58,9 @@ export function getPublicRacecourseMeetingState(
     next_meetings: nextMeetings,
     upcoming_meetings: upcomingMeetings,
     timezone_candidate_meetings: timezoneCandidateMeetings,
+    // Runtime classification must not depend on the static build date. Keep the full
+    // public racecourse meeting set separately so current header/authority behavior
+    // remains bound to the existing timezone candidate window.
+    runtime_candidate_meetings: meetings,
   };
 }
