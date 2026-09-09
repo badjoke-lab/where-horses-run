@@ -104,13 +104,13 @@ const pick = (en: string, ja: string) => isJa ? ja : en;
 
     <header class="racecourse-detail-v3__header">
       <div class="racecourse-detail-v3__title">
-        <h1>{racecourseName}</h1>
-        {secondaryName && secondaryName !== racecourseName ? <p>{secondaryName}</p> : null}
+        <h1 id="page-title">{racecourseName}</h1>
+        {secondaryName && secondaryName !== racecourseName ? <p data-racecourse-local-name>{secondaryName}</p> : null}
       </div>
 
       <div class="racecourse-detail-v3__chips" aria-label={pick('Basic racecourse facts', '競馬場の基本情報')}>
-        <a href={countryHref}>{countryName}</a>
-        {locality ? <span>{locality}</span> : null}
+        <a href={countryHref} data-racecourse-country>{countryName}</a>
+        {locality ? <span data-racecourse-location>{locality}</span> : null}
         {track.timezone ? <span>{track.timezone}</span> : null}
         {racingTypes.map((type) => <a href={type.href}>{type.label}</a>)}
         {surfaces.length ? <span>{surfaces.join(' / ')}</span> : null}
