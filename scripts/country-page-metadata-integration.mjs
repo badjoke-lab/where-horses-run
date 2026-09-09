@@ -102,11 +102,9 @@ function parsePage(outputDirectory, file, route) {
       route.relative,
     );
     const heading = extractText(html, /<h1[^>]*id="page-title"[^>]*>([\s\S]*?)<\/h1>/i, 'country page heading', route.relative);
-    const suffix = route.locale === 'ja'
-      ? 'の競馬カレンダー・競馬場ガイド'
-      : ' Horse Racing Calendar & Racecourses';
-    if (!heading.endsWith(suffix)) throw new Error(`Country heading suffix differs in ${route.relative}: ${heading}`);
-    const name = heading.slice(0, -suffix.length).trim();
+    // Country hubs intentionally use the compact visible country/region name as h1.
+    // Structured metadata should consume that visible name instead of enforcing an older SEO suffix.
+    const name = heading.trim();
     if (!name) throw new Error(`Country name is empty in ${route.relative}`);
 
     const localName = extractDefinition(html, route.locale === 'ja' ? '現地名' : 'Local name', route.relative);
