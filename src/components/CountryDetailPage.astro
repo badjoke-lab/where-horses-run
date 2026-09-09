@@ -308,8 +308,17 @@ const racingTypePathPrefix = isJa ? '/ja/types/' : '/types/';
 const glossaryPathPrefix = isJa ? '/ja/glossary/' : '/glossary/';
 const sourceRegistryPath = isJa ? `/ja/sources/${country.slug}/` : `/sources/${country.slug}/`;
 const countriesBackPath = isJa ? '/ja/countries/' : '/countries/';
+const calendarPath = isJa ? '/ja/calendar/' : '/calendar/';
 const canonicalPath = isJa ? `/ja/countries/${country.slug}/` : `/countries/${country.slug}/`;
 const alternatePath = isJa ? `/countries/${country.slug}/` : `/ja/countries/${country.slug}/`;
+const getRacecourseHref = (record: any) => {
+  const racecourse = record.racecourse_id ? racecoursesById.get(record.racecourse_id) : undefined;
+  return racecourse?.slug ? `${racecoursePathPrefix}${racecourse.slug}/` : null;
+};
+const getMeetingHref = (record: any) => {
+  if (record.detail_path) return isJa ? `/ja${record.detail_path}` : record.detail_path;
+  return record.date ? `${calendarPath}?date=${encodeURIComponent(record.date)}` : calendarPath;
+};
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} lang={locale} canonicalPath={canonicalPath} alternatePath={alternatePath}>
@@ -319,6 +328,7 @@ const alternatePath = isJa ? `/countries/${country.slug}/` : `/ja/countries/${co
       <h1 id="page-title">{pick(`${country.name_en} Horse Racing Calendar & Racecourses`, `${country.name_ja}の競馬カレンダー・競馬場ガイド`)}</h1>
       <p class="hero__summary">{pageDescription}</p>
       <nav class="country-jump-nav" aria-label={pick('Page sections', 'ページ内リンク')}>
+        <a href={calendarPath}>{pick('Full calendar', '全開催カレンダー')}</a>
         <a href="#upcoming-meetings">{pick('Upcoming meetings', '近日開催')}</a>
         <a href="#racecourses">{pick('Main racecourses', '主な競馬場')}</a>
         <a href="#official-sources">{pick('Official sources', '公式ソース')}</a>
@@ -461,8 +471,8 @@ const alternatePath = isJa ? `/countries/${country.slug}/` : `/ja/countries/${co
               <tbody>
                 {primaryMeetings.map((record) => (
                   <tr>
-                    <td data-label={pick('Date', '日付')}>{record.date ?? pick('Not listed', '未掲載')}</td>
-                    <td data-label={pick('Racecourse', '競馬場')}>{getRacecourseName(record)}</td>
+                    <td data-label={pick('Date', '日付')}>{record.date ? <a href={getMeetingHref(record)}>{record.date}</a> : pick('Not listed', '未掲載')}</td>
+                    <td data-label={pick('Racecourse', '競馬場')}>{getRacecourseHref(record) ? <a href={getRacecourseHref(record) ?? undefined}>{getRacecourseName(record)}</a> : getRacecourseName(record)}</td>
                     {showMeetingDetails && <td data-label={pick('System', '体系')}>{getMeetingSystem(record.racing_type)}</td>}
                     {showMeetingDetails && <td data-label={pick('Start time', '開始時刻')}>{formatStartTime(record.start_time_local)}</td>}
                     {showMeetingDetails && <td data-label={pick('Timezone', 'タイムゾーン')}>{formatTimezone(record.timezone ?? profile?.typical_schedule.timezone)}</td>}
@@ -488,8 +498,8 @@ const alternatePath = isJa ? `/countries/${country.slug}/` : `/ja/countries/${co
                   <tbody>
                     {remainingMeetings.map((record) => (
                       <tr>
-                        <td data-label={pick('Date', '日付')}>{record.date ?? pick('Not listed', '未掲載')}</td>
-                        <td data-label={pick('Racecourse', '競馬場')}>{getRacecourseName(record)}</td>
+                        <td data-label={pick('Date', '日付')}>{record.date ? <a href={getMeetingHref(record)}>{record.date}</a> : pick('Not listed', '未掲載')}</td>
+                        <td data-label={pick('Racecourse', '競馬場')}>{getRacecourseHref(record) ? <a href={getRacecourseHref(record) ?? undefined}>{getRacecourseName(record)}</a> : getRacecourseName(record)}</td>
                         {showMeetingDetails && <td data-label={pick('System', '体系')}>{getMeetingSystem(record.racing_type)}</td>}
                         {showMeetingDetails && <td data-label={pick('Start time', '開始時刻')}>{formatStartTime(record.start_time_local)}</td>}
                         {showMeetingDetails && <td data-label={pick('Timezone', 'タイムゾーン')}>{formatTimezone(record.timezone ?? profile?.typical_schedule.timezone)}</td>}
@@ -501,10 +511,12 @@ const alternatePath = isJa ? `/countries/${country.slug}/` : `/ja/countries/${co
               </div>
             </details>
           )}
+          <p class="country-section__intro"><a href={calendarPath}>{pick('View all meetings in Calendar', 'すべての開催をカレンダーで見る')} →</a></p>
         </>
       ) : (
         <div class="card country-card">
           <p>{upcomingEmptyText}</p>
+          <p><a href={calendarPath}>{pick('Open Calendar', 'カレンダーを開く')} →</a></p>
         </div>
       )}
     </section>
