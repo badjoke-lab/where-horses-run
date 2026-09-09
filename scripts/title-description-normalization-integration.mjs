@@ -137,9 +137,8 @@ function meetingMetadata(page) {
 function countryAreaName(page) {
   if (!/^\/(?:ja\/)?countries\/[^/]+\/$/.test(page.pathname)) return null;
   const heading = readText(page.html, /<h1[^>]*id="page-title"[^>]*>([\s\S]*?)<\/h1>/i, 'country heading', page.relative);
-  const suffix = page.lang === 'ja' ? 'の競馬カレンダー・競馬場ガイド' : ' Horse Racing Calendar & Racecourses';
-  if (!heading.endsWith(suffix)) throw new Error(`Country heading suffix differs in ${page.relative}: ${heading}`);
-  return heading.slice(0, -suffix.length).trim();
+  if (!heading) throw new Error(`Country heading is empty in ${page.relative}`);
+  return heading;
 }
 
 function countryMetadata(page) {
