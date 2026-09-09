@@ -93,7 +93,7 @@ const pick = (en: string, ja: string) => isJa ? ja : en;
   canonicalPath={`${prefix}/tracks/${track.slug}/`}
   alternatePath={`${isJa ? '' : '/ja'}/tracks/${track.slug}/`}
 >
-  <main class="racecourse-detail-v3" data-racecourse-detail-v3 data-racecourse-id={track.id}>
+  <main class="racecourse-detail-v3" data-racecourse-detail-v3 data-racecourse-detail-v2 data-racecourse-id={track.id}>
     <nav class="racecourse-detail-v3__breadcrumbs" aria-label={pick('Breadcrumb', 'パンくずリスト')}>
       <a href={prefix ? `${prefix}/` : '/'}>{pick('Home', 'ホーム')}</a>
       <span aria-hidden="true">›</span>
@@ -102,7 +102,7 @@ const pick = (en: string, ja: string) => isJa ? ja : en;
       <span aria-current="page">{racecourseName}</span>
     </nav>
 
-    <header class="racecourse-detail-v3__header">
+    <header class="racecourse-detail-v3__header" data-racecourse-detail-identity>
       <div class="racecourse-detail-v3__title">
         <h1 id="page-title">{racecourseName}</h1>
         {secondaryName && secondaryName !== racecourseName ? <p data-racecourse-local-name>{secondaryName}</p> : null}
@@ -147,7 +147,7 @@ const pick = (en: string, ja: string) => isJa ? ja : en;
       <aside class="racecourse-detail-v3__sidebar" aria-label={pick('Meeting and source information', '開催・情報源')}>
         <RacecourseMeetingSummary state={meetingState} lang={locale} officialScheduleUrl={primaryScheduleUrl} />
 
-        <section class="racecourse-detail-v3__panel" aria-labelledby="racecourse-sources-heading">
+        <section class="racecourse-detail-v3__panel" data-racecourse-detail-sources aria-labelledby="racecourse-sources-heading">
           <h2 id="racecourse-sources-heading">{pick('Official sources', '公式ソース')}</h2>
           {officialLinks.length ? (
             <ul>
