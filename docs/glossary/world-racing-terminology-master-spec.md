@@ -8,489 +8,364 @@ Public-page implementation: deferred until the reviewed master is sufficiently m
 
 ## 1. Purpose
 
-The Where Horses Run glossary is a user-facing horse-racing knowledge resource. Its first responsibility is to help readers understand racing concepts, terminology, local usage, and differences between racing jurisdictions and disciplines.
+The Where Horses Run glossary is a **user-facing horse-racing knowledge resource**. Its first responsibility is to help readers understand racing concepts, terminology, local usage, and differences between racing jurisdictions and disciplines.
 
-The terminology master must also support search discovery and machine comprehension by keeping concepts, labels, regional usage, relationships, evidence, and search intents in explicit structured form.
+Because WHR is a later entrant, the same knowledge base must also be structured so that Google/Bing and AI-search systems can discover, understand, connect, and cite the material accurately. Search optimization is therefore a structural requirement, but it does not replace user value and must not distort canonical knowledge.
 
-The master is **not** an English-to-Japanese translation list and is **not** a site manual.
+The master is **not**:
 
-The model is designed for worldwide racing, where terminology is not globally standardized. A concept may have:
+- an English-to-Japanese translation list;
+- a list of terms needed only to understand WHR UI;
+- an automatic SEO page-generation queue;
+- a migration exercise for the existing public glossary.
 
-- different official names in different jurisdictions;
-- a local-language name with no exact English or Japanese equivalent;
-- multiple common or industry names;
-- abbreviations or short forms;
-- colloquial or slang forms;
-- historical, deprecated, or obsolete forms;
-- different meanings under the same spelling in different contexts.
+Worldwide racing terminology is not globally standardized. A concept may have different official names by jurisdiction, local-language names with no exact English/Japanese equivalent, abbreviations, industry names, slang, historic names, or the same spelling with different meanings.
 
-The data model must preserve those differences rather than flatten them into false global synonyms.
+The model must preserve those differences rather than flattening them into false global synonyms.
 
-## 2. Authority and relationship to the existing glossary
+## 2. Authority and replacement rule
 
-This document is the governing knowledge-model specification for future glossary expansion.
+This document is the governing knowledge-model specification for future glossary research, data modeling, and later public implementation.
 
-Existing files under `docs/glossary/` and the current `data/static/glossary.json` implementation remain valid historical/legacy implementation evidence where they do not conflict with this specification.
+The zero-based candidate inventory under `data/glossary-master/concepts/` is the current master-list starting point.
 
-The existing v2 glossary schema and current public routes are a **legacy baseline**, not the canonical model for worldwide terminology coverage and not a completeness target.
+The existing public glossary and older glossary-v2 documents are **legacy runtime/implementation evidence only**. They are not:
 
-Existing public glossary routes may remain available while the master is built. Their existence does not authorize immediate mass expansion of glossary pages.
+- the source population for the new master;
+- a completeness target;
+- a migration gate;
+- a requirement to preserve IDs, headwords, categories, or EN/JA-only fields.
 
-Any future glossary schema, migration, generator, content expansion, or public-page redesign must map to this specification or explicitly amend it first.
+When a later `GLOSSARY-PUBLIC-*` implementation is authorized, current glossary content may be removed wholesale and public content regenerated from reviewed master data. Reusable routing/UI code may be retained only if it satisfies the new public contract.
 
-## 3. Core principle: concept first, labels second
+## 3. Core principle: Concept first, labels second
 
-The canonical unit is a language-independent concept identified by a stable `concept_id`.
+The canonical identity is a language-independent `concept_id`.
 
 ```text
-concept
--> labels in one or more languages/locales
--> regional/jurisdiction usage
--> definitions
--> concept relationships
+Concept
+-> labels by language / script / locale / jurisdiction
+-> reader definitions
+-> regional usage
+-> typed relationships
 -> evidence
 -> search intents
--> eventual page targets
+-> eventual public targets
 ```
 
-Labels are not the canonical identity.
+A preferred English or Japanese working label is not proof that the term is globally official.
 
-A preferred English label may be convenient for display or maintenance, but it must not become a hidden assumption that the English term is globally official or that every concept has an exact English equivalent.
+If two strings translate similarly but represent different concepts, keep separate Concepts.
 
-If two strings translate similarly but represent different concepts, they remain separate concepts.
+If the same string has materially different meanings, keep separate Concepts and record the ambiguity/homonym relationship. For example, the English word `Break` may refer to leaving the starting gate in one context and breaking gait in harness racing in another.
 
-If the same string has materially different meanings in different racing contexts, it maps to separate concepts and is marked as ambiguous/homonymous usage.
+## 4. Labels and local language
 
-## 4. Translation and equivalence rules
+Each label must be capable of carrying:
+
+```text
+concept_id
+label
+language
+script
+locale
+label_type
+country_or_territory
+jurisdiction
+authority
+discipline
+usage_region
+register
+currentness
+source/evidence
+review_state
+```
+
+Supported label types include:
+
+- `official`
+- `preferred`
+- `alternate`
+- `abbreviation`
+- `short_form`
+- `regional`
+- `colloquial`
+- `slang`
+- `historical`
+- `deprecated`
+- `transliteration`
+- `descriptive_translation`
+- `search_variant`
+- `misspelling`
+
+Original script must be preserved. Do not force local terminology into ASCII or English solely for maintenance convenience.
+
+## 5. Translation and equivalence
 
 Do not invent equivalence for convenience.
 
-Permitted equivalence/relationship states include:
+Supported semantic relationships include:
 
-- `exact_equivalent`;
-- `close_equivalent`;
-- `broader`;
-- `narrower`;
-- `related`;
-- `contrast`;
-- `regional_counterpart`;
-- `no_direct_equivalent`.
+- `exact_equivalent`
+- `close_equivalent`
+- `broader`
+- `narrower`
+- `related`
+- `contrast`
+- `regional_counterpart`
+- `no_direct_equivalent`
+- `homonym_or_ambiguous_label`
 
-When no established translation exists, preserve:
+When no established translation exists, retain as applicable:
 
-1. the original-script label;
-2. transliteration or romanization when useful;
-3. a literal translation only when supportable and useful;
-4. a descriptive translation for reader comprehension when needed;
-5. an explicit note that the descriptive translation is not an official equivalent.
+1. original-script label;
+2. transliteration/romanization;
+3. literal translation if useful and supportable;
+4. descriptive translation for reader comprehension;
+5. an explicit marker that the descriptive translation is not an official equivalent.
 
-Original script is never discarded merely to fit an English-first schema.
+Regionality is metadata, not a `regional terms` catch-all category.
 
-## 5. Label types
+## 6. Controlled domain taxonomy
 
-Every label or variant must declare what kind of label it is. Supported types are:
+The current zero-based seed uses 18 semantic categories:
 
-- `official` — used by a governing authority, official rules, or other authoritative racing source;
-- `preferred` — preferred public headword for a specified language/locale;
-- `alternate` — established alternative name;
-- `abbreviation` — abbreviation or initialism;
-- `short_form` — shortened form;
-- `regional` — established form associated with a region or jurisdiction;
-- `colloquial` — established informal or industry usage;
-- `slang` — slang usage with bounded evidence and context;
-- `historical` — historically used form;
-- `deprecated` — superseded or discouraged form;
-- `transliteration` — script-to-script transliteration/romanization;
-- `descriptive_translation` — explanatory translation, not asserted as an official equivalent;
-- `search_variant` — meaningful search/display variant that is not a preferred headword;
-- `misspelling` — sufficiently common search misspelling retained for retrieval only, never presented as the correct term.
+1. `DISC` — Racing disciplines and systems / 競馬の種類・競技体系
+2. `RTYPE` — Race types, class, and conditions / レースの種類・格・条件
+3. `ENTRY` — Entry and participation process / 登録・出走手続
+4. `HORSE` — Horse breeds, sex, and age / 馬の品種・性別・年齢
+5. `BREED` — Pedigree and breeding / 血統・繁殖
+6. `ROLE` — People and official roles / 騎手・調教師・関係者
+7. `VENUE` — Racecourses and course structure / 競馬場・コース
+8. `SURF` — Surfaces and track/going conditions / 走路・馬場状態
+9. `DIST` — Distance and measurement / 距離・計測
+10. `WEIGHT` — Weight and handicapping / 重量・ハンデ
+11. `RUN` — Race progression and running styles / レース進行・脚質・競走中の表現
+12. `EQUIP` — Tack and equipment / 馬具・装備
+13. `TRAIN` — Training and pre/post-race activity / 調教・競走前後
+14. `MEET` — Meetings, schedules, and official documents / 開催・日程・公式文書
+15. `RESULT` — Results, inquiry, and adjudication / 結果・審議・裁定
+16. `PRIZE` — Prize money and race value / 賞金・競走価値
+17. `BET` — Betting and odds terminology / 馬券・オッズ
+18. `WELF` — Veterinary, safety, and horse welfare / 獣医・安全・競走馬福祉
 
-Label type is data. Public rendering must not present slang, descriptive translations, or deprecated forms as official terminology.
+This taxonomy may be amended when bottom-up jurisdiction research proves that a semantic domain is missing. It must not be expanded simply to mirror old glossary categories.
 
-## 6. Regional and contextual dimensions
+WHR-specific interface/access vocabulary such as `Official live`, `Official replay`, `Account required`, `Subscription required`, `Geo-restricted`, `Live`, or `Upcoming` is **site UI vocabulary**, not a horse-racing knowledge category, unless a term separately represents a genuine racing concept.
 
-Regionality is an attribute, not a catch-all category.
+## 7. Current zero-based seed
 
-A term may be scoped by:
+`GLOSSARY-MASTER-002` established the initial research seed:
 
-- language;
-- script;
-- locale;
-- country or territory;
-- jurisdiction;
-- racing authority;
-- racing system;
-- discipline;
-- usage region;
-- register/audience;
-- period/currentness.
+- **501 candidate Concepts**;
+- **18 domain categories**;
+- P0: **156**;
+- P1: **212**;
+- P2: **118**;
+- P3: **15**;
+- every row starts `verification_status=candidate`;
+- every row starts `public_ready=no`.
 
-A jurisdiction-specific term remains in its semantic category. For example, a locally specific race type belongs under race types, with jurisdiction metadata; it does not move into a generic `regional terms` bucket.
+The 501 count is a starting research population, not a claim that the world terminology set is complete or correct.
 
-## 7. Knowledge taxonomy
+New Concepts may be added, split, merged, renamed, or rejected as jurisdiction evidence improves the model.
 
-The initial controlled taxonomy is grouped for human navigation while retaining narrower internal categories.
+## 8. Bottom-up jurisdiction research rule
 
-### A. Racing systems and disciplines
+Do not translate one master list country by country.
 
-1. Racing types and competition systems
+For every jurisdiction/language pass:
 
-Examples: flat racing, jump racing, hurdle racing, steeplechase, harness racing, trotting, pacing, Arabian racing, Quarter Horse racing, Banei racing/ばんえい競馬.
+```text
+actual local authoritative/specialist material
+-> collect terminology actually used there
+-> preserve original script
+-> identify meaning and context
+-> map to an existing Concept only when justified
+-> create/split Concepts when the current model does not fit
+-> record relationship/equivalence strength
+-> attach evidence for the claim being made
+```
 
-### B. Meetings and races
+This is mandatory to prevent an English/Japanese master from erasing local-only concepts.
 
-2. Meetings and scheduling  
-Examples: race meeting, meeting, fixture, race day, racing calendar, card, programme.
+## 9. Slang, colloquial, industry, and historical terminology
 
-3. Race types, class, and conditions  
-Examples: maiden, handicap, conditions race, allowance, claiming, stakes, Listed, Group race, Grade race, open race, novice, nursery.
+Established informal terminology is in scope because users encounter it in racing media, commentary, racecourses, historical publications, and community discussion.
 
-4. Entry and participation process  
-Examples: entry, nomination, declaration, acceptance, scratch, withdrawal, non-runner, reserve, ballot.
+Slang/colloquial records must, where known, capture:
 
-### C. Horses
-
-5. Horse breeds, sex, age, and racing attributes  
-Examples: Thoroughbred, Arabian, Standardbred, Quarter Horse, colt, filly, mare, stallion, gelding, foal, yearling.
-
-6. Pedigree and breeding  
-Examples: sire, dam, damsire, pedigree, stud, broodmare, foaling.
-
-### D. People and roles
-
-7. Jockeys, trainers, officials, and other roles  
-Examples: jockey, apprentice jockey, trainer, driver, owner, breeder, steward, starter, handicapper, clerk of the course.
-
-### E. Racecourses and tracks
-
-8. Racecourse and course structure  
-Examples: racecourse, racetrack, track, course, inner course, outer course, straight course, chute, home straight, backstretch, turn, bend, rail, winning post, starting gate.
-
-9. Surface and condition  
-Surface examples: turf, dirt, sand, synthetic, all-weather, Tapeta, Polytrack.  
-Condition examples: going, track condition, firm, good, soft, heavy, fast, muddy, sloppy.
-
-Surface/material and current condition are separate concepts and must not be conflated.
-
-### F. Race mechanics
-
-10. Distance and measurement  
-Examples: furlong, mile, metre, sprint, middle distance, staying, race distance.
-
-11. Weight and handicapping  
-Examples: weight, handicap, weight-for-age, allowance, penalty, claim, top weight, bottom weight.
-
-12. Race progression and running style  
-Examples: start, pace, lead, front-runner, pacesetter, closer, final turn, finish, photo finish, dead heat.
-
-### G. Equipment and preparation
-
-13. Tack and equipment  
-Examples: blinkers, visor, hood, tongue tie, cheekpieces, saddle, bridle, sulky.
-
-14. Training and pre/post-race activity  
-Examples: training, workout, gallop, breeze, trial, barrier trial, warm-up, paddock.
-
-### H. Results, decisions, and race validity
-
-15. Results, inquiry, and adjudication  
-Examples: winner, placing, dead heat, inquiry, objection, disqualification, official result, void race, false start.
-
-### I. Betting and market terminology
-
-16. Betting and odds terminology  
-Examples: odds, tote, pari-mutuel, fixed odds, win, place, show, exacta, quinella, trifecta, dividend, payout.
-
-These concepts may be defined as knowledge. This does not authorize publication of meeting-specific odds, results, payouts, tips, or full racecard datasets.
-
-## 8. Slang, colloquial, and industry terminology
-
-Established informal terminology is in scope because users encounter it in racing media, commentary, racecourse usage, historic material, and community discussion.
-
-Slang must not be accepted solely because one social post used it.
-
-A slang/colloquial record should capture, where known:
-
-- concept mapping;
 - exact form and original script;
+- Concept mapping;
 - language/locale;
 - jurisdiction/usage region;
-- discipline or audience;
-- register (`colloquial`, `industry`, `slang`, etc.);
-- currentness (`current`, `declining`, `historical`, etc.);
+- discipline/audience;
+- register;
+- currentness;
 - evidence type;
 - confidence;
-- explanatory note where the meaning is not obvious.
+- explanatory note.
 
-Evidence appropriate to slang may include established racing media, industry publications, commentary, specialist dictionaries, historical publications, or repeated long-running community usage. It need not be an official authority source, but the source type must be explicit.
+A one-off social-media use is not sufficient evidence.
 
-## 9. Historical and deprecated terminology
+Appropriate evidence may include established racing media, industry publications, specialist dictionaries, commentary/transcripts, historical publications, and repeated durable community usage.
 
-Historical terminology is retained when it helps users understand older programmes, publications, racecourse history, archival material, or changes in racing language.
-
-Currentness values should distinguish at least:
-
-- `current`;
-- `legacy`;
-- `historical`;
-- `deprecated`;
-- `obsolete`.
-
-Historical forms must not silently replace current preferred terminology.
+Historical terminology remains useful when it helps readers understand older programmes, archival racing material, racecourse history, or changes in racing language. Distinguish at least `current`, `declining`, `legacy`, `historical`, `deprecated`, and `obsolete` where evidence supports the distinction.
 
 ## 10. Evidence model
 
-Source requirements depend on the claim being made.
+Evidence requirements depend on the claim.
 
-### Formal/official terminology
+### Formal/official claims
 
-Prefer, in order where available:
+Prefer, where available:
 
-1. governing authority;
+1. governing/racing authority;
 2. official rules of racing;
-3. official racecard/programme/timetable material;
-4. official racecourse or organizer material;
-5. other public authoritative racing material.
+3. official glossary;
+4. official racecard/programme/conditions book/results material;
+5. official racecourse/organizer material;
+6. other authoritative public racing material.
 
-### General terminology and explanation
+### General explanation
 
-May additionally use:
+May additionally use established specialist racing media, specialist dictionaries, academic/research sources, and reputable historical sources.
 
-- major specialist racing media;
-- established specialist dictionaries;
-- academic/research material;
-- reputable historical sources.
+### Informal/historical usage
 
-### Slang and colloquial usage
+May additionally use industry publications, commentary/transcripts, specialist media, historical publications, and durable community evidence.
 
-May additionally use:
+Every evidence record must state what claim it supports: meaning, official status, spelling, regional use, currentness, slang use, historical use, or another specific claim.
 
-- established industry publications;
-- specialist racing media;
-- commentary/transcript evidence;
-- historical publications;
-- repeated, durable community usage.
+## 11. Normalized master domains
 
-Evidence records must state what they support: official status, meaning, regional usage, currentness, spelling, slang usage, or another specific claim.
+The working master must support these logical domains even when not all are populated yet:
 
-## 11. Bottom-up jurisdiction research rule
+- `Concepts`
+- `Labels`
+- `Definitions`
+- `Relations`
+- `Regional_Usage`
+- `Slang_Colloquial`
+- `Historical_Terms`
+- `Sources`
+- `Search_Queries`
+- `Page_Targets`
+- `Coverage`
+- `Review_Queue`
 
-Do not build a master in one language and translate it country by country.
+The repository concept seed is currently partitioned by category under `data/glossary-master/concepts/*.tsv` to keep review and Git diffs manageable. All category files share one schema and together form the current candidate Concept inventory.
 
-For each jurisdiction/language research pass:
+## 12. Search and AI-discovery layer
 
-```text
-local authoritative/specialist material
--> collect terms actually used there
--> identify meaning and context
--> map to an existing concept when justified
--> create a new concept when no existing concept fits
--> record equivalence/relationship rather than forcing a translation
-```
-
-This bottom-up rule is required to preserve local-only concepts and prevent an English/Japanese master from erasing regional racing knowledge.
-
-## 12. Master data domains
-
-The master should be representable as normalized tables/files with at least these logical domains:
-
-### `Concepts`
-
-Language-independent identities and semantic classification.
-
-Minimum concerns:
-
-- `concept_id`;
-- top-level group and internal category;
-- semantic scope;
-- parent/child relationships;
-- status;
-- user importance;
-- review state.
-
-### `Labels`
-
-All names and variants, including original script and label type.
-
-Minimum concerns:
-
-- `concept_id`;
-- label text;
-- language/script/locale;
-- label type;
-- jurisdiction/usage scope;
-- currentness;
-- source/evidence reference.
-
-### `Definitions`
-
-Reader-oriented definitions and explanations by language.
-
-At minimum support:
-
-- concise direct definition;
-- fuller explanation;
-- jurisdiction/context notes;
-- confusion/difference notes;
-- review state and evidence.
-
-### `Relations`
-
-Typed concept relationships, including exact/close equivalence, broader/narrower, related, contrast, regional counterpart, and no-direct-equivalent relationships.
-
-### `Regional_Usage`
-
-Jurisdiction, authority, discipline, audience/register, and period-specific usage.
-
-### `Slang_Colloquial`
-
-Informal forms with bounded usage evidence and confidence.
-
-### `Historical_Terms`
-
-Historical/deprecated/obsolete forms with period/currentness evidence.
-
-### `Sources`
-
-Evidence registry with source type, authority, jurisdiction/language, supported claim, URL/reference, review date, and evidence status.
-
-### `Search_Queries`
-
-Search-discovery metadata linked to concepts but kept separate from knowledge truth.
-
-### `Page_Targets`
-
-Future publication decisions. A query or label does not automatically justify a standalone page.
-
-### `Coverage`
-
-Coverage by taxonomy, jurisdiction, language, evidence state, and review state.
-
-### `Review_Queue`
-
-Unverified, ambiguous, conflicting, low-confidence, or unmapped terminology requiring human review.
-
-## 13. Search and AI-discovery layer
-
-Search metadata is a separate layer. It must not redefine concept truth or cause definitions to be written around keyword stuffing.
+Search metadata is separate from canonical knowledge truth.
 
 Search records may capture:
 
-- `concept_id`;
-- query text;
-- language;
-- country/locale when relevant;
-- search intent;
-- query type;
-- priority;
-- future target page/section.
+```text
+concept_id
+query
+language
+country_or_locale
+search_intent
+query_type
+priority
+future_target
+review_state
+```
 
 Useful query classes include:
 
 - definition (`what is X`, `Xとは`);
 - comparison (`X vs Y`, `XとYの違い`);
-- regional usage (`X in UK racing`, jurisdiction comparisons);
+- regional usage and jurisdiction comparison;
 - how/why questions;
 - translation/local-language searches;
-- abbreviation and racecard-reading questions.
+- abbreviations;
+- racecard/official-document reading questions.
 
-The public knowledge remains written for people first. Search metadata is used to improve discoverability, information architecture, internal linking, answer completeness, and machine comprehension.
+Do not keyword-stuff canonical definitions. Do not create thin pages mechanically for every generated query, spelling, or regional label.
 
-## 14. Public-content principles for the later implementation phase
+Search metadata should improve discoverability, internal-link planning, answer completeness, machine comprehension, and citation suitability while leaving the user-facing knowledge accurate and readable.
 
-When public glossary expansion is implemented later, each reviewed concept page/section should be capable of providing:
+## 13. Later public-content principles
 
-1. a concise direct answer/definition;
+When `GLOSSARY-PUBLIC-*` work is authorized, a reviewed concept page/section should be able to provide:
+
+1. a concise direct definition;
 2. a reader-friendly fuller explanation;
 3. regional/jurisdiction differences where material;
-4. aliases, abbreviations, local forms, or slang with clear labels;
-5. differences from commonly confused concepts;
+4. original-language labels, aliases, abbreviations, slang, or historical forms with clear status labels;
+5. commonly confused concepts and differences;
 6. related concepts;
-7. evidence/source attribution appropriate to the claim.
+7. appropriate evidence/source attribution;
+8. useful links into WHR country, racecourse, racing-system, Calendar, or other relevant knowledge pages where they genuinely help the reader.
 
-Do not create thin standalone pages mechanically for every query, spelling, translation, or regional label.
+A comparison or regional page should be created only when it has distinct user value and enough reviewed material.
 
-A comparison, regional page, or separate question page is justified only when it has distinct user value and enough reviewed material. Otherwise the content belongs inside the canonical concept page/section.
+## 14. Publication boundary
 
-## 15. Public-data boundary
+The knowledge base may explain racecards, entries, participants, odds, results, payouts, betting systems, and other racing concepts.
 
-The knowledge base may explain concepts such as racecards, entries, odds, results, payouts, jockeys, trainers, and betting systems.
+Glossary work does **not** authorize publication of otherwise restricted meeting-specific datasets, predictions, tips, raw source bodies, or data prohibited by the existing publication contracts.
 
-It must not use glossary expansion as a route to republish prohibited meeting-specific datasets.
+Existing publication/governance policies remain authoritative.
 
-The existing publication boundary remains in force. In particular, glossary work does not authorize publication of:
-
-- full racecards;
-- participant datasets merely because participant roles are glossary concepts;
-- meeting-specific odds;
-- meeting-specific results or payouts where prohibited by the governing publication contract;
-- predictions or tips;
-- raw external source bodies.
-
-## 16. Current work boundary
-
-The immediate glossary programme is **master-list and knowledge-model construction**.
+## 15. Current work boundary
 
 Current in-scope work:
 
 ```text
-specification and normalized schema design
-legacy seed audit/migration mapping
-worldwide concept inventory expansion
-local-language and jurisdiction terminology collection
+zero-based world Concept inventory
+jurisdiction and local-language terminology research
+original-script labels
 relations/equivalence mapping
-slang/colloquial/historical collection
+slang/colloquial/industry/historical collection
 source/evidence registry
-search-intent/query mapping
+search-intent mapping
 coverage and review queues
 ```
 
-Deferred work:
+Deferred:
 
 ```text
-new public glossary route expansion
+new public glossary URL/IA design
 public glossary UI redesign
 mass generation of detail pages
-new public structured-data rollout for the glossary
-large-scale public internal-link rollout driven by the new master
+new glossary structured-data rollout
+large-scale public internal-link rollout driven by the master
 ```
 
-Existing public glossary routes may remain as the legacy baseline during this phase.
+## 16. Master-list readiness criteria
 
-## 17. Completion criteria for the master-list phase
+The master-list phase is not complete merely because a target term count has been reached.
 
-The master-list phase is not complete because an arbitrary target number of terms has been reached.
+A later readiness review must confirm that:
 
-Completion requires:
+- the concept-first model is stable enough;
+- major racing domains have credible coverage;
+- major jurisdictions and racing systems have been researched bottom-up;
+- local-language/original-script labels can be represented correctly;
+- no-direct-equivalent cases work without invented translations;
+- homonyms and common false-synonym risks are modeled explicitly;
+- slang and historical terms have evidence/register/currentness handling;
+- source provenance is attached at claim-appropriate granularity;
+- search intents are linked without becoming canonical knowledge;
+- coverage gaps and unresolved terminology remain visible.
 
-- the concept-first model is implemented in the working master;
-- legacy terms are mapped, split, retained, or rejected explicitly rather than silently copied;
-- the controlled taxonomy is represented;
-- labels preserve language, script, type, regional scope, and currentness;
-- no-direct-equivalent cases can be represented without invented translations;
-- relationships can distinguish exact from approximate equivalence;
-- local terms can be collected bottom-up by jurisdiction;
-- slang and historical terms have their own evidence/register/currentness handling;
-- evidence provenance is attached at claim-appropriate granularity;
-- search queries are linked without becoming canonical knowledge;
-- coverage gaps and unresolved terminology remain visible in review/coverage records;
-- a separate review explicitly decides when the master is mature enough for the public-page implementation phase.
+There is **no legacy-record migration requirement** in this readiness gate.
 
-## 18. Migration rule for existing seed material
+## 17. Execution sequence
 
-Existing glossary records, spreadsheets, and term lists are migration inputs only.
+```text
+GLOSSARY-MASTER-001  specification and authority                         COMPLETE
+GLOSSARY-MASTER-002  zero-based world Concept seed (501 / 18 categories) COMPLETE
+GLOSSARY-MASTER-003  jurisdiction + local-language research              CURRENT
+GLOSSARY-MASTER-004  slang / colloquial / industry / historical evidence QUEUED
+GLOSSARY-MASTER-005  relations / equivalence / evidence refinement       QUEUED
+GLOSSARY-MASTER-006  search-intent / coverage / readiness review         QUEUED
 
-They must not be treated as canonical truth merely because they predate this specification.
+GLOSSARY-PUBLIC-*    public implementation                               DEFERRED
+```
 
-Migration decisions should be explicit:
-
-- keep as the same concept;
-- split into multiple concepts;
-- merge into another concept;
-- retain only as a label/variant;
-- regionalize;
-- mark historical/deprecated;
-- defer pending evidence;
-- reject.
-
-No legacy count is a protected completeness target for the new world terminology master.
+Conversation history is not execution authority. Future glossary work must use this specification, `data/glossary-master/README.md`, and the active glossary roadmap addendum as the current repository authority.
