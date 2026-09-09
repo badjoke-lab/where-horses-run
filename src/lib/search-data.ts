@@ -1,6 +1,7 @@
 import { getCountries, getRacecourses } from './data';
 import { getGlossaryEntries } from './glossary-data';
 import { isCalendarSupportedCountry } from './calendarPublicCountrySupport';
+import { isPublicActiveRacecourse } from './racecoursePublicSupport';
 
 export type SearchLocale = 'en' | 'ja';
 export type SearchRecordType = 'country' | 'racecourse' | 'glossary';
@@ -59,37 +60,39 @@ export function getGlobalSearchRecords(locale: SearchLocale): SearchRecord[] {
       ]),
     }));
 
-  const racecourseRecords: SearchRecord[] = getRacecourses().map((racecourse) => {
-    const country = countryById.get(racecourse.country_id);
-    return {
-      id: racecourse.id,
-      type: 'racecourse',
-      href: isJapanese ? `/ja/tracks/${racecourse.slug}/` : `/tracks/${racecourse.slug}/`,
-      label: isJapanese ? racecourse.name_ja : racecourse.name_en,
-      alternateLabel: isJapanese ? racecourse.name_en : racecourse.name_ja,
-      description: isJapanese
-        ? `${country?.name_ja ?? racecourse.country_id}にある競馬場。所在地・馬場・コース・公式リンクを確認できます。`
-        : `Racecourse in ${country?.name_en ?? racecourse.country_id}. View location, surfaces, course profile, and official links.`,
-      meta: [
-        isJapanese ? country?.name_ja : country?.name_en,
-        racecourse.city,
-        racecourse.region,
-      ].filter(Boolean).join(' · '),
-      searchText: joinSearchText([
-        racecourse.name_en,
-        racecourse.name_ja,
-        racecourse.name_local,
-        country?.name_en,
-        country?.name_ja,
-        country?.name_local,
-        racecourse.city,
-        racecourse.region,
-        racecourse.racing_types,
-        racecourse.surfaces,
-        racecourse.direction,
-      ]),
-    };
-  });
+  const racecourseRecords: SearchRecord[] = getRacecourses()
+    .filter((racecourse) => isPublicActiveRacecourse(racecourse))
+    .map((racecourse) => {
+      const country = countryById.get(racecourse.country_id);
+      return {
+        id: racecourse.id,
+        type: 'racecourse',
+        href: isJapanese ? `/ja/tracks/${racecourse.slug}/` : `/tracks/${racecourse.slug}/`,
+        label: isJapanese ? racecourse.name_ja : racecourse.name_en,
+        alternateLabel: isJapanese ? racecourse.name_en : racecourse.name_ja,
+        description: isJapanese
+          ? `${country?.name_ja ?? racecourse.country_id}にある競馬場。所在地・馬場・コース・公式リンクを確認できます。`
+          : `Racecourse in ${country?.name_en ?? racecourse.country_id}. View location, surfaces, course profile, and official links.`,
+        meta: [
+          isJapanese ? country?.name_ja : country?.name_en,
+          racecourse.city,
+          racecourse.region,
+        ].filter(Boolean).join(' · '),
+        searchText: joinSearchText([
+          racecourse.name_en,
+          racecourse.name_ja,
+          racecourse.name_local,
+          country?.name_en,
+          country?.name_ja,
+          country?.name_local,
+          racecourse.city,
+          racecourse.region,
+          racecourse.racing_types,
+          racecourse.surfaces,
+          racecourse.direction,
+        ]),
+      };
+    });
 
   const glossaryRecords: SearchRecord[] = getGlossaryEntries().map((entry) => ({
     id: entry.id,

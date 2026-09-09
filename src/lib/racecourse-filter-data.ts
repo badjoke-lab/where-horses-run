@@ -6,6 +6,7 @@ import {
   getCalendarRacecourseDisplayNames,
 } from './calendarDisplayNames';
 import { getCountries, getRacecourses, type Racecourse } from './data';
+import { isPublicActiveRacecourse } from './racecoursePublicSupport';
 import { getRacingTypeById } from './racingTypes';
 
 export type RacecourseDirectoryLocale = 'en' | 'ja';
@@ -109,105 +110,107 @@ export function getRacecourseFilterRecords(locale: RacecourseDirectoryLocale): R
     );
   }
 
-  return getRacecourses().map((sourceRacecourse) => {
-    const racecourse = sourceRacecourse as unknown as FilterableRacecourse;
-    const country = countryById.get(racecourse.country_id);
-    const fallbackEnglish = racecourse.name_en;
-    const reviewedNames = getCalendarRacecourseDisplayNames(racecourse.id, fallbackEnglish);
-    const name = getCalendarRacecourseDisplayName(racecourse.id, fallbackEnglish, locale);
-    const alternateName = isJapanese
-      ? reviewedNames.nameEn
-      : reviewedNames.nameJa ?? reviewedNames.nameLocal ?? '';
-    const localName = reviewedNames.nameLocal ?? '';
-    const countryFallback = country?.name_en ?? racecourse.country_id;
-    const countryName = getCalendarCountryDisplayName(racecourse.country_id, countryFallback, locale);
-    const countryHref = country
-      ? isJapanese ? `/ja/countries/${country.slug}/` : `/countries/${country.slug}/`
-      : '';
-    const racingTypes = uniqueStrings([...(racecourse.racing_types ?? [])]).map((id) => {
-      const type = getRacingTypeById(id);
+  return getRacecourses()
+    .filter((racecourse) => isPublicActiveRacecourse(racecourse))
+    .map((sourceRacecourse) => {
+      const racecourse = sourceRacecourse as unknown as FilterableRacecourse;
+      const country = countryById.get(racecourse.country_id);
+      const fallbackEnglish = racecourse.name_en;
+      const reviewedNames = getCalendarRacecourseDisplayNames(racecourse.id, fallbackEnglish);
+      const name = getCalendarRacecourseDisplayName(racecourse.id, fallbackEnglish, locale);
+      const alternateName = isJapanese
+        ? reviewedNames.nameEn
+        : reviewedNames.nameJa ?? reviewedNames.nameLocal ?? '';
+      const localName = reviewedNames.nameLocal ?? '';
+      const countryFallback = country?.name_en ?? racecourse.country_id;
+      const countryName = getCalendarCountryDisplayName(racecourse.country_id, countryFallback, locale);
+      const countryHref = country
+        ? isJapanese ? `/ja/countries/${country.slug}/` : `/countries/${country.slug}/`
+        : '';
+      const racingTypes = uniqueStrings([...(racecourse.racing_types ?? [])]).map((id) => {
+        const type = getRacingTypeById(id);
+        return {
+          id,
+          label: type ? isJapanese ? type.name_ja : type.name_en : humanize(id),
+          href: type ? isJapanese ? `/ja/types/${type.slug}/` : `/types/${type.slug}/` : '',
+        };
+      });
+      const surfaces = uniqueStrings([...(racecourse.surfaces ?? [])]);
+      const city = nonempty(racecourse.city) ? racecourse.city : '';
+      const region = nonempty(racecourse.region) ? racecourse.region : '';
+      const direction = nonempty(racecourse.direction) ? racecourse.direction : 'unknown';
+      const status = nonempty(racecourse.status) ? racecourse.status : 'unknown';
+      const scheduleStatus = nonempty(racecourse.schedule_summary?.status)
+        ? racecourse.schedule_summary.status
+        : 'official-link-only';
+      const courseProfileStatus = nonempty(racecourse.data_status?.course_profile)
+        ? racecourse.data_status.course_profile
+        : 'partial';
+      const href = isJapanese ? `/ja/tracks/${racecourse.slug}/` : `/tracks/${racecourse.slug}/`;
+      const currentWindowMeetings = meetingsByRacecourseId.get(racecourse.id) ?? [];
+      const authorityById = new Map<string, RacecourseFilterReference>();
+
+      for (const meeting of currentWindowMeetings) {
+        if (authorityById.has(meeting.authority_id)) continue;
+        authorityById.set(meeting.authority_id, {
+          id: meeting.authority_id,
+          label: getCalendarAuthorityDisplayName(meeting.authority_id, meeting.authority_label, locale),
+          href: '',
+        });
+      }
+
+      const authorities = [...authorityById.values()].sort((left, right) => left.label.localeCompare(right.label));
+      const firstMeeting = currentWindowMeetings[0] ?? null;
+      const calendarMeeting = firstMeeting
+        ? {
+            date: firstMeeting.date,
+            firstRaceTimeLocal: firstMeeting.first_race_time_local,
+            lastRaceTimeLocal: firstMeeting.last_race_time_local,
+            rank: firstMeeting.capability_rank,
+            href: `${isJapanese ? '/ja/calendar/' : '/calendar/'}?date=${encodeURIComponent(firstMeeting.date)}`,
+          }
+        : null;
+      const searchText = normalizeRacecourseFilterText([
+        racecourse.id,
+        racecourse.slug,
+        ...reviewedNames.aliases,
+        country?.name_en,
+        country?.name_ja,
+        countryName,
+        city,
+        region,
+        direction,
+        status,
+        scheduleStatus,
+        courseProfileStatus,
+        ...authorities.flatMap((authority) => [authority.id, authority.label]),
+        ...racingTypes.flatMap((type) => [type.id, type.label]),
+        ...surfaces,
+      ].filter(nonempty).join(' '));
+
       return {
-        id,
-        label: type ? isJapanese ? type.name_ja : type.name_en : humanize(id),
-        href: type ? isJapanese ? `/ja/types/${type.slug}/` : `/types/${type.slug}/` : '',
+        id: racecourse.id,
+        slug: racecourse.slug,
+        href,
+        name,
+        alternateName,
+        localName,
+        countryId: racecourse.country_id,
+        countryName,
+        countryHref,
+        city,
+        region,
+        racingTypes,
+        authorities,
+        surfaces,
+        direction,
+        status,
+        scheduleStatus,
+        courseProfileStatus,
+        calendarMeeting,
+        searchText,
       };
     });
-    const surfaces = uniqueStrings([...(racecourse.surfaces ?? [])]);
-    const city = nonempty(racecourse.city) ? racecourse.city : '';
-    const region = nonempty(racecourse.region) ? racecourse.region : '';
-    const direction = nonempty(racecourse.direction) ? racecourse.direction : 'unknown';
-    const status = nonempty(racecourse.status) ? racecourse.status : 'unknown';
-    const scheduleStatus = nonempty(racecourse.schedule_summary?.status)
-      ? racecourse.schedule_summary.status
-      : 'official-link-only';
-    const courseProfileStatus = nonempty(racecourse.data_status?.course_profile)
-      ? racecourse.data_status.course_profile
-      : 'partial';
-    const href = isJapanese ? `/ja/tracks/${racecourse.slug}/` : `/tracks/${racecourse.slug}/`;
-    const currentWindowMeetings = meetingsByRacecourseId.get(racecourse.id) ?? [];
-    const authorityById = new Map<string, RacecourseFilterReference>();
-
-    for (const meeting of currentWindowMeetings) {
-      if (authorityById.has(meeting.authority_id)) continue;
-      authorityById.set(meeting.authority_id, {
-        id: meeting.authority_id,
-        label: getCalendarAuthorityDisplayName(meeting.authority_id, meeting.authority_label, locale),
-        href: '',
-      });
-    }
-
-    const authorities = [...authorityById.values()].sort((left, right) => left.label.localeCompare(right.label));
-    const firstMeeting = currentWindowMeetings[0] ?? null;
-    const calendarMeeting = firstMeeting
-      ? {
-          date: firstMeeting.date,
-          firstRaceTimeLocal: firstMeeting.first_race_time_local,
-          lastRaceTimeLocal: firstMeeting.last_race_time_local,
-          rank: firstMeeting.capability_rank,
-          href: `${isJapanese ? '/ja/calendar/' : '/calendar/'}?date=${encodeURIComponent(firstMeeting.date)}`,
-        }
-      : null;
-    const searchText = normalizeRacecourseFilterText([
-      racecourse.id,
-      racecourse.slug,
-      ...reviewedNames.aliases,
-      country?.name_en,
-      country?.name_ja,
-      countryName,
-      city,
-      region,
-      direction,
-      status,
-      scheduleStatus,
-      courseProfileStatus,
-      ...authorities.flatMap((authority) => [authority.id, authority.label]),
-      ...racingTypes.flatMap((type) => [type.id, type.label]),
-      ...surfaces,
-    ].filter(nonempty).join(' '));
-
-    return {
-      id: racecourse.id,
-      slug: racecourse.slug,
-      href,
-      name,
-      alternateName,
-      localName,
-      countryId: racecourse.country_id,
-      countryName,
-      countryHref,
-      city,
-      region,
-      racingTypes,
-      authorities,
-      surfaces,
-      direction,
-      status,
-      scheduleStatus,
-      courseProfileStatus,
-      calendarMeeting,
-      searchText,
-    };
-  });
 }
 
 export function getRacecourseFilterOptions(records: RacecourseFilterRecord[]): RacecourseFilterOptions {

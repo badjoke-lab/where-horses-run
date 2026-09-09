@@ -16,6 +16,7 @@ import {
 } from '../data/timetableMeetingRows';
 import { addCalendarDays } from '../lib/timetable/calendarDateContext.mjs';
 import { isCalendarSupportedCountry } from '../lib/calendarPublicCountrySupport';
+import { isPublicActiveRacecourse } from '../lib/racecoursePublicSupport';
 import '../styles/country-hub-v1.css';
 
 interface Props {
@@ -28,7 +29,8 @@ const isJa = locale === 'ja';
 const pick = (en: string, ja: string) => isJa ? ja : en;
 const profile = getCountryProfileByCountryId(country.id) as any;
 const rawRacecourses = getRacecoursesByCountryId(country.id) as any[];
-const racecourses = [...new Map(rawRacecourses.map((racecourse) => [racecourse.id, racecourse])).values()] as any[];
+const racecourses = ([...new Map(rawRacecourses.map((racecourse) => [racecourse.id, racecourse])).values()] as any[])
+  .filter((racecourse) => isPublicActiveRacecourse(racecourse));
 const sources = getSourcesByCountryId(country.id) as any[];
 const calendarSupported = isCalendarSupportedCountry(country.id);
 const context = getTimetableDateContext();
