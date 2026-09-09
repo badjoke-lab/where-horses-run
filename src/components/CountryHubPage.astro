@@ -42,9 +42,11 @@ const racecourseById = new Map(racecourses.map((racecourse) => [racecourse.id, r
 
 const countryName = isJa ? country.name_ja : country.name_en;
 const secondaryName = isJa ? country.name_en : country.name_ja;
+// The compact country record is maintained alongside Calendar-support changes and is the
+// safer public lead when an older enrichment profile has not yet been re-reviewed.
 const overview = isJa
-  ? profile?.hero_summary_ja ?? profile?.overview_ja ?? country.summary_ja
-  : profile?.hero_summary_en ?? profile?.overview_en ?? country.summary_en;
+  ? country.summary_ja ?? profile?.hero_summary_ja ?? profile?.overview_ja
+  : country.summary_en ?? profile?.hero_summary_en ?? profile?.overview_en;
 const systems = (profile?.racing_systems ?? []) as any[];
 const racingTypes = (profile?.racing_types ?? [])
   .map((entry: any) => isJa ? entry.name_ja : entry.name_en)
