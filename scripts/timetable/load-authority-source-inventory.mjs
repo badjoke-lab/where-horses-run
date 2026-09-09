@@ -33,6 +33,11 @@ const SUPPLEMENTS = Object.freeze([
     path: 'data/static/authority-source-inventory-hkjc-detail-v1.json',
     schemaVersion: 'authority-source-inventory-hkjc-detail-v1',
   },
+  {
+    key: 'sorec_programme',
+    path: 'data/static/authority-source-inventory-sorec-programme-v1.json',
+    schemaVersion: 'authority-source-inventory-sorec-programme-v1',
+  },
 ]);
 
 function readJson(root, relativePath) {
