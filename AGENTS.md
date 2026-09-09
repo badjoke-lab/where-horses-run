@@ -58,6 +58,22 @@ Calendar view/presentation state
 
 Do not fix a presentation defect by inventing a second meeting truth, guessed race time, guessed stream state, map-only override, or unreviewed public field.
 
+## Racecourse notable/graded-race entry rule
+
+Before changing racecourse `notable_races`, representative-race selection, race-name link behavior, graded-race identity, race pages, or current/historical racecourse-to-race relationships, also read:
+
+```text
+docs/specs/map-first-site-ui-2026-09-06.md
+docs/racecourses/page-link-architecture.md
+docs/racecourses/current-state-2026-08-28-addendum.md
+docs/racecourses/notable-and-graded-race-display-2026-09-09.md
+docs/racecourses/notable-and-graded-race-roadmap-2026-09-09.md
+```
+
+The immediate public rule is fail-closed: legacy `notable_races[].source_url`, `official_link`, and `url` are evidence/provenance only and must not make the visible race name an external anchor. Reviewed venue/authority links remain in `Official sources / 公式情報源`.
+
+The target model is stable `race_id` relationships and internal WHR race pages, followed by active graded-race completeness per researched racing system and later historical/closed-racecourse relationships. Do not mass-convert free-form race names into IDs without identity review.
+
 ## PR discipline
 
 Every substantive PR must state at minimum:
