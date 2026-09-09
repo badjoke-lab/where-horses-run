@@ -1,6 +1,7 @@
 ---
 import type { TimetableMeetingDayGroup, TimetableMeetingRow } from '../data/timetableMeetingRows';
 import { getTimetableDateContext } from '../data/timetableMeetingRows';
+import { getCountries, getRacecourses } from '../lib/data';
 import { evaluatePublicFreshness } from '../lib/timetable/publicFreshnessState.mjs';
 import {
   getCalendarAuthorityDisplayName,
@@ -27,6 +28,17 @@ const groups: TimetableMeetingDayGroup[] = 'groups' in props
   ? props.groups
   : [{ date: props.date ?? props.records[0]?.date ?? '', records: props.records }]
       .filter((group) => group.records.length > 0);
+const countriesById = new Map(getCountries().map((country) => [country.id, country]));
+const racecoursesById = new Map(getRacecourses().map((racecourse) => [racecourse.id, racecourse]));
+const localePrefix = lang === 'ja' ? '/ja' : '';
+const countryHrefFor = (record: TimetableMeetingRow) => {
+  const country = countriesById.get(record.country_id);
+  return country?.slug ? `${localePrefix}/countries/${country.slug}/` : null;
+};
+const racecourseHrefFor = (record: TimetableMeetingRow) => {
+  const racecourse = racecoursesById.get(record.racecourse_id);
+  return racecourse?.slug ? `${localePrefix}/tracks/${racecourse.slug}/` : null;
+};
 
 const text = lang === 'ja'
   ? {
@@ -127,6 +139,9 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
             const racecourse = displayRacecourse(record);
             const racecourseSearch = getCalendarRacecourseSearchAliases(record.racecourse_id, record.racecourse_name).join(' | ');
             const liveDetectorId = liveDetectorIdFor(record);
+            const racecourseHref = racecourseHrefFor(record);
+            const countryHref = countryHrefFor(record);
+            const countryLabel = displayCountry(record);
             return (
               <li
                 class="meeting-row"
@@ -153,8 +168,8 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
                 data-stream-state="unknown"
                 data-timezone-scope-hidden="false"
               >
-                <div class="meeting-row__identity"><strong>{racecourse}</strong></div>
-                <p class="meeting-row__system">{displayCountry(record)} · {displayAuthority(record)}</p>
+                <div class="meeting-row__identity"><strong>{racecourseHref ? <a href={racecourseHref} data-no-timezone-propagation>{racecourse}</a> : racecourse}</strong></div>
+                <p class="meeting-row__system">{countryHref ? <a href={countryHref} data-no-timezone-propagation>{countryLabel}</a> : countryLabel} · {displayAuthority(record)}</p>
                 <p class="meeting-row__time" title={`${lang === 'ja' ? '開催地タイムゾーン' : 'Venue timezone'}: ${record.timezone}`} data-source-time-label={raceTime(record)}>
                   {record.first_race_time_local ? <><time data-race-time="first">{record.first_race_time_local}</time>{record.last_race_time_local && <>–<time data-race-time="last">{record.last_race_time_local}</time></>}</> : '—'}
                 </p>
@@ -246,6 +261,7 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
   };
   const propagateTimeZoneToLinks = (root, timeZone) => {
     root.querySelectorAll('a[href]').forEach((anchor) => {
+      if (anchor.hasAttribute('data-no-timezone-propagation')) return;
       const rawHref = anchor.getAttribute('href');
       if (!rawHref || rawHref.startsWith('#') || rawHref.startsWith('mailto:')) return;
       const url = new URL(rawHref, window.location.href);
