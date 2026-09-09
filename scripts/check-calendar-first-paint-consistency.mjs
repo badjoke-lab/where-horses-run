@@ -36,6 +36,28 @@ requireText('src/components/CalendarRuntimeBootstrap.astro', "projectedTimeZoneR
 requireText('src/components/CalendarDateNavigation.astro', 'window.__WHR_CALENDAR_RUNTIME__');
 requireText('src/components/CalendarDateNavigation.astro', "runtime?.mode === 'calendar'");
 
+// Country pages already rebuild the upcoming-meetings section in BaseLayout. The
+// first-paint contract is CSS-gated only while scripting is enabled and reveals
+// only after the runtime-generated table/card marker exists.
+requireText('src/styles/base.css', '@media (scripting: enabled)');
+requireText('src/styles/base.css', '#upcoming-meetings:has([data-country-timezone-generated])');
+requireText('src/layouts/BaseLayout.astro', 'data-country-timezone-generated');
+requireText('src/layouts/BaseLayout.astro', 'initializeCountryTimezoneProjection');
+
+// Racecourse pages keep SSR as no-JS fallback but hide it when JS runs, then
+// rebuild Today / Next / Upcoming from the venue timezone and full public set.
+for (const marker of [
+  'racecourseMeetingRuntimePending',
+  'data-racecourse-runtime-meetings',
+  'todayIn(timeZone)',
+  'const endExclusive = addDays(today, 30)',
+  'data-racecourse-meeting-runtime-body',
+  'racecourseMeetingRuntimeReady',
+]) {
+  requireText('src/components/RacecourseMeetingSummary.astro', marker);
+}
+requireText('src/lib/racecourses/publicRacecourseMeetingState.ts', 'timezone_candidate_meetings: meetings');
+
 const htmlChecks = [
   ['dist/index.html', 'home'],
   ['dist/ja/index.html', 'home'],
@@ -65,7 +87,7 @@ for (const [file, mode] of htmlChecks) {
   }
 }
 
-const findFirstMeetingDetail = (base) => {
+const findFirstBuiltDetail = (base) => {
   const absolute = path.join(root, base);
   if (!fs.existsSync(absolute)) return null;
   for (const entry of fs.readdirSync(absolute, { withFileTypes: true })) {
@@ -77,7 +99,7 @@ const findFirstMeetingDetail = (base) => {
 };
 
 for (const base of ['dist/timetable/meetings', 'dist/ja/timetable/meetings']) {
-  const file = findFirstMeetingDetail(base);
+  const file = findFirstBuiltDetail(base);
   if (!file) {
     fail(`${base} has no built meeting detail to audit`);
     continue;
@@ -87,6 +109,20 @@ for (const base of ['dist/timetable/meetings', 'dist/ja/timetable/meetings']) {
   const sensitivePos = html.indexOf('data-calendar-runtime-sensitive');
   if (guardPos < 0 || sensitivePos < 0 || guardPos > sensitivePos) {
     fail(`${path.relative(root, file)} does not gate projected meeting times before paint`);
+  }
+}
+
+for (const base of ['dist/tracks', 'dist/ja/tracks']) {
+  const file = findFirstBuiltDetail(base);
+  if (!file) {
+    fail(`${base} has no built racecourse detail to audit`);
+    continue;
+  }
+  const html = fs.readFileSync(file, 'utf8');
+  const guardPos = html.indexOf('racecourseMeetingRuntimePending');
+  const summaryPos = html.indexOf('data-racecourse-meeting-summary');
+  if (guardPos < 0 || summaryPos < 0 || guardPos > summaryPos) {
+    fail(`${path.relative(root, file)} exposes build-time racecourse meeting state before its runtime guard`);
   }
 }
 
