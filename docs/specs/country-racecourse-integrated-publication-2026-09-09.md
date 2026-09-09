@@ -2,7 +2,8 @@
 
 Status: active canonical product specification  
 Adopted: 2026-09-09  
-Applies to: Countries, Racecourses, Calendar linkage, Map linkage, search/sitemap/internal navigation
+Applies to: Countries, Racecourses, Calendar linkage, Map linkage, search/sitemap/internal navigation  
+Operational runbook: `docs/runbooks/country-racecourse-publication-package.md`
 
 ## Purpose
 
@@ -25,7 +26,7 @@ official source / acquisition
 -> search / sitemap / navigation projection
 ```
 
-The work may be split across PRs, but completion is measured at country-package level.
+The work may be split across PRs, but completion is measured at country-package level. The repeatable execution procedure is defined by `docs/runbooks/country-racecourse-publication-package.md`.
 
 ## Country public gate
 
@@ -40,7 +41,7 @@ For a country that is not Calendar-supported:
 - do not expose it through normal site search, sitemap, or primary internal navigation;
 - do not generate a normal public detail route unless a separate historical/reference publication rule explicitly allows it.
 
-The exact machine-readable field/name may be implemented separately, but runtime behavior must represent the stable state `calendar_supported = true|false`, not current-day meeting presence.
+The machine-readable public gate is `data/static/calendar-public-country-support-v1.json`. Runtime behavior must represent the stable state `calendar_supported = true|false`, not current-day meeting presence.
 
 ## Country page baseline composition
 
@@ -119,6 +120,24 @@ Map pins must come from reviewed racecourse locations only.
 
 Representative race names remain plain text until the graded-race master and internal race relationship model are ready.
 
+## Future-country package rule
+
+Once a new country receives reviewed normal Calendar support, do not build bespoke public routing for it. The package must use the shared gates and components:
+
+```text
+Country publication
+  -> calendar-public-country-support-v1.json
+  -> CountryHubPage
+
+Racecourse publication
+  -> Calendar-supported country + canonical active/current racecourse status
+  -> RacecourseHubPage
+```
+
+The same package must reconcile active `racecourse_id` identities, attach reviewed map locations where available, and verify Country <-> Racecourse <-> Calendar/search/navigation links in EN and JA.
+
+Adding only the Calendar collector, only the Country route, or only selected Racecourse routes is incomplete. Country-specific route allowlists or a second publication registry are prohibited unless this specification is explicitly changed first.
+
 ## Expansion sequence
 
 ```text
@@ -126,10 +145,12 @@ Reference implementation
 1. Japan Country page
 2. Tokyo Racecourse page
 
-Then
+Projection
 3. project current Calendar-supported countries into the same Country layout
 4. publish their active racecourses using the shared Racecourse layout and active Racecourse public gate
-5. for every new Calendar-supported country, expand Country + Racecourses + Map + links as one package
+
+Ongoing model
+5. for every new Calendar-supported country, follow the full package runbook through Country + Racecourses + Map + links/search/navigation
 6. continue independent all-tier/closed-racecourse master research for later historical publication
 ```
 
@@ -145,4 +166,5 @@ A country package is complete when:
 - primary Racecourses/search/generated routes expose only the active supported-country set unless a separate historical rule applies;
 - Country <-> Racecourse <-> Calendar links work in EN and JA;
 - search/sitemap/internal navigation reflect the same public gate;
+- the package follows `docs/runbooks/country-racecourse-publication-package.md` without a second route/publication truth;
 - the result visually fits the existing site rather than behaving as a separate redesign.

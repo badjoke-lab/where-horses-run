@@ -1,7 +1,7 @@
 # Documentation authority
 
 Status: active canonical governance policy  
-Last reviewed: 2026-09-08
+Last reviewed: 2026-09-09
 
 ## Authority order
 
@@ -25,7 +25,13 @@ Conversation history and PR numbers do not replace canonical repository document
 The current adopted top-level execution addendum is:
 
 ```text
-docs/project-roadmap-2026-09-08-addendum.md
+docs/project-roadmap-2026-09-09-addendum.md
+```
+
+The current adopted Country/Racecourse integrated publication authority is:
+
+```text
+docs/specs/country-racecourse-integrated-publication-2026-09-09.md
 ```
 
 The current adopted Calendar implementation addendum remains:
@@ -55,8 +61,9 @@ docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md
 Overall:
 
 - `docs/project-roadmap.md`
-- `docs/project-roadmap-2026-09-08-addendum.md`
+- `docs/project-roadmap-2026-09-09-addendum.md`
 - `docs/specs/map-first-site-ui-2026-09-06.md`
+- `docs/specs/country-racecourse-integrated-publication-2026-09-09.md`
 - `docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md`
 - this policy
 - `docs/operations/deployment-and-ci-policy.md`
@@ -66,7 +73,19 @@ Execution entry instructions:
 - `AGENTS.md`
 - `START-HERE.md`
 
-Country pages:
+Country / Racecourse integrated publication:
+
+- `docs/specs/country-racecourse-integrated-publication-2026-09-09.md`
+- `docs/project-roadmap-2026-09-09-addendum.md`
+- `docs/runbooks/country-racecourse-publication-package.md`
+- `data/static/calendar-public-country-support-v1.json`
+- `docs/racecourses/identity-reconciliation.md`
+- `docs/racecourses/public-timetable-connection.md`
+- `docs/racecourses/profile-evidence.md`
+- `docs/racecourses/page-link-architecture.md`
+- `docs/racecourses/bilingual-qa.md`
+
+Country pages historical programme:
 
 - `docs/country-pages/programme-roadmap.md` plus active addendum
 - `docs/country-pages/completion-contract.md` plus Calendar addendum
@@ -236,8 +255,9 @@ Before work begins:
 2. assign or confirm the stable Work ID;
 3. read the applicable canonical documents and the latest adopted roadmap addenda;
 4. for Calendar work, read `docs/calendar/incremental-coverage-contract.md`, `docs/calendar/acquisition-control-plane-contract.md`, `docs/calendar/implementation-roadmap-2026-08-09-addendum.md`, the applicable machine-readable contract, and `docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md` when presentation/state/timezone/stream/view behavior is involved;
-5. confirm tracker, Registry, source-test/readiness, and source implementation-status state;
-6. record whether Cloudflare is required.
+5. for Country/Racecourse publication or a new Calendar-country package, read `docs/specs/country-racecourse-integrated-publication-2026-09-09.md`, `docs/project-roadmap-2026-09-09-addendum.md`, and `docs/runbooks/country-racecourse-publication-package.md` together with the applicable racecourse identity/location/link contracts;
+6. confirm tracker, Registry, source-test/readiness, and source implementation-status state;
+7. record whether Cloudflare is required.
 
 Re-read the applicable canonical specification and active roadmap/addendum whenever scope or acceptance criteria change, after relevant movement on `main`, before opening/materially updating a PR, before merge, and after merge before starting the next Work ID.
 
@@ -246,6 +266,8 @@ If intended runtime behavior conflicts with repository authority, update the spe
 For `WHR-CAL-DAILY-ACQUISITION`, also read the daily acquisition contract, implementation schedule, roadmap addendum, operations document, reviewed season-state file, current-horizon audit, and daily execution policy before changing workflow, policy, season state, runner, draft-PR, or publication behavior.
 
 For source expansion, also read the current source-test summary/implementation status, Calendar Readiness record, Authority Source Inventory record, racecourse identity/public-timetable contracts, and public display boundary before creating or promoting candidates.
+
+For a new Calendar-supported country, do not stop at acquisition. Follow the integrated package runbook through Country publication, active racecourse reconciliation, reviewed map linkage, Racecourse publication, and EN/JA Country <-> Racecourse <-> Calendar/search projection. Do not create a second country/racecourse route allowlist to bypass the canonical gates.
 
 The same PR must update the relevant tracker, Registry, active roadmap/addendum, contract, runbook, schema, source implementation status, and validator when their state or rule changes.
 

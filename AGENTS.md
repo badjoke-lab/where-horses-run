@@ -1,7 +1,8 @@
 # Where Horses Run — agent execution contract
 
 Status: active repository execution instruction  
-Adopted: 2026-09-08
+Adopted: 2026-09-08  
+Last reviewed: 2026-09-09
 
 This file tells coding/research agents how to enter and execute work in this repository. It does not override higher-authority contracts, schemas, or governance documents.
 
@@ -65,6 +66,7 @@ Before Countries, Country detail, Racecourses, Racecourse detail, country-public
 ```text
 docs/project-roadmap-2026-09-09-addendum.md
 docs/specs/country-racecourse-integrated-publication-2026-09-09.md
+docs/runbooks/country-racecourse-publication-package.md
 docs/specs/map-first-site-ui-2026-09-06.md
 docs/racecourses/identity-reconciliation.md
 docs/racecourses/public-timetable-connection.md
@@ -76,9 +78,13 @@ Country and Racecourse public growth is one vertical product-expansion model, no
 
 Do not expose all canonical countries merely because they exist in the master. Primary Country publication follows the stable reviewed Calendar-support gate defined by the active specification/roadmap, not current-day meeting presence.
 
+Normal active Racecourse publication derives from the same gate: canonical `active`/`current` racecourses in Calendar-supported countries. Do not create country-specific route allowlists or a second Racecourse-publication truth merely to expose a new country.
+
 Active racecourses in Calendar-supported countries are the first public Racecourse priority. Closed/historical racecourses remain a separate evidence/readiness lane and are not forced into the active-country Calendar gate.
 
 The Japan Country page and Tokyo Racecourse page are the reference compositions for the current rollout. Reuse the existing site visual language and existing reviewed data/components; do not invent decorative requirements, unreviewed facts, or external organisation logos.
+
+For every future Calendar country addition, follow `docs/runbooks/country-racecourse-publication-package.md` through the whole vertical package. Adding only a collector, only a Country page, or only a Racecourse page is not package completion.
 
 ## PR discipline
 
