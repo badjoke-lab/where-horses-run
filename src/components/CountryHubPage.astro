@@ -1,0 +1,209 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RacecourseMap from './RacecourseMap.astro';
+import {
+  getCountryProfileByCountryId,
+  getRacecoursesByCountryId,
+  getSourcesByCountryId,
+} from '../lib/data';
+import {
+  getCalendarAuthorityDisplayName,
+  getCalendarRacecourseDisplayName,
+} from '../lib/calendarDisplayNames';
+import {
+  getTimetableDateContext,
+  getTimetableMeetingRowsForWindow,
+} from '../data/timetableMeetingRows';
+import { addCalendarDays } from '../lib/timetable/calendarDateContext.mjs';
+import { isCalendarSupportedCountry } from '../lib/calendarPublicCountrySupport';
+import '../styles/country-hub-v1.css';
+
+interface Props {
+  country: any;
+  locale?: 'en' | 'ja';
+}
+
+const { country, locale = 'en' } = Astro.props;
+const isJa = locale === 'ja';
+const pick = (en: string, ja: string) => isJa ? ja : en;
+const profile = getCountryProfileByCountryId(country.id) as any;
+const rawRacecourses = getRacecoursesByCountryId(country.id) as any[];
+const racecourses = [...new Map(rawRacecourses.map((racecourse) => [racecourse.id, racecourse])).values()] as any[];
+const sources = getSourcesByCountryId(country.id) as any[];
+const calendarSupported = isCalendarSupportedCountry(country.id);
+const context = getTimetableDateContext();
+const meetings = getTimetableMeetingRowsForWindow(context.today, addCalendarDays(context.today, 8))
+  .filter((meeting) => meeting.country_id === country.id)
+  .sort((left, right) => `${left.date}:${left.first_race_time_local ?? '99:99'}:${left.racecourse_id}`.localeCompare(`${right.date}:${right.first_race_time_local ?? '99:99'}:${right.racecourse_id}`));
+const nearMeetings = meetings.slice(0, 8);
+const racecourseById = new Map(racecourses.map((racecourse) => [racecourse.id, racecourse]));
+
+const countryName = isJa ? country.name_ja : country.name_en;
+const secondaryName = isJa ? country.name_en : country.name_ja;
+const overview = isJa
+  ? profile?.hero_summary_ja ?? profile?.overview_ja ?? country.summary_ja
+  : profile?.hero_summary_en ?? profile?.overview_en ?? country.summary_en;
+const systems = (profile?.racing_systems ?? []) as any[];
+const racingTypes = (profile?.racing_types ?? [])
+  .map((entry: any) => isJa ? entry.name_ja : entry.name_en)
+  .filter(Boolean);
+
+const homePath = isJa ? '/ja/' : '/';
+const countriesPath = isJa ? '/ja/countries/' : '/countries/';
+const calendarPath = isJa ? '/ja/calendar/' : '/calendar/';
+const tracksPath = isJa ? '/ja/tracks/' : '/tracks/';
+const countryPath = `${isJa ? '/ja' : ''}/countries/${country.slug}/`;
+const alternatePath = `${isJa ? '' : '/ja'}/countries/${country.slug}/`;
+const sourceRegistryPath = `${isJa ? '/ja' : ''}/sources/${country.slug}/`;
+
+const sourceLabelById: Record<string, { en: string; ja: string }> = {
+  'japan-jra-home': { en: 'JRA official site', ja: 'JRA公式サイト' },
+  'japan-jairs-racecourses': { en: 'JAIRS / JRA racecourse guide', ja: 'JAIRS / JRA競馬場ガイド' },
+  'japan-nar-home': { en: 'Local Government Racing official site', ja: '地方競馬情報サイト' },
+  'japan-nar-racecourse-guide': { en: 'NAR racecourse guide', ja: '地方競馬場ガイド' },
+  'japan-banei-home': { en: 'Banei Tokachi official site', ja: 'ばんえい十勝公式サイト' },
+  'japan-banei-monthly-schedule': { en: 'Banei Tokachi schedule', ja: 'ばんえい十勝開催日程' },
+};
+const sourceLabel = (source: any) => {
+  const known = sourceLabelById[source.id];
+  if (known) return isJa ? known.ja : known.en;
+  return (isJa ? source.label_ja : source.label_en) ?? source.name_en ?? source.id;
+};
+const sourceById = new Map(sources.map((source) => [source.id, source]));
+const sourceGroups = systems.map((system) => ({
+  name: isJa ? system.name_ja : system.name_en,
+  sources: (system.source_ids ?? []).map((id: string) => sourceById.get(id)).filter(Boolean),
+})).filter((group) => group.sources.length > 0);
+
+const japaneseLocationByRacecourseId: Record<string, string> = {
+  'tokyo-racecourse': '東京都府中市',
+  'nakayama-racecourse': '千葉県船橋市',
+  'kyoto-racecourse': '京都府京都市',
+  'hanshin-racecourse': '兵庫県宝塚市',
+  'chukyo-racecourse': '愛知県豊明市',
+  'sapporo-racecourse': '北海道札幌市',
+  'hakodate-racecourse': '北海道函館市',
+  'fukushima-racecourse': '福島県福島市',
+  'niigata-racecourse': '新潟県新潟市',
+  'kokura-racecourse': '福岡県北九州市',
+  'obihiro-racecourse': '北海道帯広市',
+  'oi-racecourse': '東京都品川区',
+  'kawasaki-racecourse': '神奈川県川崎市',
+  'funabashi-racecourse': '千葉県船橋市',
+  'urawa-racecourse': '埼玉県さいたま市',
+};
+const locationFor = (racecourse: any) => isJa && japaneseLocationByRacecourseId[racecourse.id]
+  ? japaneseLocationByRacecourseId[racecourse.id]
+  : [racecourse.city, racecourse.region].filter(Boolean).join(', ') || pick('Location not listed', '所在地未掲載');
+const systemFor = (racecourse: any) => {
+  if (racecourse.id === 'obihiro-racecourse' || racecourse.racing_types?.includes('banei-racing')) return pick('Banei Tokachi', 'ばんえい十勝');
+  if (racecourse.related_sources?.some((id: string) => id.startsWith('japan-jra'))) return 'JRA';
+  if (racecourse.related_sources?.some((id: string) => id.startsWith('japan-nar'))) return pick('Local racing', '地方競馬');
+  const meeting = meetings.find((candidate) => candidate.racecourse_id === racecourse.id);
+  return meeting ? getCalendarAuthorityDisplayName(meeting.authority_id, meeting.authority_label, locale) : '—';
+};
+const racecourseName = (racecourse: any) => getCalendarRacecourseDisplayName(racecourse.id, racecourse.name_en, locale);
+const meetingTime = (meeting: any) => meeting.first_race_time_local && meeting.last_race_time_local
+  ? `${meeting.first_race_time_local}–${meeting.last_race_time_local}`
+  : meeting.first_race_time_local ? `${meeting.first_race_time_local}–` : '—';
+const meetingDate = (date: string) => new Intl.DateTimeFormat(isJa ? 'ja-JP' : 'en-GB', {
+  month: 'short', day: 'numeric', weekday: 'short', timeZone: 'UTC',
+}).format(new Date(`${date}T12:00:00Z`));
+const pageTitle = isJa ? `${country.name_ja}の競馬開催・競馬場 | 競馬どこ？` : `${country.name_en} Racing & Racecourses | Where Horses Run`;
+const pageDescription = overview || pick(
+  `Meetings, racecourses, and official sources for horse racing in ${country.name_en}.`,
+  `${country.name_ja}の競馬開催、競馬場、公式情報源をまとめて確認できます。`,
+);
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} lang={locale} canonicalPath={countryPath} alternatePath={alternatePath}>
+  <main class="country-hub" data-country-hub data-country-id={country.id}>
+    <nav class="country-hub__breadcrumb" aria-label={pick('Breadcrumb', 'パンくず')}>
+      <a href={homePath}>{pick('Home', 'ホーム')}</a><span aria-hidden="true">›</span>
+      <a href={countriesPath}>{pick('Countries', '国・地域')}</a><span aria-hidden="true">›</span>
+      <span aria-current="page">{countryName}</span>
+    </nav>
+
+    <section class="country-hub__hero" aria-labelledby="page-title">
+      <div class="country-hub__title-row">
+        <h1 id="page-title">{countryName}</h1>
+        {secondaryName && secondaryName !== countryName ? <span>{secondaryName}</span> : null}
+        {calendarSupported ? <strong class="country-hub__supported">● {pick('Calendar supported', 'カレンダー対応済み')}</strong> : null}
+      </div>
+      {overview ? <p class="country-hub__summary">{overview}</p> : null}
+    </section>
+
+    <section class="country-hub__facts" aria-label={pick('Country racing facts', '国別競馬基本情報')}>
+      <article><span>{pick('Authorities / systems', '主催・管轄')}</span><strong>{systems.length ? systems.map((system) => isJa ? system.name_ja : system.name_en).join(' · ') : '—'}</strong></article>
+      <article><span>{pick('Racing types', '競馬種別')}</span><strong>{racingTypes.length ? racingTypes.join(' · ') : '—'}</strong></article>
+      <article><span>{pick('Listed racecourses', '掲載競馬場数')}</span><strong>{racecourses.length}</strong></article>
+      <article><span>{pick('Official sources', '公式情報源')}</span><strong>{sources.length ? pick(`${sources.length} reviewed links`, `${sources.length}件`) : '—'}</strong></article>
+    </section>
+
+    <div class="country-hub__layout">
+      <div class="country-hub__main-column">
+        <section class="country-hub__section" aria-labelledby="country-meetings-heading">
+          <div class="country-hub__section-heading">
+            <h2 id="country-meetings-heading">{pick('Today / near-term meetings', '今日 / 直近の開催')}</h2>
+            <a href={`${calendarPath}?country=${encodeURIComponent(country.id)}`}>{pick('View in Calendar', 'カレンダーで表示')} →</a>
+          </div>
+          {nearMeetings.length ? <div class="country-hub__table-wrap">
+            <table class="country-hub__table">
+              <thead><tr><th>{pick('Date', '日付')}</th><th>{pick('Racecourse', '競馬場')}</th><th>{pick('Authority', '主催・管轄')}</th><th>{pick('Time', '開催時間')}</th><th>{pick('Rank', '公開ランク')}</th><th>{pick('Official', '公式情報')}</th></tr></thead>
+              <tbody>{nearMeetings.map((meeting) => {
+                const racecourse = racecourseById.get(meeting.racecourse_id);
+                const href = racecourse?.slug ? `${tracksPath}${racecourse.slug}/` : null;
+                const name = getCalendarRacecourseDisplayName(meeting.racecourse_id, meeting.racecourse_name, locale);
+                return <tr>
+                  <td data-label={pick('Date', '日付')}>{meetingDate(meeting.date)}</td>
+                  <td data-label={pick('Racecourse', '競馬場')}>{href ? <a href={href}>{name}</a> : name}</td>
+                  <td data-label={pick('Authority', '主催・管轄')}>{getCalendarAuthorityDisplayName(meeting.authority_id, meeting.authority_label, locale)}</td>
+                  <td data-label={pick('Time', '開催時間')}>{meetingTime(meeting)}</td>
+                  <td data-label={pick('Rank', '公開ランク')}><span class="country-hub__rank">{meeting.capability_rank}</span></td>
+                  <td data-label={pick('Official', '公式情報')}><a href={meeting.official_source_url} target="_blank" rel="noopener noreferrer">{pick('Official source', '公式')} ↗</a></td>
+                </tr>;
+              })}</tbody>
+            </table>
+          </div> : <div class="country-hub__empty"><p>{pick('No reviewed meeting is currently listed in the near-term window.', '現在の直近表示範囲には確認済み開催がありません。')}</p><a href={calendarPath}>{pick('Open Calendar', 'カレンダーを開く')} →</a></div>}
+        </section>
+
+        <section class="country-hub__section" aria-labelledby="country-racecourses-heading">
+          <div class="country-hub__section-heading">
+            <h2 id="country-racecourses-heading">{pick('Racecourses', '国内競馬場')}</h2>
+            <a href={`${tracksPath}?country=${encodeURIComponent(country.id)}`}>{pick('Browse racecourses', '競馬場一覧で見る')} →</a>
+          </div>
+          <div class="country-hub__table-wrap">
+            <table class="country-hub__table country-hub__table--racecourses">
+              <thead><tr><th>{pick('Racecourse', '競馬場')}</th><th>{pick('Location', '所在地')}</th><th>{pick('System', '体系')}</th><th>{pick('Page', '詳細')}</th></tr></thead>
+              <tbody>{racecourses.map((racecourse) => <tr>
+                <td data-label={pick('Racecourse', '競馬場')}><strong>{racecourseName(racecourse)}</strong></td>
+                <td data-label={pick('Location', '所在地')}>{locationFor(racecourse)}</td>
+                <td data-label={pick('System', '体系')}>{systemFor(racecourse)}</td>
+                <td data-label={pick('Page', '詳細')}><a href={`${tracksPath}${racecourse.slug}/`}>{pick('Racecourse page', '競馬場ページ')} →</a></td>
+              </tr>)}</tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <aside class="country-hub__side-column">
+        <section class="country-hub__panel country-hub__map-panel" aria-labelledby="country-map-heading">
+          <div class="country-hub__panel-heading"><h2 id="country-map-heading">{pick(`${country.name_en} racecourses`, `${country.name_ja}の競馬場`)}</h2><a href={`${tracksPath}?country=${encodeURIComponent(country.id)}`}>{pick('Open list', '一覧を見る')} →</a></div>
+          <RacecourseMap racecourseIds={racecourses.map((racecourse) => racecourse.id)} visibleRacecourseIds={racecourses.map((racecourse) => racecourse.id)} initialZoom={4} ariaLabel={pick(`${country.name_en} racecourse map`, `${country.name_ja}の競馬場地図`)} />
+        </section>
+
+        <section class="country-hub__panel" aria-labelledby="country-sources-heading">
+          <div class="country-hub__panel-heading"><h2 id="country-sources-heading">{pick('Official sources', '公式情報源')}</h2><a href={sourceRegistryPath}>{pick('Source registry', '情報源一覧')} →</a></div>
+          {sourceGroups.length ? sourceGroups.map((group) => <div class="country-hub__source-group"><h3>{group.name}</h3><ul>{group.sources.map((source: any) => <li><a href={source.url} target="_blank" rel="noopener noreferrer">{sourceLabel(source)} ↗</a></li>)}</ul></div>) : <ul>{sources.slice(0, 6).map((source) => <li><a href={source.url} target="_blank" rel="noopener noreferrer">{sourceLabel(source)} ↗</a></li>)}</ul>}
+        </section>
+
+        <section class="country-hub__panel" aria-labelledby="country-about-heading">
+          <h2 id="country-about-heading">{pick('About this country page', 'この国ページについて')}</h2>
+          <p>{pick('This page connects reviewed Calendar meetings, racecourse profiles, map locations, and official sources. Historical and graded-race information can be added as reviewed data becomes available.', 'このページは、確認済みカレンダー開催、競馬場プロフィール、地図、公式情報源をつなぐ国別ハブです。歴史情報や重賞情報は、確認済みデータが揃ったものから追加します。')}</p>
+        </section>
+      </aside>
+    </div>
+
+    <p class="country-hub__back"><a href={countriesPath}>← {pick('Back to countries', '国・地域一覧へ戻る')}</a></p>
+  </main>
+</BaseLayout>

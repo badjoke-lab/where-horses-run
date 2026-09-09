@@ -1,0 +1,415 @@
+.country-hub {
+  width: min(1280px, calc(100% - 2rem));
+  margin-inline: auto;
+  padding-block: 1.5rem 4rem;
+  color: var(--whr-color-text);
+}
+
+.country-hub a {
+  color: var(--whr-color-link, #075ea8);
+}
+
+.country-hub__breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .4rem;
+  margin-block-end: 1.15rem;
+  color: var(--whr-color-muted);
+  font-size: .82rem;
+}
+
+.country-hub__breadcrumb a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.country-hub__hero {
+  max-width: 58rem;
+  margin-block-end: 1.25rem;
+}
+
+.country-hub__title-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: .55rem .75rem;
+}
+
+.country-hub__title-row h1 {
+  margin: 0;
+  color: var(--whr-color-navy);
+  font-size: clamp(2.35rem, 5vw, 4.25rem);
+  line-height: 1;
+}
+
+.country-hub__title-row > span {
+  color: var(--whr-color-muted);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.country-hub__supported {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: .24rem .6rem;
+  border: 1px solid rgba(151, 110, 15, .32);
+  border-radius: 999px;
+  background: #fff8e3;
+  color: var(--whr-color-gold-dark, #7a5900);
+  font-size: .75rem;
+  white-space: nowrap;
+}
+
+.country-hub__summary {
+  max-width: 52rem;
+  margin: .85rem 0 0;
+  color: var(--whr-color-muted);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.country-hub__facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .65rem;
+  margin-block: 1.2rem 1.7rem;
+}
+
+.country-hub__facts article,
+.country-hub__panel {
+  border: 1px solid var(--whr-color-border);
+  border-radius: .6rem;
+  background: var(--whr-color-bg);
+}
+
+.country-hub__facts article {
+  display: grid;
+  align-content: start;
+  gap: .3rem;
+  min-height: 92px;
+  padding: .8rem .9rem;
+}
+
+.country-hub__facts span {
+  color: var(--whr-color-muted);
+  font-size: .76rem;
+  font-weight: 800;
+}
+
+.country-hub__facts strong {
+  color: var(--whr-color-navy);
+  font-size: .92rem;
+  line-height: 1.4;
+}
+
+.country-hub__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.52fr) minmax(330px, .88fr);
+  gap: clamp(1.4rem, 3vw, 2.2rem);
+  align-items: start;
+}
+
+.country-hub__main-column,
+.country-hub__side-column {
+  display: grid;
+  gap: 1.55rem;
+  min-width: 0;
+}
+
+.country-hub__section {
+  min-width: 0;
+}
+
+.country-hub__section-heading,
+.country-hub__panel-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-block-end: .65rem;
+}
+
+.country-hub__section-heading {
+  padding-block-start: .7rem;
+  border-top: 2px solid var(--whr-color-text);
+}
+
+.country-hub__section-heading h2,
+.country-hub__panel-heading h2,
+.country-hub__panel > h2 {
+  margin: 0;
+  color: var(--whr-color-navy);
+  font-size: 1.35rem;
+  line-height: 1.15;
+}
+
+.country-hub__section-heading > a,
+.country-hub__panel-heading > a {
+  flex: 0 0 auto;
+  font-size: .8rem;
+  font-weight: 700;
+}
+
+.country-hub__table-wrap {
+  overflow-x: auto;
+  border-block: 1px solid var(--whr-color-border);
+}
+
+.country-hub__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .84rem;
+}
+
+.country-hub__table th {
+  padding: .55rem .45rem;
+  background: rgba(7, 35, 69, .035);
+  color: var(--whr-color-muted);
+  font-size: .72rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.country-hub__table td {
+  padding: .58rem .45rem;
+  border-top: 1px solid var(--whr-color-border);
+  vertical-align: middle;
+}
+
+.country-hub__table tbody tr:first-child td {
+  border-top: 0;
+}
+
+.country-hub__table td:first-child,
+.country-hub__table td:nth-child(2) {
+  color: var(--whr-color-navy);
+}
+
+.country-hub__rank {
+  display: inline-flex;
+  min-width: 2rem;
+  min-height: 26px;
+  align-items: center;
+  justify-content: center;
+  padding-inline: .35rem;
+  border: 1px solid var(--whr-color-border);
+  border-radius: .35rem;
+  background: #fff;
+  color: var(--whr-color-navy);
+  font-size: .74rem;
+  font-weight: 800;
+}
+
+.country-hub__empty {
+  padding: 1rem;
+  border: 1px solid var(--whr-color-border);
+  border-radius: .5rem;
+  background: rgba(7, 35, 69, .025);
+}
+
+.country-hub__empty p {
+  margin-block: 0 0.35rem;
+  color: var(--whr-color-muted);
+}
+
+.country-hub__panel {
+  padding: .85rem;
+}
+
+.country-hub__map-panel {
+  padding: 0;
+  overflow: hidden;
+}
+
+.country-hub__map-panel .country-hub__panel-heading {
+  margin: 0;
+  padding: .8rem .9rem;
+  border-bottom: 1px solid var(--whr-color-border);
+}
+
+.country-hub__map-panel .racecourse-map__canvas {
+  min-height: 420px;
+  border: 0;
+  border-radius: 0;
+}
+
+.country-hub__map-panel .racecourse-map__legend {
+  display: none !important;
+}
+
+.country-hub__map-panel .racecourse-map__status {
+  margin: 0;
+  padding: .45rem .75rem;
+  color: var(--whr-color-muted);
+  font-size: .68rem;
+}
+
+.country-hub__source-group + .country-hub__source-group {
+  margin-block-start: .85rem;
+  padding-block-start: .85rem;
+  border-top: 1px solid var(--whr-color-border);
+}
+
+.country-hub__source-group h3 {
+  margin: 0 0 .4rem;
+  color: var(--whr-color-navy);
+  font-size: .9rem;
+}
+
+.country-hub__source-group ul,
+.country-hub__panel > ul {
+  display: grid;
+  gap: .35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.country-hub__source-group li,
+.country-hub__panel > ul li {
+  font-size: .82rem;
+}
+
+.country-hub__panel > p {
+  margin-block: .55rem 0;
+  color: var(--whr-color-muted);
+  font-size: .85rem;
+  line-height: 1.6;
+}
+
+.country-hub__back {
+  margin-block: 2rem 0;
+  padding-block-start: 1rem;
+  border-top: 1px solid var(--whr-color-border);
+  font-size: .85rem;
+}
+
+@media (max-width: 980px) {
+  .country-hub__facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .country-hub__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .country-hub__side-column {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .country-hub__map-panel {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 700px) {
+  .country-hub {
+    width: min(100% - 1rem, 1280px);
+    padding-block: .8rem 5rem;
+  }
+
+  .country-hub__breadcrumb {
+    margin-block-end: .8rem;
+    font-size: .72rem;
+  }
+
+  .country-hub__title-row {
+    align-items: flex-start;
+  }
+
+  .country-hub__title-row h1 {
+    flex-basis: 100%;
+    font-size: clamp(2rem, 10vw, 2.8rem);
+  }
+
+  .country-hub__summary {
+    font-size: .9rem;
+    line-height: 1.55;
+  }
+
+  .country-hub__facts {
+    gap: .45rem;
+    margin-block: .9rem 1.15rem;
+  }
+
+  .country-hub__facts article {
+    min-height: 78px;
+    padding: .65rem;
+  }
+
+  .country-hub__facts strong {
+    font-size: .82rem;
+  }
+
+  .country-hub__section-heading,
+  .country-hub__panel-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: .25rem;
+  }
+
+  .country-hub__section-heading h2,
+  .country-hub__panel-heading h2,
+  .country-hub__panel > h2 {
+    font-size: 1.2rem;
+  }
+
+  .country-hub__table-wrap {
+    overflow: visible;
+    border: 0;
+  }
+
+  .country-hub__table,
+  .country-hub__table tbody,
+  .country-hub__table tr,
+  .country-hub__table td {
+    display: block;
+    width: 100%;
+  }
+
+  .country-hub__table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .country-hub__table tr {
+    margin-block-end: .55rem;
+    padding: .65rem .7rem;
+    border: 1px solid var(--whr-color-border);
+    border-radius: .5rem;
+  }
+
+  .country-hub__table td,
+  .country-hub__table tbody tr:first-child td {
+    display: grid;
+    grid-template-columns: minmax(6.2rem, 36%) 1fr;
+    gap: .6rem;
+    padding: .28rem 0;
+    border: 0;
+    font-size: .8rem;
+  }
+
+  .country-hub__table td::before {
+    content: attr(data-label);
+    color: var(--whr-color-muted);
+    font-size: .7rem;
+    font-weight: 800;
+  }
+
+  .country-hub__side-column {
+    grid-template-columns: 1fr;
+  }
+
+  .country-hub__map-panel {
+    grid-column: auto;
+  }
+
+  .country-hub__map-panel .racecourse-map__canvas {
+    min-height: 300px;
+  }
+}

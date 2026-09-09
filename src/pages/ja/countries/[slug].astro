@@ -1,5 +1,6 @@
 ---
 import CountryDetailPage from '../../../components/CountryDetailPage.astro';
+import CountryHubPage from '../../../components/CountryHubPage.astro';
 import { getCountries, getCountryBySlug } from '../../../lib/data';
 import { isCalendarSupportedCountry } from '../../../lib/calendarPublicCountrySupport';
 
@@ -17,4 +18,6 @@ if (!country || !isCalendarSupportedCountry(country.id)) {
 }
 ---
 
-<CountryDetailPage country={country} locale="ja" />
+{country.id === 'japan'
+  ? <CountryHubPage country={country} locale="ja" />
+  : <CountryDetailPage country={country} locale="ja" />}
