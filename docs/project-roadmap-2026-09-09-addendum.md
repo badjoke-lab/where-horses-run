@@ -194,6 +194,15 @@ mobile and desktop layout behavior
 
 At minimum, verify one representative page from each currently supported country where public racecourse data exists, plus the Japan/Tokyo reference pages. Confirm that unsupported countries and non-active/unsupported-country racecourses are not exposed as normal public routes/search results.
 
+### Current repository-level findings and corrections
+
+The first UI-009 repository pass found two integration inconsistencies after the public gate was narrowed:
+
+- Countries and Racecourses directory copy still described worldwide/broad coverage even though the runtime now exposes only Calendar-supported countries and active/current racecourses in those countries. Directory descriptions and hero copy are being corrected to state the actual public scope.
+- Morocco is part of the reviewed Calendar-supported set, but the shared shell curated display-timezone list omitted `Africa/Casablanca`. The shared server-rendered and client-side timezone option lists are being corrected together so Morocco is selectable without introducing a second timezone truth.
+
+These are repository/runtime corrections, not visual acceptance. UI-009 remains current until the representative EN/JA desktop/mobile browser pass is actually completed.
+
 Visible UI acceptance requires actual browser output at representative desktop/mobile widths. Repository/code inspection alone must not be recorded as visual acceptance.
 
 UI-009 completion must record any discovered data gaps separately from layout/runtime defects. Missing reviewed optional data must stay absent/pending rather than being filled with guessed values.

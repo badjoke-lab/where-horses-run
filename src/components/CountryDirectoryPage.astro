@@ -74,8 +74,8 @@ function regionLabel(value: string): string {
 <BaseLayout
   title={isJapanese ? '国・地域から探す | 競馬どこ？' : 'Countries and Regions | Where Horses Run'}
   description={isJapanese
-    ? '世界の競馬開催国・地域を、名称、地域、競馬種別から探せます。'
-    : 'Find horse racing countries and regions by name, region, or racing type.'}
+    ? '現在カレンダー対応中の競馬開催国・地域を、名称、地域、競馬種別から探せます。'
+    : 'Find countries and regions currently supported by the Calendar by name, region, or racing type.'}
   lang={locale}
   canonicalPath={directoryPath}
   alternatePath={isJapanese ? '/countries/' : '/ja/countries/'}
@@ -87,14 +87,14 @@ function regionLabel(value: string): string {
     data-country-racing-types={options.racingTypes.length}
   >
     <section class="hero" aria-labelledby="page-title">
-      <p class="hero__eyebrow">{isJapanese ? '世界の競馬' : 'Horse racing worldwide'}</p>
+      <p class="hero__eyebrow">{isJapanese ? 'カレンダー対応国' : 'Calendar-supported racing'}</p>
       <h1 id="page-title">{isJapanese ? '国・地域から探す' : 'Countries and Regions'}</h1>
       <p class="hero__summary">
         {isJapanese
-          ? '名称、地域、競馬種別から開催国・地域を探し、各地域の競馬情報へ進めます。'
-          : 'Browse racing jurisdictions by name, region, or racing type, then open each country or region for more information.'}
+          ? '現在カレンダー対応している国・地域を掲載しています。各ページから直近の開催、競馬場、地図、公式情報源を確認できます。'
+          : 'Browse countries and regions currently supported by the Calendar, then open each hub for meetings, racecourses, maps, and official sources.'}
       </p>
-      <p>{isJapanese ? `${records.length}か国・地域を掲載しています。` : `${records.length} countries and regions are listed.`}</p>
+      <p>{isJapanese ? `現在${records.length}か国・地域に対応しています。` : `Calendar support currently covers ${records.length} countries and regions.`}</p>
     </section>
 
     <section aria-labelledby="region-navigation-heading" data-region-filter-navigation>

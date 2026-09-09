@@ -61,8 +61,8 @@ function locationLabel(record: RacecourseFilterRecord): string {
 <BaseLayout
   title={isJapanese ? '競馬場から探す | 競馬どこ？' : 'Racecourses | Where Horses Run'}
   description={isJapanese
-    ? '競馬場を名称、国・地域、主催、競馬種別から探せます。'
-    : 'Find racecourses by name, country or region, authority, and racing type.'}
+    ? 'カレンダー対応国の現役競馬場を、名称、国・地域、主催、競馬種別から探せます。'
+    : 'Find active racecourses in Calendar-supported countries by name, country or region, authority, and racing type.'}
   lang={locale}
   canonicalPath={isJapanese ? '/ja/tracks/' : '/tracks/'}
   alternatePath={isJapanese ? '/tracks/' : '/ja/tracks/'}
@@ -78,13 +78,13 @@ function locationLabel(record: RacecourseFilterRecord): string {
     data-racecourse-surface-options={options.surfaces.length}
   >
     <header class="directory-hero" aria-labelledby="page-title">
-      <p class="directory-eyebrow">{isJapanese ? '世界の競馬場' : 'Racecourses worldwide'}</p>
+      <p class="directory-eyebrow">{isJapanese ? 'カレンダー対応国の現役競馬場' : 'Active racecourses in supported countries'}</p>
       <div class="directory-hero-row">
         <div>
           <h1 id="page-title">{isJapanese ? '競馬場から探す' : 'Racecourses'}</h1>
           <p>{isJapanese
-            ? '名前や場所から競馬場を探し、各競馬場のページへ進めます。'
-            : 'Find a racecourse by name or place, then open its venue page.'}</p>
+            ? '現在カレンダー対応している国の現役競馬場を掲載しています。名前や場所から探して各競馬場ページへ進めます。'
+            : 'Browse active racecourses in countries currently supported by the Calendar, then open each venue page for meetings, location, course facts, and official sources.'}</p>
         </div>
         <strong class="directory-total">{isJapanese ? `${records.length}競馬場` : `${records.length} racecourses`}</strong>
       </div>
