@@ -1,0 +1,309 @@
+.racecourse-detail-v3 {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.racecourse-detail-v3__breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem;
+  color: var(--whr-color-muted);
+  font-size: .82rem;
+}
+
+.racecourse-detail-v3__breadcrumbs a {
+  color: inherit;
+}
+
+.racecourse-detail-v3__header {
+  display: grid;
+  gap: .9rem;
+  padding-block: .25rem 1.15rem;
+  border-bottom: 1px solid var(--whr-color-border);
+}
+
+.racecourse-detail-v3__title h1 {
+  margin: 0;
+  color: var(--whr-color-navy);
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  line-height: 1.05;
+}
+
+html:lang(ja) .racecourse-detail-v3__title h1 {
+  font-family: var(--whr-font-family);
+}
+
+.racecourse-detail-v3__title p {
+  margin: .3rem 0 0;
+  color: var(--whr-color-muted);
+  font-size: 1.05rem;
+}
+
+.racecourse-detail-v3__chips,
+.racecourse-detail-v3__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.racecourse-detail-v3__chips > * {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.1rem;
+  padding: .3rem .65rem;
+  border: 1px solid var(--whr-color-border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--whr-color-navy);
+  font-size: .86rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.racecourse-detail-v3__actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: .55rem .9rem;
+  border: 1px solid var(--whr-color-border);
+  border-radius: .6rem;
+  background: #fff;
+  color: var(--whr-color-navy);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.racecourse-detail-v3__actions .button-like {
+  border-color: var(--whr-color-gold-dark);
+  background: var(--whr-color-gold-dark);
+  color: #fff;
+}
+
+.racecourse-detail-v3__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(18rem, .8fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.racecourse-detail-v3__main,
+.racecourse-detail-v3__sidebar {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.racecourse-detail-v3 .racecourse-location-section,
+.racecourse-detail-v3 .racecourse-meeting-summary,
+.racecourse-detail-v3__panel,
+.racecourse-detail-v3__related {
+  margin: 0;
+  padding: 1rem;
+  border: 1px solid var(--whr-color-border);
+  border-radius: .8rem;
+  background: #fff;
+}
+
+.racecourse-detail-v3 .racecourse-location-section .racecourse-map__canvas {
+  min-height: clamp(430px, 50vh, 600px);
+}
+
+.racecourse-detail-v3 :is(.racecourse-meeting-summary, .racecourse-detail-v3__panel, .racecourse-detail-v3__related) h2 {
+  margin: 0;
+  color: var(--whr-color-navy);
+  font-size: 1.25rem;
+}
+
+html:lang(ja) .racecourse-detail-v3 :is(.racecourse-meeting-summary, .racecourse-detail-v3__panel, .racecourse-detail-v3__related) h2 {
+  font-family: var(--whr-font-family);
+}
+
+.racecourse-detail-v3 .racecourse-meeting-summary {
+  gap: .8rem;
+}
+
+.racecourse-detail-v3 .racecourse-meeting-summary__primary {
+  grid-template-columns: 1fr;
+  padding: .8rem;
+}
+
+.racecourse-detail-v3 .racecourse-meeting-summary__actions {
+  justify-content: flex-start;
+}
+
+.racecourse-detail-v3 .racecourse-meeting-summary__upcoming li {
+  grid-template-columns: minmax(6.5rem, auto) minmax(0, 1fr) auto;
+}
+
+.racecourse-detail-v3 .racecourse-meeting-summary__upcoming li > a:last-child {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
+.racecourse-detail-v3__panel {
+  display: grid;
+  gap: .75rem;
+}
+
+.racecourse-detail-v3__panel ul {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.racecourse-detail-v3__panel li {
+  border-top: 1px solid var(--whr-color-border);
+}
+
+.racecourse-detail-v3__panel li:first-child {
+  border-top: 0;
+}
+
+.racecourse-detail-v3__panel li a {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.racecourse-detail-v3__status-list {
+  display: grid;
+  margin: 0;
+}
+
+.racecourse-detail-v3__status-list > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: .8rem;
+  align-items: center;
+  min-height: 2.6rem;
+  border-top: 1px solid var(--whr-color-border);
+}
+
+.racecourse-detail-v3__status-list > div:first-child {
+  border-top: 0;
+}
+
+.racecourse-detail-v3__status-list dt,
+.racecourse-detail-v3__status-list dd {
+  margin: 0;
+}
+
+.racecourse-detail-v3__status-list dt {
+  color: var(--whr-color-muted);
+  font-size: .84rem;
+  font-weight: 700;
+}
+
+.racecourse-detail-v3__status-list dd {
+  color: var(--whr-color-navy);
+  font-size: .86rem;
+  font-weight: 800;
+}
+
+.racecourse-detail-v3__status-list dd[data-status='ok'],
+.racecourse-detail-v3__status-list dd[data-status='pending'] {
+  padding: .2rem .5rem;
+  border-radius: 999px;
+}
+
+.racecourse-detail-v3__status-list dd[data-status='ok'] {
+  background: #edf7ef;
+}
+
+.racecourse-detail-v3__status-list dd[data-status='pending'] {
+  background: #f2f3f4;
+  color: var(--whr-color-muted);
+}
+
+.racecourse-detail-v3__related {
+  display: grid;
+  gap: .8rem;
+}
+
+.racecourse-detail-v3__related > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .7rem;
+}
+
+.racecourse-detail-v3__related a {
+  display: grid;
+  gap: .2rem;
+  min-width: 0;
+  min-height: 5rem;
+  padding: .8rem;
+  border: 1px solid var(--whr-color-border);
+  border-radius: .65rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.racecourse-detail-v3__related a strong {
+  color: var(--whr-color-navy);
+}
+
+.racecourse-detail-v3__related a span {
+  color: var(--whr-color-muted);
+  font-size: .82rem;
+}
+
+@media (max-width: 900px) {
+  .racecourse-detail-v3__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .racecourse-detail-v3__sidebar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .racecourse-detail-v3__sidebar .racecourse-meeting-summary {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 650px) {
+  .racecourse-detail-v3 {
+    gap: .85rem;
+  }
+
+  .racecourse-detail-v3__header {
+    gap: .7rem;
+  }
+
+  .racecourse-detail-v3__chips {
+    gap: .35rem;
+  }
+
+  .racecourse-detail-v3__chips > * {
+    font-size: .78rem;
+  }
+
+  .racecourse-detail-v3__actions a {
+    flex: 1 1 10rem;
+  }
+
+  .racecourse-detail-v3 .racecourse-location-section,
+  .racecourse-detail-v3 .racecourse-meeting-summary,
+  .racecourse-detail-v3__panel,
+  .racecourse-detail-v3__related {
+    padding: .8rem;
+  }
+
+  .racecourse-detail-v3 .racecourse-location-section .racecourse-map__canvas {
+    min-height: 360px;
+  }
+
+  .racecourse-detail-v3__sidebar,
+  .racecourse-detail-v3__related > div {
+    grid-template-columns: 1fr;
+  }
+
+  .racecourse-detail-v3 .racecourse-meeting-summary__upcoming li {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}
