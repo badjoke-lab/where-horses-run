@@ -2,48 +2,56 @@
   "schema_version": "world-racing-terminology-master-manifest-v1",
   "status": "candidate_seed_plus_jurisdiction_research",
   "generated_from_legacy_glossary": false,
-  "concept_count": 516,
+  "concept_count": 536,
   "category_count": 18,
   "priority_counts": {
-    "P0": 157,
-    "P1": 222,
-    "P2": 120,
-    "P3": 17
+    "P0": 162,
+    "P1": 229,
+    "P2": 127,
+    "P3": 18
   },
   "verification_status": "mixed_candidate_and_source_verified",
   "public_ready_count": 0,
   "public_runtime_input": false,
   "categories": [
     {"id":"DISC","count":17,"file":"concepts/01-disc.tsv"},
-    {"id":"RTYPE","count":44,"file":"concepts/02-rtype.tsv","supplemental_file":"concepts/gb-ireland-wave2-additions.tsv"},
-    {"id":"ENTRY","count":28,"file":"concepts/03-entry.tsv","supplemental_file":"concepts/gb-ireland-wave2-additions.tsv"},
+    {"id":"RTYPE","count":53,"file":"concepts/02-rtype.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv"]},
+    {"id":"ENTRY","count":30,"file":"concepts/03-entry.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv"]},
     {"id":"HORSE","count":30,"file":"concepts/04-horse.tsv"},
     {"id":"BREED","count":23,"file":"concepts/05-breed.tsv"},
-    {"id":"ROLE","count":29,"file":"concepts/06-role.tsv","supplemental_file":"concepts/gb-ireland-wave2-additions.tsv"},
+    {"id":"ROLE","count":30,"file":"concepts/06-role.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv"]},
     {"id":"VENUE","count":42,"file":"concepts/07-venue.tsv"},
-    {"id":"SURF","count":33,"file":"concepts/08-surf.tsv","supplemental_file":"concepts/gb-ireland-wave2-additions.tsv"},
+    {"id":"SURF","count":34,"file":"concepts/08-surf.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv"]},
     {"id":"DIST","count":22,"file":"concepts/09-dist.tsv"},
-    {"id":"WEIGHT","count":24,"file":"concepts/10-weight.tsv","supplemental_file":"concepts/gb-ireland-wave2-additions.tsv"},
-    {"id":"RUN","count":41,"file":"concepts/11-run.tsv"},
-    {"id":"EQUIP","count":25,"file":"concepts/12-equip.tsv"},
-    {"id":"TRAIN","count":23,"file":"concepts/13-train.tsv"},
-    {"id":"MEET","count":39,"file":"concepts/14-meet.tsv","supplemental_file":"concepts/gb-ireland-wave2-additions.tsv"},
+    {"id":"WEIGHT","count":24,"file":"concepts/10-weight.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv"]},
+    {"id":"RUN","count":44,"file":"concepts/11-run.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv"]},
+    {"id":"EQUIP","count":26,"file":"concepts/12-equip.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv"]},
+    {"id":"TRAIN","count":24,"file":"concepts/13-train.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv"]},
+    {"id":"MEET","count":39,"file":"concepts/14-meet.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv"]},
     {"id":"RESULT","count":28,"file":"concepts/15-result.tsv"},
     {"id":"PRIZE","count":10,"file":"concepts/16-prize.tsv"},
-    {"id":"BET","count":40,"file":"concepts/17-bet.tsv"},
+    {"id":"BET","count":42,"file":"concepts/17-bet.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv"]},
     {"id":"WELF","count":18,"file":"concepts/18-welf.tsv"}
   ],
   "jurisdiction_research": {
     "gb_ireland": {
-      "status": "wave_2_in_progress",
+      "status": "wave_2_complete_for_current_pass",
       "research_file": "jurisdictions/gb-ireland-research-v1.tsv",
       "concept_additions_file": "concepts/gb-ireland-wave2-additions.tsv",
       "labels_file": "labels/gb-ireland-labels-v1.tsv",
       "definitions_file": "definitions/gb-ireland-definitions-v1.tsv",
       "sources_file": "sources/gb-ireland-sources-v1.tsv"
+    },
+    "us_canada": {
+      "status": "wave_1_in_progress",
+      "research_file": "jurisdictions/us-canada-research-v1.tsv",
+      "concept_additions_file": "concepts/us-canada-wave1-additions.tsv",
+      "labels_file": "labels/us-canada-labels-v1.tsv",
+      "definitions_file": "definitions/us-canada-definitions-v1.tsv",
+      "sources_file": "sources/us-canada-sources-v1.tsv"
     }
   },
   "next_work_id": "GLOSSARY-MASTER-003",
-  "next_work": "continue_gb_ireland_then_us_canada_jurisdiction_research",
+  "next_work": "continue_us_canada_state_provincial_and_harness_research_then_australia_new_zealand",
   "public_implementation": "deferred"
 }
