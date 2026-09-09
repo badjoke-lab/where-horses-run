@@ -1,0 +1,44 @@
+name: Racecourse Notable Race Display
+
+on:
+  pull_request:
+    paths:
+      - 'AGENTS.md'
+      - 'src/components/RacecourseDetailPage.astro'
+      - 'docs/racecourses/notable-and-graded-race-display-2026-09-09.md'
+      - 'docs/racecourses/notable-and-graded-race-roadmap-2026-09-09.md'
+      - 'scripts/check-racecourse-notable-race-display.mjs'
+      - '.github/workflows/racecourse-notable-race-display.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'AGENTS.md'
+      - 'src/components/RacecourseDetailPage.astro'
+      - 'docs/racecourses/notable-and-graded-race-display-2026-09-09.md'
+      - 'docs/racecourses/notable-and-graded-race-roadmap-2026-09-09.md'
+      - 'scripts/check-racecourse-notable-race-display.mjs'
+      - '.github/workflows/racecourse-notable-race-display.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  notable-race-display:
+    name: Notable race text-only contract
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+
+      - name: Check notable-race display contract
+        run: node scripts/check-racecourse-notable-race-display.mjs
