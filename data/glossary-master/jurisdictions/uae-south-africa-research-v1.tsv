@@ -1,0 +1,31 @@
+jurisdiction	authority	observed_term	mapping_target	mapping_type	verification_status	source_id	note
+UAE	ERA	PRESTIGE	RTYPE-099	new_concept	source_verified	UAZA-SRC-002	Current ERA race-type display.
+UAE	ERA	Purebred Arabian	HORSE-002	regional_official_label	source_verified	UAZA-SRC-002	Major ERA horse/race category.
+UAE	ERA	MAIDEN	RTYPE-001	regional_definition	source_verified	UAZA-SRC-003	Current ERA race type.
+UAE	ERA	Rated Maiden	NEW-REVIEW-UAE-RATED-MAIDEN	new_candidate	candidate	UAZA-SRC-003	Race title uses Rated Maiden while race-type field is MAIDEN; do not create separate Concept without Condition Book definition.
+UAE	ERA	HANDICAP (0-70)	RTYPE-007	qualified_regional_label	source_verified	UAZA-SRC-004	Numeric rating band is an event condition, not separate base Concept.
+UAE	ERA	For Private Owners	RTYPE-027	regional_restriction	source_verified	UAZA-SRC-004	Private-owner eligibility condition.
+UAE	ERA	bred in United Arab Emirates	HORSE-027	regional_condition	source_verified	UAZA-SRC-002	UAE-bred eligibility wording.
+UAE	ERA	Safety Limit	ENTRY-009	regional_label	source_verified	UAZA-SRC-005	Racecard maximum/safety field.
+UAE	ERA	TRIAL	TRAIN-012	regional_definition	source_verified	UAZA-SRC-006	Official trials for raced/unraced Thoroughbred and Purebred Arabian horses.
+UAE	ERA	Rating	WEIGHT-022	regional_label	source_verified	UAZA-SRC-005	Horse rating field.
+UAE	ERA	Dirt Rating / Turf Rating	NEW-REVIEW-UAE-SURFACE-RATING	new_candidate	candidate	UAZA-SRC-007	ERA horse database exposes surface-specific ratings; formal rating-system semantics need Condition Book/rules extraction.
+UAE	ERA	NOR	NEW-REVIEW-UAE-NOR	new_candidate	candidate	UAZA-SRC-007	Current rating-status code; expansion/meaning must be sourced before Concept creation.
+UAE	ERA	NH / SH	NEW-REVIEW-UAE-HEMISPHERE-AGE	new_candidate	candidate	UAZA-SRC-006	Trial age notation; likely Northern/Southern Hemisphere but do not publish expansion without formal source.
+UAE	ERA	Arabic Rules terminology	NEW-REVIEW-UAE-ARABIC-LABELS	local_language_research_pending	candidate	UAZA-SRC-001	ERA provides Arabic Rules, but Arabic PDF was not retrievable in this pass; no Arabic labels were invented.
+South Africa	NHA	Merit Rating	WEIGHT-035	new_concept	source_verified	UAZA-SRC-011	Current official NHA terminology.
+South Africa	NHA/4Racing	MR	WEIGHT-035	official_abbreviation	source_verified	UAZA-SRC-013	Operational abbreviation in race names.
+South Africa	NHA/4Racing	MR 66 Handicap	RTYPE-100	qualified_regional_label	source_verified	UAZA-SRC-013	Numeric MR value is a parameter.
+South Africa	NHA	Plate	RTYPE-101	new_concept	source_verified	UAZA-SRC-008	Formal current Rules definition.
+South Africa	NHA/4Racing	Pinnacle Stakes	RTYPE-102	new_concept	source_verified	UAZA-SRC-012	Current programme and NHA handicapping usage.
+South Africa	NHA/4Racing	Progress Plate	RTYPE-103	new_concept	source_verified	UAZA-SRC-010	Current NHA usage plus programme evidence.
+South Africa	4Racing	Maiden Plate	RTYPE-104	new_concept	source_verified	UAZA-SRC-014	Current programme term.
+South Africa	4Racing	Graduation Plate	RTYPE-105	new_concept	source_verified	UAZA-SRC-013	Current 2026 programme term.
+South Africa	4Racing	Novice Plate	RTYPE-106	new_concept	source_verified	UAZA-SRC-015	Current-season programme term; later 2026 confirmation queued.
+South Africa	NHA	Conditions Race	RTYPE-008	jurisdiction_definition	source_verified	UAZA-SRC-008	Formal current Rules definition.
+South Africa	NHA	Handicap	RTYPE-007	jurisdiction_definition	source_verified	UAZA-SRC-008	Weights allocated by handicapper to equalise winning chances.
+South Africa	NHA	Match	RTYPE-040	jurisdiction_definition	source_verified	UAZA-SRC-008	Formal current Rules definition.
+South Africa	NHA	Weight-for-age Race	WEIGHT-003	regional_definition	source_verified	UAZA-SRC-008	Formal current Rules weighting system.
+South Africa	NHA	Barrier Trial	TRAIN-011	jurisdiction_definition	source_verified	UAZA-SRC-008	Formal current Rules category.
+South Africa	NHA	Assessment Plate	NEW-REVIEW-ZA-ASSESSMENT-PLATE	new_candidate	candidate	UAZA-SRC-008	Current 2026 NHA discussion confirms system activity; dedicated programme/conditions extraction required before Concept creation.
+South Africa	NHA	weighted under sufferance	NEW-REVIEW-ZA-UNDER-SUFFERANCE	industry_rule_term_pending	candidate	UAZA-SRC-008	Specialist weight term should be sourced directly from current rule text before glossary Concept creation.
