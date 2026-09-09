@@ -76,8 +76,33 @@ assert.match(
 );
 assert.match(
   racecourseMap,
-  /'circle-color': \[[\s\S]*?\['>', \['get', 'running_count'\], 0\], '#c40000',[\s\S]*?\['>', \['get', 'upcoming_count'\], 0\], '#d18a00'/,
-  'Map cluster emphasis must prioritize running over upcoming without redefining either state',
+  /const clusterHasRunning = \['>', \['get', 'running_count'\], 0\];[\s\S]*?const clusterHasUpcoming = \['>', \['get', 'upcoming_count'\], 0\];/,
+  'Map cluster priority must still derive only from resolved running and upcoming child counts',
+);
+assert.match(
+  racecourseMap,
+  /id: MAP_CLUSTER_STATUS_RING_LAYER[\s\S]*?clusterHasRunning, '#e53935',[\s\S]*?'#fb8c00'/,
+  'Map cluster status emphasis must move to a Live/Upcoming outer ring rather than filling the core',
+);
+assert.match(
+  racecourseMap,
+  /clusterHasPriorityState, '#59636f'/,
+  'Live and Upcoming clusters must share a neutral core so total count and status emphasis remain visually separated',
+);
+assert.match(
+  racecourseMap,
+  /'icon-image': MAP_CLUSTER_LIVE_BADGE_IMAGE[\s\S]*?'icon-text-fit': 'width'[\s\S]*?'LIVE '/,
+  'Live cluster counts must render as a fitted pill badge',
+);
+assert.match(
+  racecourseMap,
+  /'icon-image': MAP_CLUSTER_UPCOMING_BADGE_IMAGE[\s\S]*?'icon-text-fit': 'width'[\s\S]*?'UPCOMING '/,
+  'Upcoming cluster counts must render as a fitted pill badge',
+);
+assert.match(
+  racecourseMap,
+  /MAP_CLUSTER_LIVE_GLOW_LAYER[\s\S]*?clusterPulseTimer = window\.setInterval/,
+  'Live clusters must retain a dedicated glow layer with motion-aware pulse treatment',
 );
 assert.match(
   racecourseMap,
