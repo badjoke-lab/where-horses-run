@@ -15,6 +15,16 @@ const markupAttributePosition = (html, attribute) => {
   const match = pattern.exec(html);
   return match ? match.index : -1;
 };
+const attributeValues = (html, attribute) => {
+  const pattern = new RegExp(`\\s${attribute}=(['"])(.*?)\\1`, 'gi');
+  return [...html.matchAll(pattern)].map((match) => match[2]);
+};
+const filterOptionValues = (html, filterName) => {
+  const selectPattern = new RegExp(`<select[^>]*data-today-filter=(['"])${filterName}\\1[^>]*>([\\s\\S]*?)<\\/select>`, 'i');
+  const selectMatch = selectPattern.exec(html);
+  if (!selectMatch) return [];
+  return attributeValues(selectMatch[2], 'value').filter(Boolean);
+};
 
 const guardedSources = [
   'src/pages/index.astro',
@@ -43,6 +53,15 @@ requireText('src/components/CalendarRuntimeBootstrap.astro', 'isTimeZoneSupporte
 requireText('src/components/CalendarRuntimeBootstrap.astro', 'isTimeZoneSupported(browserTimeZone)');
 requireText('src/components/CalendarDateNavigation.astro', 'window.__WHR_CALENDAR_RUNTIME__');
 requireText('src/components/CalendarDateNavigation.astro', "runtime?.mode === 'calendar'");
+
+// Home filter values must use the same canonical dataset contract as the rows.
+// This guards against display labels being rendered as option values while the
+// row matcher compares country_id / authority_id.
+requireText('src/components/TodayFilters.astro', 'row.dataset.country !== country.value');
+requireText('src/components/TodayFilters.astro', 'row.dataset.authority !== authority.value');
+requireText('src/components/TodayFilters.astro', 'row.dataset.rank !== rank.value');
+requireText('src/components/TodayFilters.astro', 'value={country.value}');
+requireText('src/components/TodayFilters.astro', 'value={authority.value}');
 
 // Country pages already rebuild the upcoming-meetings section in BaseLayout. The
 // first-paint contract is CSS-gated only while scripting is enabled and reveals
@@ -94,6 +113,28 @@ for (const [file, mode] of htmlChecks) {
   }
   if (!html.includes(runtimeMarker) && !html.includes(`mode:${JSON.stringify(mode)}`) && !html.includes(`mode = '${mode}'`)) {
     // Astro may compact define:vars differently; source-level mode assertions above remain authoritative.
+  }
+}
+
+for (const file of ['dist/index.html', 'dist/ja/index.html']) {
+  const absolute = path.join(root, file);
+  if (!fs.existsSync(absolute)) continue;
+  const html = fs.readFileSync(absolute, 'utf8');
+  for (const [filterName, rowAttribute] of [
+    ['country', 'data-country'],
+    ['authority', 'data-authority'],
+    ['rank', 'data-rank'],
+  ]) {
+    const optionValues = filterOptionValues(html, filterName);
+    const rowValues = new Set(attributeValues(html, rowAttribute));
+    if (optionValues.length === 0) {
+      fail(`${file} has no non-empty ${filterName} filter options`);
+      continue;
+    }
+    const unmatched = optionValues.filter((value) => !rowValues.has(value));
+    if (unmatched.length > 0) {
+      fail(`${file} ${filterName} filter values do not match meeting-row ${rowAttribute}: ${unmatched.join(', ')}`);
+    }
   }
 }
 
