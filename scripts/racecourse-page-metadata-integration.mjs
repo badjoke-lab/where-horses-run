@@ -5,7 +5,14 @@ import { fileURLToPath } from 'node:url';
 const SITE_ORIGIN = 'https://whr.badjoke-lab.com';
 const WEBSITE_ID = `${SITE_ORIGIN}/#website`;
 const MARKER = 'collection-place-v1';
-const PLACEHOLDERS = new Set(['Not listed yet', '未掲載', 'Location pending', '所在地未掲載']);
+const PLACEHOLDERS = new Set([
+  'Not listed yet',
+  '未掲載',
+  'Location pending',
+  '所在地未掲載',
+  'Reviewed map below',
+  '確認済み地図を参照',
+]);
 const RACECOURSE_DATA_FILES = [
   'data/static/racecourses.json',
   'data/static/racecourses-extensions.json',
@@ -129,19 +136,23 @@ async function parsePage(outputDirectory, file, route) {
   const name = extractText(html, /<h1[^>]*id="page-title"[^>]*>([\s\S]*?)<\/h1>/i, 'racecourse heading', route.relative);
   const localName = extractOptionalText(
     html,
-    /<p[^>]*data-racecourse-local-name[^>]*>([\s\S]*?)<\/p>/i,
+    /<div[^>]*class="[^"]*racecourse-hub__title-row[^"]*"[^>]*>[\s\S]*?<h1[^>]*id="page-title"[^>]*>[\s\S]*?<\/h1>\s*<span[^>]*>([\s\S]*?)<\/span>/i,
   );
-  const countryTagPattern = /<a\s+[^>]*data-racecourse-country[^>]*>/i;
-  const countryHref = extractAttribute(html, countryTagPattern, 'href', route.relative);
+  const countryAnchorPattern = route.locale === 'ja'
+    ? /<a\s+[^>]*href="\/ja\/countries\/[^"/]+\/"[^>]*>[\s\S]*?<\/a>/i
+    : /<a\s+[^>]*href="\/countries\/[^"/]+\/"[^>]*>[\s\S]*?<\/a>/i;
+  const countryAnchor = html.match(countryAnchorPattern)?.[0];
+  if (!countryAnchor) throw new Error(`Racecourse country link missing in ${route.relative}`);
+  const countryHref = extractAttribute(countryAnchor, /<a\s+[^>]*>/i, 'href', route.relative);
   const countryName = extractText(
-    html,
-    /<a\s+[^>]*data-racecourse-country[^>]*>([\s\S]*?)<\/a>/i,
+    countryAnchor,
+    /<a\s+[^>]*>([\s\S]*?)<\/a>/i,
     'racecourse country',
     route.relative,
   );
   const addressText = visibleAddress(extractOptionalText(
     html,
-    /<span[^>]*data-racecourse-location[^>]*>([\s\S]*?)<\/span>/i,
+    /<section[^>]*class="[^"]*racecourse-hub__facts[^"]*"[^>]*>[\s\S]*?<article>[\s\S]*?<strong>([\s\S]*?)<\/strong>/i,
   ));
 
   const expectedCountryPattern = route.locale === 'ja'
