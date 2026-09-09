@@ -154,6 +154,56 @@
   font-weight: 700;
 }
 
+@media (min-width: 761px) {
+  .timetable-timezone-projection .meeting-row__links {
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.25rem 0.55rem !important;
+  }
+
+  .timetable-timezone-projection .meeting-row__links .meeting-row__meeting-badge {
+    margin-inline-end: 0.1rem;
+  }
+
+  /* External destinations read as lightweight reference links; Details remains the internal row action. */
+  .timetable-timezone-projection .meeting-row__links a {
+    min-height: 28px;
+    padding-inline: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--whr-color-navy);
+    font-size: 0.74rem;
+    font-weight: 650;
+  }
+
+  .timetable-timezone-projection .meeting-row__links a:not([target]) {
+    padding: 0.14rem 0.5rem;
+    border: 1px solid rgba(7, 35, 69, 0.22);
+    border-radius: 0.38rem;
+    background: #fff;
+    font-weight: 800;
+  }
+
+  .timetable-timezone-projection .meeting-row__links a[target]:not([data-live-link]) {
+    color: color-mix(in srgb, var(--whr-color-navy) 78%, #fff);
+    font-weight: 650;
+  }
+
+  .timetable-timezone-projection .meeting-row__links a[data-live-link] {
+    padding-inline: 0;
+    color: color-mix(in srgb, var(--whr-color-navy) 84%, #fff);
+    font-weight: 700;
+  }
+
+  .timetable-timezone-projection .meeting-row[data-stream-state='live'] .meeting-row__links a[data-live-link] {
+    padding-inline: 0.42rem;
+    border-radius: 0.38rem;
+    background: #fff0ef;
+    color: #9d0000;
+  }
+}
+
 @media (max-width: 760px) {
   .timetable-timezone-projection .meeting-row {
     grid-template-columns: minmax(0, 1fr) auto !important;
