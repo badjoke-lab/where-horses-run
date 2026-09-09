@@ -59,6 +59,28 @@ Baseline sections:
 
 Future additions are incremental. Missing optional enrichment does not block the baseline page if the required reviewed facts exist.
 
+## Racecourse public gate
+
+The active public Racecourse surface is derived from the same Country gate. It must not become an independent second publication truth.
+
+A normal active Racecourse page is public when both are true:
+
+```text
+racecourse.status in {active, current}
+AND
+racecourse.country_id is Calendar-supported
+```
+
+For racecourses that do not satisfy this active gate:
+
+- retain canonical/internal racecourse records;
+- omit them from the primary Racecourses directory;
+- omit them from normal global search and generated active-racecourse routes;
+- do not link to them as normal active racecourse pages from Country hubs;
+- preserve them for the separate historical/closed-racecourse publication lane.
+
+The gate is based on stable country support plus canonical racecourse status. Current-day meeting presence is not required, so a seasonal active racecourse does not disappear merely because no meeting is visible today.
+
 ## Racecourse public baseline
 
 The first reference implementation is Tokyo Racecourse. The shared Racecourse page should remain consistent with the current Home/Calendar/Country design and avoid external logos or hard-to-maintain decorative assets.
@@ -81,7 +103,7 @@ Optional later enrichment includes opening/closure dates, rename/move history, c
 
 The all-tier racecourse master remains broader than the public site.
 
-Active racecourses in Calendar-supported countries are the first public priority.
+Active racecourses in Calendar-supported countries are the first public priority and use the active Racecourse public gate above.
 
 Closed/historical racecourses use a separate readiness concept. They may be published later when identity, country, location, operating period, closure/history evidence, names/history and other core facts are defensible. Calendar support is not required for historical publication.
 
@@ -106,7 +128,7 @@ Reference implementation
 
 Then
 3. project current Calendar-supported countries into the same Country layout
-4. publish their active racecourses using the shared Racecourse layout
+4. publish their active racecourses using the shared Racecourse layout and active Racecourse public gate
 5. for every new Calendar-supported country, expand Country + Racecourses + Map + links as one package
 6. continue independent all-tier/closed-racecourse master research for later historical publication
 ```
@@ -120,6 +142,7 @@ A country package is complete when:
 - the supported country's active racecourse inventory is reconciled to canonical `racecourse_id` values;
 - reviewed locations are used where available and unreviewed locations are not guessed;
 - active racecourse pages use the shared baseline composition;
+- primary Racecourses/search/generated routes expose only the active supported-country set unless a separate historical rule applies;
 - Country <-> Racecourse <-> Calendar links work in EN and JA;
 - search/sitemap/internal navigation reflect the same public gate;
 - the result visually fits the existing site rather than behaving as a separate redesign.
