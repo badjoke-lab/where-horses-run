@@ -1,0 +1,32 @@
+<script is:inline>
+  (() => {
+    const CANONICAL_RANKS = ['A+', 'A', 'B+', 'B', 'C'];
+
+    const normalizeRankSelect = (select) => {
+      if (!(select instanceof HTMLSelectElement)) return;
+      const currentValue = select.value;
+      const firstOption = select.options[0];
+      const firstValue = firstOption?.value ?? '';
+      const firstLabel = firstOption?.textContent ?? 'All';
+      select.replaceChildren();
+      const all = document.createElement('option');
+      all.value = firstValue;
+      all.textContent = firstLabel;
+      select.append(all);
+      for (const rank of CANONICAL_RANKS) {
+        const option = document.createElement('option');
+        option.value = rank;
+        option.textContent = rank;
+        select.append(option);
+      }
+      if ([...select.options].some((option) => option.value === currentValue)) select.value = currentValue;
+    };
+
+    const install = () => {
+      document.querySelectorAll('[data-today-filter="rank"], [data-filter-rank]').forEach(normalizeRankSelect);
+    };
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
+    else install();
+  })();
+</script>
