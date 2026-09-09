@@ -1,0 +1,58 @@
+/* Home filter layout: size against the actual control width, not the viewport. */
+.today-controls {
+  container-type: inline-size;
+}
+
+.today-controls__filters {
+  grid-template-columns: repeat(3, minmax(10rem, 1fr)) max-content;
+  align-items: end;
+}
+
+.today-controls__filters > label:first-child {
+  grid-column: 1 / -1;
+}
+
+.today-controls__filters label {
+  min-width: 0;
+}
+
+.today-controls__filters select {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.today-controls__reset {
+  width: auto !important;
+  min-width: max-content;
+  white-space: nowrap;
+}
+
+@container (max-width: 48rem) {
+  .today-controls__filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .today-controls__filters > label:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .today-controls__reset {
+    justify-self: start;
+    width: auto !important;
+  }
+}
+
+@container (max-width: 32rem) {
+  .today-controls__filters {
+    grid-template-columns: 1fr;
+  }
+
+  .today-controls__filters > label:first-child {
+    grid-column: auto;
+  }
+
+  .today-controls__reset {
+    width: 100% !important;
+  }
+}
