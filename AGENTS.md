@@ -58,6 +58,28 @@ Calendar view/presentation state
 
 Do not fix a presentation defect by inventing a second meeting truth, guessed race time, guessed stream state, map-only override, or unreviewed public field.
 
+## Country / Racecourse integrated expansion rule
+
+Before Countries, Country detail, Racecourses, Racecourse detail, country-publication gating, racecourse-publication gating, or new-country site expansion work, also read:
+
+```text
+docs/project-roadmap-2026-09-09-addendum.md
+docs/specs/country-racecourse-integrated-publication-2026-09-09.md
+docs/specs/map-first-site-ui-2026-09-06.md
+docs/racecourses/identity-reconciliation.md
+docs/racecourses/public-timetable-connection.md
+docs/racecourses/profile-evidence.md
+docs/racecourses/page-link-architecture.md
+```
+
+Country and Racecourse public growth is one vertical product-expansion model, not two independent directory programmes. A supported-country package flows through Calendar support -> Country -> active Racecourses -> reviewed Map -> links/search/sitemap. The broader country and all-tier racecourse masters may remain internal/canonical without immediate public exposure.
+
+Do not expose all canonical countries merely because they exist in the master. Primary Country publication follows the stable reviewed Calendar-support gate defined by the active specification/roadmap, not current-day meeting presence.
+
+Active racecourses in Calendar-supported countries are the first public Racecourse priority. Closed/historical racecourses remain a separate evidence/readiness lane and are not forced into the active-country Calendar gate.
+
+The Japan Country page and Tokyo Racecourse page are the reference compositions for the current rollout. Reuse the existing site visual language and existing reviewed data/components; do not invent decorative requirements, unreviewed facts, or external organisation logos.
+
 ## PR discipline
 
 Every substantive PR must state at minimum:
