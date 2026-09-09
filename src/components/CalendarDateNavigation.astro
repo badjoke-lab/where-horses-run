@@ -65,9 +65,12 @@ for (let date = startDate; date <= endDateInclusive; date = addCalendarDays(date
         const label = root.querySelector('[data-calendar-selected-date-label]');
         if (!(select instanceof HTMLSelectElement) || !(previous instanceof HTMLButtonElement) || !(next instanceof HTMLButtonElement) || !(todayButton instanceof HTMLButtonElement)) return;
 
-        let windowStart = root.dataset.windowStart || '';
-        let windowEnd = root.dataset.windowEnd || '';
-        let today = root.dataset.today || windowStart;
+        const runtime = window.__WHR_CALENDAR_RUNTIME__;
+        const runtimeIsCalendar = runtime?.mode === 'calendar';
+        let windowStart = runtimeIsCalendar && validDate(runtime.windowStart) ? runtime.windowStart : (root.dataset.windowStart || '');
+        let windowEnd = runtimeIsCalendar && validDate(runtime.windowEndInclusive) ? runtime.windowEndInclusive : (root.dataset.windowEnd || '');
+        let today = runtimeIsCalendar && validDate(runtime.today) ? runtime.today : (root.dataset.today || windowStart);
+        let initialSelectedDate = runtimeIsCalendar && validDate(runtime.selectedDate) ? runtime.selectedDate : '';
 
         const isInWindow = (value) => validDate(value) && value >= windowStart && value <= windowEnd;
         const fallbackDate = () => isInWindow(today) ? today : windowStart;
@@ -82,8 +85,9 @@ for (let date = startDate; date <= endDateInclusive; date = addCalendarDays(date
             options.push(option);
           }
           select.replaceChildren(...options);
-          const requested = new URL(window.location.href).searchParams.get('date');
+          const requested = initialSelectedDate || new URL(window.location.href).searchParams.get('date');
           select.value = isInWindow(requested) ? requested : isInWindow(current) ? current : fallbackDate();
+          initialSelectedDate = '';
         };
 
         const notify = (updateUrl = true) => {
