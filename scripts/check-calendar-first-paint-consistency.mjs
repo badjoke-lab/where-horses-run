@@ -33,6 +33,9 @@ requireText('src/components/CalendarRuntimeBootstrap.astro', "whr:todayfiltercha
 requireText('src/components/CalendarRuntimeBootstrap.astro', "whr:calendarfilterchange");
 requireText('src/components/CalendarRuntimeBootstrap.astro', "whr:timezonechange");
 requireText('src/components/CalendarRuntimeBootstrap.astro', "projectedTimeZoneReady");
+requireText('src/components/CalendarRuntimeBootstrap.astro', "mode === 'meeting-detail'");
+requireText('src/components/CalendarRuntimeBootstrap.astro', 'isTimeZoneSupported(requestedTimeZone)');
+requireText('src/components/CalendarRuntimeBootstrap.astro', 'isTimeZoneSupported(browserTimeZone)');
 requireText('src/components/CalendarDateNavigation.astro', 'window.__WHR_CALENDAR_RUNTIME__');
 requireText('src/components/CalendarDateNavigation.astro', "runtime?.mode === 'calendar'");
 
@@ -49,6 +52,7 @@ requireText('src/layouts/BaseLayout.astro', 'initializeCountryTimezoneProjection
 for (const marker of [
   'racecourseMeetingRuntimePending',
   'data-racecourse-runtime-meetings',
+  'state.runtime_candidate_meetings',
   'todayIn(timeZone)',
   'const endExclusive = addDays(today, 30)',
   'data-racecourse-meeting-runtime-body',
@@ -56,7 +60,8 @@ for (const marker of [
 ]) {
   requireText('src/components/RacecourseMeetingSummary.astro', marker);
 }
-requireText('src/lib/racecourses/publicRacecourseMeetingState.ts', 'timezone_candidate_meetings: meetings');
+requireText('src/lib/racecourses/publicRacecourseMeetingState.ts', 'timezone_candidate_meetings: timezoneCandidateMeetings');
+requireText('src/lib/racecourses/publicRacecourseMeetingState.ts', 'runtime_candidate_meetings: meetings');
 
 const htmlChecks = [
   ['dist/index.html', 'home'],
