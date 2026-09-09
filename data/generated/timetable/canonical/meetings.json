@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-09T21:44:21.183Z",
+  "generated_at": "2026-09-09T21:46:25.100Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -12667,6 +12667,35 @@
       "racing_system_id": "japan-nar-system"
     },
     {
+      "meeting_id": "sorec-meknes-racecourse-2026-09-10",
+      "country_id": "morocco",
+      "authority_id": "sorec",
+      "racing_system_id": "sorec-racing-information-system",
+      "timezone": "Africa/Casablanca",
+      "racecourse_id": "meknes-racecourse",
+      "date": "2026-09-10",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "sorec-programme-reunion",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.sorec-galop.ma/pages/programmeReunion/programmeReunion.jsf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-09",
+        "generated_at": "2026-09-09T21:46:25.100Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
       "meeting_id": "tjk-ankara-racecourse-2026-09-10",
       "country_id": "turkey",
       "authority_id": "turkiye-jokey-kulubu",
@@ -12732,23 +12761,23 @@
       "timezone": "Asia/Seoul",
       "racecourse_id": "busan-gyeongnam-racecourse",
       "date": "2026-09-11",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "11:15",
+      "last_race_time_local": "17:55",
       "source_trace": {
-        "source_id": "kra-annual-race-operation-plan",
+        "source_id": "kra-today-race",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://race.kra.co.kr/raceoper/RaceoperView.do?Sub=1&meet=1",
+        "official_source_url": "https://race.kra.co.kr/thisweekrace/ThisWeekBaljuTime.do",
         "source_label": null,
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.716Z",
+        "last_checked_date": "2026-09-09",
+        "generated_at": "2026-09-09T21:46:16.122Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
@@ -12922,23 +12951,23 @@
       "timezone": "Europe/Istanbul",
       "racecourse_id": "bursa-racecourse",
       "date": "2026-09-11",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "15:00",
+      "last_race_time_local": "18:00",
       "source_trace": {
         "source_id": "tjk-annual-programme",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?SehirId=4&QueryParameter_Tarih=11%2F09%2F2026&SehirAdi=Bursa",
+        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=4&QueryParameter_Tarih=11%2F09%2F2026&SehirAdi=Bursa&Era=nextWeek",
         "source_label": null,
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-09",
+        "generated_at": "2026-09-09T21:46:16.175Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
@@ -12951,23 +12980,23 @@
       "timezone": "Europe/Istanbul",
       "racecourse_id": "istanbul-racecourse",
       "date": "2026-09-11",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "17:15",
+      "last_race_time_local": "21:30",
       "source_trace": {
         "source_id": "tjk-annual-programme",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?SehirId=3&QueryParameter_Tarih=11%2F09%2F2026&SehirAdi=%C4%B0stanbul",
+        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Sehir/GunlukYarisProgrami?SehirId=3&QueryParameter_Tarih=11%2F09%2F2026&SehirAdi=%C4%B0stanbul&Era=nextWeek",
         "source_label": null,
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-09",
+        "generated_at": "2026-09-09T21:46:16.175Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
@@ -13123,23 +13152,23 @@
       "timezone": "Asia/Seoul",
       "racecourse_id": "seoul-racecourse",
       "date": "2026-09-12",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "10:35",
+      "last_race_time_local": "17:55",
       "source_trace": {
-        "source_id": "kra-annual-race-operation-plan",
+        "source_id": "kra-today-race",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://race.kra.co.kr/raceoper/RaceoperView.do?Sub=1&meet=1",
+        "official_source_url": "https://race.kra.co.kr/thisweekrace/ThisWeekBaljuTime.do",
         "source_label": null,
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.716Z",
+        "last_checked_date": "2026-09-09",
+        "generated_at": "2026-09-09T21:46:16.122Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
