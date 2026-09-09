@@ -29,44 +29,60 @@ jobs:
           const file = '.github/workflows/calendar-unified-official-refresh.yml';
           let text = fs.readFileSync(file, 'utf8');
           const expr = '$' + '{{ steps.scope.outputs.days }}';
+          const lines = (items) => items.join('\n');
 
-          function lines(items) {
-            return items.join('\n');
-          }
-          function replaceExact(before, after, expectedCount, label) {
+          function replaceExact(before, after, label) {
             const parts = text.split(before);
             const count = parts.length - 1;
-            if (count !== expectedCount) {
-              throw new Error(`${label}: expected ${expectedCount} occurrence(s), found ${count}`);
-            }
+            if (count !== 1) throw new Error(`${label}: expected 1 occurrence, found ${count}`);
             text = parts.join(after);
           }
 
-          const tjkCollect = lines([
+          const topTjkCollect = lines([
             '          node scripts/timetable/run-tjk-current-best-available.mjs \\',
             `            --days="${expr}" \\`,
             '            --output=.calendar-unified/tjk.json',
           ]);
-          const tjkAndSorecCollect = lines([
-            tjkCollect,
+          replaceExact(topTjkCollect, lines([
+            topTjkCollect,
             '          node scripts/timetable/run-sorec-official-window.mjs \\',
             `            --days="${expr}" \\`,
             '            --output=.calendar-unified/sorec.json',
-          ]);
-          replaceExact(tjkCollect, tjkAndSorecCollect, 2, 'collector wiring');
+          ]), 'top collector wiring');
 
-          const exclusionTail = lines([
+          const rebuildTjkCollect = lines([
+            '            node scripts/timetable/run-tjk-current-best-available.mjs \\',
+            `              --days="${expr}" \\`,
+            '              --output=.calendar-unified/tjk.json',
+          ]);
+          replaceExact(rebuildTjkCollect, lines([
+            rebuildTjkCollect,
+            '            node scripts/timetable/run-sorec-official-window.mjs \\',
+            `              --days="${expr}" \\`,
+            '              --output=.calendar-unified/sorec.json',
+          ]), 'rebuild collector wiring');
+
+          const topExclusionTail = lines([
             '            --artifact=.calendar-unified/kra.json \\',
             '            --artifact=.calendar-unified/tjk.json',
           ]);
-          const exclusionTailWithSorec = lines([
+          replaceExact(topExclusionTail, lines([
             '            --artifact=.calendar-unified/kra.json \\',
             '            --artifact=.calendar-unified/tjk.json \\',
             '            --artifact=.calendar-unified/sorec.json',
-          ]);
-          replaceExact(exclusionTail, exclusionTailWithSorec, 2, 'exclusion wiring');
+          ]), 'top exclusion wiring');
 
-          const tjkApply = lines([
+          const rebuildExclusionTail = lines([
+            '              --artifact=.calendar-unified/kra.json \\',
+            '              --artifact=.calendar-unified/tjk.json',
+          ]);
+          replaceExact(rebuildExclusionTail, lines([
+            '              --artifact=.calendar-unified/kra.json \\',
+            '              --artifact=.calendar-unified/tjk.json \\',
+            '              --artifact=.calendar-unified/sorec.json',
+          ]), 'rebuild exclusion wiring');
+
+          const topTjkApply = lines([
             '          node scripts/timetable/apply-official-rolling-observations.mjs \\',
             '            --artifact=.calendar-unified/tjk.json \\',
             '            --country-id=turkey \\',
@@ -74,27 +90,46 @@ jobs:
             '            --racing-system-id=tjk-national-racing-system \\',
             '            --timezone=Europe/Istanbul',
           ]);
-          const tjkAndSorecApply = lines([
-            tjkApply,
+          replaceExact(topTjkApply, lines([
+            topTjkApply,
             '          node scripts/timetable/apply-official-rolling-observations.mjs \\',
             '            --artifact=.calendar-unified/sorec.json \\',
             '            --country-id=morocco \\',
             '            --authority-id=sorec \\',
             '            --racing-system-id=sorec-racing-information-system \\',
             '            --timezone=Africa/Casablanca',
+          ]), 'top apply wiring');
+
+          const rebuildTjkApply = lines([
+            '            node scripts/timetable/apply-official-rolling-observations.mjs \\',
+            '              --artifact=.calendar-unified/tjk.json \\',
+            '              --country-id=turkey \\',
+            '              --authority-id=turkiye-jokey-kulubu \\',
+            '              --racing-system-id=tjk-national-racing-system \\',
+            '              --timezone=Europe/Istanbul',
           ]);
-          replaceExact(tjkApply, tjkAndSorecApply, 2, 'apply wiring');
+          replaceExact(rebuildTjkApply, lines([
+            rebuildTjkApply,
+            '            node scripts/timetable/apply-official-rolling-observations.mjs \\',
+            '              --artifact=.calendar-unified/sorec.json \\',
+            '              --country-id=morocco \\',
+            '              --authority-id=sorec \\',
+            '              --racing-system-id=sorec-racing-information-system \\',
+            '              --timezone=Africa/Casablanca',
+          ]), 'rebuild apply wiring');
 
           replaceExact(
             '      - name: Collect TJK official window',
             '      - name: Collect TJK and SOREC official windows',
-            1,
             'step label',
           );
 
           fs.writeFileSync(file, text);
           NODE
           git diff --check
+          test "$(grep -c 'run-sorec-official-window.mjs' .github/workflows/calendar-unified-official-refresh.yml)" -eq 2
+          test "$(grep -c -- '--authority-id=sorec' .github/workflows/calendar-unified-official-refresh.yml)" -eq 2
+          test "$(grep -c -- '--artifact=.calendar-unified/sorec.json' .github/workflows/calendar-unified-official-refresh.yml)" -eq 4
           git diff -- .github/workflows/calendar-unified-official-refresh.yml
       - name: Commit patch
         shell: bash
