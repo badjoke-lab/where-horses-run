@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import CalendarRuntimeBootstrap from '../../../components/CalendarRuntimeBootstrap.astro';
+import CanonicalRankFilterRuntime from '../../../components/CanonicalRankFilterRuntime.astro';
 import CalendarCoverageDashboard from '../../../components/CalendarCoverageDashboard.astro';
 import CalendarDateNavigation from '../../../components/CalendarDateNavigation.astro';
 import CalendarDateStatus from '../../../components/CalendarDateStatus.astro';
@@ -42,6 +43,7 @@ const groupedCalendarRecords = getGroupedTimetableMeetingRows(candidateRecords);
     windowStart={context.windowStart}
     windowEndInclusive={context.windowEndInclusive}
   />
+  <CanonicalRankFilterRuntime />
   <div class="calendar-page" data-calendar-runtime-sensitive>
     <MeetingStatePolicy />
 
