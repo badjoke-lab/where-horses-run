@@ -32,7 +32,7 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
   alternatePath="/ja/"
 >
   <CalendarRuntimeBootstrap mode="home" serverToday={context.today} />
-  <main class="today-page" data-today-page data-home-meeting-window data-calendar-runtime-sensitive>
+  <div class="today-page" data-today-page data-home-meeting-window data-calendar-runtime-sensitive>
     <MeetingStatePolicy />
     <MeetingLiveStatusRuntime />
     <TodayRangeMapAccessibility />
@@ -45,6 +45,9 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
       </p>
       <p class="hero__summary">
         Your global guide to racecourses, calendars and racing times from around the world. Explore current and upcoming meetings on the map and timetable.
+      </p>
+      <p class="hero__summary">
+        Open the <a href="/calendar/">30-day horse racing calendar</a>, browse <a href="/tracks/">racecourse profiles</a>, or find meetings by <a href="/countries/">country and region</a>. Meeting pages link back to the official source used for the published schedule.
       </p>
     </section>
 
@@ -67,5 +70,5 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
     </section>
 
     <TodayMeetingMap records={meetingCandidates} date={context.today} />
-  </main>
+  </div>
 </BaseLayout>

@@ -33,7 +33,7 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
   alternatePath="/"
 >
   <CalendarRuntimeBootstrap mode="home" serverToday={context.today} />
-  <main class="today-page" data-today-page data-home-meeting-window data-calendar-runtime-sensitive>
+  <div class="today-page" data-today-page data-home-meeting-window data-calendar-runtime-sensitive>
     <MeetingStatePolicy />
     <MeetingLiveStatusRuntime />
     <TodayRangeMapAccessibility />
@@ -46,6 +46,9 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
       </p>
       <p class="hero__summary">
         今日・明日・今後7日間の競馬開催を、地図と一覧で確認できます。期間、タイムゾーン、国・地域、主催・管轄、公開ランクで絞り込めます。
+      </p>
+      <p class="hero__summary">
+        <a href="/ja/calendar/">30日間の競馬開催カレンダー</a>、<a href="/ja/tracks/">競馬場一覧</a>、<a href="/ja/countries/">国・地域別の索引</a>からも探せます。開催詳細ページには、掲載日程の確認に使った公式情報源へのリンクを掲載します。
       </p>
     </section>
 
@@ -69,5 +72,5 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
     </section>
 
     <TodayMeetingMap records={meetingCandidates} date={context.today} lang="ja" />
-  </main>
+  </div>
 </BaseLayout>
