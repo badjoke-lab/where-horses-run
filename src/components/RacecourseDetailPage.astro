@@ -131,7 +131,6 @@ const courseFacts = [
 const notableRaces = (Array.isArray(track.notable_races) ? track.notable_races : [])
   .map((race: any) => ({
     name: isJapanese ? race?.name_ja ?? race?.name_en ?? race?.name : race?.name_en ?? race?.name,
-    url: race?.source_url ?? race?.official_link ?? race?.url ?? null,
   }))
   .filter((race: any) => nonempty(race.name));
 const officialLinks = (Array.isArray(track.official_links) ? track.official_links : [])
@@ -248,12 +247,10 @@ const pageDescription = isJapanese
         ) : null}
 
         {notableRaces.length ? (
-          <div class="racecourse-detail-v2__subsection">
+          <div class="racecourse-detail-v2__subsection" data-racecourse-notable-races>
             <h3>{isJapanese ? '主なレース' : 'Notable races'}</h3>
             <ul class="racecourse-detail-v2__link-list">
-              {notableRaces.map((race: any) => (
-                <li>{race.url ? <a href={race.url}>{race.name}</a> : race.name}</li>
-              ))}
+              {notableRaces.map((race: any) => <li>{race.name}</li>)}
             </ul>
           </div>
         ) : null}
