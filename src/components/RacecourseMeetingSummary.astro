@@ -29,7 +29,7 @@ const isToday = Boolean(state.today_meetings.length);
 const upcoming = state.upcoming_meetings
   .filter((meeting) => !primaryMeeting || meeting.meeting_id !== primaryMeeting.meeting_id)
   .slice(0, 6);
-const runtimeMeetingsJson = JSON.stringify(state.timezone_candidate_meetings).replace(/</g, '\\u003c');
+const runtimeMeetingsJson = JSON.stringify(state.runtime_candidate_meetings).replace(/</g, '\\u003c');
 ---
 
 <script is:inline>
