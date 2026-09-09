@@ -6,7 +6,6 @@ import racecoursePageMetadataIntegration from './scripts/racecourse-page-metadat
 import glossaryPageMetadataIntegration from './scripts/glossary-page-metadata-integration.mjs';
 import socialCardIntegration from './scripts/social-card-integration.mjs';
 import titleDescriptionNormalizationIntegration from './scripts/title-description-normalization-integration.mjs';
-import entityStructuredDataIntegration from './scripts/entity-structured-data-integration.mjs';
 
 // Static builds read committed public timetable projections only.
 // Candidate, canonical, and public-data generation run through explicit
@@ -21,7 +20,6 @@ export default defineConfig({
     racecoursePageMetadataIntegration(),
     glossaryPageMetadataIntegration(),
     socialCardIntegration(),
-    titleDescriptionNormalizationIntegration(),
-    entityStructuredDataIntegration()
+    titleDescriptionNormalizationIntegration()
   )
 });
