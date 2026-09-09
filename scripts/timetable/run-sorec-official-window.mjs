@@ -72,9 +72,6 @@ if (diagnostics.unknown_venues.length > 0) {
 if (diagnostics.parse_failures.length > 0) {
   throw new Error(`SOREC parse failure(s) in requested window: ${JSON.stringify(diagnostics.parse_failures)}`);
 }
-if (!fixture && candidate.records.length === 0) {
-  throw new Error(`SOREC Programme Réunion exposed no recognized meeting in ${startDate}..${endDateExclusive}`);
-}
 
 const rankCounts = Object.fromEntries(
   ['C', 'B', 'B+', 'A', 'A+'].map((rank) => [rank, candidate.records.filter((record) => record.capability_rank === rank).length]),
@@ -94,6 +91,7 @@ const artifact = {
     method: 'official_programme_reunion_index',
     schedule_source_id: SOREC_SOURCE_ID,
     schedule_source_url: SOREC_PROGRAMME_REUNION_URL,
+    source_row_count: diagnostics.source_row_count,
     rank_counts: rankCounts,
   },
   window: {
@@ -113,6 +111,7 @@ fs.writeFileSync(absolute, `${JSON.stringify(artifact, null, 2)}\n`);
 console.log(JSON.stringify({
   output,
   source_url: SOREC_PROGRAMME_REUNION_URL,
+  source_row_count: diagnostics.source_row_count,
   start_date: startDate,
   end_date_exclusive: endDateExclusive,
   meetings_emitted: artifact.records.length,
