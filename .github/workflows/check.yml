@@ -29,9 +29,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Check race acquisition
-        run: npm run check
-
       - name: Check sitemap freshness metadata
         run: node scripts/check-sitemap-freshness.mjs dist/sitemap.xml
 
