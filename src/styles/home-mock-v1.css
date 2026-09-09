@@ -18,7 +18,7 @@
 }
 
 .today-page__hero {
-  align-self: end;
+  align-self: start;
 }
 
 .today-page__hero h1 {
@@ -204,7 +204,7 @@
   .today-page {
     grid-template-columns: minmax(320px, .82fr) minmax(520px, 1.68fr);
     grid-template-areas:
-      'hero map'
+      'hero hero'
       'controls map'
       'list list';
     column-gap: clamp(2rem, 4vw, 4rem);
@@ -212,7 +212,17 @@
     padding-block: clamp(2.5rem, 5vw, 5rem) 4rem;
   }
 
-  .today-page__hero { grid-area: hero; }
+  /* Crawlable/SEO copy belongs above the application split, never in one side of it. */
+  .today-page__hero {
+    grid-area: hero;
+    max-width: 72rem;
+    padding-block-end: .25rem;
+  }
+
+  .today-page__hero .hero__summary {
+    max-width: 64rem;
+  }
+
   .today-controls { grid-area: controls; }
   .today-page .today-meeting-map { grid-area: map; }
   .today-page__list { grid-area: list; }
