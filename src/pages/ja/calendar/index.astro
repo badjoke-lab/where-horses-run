@@ -30,8 +30,8 @@ const groupedCalendarRecords = getGroupedTimetableMeetingRows(candidateRecords);
 ---
 
 <BaseLayout
-  title="開催カレンダー | 競馬どこ？"
-  description={`${context.windowStart}から${context.windowEndInclusive}までの開催を日別・月表示・地図で確認できます。`}
+  title="世界の競馬開催カレンダー | 競馬どこ？"
+  description={`${context.windowStart}から${context.windowEndInclusive}までの公式情報源ベースの競馬開催を、日別・30日表示・地図で確認できます。競馬場、国・地域、開催詳細、公式情報源へ移動できます。`}
   lang="ja"
   canonicalPath="/ja/calendar/"
   alternatePath="/calendar/"
@@ -47,9 +47,12 @@ const groupedCalendarRecords = getGroupedTimetableMeetingRows(candidateRecords);
 
     <section class="hero" aria-labelledby="page-title">
       <p class="hero__eyebrow">開催カレンダー</p>
-      <h1 id="page-title">カレンダー</h1>
+      <h1 id="page-title">世界の競馬開催カレンダー</h1>
       <p class="hero__summary">
         一覧は1日ずつ、月表示では30日全体、地図では選択日の開催地を確認できます。時刻は<span data-timezone-label>{context.timeZone}</span>表示です。
+      </p>
+      <p class="hero__summary">
+        一覧の開催を開くと公式情報源に基づく詳細を確認できます。日付以外から探す場合は、<a href="/ja/tracks/">競馬場一覧</a>または<a href="/ja/countries/">国・地域別の索引</a>を利用できます。
       </p>
       <p class="calendar-page__window">
         <span data-timezone-window-start>{context.windowStart}</span> – <span data-timezone-window-end>{context.windowEndInclusive}</span>
