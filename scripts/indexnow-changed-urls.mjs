@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 
 const SITE_ORIGIN = 'https://whr.badjoke-lab.com';
@@ -33,6 +34,28 @@ function readJsonCollection(text, key, label) {
   return parsed[key];
 }
 
+async function loadCountrySlugById() {
+  const directory = path.join(process.cwd(), 'data/static');
+  const files = (await fs.readdir(directory))
+    .filter((name) => /^country-profiles-v2(?:-|\.)/.test(name) && name.endsWith('.json'))
+    .sort((left, right) => left.localeCompare(right, 'en'));
+  const byId = new Map();
+  for (const file of files) {
+    const records = JSON.parse(await fs.readFile(path.join(directory, file), 'utf8'));
+    if (!Array.isArray(records)) throw new Error(`Country profile registry must be an array: ${file}`);
+    for (const record of records) {
+      if (typeof record?.country_id !== 'string' || typeof record?.slug !== 'string') continue;
+      const existing = byId.get(record.country_id);
+      if (existing && existing !== record.slug) {
+        throw new Error(`Country id maps to multiple slugs: ${record.country_id} -> ${existing}, ${record.slug}`);
+      }
+      byId.set(record.country_id, record.slug);
+    }
+  }
+  if (byId.size !== 98) throw new Error(`IndexNow country registry scope differs: expected 98 country ids, found ${byId.size}.`);
+  return byId;
+}
+
 function comparableMeeting(meeting) {
   return JSON.stringify({
     meeting_id: meeting?.meeting_id ?? null,
@@ -62,11 +85,13 @@ function addLocalizedPath(paths, pathname) {
   else if (!pathname.startsWith('/ja/')) paths.add(`/ja${pathname}`);
 }
 
-function addMeetingImpact(paths, meeting, meetingId, hasDetail) {
+function addMeetingImpact(paths, meeting, meetingId, hasDetail, countrySlugById) {
   if (meeting) {
     addLocalizedPath(paths, meeting.detail_path);
     if (typeof meeting.country_id === 'string' && meeting.country_id) {
-      addLocalizedPath(paths, `/countries/${meeting.country_id}/`);
+      const countrySlug = countrySlugById.get(meeting.country_id);
+      if (!countrySlug) throw new Error(`No country slug for changed meeting ${meetingId}: ${meeting.country_id}`);
+      addLocalizedPath(paths, `/countries/${countrySlug}/`);
     }
     if (typeof meeting.racecourse_id === 'string' && meeting.racecourse_id) {
       addLocalizedPath(paths, `/tracks/${meeting.racecourse_id}/`);
@@ -114,6 +139,7 @@ async function submit(urlList) {
 const before = argValue('before');
 const after = argValue('after') ?? 'HEAD';
 const shouldSubmit = process.argv.includes('--submit');
+const countrySlugById = await loadCountrySlugById();
 const currentListText = after === 'WORKTREE'
   ? await fs.readFile(MEETING_LIST_PATH, 'utf8')
   : readGitFile(after, MEETING_LIST_PATH) ?? await fs.readFile(MEETING_LIST_PATH, 'utf8');
@@ -159,8 +185,8 @@ if (changedIds.length) {
   addLocalizedPath(paths, '/calendar/');
   for (const id of changedIds) {
     const hasDetail = currentDetailsById.has(id) || previousDetailsById.has(id);
-    addMeetingImpact(paths, currentById.get(id) ?? currentDetailsById.get(id), id, hasDetail);
-    addMeetingImpact(paths, previousById.get(id) ?? previousDetailsById.get(id), id, hasDetail);
+    addMeetingImpact(paths, currentById.get(id) ?? currentDetailsById.get(id), id, hasDetail, countrySlugById);
+    addMeetingImpact(paths, previousById.get(id) ?? previousDetailsById.get(id), id, hasDetail, countrySlugById);
   }
 }
 
