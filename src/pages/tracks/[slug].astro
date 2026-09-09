@@ -1,5 +1,6 @@
 ---
 import RacecourseDetailPage from '../../components/RacecourseDetailPage.astro';
+import RacecourseHubPage from '../../components/RacecourseHubPage.astro';
 import { getRacecourseBySlug, getRacecourses } from '../../lib/data';
 
 export function getStaticPaths() {
@@ -12,6 +13,10 @@ const track = getRacecourseBySlug(slug ?? '');
 if (!track) {
   return Astro.redirect('/tracks/');
 }
+
+const useReferenceHub = track.id === 'tokyo-racecourse';
 ---
 
-<RacecourseDetailPage track={track} locale="en" />
+{useReferenceHub
+  ? <RacecourseHubPage track={track} locale="en" />
+  : <RacecourseDetailPage track={track} locale="en" />}
