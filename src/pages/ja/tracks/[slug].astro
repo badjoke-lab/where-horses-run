@@ -1,5 +1,5 @@
 ---
-import RacecourseDetailPage from '../../../components/RacecourseDetailPage.astro';
+import RacecourseDetailPageV3 from '../../../components/RacecourseDetailPageV3.astro';
 import { getRacecourseBySlug, getRacecourses } from '../../../lib/data';
 
 export function getStaticPaths() {
@@ -14,4 +14,4 @@ if (!track) {
 }
 ---
 
-<RacecourseDetailPage track={track} locale="ja" />
+<RacecourseDetailPageV3 track={track} locale="ja" />
