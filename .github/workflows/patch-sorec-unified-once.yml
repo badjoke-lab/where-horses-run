@@ -1,0 +1,107 @@
+name: Patch SOREC unified once
+
+on:
+  push:
+    branches:
+      - fix/morocco-sorec-best-available-20260909
+    paths:
+      - '.github/workflows/patch-sorec-unified-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/morocco-sorec-best-available-20260909
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Wire SOREC into unified rolling refresh
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const file = '.github/workflows/calendar-unified-official-refresh.yml';
+          let text = fs.readFileSync(file, 'utf8');
+
+          function replaceExact(before, after, expectedCount, label) {
+            const parts = text.split(before);
+            const count = parts.length - 1;
+            if (count !== expectedCount) {
+              throw new Error(`${label}: expected ${expectedCount} occurrence(s), found ${count}`);
+            }
+            text = parts.join(after);
+          }
+
+          replaceExact(
+`          node scripts/timetable/run-tjk-current-best-available.mjs \\
+            --days="\${{ steps.scope.outputs.days }}" \\
+            --output=.calendar-unified/tjk.json`,
+`          node scripts/timetable/run-tjk-current-best-available.mjs \\
+            --days="\${{ steps.scope.outputs.days }}" \\
+            --output=.calendar-unified/tjk.json
+          node scripts/timetable/run-sorec-official-window.mjs \\
+            --days="\${{ steps.scope.outputs.days }}" \\
+            --output=.calendar-unified/sorec.json`,
+            2,
+            'collector wiring',
+          );
+
+          replaceExact(
+`            --artifact=.calendar-unified/kra.json \\
+            --artifact=.calendar-unified/tjk.json`,
+`            --artifact=.calendar-unified/kra.json \\
+            --artifact=.calendar-unified/tjk.json \\
+            --artifact=.calendar-unified/sorec.json`,
+            2,
+            'exclusion wiring',
+          );
+
+          replaceExact(
+`          node scripts/timetable/apply-official-rolling-observations.mjs \\
+            --artifact=.calendar-unified/tjk.json \\
+            --country-id=turkey \\
+            --authority-id=turkiye-jokey-kulubu \\
+            --racing-system-id=tjk-national-racing-system \\
+            --timezone=Europe/Istanbul`,
+`          node scripts/timetable/apply-official-rolling-observations.mjs \\
+            --artifact=.calendar-unified/tjk.json \\
+            --country-id=turkey \\
+            --authority-id=turkiye-jokey-kulubu \\
+            --racing-system-id=tjk-national-racing-system \\
+            --timezone=Europe/Istanbul
+          node scripts/timetable/apply-official-rolling-observations.mjs \\
+            --artifact=.calendar-unified/sorec.json \\
+            --country-id=morocco \\
+            --authority-id=sorec \\
+            --racing-system-id=sorec-racing-information-system \\
+            --timezone=Africa/Casablanca`,
+            2,
+            'apply wiring',
+          );
+
+          replaceExact(
+            '      - name: Collect TJK official window',
+            '      - name: Collect TJK and SOREC official windows',
+            1,
+            'step label',
+          );
+
+          fs.writeFileSync(file, text);
+          NODE
+          git diff --check
+          git diff -- .github/workflows/calendar-unified-official-refresh.yml
+      - name: Commit patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/calendar-unified-official-refresh.yml
+          git commit -m "feat(calendar): wire SOREC into unified official refresh"
+          git push origin HEAD:fix/morocco-sorec-best-available-20260909
