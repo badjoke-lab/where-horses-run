@@ -5,6 +5,7 @@ import MeetingLiveStatusRuntime from '../components/MeetingLiveStatusRuntime.ast
 import MeetingStatePolicy from '../components/MeetingStatePolicy.astro';
 import TimetableMeetingList from '../components/TimetableMeetingList.astro';
 import TodayFilters from '../components/TodayFilters.astro';
+import TodayFilterOptionRuntime from '../components/TodayFilterOptionRuntime.astro';
 import TodayMeetingMap from '../components/TodayMeetingMap.astro';
 import TodayRangeMapAccessibility from '../components/TodayRangeMapAccessibility.astro';
 import '../styles/today-practical.css';
@@ -47,6 +48,7 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
     </section>
 
     <TodayFilters records={meetingCandidates} />
+    <TodayFilterOptionRuntime records={meetingCandidates} />
 
     <section class="today-page__list" aria-labelledby="home-list-title" data-today-practical-list>
       <div class="today-page__list-heading">

@@ -1,0 +1,57 @@
+---
+import type { TimetableMeetingRow } from '../data/timetableMeetingRows';
+import {
+  getCalendarAuthorityDisplayName,
+  getCalendarCountryDisplayName,
+} from '../lib/calendarDisplayNames';
+
+interface Props {
+  records: TimetableMeetingRow[];
+  lang?: 'en' | 'ja';
+}
+
+const { records, lang = 'en' } = Astro.props;
+const isJa = lang === 'ja';
+const countries = [...new Map(records.map((record) => [
+  record.country_id,
+  getCalendarCountryDisplayName(record.country_id, record.country_label, lang),
+])).entries()].sort((a, b) => a[1].localeCompare(b[1], isJa ? 'ja' : 'en'));
+const authorities = [...new Map(records.map((record) => [
+  record.authority_id,
+  getCalendarAuthorityDisplayName(record.authority_id, record.authority_label, lang),
+])).entries()].sort((a, b) => a[1].localeCompare(b[1], isJa ? 'ja' : 'en'));
+const ranks = ['A+', 'A', 'B+', 'B', 'C'];
+---
+
+<script is:inline define:vars={{ countries, authorities, ranks }}>
+  (() => {
+    const rebuild = (select, entries) => {
+      if (!(select instanceof HTMLSelectElement)) return;
+      const first = select.options[0];
+      const allValue = first?.value ?? '';
+      const allLabel = first?.textContent ?? 'All';
+      const current = select.value;
+      select.replaceChildren();
+      const all = document.createElement('option');
+      all.value = allValue;
+      all.textContent = allLabel;
+      select.append(all);
+      entries.forEach(([value, label]) => {
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = label;
+        select.append(option);
+      });
+      if ([...select.options].some((option) => option.value === current)) select.value = current;
+    };
+
+    const install = () => {
+      rebuild(document.querySelector('[data-today-filter="country"]'), countries);
+      rebuild(document.querySelector('[data-today-filter="authority"]'), authorities);
+      rebuild(document.querySelector('[data-today-filter="rank"]'), ranks.map((rank) => [rank, rank]));
+    };
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
+    else install();
+  })();
+</script>

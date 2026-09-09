@@ -51,7 +51,7 @@
 
 .today-controls {
   align-self: start;
-  gap: .75rem;
+  gap: .8rem;
   border: 0;
   padding-block: 0;
 }
@@ -84,21 +84,21 @@
 .today-controls__filters {
   display: grid;
   grid-template-columns: 1fr;
-  gap: .45rem;
-  padding-block-start: .7rem;
+  gap: .68rem;
+  padding-block-start: .8rem;
   border-top: 1px solid var(--whr-color-border);
 }
 
 .today-controls__filters label,
 .today-controls__filters label:first-child {
   display: grid;
-  grid-template-columns: 6.6rem minmax(0, 1fr);
+  grid-template-columns: 1fr;
   grid-column: auto;
-  align-items: center;
-  gap: .65rem;
+  align-items: start;
+  gap: .28rem;
   min-width: 0;
   color: var(--whr-color-muted);
-  font-size: .76rem;
+  font-size: .875rem;
   font-weight: 700;
 }
 
@@ -110,27 +110,28 @@
 .today-controls__filters select {
   width: 100%;
   min-width: 0;
-  min-height: 40px;
-  padding: .42rem 2rem .42rem .6rem;
+  min-height: 44px;
+  padding: .5rem 2.1rem .5rem .7rem;
   border: 1px solid var(--whr-color-border);
-  border-radius: .45rem;
+  border-radius: .5rem;
   background: #fff;
   color: var(--whr-color-text);
   font: inherit;
-  font-size: .82rem;
+  font-size: .9rem;
   font-weight: 700;
 }
 
 .today-controls__reset {
-  min-height: 30px;
+  min-height: 28px;
   justify-self: end;
+  margin-block-start: -.1rem;
   padding: 0;
   border: 0 !important;
   border-radius: 0;
   background: transparent !important;
   color: var(--whr-color-muted) !important;
   cursor: pointer;
-  font-size: .75rem;
+  font-size: .8125rem;
   font-weight: 700;
   text-decoration: underline;
   text-decoration-thickness: 1px;
@@ -146,8 +147,8 @@
 .today-state-summary {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: .3rem .85rem;
-  padding-block-start: .65rem;
+  gap: .35rem .9rem;
+  padding-block-start: .7rem;
   border-top: 1px solid var(--whr-color-border);
 }
 
@@ -159,7 +160,7 @@
   border: 0;
   border-radius: 0;
   background: transparent;
-  font-size: .76rem;
+  font-size: .8125rem;
   text-align: left;
 }
 
@@ -177,7 +178,7 @@
   justify-self: end;
   margin-inline-start: 0;
   color: var(--whr-color-muted);
-  font-size: .72rem;
+  font-size: .8125rem;
 }
 
 .today-page .today-meeting-map.card {
@@ -201,7 +202,7 @@
 
 @media (min-width: 901px) {
   .today-page {
-    grid-template-columns: minmax(300px, .78fr) minmax(520px, 1.72fr);
+    grid-template-columns: minmax(320px, .82fr) minmax(520px, 1.68fr);
     grid-template-areas:
       'hero map'
       'controls map'
@@ -260,20 +261,20 @@
   .today-controls__period button {
     min-height: 42px;
     padding-inline: 0.35rem;
-    font-size: 0.78rem;
+    font-size: .8125rem;
   }
 
   .today-controls__filters {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.45rem;
-    padding-block-start: .55rem;
+    gap: .55rem .5rem;
+    padding-block-start: .6rem;
   }
 
   .today-controls__filters label,
   .today-controls__filters label:first-child {
     grid-template-columns: 1fr;
-    gap: 0.18rem;
-    font-size: 0.7rem;
+    gap: .22rem;
+    font-size: .8125rem;
   }
 
   .today-controls__filters label:first-child {
@@ -282,8 +283,8 @@
 
   .today-controls__filters select {
     min-height: 42px;
-    padding-block: 0.35rem;
-    font-size: 0.78rem;
+    padding-block: .4rem;
+    font-size: .875rem;
   }
 
   .today-controls__reset {
@@ -291,13 +292,13 @@
     justify-self: end;
     min-height: 28px;
     padding: 0;
-    font-size: .7rem;
+    font-size: .8125rem;
   }
 
   .today-state-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.3rem .65rem;
-    padding-block-start: .5rem;
+    gap: .35rem .7rem;
+    padding-block-start: .55rem;
   }
 
   .today-state-summary__item,
@@ -305,7 +306,7 @@
     min-height: auto;
     padding: .08rem 0;
     border-radius: 0;
-    font-size: 0.72rem;
+    font-size: .8125rem;
   }
 
   .today-page__list {
