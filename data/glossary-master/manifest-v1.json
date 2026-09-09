@@ -2,12 +2,12 @@
   "schema_version": "world-racing-terminology-master-manifest-v1",
   "status": "candidate_seed_plus_jurisdiction_research",
   "generated_from_legacy_glossary": false,
-  "concept_count": 536,
+  "concept_count": 546,
   "category_count": 18,
   "priority_counts": {
-    "P0": 162,
-    "P1": 229,
-    "P2": 127,
+    "P0": 166,
+    "P1": 234,
+    "P2": 128,
     "P3": 18
   },
   "verification_status": "mixed_candidate_and_source_verified",
@@ -15,15 +15,15 @@
   "public_runtime_input": false,
   "categories": [
     {"id":"DISC","count":17,"file":"concepts/01-disc.tsv"},
-    {"id":"RTYPE","count":53,"file":"concepts/02-rtype.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv"]},
-    {"id":"ENTRY","count":30,"file":"concepts/03-entry.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv"]},
+    {"id":"RTYPE","count":57,"file":"concepts/02-rtype.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv"]},
+    {"id":"ENTRY","count":31,"file":"concepts/03-entry.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv"]},
     {"id":"HORSE","count":30,"file":"concepts/04-horse.tsv"},
     {"id":"BREED","count":23,"file":"concepts/05-breed.tsv"},
     {"id":"ROLE","count":30,"file":"concepts/06-role.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv"]},
     {"id":"VENUE","count":42,"file":"concepts/07-venue.tsv"},
-    {"id":"SURF","count":34,"file":"concepts/08-surf.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv"]},
+    {"id":"SURF","count":36,"file":"concepts/08-surf.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv"]},
     {"id":"DIST","count":22,"file":"concepts/09-dist.tsv"},
-    {"id":"WEIGHT","count":24,"file":"concepts/10-weight.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv"]},
+    {"id":"WEIGHT","count":27,"file":"concepts/10-weight.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv"]},
     {"id":"RUN","count":44,"file":"concepts/11-run.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv"]},
     {"id":"EQUIP","count":26,"file":"concepts/12-equip.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv"]},
     {"id":"TRAIN","count":24,"file":"concepts/13-train.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv"]},
@@ -43,15 +43,23 @@
       "sources_file": "sources/gb-ireland-sources-v1.tsv"
     },
     "us_canada": {
-      "status": "wave_1_in_progress",
+      "status": "wave_1_complete_for_current_pass",
       "research_file": "jurisdictions/us-canada-research-v1.tsv",
       "concept_additions_file": "concepts/us-canada-wave1-additions.tsv",
       "labels_file": "labels/us-canada-labels-v1.tsv",
       "definitions_file": "definitions/us-canada-definitions-v1.tsv",
       "sources_file": "sources/us-canada-sources-v1.tsv"
+    },
+    "australia_new_zealand": {
+      "status": "wave_1_in_progress",
+      "research_file": "jurisdictions/australia-new-zealand-research-v1.tsv",
+      "concept_additions_file": "concepts/australia-new-zealand-wave1-additions.tsv",
+      "labels_file": "labels/australia-new-zealand-labels-v1.tsv",
+      "definitions_file": "definitions/australia-new-zealand-definitions-v1.tsv",
+      "sources_file": "sources/australia-new-zealand-sources-v1.tsv"
     }
   },
   "next_work_id": "GLOSSARY-MASTER-003",
-  "next_work": "continue_us_canada_state_provincial_and_harness_research_then_australia_new_zealand",
+  "next_work": "continue_australia_new_zealand_then_japan_and_france_jurisdiction_research",
   "public_implementation": "deferred"
 }
