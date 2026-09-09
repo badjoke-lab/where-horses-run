@@ -29,14 +29,29 @@ const {
       'Europe/Istanbul',
       'UTC',
     ]);
+    const isTimeZoneSupported = (timeZone) => {
+      if (!timeZone) return false;
+      try {
+        new Intl.DateTimeFormat('en', { timeZone }).format(new Date(0));
+        return true;
+      } catch {
+        return false;
+      }
+    };
     const params = new URL(window.location.href).searchParams;
     const browserTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const requestedTimeZone = params.get('tz');
-    const timeZone = CURATED_TIMEZONES.has(requestedTimeZone)
-      ? requestedTimeZone
-      : CURATED_TIMEZONES.has(browserTimeZone)
-        ? browserTimeZone
-        : 'Asia/Tokyo';
+    const timeZone = mode === 'meeting-detail'
+      ? isTimeZoneSupported(requestedTimeZone)
+        ? requestedTimeZone
+        : isTimeZoneSupported(browserTimeZone)
+          ? browserTimeZone
+          : 'Asia/Tokyo'
+      : CURATED_TIMEZONES.has(requestedTimeZone)
+        ? requestedTimeZone
+        : CURATED_TIMEZONES.has(browserTimeZone)
+          ? browserTimeZone
+          : 'Asia/Tokyo';
     const dateInTimeZone = (instant, zone) => {
       const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {
         timeZone: zone,
