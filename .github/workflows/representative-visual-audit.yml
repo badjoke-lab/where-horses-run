@@ -11,6 +11,7 @@ on:
       - 'scripts/check-calendar-context-acceptance.mjs'
       - 'scripts/check-calendar-legend-rendered-text.mjs'
       - 'scripts/check-calendar-all-stream-links-visual.mjs'
+      - 'scripts/check-all-filter-behavior-visual.mjs'
       - '.github/workflows/representative-visual-audit.yml'
   push:
     branches:
@@ -24,6 +25,7 @@ on:
       - 'scripts/check-calendar-context-acceptance.mjs'
       - 'scripts/check-calendar-legend-rendered-text.mjs'
       - 'scripts/check-calendar-all-stream-links-visual.mjs'
+      - 'scripts/check-all-filter-behavior-visual.mjs'
       - '.github/workflows/representative-visual-audit.yml'
   workflow_dispatch:
     inputs:
@@ -89,6 +91,13 @@ jobs:
             export BASE_URL='http://127.0.0.1:4321'
           fi
           node scripts/visual-audit-representative.mjs
+
+      - name: Inspect all filter behavior and racecourse scope
+        run: |
+          if [ -z "$BASE_URL" ]; then
+            export BASE_URL='http://127.0.0.1:4321'
+          fi
+          node scripts/check-all-filter-behavior-visual.mjs
 
       - name: Inspect Calendar context semantics
         run: |
