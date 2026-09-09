@@ -8,8 +8,18 @@ interface Props {
 
 const { records, lang = 'en' } = Astro.props;
 const isJapanese = lang === 'ja';
-const countries = [...new Set(records.map((record) => record.country_label))].sort((a, b) => a.localeCompare(b));
-const authorities = [...new Set(records.map((record) => record.authority_label))].sort((a, b) => a.localeCompare(b));
+const countryLabels = new Map<string, string>();
+const authorityLabels = new Map<string, string>();
+for (const record of records) {
+  if (record.country_id && record.country_label) countryLabels.set(record.country_id, record.country_label);
+  if (record.authority_id && record.authority_label) authorityLabels.set(record.authority_id, record.authority_label);
+}
+const countries = [...countryLabels.entries()]
+  .map(([value, label]) => ({ value, label }))
+  .sort((a, b) => a.label.localeCompare(b.label, isJapanese ? 'ja' : 'en'));
+const authorities = [...authorityLabels.entries()]
+  .map(([value, label]) => ({ value, label }))
+  .sort((a, b) => a.label.localeCompare(b.label, isJapanese ? 'ja' : 'en'));
 const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record) => record.capability_rank === rank));
 const timeZoneOptions = [
   { value: 'Asia/Tokyo', label: isJapanese ? '日本 — UTC+09:00' : 'Japan — UTC+09:00' },
@@ -39,14 +49,14 @@ const timeZoneOptions = [
       <span>{isJapanese ? '国・地域' : 'Country'}</span>
       <select data-today-filter="country">
         <option value="">{isJapanese ? 'すべて' : 'All countries'}</option>
-        {countries.map((country) => <option value={country}>{country}</option>)}
+        {countries.map((country) => <option value={country.value}>{country.label}</option>)}
       </select>
     </label>
     <label>
       <span>{isJapanese ? '主催・管轄' : 'Authority'}</span>
       <select data-today-filter="authority">
         <option value="">{isJapanese ? 'すべて' : 'All authorities'}</option>
-        {authorities.map((authority) => <option value={authority}>{authority}</option>)}
+        {authorities.map((authority) => <option value={authority.value}>{authority.label}</option>)}
       </select>
     </label>
     <label>
