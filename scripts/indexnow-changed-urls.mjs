@@ -6,6 +6,7 @@ const INDEXNOW_ENDPOINT = 'https://api.indexnow.org/indexnow';
 const INDEXNOW_KEY = '93f4c2a78d1e6b5c0a9f3d8e7b2c4a61';
 const INDEXNOW_KEY_LOCATION = `${SITE_ORIGIN}/${INDEXNOW_KEY}.txt`;
 const MEETING_LIST_PATH = 'data/generated/timetable/public/meeting-list.json';
+const MEETING_DETAILS_PATH = 'data/generated/timetable/public/meeting-details.json';
 
 function argValue(name) {
   const prefix = `--${name}=`;
@@ -25,11 +26,11 @@ function readGitFile(ref, file) {
   }
 }
 
-function parseMeetingList(text, label) {
+function readJsonCollection(text, key, label) {
   if (!text) return [];
   const parsed = JSON.parse(text);
-  if (!Array.isArray(parsed?.meetings)) throw new Error(`${label} does not contain a meetings array.`);
-  return parsed.meetings;
+  if (!Array.isArray(parsed?.[key])) throw new Error(`${label} does not contain a ${key} array.`);
+  return parsed[key];
 }
 
 function comparableMeeting(meeting) {
@@ -61,14 +62,18 @@ function addLocalizedPath(paths, pathname) {
   else if (!pathname.startsWith('/ja/')) paths.add(`/ja${pathname}`);
 }
 
-function addMeetingImpact(paths, meeting) {
-  if (!meeting) return;
-  addLocalizedPath(paths, meeting.detail_path);
-  if (typeof meeting.country_id === 'string' && meeting.country_id) {
-    addLocalizedPath(paths, `/countries/${meeting.country_id}/`);
+function addMeetingImpact(paths, meeting, meetingId, hasDetail) {
+  if (meeting) {
+    addLocalizedPath(paths, meeting.detail_path);
+    if (typeof meeting.country_id === 'string' && meeting.country_id) {
+      addLocalizedPath(paths, `/countries/${meeting.country_id}/`);
+    }
+    if (typeof meeting.racecourse_id === 'string' && meeting.racecourse_id) {
+      addLocalizedPath(paths, `/tracks/${meeting.racecourse_id}/`);
+    }
   }
-  if (typeof meeting.racecourse_id === 'string' && meeting.racecourse_id) {
-    addLocalizedPath(paths, `/tracks/${meeting.racecourse_id}/`);
+  if (hasDetail && typeof meetingId === 'string' && meetingId) {
+    addLocalizedPath(paths, `/timetable/meetings/${meetingId}/`);
   }
 }
 
@@ -109,25 +114,43 @@ async function submit(urlList) {
 const before = argValue('before');
 const after = argValue('after') ?? 'HEAD';
 const shouldSubmit = process.argv.includes('--submit');
-const currentText = after === 'WORKTREE'
+const currentListText = after === 'WORKTREE'
   ? await fs.readFile(MEETING_LIST_PATH, 'utf8')
   : readGitFile(after, MEETING_LIST_PATH) ?? await fs.readFile(MEETING_LIST_PATH, 'utf8');
-const previousText = readGitFile(before, MEETING_LIST_PATH);
-const currentMeetings = parseMeetingList(currentText, `Current ${MEETING_LIST_PATH}`);
-const previousMeetings = parseMeetingList(previousText, `Previous ${MEETING_LIST_PATH}`);
+const currentDetailsText = after === 'WORKTREE'
+  ? await fs.readFile(MEETING_DETAILS_PATH, 'utf8')
+  : readGitFile(after, MEETING_DETAILS_PATH) ?? await fs.readFile(MEETING_DETAILS_PATH, 'utf8');
+const previousListText = readGitFile(before, MEETING_LIST_PATH);
+const previousDetailsText = readGitFile(before, MEETING_DETAILS_PATH);
+const currentMeetings = readJsonCollection(currentListText, 'meetings', `Current ${MEETING_LIST_PATH}`);
+const previousMeetings = readJsonCollection(previousListText, 'meetings', `Previous ${MEETING_LIST_PATH}`);
+const currentDetails = readJsonCollection(currentDetailsText, 'details', `Current ${MEETING_DETAILS_PATH}`);
+const previousDetails = readJsonCollection(previousDetailsText, 'details', `Previous ${MEETING_DETAILS_PATH}`);
 
 const currentById = new Map(currentMeetings.map((meeting) => [meeting.meeting_id, meeting]));
 const previousById = new Map(previousMeetings.map((meeting) => [meeting.meeting_id, meeting]));
-const allIds = new Set([...currentById.keys(), ...previousById.keys()]);
+const currentDetailsById = new Map(currentDetails.map((detail) => [detail.meeting_id, detail]));
+const previousDetailsById = new Map(previousDetails.map((detail) => [detail.meeting_id, detail]));
+const allIds = new Set([
+  ...currentById.keys(),
+  ...previousById.keys(),
+  ...currentDetailsById.keys(),
+  ...previousDetailsById.keys(),
+]);
 const changedIds = [...allIds].filter((id) => {
   const current = currentById.get(id);
   const previous = previousById.get(id);
-  if (!current || !previous) return true;
-  return comparableMeeting(current) !== comparableMeeting(previous);
+  const listChanged = !current || !previous || comparableMeeting(current) !== comparableMeeting(previous);
+  const currentDetail = currentDetailsById.get(id);
+  const previousDetail = previousDetailsById.get(id);
+  const detailChanged = !currentDetail || !previousDetail
+    ? Boolean(currentDetail || previousDetail)
+    : JSON.stringify(currentDetail) !== JSON.stringify(previousDetail);
+  return listChanged || detailChanged;
 });
 
-if (!previousText && !isZeroSha(before)) {
-  console.warn(`Could not read ${MEETING_LIST_PATH} at ${before}; treating all current meetings as changed.`);
+if ((!previousListText || !previousDetailsText) && !isZeroSha(before)) {
+  console.warn(`Could not read one or both previous public timetable files at ${before}; current public meetings are treated as changed.`);
 }
 
 const paths = new Set();
@@ -135,8 +158,9 @@ if (changedIds.length) {
   addLocalizedPath(paths, '/');
   addLocalizedPath(paths, '/calendar/');
   for (const id of changedIds) {
-    addMeetingImpact(paths, currentById.get(id));
-    addMeetingImpact(paths, previousById.get(id));
+    const hasDetail = currentDetailsById.has(id) || previousDetailsById.has(id);
+    addMeetingImpact(paths, currentById.get(id) ?? currentDetailsById.get(id), id, hasDetail);
+    addMeetingImpact(paths, previousById.get(id) ?? previousDetailsById.get(id), id, hasDetail);
   }
 }
 
