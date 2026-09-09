@@ -129,50 +129,56 @@ function buildBreadcrumb(route, canonicalUrl, currentName) {
 }
 
 function parseLocalDateTime(dateValue, timeValue, timeZone) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateValue) || !/^\d{2}:\d{2}$/.test(timeValue)) return null;
-  const [year, month, day] = dateValue.split('-').map(Number);
-  const [hour, minute] = timeValue.split(':').map(Number);
-  const targetNaive = Date.UTC(year, month - 1, day, hour, minute, 0);
-  let instant = targetNaive;
-  const formatter = new Intl.DateTimeFormat('en-CA', {
-    timeZone,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hourCycle: 'h23',
-  });
-  const partsFor = (value) => Object.fromEntries(
-    formatter.formatToParts(new Date(value))
-      .filter((part) => part.type !== 'literal')
-      .map((part) => [part.type, Number(part.value)]),
-  );
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateValue) || !/^\d{2}:\d{2}$/.test(timeValue) || !timeZone) return null;
 
-  for (let attempt = 0; attempt < 3; attempt += 1) {
-    const parts = partsFor(instant);
-    const renderedNaive = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
-    const correction = targetNaive - renderedNaive;
-    instant += correction;
-    if (correction === 0) break;
+  try {
+    const [year, month, day] = dateValue.split('-').map(Number);
+    const [hour, minute] = timeValue.split(':').map(Number);
+    const targetNaive = Date.UTC(year, month - 1, day, hour, minute, 0);
+    let instant = targetNaive;
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hourCycle: 'h23',
+    });
+    const partsFor = (value) => Object.fromEntries(
+      formatter.formatToParts(new Date(value))
+        .filter((part) => part.type !== 'literal')
+        .map((part) => [part.type, Number(part.value)]),
+    );
+
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const parts = partsFor(instant);
+      const renderedNaive = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
+      const correction = targetNaive - renderedNaive;
+      instant += correction;
+      if (correction === 0) break;
+    }
+
+    const roundTrip = partsFor(instant);
+    if (
+      roundTrip.year !== year
+      || roundTrip.month !== month
+      || roundTrip.day !== day
+      || roundTrip.hour !== hour
+      || roundTrip.minute !== minute
+    ) return null;
+
+    const offsetMinutes = Math.round((targetNaive - instant) / 60000);
+    const sign = offsetMinutes >= 0 ? '+' : '-';
+    const absolute = Math.abs(offsetMinutes);
+    const offsetHours = String(Math.floor(absolute / 60)).padStart(2, '0');
+    const offsetRemainder = String(absolute % 60).padStart(2, '0');
+    return `${dateValue}T${timeValue}:00${sign}${offsetHours}:${offsetRemainder}`;
+  } catch (error) {
+    if (error instanceof RangeError) return null;
+    throw error;
   }
-
-  const roundTrip = partsFor(instant);
-  if (
-    roundTrip.year !== year
-    || roundTrip.month !== month
-    || roundTrip.day !== day
-    || roundTrip.hour !== hour
-    || roundTrip.minute !== minute
-  ) return null;
-
-  const offsetMinutes = Math.round((targetNaive - instant) / 60000);
-  const sign = offsetMinutes >= 0 ? '+' : '-';
-  const absolute = Math.abs(offsetMinutes);
-  const offsetHours = String(Math.floor(absolute / 60)).padStart(2, '0');
-  const offsetRemainder = String(absolute % 60).padStart(2, '0');
-  return `${dateValue}T${timeValue}:00${sign}${offsetHours}:${offsetRemainder}`;
 }
 
 function buildMeetingEvent(route, canonicalUrl, html) {
