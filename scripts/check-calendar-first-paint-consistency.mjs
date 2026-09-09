@@ -10,6 +10,11 @@ const fail = (message) => {
 const requireText = (file, text) => {
   if (!read(file).includes(text)) fail(`${file} must contain ${JSON.stringify(text)}`);
 };
+const markupAttributePosition = (html, attribute) => {
+  const pattern = new RegExp(`<[^>]+\\s${attribute}(?:\\s|=|>)`, 'i');
+  const match = pattern.exec(html);
+  return match ? match.index : -1;
+};
 
 const guardedSources = [
   'src/pages/index.astro',
@@ -81,7 +86,7 @@ for (const [file, mode] of htmlChecks) {
   const html = fs.readFileSync(absolute, 'utf8');
   const runtimeMarker = `mode = ${JSON.stringify(mode)}`;
   const guardPos = html.indexOf('calendarRuntimePending');
-  const sensitivePos = html.indexOf('data-calendar-runtime-sensitive');
+  const sensitivePos = markupAttributePosition(html, 'data-calendar-runtime-sensitive');
   if (guardPos < 0) fail(`${file} is missing the prepaint runtime script`);
   if (sensitivePos < 0) fail(`${file} is missing the sensitive-content marker`);
   if (guardPos >= 0 && sensitivePos >= 0 && guardPos > sensitivePos) {
@@ -111,7 +116,7 @@ for (const base of ['dist/timetable/meetings', 'dist/ja/timetable/meetings']) {
   }
   const html = fs.readFileSync(file, 'utf8');
   const guardPos = html.indexOf('calendarRuntimePending');
-  const sensitivePos = html.indexOf('data-calendar-runtime-sensitive');
+  const sensitivePos = markupAttributePosition(html, 'data-calendar-runtime-sensitive');
   if (guardPos < 0 || sensitivePos < 0 || guardPos > sensitivePos) {
     fail(`${path.relative(root, file)} does not gate projected meeting times before paint`);
   }
@@ -125,7 +130,7 @@ for (const base of ['dist/tracks', 'dist/ja/tracks']) {
   }
   const html = fs.readFileSync(file, 'utf8');
   const guardPos = html.indexOf('racecourseMeetingRuntimePending');
-  const summaryPos = html.indexOf('data-racecourse-meeting-summary');
+  const summaryPos = markupAttributePosition(html, 'data-racecourse-meeting-summary');
   if (guardPos < 0 || summaryPos < 0 || guardPos > summaryPos) {
     fail(`${path.relative(root, file)} exposes build-time racecourse meeting state before its runtime guard`);
   }
