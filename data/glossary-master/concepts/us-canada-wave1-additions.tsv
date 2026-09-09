@@ -1,0 +1,21 @@
+concept_id	category_id	category_ja	canonical_en	preferred_ja	working_definition_ja	concept_kind	priority	jurisdiction_scope	discipline_scope	translation_status	verification_status	source_required	public_ready	notes
+RTYPE-045	RTYPE	レースの種類・格・条件	Maiden Special Weight	メイデン・スペシャル・ウェイト	未勝利馬を対象とし、出走馬がクレーミング対象にならない北米の代表的な未勝利競走類型。	concept	P0	North America	Flat	transliteration	source_verified	yes	no	USCA-SRC-003.
+RTYPE-046	RTYPE	レースの種類・格・条件	Waiver Claiming	ウェイバー・クレーミング	クレーミング競走だが、規則上一定の馬をclaim対象外として出走させられる類型。	concept	P2	North America	Flat	transliteration	source_verified	yes	no	USCA-SRC-003.
+RTYPE-047	RTYPE	レースの種類・格・条件	Waiver Maiden Claiming	ウェイバー・メイデン・クレーミング	Maiden Claimingのうち、規則上一定の馬をclaim対象外として出走させられる類型。	concept	P2	North America	Flat	transliteration	source_verified	yes	no	USCA-SRC-003.
+RTYPE-048	RTYPE	レースの種類・格・条件	Optional Claiming Handicap	オプショナル・クレーミング・ハンデキャップ	Optional ClaimingをHandicap条件で行う北米の競走類型。	concept	P2	North America	Flat	transliteration	source_verified	yes	no	USCA-SRC-003.
+RTYPE-049	RTYPE	レースの種類・格・条件	Maiden Optional Claiming	メイデン・オプショナル・クレーミング	未勝利馬を対象にOptional Claiming条件を組み合わせた北米の競走類型。	concept	P2	North America	Flat	transliteration	source_verified	yes	no	USCA-SRC-003.
+RTYPE-050	RTYPE	レースの種類・格・条件	Claiming Handicap	クレーミング・ハンデキャップ	claim対象馬による競走にHandicapの重量割当を組み合わせた競走類型。	concept	P2	North America	Flat	transliteration	source_verified	yes	no	USCA-SRC-003.
+RTYPE-051	RTYPE	レースの種類・格・条件	Claiming Stakes	クレーミング・ステークス	claim対象馬による競走で、nomination・entry等の料金が賞金へ加算される北米の競走類型。	concept	P2	North America	Flat	transliteration	source_verified	yes	no	USCA-SRC-003.
+RTYPE-052	RTYPE	レースの種類・格・条件	Training Race	トレーニング・レース	Equibase体系でSteeplechaseに関連して用いられるTraining race類型。通常競走との位置付けは制度別に扱う。	concept	P3	North America	Jump	working_equivalent	source_verified	yes	no	USCA-SRC-003.
+RTYPE-053	RTYPE	レースの種類・格・条件	Claiming price	クレーミング価格	Claiming raceで当該馬を購入請求できる設定価格。	concept	P0	North America/Regional	Flat	working_equivalent	source_verified	yes	no	USCA-SRC-003 and ARCI model rules.
+ENTRY-029	ENTRY	登録・出走手続	Coupled entry	カップルド・エントリー	所有関係等により複数馬を一つのbetting entryとして扱う北米の登録・投票上の単位。	concept	P1	North America	ALL	transliteration	candidate	yes	no	Distinct from generic Entry; needs state/provincial rule verification before public use.
+ENTRY-030	ENTRY	登録・出走手続	Post position	ポストポジション	発走時に割り当てられたスタート位置・ゲート位置。	concept	P0	North America/Global	ALL	working_equivalent	source_verified	yes	no	USCA-SRC-008 and Equibase chart structure.
+RUN-042	RUN	レース進行・脚質・競走中の表現	Point of call	ポイント・オブ・コール	レース途中の所定地点で馬の位置・着差等を記録する観測点。	concept	P0	North America	Flat	transliteration	source_verified	yes	no	USCA-SRC-004.
+RUN-043	RUN	レース進行・脚質・競走中の表現	First over	ファースト・オーバー	繋駕競走で、外から最初に先頭馬へ進出していく位置取り・馬を指す用語。	concept	P1	US/Canada	Harness	transliteration	source_verified	yes	no	USCA-SRC-008.
+RUN-044	RUN	レース進行・脚質・競走中の表現	Rough gaited	歩様が乱れた	繋駕競走で規定歩様が不安定・乱れた状態を示すチャート用語。	concept	P2	US/Canada	Harness	descriptive_translation	source_verified	yes	no	USCA-SRC-007.
+EQUIP-026	EQUIP	馬具・装備	Hopples	ホップル	主にpacerの同側脚の動きを補助し、pacing gaitを維持するために用いる脚部装具。	concept	P0	US/Canada/Global	Harness	transliteration	source_verified	yes	no	USCA-SRC-008 and USTA equipment terminology.
+TRAIN-024	TRAIN	調教・競走前後	Time Trial	タイムトライアル	競争相手との通常競走ではなく、自己記録更新等を目的に公式計時される走行。	concept	P1	US/Canada	Harness	transliteration	source_verified	yes	no	USCA-SRC-008.
+ROLE-030	ROLE	騎手・調教師・関係者	Catch driver	キャッチドライバー	自厩舎専属ではなく、他のTrainerやOwnerから依頼されて馬を運転する繋駕競走のDriver。	concept	P1	US/Canada	Harness	transliteration	source_verified	yes	no	USCA-SRC-008.
+BET-041	BET	馬券・オッズ	Handle	売得金／投票総額	一開催・一競走等で賭けられた金額の総額を示す北米競馬用語。	concept	P1	US/Canada	ALL	working_equivalent	source_verified	yes	no	USCA-SRC-008.
+BET-042	BET	馬券・オッズ	Tote board	トートボード	オッズ、投票額、結果、払戻等を表示する競馬場の表示盤。	concept	P1	US/Canada	ALL	transliteration	source_verified	yes	no	USCA-SRC-008.
+SURF-034	SURF	走路・馬場状態	Slow	Slow／遅い	USTAの繋駕競走Track Condition codeで用いられる走路状態区分。	concept	P1	US	Harness	descriptive_translation	source_verified	yes	no	USCA-SRC-007.
