@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="お問い合わせ | 競馬どこ？"
+  description="競馬どこ？へのお問い合わせ窓口です。"
+  lang="ja"
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">お問い合わせ</p>
+    <h1 id="page-title">お問い合わせ</h1>
+    <p class="hero__summary">サイト、掲載データ、プライバシー、将来の決済に関するお問い合わせをフォームから受け付けます。</p>
+  </section>
+
+  <section class="section-grid" aria-label="お問い合わせ先">
+    <article class="card">
+      <h2>お問い合わせフォーム</h2>
+      <p>任意の決済を有効化する前に、ここへGoogleフォームのリンクを追加します。</p>
+      <p><strong>現在、決済機能は有効化していません。</strong></p>
+    </article>
+    <article class="card">
+      <h2>決済に関するお問い合わせ</h2>
+      <p>決済日、金額、通貨、問題の概要を記載してください。カード番号全体や認証情報などの機密情報は送信しないでください。</p>
+    </article>
+  </section>
+</BaseLayout>
