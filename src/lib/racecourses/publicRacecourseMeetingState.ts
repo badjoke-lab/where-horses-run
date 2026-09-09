@@ -1,4 +1,4 @@
-import { addCalendarDays, createCalendarDateContext } from '../timetable/calendarDateContext.mjs';
+import { createCalendarDateContext } from '../timetable/calendarDateContext.mjs';
 import {
   getPublicTimetableGeneratedAt,
   getPublicTimetableMeetingRowsByRacecourse,
@@ -32,11 +32,6 @@ export function getPublicRacecourseMeetingState(
   const windowMeetings = meetings.filter(
     (meeting) => meeting.date >= context.windowStart && meeting.date < context.windowEndExclusive,
   );
-  const candidateStart = addCalendarDays(context.windowStart, -2);
-  const candidateEndExclusive = addCalendarDays(context.windowEndExclusive, 2);
-  const timezoneCandidateMeetings = meetings.filter(
-    (meeting) => meeting.date >= candidateStart && meeting.date < candidateEndExclusive,
-  );
   const todayMeetings = windowMeetings.filter((meeting) => meeting.date === context.today);
   const upcomingMeetings = windowMeetings.filter((meeting) => meeting.date > context.today);
   const nextMeetingDate = upcomingMeetings[0]?.date ?? null;
@@ -56,6 +51,8 @@ export function getPublicRacecourseMeetingState(
     next_meeting_date: nextMeetingDate,
     next_meetings: nextMeetings,
     upcoming_meetings: upcomingMeetings,
-    timezone_candidate_meetings: timezoneCandidateMeetings,
+    // Runtime classification must not depend on the static build date. Keep the full
+    // public racecourse meeting set so the browser can derive the current 30-day window.
+    timezone_candidate_meetings: meetings,
   };
 }
