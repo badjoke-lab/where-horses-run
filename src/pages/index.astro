@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CalendarRuntimeBootstrap from '../components/CalendarRuntimeBootstrap.astro';
+import CanonicalRankFilterRuntime from '../components/CanonicalRankFilterRuntime.astro';
 import MeetingLiveStatusRuntime from '../components/MeetingLiveStatusRuntime.astro';
 import MeetingStatePolicy from '../components/MeetingStatePolicy.astro';
 import TimetableMeetingList from '../components/TimetableMeetingList.astro';
@@ -9,6 +10,7 @@ import TodayMeetingMap from '../components/TodayMeetingMap.astro';
 import TodayRangeMapAccessibility from '../components/TodayRangeMapAccessibility.astro';
 import '../styles/today-practical.css';
 import '../styles/today-context-correction.css';
+import '../styles/today-filter-layout-v2.css';
 import {
   getGroupedTimetableMeetingRows,
   getTimetableDateContext,
@@ -30,6 +32,7 @@ const meetingGroups = getGroupedTimetableMeetingRows(meetingCandidates);
   alternatePath="/ja/"
 >
   <CalendarRuntimeBootstrap mode="home" serverToday={context.today} />
+  <CanonicalRankFilterRuntime />
   <main class="today-page" data-today-page data-home-meeting-window data-calendar-runtime-sensitive>
     <MeetingStatePolicy />
     <MeetingLiveStatusRuntime />
