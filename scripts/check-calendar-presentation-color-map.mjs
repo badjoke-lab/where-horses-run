@@ -81,23 +81,43 @@ assert.match(
 );
 assert.match(
   racecourseMap,
-  /id: MAP_CLUSTER_STATUS_RING_LAYER[\s\S]*?clusterHasRunning, '#e53935',[\s\S]*?'#fb8c00'/,
-  'Map cluster status emphasis must move to a Live/Upcoming outer ring rather than filling the core',
+  /id: MAP_CLUSTER_STATUS_AURA_LAYER[\s\S]*?'circle-radius': 28[\s\S]*?rgba\(229, 57, 53, 0\.20\)[\s\S]*?rgba\(251, 140, 0, 0\.17\)/,
+  'Priority clusters must use the same compact translucent outer aura geometry as the Live Music Map reference',
 );
 assert.match(
   racecourseMap,
-  /clusterHasPriorityState, '#59636f'/,
-  'Live and Upcoming clusters must share a neutral core so total count and status emphasis remain visually separated',
+  /id: MAP_CLUSTER_STATUS_RING_LAYER[\s\S]*?'circle-radius': 23[\s\S]*?clusterHasRunning, '#e53935',[\s\S]*?'#fb8c00'/,
+  'Priority clusters must use a single compact solid status ring around the neutral core',
 );
 assert.match(
   racecourseMap,
-  /'icon-image': MAP_CLUSTER_LIVE_BADGE_IMAGE[\s\S]*?'icon-text-fit': 'width'[\s\S]*?'LIVE '/,
-  'Live cluster counts must render as a fitted pill badge',
+  /id: MAP_CLUSTER_SHADOW_LAYER[\s\S]*?'circle-radius': 22[\s\S]*?'circle-opacity': 0\.26[\s\S]*?'circle-translate': \[0, 4\]/,
+  'Clusters must retain the compact dark drop shadow used by the Live Music Map reference',
 );
 assert.match(
   racecourseMap,
-  /'icon-image': MAP_CLUSTER_UPCOMING_BADGE_IMAGE[\s\S]*?'icon-text-fit': 'width'[\s\S]*?'UPCOMING '/,
-  'Upcoming cluster counts must render as a fitted pill badge',
+  /clusterHasPriorityState, '#59636f'[\s\S]*?'circle-stroke-color': \[[\s\S]*?clusterHasRunning, '#ff8b87'[\s\S]*?clusterHasUpcoming, '#ffd08a'/,
+  'Live and Upcoming clusters must keep the neutral core while using the reference status-tinted inner border',
+);
+assert.match(
+  racecourseMap,
+  /pixelRatio: 2[\s\S]*?stretchX: \[\[16, 40\]\][\s\S]*?content: \[12, 5, 44, 27\]/,
+  'Cluster pill assets must render at compact high-DPI geometry rather than oversized one-to-one canvas dimensions',
+);
+assert.match(
+  racecourseMap,
+  /'icon-image': MAP_CLUSTER_LIVE_BADGE_IMAGE[\s\S]*?'icon-text-fit-padding': \[1, 4, 1, 4\][\s\S]*?'text-field': \['concat', 'LIVE '[\s\S]*?'text-size': 8[\s\S]*?'icon-translate': \[0, -28\][\s\S]*?'text-translate': \[0, -28\]/,
+  'Live badge icon and text must use the reference compact pill proportions and move together above the ring',
+);
+assert.match(
+  racecourseMap,
+  /'icon-image': MAP_CLUSTER_UPCOMING_BADGE_IMAGE[\s\S]*?'icon-text-fit-padding': \[1, 4, 1, 4\][\s\S]*?'text-field': \['concat', 'UP '[\s\S]*?'text-size': 8[\s\S]*?'icon-translate': \[0, 28\][\s\S]*?'text-translate': \[0, 28\]/,
+  'Upcoming badge icon and text must use the reference compact pill proportions and move together below the ring',
+);
+assert.doesNotMatch(
+  racecourseMap,
+  /'icon-offset': \[0, -(?:30|28)\][\s\S]*?'text-offset': \[0, -3\]/,
+  'Cluster pill background and label must not use divergent icon/text offset systems',
 );
 assert.match(
   racecourseMap,
@@ -111,8 +131,8 @@ assert.match(
 );
 assert.match(
   racecourseMap,
-  /'text-field': \['concat', 'UPCOMING ', \['to-string', \['get', 'upcoming_count'\]\]\]/,
-  'Map clusters containing upcoming markers must expose an UPCOMING count badge',
+  /'text-field': \['concat', 'UP ', \['to-string', \['get', 'upcoming_count'\]\]\]/,
+  'Map clusters containing upcoming markers must expose a compact UP count badge matching the reference treatment',
 );
 assert.match(
   racecourseMap,

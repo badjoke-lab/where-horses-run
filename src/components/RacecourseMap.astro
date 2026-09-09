@@ -162,7 +162,9 @@ const {
   const MAPLIBRE_MODULE_URL = 'https://unpkg.com/maplibre-gl@6.7.0/dist/maplibre-gl.mjs';
   const MAP_SOURCE = 'racecourses';
   const MAP_CLUSTER_LAYER = 'racecourse-clusters';
+  const MAP_CLUSTER_SHADOW_LAYER = 'racecourse-cluster-shadow';
   const MAP_CLUSTER_LIVE_GLOW_LAYER = 'racecourse-cluster-live-glow';
+  const MAP_CLUSTER_STATUS_AURA_LAYER = 'racecourse-cluster-status-aura';
   const MAP_CLUSTER_STATUS_RING_LAYER = 'racecourse-cluster-status-ring';
   const MAP_CLUSTER_COUNT_LAYER = 'racecourse-cluster-count';
   const MAP_CLUSTER_RUNNING_BADGE_LAYER = 'racecourse-cluster-running-badge';
@@ -291,7 +293,7 @@ const {
   const registerClusterPillImage = (map, name, fill, border) => {
     if (typeof map.hasImage === 'function' && map.hasImage(name)) return;
     const width = 56;
-    const height = 20;
+    const height = 32;
     const radius = height / 2;
     const canvas = document.createElement('canvas');
     canvas.width = width;
@@ -300,24 +302,24 @@ const {
     if (!context) return;
 
     context.beginPath();
-    context.moveTo(radius, 0.75);
-    context.lineTo(width - radius, 0.75);
-    context.arcTo(width - 0.75, 0.75, width - 0.75, radius, radius - 0.75);
-    context.arcTo(width - 0.75, height - 0.75, width - radius, height - 0.75, radius - 0.75);
-    context.lineTo(radius, height - 0.75);
-    context.arcTo(0.75, height - 0.75, 0.75, radius, radius - 0.75);
-    context.arcTo(0.75, 0.75, radius, 0.75, radius - 0.75);
+    context.moveTo(radius, 1);
+    context.lineTo(width - radius, 1);
+    context.arcTo(width - 1, 1, width - 1, radius, radius - 1);
+    context.arcTo(width - 1, height - 1, width - radius, height - 1, radius - 1);
+    context.lineTo(radius, height - 1);
+    context.arcTo(1, height - 1, 1, radius, radius - 1);
+    context.arcTo(1, 1, radius, 1, radius - 1);
     context.closePath();
     context.fillStyle = fill;
     context.fill();
     context.strokeStyle = border;
-    context.lineWidth = 1.5;
+    context.lineWidth = 2;
     context.stroke();
 
     map.addImage(name, context.getImageData(0, 0, width, height), {
-      pixelRatio: 1,
-      stretchX: [[radius, width - radius]],
-      content: [7, 3, width - 7, height - 3]
+      pixelRatio: 2,
+      stretchX: [[16, 40]],
+      content: [12, 5, 44, 27]
     });
   };
 
@@ -720,8 +722,23 @@ const {
         const clusterHasUpcoming = ['>', ['get', 'upcoming_count'], 0];
         const clusterHasPriorityState = ['any', clusterHasRunning, clusterHasUpcoming];
 
-        registerClusterPillImage(map, MAP_CLUSTER_LIVE_BADGE_IMAGE, '#e53935', 'rgba(255, 255, 255, 0.58)');
-        registerClusterPillImage(map, MAP_CLUSTER_UPCOMING_BADGE_IMAGE, '#fb8c00', 'rgba(255, 255, 255, 0.58)');
+        registerClusterPillImage(map, MAP_CLUSTER_LIVE_BADGE_IMAGE, '#e53935', 'rgba(255, 255, 255, 0.68)');
+        registerClusterPillImage(map, MAP_CLUSTER_UPCOMING_BADGE_IMAGE, '#fb8c00', 'rgba(255, 255, 255, 0.68)');
+
+        map.addLayer({
+          id: MAP_CLUSTER_SHADOW_LAYER,
+          type: 'circle',
+          source: MAP_SOURCE,
+          filter: ['has', 'point_count'],
+          paint: {
+            'circle-radius': 22,
+            'circle-color': '#000000',
+            'circle-opacity': 0.26,
+            'circle-blur': 0.82,
+            'circle-translate': [0, 4],
+            'circle-translate-anchor': 'viewport'
+          }
+        });
 
         map.addLayer({
           id: MAP_CLUSTER_LIVE_GLOW_LAYER,
@@ -729,10 +746,25 @@ const {
           source: MAP_SOURCE,
           filter: ['all', ['has', 'point_count'], clusterHasRunning],
           paint: {
-            'circle-radius': 29,
+            'circle-radius': 31,
             'circle-color': '#e53935',
-            'circle-opacity': 0.16,
+            'circle-opacity': 0.18,
             'circle-blur': 0.72
+          }
+        });
+
+        map.addLayer({
+          id: MAP_CLUSTER_STATUS_AURA_LAYER,
+          type: 'circle',
+          source: MAP_SOURCE,
+          filter: ['all', ['has', 'point_count'], clusterHasPriorityState],
+          paint: {
+            'circle-radius': 28,
+            'circle-color': [
+              'case',
+              clusterHasRunning, 'rgba(229, 57, 53, 0.20)',
+              'rgba(251, 140, 0, 0.17)'
+            ]
           }
         });
 
@@ -742,18 +774,12 @@ const {
           source: MAP_SOURCE,
           filter: ['all', ['has', 'point_count'], clusterHasPriorityState],
           paint: {
-            'circle-radius': 24,
+            'circle-radius': 23,
             'circle-color': [
-              'case',
-              clusterHasRunning, 'rgba(229, 57, 53, 0.22)',
-              'rgba(251, 140, 0, 0.19)'
-            ],
-            'circle-stroke-color': [
               'case',
               clusterHasRunning, '#e53935',
               '#fb8c00'
-            ],
-            'circle-stroke-width': 4
+            ]
           }
         });
 
@@ -819,17 +845,19 @@ const {
           layout: {
             'icon-image': MAP_CLUSTER_LIVE_BADGE_IMAGE,
             'icon-text-fit': 'width',
-            'icon-text-fit-padding': [0, 6, 0, 6],
-            'icon-offset': [0, -30],
+            'icon-text-fit-padding': [1, 4, 1, 4],
             'icon-allow-overlap': true,
             'icon-ignore-placement': true,
             'text-field': ['concat', 'LIVE ', ['to-string', ['get', 'running_count']]],
-            'text-size': 10,
-            'text-offset': [0, -3],
+            'text-size': 8,
             'text-allow-overlap': true,
             'text-ignore-placement': true
           },
           paint: {
+            'icon-translate': [0, -28],
+            'icon-translate-anchor': 'viewport',
+            'text-translate': [0, -28],
+            'text-translate-anchor': 'viewport',
             'text-color': '#ffffff'
           }
         });
@@ -842,17 +870,19 @@ const {
           layout: {
             'icon-image': MAP_CLUSTER_UPCOMING_BADGE_IMAGE,
             'icon-text-fit': 'width',
-            'icon-text-fit-padding': [0, 6, 0, 6],
-            'icon-offset': [0, 30],
+            'icon-text-fit-padding': [1, 4, 1, 4],
             'icon-allow-overlap': true,
             'icon-ignore-placement': true,
-            'text-field': ['concat', 'UPCOMING ', ['to-string', ['get', 'upcoming_count']]],
-            'text-size': 10,
-            'text-offset': [0, 3],
+            'text-field': ['concat', 'UP ', ['to-string', ['get', 'upcoming_count']]],
+            'text-size': 8,
             'text-allow-overlap': true,
             'text-ignore-placement': true
           },
           paint: {
+            'icon-translate': [0, 28],
+            'icon-translate-anchor': 'viewport',
+            'text-translate': [0, 28],
+            'text-translate-anchor': 'viewport',
             'text-color': '#ffffff'
           }
         });
@@ -862,8 +892,8 @@ const {
           clusterPulseTimer = window.setInterval(() => {
             if (!map?.getLayer(MAP_CLUSTER_LIVE_GLOW_LAYER)) return;
             const phase = (Math.sin(((performance.now() - pulseStartedAt) / 900) * Math.PI) + 1) / 2;
-            map.setPaintProperty(MAP_CLUSTER_LIVE_GLOW_LAYER, 'circle-radius', 28 + (phase * 2.5));
-            map.setPaintProperty(MAP_CLUSTER_LIVE_GLOW_LAYER, 'circle-opacity', 0.10 + (phase * 0.12));
+            map.setPaintProperty(MAP_CLUSTER_LIVE_GLOW_LAYER, 'circle-radius', 30 + (phase * 2));
+            map.setPaintProperty(MAP_CLUSTER_LIVE_GLOW_LAYER, 'circle-opacity', 0.14 + (phase * 0.10));
           }, 120);
         }
 
