@@ -29,8 +29,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Check race acquisition
-        run: npm run check
+      - name: Build site
+        run: npm run build
 
       - name: Check sitemap freshness metadata
         run: node scripts/check-sitemap-freshness.mjs dist/sitemap.xml
@@ -39,6 +39,9 @@ jobs:
         run: |
           node --check scripts/indexnow-changed-urls.mjs
           node scripts/indexnow-changed-urls.mjs --before=HEAD --after=HEAD
+
+      - name: Check entity structured data
+        run: node scripts/check-entity-structured-data.mjs dist
 
       - name: Check meeting lifecycle state
         run: node scripts/check-meeting-lifecycle-state.mjs
