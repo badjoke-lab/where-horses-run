@@ -90,8 +90,13 @@ const {
     let revealed = false;
     let calendarDateReady = mode !== 'calendar';
     let calendarViewReady = mode !== 'calendar';
+    const projectedTimeZoneReady = () => {
+      const listSelect = document.querySelector('[data-display-timezone-select]');
+      if (!(listSelect instanceof HTMLSelectElement)) return true;
+      return listSelect.value === window.__WHR_CALENDAR_RUNTIME__?.timeZone;
+    };
     const reveal = () => {
-      if (revealed) return;
+      if (revealed || !projectedTimeZoneReady()) return;
       revealed = true;
       delete html.dataset.calendarRuntimePending;
       html.dataset.calendarRuntimeReady = 'true';
@@ -113,11 +118,15 @@ const {
     };
 
     if (mode === 'home') {
-      window.addEventListener('whr:todayfilterchange', reveal, { once: true });
+      window.addEventListener('whr:todayfilterchange', (event) => {
+        const expectedRange = window.__WHR_CALENDAR_RUNTIME__?.range || 'today';
+        if (event?.detail?.range !== expectedRange || !projectedTimeZoneReady()) return;
+        reveal();
+      });
     } else if (mode === 'calendar') {
       window.addEventListener('whr:calendarfilterchange', (event) => {
         const expected = window.__WHR_CALENDAR_RUNTIME__?.selectedDate;
-        if (!expected || event?.detail?.date === expected) {
+        if ((!expected || event?.detail?.date === expected) && projectedTimeZoneReady()) {
           calendarDateReady = true;
           checkCalendarView();
           requestAnimationFrame(checkCalendarView);
@@ -134,11 +143,16 @@ const {
       else observeCalendarView();
     } else {
       window.addEventListener('whr:timezonechange', (event) => {
-        if (event?.detail?.scope === mode) reveal();
+        if (event?.detail?.scope === mode && event?.detail?.timeZone === window.__WHR_CALENDAR_RUNTIME__?.timeZone) reveal();
       });
     }
 
-    window.setTimeout(reveal, 4000);
+    window.setTimeout(() => {
+      if (!revealed) {
+        delete html.dataset.calendarRuntimePending;
+        html.dataset.calendarRuntimeFallback = 'true';
+      }
+    }, 4000);
   })();
 </script>
 
