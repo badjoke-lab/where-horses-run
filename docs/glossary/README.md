@@ -8,15 +8,21 @@ Read these first for new glossary-list work:
 
 1. [World racing terminology master specification](world-racing-terminology-master-spec.md)
 2. [2026-09-09 glossary roadmap addendum](../project-roadmap-2026-09-09-glossary-addendum.md)
+3. [Legacy runtime migration audit](legacy-runtime-audit-2026-09-09.md)
+4. [Working master data contract](../../data/glossary-master/README.md)
 
 Current execution pointer:
 
 ```text
-Current glossary Work ID: GLOSSARY-MASTER-001
-Next: GLOSSARY-MASTER-002
-Current output: terminology master/list construction
+Completed: GLOSSARY-MASTER-001
+Completed: GLOSSARY-MASTER-002
+Current glossary Work ID: GLOSSARY-MASTER-003
+Next: GLOSSARY-MASTER-004
+Current output: core worldwide concept inventory
 New public-page expansion/redesign: deferred
 ```
+
+`GLOSSARY-MASTER-002` recovered the complete legacy public-v1 scope as 48 concepts / nine categories and assigned every legacy concept an explicit migration disposition in `data/glossary-master/legacy-migration-v1.tsv`.
 
 ## Relationship to legacy glossary implementation
 
