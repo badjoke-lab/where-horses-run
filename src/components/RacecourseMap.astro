@@ -163,6 +163,8 @@ const {
   const MAP_SOURCE = 'racecourses';
   const MAP_CLUSTER_LAYER = 'racecourse-clusters';
   const MAP_CLUSTER_COUNT_LAYER = 'racecourse-cluster-count';
+  const MAP_CLUSTER_RUNNING_BADGE_LAYER = 'racecourse-cluster-running-badge';
+  const MAP_CLUSTER_UPCOMING_BADGE_LAYER = 'racecourse-cluster-upcoming-badge';
   const MAP_SELECTED_RING_LAYER = 'racecourse-selected-ring';
   const MAP_POINT_LAYER = 'racecourse-points';
   const MAP_HIT_LAYER = 'racecourse-hit-targets';
@@ -656,8 +658,24 @@ const {
           },
           cluster: features.length > 1,
           clusterMaxZoom: 9,
-          clusterRadius: 44
+          clusterRadius: 44,
+          clusterProperties: {
+            running_count: ['+', ['case', ['==', ['get', 'meeting_status'], 'running'], 1, 0]],
+            upcoming_count: ['+', ['case', ['==', ['get', 'meeting_status'], 'upcoming'], 1, 0]],
+            today_count: ['+', ['case', ['==', ['get', 'meeting_status'], 'today'], 1, 0]],
+            future_count: ['+', ['case', ['==', ['get', 'meeting_status'], 'future'], 1, 0]],
+            ended_count: ['+', ['case', ['==', ['get', 'meeting_status'], 'ended'], 1, 0]]
+          }
         });
+
+        const clusterAllToday = ['==', ['get', 'today_count'], ['get', 'point_count']];
+        const clusterAllFuture = ['==', ['get', 'future_count'], ['get', 'point_count']];
+        const clusterAllEnded = ['==', ['get', 'ended_count'], ['get', 'point_count']];
+        const clusterAllNeutral = [
+          '==',
+          ['+', ['get', 'running_count'], ['get', 'upcoming_count'], ['get', 'today_count'], ['get', 'future_count'], ['get', 'ended_count']],
+          0
+        ];
 
         map.addLayer({
           id: MAP_CLUSTER_LAYER,
@@ -672,9 +690,27 @@ const {
               10, 20,
               25, 23
             ],
-            'circle-color': '#111111',
-            'circle-stroke-color': '#ffffff',
-            'circle-stroke-width': 2
+            'circle-color': [
+              'case',
+              ['>', ['get', 'running_count'], 0], '#c40000',
+              ['>', ['get', 'upcoming_count'], 0], '#d18a00',
+              clusterAllToday, '#fffcf4',
+              clusterAllEnded, '#666666',
+              clusterAllFuture, '#111111',
+              clusterAllNeutral, '#ffffff',
+              '#111111'
+            ],
+            'circle-stroke-color': [
+              'case',
+              clusterAllToday, '#7a5a00',
+              clusterAllNeutral, '#777777',
+              '#ffffff'
+            ],
+            'circle-stroke-width': [
+              'case',
+              clusterAllToday, 3,
+              2
+            ]
           }
         });
 
@@ -688,7 +724,52 @@ const {
             'text-size': 12
           },
           paint: {
-            'text-color': '#ffffff'
+            'text-color': [
+              'case',
+              clusterAllToday, '#3b2b00',
+              clusterAllNeutral, '#111111',
+              '#ffffff'
+            ]
+          }
+        });
+
+        map.addLayer({
+          id: MAP_CLUSTER_RUNNING_BADGE_LAYER,
+          type: 'symbol',
+          source: MAP_SOURCE,
+          filter: ['all', ['has', 'point_count'], ['>', ['get', 'running_count'], 0]],
+          layout: {
+            'text-field': ['concat', 'LIVE ', ['to-string', ['get', 'running_count']]],
+            'text-size': 10,
+            'text-offset': [0, -2.7],
+            'text-allow-overlap': true,
+            'text-ignore-placement': true
+          },
+          paint: {
+            'text-color': '#ffffff',
+            'text-halo-color': '#c40000',
+            'text-halo-width': 4,
+            'text-halo-blur': 0.5
+          }
+        });
+
+        map.addLayer({
+          id: MAP_CLUSTER_UPCOMING_BADGE_LAYER,
+          type: 'symbol',
+          source: MAP_SOURCE,
+          filter: ['all', ['has', 'point_count'], ['>', ['get', 'upcoming_count'], 0]],
+          layout: {
+            'text-field': ['concat', 'UPCOMING ', ['to-string', ['get', 'upcoming_count']]],
+            'text-size': 10,
+            'text-offset': [0, 2.7],
+            'text-allow-overlap': true,
+            'text-ignore-placement': true
+          },
+          paint: {
+            'text-color': '#111111',
+            'text-halo-color': '#f4b43c',
+            'text-halo-width': 4,
+            'text-halo-blur': 0.5
           }
         });
 

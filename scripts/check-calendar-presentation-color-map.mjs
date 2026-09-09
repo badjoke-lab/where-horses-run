@@ -69,6 +69,32 @@ assert.match(racecourseMap, /'today', '#fffcf4'/, 'Map today marker fill must be
 assert.match(racecourseMap, /'#7a5a00'/, 'Near-white Map today marker must have a dark warm outline');
 assert.match(racecourseMap, /'upcoming', '#d18a00'/, 'Map precise upcoming marker must remain orange');
 
+assert.match(
+  racecourseMap,
+  /clusterProperties:\s*\{[\s\S]*?running_count:[\s\S]*?meeting_status'\], 'running'[\s\S]*?upcoming_count:[\s\S]*?meeting_status'\], 'upcoming'/,
+  'Map clusters must aggregate the already-resolved running and upcoming marker states',
+);
+assert.match(
+  racecourseMap,
+  /'circle-color': \[[\s\S]*?\['>', \['get', 'running_count'\], 0\], '#c40000',[\s\S]*?\['>', \['get', 'upcoming_count'\], 0\], '#d18a00'/,
+  'Map cluster emphasis must prioritize running over upcoming without redefining either state',
+);
+assert.match(
+  racecourseMap,
+  /'text-field': \['concat', 'LIVE ', \['to-string', \['get', 'running_count'\]\]\]/,
+  'Map clusters containing running markers must expose a LIVE count badge',
+);
+assert.match(
+  racecourseMap,
+  /'text-field': \['concat', 'UPCOMING ', \['to-string', \['get', 'upcoming_count'\]\]\]/,
+  'Map clusters containing upcoming markers must expose an UPCOMING count badge',
+);
+assert.match(
+  racecourseMap,
+  /clusterAllToday[\s\S]*?clusterAllEnded[\s\S]*?clusterAllFuture[\s\S]*?clusterAllNeutral/,
+  'Other-only homogeneous clusters must retain the existing marker-state presentation instead of inventing a new lifecycle state',
+);
+
 for (const document of [spec, schedule]) {
   assert.ok(document.includes('#fff9e9'), 'Calendar authority must document precise upcoming color');
   assert.ok(document.includes('#fffcf4'), 'Calendar authority must document day-only today color');
