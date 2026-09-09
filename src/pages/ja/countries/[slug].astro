@@ -1,15 +1,18 @@
 ---
 import CountryDetailPage from '../../../components/CountryDetailPage.astro';
 import { getCountries, getCountryBySlug } from '../../../lib/data';
+import { isCalendarSupportedCountry } from '../../../lib/calendarPublicCountrySupport';
 
 export function getStaticPaths() {
-  return getCountries().map((country) => ({ params: { slug: country.slug } }));
+  return getCountries()
+    .filter((country) => isCalendarSupportedCountry(country.id))
+    .map((country) => ({ params: { slug: country.slug } }));
 }
 
 const { slug } = Astro.params;
 const country = getCountryBySlug(slug ?? '');
 
-if (!country) {
+if (!country || !isCalendarSupportedCountry(country.id)) {
   return Astro.redirect('/ja/countries/');
 }
 ---
