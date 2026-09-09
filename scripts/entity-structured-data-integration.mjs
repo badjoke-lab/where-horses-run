@@ -46,12 +46,6 @@ function extractText(html, pattern, label, file) {
   return stripTags(value);
 }
 
-function extractOptionalAttribute(html, tagPattern, name) {
-  const tag = html.match(tagPattern)?.[0];
-  const value = tag?.match(new RegExp(`${name}="([^"]*)"`, 'i'))?.[1];
-  return value ? decodeHtml(value) : null;
-}
-
 function parseRoute(outputDirectory, file) {
   const relative = path.relative(outputDirectory, file).split(path.sep).join('/');
   const match = relative.match(/^(ja\/)?(countries|tracks|timetable\/meetings)\/([^/]+)\/index\.html$/);
@@ -108,7 +102,6 @@ function buildBreadcrumb(route, canonicalUrl, currentName) {
     : route.kind === 'racecourse'
       ? `${prefix}/tracks/`
       : `${prefix}/calendar/`;
-  const parentName = labels[route.kind];
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -122,7 +115,7 @@ function buildBreadcrumb(route, canonicalUrl, currentName) {
       {
         '@type': 'ListItem',
         position: 2,
-        name: parentName,
+        name: labels[route.kind],
         item: `${SITE_ORIGIN}${parentPath}`,
       },
       {
@@ -151,7 +144,6 @@ function parseLocalDateTime(dateValue, timeValue, timeZone) {
     second: '2-digit',
     hourCycle: 'h23',
   });
-
   const partsFor = (value) => Object.fromEntries(
     formatter.formatToParts(new Date(value))
       .filter((part) => part.type !== 'literal')
@@ -195,20 +187,12 @@ function buildMeetingEvent(route, canonicalUrl, html) {
   const timezone = timezoneMatch ? stripTags(timezoneMatch[1]) : null;
   if (!timezone) throw new Error(`Missing visible venue timezone in ${route.relative}`);
 
-  const sourceUrl = extractAttribute(
-    html,
-    /<a\s+[^>]*href="[^"]+"[^>]*>\s*(?:Open official source|公式ソースを開く)\s*<\/a>/i,
-    'href',
-    route.relative,
-  );
   const trackHref = extractAttribute(
     html,
     /<h1[^>]*id="page-title"[^>]*>\s*<a\s+[^>]*href="[^"]+"[^>]*>/i,
     'href',
     route.relative,
   );
-  const countryAnchor = html.match(/<p>[^<]*(?:·|&middot;)[\s\S]*?<a\s+[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>\s*<\/p>/i);
-  const countryName = countryAnchor ? stripTags(countryAnchor[2]) : null;
   const trackUrl = new URL(trackHref, SITE_ORIGIN).toString();
   const timeTags = [...html.matchAll(/<time\s+[^>]*data-meeting-source-time="([^"]+)"[^>]*>/gi)]
     .map((match) => match[1])
@@ -223,6 +207,7 @@ function buildMeetingEvent(route, canonicalUrl, html) {
     '@context': 'https://schema.org',
     '@type': 'SportsEvent',
     '@id': `${canonicalUrl}#event`,
+    identifier: route.slug,
     url: canonicalUrl,
     name: eventName,
     startDate,
@@ -232,14 +217,8 @@ function buildMeetingEvent(route, canonicalUrl, html) {
       '@id': `${trackUrl}#place`,
       name: racecourseName,
       url: trackUrl,
-      ...(countryName ? { address: { '@type': 'PostalAddress', addressCountry: countryName } } : {}),
     },
     mainEntityOfPage: { '@id': `${canonicalUrl}#webpage` },
-    subjectOf: {
-      '@type': 'WebPage',
-      url: sourceUrl,
-      name: route.locale === 'ja' ? '公式ソース' : 'Official source',
-    },
   };
 }
 
