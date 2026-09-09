@@ -1,0 +1,23 @@
+jurisdiction	authority	observed_term	mapping_target	mapping_type	verification_status	source_id	note
+Japan/NAR	NAR	一般	RTYPE-072	new_concept	source_verified	JP2-SRC-001	NAR age/programme category; not JRA 一般競走.
+Japan/NAR	NAR	A・B・C	RTYPE-073	class_system_labels	source_verified	JP2-SRC-001	District-specific class letters; thresholds differ by district.
+Japan/NAR	NAR	組	RTYPE-074	new_concept	source_verified	JP2-SRC-002	Class subdivision below A/B/C etc.
+Japan/NAR	NAR	準重賞	RTYPE-075	new_concept	source_verified	JP2-SRC-002	Semi-graded local race category.
+Japan/NAR	NAR	普通競走	RTYPE-076	new_concept	source_verified	JP2-SRC-002	Ordinary local-racing programme category.
+Japan/NAR	NAR	特別競走	RTYPE-077	new_concept	source_verified	JP2-SRC-002	Same string as JRA but separate jurisdiction semantics.
+Japan/Banei	ばんえい十勝	BG	RTYPE-078	grade_family_label	source_verified	JP2-SRC-006	BG means ばんえいグレード; family label for BG1-BG3.
+Japan/Banei	ばんえい十勝	BG1	RTYPE-078	new_concept	source_verified	JP2-SRC-006	Highest Banei Grade.
+Japan/Banei	ばんえい十勝	BG2	RTYPE-079	new_concept	source_verified	JP2-SRC-006	Second Banei Grade.
+Japan/Banei	ばんえい十勝	BG3	RTYPE-080	new_concept	source_verified	JP2-SRC-006	Third Banei Grade.
+Japan/Banei	ばんえい十勝	ばんえい重量	WEIGHT-031	new_concept	source_verified	JP2-SRC-004	Sled-based race weight system; not carried weight.
+Japan/Banei	ばんえい十勝	規定重量	WEIGHT-031	regional_subtype	source_verified	JP2-SRC-004	Programme subtype of Banei weight.
+Japan/Banei	ばんえい十勝	別定重量	WEIGHT-031	regional_subtype	source_verified	JP2-SRC-004	Programme subtype of Banei weight.
+Japan/Banei	ばんえい十勝	競走用ソリ	EQUIP-027	new_concept	source_verified	JP2-SRC-008	Official operational sled term.
+Japan/Banei	ばんえい十勝	鉄ソリ	EQUIP-027	alternate_label	source_verified	JP2-SRC-003	Visitor-guide alternate wording.
+Japan/Banei	ばんえい十勝	第1障害	VENUE-043	new_concept	source_verified	JP2-SRC-009	First hill obstacle.
+Japan/Banei	ばんえい十勝	第2障害	VENUE-044	new_concept	source_verified	JP2-SRC-009	Second larger hill obstacle.
+Japan/Banei	ばんえい十勝	馬場水分	SURF-044	new_concept	source_verified	JP2-SRC-003	Percentage-based Banei surface metric; no direct foreign Going equivalence.
+Japan/Banei	ばんえい十勝	能力検査	TRAIN-025	new_concept	source_verified	JP2-SRC-005	Official ability/eligibility inspection.
+Japan/Banei	ばんえい十勝	能力調教再検査	TRAIN-025	regional_subtype	source_verified	JP2-SRC-005	Retain as subtype until evidence supports a separate Concept.
+Japan/Banei	ばんえい十勝	ばん馬	HORSE-031	regional_term	source_verified	JP2-SRC-003	Racing-system term; do not assert a single breed identity.
+Japan/Banei	ばんえい十勝	ソリの最後端が決勝線を通過	NEW-REL-BANEI-FINISH	definition_relation_candidate	source_verified	JP2-SRC-003	Finish criterion differs from mounted racing; review whether a separate result/race-mechanics Concept is warranted.
