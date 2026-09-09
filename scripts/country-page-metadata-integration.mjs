@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 const SITE_ORIGIN = 'https://whr.badjoke-lab.com';
 const WEBSITE_ID = `${SITE_ORIGIN}/#website`;
 const MARKER = 'collection-administrative-area-v1';
+const SUPPORT_REGISTRY_URL = new URL('../data/static/calendar-public-country-support-v1.json', import.meta.url);
 
 async function walk(directory) {
   const entries = await fs.readdir(directory, { withFileTypes: true });
@@ -46,14 +47,6 @@ function extractText(html, pattern, label, file) {
   return stripTags(value);
 }
 
-function extractDefinition(html, label, file) {
-  const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const pattern = new RegExp(`<dt[^>]*>\\s*${escaped}\\s*<\\/dt>\\s*<dd[^>]*>([\\s\\S]*?)<\\/dd>`, 'i');
-  const value = html.match(pattern)?.[1];
-  if (!value) throw new Error(`Missing visible ${label} value in ${file}`);
-  return stripTags(value);
-}
-
 function parseCountryRoute(outputDirectory, file) {
   const relative = path.relative(outputDirectory, file).split(path.sep).join('/');
   const match = relative.match(/^(ja\/)?countries\/([^/]+)\/index\.html$/);
@@ -65,7 +58,7 @@ function parseCountryRoute(outputDirectory, file) {
   };
 }
 
-function parsePage(outputDirectory, file, route) {
+function parsePage(file, route) {
   return fs.readFile(file, 'utf8').then((html) => {
     if (html.includes(`data-country-page-metadata="${MARKER}"`)) {
       throw new Error(`Country metadata marker already exists in ${route.relative}`);
@@ -102,16 +95,8 @@ function parsePage(outputDirectory, file, route) {
       route.relative,
     );
     const heading = extractText(html, /<h1[^>]*id="page-title"[^>]*>([\s\S]*?)<\/h1>/i, 'country page heading', route.relative);
-    // Country hubs intentionally use the compact visible country/region name as h1.
-    // Structured metadata should consume that visible name instead of enforcing an older SEO suffix.
     const name = heading.trim();
     if (!name) throw new Error(`Country name is empty in ${route.relative}`);
-
-    const localName = extractDefinition(html, route.locale === 'ja' ? '現地名' : 'Local name', route.relative);
-    const lastReviewed = extractDefinition(html, route.locale === 'ja' ? 'プロフィール確認日' : 'Profile reviewed', route.relative);
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(lastReviewed)) {
-      throw new Error(`Country review date is not ISO YYYY-MM-DD in ${route.relative}: ${lastReviewed}`);
-    }
 
     return {
       ...route,
@@ -121,8 +106,6 @@ function parsePage(outputDirectory, file, route) {
       title,
       description,
       name,
-      localName,
-      lastReviewed,
     };
   });
 }
@@ -134,7 +117,7 @@ function uniqueNames(values, currentName) {
 function buildMetadata(page, counterpart) {
   const areaId = `${page.canonicalUrl}#administrative-area`;
   const webpageId = `${page.canonicalUrl}#webpage`;
-  const alternateName = uniqueNames([counterpart.name, page.localName], page.name);
+  const alternateName = uniqueNames([counterpart.name], page.name);
   const administrativeAreaNode = {
     '@type': 'AdministrativeArea',
     '@id': areaId,
@@ -151,7 +134,6 @@ function buildMetadata(page, counterpart) {
     description: page.description,
     inLanguage: page.locale,
     isPartOf: { '@id': WEBSITE_ID },
-    lastReviewed: page.lastReviewed,
     about: { '@id': areaId },
     mainEntity: { '@id': areaId },
   };
@@ -163,6 +145,18 @@ function buildMetadata(page, counterpart) {
 
 function serialize(data) {
   return JSON.stringify(data).replace(/</g, '\\u003c');
+}
+
+async function getExpectedPublicCountryCount() {
+  const registry = JSON.parse(await fs.readFile(SUPPORT_REGISTRY_URL, 'utf8'));
+  if (!Array.isArray(registry?.countries)) {
+    throw new Error('Calendar public country support registry has no countries array');
+  }
+  const supported = registry.countries.filter((record) => record?.calendar_supported === true);
+  if (!supported.length) {
+    throw new Error('Calendar public country support registry has no supported countries');
+  }
+  return supported.length;
 }
 
 export default function countryPageMetadataIntegration() {
@@ -177,7 +171,7 @@ export default function countryPageMetadataIntegration() {
           .map((file) => ({ file, route: parseCountryRoute(outputDirectory, file) }))
           .filter((entry) => entry.route);
 
-        const pages = await Promise.all(routes.map(({ file, route }) => parsePage(outputDirectory, file, route)));
+        const pages = await Promise.all(routes.map(({ file, route }) => parsePage(file, route)));
         const bySlug = new Map();
         for (const page of pages) {
           if (!bySlug.has(page.slug)) bySlug.set(page.slug, new Map());
@@ -186,8 +180,12 @@ export default function countryPageMetadataIntegration() {
           locales.set(page.locale, page);
         }
 
-        if (bySlug.size !== 98 || pages.length !== 196) {
-          throw new Error(`Country metadata scope differs: ${bySlug.size} slugs / ${pages.length} pages`);
+        const expectedCountryCount = await getExpectedPublicCountryCount();
+        const expectedPageCount = expectedCountryCount * 2;
+        if (bySlug.size !== expectedCountryCount || pages.length !== expectedPageCount) {
+          throw new Error(
+            `Country metadata scope differs from Calendar public support: ${bySlug.size} slugs / ${pages.length} pages; expected ${expectedCountryCount} slugs / ${expectedPageCount} pages`,
+          );
         }
 
         let injected = 0;
@@ -208,7 +206,7 @@ export default function countryPageMetadataIntegration() {
         }
 
         logger.info(`Injected country-page metadata into ${injected} bilingual detail pages.`);
-        logger.info(`Validated ${bySlug.size} country or region pairs with visible names and review dates.`);
+        logger.info(`Validated ${bySlug.size} Calendar-supported country or region pairs with visible names.`);
       },
     },
   };
