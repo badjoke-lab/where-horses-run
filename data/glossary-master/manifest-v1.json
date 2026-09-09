@@ -2,11 +2,11 @@
   "schema_version": "world-racing-terminology-master-manifest-v1",
   "status": "candidate_seed_plus_jurisdiction_research",
   "generated_from_legacy_glossary": false,
-  "concept_count": 572,
+  "concept_count": 588,
   "category_count": 18,
   "priority_counts": {
-    "P0": 180,
-    "P1": 245,
+    "P0": 187,
+    "P1": 254,
     "P2": 129,
     "P3": 18
   },
@@ -15,18 +15,18 @@
   "public_runtime_input": false,
   "categories": [
     {"id":"DISC","count":17,"file":"concepts/01-disc.tsv"},
-    {"id":"RTYPE","count":71,"file":"concepts/02-rtype.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv","concepts/japan-wave1-additions.tsv"]},
+    {"id":"RTYPE","count":80,"file":"concepts/02-rtype.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv","concepts/japan-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv"]},
     {"id":"ENTRY","count":31,"file":"concepts/03-entry.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv"]},
-    {"id":"HORSE","count":30,"file":"concepts/04-horse.tsv"},
+    {"id":"HORSE","count":31,"file":"concepts/04-horse.tsv","supplemental_files":["concepts/japan-wave2-nar-banei-additions.tsv"]},
     {"id":"BREED","count":23,"file":"concepts/05-breed.tsv"},
     {"id":"ROLE","count":30,"file":"concepts/06-role.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv"]},
-    {"id":"VENUE","count":42,"file":"concepts/07-venue.tsv"},
-    {"id":"SURF","count":43,"file":"concepts/08-surf.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv","concepts/japan-wave1-additions.tsv"]},
+    {"id":"VENUE","count":44,"file":"concepts/07-venue.tsv","supplemental_files":["concepts/japan-wave2-nar-banei-additions.tsv"]},
+    {"id":"SURF","count":44,"file":"concepts/08-surf.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv","concepts/japan-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv"]},
     {"id":"DIST","count":22,"file":"concepts/09-dist.tsv"},
-    {"id":"WEIGHT","count":30,"file":"concepts/10-weight.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv","concepts/japan-wave1-additions.tsv"]},
+    {"id":"WEIGHT","count":31,"file":"concepts/10-weight.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv","concepts/japan-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv"]},
     {"id":"RUN","count":44,"file":"concepts/11-run.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv"]},
-    {"id":"EQUIP","count":26,"file":"concepts/12-equip.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv"]},
-    {"id":"TRAIN","count":24,"file":"concepts/13-train.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv"]},
+    {"id":"EQUIP","count":27,"file":"concepts/12-equip.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv"]},
+    {"id":"TRAIN","count":25,"file":"concepts/13-train.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv"]},
     {"id":"MEET","count":39,"file":"concepts/14-meet.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv"]},
     {"id":"RESULT","count":28,"file":"concepts/15-result.tsv"},
     {"id":"PRIZE","count":12,"file":"concepts/16-prize.tsv","supplemental_files":["concepts/japan-wave1-additions.tsv"]},
@@ -59,15 +59,24 @@
       "sources_file": "sources/australia-new-zealand-sources-v1.tsv"
     },
     "japan": {
-      "status": "wave_1_in_progress",
-      "research_file": "jurisdictions/japan-research-v1.tsv",
-      "concept_additions_file": "concepts/japan-wave1-additions.tsv",
-      "labels_file": "labels/japan-labels-v1.tsv",
-      "definitions_file": "definitions/japan-definitions-v1.tsv",
-      "sources_file": "sources/japan-sources-v1.tsv"
+      "status": "wave_2_complete_for_current_pass",
+      "wave_1": {
+        "research_file": "jurisdictions/japan-research-v1.tsv",
+        "concept_additions_file": "concepts/japan-wave1-additions.tsv",
+        "labels_file": "labels/japan-labels-v1.tsv",
+        "definitions_file": "definitions/japan-definitions-v1.tsv",
+        "sources_file": "sources/japan-sources-v1.tsv"
+      },
+      "wave_2_nar_banei": {
+        "research_file": "jurisdictions/japan-nar-banei-research-v2.tsv",
+        "concept_additions_file": "concepts/japan-wave2-nar-banei-additions.tsv",
+        "labels_file": "labels/japan-nar-banei-labels-v2.tsv",
+        "definitions_file": "definitions/japan-nar-banei-definitions-v2.tsv",
+        "sources_file": "sources/japan-nar-banei-sources-v2.tsv"
+      }
     }
   },
   "next_work_id": "GLOSSARY-MASTER-003",
-  "next_work": "continue_japan_local_racing_and_banei_then_france_jurisdiction_research",
+  "next_work": "france_jurisdiction_research_from_french_primary_sources",
   "public_implementation": "deferred"
 }
