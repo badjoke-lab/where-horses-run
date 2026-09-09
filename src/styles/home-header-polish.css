@@ -33,6 +33,26 @@ html:lang(ja) :is(h1, h2, h3, h4, h5, h6) {
     font-size: .88rem;
     line-height: 1.45;
   }
+
+  /* The filter rail is utility UI, not microcopy. Keep labels, controls and counts readable at desktop size. */
+  .today-controls__filters label,
+  .today-controls__filters label:first-child {
+    font-size: .875rem;
+  }
+
+  .today-controls__filters select {
+    min-height: 42px;
+    font-size: .9rem;
+  }
+
+  .today-controls__reset {
+    font-size: .8125rem;
+  }
+
+  .today-state-summary__item,
+  .today-state-summary__total {
+    font-size: .8125rem;
+  }
 }
 
 @media (min-width: 721px) {
@@ -64,6 +84,27 @@ html:lang(ja) :is(h1, h2, h3, h4, h5, h6) {
   html:lang(ja) .desktop-timezone__summary,
   html:lang(ja) .desktop-more__summary {
     white-space: nowrap;
+  }
+}
+
+@media (max-width: 900px) {
+  .today-controls__period button {
+    font-size: .8125rem;
+  }
+
+  .today-controls__filters label,
+  .today-controls__filters label:first-child {
+    font-size: .8125rem;
+  }
+
+  .today-controls__filters select {
+    font-size: .875rem;
+  }
+
+  .today-controls__reset,
+  .today-state-summary__item,
+  .today-state-summary__total {
+    font-size: .8125rem;
   }
 }
 
