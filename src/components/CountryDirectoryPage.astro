@@ -12,21 +12,23 @@ interface Props {
   options: CountryFilterOptions;
 }
 
-const { locale, records, options } = Astro.props;
+const { locale, records } = Astro.props;
 const isJapanese = locale === 'ja';
 const directoryPath = isJapanese ? '/ja/countries/' : '/countries/';
+const calendarPath = isJapanese ? '/ja/calendar/' : '/calendar/';
+const tracksPath = isJapanese ? '/ja/tracks/' : '/tracks/';
 
 const racingTypeLabelsJa: Record<string, string> = {
-  'thoroughbred-flat': 'サラブレッド平地競走',
+  'thoroughbred-flat': 'サラブレッド平地',
   'thoroughbred-racing': 'サラブレッド競馬',
   'jump-racing': '障害競走',
   steeplechase: '障害競走',
-  'harness-racing': '繋駕速歩競走',
-  trotting: 'トロット競走',
-  pacing: 'ペース競走',
+  'harness-racing': '繋駕速歩',
+  trotting: 'トロット',
+  pacing: 'ペース',
   'arabian-racing': 'アラブ競馬',
-  'quarter-horse-racing': 'クォーターホース競走',
-  'banei-racing': 'ばんえい競馬',
+  'quarter-horse-racing': 'クォーターホース',
+  'banei-racing': 'ばんえい',
 };
 
 const regionLabelsJa: Record<string, string> = {
@@ -59,7 +61,7 @@ function humanize(value: string): string {
 }
 
 function racingTypeLabel(value: string): string {
-  return isJapanese ? racingTypeLabelsJa[value] ?? 'その他' : humanize(value);
+  return isJapanese ? racingTypeLabelsJa[value] ?? humanize(value) : humanize(value);
 }
 
 function regionLabel(value: string): string {
@@ -74,209 +76,339 @@ function regionLabel(value: string): string {
 <BaseLayout
   title={isJapanese ? '国・地域から探す | 競馬どこ？' : 'Countries and Regions | Where Horses Run'}
   description={isJapanese
-    ? '現在カレンダー対応中の競馬開催国・地域を、名称、地域、競馬種別から探せます。'
-    : 'Find countries and regions currently supported by the Calendar by name, region, or racing type.'}
+    ? '現在カレンダー対応中の競馬開催国・地域から、開催日程と競馬場を探せます。'
+    : 'Browse countries and regions currently supported by the Calendar, then open meetings and racecourses.'}
   lang={locale}
   canonicalPath={directoryPath}
   alternatePath={isJapanese ? '/countries/' : '/ja/countries/'}
 >
-  <div
-    data-country-directory
-    data-country-records={records.length}
-    data-country-regions={options.regions.length}
-    data-country-racing-types={options.racingTypes.length}
-  >
-    <section class="hero" aria-labelledby="page-title">
-      <p class="hero__eyebrow">{isJapanese ? 'カレンダー対応国' : 'Calendar-supported racing'}</p>
-      <h1 id="page-title">{isJapanese ? '国・地域から探す' : 'Countries and Regions'}</h1>
-      <p class="hero__summary">
-        {isJapanese
-          ? '現在カレンダー対応している国・地域を掲載しています。各ページから直近の開催、競馬場、地図、公式情報源を確認できます。'
-          : 'Browse countries and regions currently supported by the Calendar, then open each hub for meetings, racecourses, maps, and official sources.'}
-      </p>
-      <p>{isJapanese ? `現在${records.length}か国・地域に対応しています。` : `Calendar support currently covers ${records.length} countries and regions.`}</p>
-    </section>
-
-    <section aria-labelledby="region-navigation-heading" data-region-filter-navigation>
-      <h2 id="region-navigation-heading">{isJapanese ? '地域から探す' : 'Browse by region'}</h2>
-      <div class="section-grid">
-        {options.regions.map((region) => (
-          <article class="card" data-region-filter-card data-region-id={region.id} data-region-count={region.count}>
-            <h3>
-              <a
-                href={`${directoryPath}?region=${encodeURIComponent(region.id)}`}
-                data-region-filter-link
-                data-region-filter-id={region.id}
-              >
-                {regionLabel(region.id)}
-              </a>
-            </h3>
-            <p>{isJapanese ? `${region.count}か国・地域` : `${region.count} countries and regions`}</p>
-          </article>
-        ))}
+  <div class="countries-index" data-country-directory data-country-records={records.length}>
+    <header class="countries-index__hero" aria-labelledby="page-title">
+      <p class="countries-index__eyebrow">{isJapanese ? 'カレンダー対応国' : 'Calendar-supported countries'}</p>
+      <div class="countries-index__title-row">
+        <div>
+          <h1 id="page-title">{isJapanese ? '国・地域から探す' : 'Countries and Regions'}</h1>
+          <p>{isJapanese
+            ? '対応済みの国・地域を入口として、開催日程と競馬場へ進むための索引です。'
+            : 'A compact index for moving from supported countries and regions to meetings and racecourses.'}</p>
+        </div>
+        <strong>{isJapanese ? `${records.length}か国・地域` : `${records.length} supported`}</strong>
       </div>
+    </header>
+
+    <section class="countries-index__shortcuts" aria-label={isJapanese ? '主要導線' : 'Primary shortcuts'}>
+      <a href={calendarPath}>{isJapanese ? '開催日程を見る' : 'Open Calendar'} <span aria-hidden="true">→</span></a>
+      <a href={tracksPath}>{isJapanese ? '競馬場から探す' : 'Browse Racecourses'} <span aria-hidden="true">→</span></a>
     </section>
 
-    <section class="card" aria-labelledby="country-filter-heading">
-      <h2 id="country-filter-heading">{isJapanese ? '国・地域を絞り込む' : 'Filter countries and regions'}</h2>
-      <form data-country-filter-form role="search">
-        <p>
-          <label for="country-filter-query"><strong>{isJapanese ? '名称・キーワード' : 'Name or keyword'}</strong></label><br />
-          <input
-            id="country-filter-query"
-            name="q"
-            type="search"
-            autocomplete="off"
-            placeholder={isJapanese ? '例：日本、アジア、ばんえい' : 'Example: Japan, Asia, harness'}
-            data-country-filter-query
-          />
-        </p>
-        <p>
-          <label for="country-filter-region"><strong>{isJapanese ? '地域' : 'Region'}</strong></label><br />
-          <select id="country-filter-region" name="region" data-country-filter-region>
-            <option value="all">{isJapanese ? 'すべての地域' : 'All regions'}</option>
-            {options.regions.map((region) => (
-              <option value={region.id}>{regionLabel(region.id)} ({region.count})</option>
-            ))}
-          </select>
-        </p>
-        <p>
-          <label for="country-filter-racing-type"><strong>{isJapanese ? '競馬種別' : 'Racing type'}</strong></label><br />
-          <select id="country-filter-racing-type" name="racing_type" data-country-filter-racing-type>
-            <option value="all">{isJapanese ? 'すべての競馬種別' : 'All racing types'}</option>
-            {options.racingTypes.map((racingType) => <option value={racingType}>{racingTypeLabel(racingType)}</option>)}
-          </select>
-        </p>
-        <p>
-          <button type="submit">{isJapanese ? '適用' : 'Apply filters'}</button>{' '}
-          <button type="button" data-country-filter-reset>{isJapanese ? '条件を解除' : 'Clear filters'}</button>
-        </p>
-      </form>
-      <p aria-live="polite" data-country-filter-count>
-        {isJapanese ? `${records.length}件を表示中` : `Showing ${records.length} records`}
-      </p>
-      <noscript>
+    <section class="countries-index__section" aria-labelledby="supported-countries-heading">
+      <div class="countries-index__section-heading">
+        <h2 id="supported-countries-heading">{isJapanese ? '対応中の国・地域' : 'Supported countries and regions'}</h2>
         <p>{isJapanese
-          ? 'JavaScriptが無効な場合も、下の一覧から国・地域を選べます。'
-          : 'With JavaScript disabled, the complete country and region list remains available below.'}</p>
-      </noscript>
-    </section>
+          ? 'カレンダー対応が確認できている国・地域だけを掲載しています。'
+          : 'Only countries and regions with reviewed Calendar support are shown here.'}</p>
+      </div>
 
-    <section class="section-grid" aria-label={isJapanese ? '国・地域一覧' : 'Country and region list'} data-country-filter-results>
-      {records.map((record) => (
-        <article
-          class="card"
-          data-country-record
-          data-country-id={record.id}
-          data-country-region={record.region}
-          data-country-regions={record.regions.join('|')}
-          data-country-racing-types={record.racingTypes.join('|')}
-          data-country-search-text={record.searchText}
-        >
-          <h2><a href={record.href}>{record.name}</a></h2>
-          {record.alternateName && record.alternateName !== record.name && (
-            <p><strong>{isJapanese ? '別名' : 'Alternate name'}:</strong> {record.alternateName}</p>
-          )}
-          {record.localName && ![record.name, record.alternateName].includes(record.localName) && (
-            <p><strong>{isJapanese ? '現地表記' : 'Local name'}:</strong> {record.localName}</p>
-          )}
-          <p>{record.summary}</p>
-          <p><strong>{isJapanese ? '地域' : 'Region'}:</strong> {regionLabel(record.region)}</p>
-          <p><strong>{isJapanese ? '競馬種別' : 'Racing types'}:</strong> {record.racingTypes.length ? record.racingTypes.map(racingTypeLabel).join(' · ') : (isJapanese ? '未分類' : 'Not classified')}</p>
-        </article>
-      ))}
-    </section>
+      <div class="countries-index__list">
+        {records.map((record) => {
+          const typeLabels = record.racingTypes.map(racingTypeLabel);
+          const secondaryName = record.alternateName && record.alternateName !== record.name
+            ? record.alternateName
+            : record.localName && record.localName !== record.name
+              ? record.localName
+              : '';
+          return (
+            <article class="countries-index__row" data-country-record data-country-id={record.id}>
+              <div class="countries-index__identity">
+                <h3><a href={record.href}>{record.name}</a></h3>
+                {secondaryName && <span>{secondaryName}</span>}
+              </div>
 
-    <section class="card" data-country-filter-empty hidden>
-      <h2>{isJapanese ? '該当する国・地域がありません' : 'No matching countries or regions'}</h2>
-      <p>{isJapanese
-        ? 'キーワードを短くするか、地域または競馬種別を「すべて」に戻してください。'
-        : 'Try a shorter keyword or reset the region or racing type filter to All.'}</p>
+              <div class="countries-index__meta">
+                <span>{regionLabel(record.region)}</span>
+                {typeLabels.length > 0 && <span>{typeLabels.join(' · ')}</span>}
+              </div>
+
+              <nav class="countries-index__actions" aria-label={isJapanese ? `${record.name}のリンク` : `${record.name} links`}>
+                <a href={`${calendarPath}?country=${encodeURIComponent(record.id)}`}>{isJapanese ? '日程' : 'Calendar'}</a>
+                <a href={`${tracksPath}?country=${encodeURIComponent(record.id)}`}>{isJapanese ? '競馬場' : 'Racecourses'}</a>
+              </nav>
+            </article>
+          );
+        })}
+      </div>
     </section>
   </div>
 
-  <script is:inline>
-    (() => {
-      const root = document.querySelector('[data-country-directory]');
-      if (!root) return;
+  <style>
+    .countries-index {
+      width: min(1080px, 100%);
+      margin-inline: auto;
+      padding-block: .5rem 3rem;
+    }
 
-      const form = root.querySelector('[data-country-filter-form]');
-      const queryInput = root.querySelector('[data-country-filter-query]');
-      const regionSelect = root.querySelector('[data-country-filter-region]');
-      const racingTypeSelect = root.querySelector('[data-country-filter-racing-type]');
-      const resetButton = root.querySelector('[data-country-filter-reset]');
-      const count = root.querySelector('[data-country-filter-count]');
-      const empty = root.querySelector('[data-country-filter-empty]');
-      const records = [...root.querySelectorAll('[data-country-record]')];
-      const regionLinks = [...root.querySelectorAll('[data-region-filter-link]')];
-      const isJapanese = document.documentElement.lang === 'ja';
+    .countries-index__hero {
+      padding: .35rem 0 1.2rem;
+      border-bottom: 1px solid var(--whr-color-border);
+    }
 
-      if (!form || !queryInput || !regionSelect || !racingTypeSelect || !resetButton || !count || !empty) return;
+    .countries-index__eyebrow {
+      margin: 0 0 .35rem;
+      color: var(--whr-color-muted);
+      font-size: .76rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
 
-      const normalize = (value) => value
-        .normalize('NFKC')
-        .toLocaleLowerCase()
-        .replace(/\s+/g, ' ')
-        .trim();
+    .countries-index__title-row {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
 
-      const params = new URLSearchParams(window.location.search);
-      queryInput.value = params.get('q') ?? '';
+    .countries-index__title-row h1 {
+      margin: 0;
+      color: var(--whr-color-navy);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      line-height: 1.04;
+    }
 
-      const restoreSelect = (select, parameter) => {
-        const requested = params.get(parameter) ?? 'all';
-        if ([...select.options].some((option) => option.value === requested)) select.value = requested;
-      };
-      restoreSelect(regionSelect, 'region');
-      restoreSelect(racingTypeSelect, 'racing_type');
+    .countries-index__title-row p {
+      max-width: 44rem;
+      margin: .55rem 0 0;
+      color: var(--whr-color-muted);
+      line-height: 1.55;
+    }
 
-      const apply = () => {
-        const query = normalize(queryInput.value);
-        const region = regionSelect.value;
-        const racingType = racingTypeSelect.value;
-        let visible = 0;
+    .countries-index__title-row > strong {
+      flex: 0 0 auto;
+      padding-bottom: .2rem;
+      color: var(--whr-color-muted);
+      font-size: .85rem;
+    }
 
-        for (const record of records) {
-          const regions = (record.dataset.countryRegions ?? '').split('|').filter(Boolean);
-          const racingTypes = (record.dataset.countryRacingTypes ?? '').split('|').filter(Boolean);
-          const show =
-            (!query || (record.dataset.countrySearchText ?? '').includes(query)) &&
-            (region === 'all' || regions.includes(region)) &&
-            (racingType === 'all' || racingTypes.includes(racingType));
-          record.hidden = !show;
-          if (show) visible += 1;
-        }
+    .countries-index__shortcuts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .55rem;
+      padding: .9rem 0;
+      border-bottom: 1px solid var(--whr-color-border);
+    }
 
-        for (const link of regionLinks) {
-          if (region !== 'all' && link.dataset.regionFilterId === region) link.setAttribute('aria-current', 'page');
-          else link.removeAttribute('aria-current');
-        }
+    .countries-index__shortcuts a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      padding: .5rem .7rem;
+      border: 1px solid var(--whr-color-border);
+      border-radius: .45rem;
+      color: var(--whr-color-navy);
+      font-size: .84rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
 
-        count.textContent = isJapanese ? `${visible}件を表示中` : `Showing ${visible} records`;
-        empty.hidden = visible !== 0;
+    .countries-index__shortcuts a:hover,
+    .countries-index__shortcuts a:focus-visible,
+    .countries-index__identity a:hover,
+    .countries-index__identity a:focus-visible,
+    .countries-index__actions a:hover,
+    .countries-index__actions a:focus-visible {
+      text-decoration: underline;
+      text-underline-offset: .2em;
+    }
 
-        const next = new URLSearchParams();
-        if (queryInput.value.trim()) next.set('q', queryInput.value.trim());
-        if (region !== 'all') next.set('region', region);
-        if (racingType !== 'all') next.set('racing_type', racingType);
-        const nextUrl = `${window.location.pathname}${next.size ? `?${next}` : ''}`;
-        window.history.replaceState(null, '', nextUrl);
-      };
+    .countries-index__section {
+      padding-top: 1.25rem;
+    }
 
-      form.addEventListener('submit', (event) => {
-        event.preventDefault();
-        apply();
-      });
-      queryInput.addEventListener('input', apply);
-      regionSelect.addEventListener('change', apply);
-      racingTypeSelect.addEventListener('change', apply);
-      resetButton.addEventListener('click', () => {
-        queryInput.value = '';
-        regionSelect.value = 'all';
-        racingTypeSelect.value = 'all';
-        apply();
-        queryInput.focus();
-      });
-      apply();
-    })();
-  </script>
+    .countries-index__section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: .65rem;
+    }
+
+    .countries-index__section-heading h2,
+    .countries-index__section-heading p {
+      margin: 0;
+    }
+
+    .countries-index__section-heading h2 {
+      color: var(--whr-color-navy);
+      font-size: 1.2rem;
+    }
+
+    .countries-index__section-heading p {
+      color: var(--whr-color-muted);
+      font-size: .8rem;
+    }
+
+    .countries-index__list {
+      border-top: 2px solid var(--whr-color-text);
+    }
+
+    .countries-index__row {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) minmax(260px, 1.25fr) auto;
+      align-items: center;
+      gap: 1rem;
+      min-width: 0;
+      padding: .9rem .15rem;
+      border-bottom: 1px solid var(--whr-color-border);
+    }
+
+    .countries-index__identity,
+    .countries-index__meta {
+      min-width: 0;
+    }
+
+    .countries-index__identity h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .countries-index__identity h3 a {
+      color: var(--whr-color-navy);
+      font-weight: 800;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    .countries-index__identity > span {
+      display: block;
+      margin-top: .18rem;
+      color: var(--whr-color-muted);
+      font-size: .75rem;
+      overflow-wrap: anywhere;
+    }
+
+    .countries-index__meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .25rem .7rem;
+      color: var(--whr-color-muted);
+      font-size: .8rem;
+      line-height: 1.4;
+    }
+
+    .countries-index__meta span + span::before {
+      content: '·';
+      margin-right: .7rem;
+    }
+
+    .countries-index__actions {
+      display: flex;
+      gap: .35rem;
+      justify-content: flex-end;
+    }
+
+    .countries-index__actions a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 36px;
+      padding: .4rem .55rem;
+      border: 1px solid var(--whr-color-border);
+      border-radius: .4rem;
+      color: var(--whr-color-navy);
+      font-size: .75rem;
+      font-weight: 800;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 760px) {
+      .countries-index {
+        padding-block: .1rem 4.5rem;
+      }
+
+      .countries-index__title-row {
+        display: block;
+      }
+
+      .countries-index__title-row h1 {
+        font-size: clamp(1.8rem, 8vw, 2.4rem);
+      }
+
+      .countries-index__title-row p {
+        margin-top: .4rem;
+        font-size: .88rem;
+      }
+
+      .countries-index__title-row > strong {
+        display: block;
+        margin-top: .45rem;
+        padding: 0;
+        font-size: .78rem;
+      }
+
+      .countries-index__section-heading {
+        display: block;
+      }
+
+      .countries-index__section-heading p {
+        margin-top: .3rem;
+      }
+
+      .countries-index__row {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: .55rem .8rem;
+        padding: .8rem .05rem;
+      }
+
+      .countries-index__identity {
+        grid-column: 1;
+      }
+
+      .countries-index__meta {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        font-size: .76rem;
+      }
+
+      .countries-index__actions {
+        grid-column: 2;
+        grid-row: 1;
+      }
+    }
+
+    @media (max-width: 460px) {
+      .countries-index__shortcuts {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .countries-index__shortcuts a {
+        justify-content: center;
+        text-align: center;
+      }
+
+      .countries-index__row {
+        grid-template-columns: 1fr;
+      }
+
+      .countries-index__identity,
+      .countries-index__actions,
+      .countries-index__meta {
+        grid-column: 1;
+      }
+
+      .countries-index__identity {
+        grid-row: 1;
+      }
+
+      .countries-index__meta {
+        grid-row: 2;
+      }
+
+      .countries-index__actions {
+        grid-row: 3;
+        justify-content: flex-start;
+      }
+    }
+  </style>
 </BaseLayout>
