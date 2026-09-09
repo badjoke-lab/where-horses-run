@@ -1,0 +1,174 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RacecourseLocationMapSection from './RacecourseLocationMapSection.astro';
+import RacecourseMeetingSummary from './RacecourseMeetingSummary.astro';
+import locationRegistry from '../../data/static/racecourse-locations-v1.json';
+import {
+  getCalendarCountryDisplayName,
+  getCalendarRacecourseDisplayName,
+  getCalendarRacecourseDisplayNames,
+} from '../lib/calendarDisplayNames';
+import { getCountries } from '../lib/data';
+import { getPublicRacecourseMeetingState } from '../lib/racecourses/publicRacecourseMeetingState';
+import { getRacingTypeById } from '../lib/racingTypes';
+import '../styles/racecourse-detail-v3.css';
+
+interface Props {
+  track: any;
+  locale?: 'en' | 'ja';
+}
+
+const { track, locale = 'en' } = Astro.props;
+const isJa = locale === 'ja';
+const prefix = isJa ? '/ja' : '';
+const country = getCountries().find((entry) => entry.id === track.country_id) as any;
+const countryName = getCalendarCountryDisplayName(track.country_id, country?.name_en ?? track.country_id, locale);
+const names = getCalendarRacecourseDisplayNames(track.id, track.name_en);
+const racecourseName = getCalendarRacecourseDisplayName(track.id, track.name_en, locale);
+const secondaryName = isJa ? names.nameEn : names.nameLocal ?? names.nameJa;
+const meetingState = getPublicRacecourseMeetingState(track.id, track.timezone);
+const locationEntry = (locationRegistry as any).locations?.find((entry: any) => entry?.id === track.id) ?? null;
+const location = locationEntry?.location ?? null;
+const locality = [track.city, track.region].filter((value: unknown) => typeof value === 'string' && value.trim()).join(' / ');
+const countryHref = country ? `${prefix}/countries/${country.slug}/` : `${prefix}/countries/`;
+const tracksHref = `${prefix}/tracks/`;
+const calendarHref = `${prefix}/calendar/`;
+const primaryMeeting = meetingState.today_meetings[0] ?? meetingState.next_meetings[0] ?? null;
+const nextMeetingHref = primaryMeeting?.detail_path
+  ? `${isJa ? '/ja' : ''}${primaryMeeting.detail_path}`
+  : primaryMeeting?.date
+    ? `${calendarHref}?date=${encodeURIComponent(primaryMeeting.date)}`
+    : calendarHref;
+
+const officialLinks = (Array.isArray(track.official_links) ? track.official_links : [])
+  .map((link: any) => ({
+    label: isJa ? link?.label_ja ?? link?.label_en : link?.label_en ?? link?.label_ja,
+    url: link?.url,
+    type: link?.link_type ?? '',
+  }))
+  .filter((link: any) => typeof link.label === 'string' && link.label.trim() && typeof link.url === 'string' && link.url.trim());
+const primaryOfficial = officialLinks.find((link: any) => link.type === 'official-site')
+  ?? officialLinks.find((link: any) => link.type === 'racecourse')
+  ?? officialLinks[0]
+  ?? null;
+const primaryScheduleUrl = officialLinks.find((link: any) => link.type === 'schedule')?.url ?? primaryOfficial?.url;
+
+const racingTypes = (Array.isArray(track.racing_types) ? track.racing_types : [])
+  .map((id: string) => getRacingTypeById(id))
+  .filter(Boolean)
+  .map((type: any) => ({ label: isJa ? type.name_ja : type.name_en, href: `${prefix}/types/${type.slug}/` }));
+const surfaceLabels: Record<string, { en: string; ja: string }> = {
+  turf: { en: 'Turf', ja: '芝' },
+  dirt: { en: 'Dirt', ja: 'ダート' },
+  'all-weather': { en: 'All-weather', ja: 'オールウェザー' },
+  sand: { en: 'Sand', ja: '砂' },
+  'jump-course': { en: 'Jump course', ja: '障害' },
+};
+const surfaces = (Array.isArray(track.surfaces) ? track.surfaces : [])
+  .filter((value: unknown): value is string => typeof value === 'string' && value.trim())
+  .map((value: string) => isJa ? surfaceLabels[value]?.ja ?? value : surfaceLabels[value]?.en ?? value);
+const directionLabels: Record<string, { en: string; ja: string }> = {
+  'left-handed': { en: 'Left-handed', ja: '左回り' },
+  'right-handed': { en: 'Right-handed', ja: '右回り' },
+  'both-directions': { en: 'Both directions', ja: '両回り' },
+  straight: { en: 'Straight', ja: '直線' },
+};
+const direction = typeof track.direction === 'string' && track.direction !== 'unknown'
+  ? (isJa ? directionLabels[track.direction]?.ja : directionLabels[track.direction]?.en) ?? track.direction
+  : null;
+const status = typeof track.status === 'string' && track.status ? track.status : null;
+const scheduleRank = primaryMeeting?.effective_public_rank ?? null;
+const latestLocationCheck = location?.location_last_checked ?? null;
+const pageTitle = isJa ? `${racecourseName} | 競馬場 | 競馬どこ？` : `${racecourseName} | Racecourses | Where Horses Run`;
+const pageDescription = isJa
+  ? `${racecourseName}の確認済み所在地、直近の開催予定、公式情報源を確認できます。`
+  : `Reviewed location, upcoming meetings, and official sources for ${racecourseName}.`;
+const pick = (en: string, ja: string) => isJa ? ja : en;
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  lang={locale}
+  canonicalPath={`${prefix}/tracks/${track.slug}/`}
+  alternatePath={`${isJa ? '' : '/ja'}/tracks/${track.slug}/`}
+>
+  <main class="racecourse-detail-v3" data-racecourse-detail-v3 data-racecourse-id={track.id}>
+    <nav class="racecourse-detail-v3__breadcrumbs" aria-label={pick('Breadcrumb', 'パンくずリスト')}>
+      <a href={prefix ? `${prefix}/` : '/'}>{pick('Home', 'ホーム')}</a>
+      <span aria-hidden="true">›</span>
+      <a href={tracksHref}>{pick('Racecourses', '競馬場')}</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">{racecourseName}</span>
+    </nav>
+
+    <header class="racecourse-detail-v3__header">
+      <div class="racecourse-detail-v3__title">
+        <h1>{racecourseName}</h1>
+        {secondaryName && secondaryName !== racecourseName ? <p>{secondaryName}</p> : null}
+      </div>
+
+      <div class="racecourse-detail-v3__chips" aria-label={pick('Basic racecourse facts', '競馬場の基本情報')}>
+        <a href={countryHref}>{countryName}</a>
+        {locality ? <span>{locality}</span> : null}
+        {track.timezone ? <span>{track.timezone}</span> : null}
+        {racingTypes.map((type) => <a href={type.href}>{type.label}</a>)}
+        {surfaces.length ? <span>{surfaces.join(' / ')}</span> : null}
+        {direction ? <span>{direction}</span> : null}
+        {status ? <span>{status}</span> : null}
+      </div>
+
+      <div class="racecourse-detail-v3__actions">
+        {primaryOfficial ? <a class="button-like" href={primaryOfficial.url}>{pick('Official site ↗', '公式サイト ↗')}</a> : null}
+        <a href={calendarHref}>{pick('View in Calendar', 'カレンダーで見る')}</a>
+        {primaryMeeting ? <a href={nextMeetingHref}>{pick('Next meeting', '次の開催を見る')} →</a> : null}
+      </div>
+    </header>
+
+    <div class="racecourse-detail-v3__layout">
+      <div class="racecourse-detail-v3__main">
+        <RacecourseLocationMapSection
+          racecourseId={track.id}
+          racecourseName={racecourseName}
+          contextText={[locality, countryName].filter(Boolean).join(' / ') || undefined}
+          lang={locale}
+        />
+
+        <section class="racecourse-detail-v3__related" aria-labelledby="racecourse-related-heading">
+          <h2 id="racecourse-related-heading">{pick('Related links', '関連リンク')}</h2>
+          <div>
+            <a href={countryHref}><strong>{countryName}</strong><span>{pick('Country racing page', '国・地域の競馬情報')}</span></a>
+            <a href={calendarHref}><strong>{pick(`${racecourseName} meetings`, `${racecourseName}の開催一覧`)}</strong><span>{pick('Open Calendar', '開催スケジュールを見る')}</span></a>
+            <a href={tracksHref}><strong>{pick('All racecourses', 'すべての競馬場')}</strong><span>{pick('Browse racecourses', '競馬場一覧へ')}</span></a>
+          </div>
+        </section>
+      </div>
+
+      <aside class="racecourse-detail-v3__sidebar" aria-label={pick('Meeting and source information', '開催・情報源')}>
+        <RacecourseMeetingSummary state={meetingState} lang={locale} officialScheduleUrl={primaryScheduleUrl} />
+
+        <section class="racecourse-detail-v3__panel" aria-labelledby="racecourse-sources-heading">
+          <h2 id="racecourse-sources-heading">{pick('Official sources', '公式ソース')}</h2>
+          {officialLinks.length ? (
+            <ul>
+              {officialLinks.map((link: any) => <li><a href={link.url}>{link.label} ↗</a></li>)}
+            </ul>
+          ) : (
+            <p>{pick('No racecourse-specific official source is currently published.', 'この競馬場に紐づく公式情報源は現在公開していません。')}</p>
+          )}
+        </section>
+
+        <section class="racecourse-detail-v3__panel" aria-labelledby="racecourse-data-heading">
+          <h2 id="racecourse-data-heading">{pick('Data status', 'データ収録状況')}</h2>
+          <dl class="racecourse-detail-v3__status-list">
+            <div><dt>Venue identity</dt><dd data-status="ok">{pick('Verified', '検証済み')}</dd></div>
+            <div><dt>Location</dt><dd data-status={location ? 'ok' : 'pending'}>{location ? pick('Verified', '検証済み') : pick('Pending', '未確認')}</dd></div>
+            <div><dt>Schedule</dt><dd data-status={scheduleRank ? 'ok' : 'pending'}>{scheduleRank ?? pick('No current-window rank', '現在窓のランクなし')}</dd></div>
+            <div><dt>Course profile</dt><dd data-status="pending">{pick('Not published', '未公開')}</dd></div>
+            {latestLocationCheck ? <div><dt>{pick('Location checked', '位置最終確認')}</dt><dd>{latestLocationCheck}</dd></div> : null}
+          </dl>
+        </section>
+      </aside>
+    </div>
+  </main>
+</BaseLayout>
