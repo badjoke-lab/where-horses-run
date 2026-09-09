@@ -11,24 +11,26 @@ This addendum creates a parallel glossary knowledge lane. It does not supersede 
 ## Current glossary stage
 
 ```text
-Glossary stage: world_terminology_master_construction
+Glossary stage: jurisdiction_and_local_language_research
 Completed: GLOSSARY-MASTER-001
 Completed: GLOSSARY-MASTER-002
 Current glossary Work ID: GLOSSARY-MASTER-003
 Next: GLOSSARY-MASTER-004
-Immediate output: core worldwide concept inventory / working master
+Current seed: 501 candidate Concepts / 18 domain categories
 Public glossary page expansion: deferred
 Automatic glossary publication: disabled
-Legacy public glossary routes: may remain
+Existing public glossary content: disposable legacy runtime baseline
 ```
 
-The current task is to build the terminology master before committing to a new public glossary information architecture or broad route expansion.
+The current task is to verify and expand the world terminology master before committing to a new public glossary information architecture or route expansion.
 
-## Why the sequence changes
+## Programme objective
 
-The existing glossary implementation is a useful legacy baseline, but it was designed around a smaller bilingual term set and cannot serve as the canonical model for worldwide racing terminology.
+The glossary is first a useful user-facing horse-racing knowledge resource. Because WHR is a later entrant, its knowledge structure must also support strong Google/Bing and AI-search discovery through explicit concepts, local terminology, relationships, evidence, regional differences, and search intents.
 
-Worldwide racing terminology is not globally standardized. The glossary must first represent:
+Search metadata must remain separate from canonical knowledge truth.
+
+Worldwide racing terminology is not globally standardized. The master must represent:
 
 - language-independent concepts;
 - local-language and original-script labels;
@@ -41,8 +43,6 @@ Worldwide racing terminology is not globally standardized. The glossary must fir
 - source/evidence provenance;
 - search-discovery intents separated from canonical knowledge.
 
-Public-page expansion before this model is sufficiently reviewed risks freezing an English/Japanese-first or false-synonym structure into the site.
-
 ## Active glossary sequence
 
 ### `GLOSSARY-MASTER-001` — specification and authority
@@ -53,81 +53,88 @@ Completed output:
 
 - `docs/glossary/world-racing-terminology-master-spec.md`;
 - concept-first authority over future glossary expansion;
-- current public glossary preserved as a legacy baseline rather than completeness authority;
-- master-list-first / public-pages-later boundary recorded.
+- multilingual/regional/slang/historical/evidence/search model defined;
+- master-list-first / public-pages-later boundary recorded;
+- existing public glossary explicitly excluded as a completeness target.
 
-### `GLOSSARY-MASTER-002` — normalized working master and legacy audit
+### `GLOSSARY-MASTER-002` — zero-based world concept seed
 
 Status: **complete**.
 
 Completed output:
 
-- recovered the complete legacy public-v1 contract as 48 concepts / nine categories;
-- identified the runtime composition as 31 base records + five role additions + four timetable/data additions + eight official/governance additions;
-- created `data/glossary-master/README.md` with normalized domain/file contracts;
-- created `data/glossary-master/legacy-migration-v1.tsv` with exactly 48 migration rows;
-- created `docs/glossary/legacy-runtime-audit-2026-09-09.md`;
-- assigned every legacy concept an explicit migration decision instead of silently copying old headwords/categories;
-- surfaced reclassification, split, regional-scope, operational-term, and governance-taxonomy problems;
-- did not treat old review status as new master evidence verification.
+- new inventory built from zero rather than from the existing 48-term runtime;
+- **501 candidate Concepts** across **18 domain categories**;
+- P0: **156**;
+- P1: **212**;
+- P2: **118**;
+- P3: **15**;
+- all rows start `verification_status=candidate` and `public_ready=no`;
+- repository source rows stored under `data/glossary-master/concepts/`;
+- current public glossary IDs/headwords/categories are not migration requirements;
+- site-specific vocabulary such as `Official live` and account/access labels is separated from horse-racing domain terminology.
 
-Material MASTER-002 findings include:
+The 501 count is a research seed, **not** a worldwide completeness claim.
 
-```text
-post-time -> variant under scheduled-race-start-time proposal
-jump-course -> course structure, not surface
-all-weather course -> all-weather surface proposal
-meeting -> Race meeting proposal, with Meeting retained as label
-entries -> split required
-results -> split required
-link-first-source/source-status -> WHR operations, not automatic public-world-glossary concepts
-governing-body/racing-authority/racecourse-operator -> taxonomy gap review
-```
-
-### `GLOSSARY-MASTER-003` — core worldwide concept inventory
+### `GLOSSARY-MASTER-003` — jurisdiction and local-language terminology
 
 Status: **current**.
 
-- expand the concept inventory across the controlled taxonomy;
-- include racing systems, meetings, race types/conditions, entry process, horses, pedigree, roles, racecourses, surfaces/conditions, distance, weights, race progression, equipment, training, results/adjudication, and betting terminology;
-- identify concept boundaries and common confusion pairs before translation expansion;
-- resolve the governance/organization taxonomy gap exposed by MASTER-002 without force-fitting organizations into People and roles;
-- assign stable master `concept_id` values only after concept boundaries are accepted;
-- populate working-master structures rather than modifying current public glossary routes.
+Research each jurisdiction/language bottom-up from terminology actually used there.
 
-### `GLOSSARY-MASTER-004` — jurisdiction and local-language terminology
+Required work:
 
-Status: queued after MASTER-003.
+- identify governing authorities, official rulebooks, glossaries, racecards/programmes, and other authoritative racing material;
+- preserve original-script terminology;
+- add official, preferred, alternate, abbreviation, and regional labels with language/locale/jurisdiction/discipline metadata;
+- map local labels to existing Concepts only when the semantic match is supportable;
+- create new Concepts when a local concept is genuinely absent from the 501 seed;
+- record `no_direct_equivalent` rather than inventing a translation;
+- split homonyms and same-spelling/different-meaning cases explicitly;
+- record evidence at the claim level.
 
-- research terminology bottom-up from material actually used in each jurisdiction/language;
-- preserve original script;
-- map local terms to existing concepts only when justified;
-- create local-only concepts where required;
-- record `no_direct_equivalent` instead of inventing translations;
-- capture authority/jurisdiction/discipline/period context.
+Priority research should cover major racing systems and jurisdictions first, while keeping the data model capable of accepting smaller/local systems without redesign.
 
-### `GLOSSARY-MASTER-005` — colloquial, slang, historical, and evidence pass
+### `GLOSSARY-MASTER-004` — colloquial, slang, industry, and historical terminology
+
+Status: queued after MASTER-003 has enough jurisdiction evidence.
+
+Required work:
+
+- collect established colloquial, industry, slang, historic, deprecated, and obsolete forms;
+- attach jurisdiction, discipline, audience/register, currentness, and confidence;
+- use evidence appropriate to the claim instead of demanding official-rulebook proof for slang;
+- reject one-off social-media wording as insufficient evidence;
+- preserve historical terms where they help users understand older racing publications and records.
+
+### `GLOSSARY-MASTER-005` — relationship/equivalence and evidence refinement
 
 Status: queued.
 
-- add established colloquial, industry, slang, historic, deprecated, and obsolete forms;
-- distinguish them from official/preferred labels;
-- attach claim-appropriate evidence, usage context, currentness, and confidence;
-- route ambiguous or weakly evidenced forms to Review Queue rather than publishing guesses.
+Required work:
 
-### `GLOSSARY-MASTER-006` — search-intent and coverage review
+- review `exact_equivalent`, `close_equivalent`, `broader`, `narrower`, `related`, `contrast`, `regional_counterpart`, and `no_direct_equivalent` relations;
+- add explicit ambiguity/homonym relations where one spelling has multiple meanings;
+- resolve common false-synonym risks such as Meeting/Fixture/Race day, Racecourse/Racetrack/Track, Going/Track condition, and regional race-class terminology;
+- verify definitions and jurisdiction claims against source evidence;
+- keep unresolved conflicts visible in a review queue.
+
+### `GLOSSARY-MASTER-006` — search-intent, coverage, and readiness review
 
 Status: queued.
 
-- map definition, comparison, regional, how/why, translation, and abbreviation search intents to reviewed concepts;
+Required work:
+
+- map definition, comparison, regional, how/why, translation, abbreviation, and racecard-reading search intents to reviewed concepts;
 - keep search metadata separate from canonical concept truth;
+- identify useful comparison and regional-difference content rather than mechanically generating thin pages;
 - produce coverage views by taxonomy, jurisdiction, language, evidence state, and review state;
-- identify knowledge gaps and high-value comparison/regional topics;
+- identify remaining knowledge gaps;
 - decide whether the master is mature enough to enter public implementation planning.
 
 ## Explicitly deferred public implementation lane
 
-Do not start this lane merely because individual terms are reviewed.
+Do not start this lane merely because individual terms have been reviewed.
 
 ```text
 GLOSSARY-PUBLIC-001  public information architecture / URL contract
@@ -135,7 +142,7 @@ GLOSSARY-PUBLIC-002  concept-page and category-page content contract
 GLOSSARY-PUBLIC-003  multilingual/local-label presentation rules
 GLOSSARY-PUBLIC-004  comparison/regional content presentation
 GLOSSARY-PUBLIC-005  structured data / metadata / machine-readable projection
-GLOSSARY-PUBLIC-006  internal-link integration with countries, racecourses, types, and other relevant pages
+GLOSSARY-PUBLIC-006  internal-link integration with countries, racecourses, racing types, and related pages
 GLOSSARY-PUBLIC-007  EN/JA/responsive/accessibility/SEO/AI-discovery QA
 GLOSSARY-PUBLIC-008  reviewed public rollout
 ```
@@ -148,29 +155,29 @@ A new glossary public-page expansion/redesign may begin only after a reviewed de
 
 ```text
 concept model is stable enough
-legacy terms have explicit migration dispositions
-core taxonomy coverage is credible
-major regional terminology differences can be represented
-no-direct-equivalent cases work without invented translations
+core domain coverage is credible
+major jurisdiction and local-language differences can be represented
+original-script and no-direct-equivalent cases work without invented translations
 slang/historical handling is evidence-bound
 source provenance is usable
+important concept relationships and ambiguity cases are reviewed
 search intents are mapped separately from knowledge truth
 coverage/review gaps are visible
 ```
 
-A raw term-count target is not sufficient.
+A raw term-count target is not sufficient. **There is no legacy-record migration gate.**
 
-## Relationship to existing public glossary pages
+## Replacement rule for the existing public glossary
 
-Current glossary index/detail routes are not required to be removed during master construction.
+The current glossary is a disposable runtime/content baseline, not an input to the world master.
 
-However:
+During master construction it may remain online. When `GLOSSARY-PUBLIC-*` is later authorized:
 
-- do not treat their current records as the full worldwide master;
-- do not mass-expand routes from unreviewed rows;
-- do not force new concepts into the legacy v2 field/category assumptions when that would lose regional or semantic meaning;
-- do not rewrite official/local terminology to fit an English-first hierarchy;
-- do not use the glossary to bypass prohibited public-data boundaries.
+- current glossary content may be deleted wholesale;
+- no one-to-one migration of old IDs/headwords/categories is required;
+- reviewed new master data may become the source for regenerated public glossary content;
+- reusable routing or UI code may be retained only when it satisfies the new public contract;
+- old glossary review status is not evidence for new master claims.
 
 ## Publication boundary
 
@@ -188,8 +195,9 @@ Glossary master work must not block Calendar corrections, racecourse data qualit
 
 ```text
 Current glossary Work ID: GLOSSARY-MASTER-003
+Current input: data/glossary-master/concepts/*.tsv — 501 candidate Concepts
 Next: GLOSSARY-MASTER-004
 Public implementation: deferred until post-MASTER-006 readiness review
 ```
 
-Conversation history is not the execution authority. Future glossary-list work should read `docs/glossary/world-racing-terminology-master-spec.md`, `docs/glossary/legacy-runtime-audit-2026-09-09.md`, `data/glossary-master/README.md`, and this addendum first.
+Conversation history is not the execution authority. Future glossary-list work should read `docs/glossary/world-racing-terminology-master-spec.md`, `data/glossary-master/README.md`, and this addendum first.
