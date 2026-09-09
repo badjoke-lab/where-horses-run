@@ -16,8 +16,8 @@ The completed historical 98-country publication programme remains evidence of ga
 ## Current UI/product Work IDs
 
 ```text
-UI-008A — define and implement Calendar-supported Country public gate [current]
-UI-008B — Japan Country reference page [next]
+UI-008A — Calendar-supported Country public gate [complete: main a2d8b88802e54f5c67846a165d4f421e76ac44df]
+UI-008B — Japan Country reference page [current]
 UI-008C — Tokyo Racecourse reference page [next]
 UI-008D — project current Calendar-supported countries and active racecourses into shared layouts
 UI-008E — make future country expansion a vertical Calendar + Country + Racecourse + Map package
@@ -26,30 +26,49 @@ UI-009  — EN/JA responsive and navigation release verification after the suppo
 
 Calendar country/authority acquisition expansion and all-tier racecourse inventory research continue in parallel. They must not be serialized behind UI work unless a real schema/shared-file dependency exists.
 
-## Required public-gating work
+## Completed public-gating baseline — UI-008A
 
-Country public eligibility must become a stable Calendar-support state. It must not depend on whether there is a meeting today.
+The public Country gate is now implemented from a stable reviewed registry rather than current-day meeting presence.
 
-Initial runtime target:
+Canonical runtime registry:
+
+```text
+data/static/calendar-public-country-support-v1.json
+```
+
+Current supported set at the UI-008A merge boundary:
+
+```text
+Japan
+Hong Kong
+United Arab Emirates
+South Korea
+Turkey
+Morocco
+```
+
+The set is grounded in the production systems wired into `.github/workflows/calendar-unified-official-refresh.yml`. The canonical 98-country master remains broader than public exposure.
+
+Implemented behavior:
 
 ```text
 calendar_supported = true
   -> visible in Countries directory
   -> eligible for Country detail route
-  -> included in normal search/sitemap/internal links
+  -> included as a Country result in normal search
 
 calendar_supported = false
   -> retained in internal/canonical data
   -> omitted from primary Countries directory
-  -> omitted from normal search/sitemap/internal links
-  -> normal detail route not generated unless separately authorised
+  -> normal Country detail route not generated
+  -> omitted as a Country result from normal search
 ```
 
-The implementation may reuse an existing readiness/coverage registry if it provides a reviewed stable support state. Do not create a second conflicting truth merely to satisfy the UI.
+Static route generation supplies sitemap exposure, so unsupported Country detail routes are no longer part of the normal generated public route set.
 
 ## Reference pages
 
-### Japan Country page
+### Japan Country page — UI-008B current
 
 Build the first shared Country layout against existing reviewed Japan data and current Calendar meeting data.
 
@@ -57,14 +76,16 @@ Required baseline:
 
 - identity + Calendar-supported state;
 - reviewed overview;
-- authority/system, racing types, active racecourse count, official sources;
-- today / near-term meetings;
-- reviewed racecourse map;
-- active domestic racecourse list;
+- authority/system, racing types, listed/current public racecourse count, official sources;
+- today / near-term meetings from the public Calendar view model;
+- reviewed racecourse map using the existing RacecourseMap / reviewed GeoJSON path;
+- domestic racecourse list;
 - official-source links;
 - Country -> Calendar and Country -> Racecourse links.
 
-The visual design should follow the current Home/Calendar visual language: white surface, navy headings, restrained gold accents, simple cards/tables, existing MapLibre/OpenStreetMap stack, no external organisation logos, no decorative asset dependency.
+The visual design follows the current Home/Calendar visual language: white surface, navy headings, restrained gold accents, simple cards/tables, existing MapLibre/OpenStreetMap stack, no external organisation logos, no decorative asset dependency.
+
+Japan is the only Country switched to the reference composition during UI-008B. The other Calendar-supported Country routes keep their existing page until UI-008D, which prevents an unfinished generic layout from being pushed across all supported countries at once.
 
 ### Tokyo Racecourse page
 
@@ -88,8 +109,8 @@ Do not wait for every future enrichment field before shipping the shared baselin
 
 After the two reference pages are accepted:
 
-1. derive the current Calendar-supported country set from canonical/reviewed Calendar support state;
-2. apply the public gate to Countries listing/routes/search/sitemap/internal links;
+1. derive the current Calendar-supported country set from `calendar-public-country-support-v1.json` and its reviewed production acquisition basis;
+2. keep the public gate aligned across Countries listing/routes/search/sitemap/internal links;
 3. render each supported Country with the shared Country composition;
 4. reconcile the supported country's active racecourses to canonical `racecourse_id` values;
 5. render those active racecourses with the shared Racecourse composition;
