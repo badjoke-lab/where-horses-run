@@ -11,7 +11,7 @@ const orderedSteps = [
   'Collect HKJC official window',
   'Collect UAE official window',
   'Collect KRA official window',
-  'Collect TJK official window',
+  'Collect TJK and SOREC official windows',
   'Persist remaining canonical and public rolling state',
 ];
 
@@ -28,4 +28,23 @@ const firstNonJapan = workflow.indexOf('- name: Collect HKJC official window', j
 assert.ok(japanPersist < firstNonJapan, 'Japan state must be persisted before any unrelated authority collector runs');
 assert.doesNotMatch(workflow, /- name: Persist canonical and public rolling state once/, 'single end-of-workflow persistence would reintroduce cross-authority blocking');
 
+assert.equal(
+  (workflow.match(/run-sorec-official-window\.mjs/g) ?? []).length,
+  2,
+  'SOREC must be collected in both normal and latest-main rebuild paths',
+);
+assert.equal(
+  (workflow.match(/--authority-id=sorec/g) ?? []).length,
+  2,
+  'SOREC observations must be applied in both normal and latest-main rebuild paths',
+);
+assert.equal(
+  (workflow.match(/--artifact=\.calendar-unified\/sorec\.json/g) ?? []).length,
+  4,
+  'SOREC artifact must pass exclusion and apply layers in both execution paths',
+);
+assert.match(workflow, /--racing-system-id=sorec-racing-information-system/, 'SOREC apply path must bind the canonical racing system id');
+assert.match(workflow, /--timezone=Africa\/Casablanca/, 'SOREC apply path must bind the Morocco timezone');
+
 console.log('CALENDAR_REFRESH_PUBLICATION_BOUNDARIES: pass');
+console.log('SOREC_UNIFIED_REFRESH_PATHS: 2');

@@ -156,6 +156,26 @@
       "show_live_label": false,
       "show_replay_label": false,
       "notes": "TJK publishes the centrally derived best-available rank. Current time-only rows derive as A; complete verified programme metadata may reach A+."
+    },
+    {
+      "id": "sorec-reviewed-a",
+      "priority": 350,
+      "match": {
+        "authority_ids": [
+          "sorec"
+        ]
+      },
+      "max_public_rank": "A",
+      "include_in_public_list": true,
+      "a_plus_fields": {
+        "show_race_name": false,
+        "show_distance": false,
+        "show_surface": false,
+        "show_course": false
+      },
+      "show_live_label": false,
+      "show_replay_label": false,
+      "notes": "SOREC public output may rise automatically with verified evidence through A. Meeting-only observations remain C by evidence; A+ remains disabled pending explicit review."
     }
   ]
 }
