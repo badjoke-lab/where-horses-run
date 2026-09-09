@@ -51,6 +51,7 @@
 
 .today-controls {
   align-self: start;
+  gap: .75rem;
   border: 0;
   padding-block: 0;
 }
@@ -58,62 +59,130 @@
 .today-controls__period {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0;
-  overflow: hidden;
-  border: 1px solid var(--whr-color-border);
-  border-radius: .65rem;
+  gap: .45rem;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
 }
 
-.today-controls__period button {
-  min-height: 46px;
-  border: 0;
-  border-inline-end: 1px solid var(--whr-color-border);
+.today-controls__period button,
+.today-controls__period button:last-child {
+  min-height: 44px;
+  border: 1px solid var(--whr-color-border);
+  border-radius: .6rem;
   background: #fff;
   color: var(--whr-color-navy);
   font-weight: 800;
 }
 
-.today-controls__period button:last-child {
-  border-inline-end: 0;
-}
-
 .today-controls__period button[aria-pressed='true'] {
+  border-color: var(--whr-color-navy);
   background: var(--whr-color-navy) !important;
   color: #fff !important;
 }
 
+/* The desktop rail is intentionally one compact control stack. Two half-width
+   dropdowns made Country / Authority look cramped and made Reset read like a
+   fourth primary filter. */
 .today-controls__filters {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: .45rem;
+  padding-block-start: .7rem;
+  border-top: 1px solid var(--whr-color-border);
 }
 
+.today-controls__filters label,
 .today-controls__filters label:first-child {
-  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 6.6rem minmax(0, 1fr);
+  grid-column: auto;
+  align-items: center;
+  gap: .65rem;
+  min-width: 0;
+  color: var(--whr-color-muted);
+  font-size: .76rem;
+  font-weight: 700;
+}
+
+.today-controls__filters label > span {
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.today-controls__filters select {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  padding: .42rem 2rem .42rem .6rem;
+  border: 1px solid var(--whr-color-border);
+  border-radius: .45rem;
+  background: #fff;
+  color: var(--whr-color-text);
+  font: inherit;
+  font-size: .82rem;
+  font-weight: 700;
 }
 
 .today-controls__reset {
-  border-color: var(--whr-color-gold) !important;
-  background: var(--whr-color-gold) !important;
-  color: #fff;
+  min-height: 30px;
+  justify-self: end;
+  padding: 0;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent !important;
+  color: var(--whr-color-muted) !important;
+  cursor: pointer;
+  font-size: .75rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: .18em;
 }
 
+.today-controls__reset:hover,
+.today-controls__reset:focus-visible {
+  color: var(--whr-color-navy) !important;
+  background: transparent !important;
+}
+
+/* Counts remain useful, but are a compact status readout rather than another
+   row of filter-like pills. */
 .today-state-summary {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: .6rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .3rem .85rem;
+  padding-block-start: .65rem;
+  border-top: 1px solid var(--whr-color-border);
 }
 
 .today-state-summary__item,
 .today-state-summary__total {
-  min-height: 68px;
-  justify-content: center;
-  border-radius: .7rem;
-  background: #fff;
-  text-align: center;
+  min-height: auto;
+  justify-content: flex-start;
+  padding: .1rem 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: .76rem;
+  text-align: left;
+}
+
+.today-state-summary__item {
+  min-width: 0;
+}
+
+.today-state-summary__item strong {
+  margin-inline-start: auto;
+  color: var(--whr-color-navy);
 }
 
 .today-state-summary__total {
   grid-column: 1 / -1;
-  min-height: 40px;
+  justify-self: end;
+  margin-inline-start: 0;
+  color: var(--whr-color-muted);
+  font-size: .72rem;
 }
 
 .today-page .today-meeting-map.card {
@@ -189,6 +258,10 @@
     gap: 0.5rem;
   }
 
+  .today-controls__period {
+    gap: .35rem;
+  }
+
   .today-controls__period button {
     min-height: 42px;
     padding-inline: 0.35rem;
@@ -198,34 +271,45 @@
   .today-controls__filters {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.45rem;
+    padding-block-start: .55rem;
   }
 
-  .today-controls__filters label {
+  .today-controls__filters label,
+  .today-controls__filters label:first-child {
+    grid-template-columns: 1fr;
     gap: 0.18rem;
     font-size: 0.7rem;
   }
 
-  .today-controls__filters select,
-  .today-controls__reset {
+  .today-controls__filters label:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .today-controls__filters select {
     min-height: 42px;
     padding-block: 0.35rem;
     font-size: 0.78rem;
   }
 
   .today-controls__reset {
-    padding-inline: 0.5rem;
+    align-self: end;
+    justify-self: end;
+    min-height: 28px;
+    padding: 0;
+    font-size: .7rem;
   }
 
   .today-state-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.3rem;
+    gap: 0.3rem .65rem;
+    padding-block-start: .5rem;
   }
 
   .today-state-summary__item,
   .today-state-summary__total {
-    min-height: 30px;
-    padding: 0.2rem 0.42rem;
-    border-radius: 999px;
+    min-height: auto;
+    padding: .08rem 0;
+    border-radius: 0;
     font-size: 0.72rem;
   }
 
@@ -284,9 +368,5 @@
 
   .today-controls__filters label:first-child {
     grid-column: 1 / -1;
-  }
-
-  .today-state-summary__item {
-    min-height: 30px;
   }
 }
