@@ -30,8 +30,8 @@ const groups = getGroupedTimetableMeetingRows(candidateRecords);
 ---
 
 <BaseLayout
-  title="Racing calendar | Where Horses Run"
-  description={`Browse race meetings from ${context.windowStart} through ${context.windowEndInclusive} by day, month, or map.`}
+  title="Global horse racing calendar | Where Horses Run"
+  description={`Browse official-source horse racing meetings from ${context.windowStart} through ${context.windowEndInclusive} by day, 30-day view, or map, with links to racecourse, country, meeting and source pages.`}
   canonicalPath="/calendar/"
   alternatePath="/ja/calendar/"
 >
@@ -46,9 +46,12 @@ const groups = getGroupedTimetableMeetingRows(candidateRecords);
 
     <section class="hero" aria-labelledby="page-title">
       <p class="hero__eyebrow">Racing calendar</p>
-      <h1 id="page-title">Calendar</h1>
+      <h1 id="page-title">Global horse racing calendar</h1>
       <p class="hero__summary">
         Browse one day at a time in List view, use Month for the 30-day overview, or switch to Map for the selected day. Times use <span data-timezone-label>{context.timeZone}</span>.
+      </p>
+      <p class="hero__summary">
+        Open a listed meeting for its source-backed details, or browse <a href="/tracks/">racecourse profiles</a> and <a href="/countries/">countries and regions</a> to move through the same entities outside the date view.
       </p>
       <p class="calendar-page__window">
         <span data-timezone-window-start>{context.windowStart}</span> – <span data-timezone-window-end>{context.windowEndInclusive}</span>
