@@ -12,6 +12,12 @@ const RACECOURSE_DATA_FILES = [
   'data/static/country-page-racecourses-11-oman.json',
   'data/static/country-page-racecourses-12-zimbabwe.json',
 ];
+const SITEMAP_EXCLUDED_PATTERNS = [
+  /^\/(?:ja\/)?search\/$/,
+  /^\/(?:ja\/)?glossary(?:\/|$)/,
+  /^\/(?:ja\/)?sources\/[^/]+\/$/,
+  /^\/(?:ja\/)?major-countries\/(?:preview-timetable|source-health|timetable)\/$/,
+];
 
 async function walk(directory) {
   const entries = await fs.readdir(directory, { withFileTypes: true });
@@ -36,6 +42,10 @@ function extractCanonical(html, file) {
 
 function hasNoIndex(html) {
   return /<meta\s+[^>]*name="robots"[^>]*content="[^"]*noindex[^"]*"[^>]*>|<meta\s+[^>]*content="[^"]*noindex[^"]*"[^>]*name="robots"[^>]*>/i.test(html);
+}
+
+function shouldIncludeInSitemap(url) {
+  return !SITEMAP_EXCLUDED_PATTERNS.some((pattern) => pattern.test(url.pathname));
 }
 
 function escapeXml(value) {
@@ -149,6 +159,7 @@ export default function sitemapRobotsIntegration() {
         const htmlFiles = files.filter((file) => file.endsWith('.html') && path.basename(file) !== '404.html');
         const canonicalUrls = new Set();
         let noIndexFiles = 0;
+        let intentionallyExcludedFiles = 0;
 
         for (const file of htmlFiles) {
           const html = await fs.readFile(file, 'utf8');
@@ -156,7 +167,12 @@ export default function sitemapRobotsIntegration() {
             noIndexFiles += 1;
             continue;
           }
-          canonicalUrls.add(extractCanonical(html, path.relative(outputDirectory, file)).toString());
+          const canonical = extractCanonical(html, path.relative(outputDirectory, file));
+          if (!shouldIncludeInSitemap(canonical)) {
+            intentionallyExcludedFiles += 1;
+            continue;
+          }
+          canonicalUrls.add(canonical.toString());
         }
 
         const urls = [...canonicalUrls].sort(compareUrls);
@@ -189,9 +205,9 @@ export default function sitemapRobotsIntegration() {
         await fs.writeFile(path.join(outputDirectory, 'sitemap.xml'), sitemap, 'utf8');
         await fs.writeFile(path.join(outputDirectory, 'robots.txt'), robots, 'utf8');
 
-        logger.info(`Generated sitemap.xml with ${urls.length} canonical URLs.`);
+        logger.info(`Generated sitemap.xml with ${urls.length} focused canonical URLs.`);
         logger.info(`Added source-backed lastmod to ${lastModifiedCount} entity URLs; static pages remain undated rather than using build time.`);
-        logger.info(`Excluded ${noIndexFiles} noindex HTML files and the rendered 404 page.`);
+        logger.info(`Excluded ${noIndexFiles} noindex HTML files, ${intentionallyExcludedFiles} low-priority discovery pages, and the rendered 404 page.`);
       },
     },
   };
