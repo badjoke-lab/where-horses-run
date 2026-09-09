@@ -120,6 +120,27 @@ Map pins must come from reviewed racecourse locations only.
 
 Representative race names remain plain text until the graded-race master and internal race relationship model are ready.
 
+## Release/build coupling
+
+Build-time metadata and validation integrations must follow the same public projection as the routes they validate. They must not silently retain historical assumptions such as "all canonical countries are public", "all canonical racecourses render active pages", or selectors tied to a retired Country/Racecourse layout.
+
+For this lane:
+
+```text
+Country metadata scope
+  -> calendar-public-country-support-v1.json
+
+Racecourse metadata scope
+  -> Calendar-supported country + canonical active/current status
+
+Visible metadata extraction
+  -> current shared CountryHubPage / RacecourseHubPage output
+```
+
+A change to the public gate or shared page composition is incomplete until build-time metadata consumers are reconciled in the same package. Canonical/internal records that are intentionally outside the public gate must not cause a production build failure merely because they are not rendered as public pages.
+
+Metadata enrichment remains additive. It must not create a second publication gate or force obsolete visible fields back into a page solely to satisfy a stale validator.
+
 ## Future-country package rule
 
 Once a new country receives reviewed normal Calendar support, do not build bespoke public routing for it. The package must use the shared gates and components:
@@ -166,5 +187,6 @@ A country package is complete when:
 - primary Racecourses/search/generated routes expose only the active supported-country set unless a separate historical rule applies;
 - Country <-> Racecourse <-> Calendar links work in EN and JA;
 - search/sitemap/internal navigation reflect the same public gate;
+- build-time Country/Racecourse metadata validation uses the same public gates and current shared page composition;
 - the package follows `docs/runbooks/country-racecourse-publication-package.md` without a second route/publication truth;
 - the result visually fits the existing site rather than behaving as a separate redesign.

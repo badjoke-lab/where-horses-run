@@ -204,6 +204,30 @@ The UI-009 repository pass has found these integration inconsistencies after the
 - The broad generic Countries directory (region chips + multi-field filter + large three-column cards) is not the intended primary Country surface. Countries is a compact utility index over the reviewed Calendar-supported set, with direct links from each country to its hub, Calendar view, and Racecourses view. The historical 98-country master remains internal/reference data rather than a card wall on the primary page.
 - The desktop primary shell is intentionally Calendar + Racecourses, with secondary destinations under More. No client runtime is allowed to expand this into the old full horizontal navigation after page load. A visible two-item-shell -> old-full-nav switch is a stale/mixed production-output defect, not an accepted transition state.
 
+### Production recovery — 2026-09-10
+
+The reported 98-country card wall and navigation switch were traced to a production deployment stall rather than accepted current UI behavior. Cloudflare Pages had remained on the last successful pre-UI-008A build because later main commits were failing during post-build metadata processing.
+
+Three stale build assumptions were corrected in sequence:
+
+1. Country metadata still enforced the retired 98-country / 196-page scope and old visible profile fields. It now derives expected scope from `calendar-public-country-support-v1.json` and validates only the rendered supported-country EN/JA pairs.
+2. Racecourse metadata still expected every canonical racecourse to render as a normal active public page and parsed retired detail-layout markers. It now follows the active supported-country Racecourse gate and current `RacecourseHubPage` output.
+3. Title/description normalization still required the retired long Country h1 suffix. It now accepts the current shared Country hub h1 as the visible country/region identity.
+
+Recovery evidence:
+
+```text
+Country metadata gate repair merged: 977b847924dc873597b36f4ad267b3669d00c3f2
+Racecourse metadata gate repair merged: d03dcaeb89cabb442f297fc69f81ba4dd586829a
+Country title-normalizer repair merged: d7f9ce5c348ce7ad3324d21aaa4a57cc56e02b8b
+Cloudflare Pages deployment for d7f9ce5: success
+Latest inherited main deployment 01e3c2292b1121211079b272cd5378f2cc878f27: success
+```
+
+The release rule is now explicit in the Country/Racecourse integrated publication specification: build-time metadata consumers must follow the same public gates and current shared layouts as route generation. Internal/canonical records outside the public projection must not by themselves make the public site undeployable.
+
+This establishes deployment recovery. It does not by itself complete UI-009 visual acceptance. The custom-domain EN/JA desktop/mobile surfaces still require representative rendered-output verification, including confirming that the old 98-country page and old full-nav transition no longer appear.
+
 These are repository/runtime corrections, not visual acceptance. UI-009 remains current until the representative EN/JA desktop/mobile browser pass is actually completed.
 
 Visible UI acceptance requires actual browser output at representative desktop/mobile widths. Repository/code inspection alone must not be recorded as visual acceptance.
