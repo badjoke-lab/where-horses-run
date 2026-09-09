@@ -5,7 +5,8 @@ import { fileURLToPath } from 'node:url';
 const SITE_ORIGIN = 'https://whr.badjoke-lab.com';
 const WEBSITE_ID = `${SITE_ORIGIN}/#website`;
 const MARKER = 'collection-place-v1';
-const PLACEHOLDERS = new Set(['Not listed yet', '未掲載', 'Location pending', '所在地未掲載']);
+const SUPPORT_REGISTRY_URL = new URL('../data/static/calendar-public-country-support-v1.json', import.meta.url);
+const PUBLIC_ACTIVE_STATUSES = new Set(['active', 'current']);
 const RACECOURSE_DATA_FILES = [
   'data/static/racecourses.json',
   'data/static/racecourses-extensions.json',
@@ -26,7 +27,20 @@ async function walk(directory) {
   return files;
 }
 
+async function loadSupportedCountryIds() {
+  const registry = JSON.parse(await fs.readFile(SUPPORT_REGISTRY_URL, 'utf8'));
+  if (!Array.isArray(registry?.countries)) {
+    throw new Error('Calendar public country support registry has no countries array');
+  }
+  const ids = registry.countries
+    .filter((record) => record?.calendar_supported === true && typeof record?.country_id === 'string')
+    .map((record) => record.country_id);
+  if (!ids.length) throw new Error('Calendar public country support registry has no supported countries');
+  return new Set(ids);
+}
+
 async function loadExpectedRacecourseSlugs() {
+  const supportedCountryIds = await loadSupportedCountryIds();
   const ids = [];
   for (const file of RACECOURSE_DATA_FILES) {
     const content = await fs.readFile(path.join(process.cwd(), file), 'utf8');
@@ -35,11 +49,13 @@ async function loadExpectedRacecourseSlugs() {
     for (const record of records) {
       if (!record?.id || !record?.slug) throw new Error(`Racecourse registry identity missing in ${file}`);
       if (record.id !== record.slug) throw new Error(`Racecourse registry id/slug differs in ${file}: ${record.id} / ${record.slug}`);
+      if (!supportedCountryIds.has(record.country_id)) continue;
+      if (!PUBLIC_ACTIVE_STATUSES.has(record.status)) continue;
       ids.push(record.slug);
     }
   }
   const unique = new Set(ids);
-  if (unique.size !== ids.length) throw new Error(`Duplicate racecourse slug in registry: ${ids.length} records / ${unique.size} unique slugs`);
+  if (unique.size !== ids.length) throw new Error(`Duplicate public racecourse slug in registry: ${ids.length} records / ${unique.size} unique slugs`);
   return unique;
 }
 
@@ -72,13 +88,6 @@ function extractText(html, pattern, label, file) {
   return stripTags(value);
 }
 
-function extractOptionalText(html, pattern) {
-  const value = html.match(pattern)?.[1];
-  if (!value) return null;
-  const text = stripTags(value);
-  return text || null;
-}
-
 function parseRoute(outputDirectory, file) {
   const relative = path.relative(outputDirectory, file).split(path.sep).join('/');
   const match = relative.match(/^(ja\/)?tracks\/([^/]+)\/index\.html$/);
@@ -90,13 +99,16 @@ function parseRoute(outputDirectory, file) {
   };
 }
 
-function visibleAddress(value) {
-  if (!value) return null;
-  const parts = value.split('/').map((part) => part.trim()).filter(Boolean);
-  return parts.length > 0 && parts.some((part) => !PLACEHOLDERS.has(part)) ? value : null;
+function extractCountryLink(html, route) {
+  const match = html.match(/<a\s+[^>]*href="(\/(?:ja\/)?countries\/[^/]+\/)"[^>]*>([\s\S]*?)<\/a>/i);
+  if (!match) throw new Error(`Racecourse country link missing in ${route.relative}`);
+  return {
+    href: decodeHtml(match[1]),
+    name: stripTags(match[2]),
+  };
 }
 
-async function parsePage(outputDirectory, file, route) {
+async function parsePage(file, route) {
   const html = await fs.readFile(file, 'utf8');
   if (html.includes(`data-racecourse-page-metadata="${MARKER}"`)) {
     throw new Error(`Racecourse metadata marker already exists in ${route.relative}`);
@@ -127,29 +139,15 @@ async function parsePage(outputDirectory, file, route) {
     route.relative,
   );
   const name = extractText(html, /<h1[^>]*id="page-title"[^>]*>([\s\S]*?)<\/h1>/i, 'racecourse heading', route.relative);
-  const localName = extractOptionalText(
-    html,
-    /<p[^>]*data-racecourse-local-name[^>]*>([\s\S]*?)<\/p>/i,
-  );
-  const countryTagPattern = /<a\s+[^>]*data-racecourse-country[^>]*>/i;
-  const countryHref = extractAttribute(html, countryTagPattern, 'href', route.relative);
-  const countryName = extractText(
-    html,
-    /<a\s+[^>]*data-racecourse-country[^>]*>([\s\S]*?)<\/a>/i,
-    'racecourse country',
-    route.relative,
-  );
-  const addressText = visibleAddress(extractOptionalText(
-    html,
-    /<span[^>]*data-racecourse-location[^>]*>([\s\S]*?)<\/span>/i,
-  ));
+  const country = extractCountryLink(html, route);
 
   const expectedCountryPattern = route.locale === 'ja'
     ? /^\/ja\/countries\/[^/]+\/$/
     : /^\/countries\/[^/]+\/$/;
-  if (!expectedCountryPattern.test(countryHref)) {
-    throw new Error(`Racecourse country link differs in ${route.relative}: ${countryHref}`);
+  if (!expectedCountryPattern.test(country.href)) {
+    throw new Error(`Racecourse country link differs in ${route.relative}: ${country.href}`);
   }
+  if (!country.name) throw new Error(`Racecourse country name missing in ${route.relative}`);
 
   return {
     ...route,
@@ -159,10 +157,8 @@ async function parsePage(outputDirectory, file, route) {
     title,
     description,
     name,
-    localName,
-    countryHref,
-    countryName,
-    addressText,
+    countryHref: country.href,
+    countryName: country.name,
   };
 }
 
@@ -175,7 +171,7 @@ function buildMetadata(page, counterpart) {
   const placeId = `${page.canonicalUrl}#place`;
   const countryUrl = new URL(page.countryHref, SITE_ORIGIN).toString();
   const countryAreaId = `${countryUrl}#administrative-area`;
-  const alternateName = uniqueNames([counterpart.name, page.localName], page.name);
+  const alternateName = uniqueNames([counterpart.name], page.name);
   const collectionPageNode = {
     '@type': 'CollectionPage',
     '@id': webpageId,
@@ -193,7 +189,6 @@ function buildMetadata(page, counterpart) {
     url: page.canonicalUrl,
     name: page.name,
     ...(alternateName.length ? { alternateName } : {}),
-    ...(page.addressText ? { address: page.addressText } : {}),
     containedInPlace: {
       '@id': countryAreaId,
       name: page.countryName,
@@ -221,7 +216,7 @@ export default function racecoursePageMetadataIntegration() {
           .filter((file) => file.endsWith('.html'))
           .map((file) => ({ file, route: parseRoute(outputDirectory, file) }))
           .filter((entry) => entry.route);
-        const pages = await Promise.all(routes.map(({ file, route }) => parsePage(outputDirectory, file, route)));
+        const pages = await Promise.all(routes.map(({ file, route }) => parsePage(file, route)));
         const bySlug = new Map();
         for (const page of pages) {
           if (!bySlug.has(page.slug)) bySlug.set(page.slug, new Map());
@@ -236,13 +231,12 @@ export default function racecoursePageMetadataIntegration() {
         const unexpectedSlugs = [...renderedSlugs].filter((slug) => !expectedSlugs.has(slug)).sort();
         if (missingSlugs.length || unexpectedSlugs.length || pages.length !== expectedSlugs.size * 2) {
           throw new Error(
-            `Racecourse metadata scope differs: ${renderedSlugs.size} slugs / ${pages.length} pages; `
-            + `registry ${expectedSlugs.size} slugs; missing [${missingSlugs.join(', ')}]; unexpected [${unexpectedSlugs.join(', ')}]`,
+            `Racecourse metadata scope differs from the active supported-country public gate: ${renderedSlugs.size} slugs / ${pages.length} pages; `
+            + `expected ${expectedSlugs.size} slugs; missing [${missingSlugs.join(', ')}]; unexpected [${unexpectedSlugs.join(', ')}]`,
           );
         }
 
         let injected = 0;
-        let addressCount = 0;
         for (const [slug, locales] of [...bySlug.entries()].sort(([left], [right]) => left.localeCompare(right, 'en'))) {
           const english = locales.get('en');
           const japanese = locales.get('ja');
@@ -255,12 +249,11 @@ export default function racecoursePageMetadataIntegration() {
             if (!page.html.includes('</head>')) throw new Error(`Closing head tag missing in ${page.relative}`);
             await fs.writeFile(page.file, page.html.replace('</head>', `${script}</head>`), 'utf8');
             injected += 1;
-            if (page.addressText) addressCount += 1;
           }
         }
 
         logger.info(`Injected racecourse metadata into ${injected} bilingual detail pages.`);
-        logger.info(`Linked ${injected} venue pages to visible country or region identities; ${addressCount} pages include visible address text.`);
+        logger.info(`Validated ${bySlug.size} active racecourse pairs in Calendar-supported countries.`);
       },
     },
   };
