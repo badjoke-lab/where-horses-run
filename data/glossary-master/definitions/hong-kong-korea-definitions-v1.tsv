@@ -1,0 +1,32 @@
+definition_id	concept_id	jurisdiction	authority	discipline	effective_scope	definition_ja_summary	verification_status	source_id	note
+HKKR-DEF-001	RTYPE-084	Hong Kong	HKJC	Flat	current_2026	香港第一班はHKJCの通常競走クラスの最上位区分。個別競走のrating bandは一定ではないため、110-85等の観測値を恒久定義にはしない。	source_verified	HKKR-SRC-003	Use current fixture/race conditions for exact band.
+HKKR-DEF-002	RTYPE-085	Hong Kong	HKJC	Flat	current_2026	香港第二班はHKJCの通常競走クラス区分。2026年には100-80等の条件が確認できるが、番組条件は可変。	source_verified	HKKR-SRC-006	Do not freeze one observed band.
+HKKR-DEF-003	RTYPE-086	Hong Kong	HKJC	Flat	current_2026	香港第三班はHKJCの通常競走クラス区分で、2026年賽期表では80-60等の条件が頻出する。	source_verified	HKKR-SRC-003	Special variants can exist.
+HKKR-DEF-004	RTYPE-087	Hong Kong	HKJC	Flat	current_2026	香港第四班はHKJCの通常競走クラス区分で、2026年賽期表では60-40を基本とする番組が多数確認できる。	source_verified	HKKR-SRC-003	Exact race conditions remain event-level data.
+HKKR-DEF-005	RTYPE-088	Hong Kong	HKJC	Flat	current_2026	香港第五班はHKJCの通常競走クラス区分で、2026年賽期表では40-0の番組が確認できる。	source_verified	HKKR-SRC-003	Exact band may be revised by season/race.
+HKKR-DEF-006	RTYPE-089	Hong Kong	HKJC	Flat	current_2026	Griffin Race／新馬賽はHKJCのGriffin資格馬を対象とする香港固有の競走区分。	source_verified	HKKR-SRC-014	Race type distinct from Griffin horse status.
+HKKR-DEF-007	HORSE-033	Hong Kong	HKJC	Flat	2025_26_rules	HKJC RulesのGriffinはStewardsの権限により未出走のまま香港へ輸入された馬を指す。単純な世界共通の「新馬」とは同一視しない。	source_verified	HKKR-SRC-001	Formal rule definition.
+HKKR-DEF-008	TRAIN-026	Hong Kong	HKJC	Flat	2025_26_rules	Stalls Testは発馬機内での行動・適性を確認するHKJCの公式テストで、Griffinの出走資格手続ではBarrier Trialと別に要求される。	source_verified	HKKR-SRC-001	Separate from TRAIN-011 Barrier Trial.
+HKKR-DEF-009	TRAIN-011	Hong Kong	HKJC	Flat	2025_26_rules	香港のBarrier Trialは出走資格・適性確認に用いられる公式試閘で、Griffin等の出走前手続に組み込まれる。	source_verified	HKKR-SRC-001	Jurisdiction-specific definition on existing Concept.
+HKKR-DEF-010	SURF-059	Hong Kong	HKJC	Flat	current_reference	HKJCのPenetrometer Reading／度地儀指數は芝Going判定の参考値であり、騎手の意見、芝表面、天候も加味して最終Goingを決定する。	source_verified	HKKR-SRC-002	Not a deterministic one-number classification rule.
+HKKR-DEF-011	SURF-060	Hong Kong	HKJC	Flat	current_reference	Clegg Hammer Reading／硬度計指數はHKJC全天候跑道の硬さを把握する参考値で、通常は数値が高いほど表面が硬い傾向を示す。	source_verified	HKKR-SRC-002	AWT-specific measurement.
+HKKR-DEF-012	SURF-063	Hong Kong	HKJC	Flat	current_reference	Good to Yielding／好地至黏地はHKJC芝Goingの独立区分で、参考表ではpenetrometer 3.00-3.25。2026年実開催でも現役使用されている。	source_verified	HKKR-SRC-002	Distinct HK category.
+HKKR-DEF-013	SURF-061	Hong Kong	HKJC	Flat	current_reference	Rain AffectedはHKJC全天候跑道の状態区分の一つでコードRAを用いる。	source_verified	HKKR-SRC-002	Do not equate to generic wet/sloppy dirt.
+HKKR-DEF-014	SURF-062	Hong Kong	HKJC	Flat	current_reference	Normal WateringはHKJC全天候跑道の管理・状態区分の一つでコードNWを用いる。	source_verified	HKKR-SRC-002	Operational AWT state.
+HKKR-DEF-015	RTYPE-090	Korea	KRA	Flat	current_2026	KRA 1등급はrating-basedクラスの最上位で、2026施行計画の基本条件はrating 81以上。追加rating条件等が設定される場合がある。	source_verified	HKKR-SRC-009	Season-specific numeric rule.
+HKKR-DEF-016	RTYPE-091	Korea	KRA	Flat	current_2026	KRA 2등급は2026基本条件でrating 80以下のクラス区分。	source_verified	HKKR-SRC-009	Current plan.
+HKKR-DEF-017	RTYPE-092	Korea	KRA	Flat	current_2026	KRA 3등급は2026基本条件でrating 65以下のクラス区分。	source_verified	HKKR-SRC-009	Current plan.
+HKKR-DEF-018	RTYPE-093	Korea	KRA	Flat	current_2026	KRA 4등급は2026基本条件でrating 50以下のクラス区分。	source_verified	HKKR-SRC-009	Current plan.
+HKKR-DEF-019	RTYPE-094	Korea	KRA	Flat	current_2026	KRA 5등급は2026基本条件でrating 35以下のクラス区分。	source_verified	HKKR-SRC-009	Current plan.
+HKKR-DEF-020	RTYPE-095	Korea	KRA	Flat	current_2026	KRA 6등급は2026施行計画でrating未付与馬を中心とする初級クラスで、별정条件によって編成される。	source_verified	HKKR-SRC-009	Do not translate as a universal maiden class.
+HKKR-DEF-021	RTYPE-096	Korea	KRA	Flat	current_2026	대상경주はKRAが主要競走として設定する独立した公式番組区分で、個別競走にGrade/List等が付く場合があっても他国のStakesや日本の重賞と自動同義にはしない。	source_verified	HKKR-SRC-009	Korea-specific race-program category.
+HKKR-DEF-022	RTYPE-097	Korea	KRA	Flat	current_2026	특별경주はKRA施行計画で대상경주と別に扱われる特別競走区分。	source_verified	HKKR-SRC-009	Separate from similarly translated Japanese categories.
+HKKR-DEF-023	RTYPE-098	Korea	KRA	Flat	current_2026	일반경주はKRAで대상경주・특별경주以外の通常競走群を示す番組区分。	source_verified	HKKR-SRC-009	Same translation can represent a different jurisdiction Concept.
+HKKR-DEF-024	WEIGHT-032	Korea	KRA	Flat	current_2026	별정 Aは性別・年齢別に基礎重量を差別化するKRAの別定方式。	source_verified	HKKR-SRC-009	Not JRA Bettei equivalence.
+HKKR-DEF-025	WEIGHT-033	Korea	KRA	Flat	current_2026	별정 Bはrating区間別に基礎重量を設定するKRAの別定方式。	source_verified	HKKR-SRC-009	Korea-specific weighting rule.
+HKKR-DEF-026	WEIGHT-034	Korea	KRA	Flat	current_2026	별정 Cは6등급を対象に性・年齢別基礎重量へ入着経験等に応じた重量を加えるKRAの別定方式。	source_verified	HKKR-SRC-009	Korea-specific weighting rule.
+HKKR-DEF-027	WEIGHT-022	Korea	KRA	Flat	current_2026	KRAの레이팅は競走馬能力を数値化する体系で、2026施行計画では1-140の範囲を用い、rating 1点を0.5kgの重量差として扱う体系説明がある。	source_verified	HKKR-SRC-009	Current-year numeric relation; recheck each season.
+HKKR-DEF-028	WEIGHT-003	Korea	KRA	Flat	current_2026	마령중량はKRAが年齢等に基づく重量方式として用いる韓国語公式表現。	source_verified	HKKR-SRC-009	Regional definition on Weight-for-age family.
+HKKR-DEF-029	WEIGHT-002	Korea	KRA	Flat	current_2026	핸디캡중량はKRAの能力差に応じて負担重量を調整する重量方式の公式表現。	source_verified	HKKR-SRC-009	Regional handicap-weight label.
+HKKR-DEF-030	HORSE-027	Korea	KRA	Flat	current_reference	국산마はKRAの現行データ・番組で国内産馬を区分する公式ラベル。	source_verified	HKKR-SRC-011	Exact registration criteria belong in current KRA rules.
+HKKR-DEF-031	HORSE-028	Korea	KRA	Flat	current_reference	외산마はKRAの現行データ・番組で外国産馬を区分する公式ラベル。	source_verified	HKKR-SRC-011	Regional horse-origin category.

@@ -2,12 +2,12 @@
   "schema_version": "world-racing-terminology-master-manifest-v1",
   "status": "candidate_seed_plus_jurisdiction_research",
   "generated_from_legacy_glossary": false,
-  "concept_count": 611,
+  "concept_count": 636,
   "category_count": 18,
   "priority_counts": {
-    "P0": 189,
-    "P1": 273,
-    "P2": 131,
+    "P0": 202,
+    "P1": 282,
+    "P2": 134,
     "P3": 18
   },
   "verification_status": "mixed_candidate_and_source_verified",
@@ -15,18 +15,18 @@
   "public_runtime_input": false,
   "categories": [
     {"id":"DISC","count":17,"file":"concepts/01-disc.tsv"},
-    {"id":"RTYPE","count":83,"file":"concepts/02-rtype.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv","concepts/japan-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv","concepts/france-wave1-additions.tsv"]},
+    {"id":"RTYPE","count":98,"file":"concepts/02-rtype.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv","concepts/japan-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv","concepts/france-wave1-additions.tsv","concepts/hong-kong-korea-wave1-additions.tsv"]},
     {"id":"ENTRY","count":31,"file":"concepts/03-entry.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv"]},
-    {"id":"HORSE","count":32,"file":"concepts/04-horse.tsv","supplemental_files":["concepts/japan-wave2-nar-banei-additions.tsv","concepts/france-wave1-additions.tsv"]},
+    {"id":"HORSE","count":33,"file":"concepts/04-horse.tsv","supplemental_files":["concepts/japan-wave2-nar-banei-additions.tsv","concepts/france-wave1-additions.tsv","concepts/hong-kong-korea-wave1-additions.tsv"]},
     {"id":"BREED","count":23,"file":"concepts/05-breed.tsv"},
     {"id":"ROLE","count":31,"file":"concepts/06-role.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv","concepts/france-wave1-additions.tsv"]},
     {"id":"VENUE","count":44,"file":"concepts/07-venue.tsv","supplemental_files":["concepts/japan-wave2-nar-banei-additions.tsv"]},
-    {"id":"SURF","count":58,"file":"concepts/08-surf.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv","concepts/japan-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv","concepts/france-wave1-additions.tsv"]},
+    {"id":"SURF","count":63,"file":"concepts/08-surf.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv","concepts/japan-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv","concepts/france-wave1-additions.tsv","concepts/hong-kong-korea-wave1-additions.tsv"]},
     {"id":"DIST","count":22,"file":"concepts/09-dist.tsv"},
-    {"id":"WEIGHT","count":31,"file":"concepts/10-weight.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv","concepts/japan-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv"]},
+    {"id":"WEIGHT","count":34,"file":"concepts/10-weight.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv","concepts/japan-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv","concepts/hong-kong-korea-wave1-additions.tsv"]},
     {"id":"RUN","count":44,"file":"concepts/11-run.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv"]},
     {"id":"EQUIP","count":28,"file":"concepts/12-equip.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv","concepts/france-wave1-additions.tsv"]},
-    {"id":"TRAIN","count":25,"file":"concepts/13-train.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv"]},
+    {"id":"TRAIN","count":26,"file":"concepts/13-train.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv","concepts/hong-kong-korea-wave1-additions.tsv"]},
     {"id":"MEET","count":41,"file":"concepts/14-meet.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/france-wave1-additions.tsv"]},
     {"id":"RESULT","count":29,"file":"concepts/15-result.tsv","supplemental_files":["concepts/france-wave1-additions.tsv"]},
     {"id":"PRIZE","count":12,"file":"concepts/16-prize.tsv","supplemental_files":["concepts/japan-wave1-additions.tsv"]},
@@ -82,9 +82,17 @@
       "labels_file": "labels/france-labels-v1.tsv",
       "definitions_file": "definitions/france-definitions-v1.tsv",
       "sources_file": "sources/france-sources-v1.tsv"
+    },
+    "hong_kong_korea": {
+      "status": "wave_1_complete_for_current_pass",
+      "research_file": "jurisdictions/hong-kong-korea-research-v1.tsv",
+      "concept_additions_file": "concepts/hong-kong-korea-wave1-additions.tsv",
+      "labels_file": "labels/hong-kong-korea-labels-v1.tsv",
+      "definitions_file": "definitions/hong-kong-korea-definitions-v1.tsv",
+      "sources_file": "sources/hong-kong-korea-sources-v1.tsv"
     }
   },
   "next_work_id": "GLOSSARY-MASTER-003",
-  "next_work": "hong_kong_and_korea_jurisdiction_research_then_uae_south_africa",
+  "next_work": "uae_and_south_africa_jurisdiction_research_then_arabian_and_harness_followup",
   "public_implementation": "deferred"
 }
