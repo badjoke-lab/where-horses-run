@@ -15,9 +15,9 @@ export function isPreciseMeetingPresentationRank(rank) {
  */
 export function deriveMeetingPresentationState({ rank, calendarDayState, lifecycleState }) {
   if (calendarDayState === 'future') return 'future';
+  if (calendarDayState === 'today' && DAY_ONLY_RANKS.has(rank)) return 'today';
 
   if (calendarDayState === 'today') {
-    if (DAY_ONLY_RANKS.has(rank)) return 'today';
     if (PRECISE_RANKS.has(rank) && CURRENT_DAY_PRECISE_STATES.has(lifecycleState)) return lifecycleState;
     return 'unknown';
   }
