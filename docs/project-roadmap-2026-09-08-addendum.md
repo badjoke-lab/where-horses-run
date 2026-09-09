@@ -10,7 +10,7 @@ Calendar presentation authority: `docs/specs/calendar-meeting-state-stream-and-v
 Calendar display/context refinement: `docs/specs/calendar-row-rank-live-localization-2026-09-08.md`  
 Calendar presentation schedule: `docs/calendar/calendar-presentation-state-001-display-correction-schedule.md`
 
-This addendum preserves the map-first site programme and the independent Calendar quality/coverage lane. `UI-006` and `UI-007` are complete and `UI-008` remains the current primary UI Work ID. A bounded Calendar presentation correction, `WHR-CAL-PRESENTATION-CONTEXT-001`, is active and takes execution priority before UI-008 runtime work resumes.
+This addendum preserves the map-first site programme and the independent Calendar quality/coverage lane. `UI-006` and `UI-007` are complete, the bounded Calendar presentation correction `WHR-CAL-PRESENTATION-CONTEXT-001` is complete, and `UI-008` is the current active primary UI Work ID.
 
 It does not change acquisition authority, reviewed public ranks, source promotion rules, racecourse coordinates, or automatic-publication policy.
 
@@ -21,19 +21,19 @@ Current stage: reviewed_incremental_maintenance
 Primary product/UI lane: map_first_site_ui
 Completed UI Work ID: UI-006
 Completed UI Work ID: UI-007
-Current UI Work ID: UI-008 [runtime paused during bounded Calendar correction]
+Current UI Work ID: UI-008 [active]
 Next UI Work ID: UI-009
 Parallel Calendar quality lane: calendar_quality_and_coverage
 Completed Calendar presentation correction: WHR-CAL-PRESENTATION-STATE-001
 Completed Calendar color-state amendment: WHR-CAL-PRESENTATION-COLOR-001
-Active Calendar context-state amendment: WHR-CAL-PRESENTATION-CONTEXT-001
+Completed Calendar context-state amendment: WHR-CAL-PRESENTATION-CONTEXT-001
 Automatic publication: disabled
 Human review bypass: prohibited
 ```
 
-`UI-008` remains the current primary UI Work ID. `UI-006` delivered the Racecourses primary index/search surface and `UI-007` delivered the shared bilingual racecourse-detail composition. Before UI-008 runtime work continues, the Calendar context-state amendment must remove the remaining Today/Calendar/Map state inconsistencies and pass exact-head plus post-merge visual/deployment verification.
+`UI-008` is the current primary UI Work ID. `UI-006` delivered the Racecourses primary index/search surface and `UI-007` delivered the shared bilingual racecourse-detail composition. The bounded Calendar context correction has now passed its exact-head, visual, merge-SHA CI, and Cloudflare deployment gates, so UI-008 resumes from current `main` rather than from a stale pre-correction branch.
 
-## Why the active context-state amendment exists
+## Why the completed context-state amendment existed
 
 The earlier Calendar corrections correctly established:
 
@@ -46,9 +46,9 @@ The earlier Calendar corrections correctly established:
 
 A later public screenshot audit exposed that the state split was not propagated through the whole UI. Today summary/group headings still merged `Upcoming` and `Today meeting`, current-day rows could fall into `Scheduled`, and shared Map legend/selected-state logic could still expose an invalid current-day category.
 
-Therefore `WHR-CAL-PRESENTATION-CONTEXT-001` is a bounded presentation correction, not a data/acquisition change.
+`WHR-CAL-PRESENTATION-CONTEXT-001` closed that bounded presentation gap without changing data/acquisition truth.
 
-## Required execution order for WHR-CAL-PRESENTATION-CONTEXT-001
+## Completed execution order for WHR-CAL-PRESENTATION-CONTEXT-001
 
 ```text
 1. specification/governance/state-pointer update
@@ -207,7 +207,7 @@ Underlying lifecycle state, display timezone, official stream state, and acquisi
 
 ## Regression gate
 
-Required new assertions include:
+Required assertions include:
 
 ```text
 no `Upcoming / racing today`
@@ -227,7 +227,7 @@ All previous lifecycle/timezone, stream fail-closed, reviewed-name, same-href st
 
 Visible changes require actual semantic screenshot/browser inspection, not only artifact existence or overflow checks.
 
-Minimum matrix for the active amendment:
+Minimum matrix retained as regression coverage:
 
 ```text
 EN desktop Today List
@@ -252,13 +252,13 @@ The reviewer must explicitly verify that:
 - no horizontal overflow occurs at 393×852;
 - actual meeting rows remain reachable in the first List viewport where meetings exist.
 
-## Previous completion evidence retained
+## Completion evidence retained
 
 `WHR-CAL-PRESENTATION-STATE-001` remains complete for its delivered scope, including PR #920 merge `b6879d0074d06f8e4aadbb7f31138634208757cd` and exact-SHA post-merge validation/deployment.
 
 `WHR-CAL-PRESENTATION-COLOR-001` remains complete for the row/marker color split delivered in PR #923 merge `305f8fa80ee1d1b5a232387049c38c2de0c38fcb`, with exact merge-SHA Race Acquisition Check `34203474219`, Representative Visual Audit `34203474118`, and Cloudflare deployment `1ebbcd9c-96f6-455a-ab87-994f96e1f2d8`.
 
-The active context-state amendment exists because those earlier acceptance criteria did not sufficiently cover Today grouping and context-sensitive legend semantics.
+`WHR-CAL-PRESENTATION-CONTEXT-001` is complete. PR #927 merged as `cf1a010765e9d012f40b168506ae3d7f6959d65b`. Exact accepted PR head `ab86cbc532755b093c6ac07bef63aa75f0611190` passed Race Acquisition Check `34228907381` and Representative Visual Audit `34228907434`; artifact `10057027665` was manually inspected for EN/JA desktop and 393×852 Today/Calendar List/Map semantics. Post-merge Race Acquisition Check `34229426401` and Representative Visual Audit `34229426431` passed, and Cloudflare Pages deployed the exact merge commit successfully as deployment `bdb0222f-f0c3-43d2-88f3-ea96c902bdd6`.
 
 ## Ongoing agent execution rule
 
@@ -266,7 +266,7 @@ For every subsequent UI or Calendar PR:
 
 1. start from `AGENTS.md` and `START-HERE.md`;
 2. re-read `docs/governance/document-authority.md` and this active roadmap addendum;
-3. read the applicable parent Calendar specification, display/context refinement, and active schedule;
+3. read the applicable parent Calendar specification, display/context refinement, and active schedule when Calendar-visible behavior is involved;
 4. compare current runtime behavior to those documents before editing;
 5. if scope/behavior changes, update authority first;
 6. re-read after relevant `main` movement;
@@ -277,19 +277,15 @@ Conversation history is not execution authority.
 
 ## Next work
 
-The primary UI lane remains:
+The primary UI lane is now:
 
 ```text
-UI-006 — Racecourses primary index/search UI  [complete]
-UI-007 — racecourse-detail composition         [complete]
-UI-008 — secondary reference-page simplification [current; runtime paused]
-UI-009 — EN/JA responsive release verification   [next]
+UI-006 — Racecourses primary index/search UI            [complete]
+UI-007 — racecourse-detail composition                   [complete]
+UI-008 — secondary reference-page simplification        [current / active]
+UI-009 — EN/JA responsive release verification           [next]
 ```
 
-Execution priority before UI-008 resumes:
+`UI-008` scope is bounded by the active map-first UI specification: simplify/demote Countries, Racing Types, Glossary, Sources, and About into lighter content/reference surfaces while preserving useful reviewed content and secondary navigation. It must not invent aggregate statistics or alter Calendar acquisition/publication truth.
 
-```text
-WHR-CAL-PRESENTATION-CONTEXT-001 — Today/Calendar/List/Map context-state correction [active]
-```
-
-Calendar quality/coverage continues independently under its canonical contracts and acquisition-control-plane rules.
+Calendar quality/coverage and all-tier racecourse inventory/ledger work continue independently under their canonical contracts and parallel-lane rules.
