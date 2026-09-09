@@ -1,5 +1,6 @@
 import { getCountries, getRacecourses } from './data';
 import { getGlossaryEntries } from './glossary-data';
+import { isCalendarSupportedCountry } from './calendarPublicCountrySupport';
 
 export type SearchLocale = 'en' | 'ja';
 export type SearchRecordType = 'country' | 'racecourse' | 'glossary';
@@ -37,24 +38,26 @@ export function getGlobalSearchRecords(locale: SearchLocale): SearchRecord[] {
   const countries = getCountries();
   const countryById = new Map(countries.map((country) => [country.id, country]));
 
-  const countryRecords: SearchRecord[] = countries.map((country) => ({
-    id: country.id,
-    type: 'country',
-    href: isJapanese ? `/ja/countries/${country.slug}/` : `/countries/${country.slug}/`,
-    label: isJapanese ? country.name_ja : country.name_en,
-    alternateLabel: isJapanese ? country.name_en : country.name_ja,
-    description: isJapanese ? country.summary_ja : country.summary_en,
-    meta: [country.region, country.name_local].filter(Boolean).join(' · '),
-    searchText: joinSearchText([
-      country.name_en,
-      country.name_ja,
-      country.name_local,
-      country.region,
-      country.racing_types,
-      country.summary_en,
-      country.summary_ja,
-    ]),
-  }));
+  const countryRecords: SearchRecord[] = countries
+    .filter((country) => isCalendarSupportedCountry(country.id))
+    .map((country) => ({
+      id: country.id,
+      type: 'country',
+      href: isJapanese ? `/ja/countries/${country.slug}/` : `/countries/${country.slug}/`,
+      label: isJapanese ? country.name_ja : country.name_en,
+      alternateLabel: isJapanese ? country.name_en : country.name_ja,
+      description: isJapanese ? country.summary_ja : country.summary_en,
+      meta: [country.region, country.name_local].filter(Boolean).join(' · '),
+      searchText: joinSearchText([
+        country.name_en,
+        country.name_ja,
+        country.name_local,
+        country.region,
+        country.racing_types,
+        country.summary_en,
+        country.summary_ja,
+      ]),
+    }));
 
   const racecourseRecords: SearchRecord[] = getRacecourses().map((racecourse) => {
     const country = countryById.get(racecourse.country_id);
