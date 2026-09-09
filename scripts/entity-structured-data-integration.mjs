@@ -242,33 +242,45 @@ export default function entityStructuredDataIntegration() {
 
         let breadcrumbCount = 0;
         let meetingEventCount = 0;
+        let skippedCount = 0;
+
         for (const { file, route } of routes) {
-          let html = await fs.readFile(file, 'utf8');
-          if (html.includes(`data-breadcrumb-metadata="${BREADCRUMB_MARKER}"`)) {
-            throw new Error(`Breadcrumb metadata marker already exists in ${route.relative}`);
-          }
-          const canonicalUrl = canonicalFor(html, route.relative);
-          const currentName = breadcrumbName(route, html);
-          const breadcrumb = serialize(buildBreadcrumb(route, canonicalUrl, currentName));
-          let scripts = `    <script type="application/ld+json" data-breadcrumb-metadata="${BREADCRUMB_MARKER}">${breadcrumb}</script>\n`;
-          breadcrumbCount += 1;
-
-          if (route.kind === 'meeting') {
-            if (html.includes(`data-meeting-event-metadata="${MEETING_EVENT_MARKER}"`)) {
-              throw new Error(`Meeting event metadata marker already exists in ${route.relative}`);
+          try {
+            let html = await fs.readFile(file, 'utf8');
+            if (html.includes(`data-breadcrumb-metadata="${BREADCRUMB_MARKER}"`)) {
+              throw new Error(`Breadcrumb metadata marker already exists in ${route.relative}`);
             }
-            const event = serialize(buildMeetingEvent(route, canonicalUrl, html));
-            scripts += `    <script type="application/ld+json" data-meeting-event-metadata="${MEETING_EVENT_MARKER}">${event}</script>\n`;
-            meetingEventCount += 1;
-          }
 
-          if (!html.includes('</head>')) throw new Error(`Closing head tag missing in ${route.relative}`);
-          html = html.replace('</head>', `${scripts}</head>`);
-          await fs.writeFile(file, html, 'utf8');
+            const canonicalUrl = canonicalFor(html, route.relative);
+            const currentName = breadcrumbName(route, html);
+            const breadcrumb = serialize(buildBreadcrumb(route, canonicalUrl, currentName));
+            let scripts = `    <script type="application/ld+json" data-breadcrumb-metadata="${BREADCRUMB_MARKER}">${breadcrumb}</script>\n`;
+            let addedMeetingEvent = false;
+
+            if (route.kind === 'meeting') {
+              if (html.includes(`data-meeting-event-metadata="${MEETING_EVENT_MARKER}"`)) {
+                throw new Error(`Meeting event metadata marker already exists in ${route.relative}`);
+              }
+              const event = serialize(buildMeetingEvent(route, canonicalUrl, html));
+              scripts += `    <script type="application/ld+json" data-meeting-event-metadata="${MEETING_EVENT_MARKER}">${event}</script>\n`;
+              addedMeetingEvent = true;
+            }
+
+            if (!html.includes('</head>')) throw new Error(`Closing head tag missing in ${route.relative}`);
+            html = html.replace('</head>', `${scripts}</head>`);
+            await fs.writeFile(file, html, 'utf8');
+            breadcrumbCount += 1;
+            if (addedMeetingEvent) meetingEventCount += 1;
+          } catch (error) {
+            skippedCount += 1;
+            const message = error instanceof Error ? error.message : String(error);
+            logger.warn(`Skipped entity structured data for ${route.relative}: ${message}`);
+          }
         }
 
         logger.info(`Injected BreadcrumbList metadata into ${breadcrumbCount} country, racecourse, and meeting detail pages.`);
         logger.info(`Injected source-bound SportsEvent metadata into ${meetingEventCount} bilingual meeting detail pages.`);
+        if (skippedCount > 0) logger.warn(`Skipped entity structured data on ${skippedCount} rendered detail pages.`);
       },
     },
   };
