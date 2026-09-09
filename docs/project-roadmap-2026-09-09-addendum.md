@@ -17,9 +17,9 @@ The completed historical 98-country publication programme remains evidence of ga
 
 ```text
 UI-008A — Calendar-supported Country public gate [complete: main a2d8b88802e54f5c67846a165d4f421e76ac44df]
-UI-008B — Japan Country reference page [current]
-UI-008C — Tokyo Racecourse reference page [next]
-UI-008D — project current Calendar-supported countries and active racecourses into shared layouts
+UI-008B — Japan Country reference page [complete: main cf0ff0da47143bd73179403698f8365351ce91e3]
+UI-008C — Tokyo Racecourse reference page [current]
+UI-008D — project current Calendar-supported countries and active racecourses into shared layouts [next]
 UI-008E — make future country expansion a vertical Calendar + Country + Racecourse + Map package
 UI-009  — EN/JA responsive and navigation release verification after the supported set is projected
 ```
@@ -28,7 +28,7 @@ Calendar country/authority acquisition expansion and all-tier racecourse invento
 
 ## Completed public-gating baseline — UI-008A
 
-The public Country gate is now implemented from a stable reviewed registry rather than current-day meeting presence.
+The public Country gate is implemented from a stable reviewed registry rather than current-day meeting presence.
 
 Canonical runtime registry:
 
@@ -68,11 +68,11 @@ Static route generation supplies sitemap exposure, so unsupported Country detail
 
 ## Reference pages
 
-### Japan Country page — UI-008B current
+### Japan Country page — UI-008B complete
 
-Build the first shared Country layout against existing reviewed Japan data and current Calendar meeting data.
+The first shared Country hub is merged at `cf0ff0da47143bd73179403698f8365351ce91e3`.
 
-Required baseline:
+It establishes the shared baseline using existing reviewed data and current Calendar truth:
 
 - identity + Calendar-supported state;
 - reviewed overview;
@@ -85,23 +85,28 @@ Required baseline:
 
 The visual design follows the current Home/Calendar visual language: white surface, navy headings, restrained gold accents, simple cards/tables, existing MapLibre/OpenStreetMap stack, no external organisation logos, no decorative asset dependency.
 
-Japan is the only Country switched to the reference composition during UI-008B. The other Calendar-supported Country routes keep their existing page until UI-008D, which prevents an unfinished generic layout from being pushed across all supported countries at once.
+Japan is the only Country switched to the reference composition during UI-008B. The other Calendar-supported Country routes keep their existing page until UI-008D.
 
-### Tokyo Racecourse page
+### Tokyo Racecourse page — UI-008C current
 
-Use Tokyo Racecourse as the first shared Racecourse-detail reference.
+Tokyo Racecourse is the first shared Racecourse-detail reference.
 
-Required baseline:
+Current implementation target:
 
 - identity and reviewed status/context;
-- country/authority/racing type/timezone where reviewed;
-- current/next meeting context;
-- recent/upcoming meeting rows;
-- reviewed map location and location text;
+- Country link back to Japan;
+- authority/racing type/timezone where reviewed;
+- today/next meeting focus plus upcoming reviewed meeting rows;
+- reviewed location map and location text using the existing RacecourseLocationMapSection / RacecourseMap path;
 - reviewed course facts;
-- representative race names as plain text;
-- official sources;
-- Racecourse -> Country and Racecourse -> Calendar links.
+- representative race names as plain text only;
+- official racecourse/source links;
+- Racecourse -> Country and Racecourse -> Calendar links;
+- EN and JA routes use the same composition.
+
+UI-008C must not rewrite other racecourse routes yet. Tokyo alone is switched to the reference component. Other racecourses retain the existing `RacecourseDetailPage` until UI-008D.
+
+The page must consume the existing public Calendar meeting state. It must not create a second meeting lifecycle, timezone, rank, or source truth.
 
 Do not wait for every future enrichment field before shipping the shared baseline. Add later facts only when reviewed data exists.
 
