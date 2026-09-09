@@ -163,6 +163,29 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "GitHub Actions follows the official TJK current/future programme-page chain for a bounded 30-day window and enriches each discovered domestic meeting to best available C or A. Publication remains review-only; automatic approval, canonical/public writes, unattended merge, and deployment remain disabled."
+    },
+    {
+      "system_id": "sorec-racing-information-system",
+      "country_id": "morocco",
+      "authority_id": "sorec",
+      "profile_status": "provisional",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "sorec-programme-reunion",
+      "detail_source_id": null,
+      "schedule_adapter_id": "sorec-programme-reunion-v1",
+      "detail_adapter_id": null,
+      "technical_capability_rank": "A",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "A",
+      "supported_observation_ranks": ["C"],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": ["detail_source_id", "detail_adapter_id"],
+      "operator_notes": "The SOREC Programme Réunion index is wired as a meeting-discovery route and currently emits meeting-level evidence when no race times are present. That observation level is not a fixed rank ceiling: the system targets best available, canonical rank is derived centrally from evidence, public output may rise through A, and richer detail acquisition remains pending."
     }
   ]
 }
