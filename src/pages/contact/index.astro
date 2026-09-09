@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const contactFormUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSeHWxw_rGSZNF_ydDUZ4nkYwXnkYWZzG1qIrNkC1oXhqTj7lQ/viewform?usp=dialog';
+---
+
+<BaseLayout
+  title="Contact | Where Horses Run"
+  description="Contact Where Horses Run through the contact form."
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Contact</p>
+    <h1 id="page-title">Contact</h1>
+    <p class="hero__summary">Use the contact form for general questions, corrections, privacy requests, or questions about optional tips.</p>
+  </section>
+
+  <section class="section-grid" aria-label="Contact information">
+    <article class="card">
+      <h2>Contact form</h2>
+      <p><a href={contactFormUrl} target="_blank" rel="noopener noreferrer">Open the Where Horses Run contact form</a></p>
+      <p>The same bilingual form is used for English and Japanese inquiries.</p>
+    </article>
+    <article class="card">
+      <h2>Before sending</h2>
+      <p>Please do not submit passwords, full payment card numbers, government IDs, or other highly sensitive information.</p>
+      <p><strong>Payment processing is not currently enabled.</strong></p>
+    </article>
+  </section>
+</BaseLayout>

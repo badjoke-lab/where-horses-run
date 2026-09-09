@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Privacy Policy | Where Horses Run"
+  description="Privacy policy for Where Horses Run, including analytics and future payment handling."
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">Privacy</p>
+    <h1 id="page-title">Privacy Policy</h1>
+    <p class="hero__summary">How Where Horses Run handles information when you browse the site, contact us, or use an optional payment feature.</p>
+  </section>
+
+  <section class="section-grid" aria-label="Privacy policy">
+    <article class="card">
+      <h2>Site analytics</h2>
+      <p>Where Horses Run uses Google Analytics to understand aggregate site usage and improve the service. Google may process device, browser, network, and usage information under its own terms and privacy policies.</p>
+    </article>
+    <article class="card">
+      <h2>Contact form</h2>
+      <p>If you choose to contact us through the linked Google Form, the information you submit is processed by Google and used only to review and respond to your inquiry, maintain support records, and prevent abuse.</p>
+    </article>
+    <article class="card">
+      <h2>Payments</h2>
+      <p>If optional tips are enabled in the future, payment processing will be handled by Stripe. Where Horses Run does not store full payment card numbers. Stripe processes payment and related information under its own terms and privacy policy.</p>
+    </article>
+    <article class="card">
+      <h2>No accounts</h2>
+      <p>Where Horses Run does not currently offer user accounts, paid memberships, betting accounts, or wagering services.</p>
+    </article>
+    <article class="card">
+      <h2>Questions</h2>
+      <p>For privacy questions, use the <a href="/contact/">Contact</a> page.</p>
+    </article>
+  </section>
+</BaseLayout>

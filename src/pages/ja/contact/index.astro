@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const contactFormUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSeHWxw_rGSZNF_ydDUZ4nkYwXnkYWZzG1qIrNkC1oXhqTj7lQ/viewform?usp=dialog';
+---
+
+<BaseLayout
+  title="お問い合わせ | 競馬どこ？"
+  description="競馬どこ？へのお問い合わせ窓口です。"
+  lang="ja"
+>
+  <section class="hero" aria-labelledby="page-title">
+    <p class="hero__eyebrow">お問い合わせ</p>
+    <h1 id="page-title">お問い合わせ</h1>
+    <p class="hero__summary">一般的なお問い合わせ、情報の訂正、プライバシー、将来の任意Tipについてフォームからご連絡いただけます。</p>
+  </section>
+
+  <section class="section-grid" aria-label="お問い合わせ先">
+    <article class="card">
+      <h2>お問い合わせフォーム</h2>
+      <p><a href={contactFormUrl} target="_blank" rel="noopener noreferrer">Where Horses Run お問い合わせフォームを開く</a></p>
+      <p>英語・日本語とも同じフォームを使用します。</p>
+    </article>
+    <article class="card">
+      <h2>送信前に</h2>
+      <p>パスワード、カード番号全体、本人確認書類などの重要な個人情報は送信しないでください。</p>
+      <p><strong>現在、決済機能は有効化していません。</strong></p>
+    </article>
+  </section>
+</BaseLayout>
