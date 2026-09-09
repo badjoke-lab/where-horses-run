@@ -29,64 +29,248 @@ const isToday = Boolean(state.today_meetings.length);
 const upcoming = state.upcoming_meetings
   .filter((meeting) => !primaryMeeting || meeting.meeting_id !== primaryMeeting.meeting_id)
   .slice(0, 6);
+const runtimeMeetingsJson = JSON.stringify(state.timezone_candidate_meetings).replace(/</g, '\\u003c');
 ---
 
-<section class="racecourse-meeting-summary" aria-labelledby="racecourse-meeting-summary-heading" data-racecourse-meeting-summary>
+<script is:inline>
+  (() => {
+    document.documentElement.dataset.racecourseMeetingRuntimePending = 'true';
+    window.setTimeout(() => {
+      if (document.documentElement.dataset.racecourseMeetingRuntimePending === 'true') {
+        delete document.documentElement.dataset.racecourseMeetingRuntimePending;
+        document.documentElement.dataset.racecourseMeetingRuntimeFallback = 'true';
+      }
+    }, 4000);
+  })();
+</script>
+
+<style is:inline>
+  html[data-racecourse-meeting-runtime-pending='true'] [data-racecourse-meeting-summary] {
+    visibility: hidden !important;
+  }
+</style>
+
+<section
+  class="racecourse-meeting-summary"
+  aria-labelledby="racecourse-meeting-summary-heading"
+  data-racecourse-meeting-summary
+  data-runtime-timezone={state.timezone}
+  data-runtime-lang={lang}
+  data-calendar-base={calendarBase}
+  data-official-schedule-url={officialScheduleUrl ?? ''}
+>
   <div class="racecourse-detail-v2__section-heading">
     <p class="racecourse-detail-v2__eyebrow">{isJapanese ? '公開カレンダー' : 'Public Calendar'}</p>
     <h2 id="racecourse-meeting-summary-heading">{isJapanese ? '開催情報' : 'Meeting information'}</h2>
   </div>
 
-  {primaryMeeting ? (
-    <article class="racecourse-meeting-summary__primary" data-racecourse-primary-meeting>
-      <div>
-        <p class="racecourse-meeting-summary__state">{isToday ? (isJapanese ? '本日開催' : 'Racing today') : (isJapanese ? '次回開催' : 'Next meeting')}</p>
-        <h3><a href={calendarDateHref(primaryMeeting.date)}>{primaryMeeting.date}</a></h3>
-        <p class="racecourse-meeting-summary__facts">
-          {primaryTimeRange ? <span>{isJapanese ? '現地時刻 ' : 'Local time '}{primaryTimeRange}</span> : null}
-          <span>{isJapanese ? '公開ランク' : 'Public rank'} {primaryMeeting.effective_public_rank}</span>
-          <span>{primaryMeeting.timezone}</span>
+  <script type="application/json" data-racecourse-runtime-meetings set:html={runtimeMeetingsJson}></script>
+
+  <div data-racecourse-meeting-runtime-body>
+    {primaryMeeting ? (
+      <article class="racecourse-meeting-summary__primary" data-racecourse-primary-meeting>
+        <div>
+          <p class="racecourse-meeting-summary__state">{isToday ? (isJapanese ? '本日開催' : 'Racing today') : (isJapanese ? '次回開催' : 'Next meeting')}</p>
+          <h3><a href={calendarDateHref(primaryMeeting.date)}>{primaryMeeting.date}</a></h3>
+          <p class="racecourse-meeting-summary__facts">
+            {primaryTimeRange ? <span>{isJapanese ? '現地時刻 ' : 'Local time '}{primaryTimeRange}</span> : null}
+            <span>{isJapanese ? '公開ランク' : 'Public rank'} {primaryMeeting.effective_public_rank}</span>
+            <span>{primaryMeeting.timezone}</span>
+          </p>
+        </div>
+        <div class="racecourse-meeting-summary__actions">
+          {primaryDetailPath ? <a class="button-like" href={primaryDetailPath}>{isJapanese ? '開催詳細' : 'Meeting details'}</a> : null}
+          <a href={primaryMeeting.official_source_url}>{isJapanese ? '公式ソース ↗' : 'Official source ↗'}</a>
+        </div>
+      </article>
+    ) : (
+      <div class="racecourse-meeting-summary__empty" data-racecourse-no-current-window-meeting>
+        <p>{isJapanese
+          ? '現在の公開30日窓には、この競馬場の確認済み開催がありません。'
+          : 'No reviewed meeting for this racecourse is listed in the current public 30-day window.'}</p>
+        <p>
+          <a href={calendarBase}>{isJapanese ? 'カレンダーを見る' : 'Open Calendar'} →</a>
+          {officialScheduleUrl ? <><span>{' · '}</span><a href={officialScheduleUrl}>{isJapanese ? '公式開催予定 ↗' : 'Official schedule ↗'}</a></> : null}
         </p>
       </div>
-      <div class="racecourse-meeting-summary__actions">
-        {primaryDetailPath ? <a class="button-like" href={primaryDetailPath}>{isJapanese ? '開催詳細' : 'Meeting details'}</a> : null}
-        <a href={primaryMeeting.official_source_url}>{isJapanese ? '公式ソース ↗' : 'Official source ↗'}</a>
-      </div>
-    </article>
-  ) : (
-    <div class="racecourse-meeting-summary__empty" data-racecourse-no-current-window-meeting>
-      <p>{isJapanese
-        ? '現在の公開30日窓には、この競馬場の確認済み開催がありません。'
-        : 'No reviewed meeting for this racecourse is listed in the current public 30-day window.'}</p>
-      <p>
-        <a href={calendarBase}>{isJapanese ? 'カレンダーを見る' : 'Open Calendar'} →</a>
-        {officialScheduleUrl ? <><span>{' · '}</span><a href={officialScheduleUrl}>{isJapanese ? '公式開催予定 ↗' : 'Official schedule ↗'}</a></> : null}
-      </p>
-    </div>
-  )}
+    )}
 
-  {upcoming.length ? (
-    <div class="racecourse-meeting-summary__upcoming" data-racecourse-upcoming-meetings>
-      <h3>{isJapanese ? '今後の開催' : 'Upcoming meetings'}</h3>
-      <ul>
-        {upcoming.map((meeting) => {
-          const meetingTimeRange = timeRange(meeting);
-          const meetingDetailPath = detailPath(meeting);
-          return (
-            <li>
-              <a href={calendarDateHref(meeting.date)}>{meeting.date}</a>
-              {meetingTimeRange ? <span>{meetingTimeRange}</span> : null}
-              <span>{meeting.effective_public_rank}</span>
-              {meetingDetailPath ? <a href={meetingDetailPath}>{isJapanese ? '詳細' : 'Details'}</a> : null}
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  ) : null}
+    {upcoming.length ? (
+      <div class="racecourse-meeting-summary__upcoming" data-racecourse-upcoming-meetings>
+        <h3>{isJapanese ? '今後の開催' : 'Upcoming meetings'}</h3>
+        <ul>
+          {upcoming.map((meeting) => {
+            const meetingTimeRange = timeRange(meeting);
+            const meetingDetailPath = detailPath(meeting);
+            return (
+              <li>
+                <a href={calendarDateHref(meeting.date)}>{meeting.date}</a>
+                {meetingTimeRange ? <span>{meetingTimeRange}</span> : null}
+                <span>{meeting.effective_public_rank}</span>
+                {meetingDetailPath ? <a href={meetingDetailPath}>{isJapanese ? '詳細' : 'Details'}</a> : null}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    ) : null}
+  </div>
 
   <p class="racecourse-meeting-summary__footer">
     <a href={calendarBase}>{isJapanese ? 'すべての開催をカレンダーで見る' : 'View all meetings in Calendar'} →</a>
     {officialScheduleUrl ? <><span>{' · '}</span><a href={officialScheduleUrl}>{isJapanese ? '公式開催予定 ↗' : 'Official schedule ↗'}</a></> : null}
   </p>
 </section>
+
+<script is:inline>
+  (() => {
+    const roots = Array.from(document.querySelectorAll('[data-racecourse-meeting-summary]'));
+    const root = roots.find((node) => node instanceof HTMLElement && node.dataset.runtimeReady !== 'true');
+    if (!(root instanceof HTMLElement)) return;
+    const body = root.querySelector('[data-racecourse-meeting-runtime-body]');
+    const dataNode = root.querySelector('[data-racecourse-runtime-meetings]');
+    if (!(body instanceof HTMLElement) || !(dataNode instanceof HTMLScriptElement)) return;
+
+    const isJa = root.dataset.runtimeLang === 'ja';
+    const timeZone = root.dataset.runtimeTimezone || 'UTC';
+    const calendarBase = root.dataset.calendarBase || (isJa ? '/ja/calendar/' : '/calendar/');
+    const officialScheduleUrl = root.dataset.officialScheduleUrl || '';
+    const addDays = (dateText, days) => {
+      const date = new Date(`${dateText}T00:00:00.000Z`);
+      date.setUTCDate(date.getUTCDate() + days);
+      return date.toISOString().slice(0, 10);
+    };
+    const todayIn = (zone) => {
+      const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {
+        timeZone: zone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }).formatToParts(new Date()).filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
+      return `${parts.year}-${parts.month}-${parts.day}`;
+    };
+    const timeRange = (meeting) => {
+      if (meeting.first_race_time_local && meeting.last_race_time_local) return `${meeting.first_race_time_local}–${meeting.last_race_time_local}`;
+      return meeting.first_race_time_local || meeting.last_race_time_local || null;
+    };
+    const detailPath = (meeting) => {
+      if (!meeting.detail_path) return null;
+      return isJa ? `/ja${meeting.detail_path}` : meeting.detail_path;
+    };
+    const calendarDateHref = (date) => `${calendarBase}?date=${encodeURIComponent(date)}`;
+    const link = (href, text, className = '') => {
+      const anchor = document.createElement('a');
+      anchor.href = href;
+      anchor.textContent = text;
+      if (className) anchor.className = className;
+      return anchor;
+    };
+
+    let meetings = [];
+    try {
+      const parsed = JSON.parse(dataNode.textContent || '[]');
+      meetings = Array.isArray(parsed) ? parsed : [];
+    } catch {
+      meetings = [];
+    }
+
+    const today = todayIn(timeZone);
+    const endExclusive = addDays(today, 30);
+    const currentWindow = meetings
+      .filter((meeting) => typeof meeting?.date === 'string' && meeting.date >= today && meeting.date < endExclusive)
+      .sort((left, right) => String(left.date).localeCompare(String(right.date)) || String(left.meeting_id || '').localeCompare(String(right.meeting_id || '')));
+    const todayMeetings = currentWindow.filter((meeting) => meeting.date === today);
+    const futureMeetings = currentWindow.filter((meeting) => meeting.date > today);
+    const nextDate = futureMeetings[0]?.date || null;
+    const nextMeetings = nextDate ? futureMeetings.filter((meeting) => meeting.date === nextDate) : [];
+    const primary = todayMeetings[0] || nextMeetings[0] || null;
+    const upcoming = futureMeetings.filter((meeting) => !primary || meeting.meeting_id !== primary.meeting_id).slice(0, 6);
+
+    body.replaceChildren();
+    if (primary) {
+      const article = document.createElement('article');
+      article.className = 'racecourse-meeting-summary__primary';
+      article.dataset.racecoursePrimaryMeeting = 'true';
+      const info = document.createElement('div');
+      const state = document.createElement('p');
+      state.className = 'racecourse-meeting-summary__state';
+      state.textContent = todayMeetings.length ? (isJa ? '本日開催' : 'Racing today') : (isJa ? '次回開催' : 'Next meeting');
+      const heading = document.createElement('h3');
+      heading.append(link(calendarDateHref(primary.date), primary.date));
+      const facts = document.createElement('p');
+      facts.className = 'racecourse-meeting-summary__facts';
+      const range = timeRange(primary);
+      if (range) {
+        const time = document.createElement('span');
+        time.textContent = `${isJa ? '現地時刻 ' : 'Local time '}${range}`;
+        facts.append(time);
+      }
+      const rank = document.createElement('span');
+      rank.textContent = `${isJa ? '公開ランク' : 'Public rank'} ${primary.effective_public_rank || primary.capability_rank || ''}`.trim();
+      facts.append(rank);
+      if (primary.timezone) {
+        const zone = document.createElement('span');
+        zone.textContent = primary.timezone;
+        facts.append(zone);
+      }
+      info.append(state, heading, facts);
+      const actions = document.createElement('div');
+      actions.className = 'racecourse-meeting-summary__actions';
+      const detail = detailPath(primary);
+      if (detail) actions.append(link(detail, isJa ? '開催詳細' : 'Meeting details', 'button-like'));
+      if (primary.official_source_url) actions.append(link(primary.official_source_url, isJa ? '公式ソース ↗' : 'Official source ↗'));
+      article.append(info, actions);
+      body.append(article);
+    } else {
+      const empty = document.createElement('div');
+      empty.className = 'racecourse-meeting-summary__empty';
+      empty.dataset.racecourseNoCurrentWindowMeeting = 'true';
+      const message = document.createElement('p');
+      message.textContent = isJa
+        ? '現在の公開30日窓には、この競馬場の確認済み開催がありません。'
+        : 'No reviewed meeting for this racecourse is listed in the current public 30-day window.';
+      const actions = document.createElement('p');
+      actions.append(link(calendarBase, `${isJa ? 'カレンダーを見る' : 'Open Calendar'} →`));
+      if (officialScheduleUrl) {
+        actions.append(document.createTextNode(' · '));
+        actions.append(link(officialScheduleUrl, isJa ? '公式開催予定 ↗' : 'Official schedule ↗'));
+      }
+      empty.append(message, actions);
+      body.append(empty);
+    }
+
+    if (upcoming.length) {
+      const wrap = document.createElement('div');
+      wrap.className = 'racecourse-meeting-summary__upcoming';
+      wrap.dataset.racecourseUpcomingMeetings = 'true';
+      const heading = document.createElement('h3');
+      heading.textContent = isJa ? '今後の開催' : 'Upcoming meetings';
+      const list = document.createElement('ul');
+      upcoming.forEach((meeting) => {
+        const item = document.createElement('li');
+        item.append(link(calendarDateHref(meeting.date), meeting.date));
+        const range = timeRange(meeting);
+        if (range) {
+          const time = document.createElement('span');
+          time.textContent = range;
+          item.append(time);
+        }
+        const rank = document.createElement('span');
+        rank.textContent = meeting.effective_public_rank || meeting.capability_rank || '';
+        item.append(rank);
+        const detail = detailPath(meeting);
+        if (detail) item.append(link(detail, isJa ? '詳細' : 'Details'));
+        list.append(item);
+      });
+      wrap.append(heading, list);
+      body.append(wrap);
+    }
+
+    root.dataset.runtimeReady = 'true';
+    delete document.documentElement.dataset.racecourseMeetingRuntimePending;
+    document.documentElement.dataset.racecourseMeetingRuntimeReady = 'true';
+    window.dispatchEvent(new CustomEvent('whr:racecoursemeetingruntime', {
+      detail: { timeZone, today, windowEndInclusive: addDays(endExclusive, -1) },
+    }));
+  })();
+</script>
