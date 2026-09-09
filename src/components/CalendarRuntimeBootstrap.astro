@@ -102,6 +102,15 @@ const {
     const maybeRevealCalendar = () => {
       if (calendarDateReady && calendarViewReady) reveal();
     };
+    const checkCalendarView = () => {
+      if (mode !== 'calendar') return;
+      const expected = window.__WHR_CALENDAR_RUNTIME__?.view || 'list';
+      const page = document.querySelector('.calendar-page');
+      if (page instanceof HTMLElement && page.dataset.calendarActiveView === expected) {
+        calendarViewReady = true;
+        maybeRevealCalendar();
+      }
+    };
 
     if (mode === 'home') {
       window.addEventListener('whr:todayfilterchange', reveal, { once: true });
@@ -110,16 +119,19 @@ const {
         const expected = window.__WHR_CALENDAR_RUNTIME__?.selectedDate;
         if (!expected || event?.detail?.date === expected) {
           calendarDateReady = true;
-          maybeRevealCalendar();
+          checkCalendarView();
+          requestAnimationFrame(checkCalendarView);
         }
       });
-      window.addEventListener('whr:calendarviewchange', (event) => {
-        const expected = window.__WHR_CALENDAR_RUNTIME__?.view;
-        if (!expected || event?.detail?.view === expected) {
-          calendarViewReady = true;
-          maybeRevealCalendar();
-        }
-      });
+      const observeCalendarView = () => {
+        const page = document.querySelector('.calendar-page');
+        if (!(page instanceof HTMLElement)) return;
+        const observer = new MutationObserver(checkCalendarView);
+        observer.observe(page, { attributes: true, attributeFilter: ['data-calendar-active-view'] });
+        checkCalendarView();
+      };
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', observeCalendarView, { once: true });
+      else observeCalendarView();
     } else {
       window.addEventListener('whr:timezonechange', (event) => {
         if (event?.detail?.scope === mode) reveal();
