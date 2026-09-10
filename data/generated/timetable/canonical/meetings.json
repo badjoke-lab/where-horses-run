@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-10T14:37:37.586Z",
+  "generated_at": "2026-09-10T14:45:10.406Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -14644,6 +14644,35 @@
       "freshness": {
         "last_checked_date": "2026-09-03",
         "generated_at": "2026-09-03T16:36:05.765Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
+      "meeting_id": "chile-valparaiso-sporting-club-racecourse-2026-09-16",
+      "country_id": "chile",
+      "authority_id": "teletrak-chile",
+      "racing_system_id": "chile-teletrak-racing-system",
+      "timezone": "America/Santiago",
+      "racecourse_id": "valparaiso-sporting-club-racecourse",
+      "date": "2026-09-16",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "chile-teletrak-weekly-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://teletrak.cl/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T14:45:10.406Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
