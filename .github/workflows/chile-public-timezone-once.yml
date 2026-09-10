@@ -38,7 +38,8 @@ jobs:
           text = text.replace(server_needle, server_add)
           text = text.replace(client_needle, client_add)
           path.write_text(text)
-          assert text.count("America/Santiago") == 2
+          assert server_add in text
+          assert client_add in text
           PY
           npm install --no-package-lock --no-audit --no-fund
           npm run build
