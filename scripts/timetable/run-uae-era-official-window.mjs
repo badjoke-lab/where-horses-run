@@ -58,6 +58,7 @@ for (const fixture of discovery.fixtures) {
     },
     detail_observation: {
       status: usableDetail ? 'available' : detail ? 'source_error' : 'not_published',
+      ...(usableDetail ? { evaluated_capability_rank: 'A' } : {}),
       race_count: usableDetail ? detail.meeting?.race_count ?? 0 : 0,
       conflicts: [],
     },
