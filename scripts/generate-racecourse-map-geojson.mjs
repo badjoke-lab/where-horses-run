@@ -14,9 +14,51 @@ const sourcePath = path.join(root, sourceRelativePath);
 const outputPath = path.join(root, outputRelativePath);
 const checkOnly = process.argv.includes('--check');
 const calendarMapRegressionIds = [
-  'hipodromo-chile-racecourse',
+  // Chile (4)
+  'club-hipico-de-concepcion-racecourse',
+  'club-hipico-de-santiago-racecourse',
+  'hipodromo-chile',
+  'valparaiso-sporting-club-racecourse',
+  // Ireland (26)
+  'ireland--ballinrobe',
+  'ireland--bellewstown',
+  'ireland--clonmel',
+  'ireland--cork-mallow',
+  'ireland--curragh',
+  'ireland--downpatrick',
+  'ireland--down-royal',
+  'ireland--dundalk',
+  'ireland--fairyhouse',
+  'ireland--galway',
+  'ireland--gowran-park',
+  'ireland--kilbeggan',
+  'ireland--killarney',
   'ireland--laytown',
+  'ireland--leopardstown',
+  'ireland--limerick',
+  'ireland--listowel',
+  'ireland--naas',
+  'ireland--navan',
+  'ireland--punchestown',
+  'ireland--roscommon',
+  'ireland--sligo',
+  'ireland--thurles',
+  'ireland--tipperary',
+  'ireland--tramore',
+  'ireland--wexford',
+  // South Korea (4)
+  'seoul-racecourse',
+  'busan-gyeongnam-racecourse',
+  'yeongcheon-racecourse',
+  'jeju-racecourse',
+  // Morocco (7)
+  'casablanca-anfa-racecourse',
   'meknes-racecourse',
+  'marrakech-racecourse',
+  'rabat-racecourse',
+  'settat-racecourse',
+  'el-jadida-racecourse',
+  'khemisset-racecourse',
 ];
 
 const registry = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
