@@ -4,7 +4,7 @@ BREED-002	BREED	血統・繁殖	Sire	父馬	馬の父にあたる種牡馬。	co
 BREED-003	BREED	血統・繁殖	Dam	母馬	馬の母にあたる繁殖牝馬。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-046; P0-SRC-047. IFHA stud-book definition and Racing Australia breeding details verify Dam as maternal parent.
 BREED-004	BREED	血統・繁殖	Damsire	母父	母馬の父にあたる種牡馬。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-047. Racing Australia current breeding display explicitly uses Sire - Dam (Sire of Dam).
 BREED-005	BREED	血統・繁殖	Grandsire	祖父馬	父系または母系の祖父にあたる馬。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-BREED-006	BREED	血統・繁殖	Broodmare	繁殖牝馬	繁殖に供される牝馬。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+BREED-006	BREED	血統・繁殖	Broodmare	繁殖牝馬	子馬の生産を目的として繁殖に供される牝馬。	concept	P1	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P1-SRC-028. JRA defines 繁殖牝馬 as a mare retained for producing foals; English label remains the canonical cross-language term rather than a claim about one global registry.
 BREED-007	BREED	血統・繁殖	Broodmare sire	母父種牡馬	繁殖牝馬の父、または母父として評価される種牡馬。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 BREED-008	BREED	血統・繁殖	Stud	種馬場／種牡馬	文脈により繁殖施設または繁殖用雄馬を指す。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 BREED-009	BREED	血統・繁殖	Stud farm	種馬場	馬の繁殖・繋養を行う施設。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
@@ -14,8 +14,7 @@ BREED-012	BREED	血統・繁殖	Mating	配合	繁殖における交配・配合�
 BREED-013	BREED	血統・繁殖	Foaling	出産	牝馬が仔馬を出産すること。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 BREED-014	BREED	血統・繁殖	Foaled	生産／出生	馬が生まれたことを示す血統・登録上の表現。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 BREED-015	BREED	血統・繁殖	Stud book	血統登録簿	品種・血統登録を管理する公式登録簿。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-045; P0-SRC-046. JRA and IFHA support official Stud Book as the recognized registration record for Thoroughbreds.
-BREED-016	BREED	血統・繁殖	Registration	血統登録	馬の身元・血統等を公式登録すること。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-BREED-017	BREED	血統・繁殖	Breeder	生産者	馬を生産した者・主体。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+BREED-016	BREED	血統・繁殖	Registration	血統登録	所管するスタッドブック・登録機関へ馬の身元、血統、出生等を公式に記録すること。	concept	P1	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P1-SRC-010; P1-SRC-029; P1-SRC-030. WAHO, AQHA and IFHA all use formal registration/recording systems; exact eligibility, parentage and identification requirements remain registry-specific.
 BREED-018	BREED	血統・繁殖	Breeding right	種付権／繁殖権	種牡馬等の繁殖利用に関する権利。	concept	P3	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 BREED-019	BREED	血統・繁殖	Nick	血統配合相性	特定父系と母系の組み合わせの相性を語る繁殖上の用語。	concept	P3	Industry/Regional	ALL	working_equivalent	candidate	yes	no	
 BREED-020	BREED	血統・繁殖	Inbreeding	インブリード／近親交配	近い祖先を重ねる配合。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
