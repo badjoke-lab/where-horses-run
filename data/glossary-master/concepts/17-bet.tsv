@@ -2,7 +2,7 @@ concept_id	category_id	category_ja	canonical_en	preferred_ja	working_definition_
 BET-001	BET	馬券・オッズ	Odds	オッズ	賭けの価格・払戻倍率等を表す数値。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-042 verifies odds as a payout-rate/multiple concept in JRA; representation conventions vary by jurisdiction and betting system.
 BET-002	BET	馬券・オッズ	Fixed odds	固定オッズ	購入時等に払戻条件が固定される賭け方式。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-043 explicitly describes bookmaker settlement at the odds agreed when the bet is purchased; regulatory implementations vary.
 BET-003	BET	馬券・オッズ	Pari-mutuel	パリミュチュエル方式	賭金をプールし控除後の金額を的中者間で分配する方式。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-043 explicitly contrasts pari-mutuel with bookmaking; P0-SRC-041 corroborates pool-based JRA payout calculations.
-BET-004	BET	馬券・オッズ	Tote	トート	パリミュチュエル方式の投票システム・運営主体等を指す語。	concept	P0	GB/IRE/Commonwealth/Global	ALL	working_equivalent	candidate	yes	no	
+BET-004	BET	馬券・オッズ	Tote	トート	主に英国・アイルランド等で、プール方式の馬券またはその運営システム・運営主体を指す語。地域・事業者により意味範囲が異なる。	concept	P0	GB/IRE/Commonwealth/Regional	ALL	working_equivalent	source_verified	yes	no	P0-SRC-070 verifies Tote as pool-based wagering distinct from bookmaker fixed odds; retain operator/system-sensitive scope rather than treating Tote as a universal synonym for pari-mutuel.
 BET-005	BET	馬券・オッズ	Totalisator	トータリゼータ	投票集計・払戻計算を行うシステム、またはその方式。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 BET-006	BET	馬券・オッズ	Betting pool	投票プール	同一賭式に投じられた賭金の集合。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 BET-007	BET	馬券・オッズ	Takeout	控除率	投票プールから税・主催者分等として控除される割合。	concept	P1	North America/Regional	ALL	working_equivalent	candidate	yes	no	
@@ -25,8 +25,7 @@ BET-023	BET	馬券・オッズ	Pick 6	Pick 6	指定された6競走の勝馬を�
 BET-024	BET	馬券・オッズ	Forecast	Forecast	主に英国で上位2頭の着順を当てる賭式。	concept	P1	GB/IRE	ALL	working_equivalent	candidate	yes	no	
 BET-025	BET	馬券・オッズ	Reverse forecast	Reverse forecast	上位2頭を順不同で選ぶForecast系賭式。	concept	P2	GB/IRE	ALL	working_equivalent	candidate	yes	no	
 BET-026	BET	馬券・オッズ	Tricast	Tricast	主に英国で上位3頭の着順を当てる賭式。	concept	P2	GB/IRE	ALL	working_equivalent	candidate	yes	no	
-BET-027	BET	馬券・オッズ	Starting Price	SP／最終オッズ	主に英国・アイルランド等で発走時点の公式開始価格を示す語。	concept	P0	GB/IRE/Commonwealth	ALL	working_equivalent	candidate	yes	no	
-BET-028	BET	馬券・オッズ	SP	SP	Starting Priceの略。	concept	P0	GB/IRE/Commonwealth	ALL	working_equivalent	candidate	yes	no	
+BET-027	BET	馬券・オッズ	Starting Price	SP／最終オッズ	主に英国・アイルランド等で、発走時に確定する公式の開始価格・最終オッズを指す語。	concept	P0	GB/IRE/Commonwealth	ALL	working_equivalent	source_verified	yes	no	P0-SRC-071 verifies Starting Price as the final odds prevailing when the race starts. SP is retained as an abbreviation label via ABBR-027; former duplicate Concept BET-028 is merged into BET-027.
 BET-029	BET	馬券・オッズ	Morning line	モーニングライン	主に北米でレース前に作成される予想オッズ。	concept	P1	North America	Flat	working_equivalent	candidate	yes	no	
 BET-030	BET	馬券・オッズ	Favorite	1番人気	最も支持されている馬。英米で綴り差がある。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-044 verifies favorite as 一番人気馬 in JRA official overseas terminology; Favorite/Favourite spelling split remains in the label layer.
 BET-032	BET	馬券・オッズ	Longshot	穴馬	勝つ可能性が低いと市場で評価され高オッズになっている馬。	concept	P1	North America/Global	ALL	working_equivalent	candidate	yes	no	
