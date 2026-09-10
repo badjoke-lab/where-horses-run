@@ -11,19 +11,22 @@ This addendum creates a parallel glossary knowledge lane. It does not supersede 
 ## Current glossary stage
 
 ```text
-Glossary stage: register_and_historical_research
+Glossary stage: relationship_equivalence_and_evidence_refinement
 Completed: GLOSSARY-MASTER-001
 Completed: GLOSSARY-MASTER-002
 Completed first major-jurisdiction pass: GLOSSARY-MASTER-003
-Current glossary Work ID: GLOSSARY-MASTER-004
-Next: GLOSSARY-MASTER-005
+Completed current register pass: GLOSSARY-MASTER-004
+Current glossary Work ID: GLOSSARY-MASTER-005
+Next: GLOSSARY-MASTER-006
 Current research master: 654 Concepts / 18 domain categories
+Current register layer: 60 usages / 26 abbreviations / 4 historical rows
+Current relationship layer wave 1: 15 relations / 15 review items
 Public glossary page expansion: deferred
 Automatic glossary publication: disabled
 Existing public glossary content: disposable legacy runtime baseline
 ```
 
-The current task is to normalize established colloquial, industry, slang, abbreviation, chart/racecard-code, and historical terminology without confusing usage labels with Concept identity. Jurisdiction research may still receive later follow-up waves when gaps are found.
+The current task is to refine Concept relationships, homonyms, false synonyms and evidence boundaries before adding the search-intent/readiness layer. Jurisdiction and register research may still receive follow-up waves when later relationship work exposes real gaps.
 
 ## Programme objective
 
@@ -95,39 +98,62 @@ Ongoing rule:
 
 ### `GLOSSARY-MASTER-004` — colloquial, slang, industry, abbreviation, and historical terminology
 
-Status: **current**.
+Status: **current pass complete; follow-up waves allowed**.
 
-Required work:
+Current-pass output:
 
-- collect established colloquial, industry, slang, historic, deprecated, and obsolete forms;
-- normalize abbreviations, racecard codes, chart codes and official display codes separately from preferred labels;
-- attach jurisdiction, discipline, audience/register, currentness, evidence class and confidence;
-- use evidence appropriate to the claim instead of demanding official-rulebook proof for slang;
-- reject one-off social-media wording as insufficient evidence;
-- preserve historical terms where they help users understand older racing publications and records;
-- do not create a new Concept merely because a new slang/abbreviation label is found;
-- keep polysemous terms and unresolved mappings explicit in review candidates.
+- **60** register usages with jurisdiction/register/currentness/evidence metadata;
+- **26** source-verified abbreviations, chart/racecard codes and display codes;
+- **4** source-verified historical/legacy rows;
+- **33** unresolved register targets retained in an explicit review queue;
+- evidence from official glossaries, racing authorities, national racing bodies and appropriate specialist racing sources;
+- source-backed usage does not automatically create a new Concept;
+- polysemous terms stay unresolved until their senses are explicitly modeled.
 
-Current first-wave storage:
+Current storage:
 
 ```text
 data/glossary-master/register/register-usage-v1.tsv
+data/glossary-master/register/register-review-queue-v1.tsv
 data/glossary-master/abbreviations/abbreviations-v1.tsv
 data/glossary-master/historical/historical-terms-v1.tsv
 data/glossary-master/sources/register-layer-sources-v1.tsv
 ```
 
+Later relationship work may send specific terms back for additional register evidence without making MASTER-004 the primary lane again.
+
 ### `GLOSSARY-MASTER-005` — relationship/equivalence and evidence refinement
 
-Status: **queued**.
+Status: **current**.
 
 Required work:
 
 - review `exact_equivalent`, `close_equivalent`, `broader`, `narrower`, `related`, `contrast`, `regional_counterpart`, and `no_direct_equivalent` relations;
-- add explicit ambiguity/homonym relations where one spelling has multiple meanings;
+- add explicit ambiguity/homonym treatment where one spelling has multiple meanings;
 - resolve common false-synonym risks such as Meeting/Fixture/Race day, Racecourse/Racetrack/Track, Going/Track condition, and regional race-class terminology;
+- distinguish Concept identity from spelling variants and register labels;
+- identify duplicate-Concept candidates that should later become one Concept plus multiple labels;
 - verify definitions and jurisdiction claims against source evidence;
-- keep unresolved conflicts visible in a review queue.
+- keep unresolved conflicts visible in a review queue;
+- prefer the weakest relation supported by evidence rather than an optimistic exact-equivalence claim.
+
+Wave 1 storage:
+
+```text
+data/glossary-master/relations/relations-v1.tsv
+data/glossary-master/relations/relation-review-queue-v1.tsv
+data/glossary-master/sources/relationship-layer-sources-v1.tsv
+```
+
+Wave 1 starts with **15 reviewed relations** and **15 explicit review items**. Initial decisions include:
+
+- `Raceday` / `Race day` and `Favourite` / `Favorite` as exact-equivalent spelling pairs pending Concept dedupe;
+- `Bumper` / `National Hunt Flat Race` as exact-equivalent in scoped GB/IRE operational usage pending dedupe;
+- `Group` / `Grade` levels as international `regional_counterpart`, not global synonyms;
+- `Going` / `Track condition` as related but not exact-equivalent;
+- `Racecourse` / `Racetrack` only close-equivalent in the facility sense;
+- `Fixture` / `Race meeting` as related, not identical;
+- France `Meeting` held for sense split because France Galop defines it as multiple `réunions` at one racecourse over a period.
 
 ### `GLOSSARY-MASTER-006` — search-intent, coverage, and readiness review
 
@@ -138,7 +164,7 @@ Required work:
 - map definition, comparison, regional, how/why, translation, abbreviation, and racecard-reading search intents to reviewed concepts;
 - keep search metadata separate from canonical concept truth;
 - identify useful comparison and regional-difference content rather than mechanically generating thin pages;
-- produce coverage views by taxonomy, jurisdiction, language, evidence state, and review state;
+- produce coverage views by taxonomy, jurisdiction, language, evidence state, relationship state and review state;
 - identify remaining knowledge gaps;
 - decide whether the master is mature enough to enter public implementation planning.
 
@@ -204,10 +230,10 @@ Glossary master work must not block Calendar corrections, racecourse data qualit
 ## Current execution pointer
 
 ```text
-Current glossary Work ID: GLOSSARY-MASTER-004
-Current input: 654-Concept research master + jurisdiction labels/definitions/sources
-Current focus: register / abbreviation / historical evidence normalization
-Next: GLOSSARY-MASTER-005
+Current glossary Work ID: GLOSSARY-MASTER-005
+Current input: 654-Concept research master + 60 register usages + relation wave 1
+Current focus: false-synonym / homonym / equivalence / dedupe / evidence refinement
+Next: GLOSSARY-MASTER-006
 Public implementation: deferred until post-MASTER-006 readiness review
 ```
 

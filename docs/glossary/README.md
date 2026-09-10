@@ -18,9 +18,9 @@ Current execution pointer:
 Completed: GLOSSARY-MASTER-001 — specification / authority
 Completed: GLOSSARY-MASTER-002 — zero-based seed: 501 candidate Concepts / 18 categories
 Completed current pass: GLOSSARY-MASTER-003 — major-jurisdiction + local-language terminology research
-Current:   GLOSSARY-MASTER-004 — slang / colloquial / industry / abbreviation / historical evidence
-Next:      GLOSSARY-MASTER-005 — relations / equivalence / source-verification refinement
-Then:      GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
+Completed current pass: GLOSSARY-MASTER-004 — slang / colloquial / industry / abbreviation / historical evidence
+Current:   GLOSSARY-MASTER-005 — relations / equivalence / homonym / source-verification refinement
+Next:      GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 New public-page expansion/redesign: deferred
 ```
 
@@ -60,7 +60,7 @@ Legacy/completed documents include:
 
 Do not spend glossary-master work on one-to-one migration auditing of those records.
 
-## Current research rule
+## Research rule
 
 For each jurisdiction/language:
 
@@ -72,15 +72,31 @@ actual local official/specialist material
 -> create a new Concept if the local concept does not fit
 -> record regional counterpart / approximate equivalence / no direct equivalent instead of forcing translation
 -> collect established slang and historical usage separately with appropriate evidence
+-> then review relationships and ambiguity without flattening regional systems
 ```
 
-For `GLOSSARY-MASTER-004`, informal and historical usage is normalized separately from Concept identity:
+`GLOSSARY-MASTER-004` normalized informal and historical usage separately from Concept identity:
 
 ```text
 data/glossary-master/register/        colloquial / industry / slang usage and unresolved register candidates
 data/glossary-master/abbreviations/   official abbreviations, chart codes, racecard codes, display codes
 data/glossary-master/historical/      historical / deprecated / venue-specific retired terminology
 ```
+
+The current `GLOSSARY-MASTER-005` relation layer is:
+
+```text
+data/glossary-master/relations/relations-v1.tsv
+    reviewed Concept-to-Concept relations with explicit scope and confidence
+
+data/glossary-master/relations/relation-review-queue-v1.tsv
+    homonyms, sense splits, false-synonym risks, dedupe candidates, and unresolved cross-system relations
+
+data/glossary-master/sources/relationship-layer-sources-v1.tsv
+    evidence added specifically for relationship and sense-boundary claims
+```
+
+Wave 1 begins with the highest-risk confusion sets: `Meeting / Fixture / Race day`, `Racecourse / Racetrack / Track`, `Going / Track condition`, and `Group / Grade`. France Galop's current definition of `Meeting` is explicitly not assumed to be the same as the English seed sense; jurisdiction-specific sense splitting is required before publication.
 
 A slang or legacy label does not create a new Concept automatically. Polysemous terms must remain split/reviewable, and one-off social wording is insufficient evidence.
 
