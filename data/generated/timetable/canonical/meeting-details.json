@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-meeting-details-v0",
-  "generated_at": "2026-09-10T22:59:02.072Z",
+  "generated_at": "2026-09-10T23:05:39.898Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -26173,6 +26173,74 @@
       "summary_note": "Current official rolling-window race programme observation."
     },
     {
+      "meeting_id": "ireland-ireland--ballinrobe-2026-09-11",
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "racecourse_id": "ireland--ballinrobe",
+      "date": "2026-09-11",
+      "timezone": "Europe/Dublin",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "hri-racecards-month",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.hri.ie/racecards",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T23:05:39.898Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "15:24",
+          "race_name": "The Burke`s Clonbur 3-Y-O Maiden Hurdle"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "15:59",
+          "race_name": "The Irish Stallion Farms EBF Mares Maiden Hurdle"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "16:34",
+          "race_name": "The Michael Cawe Suspended Ceilings Handicap Hurdle"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "17:09",
+          "race_name": "The Irish Stallion Farms EBF Mares Handicap Hurdle"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "17:40",
+          "race_name": "The P&D Lydon Mares Beginners Steeplechase"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "18:10",
+          "race_name": "The Lodge At Ashford Castle Handicap Steeplechase"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "18:40",
+          "race_name": "The Adare Manor Opportunity Handicap Steeplechase"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "19:10",
+          "race_name": "The John Madden & Sons (Pro-Am) Flat Race"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
       "meeting_id": "kra-busan-gyeongnam-racecourse-2026-09-11",
       "country_id": "south-korea",
       "authority_id": "korea-racing-authority",
@@ -27065,6 +27133,79 @@
         }
       ],
       "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
+    },
+    {
+      "meeting_id": "ireland-ireland--leopardstown-2026-09-12",
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "racecourse_id": "ireland--leopardstown",
+      "date": "2026-09-12",
+      "timezone": "Europe/Dublin",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "hri-racecards-month",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.hri.ie/racecards",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T23:05:39.898Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "13:35",
+          "race_name": "Ballylinch Stud Irish EBF Ingabelle Stakes (Listed)"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:10",
+          "race_name": "The Irish Stallion Farms EBF Sovereign Path Handicap"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "14:45",
+          "race_name": "The HKJC World Pool Golden Fleece Stakes (Group 1)"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "15:15",
+          "race_name": "The World Pool Bet With The Tote Kilternan Stakes (Group 3)"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "15:55",
+          "race_name": "The Coolmore America `Justify` Matron Stakes (Group 1)"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "16:25",
+          "race_name": "The Tonybet Solonaway Stakes (Group 2)"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "17:00",
+          "race_name": "The Royal Bahrain Irish Champion Stakes (Group 1)"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "17:35",
+          "race_name": "The Irish Stallion Farms EBF Petingo Handicap"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "18:10",
+          "race_name": "The World Pool Bet With Tote Autumn Fillies Handicap"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
     },
     {
       "meeting_id": "jra-hanshin-racecourse-2026-09-12",
@@ -28289,6 +28430,74 @@
       "summary_note": "Current official rolling-window race programme observation."
     },
     {
+      "meeting_id": "ireland-ireland--curragh-2026-09-13",
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "racecourse_id": "ireland--curragh",
+      "date": "2026-09-13",
+      "timezone": "Europe/Dublin",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "hri-racecards-month",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.hri.ie/racecards",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T23:05:39.898Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "13:45",
+          "race_name": "The Irish Stallion Farms EBF Bold Lad Sprint Handicap"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:15",
+          "race_name": "The Tattersalls Ireland Super Auction Sales Stakes"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "14:50",
+          "race_name": "The Moyglare Stud Stakes (Group 1)"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "15:25",
+          "race_name": "The BAR 1 Betting Flying Five Stakes (Group 1)"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "16:00",
+          "race_name": "The Goffs Vincent O`Brien National Stakes (Group 1)"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "16:35",
+          "race_name": "The Comer Group International Irish St. Leger"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "17:10",
+          "race_name": "The Moyglare ``Jewels`` Blandford Stakes (Group 2)"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "17:45",
+          "race_name": "The Irish Stallion Farms EBF Northfields Handicap"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
       "meeting_id": "jra-hanshin-racecourse-2026-09-13",
       "country_id": "japan",
       "authority_id": "jra",
@@ -29327,6 +29536,69 @@
       "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
     },
     {
+      "meeting_id": "ireland-ireland--punchestown-2026-09-15",
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "racecourse_id": "ireland--punchestown",
+      "date": "2026-09-15",
+      "timezone": "Europe/Dublin",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "hri-racecards-month",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.hri.ie/racecards",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T23:05:39.898Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "14:10",
+          "race_name": "The Irish Stallion Farms EBF Fillies Maiden"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:40",
+          "race_name": "The Punchestown Is Back Maiden"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "15:10",
+          "race_name": "The Punchestown Jumps Opener October 13th Handicap"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "15:40",
+          "race_name": "The Punchestown Premiere Weekend November 21st & 22nd Race"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "16:10",
+          "race_name": "The Irish Stallion Farms EBF Median Auction Maiden"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "16:40",
+          "race_name": "The Irish Stallion Farms EBF Fillies Handicap"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "17:13",
+          "race_name": "The Festival 2027 On Sale Soon Handicap"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
       "meeting_id": "nar-oi-racecourse-2026-09-15",
       "country_id": "japan",
       "authority_id": "nar-local-government-racing",
@@ -29649,6 +29921,74 @@
         }
       ],
       "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
+    },
+    {
+      "meeting_id": "ireland-ireland--naas-2026-09-17",
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "racecourse_id": "ireland--naas",
+      "date": "2026-09-17",
+      "timezone": "Europe/Dublin",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "hri-racecards-month",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.hri.ie/racecards",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T23:05:39.898Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "13:50",
+          "race_name": "The Irish Stallion Farms EBF Fillies Maiden"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:22",
+          "race_name": "The Irish Stallion Farms EBF (C & G) Maiden"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "14:52",
+          "race_name": "The Goffs Two Million Series Maiden"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "15:22",
+          "race_name": "The Colm White Bookmakers Nursery Handicap"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "15:52",
+          "race_name": "The Irish Stallion Farms EBF Claiming Maiden"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "16:22",
+          "race_name": "The Care At Home Nursery Handicap"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "16:56",
+          "race_name": "The Irish EBF Auction Series Maiden"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "17:32",
+          "race_name": "The Irish Stallion Farms EBF Maiden"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
     },
     {
       "meeting_id": "nar-oi-racecourse-2026-09-17",
@@ -30129,6 +30469,39 @@
         }
       ],
       "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
+    },
+    {
+      "meeting_id": "ireland-ireland--gowran-park-2026-09-19",
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "racecourse_id": "ireland--gowran-park",
+      "date": "2026-09-19",
+      "timezone": "Europe/Dublin",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "hri-racecards-month",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.hri.ie/racecards",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T23:05:39.898Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "15:15",
+          "race_name": "The Denny Cordell Lavarack & Lanwades Stud Fillies Stakes (Group 3)"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
     },
     {
       "meeting_id": "jra-hanshin-racecourse-2026-09-19",
@@ -31379,6 +31752,44 @@
       "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
     },
     {
+      "meeting_id": "ireland-ireland--curragh-2026-09-26",
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "racecourse_id": "ireland--curragh",
+      "date": "2026-09-26",
+      "timezone": "Europe/Dublin",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "hri-racecards-month",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.hri.ie/racecards",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T23:05:39.898Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "15:10",
+          "race_name": "The Churchill Tyres Beresford Stakes (Group 2)"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "15:45",
+          "race_name": "The Goffs Million"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
       "meeting_id": "jra-hanshin-racecourse-2026-09-26",
       "country_id": "japan",
       "authority_id": "jra",
@@ -31689,6 +32100,44 @@
         }
       ],
       "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
+    },
+    {
+      "meeting_id": "ireland-ireland--curragh-2026-09-27",
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "racecourse_id": "ireland--curragh",
+      "date": "2026-09-27",
+      "timezone": "Europe/Dublin",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "hri-racecards-month",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.hri.ie/racecards",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T23:05:39.898Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "14:35",
+          "race_name": "The Qatar Racing And Equestrian Club Renaissance Stakes (Group 3)"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "16:20",
+          "race_name": "The Friends Of The Curragh Irish Cesarewitch"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
     },
     {
       "meeting_id": "jra-hanshin-racecourse-2026-09-27",
