@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { deriveBestAvailableRank } from './best-available-rank.mjs';
 
 export const SCHEMA = 'tjk_current_future_candidate_batch.v1';
 export const ENTRY_URL = 'https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami';
@@ -42,24 +43,81 @@ function visibleText(html) {
     .trim();
 }
 
+function normalizeSurfaceToken(token) {
+  const folded = String(token ?? '').toLocaleLowerCase('tr-TR');
+  if (folded === 'çim' || folded === 'cim') return 'Turf';
+  if (folded === 'kum') return 'Dirt';
+  if (folded === 'sentetik') return 'Synthetic';
+  return null;
+}
+
+function normalizeRaceName(block, distanceIndex) {
+  if (!Number.isInteger(distanceIndex) || distanceIndex <= 0) return null;
+  let value = block.slice(0, distanceIndex).trim();
+  value = value
+    .split(/\s*,\s*(?=\d+\s*Yaşlı|\d+\s*Yasli|\d+\s*ve\s*Yukarı|\d+\s*ve\s*Yukari)/iu)[0]
+    .replace(/\s*,?\s*\d+(?:[.,]\d+)?\s*kg\b[\s\S]*$/iu, '')
+    .replace(/^[\s,:;\-]+|[\s,:;\-]+$/g, '')
+    .trim();
+  return value || null;
+}
+
+function parseRaceMetadata(block) {
+  const match = /(\d{3,4})\s*(Çim|Cim|Kum|Sentetik)\b/iu.exec(block);
+  if (!match) {
+    return {
+      race_name: null,
+      distance_m: null,
+      surface: null,
+      course_label: null,
+      metadata_evaluated: true,
+    };
+  }
+  const surface = normalizeSurfaceToken(match[2]);
+  return {
+    race_name: normalizeRaceName(block, match.index),
+    distance_m: Number(match[1]),
+    surface,
+    course_label: surface,
+    metadata_evaluated: true,
+  };
+}
+
 export function detectRaceSchedule(html) {
   const text = visibleText(html);
+  const headerPattern = /(?:^|\s)0*([1-9]|1\d|2\d)\s*\.\s*(?:Koşu|Kosu|KOŞU)\s*:?[\s-]*([01]?\d|2[0-3])[.:]([0-5]\d)\b/giu;
+  const headers = [...text.matchAll(headerPattern)];
   const byRace = new Map();
-  const pattern = /(?:^|\s)0*([1-9]|1\d|2\d)\s*\.\s*(?:Koşu|Kosu|KOŞU)\s*:?[\s-]*([01]?\d|2[0-3])[.:]([0-5]\d)\b/giu;
-  for (const match of text.matchAll(pattern)) {
+
+  for (let index = 0; index < headers.length; index += 1) {
+    const match = headers[index];
     const raceNumber = Number(match[1]);
     const time = `${String(Number(match[2])).padStart(2, '0')}:${match[3]}`;
-    if (!byRace.has(raceNumber)) byRace.set(raceNumber, new Set());
-    byRace.get(raceNumber).add(time);
+    const blockStart = match.index + match[0].length;
+    const blockEnd = headers[index + 1]?.index ?? text.length;
+    const metadata = parseRaceMetadata(text.slice(blockStart, blockEnd));
+    if (!byRace.has(raceNumber)) byRace.set(raceNumber, []);
+    byRace.get(raceNumber).push({ time, metadata });
   }
+
   const conflicts = [];
   const schedule = [];
-  for (const [raceNumber, times] of [...byRace.entries()].sort(([a], [b]) => a - b)) {
-    if (times.size !== 1) {
+  for (const [raceNumber, observations] of [...byRace.entries()].sort(([a], [b]) => a - b)) {
+    const signatures = new Set(observations.map(({ time, metadata }) => JSON.stringify({ time, ...metadata })));
+    if (signatures.size !== 1) {
       conflicts.push(raceNumber);
       continue;
     }
-    schedule.push({ race_number: raceNumber, post_time_local: [...times][0] });
+    const { time, metadata } = observations[0];
+    schedule.push({
+      race_number: raceNumber,
+      label: `Race ${raceNumber}`,
+      post_time_local: time,
+      race_name: metadata.race_name,
+      distance_m: metadata.distance_m,
+      surface: metadata.surface,
+      course_label: metadata.course_label,
+    });
   }
   const contiguous = schedule.every((row, index) => row.race_number === index + 1);
   return { schedule: conflicts.length === 0 && contiguous ? schedule : [], conflicts, contiguous };
@@ -190,13 +248,25 @@ async function enrichBestAvailable(candidate, fetchImpl) {
         },
       };
     }
+    const firstRaceTime = detected.schedule[0].post_time_local;
+    const lastRaceTime = detected.schedule.at(-1).post_time_local;
+    const capabilityRank = deriveBestAvailableRank({
+      first_race_time_local: firstRaceTime,
+      last_race_time_local: lastRaceTime,
+      timetable_rows: detected.schedule,
+    });
     return {
       ...candidate,
-      capability_rank: 'A',
-      first_race_time_local: detected.schedule[0].post_time_local,
-      last_race_time_local: detected.schedule.at(-1).post_time_local,
+      capability_rank: capabilityRank,
+      first_race_time_local: firstRaceTime,
+      last_race_time_local: lastRaceTime,
       timetable_rows: detected.schedule,
-      detail_observation: { status: 'available', race_count: detected.schedule.length, conflicts: [] },
+      detail_observation: {
+        status: 'available',
+        evaluated_capability_rank: 'A+',
+        race_count: detected.schedule.length,
+        conflicts: [],
+      },
     };
   } catch {
     return {
@@ -263,10 +333,10 @@ export async function collectCandidateBatch({ fetchImpl = fetch, now = new Date(
       method: 'official_programme_page_anchors_plus_page_discovered_detail',
       index_pages_fetched: visited.size,
       detail_pages_attempted: candidates.length,
-      rank_counts: {
-        C: candidates.filter((candidate) => candidate.capability_rank === 'C').length,
-        A: candidates.filter((candidate) => candidate.capability_rank === 'A').length,
-      },
+      rank_counts: Object.fromEntries(['C', 'B', 'B+', 'A', 'A+'].map((rank) => [
+        rank,
+        candidates.filter((candidate) => candidate.capability_rank === rank).length,
+      ])),
     },
     candidates,
   };

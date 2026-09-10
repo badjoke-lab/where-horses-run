@@ -155,14 +155,14 @@
       "technical_capability_rank": "A+",
       "collection_target_rank": "best_available",
       "public_ceiling": "A",
-      "supported_observation_ranks": ["C", "A"],
+      "supported_observation_ranks": ["C", "A", "A+"],
       "supports_date_window": true,
       "supports_cross_month_window": true,
       "supports_selected_meetings": false,
       "supports_source_visible_horizon": true,
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
-      "operator_notes": "GitHub Actions follows the official TJK current/future programme-page chain for a bounded 30-day window and enriches each discovered domestic meeting to best available C or A. Publication remains review-only; automatic approval, canonical/public writes, unattended merge, and deployment remain disabled."
+      "operator_notes": "GitHub Actions follows the official TJK current/future programme-page chain for a bounded 30-day window and evaluates each discovered domestic meeting through A+ timetable metadata. Observed evidence remains Best Available and may stay at C or A when richer fields are not published; complete rows with race name/condition, distance, surface/course label, and post time may reach A+. Publication remains capped separately at A and remains review-only."
     },
     {
       "system_id": "sorec-racing-information-system",
