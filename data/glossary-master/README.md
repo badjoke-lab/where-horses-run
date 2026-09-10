@@ -10,7 +10,7 @@ It is **not** consumed by current public glossary routes and does not authorize 
 
 ## Current canonical candidate inventory
 
-The zero-based seed is stored by semantic category under `concepts/`.
+The original zero-based seed is stored by semantic category under `concepts/` and is extended by jurisdiction research supplement files.
 
 ```text
 concepts/01-disc.tsv    Racing disciplines and systems
@@ -33,7 +33,7 @@ concepts/17-bet.tsv     Betting and odds terminology
 concepts/18-welf.tsv    Veterinary, safety, and horse welfare
 ```
 
-Current seed totals:
+Original zero-based seed totals:
 
 - Concepts: **501**
 - categories: **18**
@@ -41,10 +41,20 @@ Current seed totals:
 - P1: **212**
 - P2: **118**
 - P3: **15**
-- verification state: **all candidate**
+- verification state at seed creation: **all candidate**
+
+Current research-master totals after jurisdiction waves through Arabian/Harness wave 1:
+
+- Concepts: **654**
+- categories: **18**
+- P0: **205**
+- P1: **296**
+- P2: **135**
+- P3: **18**
+- verification state: **mixed candidate and source-verified**
 - `public_ready=yes`: **0**
 
-These counts describe the current research seed, not a completeness claim.
+The manifest is the machine-readable count authority. These counts describe the current research master, not a worldwide completeness claim.
 
 ## Concept file contract
 
