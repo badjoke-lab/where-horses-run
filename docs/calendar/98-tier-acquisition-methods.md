@@ -15,7 +15,9 @@ It answers **how the tier is acquired or safely held when current fixture eviden
 - `data/static/calendar-98-tier-acquisition-methods/tiers-51-75.json`
 - `data/static/calendar-98-tier-acquisition-methods/tiers-76-98.json`
 - `data/static/calendar-98-tier-acquisition-methods.schema.json`
-- validator: `scripts/check-calendar-98-tier-acquisition-methods.mjs`
+- acquisition-method validator: `scripts/check-calendar-98-tier-acquisition-methods.mjs`
+- execution coverage snapshot: `data/static/calendar-98-tier-execution-coverage.json`
+- execution coverage validator: `scripts/check-calendar-98-tier-execution-coverage.mjs`
 
 ## Semantics
 
@@ -49,3 +51,18 @@ Stale dates, prior-year dates, recurring cultural dates, secondary-only dates, a
 `calendar-acquisition-registry.json` is an execution-routing registry and intentionally remains narrower. Its active/provisional profiles require runner and adapter decisions.
 
 This 98-tier contract is the coverage/method source of truth. Runner implementation is expanded from this contract into the Acquisition Registry only when an executable adapter path exists. This separation prevents a status-watch or dormant tier from being misrepresented as a failed active adapter.
+
+## Execution coverage snapshot
+
+`calendar-98-tier-execution-coverage.json` is derived from this method contract plus the current Acquisition Registry. It is intentionally a separate worklist rather than another source-discovery ledger.
+
+As of 2026-09-10 the derived partition is:
+
+- 7 tiers with a current Registry profile,
+- 64 active-method tiers without a Registry profile,
+- 20 status/annual-notice tiers that intentionally have no active meeting runner yet,
+- 7 explanatory/archive tiers where no active meeting runner is required.
+
+The validator recomputes this partition from the current Registry. Adding or removing a Registry profile therefore requires the execution-coverage snapshot to change in the same PR.
+
+The U.S. remains subject to a specific policy boundary: Equibase web pages are not an automation path without authorization. Any U.S. executable route must use automation-safe official regulator/operator sources rather than treating the reference-only Equibase rows as collector endpoints.
