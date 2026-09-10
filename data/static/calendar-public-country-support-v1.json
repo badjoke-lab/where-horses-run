@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-public-country-support-v1",
-  "reviewed_at": "2026-09-09",
+  "reviewed_at": "2026-09-10",
   "basis": "Countries currently wired into the production Calendar unified official refresh on main. Japan uses the official mother-set path; non-Japan countries use official rolling-window collectors and monotonic public observation application.",
   "source_ref": ".github/workflows/calendar-unified-official-refresh.yml",
   "countries": [
@@ -33,6 +33,11 @@
       "country_id": "morocco",
       "calendar_supported": true,
       "acquisition_key": "sorec-official-window"
+    },
+    {
+      "country_id": "chile",
+      "calendar_supported": true,
+      "acquisition_key": "chile-teletrak-official-window"
     }
   ]
 }
