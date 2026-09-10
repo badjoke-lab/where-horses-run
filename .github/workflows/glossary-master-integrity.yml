@@ -1,0 +1,33 @@
+name: Glossary master integrity
+
+on:
+  pull_request:
+    paths:
+      - 'data/glossary-master/**'
+      - 'scripts/check-glossary-master-integrity.mjs'
+      - 'package.json'
+      - '.github/workflows/glossary-master-integrity.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/glossary-master/**'
+      - 'scripts/check-glossary-master-integrity.mjs'
+      - 'package.json'
+      - '.github/workflows/glossary-master-integrity.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate glossary master
+        run: node scripts/check-glossary-master-integrity.mjs
