@@ -1,0 +1,156 @@
+name: Chile integration once
+
+on:
+  push:
+    branches:
+      - feat/calendar-chile-official-20260910-v2
+    paths:
+      - '.github/workflows/chile-integration-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/calendar-chile-official-20260910-v2
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Patch Chile unified refresh and racecourse identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import json
+
+          workflow_path = Path('.github/workflows/calendar-unified-official-refresh.yml')
+          lines = workflow_path.read_text().splitlines()
+          out = []
+          collector_count = 0
+          exclusion_count = 0
+          apply_count = 0
+          in_exclusion = False
+          slash = chr(92)
+          i = 0
+          while i < len(lines):
+              line = lines[i]
+              stripped = line.strip()
+              if 'run-sorec-official-window.mjs' in line:
+                  assert i + 2 < len(lines)
+                  assert '--days=' in lines[i + 1]
+                  assert '--output=.calendar-unified/sorec.json' in lines[i + 2]
+                  out.extend([line, lines[i + 1], lines[i + 2]])
+                  command_indent = line[:len(line) - len(line.lstrip())]
+                  output_indent = lines[i + 2][:len(lines[i + 2]) - len(lines[i + 2].lstrip())]
+                  out.extend([
+                      f'{command_indent}node scripts/timetable/run-chile-teletrak-official-window.mjs {slash}',
+                      lines[i + 1],
+                      f'{output_indent}--output=.calendar-unified/chile.json',
+                  ])
+                  collector_count += 1
+                  i += 3
+                  continue
+              if 'enforce-reviewed-calendar-exclusions.mjs' in line:
+                  in_exclusion = True
+              elif stripped.startswith('node scripts/') and 'enforce-reviewed-calendar-exclusions.mjs' not in line:
+                  in_exclusion = False
+              if in_exclusion and stripped == '--artifact=.calendar-unified/sorec.json':
+                  indent = line[:len(line) - len(line.lstrip())]
+                  out.append(f'{line} {slash}')
+                  out.append(f'{indent}--artifact=.calendar-unified/chile.json')
+                  exclusion_count += 1
+                  in_exclusion = False
+                  i += 1
+                  continue
+              out.append(line)
+              if stripped == '--timezone=Africa/Casablanca':
+                  indent = line[:len(line) - len(line.lstrip())]
+                  command_indent = indent[:-2] if len(indent) >= 2 else indent
+                  out.extend([
+                      f'{command_indent}node scripts/timetable/apply-official-rolling-observations.mjs {slash}',
+                      f'{indent}--artifact=.calendar-unified/chile.json {slash}',
+                      f'{indent}--country-id=chile {slash}',
+                      f'{indent}--authority-id=teletrak-chile {slash}',
+                      f'{indent}--racing-system-id=chile-teletrak-racing-system {slash}',
+                      f'{indent}--timezone=America/Santiago',
+                  ])
+                  apply_count += 1
+              i += 1
+          assert collector_count == 2, collector_count
+          assert exclusion_count == 2, exclusion_count
+          assert apply_count == 2, apply_count
+          workflow_path.write_text('\n'.join(out) + '\n')
+
+          racecourse_path = Path('data/static/country-page-racecourses-01-04.json')
+          raw = racecourse_path.read_text().rstrip()
+          existing = json.loads(raw)
+          existing_ids = {row.get('id') for row in existing}
+          common = {
+            'timezone': 'America/Santiago',
+            'racing_types': ['thoroughbred-flat'],
+            'status': 'active',
+            'surfaces': [], 'direction': None,
+            'course_profile': {
+              'turf_circumference_m': None, 'dirt_circumference_m': None, 'home_straight_m': None,
+              'has_inner_outer_courses': None, 'has_lighting': None, 'elevation_notes_en': None, 'elevation_notes_ja': None,
+              'course_notes_en': 'Teletrak identifies this venue in Chile’s official weekly domestic racing view. Detailed course metrics remain unverified.',
+              'course_notes_ja': 'Teletrakのチリ国内公式週間開催表示で確認できる競馬場。詳細なコース指標は未確認。'
+            },
+            'distance_profile': {
+              'turf': {'min_m': None, 'max_m': None, 'known_distances_m': []},
+              'dirt': {'min_m': None, 'max_m': None, 'known_distances_m': []},
+              'all_weather': {'min_m': None, 'max_m': None, 'known_distances_m': []},
+              'jump': {'min_m': None, 'max_m': None, 'known_distances_m': []},
+              'harness': {'min_m': None, 'max_m': None, 'known_distances_m': []},
+              'upcoming_conditions': []
+            },
+            'schedule_summary': {'today_status': 'unknown', 'next_meeting_date': None, 'upcoming_meetings': [], 'status': 'official-source-verified', 'last_checked': '2026-09-10'},
+            'notable_races': [],
+            'seasonality': {'summary_en': 'Use Teletrak’s official weekly view for current meeting identity.', 'summary_ja': '現行の開催競馬場はTeletrak公式週間表示で確認する。', 'status': 'partial'},
+            'official_links': [{'label_en': 'Teletrak Chile weekly racing', 'label_ja': 'Teletrak Chile 週間開催', 'source_id': 'chile-teletrak-weekly-programme', 'url': 'https://teletrak.cl/', 'link_type': 'official'}],
+            'related_terms': ['racecourse', 'meeting', 'fixture'],
+            'related_sources': ['chile-teletrak-weekly-programme'],
+            'data_status': {'course_profile': 'unverified', 'schedule': 'official-source-verified', 'source_status': 'verified', 'last_checked': '2026-09-10'},
+            'image_status': 'planned', 'image_path': None, 'course_diagram_status': 'pending'
+          }
+          venues = [
+            ('club-hipico-de-santiago-racecourse', 'Club Hípico de Santiago', 'サンティアゴ競馬場', 'Club Hípico de Santiago', 'Santiago', 'Santiago Metropolitan Region'),
+            ('hipodromo-chile-racecourse', 'Hipódromo Chile', 'イポドロモ・チレ', 'Hipódromo Chile', 'Santiago', 'Santiago Metropolitan Region'),
+            ('valparaiso-sporting-club-racecourse', 'Valparaíso Sporting Club', 'バルパライソ・スポーティングクラブ', 'Valparaíso Sporting Club', 'Viña del Mar', 'Valparaíso Region'),
+            ('club-hipico-de-concepcion-racecourse', 'Club Hípico de Concepción', 'コンセプシオン競馬場', 'Club Hípico de Concepción', 'Concepción', 'Biobío Region'),
+          ]
+          additions = []
+          for rid, en, ja, local, city, region in venues:
+              if rid in existing_ids: continue
+              row = {'id': rid, 'slug': rid, 'country_id': 'chile', 'name_en': en, 'name_ja': ja, 'name_local': local, 'city': city, 'region': region, **common}
+              row['image_alt_en'] = f'Planned illustrative image for {en}.'
+              row['image_alt_ja'] = f'{ja}の説明用イメージ画像予定地。'
+              row['image'] = {'src': '', 'alt_en': row['image_alt_en'], 'alt_ja': row['image_alt_ja'], 'image_type': 'placeholder', 'is_official_photo': False, 'note_en': 'Illustrative image. Not an official venue photo.', 'note_ja': '説明用のイメージ画像です。公式写真ではありません。', 'status': 'planned'}
+              additions.append(row)
+          if additions:
+              assert raw.endswith(']')
+              prefix = raw[:-1].rstrip()
+              if prefix != '[': prefix += ','
+              serialized = ',\n'.join(json.dumps(row, ensure_ascii=False, separators=(',', ':')) for row in additions)
+              racecourse_path.write_text(prefix + '\n' + serialized + '\n]\n')
+          PY
+          node scripts/check-chile-teletrak-weekly-adapter.mjs
+          node scripts/check-calendar-refresh-publication-boundaries.mjs
+          npm install --no-package-lock --no-audit --no-fund
+          npm run build
+          git diff --check
+      - name: Commit Chile integration patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/calendar-unified-official-refresh.yml data/static/country-page-racecourses-01-04.json
+          git commit -m "feat: wire Chile into unified refresh and racecourse identities"
+          git push origin HEAD:feat/calendar-chile-official-20260910-v2
