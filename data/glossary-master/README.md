@@ -2,15 +2,15 @@
 
 Status: active zero-based world racing terminology master  
 Authority: `docs/glossary/world-racing-terminology-master-spec.md`  
-Current work: `GLOSSARY-MASTER-005` — P0-first source verification
+Current work: `GLOSSARY-MASTER-005` — post-P0 evidence refinement
 
 This directory is the non-public working area for the concept-first world racing terminology master. It is **not** consumed by current public glossary routes and does not authorize automatic publication.
 
 ## Current master
 
-- Concepts: **658**
+- Concepts: **657**
 - categories: **18**
-- P0: **204** / P1: **301** / P2: **135** / P3: **18**
+- P0: **203** / P1: **301** / P2: **135** / P3: **18**
 - `public_ready=yes`: **0**
 - public runtime input: **false**
 - active Concept relations: **20**
@@ -25,10 +25,12 @@ sources/p0-core-sources-v1.tsv
 sources/p0-core-sources-v2.tsv
 sources/p0-core-sources-v3.tsv
 sources/p0-core-sources-v4.tsv
+sources/p0-core-sources-v5.tsv
 coverage/p0-verification-wave1-v1.tsv
 coverage/p0-verification-wave2-v1.tsv
 coverage/p0-verification-wave3-v1.tsv
 coverage/p0-verification-wave4-v1.tsv
+coverage/p0-verification-wave5-v1.tsv
 coverage/master-005-evidence-coverage-v1.tsv
 coverage/master-005-completion-gate-v1.tsv
 ```
@@ -58,55 +60,48 @@ Verified **44 P0 base Concepts**:
 - PRIZE: **2**
 - WELF: **5**
 
-The wave uses JRA, IFHA, USTA, Racing Australia and Equibase authority/official-industry evidence. Scope remains explicit: a source validating a Concept in one jurisdiction does not turn a local definition into a universal rule.
+### Wave 5 — complete; P0 closed
 
-## Evidence state after wave 4
+Verified **11 P0 Concepts** with scope refinement where required:
 
-- all Concepts: **300 / 658 source-verified (45.6%)**; **358 candidate**
-- P0: **192 / 204 source-verified (94.1%)**; **12 candidate**
-- active base seed: **142 / 497 source-verified (28.6%)**; **355 candidate**
+- RTYPE: Stakes race
+- SURF: Sand / Synthetic surface / All-weather
+- MEET: Draw / Official notice / Local time / Time zone / Postponed
+- BET: Tote / Starting Price
+
+`BET-028 SP` was **not** percentage-promoted. Authority evidence identifies `SP` as the abbreviation of `Starting Price`, so the duplicate Concept was merged into `BET-027` through `concept-dispositions-v1.tsv` and `SP` was moved to `abbreviations/abbreviations-v1.tsv`.
+
+Wave 5 uses IFHA, Equibase, Racing Australia, JRA, BHA, Tote and The Jockey Club evidence. Scope remains explicit: a source validating a Concept in one jurisdiction does not turn a local definition into a universal rule.
+
+## Evidence state after wave 5
+
+- all Concepts: **311 / 657 source-verified (47.3%)**; **346 candidate**
+- P0: **203 / 203 source-verified (100.0%)**; **0 candidate**
+- active base seed: **153 / 496 source-verified (30.8%)**; **343 candidate**
 - supplemental jurisdiction/relationship research: **158 / 161 source-verified (98.1%)**; **3 candidate**
 
-All current P0 rows are now source-verified in DISC, DIST, ENTRY, HORSE, BREED, ROLE, VENUE, WEIGHT, RUN, EQUIP, TRAIN, RESULT, PRIZE and WELF.
-
-The remaining **12 P0 candidates** are deliberately deferred rather than percentage-promoted:
-
-```text
-RTYPE-014  Stakes race
-SURF-004   Sand
-SURF-005   Synthetic surface
-SURF-006   All-weather
-MEET-022   Draw
-MEET-023   Official notice
-MEET-031   Local time
-MEET-032   Time zone
-MEET-034   Postponed
-BET-004    Tote
-BET-027    Starting Price
-BET-028    SP
-```
-
-Several of these likely need narrower jurisdiction scope or sense refinement before verification, especially `Stakes race`, `Tote`, and broad time/source terms.
+All current P0 rows across all 18 categories are now source-verified.
 
 ## Current completion decision
 
-`GLOSSARY-MASTER-005` remains **HOLD — not complete**. P0 is near complete, but 12 high-priority Concepts still require explicit resolution and lower-priority base-seed coverage remains materially incomplete.
+`GLOSSARY-MASTER-005` remains **HOLD — not complete**. P0 is closed, but lower-priority base-seed evidence remains materially incomplete and three supplemental candidates remain unresolved.
 
 Next work:
 
 ```text
-P0 verification wave 5 — deferred 12
--> refine Concept scope/sense where needed
--> verify only claims actually supported by authority evidence
+post-P0 base-seed verification
+-> prioritize P1 Concepts and evidence-heavy/high-risk semantic areas
+-> resolve ROLE-029 / ENTRY-029 / WEIGHT-026 supplemental candidates
+-> keep scope/polysemy review coupled to evidence verification
 -> rerun evidence coverage and MASTER-005 completion gate
--> then decide how much P1/P2 verification is required before MASTER-006
+-> only then decide MASTER-006 readiness
 ```
 
 ## Register / abbreviation / historical state
 
 - register usages: **60**
 - effective register mappings: **36 source-verified / 24 candidate**
-- abbreviations/codes: **26**, all source-verified
+- abbreviations/codes: **27**, all source-verified
 - historical terms: **4**, all source-verified
 
 ## Write rules
