@@ -26,8 +26,8 @@ RUN-024	RUN	レース進行・脚質・競走中の表現	Run-in	最後の直線
 RUN-025	RUN	レース進行・脚質・競走中の表現	Finish	ゴール	競走の終了・決勝線通過。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-054. JRA finish-line/goal-board material verifies race completion at the finish line.
 RUN-026	RUN	レース進行・脚質・競走中の表現	Turn of foot	瞬発力	短時間で速度を上げる能力・末脚を表す表現。	concept	P1	GB/IRE/Commonwealth/Global	Flat	working_equivalent	candidate	yes	no	
 RUN-027	RUN	レース進行・脚質・競走中の表現	Kick	末脚／加速	終盤の強い加速を表す口語的表現。	concept	P2	Industry/Global	ALL	working_equivalent	candidate	yes	no	
-RUN-028	RUN	レース進行・脚質・競走中の表現	Checked	進路を妨げられる	他馬等の影響で速度を落とす・進路を制限されること。	concept	P1	North America/Global	Flat	working_equivalent	candidate	yes	no	
-RUN-029	RUN	レース進行・脚質・競走中の表現	Bumped	接触	他馬と接触すること。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+RUN-028	RUN	レース進行・脚質・競走中の表現	Checked	進路を妨げられる	他馬や進路の影響で騎手が馬の勢いを抑え、速度や進路を制限された競走中の状態。	concept	P1	North America/Regional	Flat	working_equivalent	source_verified	yes	no	P1-SRC-020. Equibase standardized race comments define Checked as a North American chart-comment event; scope narrowed from North America/Global rather than globalizing the term.
+RUN-029	RUN	レース進行・脚質・競走中の表現	Bumped	接触	競走中に他馬と接触・衝突したことを示す競走コメント表現。	concept	P1	North America/Regional	Flat	working_equivalent	source_verified	yes	no	P1-SRC-020. Equibase standardized race comments define Bumped in North American Thoroughbred chart terminology; scope narrowed from GLOBAL.
 RUN-030	RUN	レース進行・脚質・競走中の表現	Carried wide	外へ振られる	他馬等の影響で外側へ進路を広げられること。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 RUN-031	RUN	レース進行・脚質・競走中の表現	Eased	流す／減速	騎手が馬を強く追わず速度を落とすこと。	concept	P1	North America/Global	ALL	working_equivalent	candidate	yes	no	
 RUN-032	RUN	レース進行・脚質・競走中の表現	Pulled up	競走中止	騎手が競走中に馬を止め、完走しないこと。	concept	P0	GB/IRE/Global	Jump/Flat	working_equivalent	source_verified	yes	no	P0-SRC-051; P0-SRC-055. Equibase/JRA evidence supports Pulled up/PU as ceasing to continue after the start; exact chart coding is regional.
