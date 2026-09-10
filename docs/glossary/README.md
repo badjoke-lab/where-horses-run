@@ -1,6 +1,6 @@
 # Glossary programme
 
-The glossary programme is building a **user-facing worldwide horse-racing knowledge base** with explicit multilingual, regional, evidence, relationship, and search-discovery structure.
+The glossary programme is building a **user-facing worldwide horse-racing knowledge base** with explicit multilingual, regional, evidence, relationship, register, historical, and search-discovery structure.
 
 The public knowledge resource is for users first. Search/AI discovery is a separate structured layer used to make that knowledge easier to find and understand; it does not replace or distort the knowledge model.
 
@@ -17,14 +17,14 @@ Current execution pointer:
 ```text
 Completed: GLOSSARY-MASTER-001 — specification / authority
 Completed: GLOSSARY-MASTER-002 — zero-based seed: 501 candidate Concepts / 18 categories
-Current:   GLOSSARY-MASTER-003 — jurisdiction + local-language terminology research
-Next:      GLOSSARY-MASTER-004 — slang / colloquial / historical evidence
-Then:      GLOSSARY-MASTER-005 — relations / equivalence / source-verification refinement
+Completed current pass: GLOSSARY-MASTER-003 — major-jurisdiction + local-language terminology research
+Current:   GLOSSARY-MASTER-004 — slang / colloquial / industry / abbreviation / historical evidence
+Next:      GLOSSARY-MASTER-005 — relations / equivalence / source-verification refinement
 Then:      GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 New public-page expansion/redesign: deferred
 ```
 
-The 501-row seed under `data/glossary-master/concepts/` is the current concept-inventory starting point. Every row remains `candidate` and `public_ready=no`; the count is a research seed, not a completeness claim.
+The original 501-Concept seed has expanded through jurisdiction research. The current research master contains **654 Concepts / 18 categories**. The count is a research inventory, not a completeness claim, and `public_ready` remains 0.
 
 ## Existing public glossary is disposable content baseline
 
@@ -73,5 +73,15 @@ actual local official/specialist material
 -> record regional counterpart / approximate equivalence / no direct equivalent instead of forcing translation
 -> collect established slang and historical usage separately with appropriate evidence
 ```
+
+For `GLOSSARY-MASTER-004`, informal and historical usage is normalized separately from Concept identity:
+
+```text
+data/glossary-master/register/        colloquial / industry / slang usage and unresolved register candidates
+data/glossary-master/abbreviations/   official abbreviations, chart codes, racecard codes, display codes
+data/glossary-master/historical/      historical / deprecated / venue-specific retired terminology
+```
+
+A slang or legacy label does not create a new Concept automatically. Polysemous terms must remain split/reviewable, and one-off social wording is insufficient evidence.
 
 WHR-specific interface terms such as `Official live`, `Account required`, and similar access-state labels are site UI vocabulary, not the backbone of the horse-racing knowledge taxonomy.

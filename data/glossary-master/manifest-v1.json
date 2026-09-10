@@ -1,6 +1,6 @@
 {
   "schema_version": "world-racing-terminology-master-manifest-v1",
-  "status": "candidate_seed_plus_jurisdiction_research",
+  "status": "candidate_seed_plus_jurisdiction_and_register_research",
   "generated_from_legacy_glossary": false,
   "concept_count": 654,
   "category_count": 18,
@@ -43,7 +43,14 @@
     "uae_south_africa": {"status":"wave_1_complete_for_current_pass","research_file":"jurisdictions/uae-south-africa-research-v1.tsv","concept_additions_file":"concepts/uae-south-africa-wave1-additions.tsv","labels_file":"labels/uae-south-africa-labels-v1.tsv","definitions_file":"definitions/uae-south-africa-definitions-v1.tsv","sources_file":"sources/uae-south-africa-sources-v1.tsv"},
     "arabian_harness": {"status":"wave_1_complete_for_current_pass","research_file":"jurisdictions/arabian-harness-research-v1.tsv","concept_additions_file":"concepts/arabian-harness-wave1-additions.tsv","labels_file":"labels/arabian-harness-labels-v1.tsv","definitions_file":"definitions/arabian-harness-definitions-v1.tsv","sources_file":"sources/arabian-harness-sources-v1.tsv"}
   },
+  "usage_layers": {
+    "status": "wave_1_in_progress",
+    "register_usage": {"file":"register/register-usage-v1.tsv","row_count":17,"source_verified_rows":12,"candidate_rows":5},
+    "abbreviations": {"file":"abbreviations/abbreviations-v1.tsv","row_count":16,"source_verified_rows":16},
+    "historical_terms": {"file":"historical/historical-terms-v1.tsv","row_count":4,"source_verified_rows":4},
+    "sources_file": "sources/register-layer-sources-v1.tsv"
+  },
   "next_work_id": "GLOSSARY-MASTER-004",
-  "next_work": "build_slang_colloquial_historical_abbreviation_layer_then_search_intent_coverage",
+  "next_work": "continue_register_slang_and_historical_research_then_advance_to_relationship_equivalence_refinement",
   "public_implementation": "deferred"
 }
