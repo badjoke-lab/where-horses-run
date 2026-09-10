@@ -1,8 +1,5 @@
 const urls = [
   'https://www.hri.ie/racecards',
-  'https://www.hri.ie/racecards?date=2026-09-11',
-  'https://www.hri.ie/racecards?Date=2026-09-11',
-  'https://www.hri.ie/racecards?meetingDate=2026-09-11',
   'https://www.hri.ie/fixture-list',
 ];
 
@@ -24,41 +21,86 @@ function text(html) {
     .trim();
 }
 
-function links(html, base) {
-  const out = [];
-  for (const match of String(html).matchAll(/<a\b[^>]*href\s*=\s*(["'])(.*?)\1[^>]*>([\s\S]*?)<\/a>/gi)) {
-    let href;
-    try { href = new URL(decode(match[2]), base).href; } catch { continue; }
-    if (!/hri\.ie\/(?:racecards\/details|entries\/Microsoft_Word__)/i.test(href)) continue;
-    out.push({ href, label: text(match[3]).slice(0, 160) });
+function extractScripts(html, base) {
+  const scripts = [];
+  for (const match of String(html).matchAll(/<script\b[^>]*\bsrc\s*=\s*(["'])(.*?)\1[^>]*>/gi)) {
+    try { scripts.push(new URL(decode(match[2]), base).href); } catch {}
   }
-  return [...new Map(out.map((row) => [row.href, row])).values()];
+  return [...new Set(scripts)];
+}
+
+function inlineRelevant(html) {
+  const out = [];
+  for (const match of String(html).matchAll(/<script\b(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi)) {
+    const body = decode(match[1]);
+    if (!/(racecard|meeting|fixture|ajax|api|fetch\s*\()/i.test(body)) continue;
+    out.push(body.replace(/\s+/g, ' ').slice(0, 4000));
+  }
+  return out;
+}
+
+function relevantSnippets(source) {
+  const flat = String(source).replace(/\s+/g, ' ');
+  const needles = [/racecards?/ig, /meeting/ig, /fixture/ig, /\/api\//ig, /ajax/ig];
+  const snippets = [];
+  for (const pattern of needles) {
+    for (const match of flat.matchAll(pattern)) {
+      const start = Math.max(0, match.index - 220);
+      const end = Math.min(flat.length, match.index + 500);
+      snippets.push(flat.slice(start, end));
+      if (snippets.length >= 30) return [...new Set(snippets)];
+    }
+  }
+  return [...new Set(snippets)];
+}
+
+async function fetchPage(url) {
+  return fetch(url, {
+    redirect: 'follow',
+    headers: {
+      'user-agent': 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; public timetable acquisition)',
+      accept: 'text/html,application/xhtml+xml,*/*',
+      'accept-language': 'en-IE,en;q=0.9',
+    },
+    signal: AbortSignal.timeout(20000),
+  });
 }
 
 for (const url of urls) {
   try {
-    const response = await fetch(url, {
-      redirect: 'follow',
-      headers: {
-        'user-agent': 'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; public timetable acquisition)',
-        accept: 'text/html,application/xhtml+xml',
-        'accept-language': 'en-IE,en;q=0.9',
-      },
-      signal: AbortSignal.timeout(20000),
-    });
+    const response = await fetchPage(url);
     const body = await response.text();
-    const visible = text(body);
-    const needle = visible.toLowerCase().indexOf('ballinrobe');
+    const scriptUrls = extractScripts(body, response.url);
     console.log(JSON.stringify({
+      type: 'page',
       requested_url: url,
       final_url: response.url,
       status: response.status,
-      content_type: response.headers.get('content-type'),
       bytes: body.length,
-      racecard_or_entry_links: links(body, response.url).slice(0, 80),
-      ballinrobe_context: needle >= 0 ? visible.slice(Math.max(0, needle - 500), needle + 1500) : null,
+      scripts: scriptUrls,
+      inline_relevant: inlineRelevant(body),
+      html_relevant: relevantSnippets(body).slice(0, 20),
     }));
+    if (!url.endsWith('/racecards')) continue;
+    for (const scriptUrl of scriptUrls) {
+      if (!scriptUrl.startsWith('https://www.hri.ie/')) continue;
+      try {
+        const jsResponse = await fetchPage(scriptUrl);
+        const js = await jsResponse.text();
+        const snippets = relevantSnippets(js);
+        if (!snippets.length) continue;
+        console.log(JSON.stringify({
+          type: 'script',
+          url: scriptUrl,
+          status: jsResponse.status,
+          bytes: js.length,
+          snippets,
+        }));
+      } catch (error) {
+        console.log(JSON.stringify({ type: 'script_error', url: scriptUrl, error: String(error?.message ?? error) }));
+      }
+    }
   } catch (error) {
-    console.log(JSON.stringify({ requested_url: url, error: String(error?.message ?? error) }));
+    console.log(JSON.stringify({ type: 'page_error', requested_url: url, error: String(error?.message ?? error) }));
   }
 }
