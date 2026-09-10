@@ -2,9 +2,9 @@ concept_id	category_id	category_ja	canonical_en	preferred_ja	working_definition_
 SURF-001	SURF	走路・馬場状態	Turf	芝	芝草を主材とする競走面。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-029 verifies turf as a distinct racing surface in JRA course structure; global material details vary.
 SURF-002	SURF	走路・馬場状態	Grass	芝	Turfと同じ競走面を指す一般語。地域・文脈で使い分ける。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 SURF-003	SURF	走路・馬場状態	Dirt	ダート	土・砂等を主体とする非芝の競走面。組成は地域で異なる。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-029 verifies JRA dirt as a distinct non-turf racing surface; composition and category boundaries vary by jurisdiction.
-SURF-004	SURF	走路・馬場状態	Sand	砂馬場	砂を主材とする競走面。Dirtとの分類対応は地域で異なる。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-SURF-005	SURF	走路・馬場状態	Synthetic surface	合成馬場	人工素材を用いた競走面の総称。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-SURF-006	SURF	走路・馬場状態	All-weather	オールウェザー	全天候型として運用される合成系競走面の呼称。	concept	P0	GB/IRE/Europe/Asia/Global	ALL	working_equivalent	candidate	yes	no	
+SURF-004	SURF	走路・馬場状態	Sand	砂馬場	砂を主材とする自然素材の非芝競走面。Dirtとの分類対応は地域・データ標準で異なる。	concept	P0	GLOBAL/Regional	ALL	working_equivalent	source_verified	yes	no	P0-SRC-064 explicitly recognizes Sand as a natural non-turf surface within the IFHA Dirt-or-Sand code; do not collapse Dirt and Sand globally.
+SURF-005	SURF	走路・馬場状態	Synthetic surface	合成馬場	人工材料または人工的に調合された素材を用いる非芝競走面の総称。All-weatherとの包含関係は管轄・規格で異なる。	concept	P0	GLOBAL/Regional	ALL	working_equivalent	source_verified	yes	no	P0-SRC-064 states that All-Weather must be synthetic, supporting Synthetic surface as the broader material class without asserting universal category identity.
+SURF-006	SURF	走路・馬場状態	All-weather	オールウェザー	全天候型として分類・運用される合成系競走面。具体的な素材・製品・状態区分は管轄ごとに異なる。	concept	P0	GB/IRE/Europe/Asia/Global	ALL	working_equivalent	source_verified	yes	no	P0-SRC-064 verifies All-Weather as distinct from Turf/Dirt and requires it to be synthetic in the IFHA data standard; existing HKJC AWT evidence corroborates current regional usage.
 SURF-007	SURF	走路・馬場状態	Tapeta	タペタ	合成馬場の製品・方式名として用いられる語。	concept	P1	GLOBAL/Regional	ALL	working_equivalent	candidate	yes	no	
 SURF-008	SURF	走路・馬場状態	Polytrack	ポリトラック	合成馬場の製品・方式名として用いられる語。	concept	P1	GLOBAL/Regional	ALL	working_equivalent	candidate	yes	no	
 SURF-009	SURF	走路・馬場状態	Fibresand	ファイバーサンド	繊維等を混合した合成系競走面の名称。	concept	P2	GB/IRE/Historical	ALL	working_equivalent	candidate	yes	no	
