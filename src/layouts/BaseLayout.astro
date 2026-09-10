@@ -64,6 +64,7 @@ const timeZoneOptions = [
 const primaryNavigationItems = [
   { href: isJapanese ? '/ja/calendar/' : '/calendar/', label: isJapanese ? 'カレンダー' : 'Calendar' },
   { href: isJapanese ? '/ja/tracks/' : '/tracks/', label: isJapanese ? '競馬場' : 'Racecourses' },
+  { href: isJapanese ? '/ja/contact/' : '/contact/', label: isJapanese ? 'お問い合わせ' : 'Contact' },
 ];
 const secondaryNavigationItems = [
   { href: isJapanese ? '/ja/countries/' : '/countries/', label: isJapanese ? '国・地域' : 'Countries' },
@@ -71,7 +72,6 @@ const secondaryNavigationItems = [
   { href: isJapanese ? '/ja/glossary/' : '/glossary/', label: isJapanese ? '用語集' : 'Glossary' },
   { href: isJapanese ? '/ja/sources/' : '/sources/', label: isJapanese ? '公式情報源' : 'Official Sources' },
   { href: isJapanese ? '/ja/about/' : '/about/', label: isJapanese ? 'このサイトについて' : 'About' },
-  { href: isJapanese ? '/ja/contact/' : '/contact/', label: isJapanese ? 'お問い合わせ' : 'Contact' },
 ];
 const searchHref = isJapanese ? '/ja/search/' : '/search/';
 const disclaimerHref = isJapanese ? '/ja/disclaimer/' : '/disclaimer/';
@@ -197,7 +197,7 @@ const socialImageAlt = isJapanese
         class="site-header"
         aria-label={isJapanese ? 'サイトヘッダー' : 'Site header'}
         data-mobile-navigation="bottom-nav-v1"
-        data-mobile-navigation-links="4"
+        data-mobile-navigation-links="5"
         data-desktop-layout="map-first-shell-v1"
       >
         <div class="site-header__inner">
