@@ -11,18 +11,19 @@ This addendum creates a parallel glossary knowledge lane. It does not supersede 
 ## Current glossary stage
 
 ```text
-Glossary stage: jurisdiction_and_local_language_research
+Glossary stage: register_and_historical_research
 Completed: GLOSSARY-MASTER-001
 Completed: GLOSSARY-MASTER-002
-Current glossary Work ID: GLOSSARY-MASTER-003
-Next: GLOSSARY-MASTER-004
-Current seed: 501 candidate Concepts / 18 domain categories
+Completed first major-jurisdiction pass: GLOSSARY-MASTER-003
+Current glossary Work ID: GLOSSARY-MASTER-004
+Next: GLOSSARY-MASTER-005
+Current research master: 654 Concepts / 18 domain categories
 Public glossary page expansion: deferred
 Automatic glossary publication: disabled
 Existing public glossary content: disposable legacy runtime baseline
 ```
 
-The current task is to verify and expand the world terminology master before committing to a new public glossary information architecture or route expansion.
+The current task is to normalize established colloquial, industry, slang, abbreviation, chart/racecard-code, and historical terminology without confusing usage labels with Concept identity. Jurisdiction research may still receive later follow-up waves when gaps are found.
 
 ## Programme objective
 
@@ -69,47 +70,56 @@ Completed output:
 - P1: **212**;
 - P2: **118**;
 - P3: **15**;
-- all rows start `verification_status=candidate` and `public_ready=no`;
+- all rows started `verification_status=candidate` and `public_ready=no`;
 - repository source rows stored under `data/glossary-master/concepts/`;
 - current public glossary IDs/headwords/categories are not migration requirements;
 - site-specific vocabulary such as `Official live` and account/access labels is separated from horse-racing domain terminology.
 
-The 501 count is a research seed, **not** a worldwide completeness claim.
+The 501 count is the original research seed, **not** a worldwide completeness claim.
 
 ### `GLOSSARY-MASTER-003` — jurisdiction and local-language terminology
 
-Status: **current**.
+Status: **first major-jurisdiction pass complete; follow-up waves allowed**.
 
-Research each jurisdiction/language bottom-up from terminology actually used there.
+The first pass researched terminology bottom-up across GB/Ireland, US/Canada, Australia/New Zealand, Japan including NAR/Banei, France, Hong Kong/Korea, UAE/South Africa, plus Arabian/Harness cross-system follow-up. The research master now contains **654 Concepts** while preserving local labels, definitions, sources, no-direct-equivalent cases, and review candidates.
 
-Required work:
+Ongoing rule:
 
-- identify governing authorities, official rulebooks, glossaries, racecards/programmes, and other authoritative racing material;
 - preserve original-script terminology;
-- add official, preferred, alternate, abbreviation, and regional labels with language/locale/jurisdiction/discipline metadata;
-- map local labels to existing Concepts only when the semantic match is supportable;
-- create new Concepts when a local concept is genuinely absent from the 501 seed;
+- map local labels to existing Concepts only when semantically supportable;
+- create new Concepts when the local concept is genuinely absent;
 - record `no_direct_equivalent` rather than inventing a translation;
 - split homonyms and same-spelling/different-meaning cases explicitly;
-- record evidence at the claim level.
+- keep claim-level source/currentness evidence;
+- add later jurisdiction waves when material gaps are discovered.
 
-Priority research should cover major racing systems and jurisdictions first, while keeping the data model capable of accepting smaller/local systems without redesign.
+### `GLOSSARY-MASTER-004` — colloquial, slang, industry, abbreviation, and historical terminology
 
-### `GLOSSARY-MASTER-004` — colloquial, slang, industry, and historical terminology
-
-Status: queued after MASTER-003 has enough jurisdiction evidence.
+Status: **current**.
 
 Required work:
 
 - collect established colloquial, industry, slang, historic, deprecated, and obsolete forms;
-- attach jurisdiction, discipline, audience/register, currentness, and confidence;
+- normalize abbreviations, racecard codes, chart codes and official display codes separately from preferred labels;
+- attach jurisdiction, discipline, audience/register, currentness, evidence class and confidence;
 - use evidence appropriate to the claim instead of demanding official-rulebook proof for slang;
 - reject one-off social-media wording as insufficient evidence;
-- preserve historical terms where they help users understand older racing publications and records.
+- preserve historical terms where they help users understand older racing publications and records;
+- do not create a new Concept merely because a new slang/abbreviation label is found;
+- keep polysemous terms and unresolved mappings explicit in review candidates.
+
+Current first-wave storage:
+
+```text
+data/glossary-master/register/register-usage-v1.tsv
+data/glossary-master/abbreviations/abbreviations-v1.tsv
+data/glossary-master/historical/historical-terms-v1.tsv
+data/glossary-master/sources/register-layer-sources-v1.tsv
+```
 
 ### `GLOSSARY-MASTER-005` — relationship/equivalence and evidence refinement
 
-Status: queued.
+Status: **queued**.
 
 Required work:
 
@@ -121,7 +131,7 @@ Required work:
 
 ### `GLOSSARY-MASTER-006` — search-intent, coverage, and readiness review
 
-Status: queued.
+Status: **queued**.
 
 Required work:
 
@@ -194,9 +204,10 @@ Glossary master work must not block Calendar corrections, racecourse data qualit
 ## Current execution pointer
 
 ```text
-Current glossary Work ID: GLOSSARY-MASTER-003
-Current input: data/glossary-master/concepts/*.tsv — 501 candidate Concepts
-Next: GLOSSARY-MASTER-004
+Current glossary Work ID: GLOSSARY-MASTER-004
+Current input: 654-Concept research master + jurisdiction labels/definitions/sources
+Current focus: register / abbreviation / historical evidence normalization
+Next: GLOSSARY-MASTER-005
 Public implementation: deferred until post-MASTER-006 readiness review
 ```
 
