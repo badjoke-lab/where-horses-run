@@ -2,7 +2,7 @@
 
 Status: active zero-based world racing terminology master  
 Authority: `docs/glossary/world-racing-terminology-master-spec.md`  
-Current work: `GLOSSARY-MASTER-003` — jurisdiction/local-language research
+Current work: `GLOSSARY-MASTER-004` — colloquial / industry / abbreviation / historical research
 
 This directory is the non-public working area for the concept-first world racing terminology master.
 
@@ -56,6 +56,29 @@ Current research-master totals after jurisdiction waves through Arabian/Harness 
 
 The manifest is the machine-readable count authority. These counts describe the current research master, not a worldwide completeness claim.
 
+## Register / abbreviation / historical layers
+
+`GLOSSARY-MASTER-004` separates how a term is used from what the underlying Concept is.
+
+```text
+register/register-usage-v1.tsv
+    colloquial, industry, betting-language and other register-specific usage;
+    may point at an existing Concept or an explicit NEW-REVIEW candidate.
+
+abbreviations/abbreviations-v1.tsv
+    official abbreviations, race-type codes, chart codes, racecard equipment codes and display codes.
+
+historical/historical-terms-v1.tsv
+    historical, predecessor, deprecated or venue-specific retired terminology with bounded periods.
+
+sources/register-layer-sources-v1.tsv
+    evidence used specifically for these usage layers.
+```
+
+A slang, colloquial or abbreviated form does **not** automatically create a Concept. A historically retired term in one venue/jurisdiction must not be declared globally obsolete without evidence.
+
+Polysemous usage must remain visible. For example, if an authority gives multiple senses for one local term, retain a review target until those senses are modeled rather than choosing one silently.
+
 ## Concept file contract
 
 Every category TSV uses the same fields:
@@ -82,30 +105,9 @@ notes
 
 ## Additional normalized domains
 
-As jurisdiction research proceeds, add normalized files/tables for:
-
 ### Labels
 
 Original-script official, preferred, alternate, abbreviated, regional, colloquial, slang, historical, transliterated, and descriptive-translation labels.
-
-Minimum concerns:
-
-```text
-label_id
-concept_id
-label
-language
-script
-locale
-label_type
-jurisdiction
-discipline
-register
-currentness
-source_id
-evidence_status
-review_state
-```
 
 ### Definitions
 
@@ -119,13 +121,13 @@ Typed relationships such as `exact_equivalent`, `close_equivalent`, `broader`, `
 
 Jurisdiction, authority, discipline, audience/register, and period-specific usage.
 
-### Slang / Colloquial
+### Slang / Colloquial / Industry
 
-Informal forms with bounded usage evidence, register, currentness, and confidence. A one-off social-media use is not sufficient evidence.
+Informal forms with bounded usage evidence, register, currentness, evidence class, confidence and review state. A one-off social-media use is not sufficient evidence.
 
 ### Historical Terms
 
-Historical/deprecated/obsolete forms with period/currentness evidence.
+Historical/deprecated/obsolete/legacy forms with period/currentness evidence and appropriately narrow jurisdiction/venue scope.
 
 ### Sources
 
@@ -164,7 +166,7 @@ WHR-specific interface/access labels such as `Official live`, `Official replay`,
 - Preserve original script when collecting local terminology.
 - Never promote a search variant into a preferred label because it is convenient.
 - Do not flatten `Meeting`, `Fixture`, `Race day`, `Racecourse`, `Racetrack`, `Going`, `Track condition`, or similar near terms into global synonyms without evidence.
-- Keep slang, colloquial, historical, and deprecated status explicit.
+- Keep slang, colloquial, historical, abbreviation and deprecated status explicit.
 - Keep unresolved taxonomy/evidence questions visible.
 - Do not set `public_ready=yes` until the relevant definition, labels, jurisdiction claims, and evidence have been reviewed.
 - Never make this working directory a public-runtime input without a later reviewed `GLOSSARY-PUBLIC-*` decision.
