@@ -10,10 +10,7 @@ import {
 } from './timetable/acquisition-completion.mjs';
 
 function profile({ technical = 'A+', supported = ['C', 'B', 'B+', 'A', 'A+'] } = {}) {
-  return {
-    technical_capability_rank: technical,
-    supported_observation_ranks: supported,
-  };
+  return { technical_capability_rank: technical, supported_observation_ranks: supported };
 }
 
 function record(rank, status = undefined, evaluatedCapabilityRank = undefined) {
@@ -67,7 +64,6 @@ for (const entry of registry.records ?? []) {
 const expectedCurrentGaps = new Set([
   'sorec-racing-information-system',
   'chile-teletrak-racing-system',
-  'ireland-hri-racing-system',
 ]);
 assert.deepEqual(new Set(obviousImplementationGaps.map((row) => row.system_id)), expectedCurrentGaps);
 
@@ -160,73 +156,19 @@ function runApplyFixture({
   }
 }
 
-runApplyFixture({
-  id: 'chile-contract',
-  countryId: 'chile',
-  authorityId: 'teletrak-chile',
-  systemId: 'chile-teletrak-racing-system',
-  timezone: 'America/Santiago',
-  rank: 'C',
-  expectedDisposition: 'implementation_gap',
-});
-runApplyFixture({
-  id: 'uae-pending',
-  countryId: 'united-arab-emirates',
-  authorityId: 'emirates-racing-authority',
-  systemId: 'uae-national-racing-system',
-  timezone: 'Asia/Dubai',
-  rank: 'C',
-  detailStatus: 'not_published',
-  expectedDisposition: 'pending_publication',
-});
-runApplyFixture({
-  id: 'kra-retry',
-  countryId: 'south-korea',
-  authorityId: 'korea-racing-authority',
-  systemId: 'kra-national-racing-system',
-  timezone: 'Asia/Seoul',
-  rank: 'C',
-  detailStatus: 'source_error',
-  expectedDisposition: 'retry_required',
-});
-runApplyFixture({
-  id: 'uae-current-best',
-  countryId: 'united-arab-emirates',
-  authorityId: 'emirates-racing-authority',
-  systemId: 'uae-national-racing-system',
-  timezone: 'Asia/Dubai',
-  rank: 'B',
-  detailStatus: 'available',
-  evaluatedCapabilityRank: 'A',
-  expectedDisposition: 'complete_current_best_available',
-});
-runApplyFixture({
-  id: 'hkjc-unproven-aplus',
-  countryId: 'hong-kong',
-  authorityId: 'hkjc',
-  systemId: 'hong-kong-hkjc-system',
-  timezone: 'Asia/Hong_Kong',
-  rank: 'A',
-  detailStatus: 'available',
-  evaluatedCapabilityRank: 'A',
-  expectedDisposition: 'implementation_gap',
-});
-runApplyFixture({
-  id: 'hkjc-proven-aplus',
-  countryId: 'hong-kong',
-  authorityId: 'hkjc',
-  systemId: 'hong-kong-hkjc-system',
-  timezone: 'Asia/Hong_Kong',
-  rank: 'A',
-  detailStatus: 'available',
-  evaluatedCapabilityRank: 'A+',
-  expectedDisposition: 'complete_current_best_available',
-});
+runApplyFixture({ id: 'chile-contract', countryId: 'chile', authorityId: 'teletrak-chile', systemId: 'chile-teletrak-racing-system', timezone: 'America/Santiago', rank: 'C', expectedDisposition: 'implementation_gap' });
+runApplyFixture({ id: 'uae-pending', countryId: 'united-arab-emirates', authorityId: 'emirates-racing-authority', systemId: 'uae-national-racing-system', timezone: 'Asia/Dubai', rank: 'C', detailStatus: 'not_published', expectedDisposition: 'pending_publication' });
+runApplyFixture({ id: 'kra-retry', countryId: 'south-korea', authorityId: 'korea-racing-authority', systemId: 'kra-national-racing-system', timezone: 'Asia/Seoul', rank: 'C', detailStatus: 'source_error', expectedDisposition: 'retry_required' });
+runApplyFixture({ id: 'uae-current-best', countryId: 'united-arab-emirates', authorityId: 'emirates-racing-authority', systemId: 'uae-national-racing-system', timezone: 'Asia/Dubai', rank: 'B', detailStatus: 'available', evaluatedCapabilityRank: 'A', expectedDisposition: 'complete_current_best_available' });
+runApplyFixture({ id: 'hkjc-unproven-aplus', countryId: 'hong-kong', authorityId: 'hkjc', systemId: 'hong-kong-hkjc-system', timezone: 'Asia/Hong_Kong', rank: 'A', detailStatus: 'available', evaluatedCapabilityRank: 'A', expectedDisposition: 'implementation_gap' });
+runApplyFixture({ id: 'hkjc-proven-aplus', countryId: 'hong-kong', authorityId: 'hkjc', systemId: 'hong-kong-hkjc-system', timezone: 'Asia/Hong_Kong', rank: 'A', detailStatus: 'available', evaluatedCapabilityRank: 'A+', expectedDisposition: 'complete_current_best_available' });
+runApplyFixture({ id: 'ireland-pending', countryId: 'ireland', authorityId: 'horse-racing-ireland', systemId: 'ireland-hri-racing-system', timezone: 'Europe/Dublin', rank: 'C', detailStatus: 'not_published', expectedDisposition: 'pending_publication' });
+runApplyFixture({ id: 'ireland-available', countryId: 'ireland', authorityId: 'horse-racing-ireland', systemId: 'ireland-hri-racing-system', timezone: 'Europe/Dublin', rank: 'A', detailStatus: 'available', evaluatedCapabilityRank: 'A', expectedDisposition: 'complete_current_best_available' });
 
 console.log(JSON.stringify({
   ok: true,
   classifier_fixture_cases: 12,
-  apply_integration_cases: 6,
+  apply_integration_cases: 8,
   implemented_profiles_checked: (registry.records ?? []).filter((row) => ['active', 'provisional'].includes(row.profile_status)).length,
   current_registry_level_implementation_gaps: obviousImplementationGaps,
 }, null, 2));
