@@ -2,16 +2,16 @@ concept_id	category_id	category_ja	canonical_en	preferred_ja	working_definition_
 TRAIN-001	TRAIN	調教・競走前後	Training	調教	競走に向けて馬の体力・技術等を整える活動。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-058. JRA glossary defines 攻め馬 as horse training and provides racing-training terminology.
 TRAIN-002	TRAIN	調教・競走前後	Workout	ワークアウト／追い切り	主に北米で公式計時されることもある調教走行。	concept	P0	North America/Global	Flat	working_equivalent	source_verified	yes	no	P0-SRC-059. JRA overseas dictionary maps Workout to 追い切り in racing context; detailed workout conventions remain jurisdiction-specific.
 TRAIN-003	TRAIN	調教・競走前後	Breeze	ブリーズ	比較的速い調教走行を示す語。地域で意味が異なる。	concept	P1	North America/Global	Flat	working_equivalent	candidate	yes	no	
-TRAIN-004	TRAIN	調教・競走前後	Breezing	ブリージング	調教時に一定の速度で走らせること。公式時計表記では意味差がある。	concept	P2	North America	Flat	working_equivalent	candidate	yes	no	
-TRAIN-005	TRAIN	調教・競走前後	Handily	ハンデリー	主に北米の調教時計で騎手が促して走った等を示す評価語。	concept	P2	North America	Flat	working_equivalent	candidate	yes	no	
+TRAIN-004	TRAIN	調教・競走前後	Breezing	ブリージング	海外競馬の調教・調教時計で用いられる表現。JRA海外競馬英和辞典では「馬なり」と対応づけられる。	concept	P2	North America/Regional	Flat	working_equivalent	source_verified	yes	no	P1-SRC-033. JRA maps breezing to 馬なり in its overseas racing dictionary. Exact workout-code and effort semantics vary by jurisdiction, so the definition does not universalize one clocking convention.
+TRAIN-005	TRAIN	調教・競走前後	Handily	ハンデリー	海外競馬の調教・調教時計で用いられる表現。JRA海外競馬英和辞典では「強めの調教」と対応づけられる。	concept	P2	North America/Regional	Flat	working_equivalent	source_verified	yes	no	P1-SRC-033. JRA maps handily to 強めの調教. Exact North American clocking conventions remain jurisdiction-specific.
 TRAIN-006	TRAIN	調教・競走前後	Gallop	ギャロップ調教	ギャロップ歩様で行う調教。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-TRAIN-007	TRAIN	調教・競走前後	Canter	キャンター	ギャロップより抑えた速度の調教・歩様表現。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-TRAIN-008	TRAIN	調教・競走前後	Trackwork	トラックワーク	主に豪州・アジア等で競馬場・調教場での調教を指す語。	concept	P1	AUS/NZ/Asia	Flat	working_equivalent	candidate	yes	no	
+TRAIN-007	TRAIN	調教・競走前後	Canter	キャンター	調教で用いられるキャンター／駈歩の歩様・走行表現。	concept	P1	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P1-SRC-033. JRA's overseas racing dictionary explicitly maps canter to キャンター／駈歩 in the training category; pace boundaries and training prescriptions are not asserted globally.
+TRAIN-008	TRAIN	調教・競走前後	Trackwork	トラックワーク	競馬場や調教場の走路で行う競走馬の調教を指す語。特に豪州で制度的に用いられる。	concept	P1	Australia/Regional	Flat	working_equivalent	source_verified	yes	no	P1-SRC-025. Racing Victoria currently licenses Trackwork Riders and distinguishes Slow Work, Fast Work and Jump Outs; scope narrowed from AUS/NZ/Asia to evidence-backed Australia/Regional.
 TRAIN-009	TRAIN	調教・競走前後	Schooling	スクーリング	障害飛越・ゲート・パドック等に馬を慣らす訓練。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 TRAIN-010	TRAIN	調教・競走前後	Gate schooling	ゲート練習	発馬機への進入・待機・発走に慣らす訓練。	concept	P1	GLOBAL	Flat	working_equivalent	candidate	yes	no	
 TRAIN-011	TRAIN	調教・競走前後	Barrier trial	バリアトライアル	主に豪州・アジアで行われる公式・準公式の模擬競走。	concept	P0	AUS/NZ/Asia	Flat	working_equivalent	source_verified	yes	no	P0-SRC-060. Current Racing Australia operations publish Barrier Trials as distinct trial events.
 TRAIN-012	TRAIN	調教・競走前後	Trial	トライアル	実戦形式の試走・能力審査等。意味は管轄で異なる。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-060. Current Racing Australia operations use Trials as an operational event class; purposes and formality remain jurisdiction-specific.
-TRAIN-013	TRAIN	調教・競走前後	Jump-out	ジャンプアウト	主に豪州で行われる非競走・調教的な実戦形式走行。	concept	P1	AUS	Flat	working_equivalent	candidate	yes	no	
+TRAIN-013	TRAIN	調教・競走前後	Jump-out	ジャンプアウト	主に豪州で行われる、競走前の実戦的な調教・非公式試走形式。	concept	P1	Australia	Flat	working_equivalent	source_verified	yes	no	P1-SRC-025; P1-SRC-026. Racing Victoria currently accredits riders for Jump Outs and publishes a dedicated Jump-Outs calendar, confirming operational Australian usage.
 TRAIN-014	TRAIN	調教・競走前後	Qualifying trial	資格審査トライアル	出走資格を得るための試走・審査。	concept	P1	Asia/Harness/Regional	ALL	working_equivalent	candidate	yes	no	
 TRAIN-015	TRAIN	調教・競走前後	Qualifier	クオリファイア	繋駕競走等で出走資格取得・確認のための審査競走。	concept	P1	North America/Global	Harness	working_equivalent	candidate	yes	no	
 TRAIN-016	TRAIN	調教・競走前後	Warm-up	ウォームアップ	競走前に馬体を温める運動。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	

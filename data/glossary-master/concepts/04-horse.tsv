@@ -1,15 +1,15 @@
 concept_id	category_id	category_ja	canonical_en	preferred_ja	working_definition_ja	concept_kind	priority	jurisdiction_scope	discipline_scope	translation_status	verification_status	source_required	public_ready	notes
 HORSE-001	HORSE	馬の品種・性別・年齢	Thoroughbred	サラブレッド	公認スタッドブックに基づく馬の品種。	concept	P0	GLOBAL	Thoroughbred	working_equivalent	source_verified	yes	no	P0-SRC-045; P0-SRC-046. Verified as a stud-book-defined breed; registry details remain authority-specific.
-HORSE-002	HORSE	馬の品種・性別・年齢	Arabian horse	アラブ馬	アラブ種として登録される馬の品種。	concept	P1	GLOBAL	Arabian	working_equivalent	candidate	yes	no	
-HORSE-003	HORSE	馬の品種・性別・年齢	American Quarter Horse	アメリカン・クォーターホース	短距離能力等で知られる公認馬品種。	concept	P1	Americas/Global	Quarter Horse	working_equivalent	candidate	yes	no	
-HORSE-004	HORSE	馬の品種・性別・年齢	Standardbred	スタンダードブレッド	繋駕競走で広く用いられる馬の品種。	concept	P1	GLOBAL	Harness	working_equivalent	candidate	yes	no	
+HORSE-002	HORSE	馬の品種・性別・年齢	Arabian horse	アラブ馬	WAHOが受入可能とする純血アラブ種のスタッドブックまたは登録簿に登録される馬。	concept	P1	GLOBAL	Arabian	working_equivalent	source_verified	yes	no	P1-SRC-010. WAHO's current 2026 definition ties Purebred Arabian identity to a WAHO-accepted stud book or register; racing eligibility remains authority-specific.
+HORSE-003	HORSE	馬の品種・性別・年齢	American Quarter Horse	アメリカン・クォーターホース	AQHA等の登録制度で管理され、北米のクォーターホース競走に用いられる馬品種。	concept	P1	North America/Regional	Quarter Horse	working_equivalent	source_verified	yes	no	P1-SRC-003; P1-SRC-029. AQHA current racing/registration guidance verifies the breed identity and registration basis; scope narrowed from Americas/Global to North America/Regional.
+HORSE-004	HORSE	馬の品種・性別・年齢	Standardbred	スタンダードブレッド	繋駕競走で主要に用いられる登録馬品種。	concept	P1	GLOBAL	Harness	working_equivalent	source_verified	yes	no	P1-SRC-011. USTA identifies Standardbred as the specific breed used in harness racing and serves as the North American breed registry; generic breed identity retained without claiming one registry globally.
 HORSE-005	HORSE	馬の品種・性別・年齢	Draft horse	重種馬／ばん馬	牽引力を重視して育成された大型馬の総称。	concept	P2	GLOBAL/Japan	Banei/General	working_equivalent	candidate	yes	no	
 HORSE-006	HORSE	馬の品種・性別・年齢	Colt	牡馬（若齢）	一般に若い雄馬を指す語。年齢境界は制度・辞書で確認する。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-047. Current Racing Australia race-form legend verifies Colt as a sex/age descriptor; exact age boundary remains jurisdiction-scoped.
 HORSE-007	HORSE	馬の品種・性別・年齢	Filly	牝馬（若齢）	一般に若い雌馬を指す語。年齢境界は制度・辞書で確認する。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-047. Current Racing Australia race-form legend verifies Filly as a sex/age descriptor; exact age boundary remains jurisdiction-scoped.
 HORSE-008	HORSE	馬の品種・性別・年齢	Mare	牝馬	成長した雌馬を指す語。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-047. Current Racing Australia race-form legend verifies Mare as a sex descriptor.
 HORSE-009	HORSE	馬の品種・性別・年齢	Stallion	種牡馬／牡馬	去勢されていない成長した雄馬。繁殖文脈では種牡馬を指す。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-045; P0-SRC-047. Breeding and adult-male senses are context-aware; not every entire male is asserted to be an active breeding stallion.
 HORSE-010	HORSE	馬の品種・性別・年齢	Gelding	せん馬	去勢された雄馬。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-047. Current Racing Australia race-form legend verifies Gelding.
-HORSE-011	HORSE	馬の品種・性別・年齢	Entire	去勢されていない牡馬	主に英国・豪州等で去勢されていない雄馬を示す語。	concept	P1	GB/AUS/Commonwealth	ALL	working_equivalent	candidate	yes	no	
+HORSE-011	HORSE	馬の品種・性別・年齢	Entire	去勢されていない牡馬	主に英国・豪州等で去勢されていない雄馬を示す性別表現。	concept	P1	GB/AUS/Commonwealth	ALL	working_equivalent	source_verified	yes	no	P0-SRC-047. Racing Australia current race-form legend uses entire as an intact-male sex descriptor; keep jurisdiction scope rather than treating it as a global preferred label.
 HORSE-012	HORSE	馬の品種・性別・年齢	Horse	成馬／馬	文脈により成長した雄馬または馬一般を指す。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 HORSE-013	HORSE	馬の品種・性別・年齢	Foal	当歳馬／仔馬	出生後の幼い馬を指す語。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 HORSE-014	HORSE	馬の品種・性別・年齢	Weanling	離乳馬	離乳後から概ね年末まで等の成長段階を指す語。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
@@ -17,10 +17,10 @@ HORSE-015	HORSE	馬の品種・性別・年齢	Yearling	1歳馬	年齢区分と�
 HORSE-016	HORSE	馬の品種・性別・年齢	Two-year-old	2歳馬	競走馬の年齢区分としての2歳馬。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-047. Current official race-form age field verifies two-year-old age classification.
 HORSE-017	HORSE	馬の品種・性別・年齢	Three-year-old	3歳馬	競走馬の年齢区分としての3歳馬。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-047. Current official race-form age field verifies three-year-old age classification.
 HORSE-018	HORSE	馬の品種・性別・年齢	Four-year-old	4歳馬	競走馬の年齢区分としての4歳馬。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-HORSE-019	HORSE	馬の品種・性別・年齢	Juvenile	若馬／2歳馬等	若い競走馬を指す語。具体的年齢は地域・文脈で異なる。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+HORSE-019	HORSE	馬の品種・性別・年齢	Juvenile	若馬／2歳馬等	若い競走馬を指す語。具体的な年齢範囲は管轄・競走体系によって異なる。	concept	P1	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P1-SRC-013. JRA overseas dictionary maps juvenile to 若馬／2歳馬, directly supporting the age sense while preserving jurisdiction-dependent boundaries.
 HORSE-020	HORSE	馬の品種・性別・年齢	Older horse	古馬	若齢限定競走を卒業した年齢層の馬を指す一般表現。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 HORSE-021	HORSE	馬の品種・性別・年齢	Veteran horse	ベテラン馬	高齢または長く競走経験を持つ馬を指す一般表現。	concept	P3	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-HORSE-022	HORSE	馬の品種・性別・年齢	Maiden	未勝利馬	所定の定義でまだ勝利していない馬。競走名としてのMaiden raceと区別する。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+HORSE-022	HORSE	馬の品種・性別・年齢	Maiden	未勝利馬	当該競走体系・コードで定める勝利実績をまだ持たない馬。Maiden raceという競走種別とは区別する。	concept	P1	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P1-SRC-012; P1-SRC-017; P1-SRC-001. JRA maps maiden to 未出走／未勝利 and BHA defines Maiden races through horses that have not won under the relevant code; exact eligibility remains jurisdiction-specific.
 HORSE-023	HORSE	馬の品種・性別・年齢	Debutant	デビュー馬	初出走する馬を指す表現。	concept	P2	Europe/Regional	ALL	working_equivalent	candidate	yes	no	
 HORSE-024	HORSE	馬の品種・性別・年齢	First-time starter	初出走馬	主に北米等で初出走する馬を示す表現。	concept	P1	North America	Flat	working_equivalent	candidate	yes	no	
 HORSE-025	HORSE	馬の品種・性別・年齢	Homebred	自家生産馬	馬主・生産者が自ら生産した馬を指す語。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
