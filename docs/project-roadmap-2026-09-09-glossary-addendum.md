@@ -19,11 +19,12 @@ Completed current register pass: GLOSSARY-MASTER-004
 Current glossary Work ID: GLOSSARY-MASTER-005
 P0 verification waves 1–5: complete
 Current P0: 203/203 source-verified; 0 candidate
-Next immediate lane: P1/base-seed verification + 3 supplemental candidate cleanup
+Supplemental research: 161/161 source-verified; 0 candidate
+Next immediate lane: P1/base-seed verification wave 1
 Later: GLOSSARY-MASTER-006
 Current research master: 657 Concepts / 18 domain categories
 Relationship layer: 20 relations / 15 reviews / 15 resolved / 0 open
-Evidence coverage: 311/657 source-verified; P0 203/203 source-verified
+Evidence coverage: 314/657 source-verified; 343 candidate
 Public glossary page expansion: deferred
 Automatic glossary publication: disabled
 Existing public glossary content: disposable legacy runtime baseline
@@ -63,7 +64,7 @@ Current master: **657 Concepts**.
 
 ### P0 evidence verification
 
-The initial evidence audit showed the generic seed was the weak layer. Five P0 waves have now promoted **152 base-seed P0 Concepts** using authority or official-industry evidence appropriate to each claim.
+Five P0 waves promoted **152 base-seed P0 Concepts** using authority or official-industry evidence appropriate to each claim.
 
 - Wave 1: **16** — DISC 7 / DIST 9
 - Wave 2: **30** — ENTRY 9 / VENUE 16 / WEIGHT 5
@@ -71,49 +72,46 @@ The initial evidence audit showed the generic seed was the weak layer. Five P0 w
 - Wave 4: **44** — HORSE 8 / BREED 5 / ROLE 5 / RUN 12 / EQUIP 3 / TRAIN 4 / PRIZE 2 / WELF 5
 - Wave 5: **11** — RTYPE 1 / SURF 3 / MEET 5 / BET 2; plus `BET-028 SP` merged into `BET-027 Starting Price`
 
-Wave 5 closes the current P0 set without percentage-driven promotion. `SP` is represented as an abbreviation rather than a duplicate Concept. `Stakes race`, `Tote`, `Draw`, surface terms and time/document-state terms were verified only after narrowing or recording the actual scope supported by evidence.
+Current P0: **203/203 source-verified (100.0%)**.
+
+### Supplemental candidate cleanup
+
+Status: **complete current pass**.
+
+The final three supplemental candidates were resolved with scope refinement rather than forced global claims:
+
+- `ROLE-029 Claiming Professional Jockey` — IHRB licence/status sense.
+- `ENTRY-029 Coupled entry` — US/Regional regulatory sense.
+- `WEIGHT-026 Base rating` — Australia/Queensland RBH/programme sense.
+
+Audit: `data/glossary-master/coverage/supplemental-candidate-cleanup-v1.tsv`.
 
 Current observed state:
 
-- all Concepts: **311/657 source-verified (47.3%)**, 346 candidate;
+- all Concepts: **314/657 source-verified (47.8%)**, 343 candidate;
 - P0: **203/203 source-verified (100.0%)**, 0 candidate;
 - active base seed: **153/496 source-verified (30.8%)**, 343 candidate;
-- supplemental jurisdiction/relationship research: **158/161 source-verified (98.1%)**, 3 candidate.
+- supplemental jurisdiction/relationship research: **161/161 source-verified (100.0%)**, 0 candidate.
 
-All current P0 rows across all 18 categories are now source-verified.
+The remaining Concept evidence gap is entirely in lower-priority active base-seed rows.
 
-Canonical provenance now includes:
-
-```text
-data/glossary-master/sources/p0-core-sources-v1.tsv
-data/glossary-master/sources/p0-core-sources-v2.tsv
-data/glossary-master/sources/p0-core-sources-v3.tsv
-data/glossary-master/sources/p0-core-sources-v4.tsv
-data/glossary-master/sources/p0-core-sources-v5.tsv
-data/glossary-master/coverage/p0-verification-wave1-v1.tsv
-data/glossary-master/coverage/p0-verification-wave2-v1.tsv
-data/glossary-master/coverage/p0-verification-wave3-v1.tsv
-data/glossary-master/coverage/p0-verification-wave4-v1.tsv
-data/glossary-master/coverage/p0-verification-wave5-v1.tsv
-data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
-data/glossary-master/coverage/master-005-completion-gate-v1.tsv
-```
+Canonical provenance includes the P0 source/audit waves, `supplemental-candidate-cleanup-v1.tsv`, `master-005-evidence-coverage-v1.tsv`, and `master-005-completion-gate-v1.tsv` under `data/glossary-master/`.
 
 ### Completion decision
 
 Status: **HOLD — not complete**.
 
-P0 is complete, but lower-priority base-seed evidence remains materially incomplete. Three supplemental research rows also remain candidate: `ROLE-029 Claiming Professional Jockey`, `ENTRY-029 Coupled entry`, and `WEIGHT-026 Base rating`.
+P0 and current supplemental research are fully evidence-backed, but **343 lower-priority active base-seed Concepts remain candidate**.
 
 Immediate work:
 
 ```text
-post-P0 evidence refinement
--> prioritize P1/base-seed Concepts and high-risk semantic areas
--> resolve ROLE-029 / ENTRY-029 / WEIGHT-026
--> keep jurisdiction scope and polysemy review coupled to verification
+P1/base-seed verification wave 1
+-> prioritize user-facing/high-risk semantic areas
+-> refine jurisdiction scope before promotion where necessary
+-> split/merge Concepts where authority evidence shows the seed model is wrong
 -> rerun evidence coverage and completion gate
--> only after MASTER-005 passes, advance to MASTER-006
+-> define a defensible evidence floor before MASTER-006
 ```
 
 ## MASTER-006 — search-intent, coverage, readiness
@@ -144,9 +142,10 @@ The current public glossary remains disposable content. There is no old-record m
 ```text
 Current Work ID: GLOSSARY-MASTER-005
 Current master: 657 Concepts
-Evidence: 311 verified / 346 candidate
+Evidence: 314 verified / 343 candidate
 P0: 203 verified / 0 candidate
-Next: P1/base-seed verification + 3 supplemental candidate cleanup
+Supplemental research: 161 verified / 0 candidate
+Next: P1/base-seed verification wave 1
 MASTER-006: blocked until MASTER-005 evidence gate passes
 Public implementation: deferred
 ```
