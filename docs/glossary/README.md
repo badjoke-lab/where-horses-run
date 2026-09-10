@@ -19,18 +19,18 @@ Completed: GLOSSARY-MASTER-001 — specification / authority
 Completed: GLOSSARY-MASTER-002 — zero-based seed: 501 candidate Concepts / 18 categories
 Completed current pass: GLOSSARY-MASTER-003 — major-jurisdiction + local-language terminology research
 Completed current pass: GLOSSARY-MASTER-004 — slang / colloquial / industry / abbreviation / historical evidence
-Current:   GLOSSARY-MASTER-005 — relations / equivalence / homonym / source-verification refinement
+Current:   GLOSSARY-MASTER-005 — source/evidence coverage audit after relation review closure
 Next:      GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 New public-page expansion/redesign: deferred
 ```
 
-The current relationship-refined master contains **653 Concepts / 18 categories**. `public_ready` remains 0.
+The current relationship-refined master contains **658 Concepts / 18 categories**. `public_ready` remains 0.
 
 ## Current MASTER-005 results
 
-Wave 1 created the scoped relationship and review ledgers. Wave 2 began modifying Concept identity itself. Wave 3 resolves the highest-priority time, track, and condition-boundary conflicts without forcing global synonymy.
+Waves 1–3 established and refined scoped relationships, Concept identity, time semantics, track polysemy and condition-system boundaries. Wave 4 closes every relation-review item discovered in those waves.
 
-Merged Concept rows from wave 2:
+Earlier identity cleanup retained these merges:
 
 ```text
 MEET-002 Meeting    -> MEET-001 Race meeting (English single-event sense)
@@ -39,38 +39,37 @@ BET-031 Favourite   -> BET-030 Favorite
 RTYPE-005 Bumper    -> RTYPE-006 National Hunt Flat Race
 ```
 
-Their usable strings remain labels; retired Concept IDs are recorded in `data/glossary-master/concepts/concept-dispositions-v1.tsv` and are not recycled.
+Wave 2 added `MEET-042 Racing meeting series (France)`, `RESULT-030 Race form notation`, and `RUN-046 Tactical pacemaker for another runner`.
 
-New meaning-bearing Concepts from wave 2:
+Wave 3 fixed `Off time` as the actual race-start timestamp, retained `Scheduled start time` as planned time, kept Going/Track condition as separate regional taxonomies, and retained sense-scoped Racetrack/Track polysemy instead of forcing false global synonymy.
+
+Wave 4 adds five meaning-bearing Concepts exposed by the remaining review cases:
 
 ```text
-MEET-042   Racing meeting series (France)
-RESULT-030 Race form notation
-RUN-046    Tactical pacemaker for another runner
+HORSE-034 Wet-track aptitude
+RUN-047   Travelling easily
+RUN-048   Under pressure
+BET-043   Strong betting support
+BET-044   Dominant betting concentration
 ```
 
-Wave 3 decisions:
+This resolves:
 
-- `MEET-028 Off time` is now the **actual race-start timestamp**, not the scheduled time;
-- BHA `Scheduled off time` is a regional label of `MEET-029 Scheduled start time`;
-- `Off time` and `Scheduled start time` remain separate related Concepts;
-- `Going` and `Track condition` remain separate but related because GB/IRE, North America, Japan and Australia use structurally different official condition taxonomies;
-- `Racetrack` and `Track` remain polysemous in the research model; facility and physical-surface/path senses are explicitly scoped rather than globally merged;
-- no new Concept split is made for Track/Racetrack until stronger cross-jurisdiction evidence justifies it.
+- regional `Spell / Spelling` as narrower than generic `Layoff`;
+- AU/NZ `Mudlark` under Wet-track aptitude, not track condition;
+- AU `under double wraps` and NZ `on the bit/bridle` under Travelling easily, contrasted with NZ `off the bit/bridle` under Under pressure;
+- AU `backed off the map` under Strong betting support and JRA `一本かぶり` under narrower Dominant betting concentration.
 
 Current relationship state:
 
-- **17** active Concept-to-Concept relations;
+- **20** active Concept-to-Concept relations;
 - **15** relation review items discovered;
-- **11** resolved;
-- **4** still open.
+- **15** resolved;
+- **0** open.
 
-The remaining open sets are:
+Register resolution has also advanced to **12** resolved usage rows, leaving **24** effective register candidates from the original 60 usage rows.
 
-- `Spell / Layoff`;
-- Australasian `Mudlark` wet-track aptitude;
-- `Under double wraps` / `On the bit or bridle` / `Off the bit or bridle`;
-- Japanese `一本かぶり` / Australian `backed off the map` betting-market support terminology.
+The next task is not public implementation and not automatic MASTER-006 promotion. It is a **source/evidence coverage audit of the 658-Concept master**. MASTER-005 remains current until that gate is assessed.
 
 ## Existing public glossary is disposable content baseline
 
@@ -90,6 +89,7 @@ actual local official/specialist material
 -> collect slang/historical usage separately
 -> review Concept identity, polysemy and relationships
 -> merge only true duplicates; split real sense differences
+-> audit evidence coverage before search/readiness work
 ```
 
 Current normalized layers include:
