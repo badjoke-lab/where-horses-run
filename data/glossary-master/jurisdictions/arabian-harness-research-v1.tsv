@@ -1,0 +1,28 @@
+jurisdiction	authority	observed_term	mapping_target	mapping_type	verification_status	source_id	note
+International/Arabian	IFAHR	Group 1 PA	RTYPE-107	new_concept	source_verified	AH-SRC-001/002	Arabian-specific Group classification context retained.
+International/Arabian	IFAHR	Group 2 PA	RTYPE-108	new_concept	source_verified	AH-SRC-001/002	
+International/Arabian	IFAHR	Group 3 PA	RTYPE-109	new_concept	source_verified	AH-SRC-001/002	
+International/Arabian	IFAHR	Purebred Arabian	HORSE-002	regional_official_label	source_verified	AH-SRC-003	Horse/breed label; do not confuse with Arabian Racing discipline DISC-012.
+International/Arabian	IFAHR	P/A	HORSE-002	abbreviation_candidate	candidate	AH-SRC-003	Operational race-name abbreviation observed; retain for later abbreviation review before preferred publication.
+France/Harness	SETF	trot attelé	DISC-008	regional_label	source_verified	AH-SRC-004	Existing Harness Racing concept.
+France/Harness	SETF	trot monté	DISC-011	regional_label	source_verified	AH-SRC-004	Existing Monté concept.
+France/Harness	SETF	Course Nationale	RTYPE-110	new_concept	source_verified	AH-SRC-004/005	Stud-book/birth eligibility category.
+France/Harness	SETF	Course Européenne	RTYPE-111	new_concept	source_verified	AH-SRC-004/005	European stud-book eligibility category.
+France/Harness	SETF	Course Internationale	RTYPE-112	new_concept	source_verified	AH-SRC-004	International trotter stud-book eligibility category.
+France/Harness	SETF	Autres courses	NEW-REVIEW-HARNESS-AUTRES	new_candidate	candidate	AH-SRC-004	Official fourth eligibility bucket; assess standalone reader/search value before Concept creation.
+France/Harness	SETF	déclaration des partants	ENTRY-003	regional_definition	source_verified	AH-SRC-004	Declaration procedure.
+France/Harness	SETF	épreuves de qualification	TRAIN-014	regional_definition	source_verified	AH-SRC-004	Horse qualification test before racing.
+France/Harness	SETF	requalification	NEW-REVIEW-HARNESS-REQUAL	new_candidate	candidate	AH-SRC-004	Related to qualification but distinct trigger/requirements require dedicated source extraction.
+France/Harness	SETF	Course qualificative	NEW-REVIEW-HARNESS-QUAL-RACE	ambiguous_candidate	candidate	AH-SRC-005	Series qualifying race in programme context; do not conflate with horse épreuve de qualification.
+France/Harness	SETF	Départ à l’autostart	RUN-045	new_concept	source_verified	AH-SRC-004/005	Starting procedure distinct from mobile-start vehicle itself.
+France/Harness	SETF	volte	NEW-REVIEW-HARNESS-VOLTE	new_candidate	candidate	AH-SRC-004	Observed start manoeuvre; exact formal start-method ontology needs Code article 66 extraction.
+France/Harness	SETF	Départ Cellules	NEW-REVIEW-HARNESS-CELLULES	new_candidate	candidate	AH-SRC-004	Official start-procedure heading; user-facing value and relation to photoelectric start need review.
+France/Harness	SETF	D4	EQUIP-022	abbreviation_exact	source_verified	AH-SRC-004/006	All four shoes removed; maps to Barefoot.
+France/Harness	SETF	DA	EQUIP-029	new_concept	source_verified	AH-SRC-004/006	Front shoes removed.
+France/Harness	SETF	DP	EQUIP-030	new_concept	source_verified	AH-SRC-004/006	Hind shoes removed.
+France/Harness	LeTROT	F4	NEW-REVIEW-HARNESS-F4	abbreviation_candidate	candidate	AH-SRC-006	Operational racecard code observed; formal expansion/definition should be sourced before Concept/label promotion.
+France/Harness	LeTROT	P4	NEW-REVIEW-HARNESS-P4	abbreviation_candidate	candidate	AH-SRC-006	Plate/shoe-state code observed; do not infer expansion.
+France/Harness	LeTROT	PA	NEW-REVIEW-HARNESS-PA-SHOE	abbreviation_candidate	candidate	AH-SRC-006	Racecard shoe-status code; unrelated to Arabian PA and therefore requires disambiguation.
+France/Harness	SETF/UET	Groupe I	RTYPE-018	regional_label	source_verified	AH-SRC-008	Map to existing Group 1 concept with Harness discipline context.
+France/Harness	SETF	Groupe II	RTYPE-019	regional_label	source_verified	AH-SRC-004	Map to existing Group 2 concept.
+France/Harness	SETF	Groupe III	RTYPE-020	regional_label	source_verified	AH-SRC-004	Map to existing Group 3 concept.
