@@ -1,0 +1,8 @@
+gate_id	criterion	observed_state	gate_result	next_action
+M5-GATE-001	Discovered relationship/equivalence conflicts have explicit reviewed resolutions	15 discovered / 15 resolved / 0 open	pass	Keep new conflicts visible if later evidence exposes them.
+M5-GATE-002	Core P0 Concepts have credible source evidence	51 source_verified / 204 P0; 153 P0 still candidate	blocked	Run a P0-first source-verification pass across the base seed before MASTER-005 completion.
+M5-GATE-003	Overall Concept evidence is not dominated by unverified seed rows	159 source_verified / 658 total; 499 candidate	blocked	Verify base category Concepts systematically; do not treat supplemental research strength as whole-master coverage.
+M5-GATE-004	Jurisdiction-research additions are evidence-backed	158 source_verified / 161 supplemental; 3 candidate	pass_current_pass	Resolve ROLE-029, ENTRY-029 and WEIGHT-026 during evidence cleanup; later jurisdiction waves remain allowed.
+M5-GATE-005	High-risk false synonym and polysemy cases are modeled without forced global equivalence	Meeting/Fixture/Race day; Racecourse/Racetrack/Track; Going/Track condition; Group/Grade; Off time/scheduled time resolved or scope-bounded	pass	Preserve scope-aware relations and sense notes during future public projection.
+M5-GATE-006	Public publication is prevented while evidence coverage is incomplete	public_ready=0; public_runtime_input=false	pass	Keep public implementation deferred.
+M5-GATE-007	MASTER-005 completion decision	Relation review complete but evidence coverage materially incomplete	hold	Remain on GLOSSARY-MASTER-005. Next work is P0-first source verification, then re-run this completion gate.
