@@ -2,7 +2,7 @@
 
 Status: active zero-based world racing terminology master  
 Authority: `docs/glossary/world-racing-terminology-master-spec.md`  
-Current work: `GLOSSARY-MASTER-005` — relationship / equivalence / homonym / evidence refinement
+Current work: `GLOSSARY-MASTER-005` — source/evidence coverage audit and completion gate
 
 This directory is the non-public working area for the concept-first world racing terminology master. It is **not** consumed by current public glossary routes and does not authorize automatic publication.
 
@@ -10,33 +10,20 @@ This directory is the non-public working area for the concept-first world racing
 
 Original seed: **501 Concepts / 18 categories**.
 
-Current relationship-refined research master:
+Current relationship-refined research master after MASTER-005 wave 4:
 
-- Concepts: **653**
+- Concepts: **658**
 - categories: **18**
 - P0: **204**
-- P1: **296**
+- P1: **301**
 - P2: **135**
 - P3: **18**
 - verification state: **mixed candidate and source-verified**
 - `public_ready=yes`: **0**
 
-The count fell from 654 to 653 in MASTER-005 wave 2 because four duplicate Concept rows were merged while three real meanings were added. Merged identities are recorded in `concepts/concept-dispositions-v1.tsv`; retired IDs are not recycled.
+The master reached 653 Concepts after wave-2 identity cleanup, then wave 4 added five genuinely missing Concepts exposed by relation review: Wet-track aptitude, Travelling easily, Under pressure, Strong betting support, and Dominant betting concentration.
 
-Current merged identities:
-
-- `MEET-002 Meeting` -> `MEET-001 Race meeting` for the English single-event sense;
-- `MEET-005 Raceday` -> `MEET-004 Race day`;
-- `BET-031 Favourite` -> `BET-030 Favorite`;
-- `RTYPE-005 Bumper` -> `RTYPE-006 National Hunt Flat Race`.
-
-New meaning-bearing Concepts from wave 2:
-
-- `MEET-042 Racing meeting series (France)`;
-- `RESULT-030 Race form notation`;
-- `RUN-046 Tactical pacemaker for another runner`.
-
-The manifest is the machine-readable count authority. Counts describe the current research master, not worldwide completeness.
+Merged identities remain recorded in `concepts/concept-dispositions-v1.tsv`; retired IDs are not recycled.
 
 ## Register / abbreviation / historical layers
 
@@ -49,12 +36,13 @@ historical/historical-terms-v1.tsv
 sources/register-layer-sources-v1.tsv
 ```
 
-Current usage snapshot:
+Current effective usage snapshot:
 
 - register usages: **60**;
-- effective source-verified register mappings: **29**;
-- effective candidate usages: **31**;
-- register review targets: **33 total / 30 still open**;
+- effective source-verified mappings: **36**;
+- effective candidate usages: **24**;
+- register review targets: **33 total / 24 effectively open**;
+- register resolutions: **12**;
 - abbreviations/codes: **26**, all source-verified;
 - historical terms: **4**, all source-verified.
 
@@ -68,37 +56,28 @@ relations/relation-review-queue-v1.tsv
 relations/relation-resolutions-v1.tsv
 labels/relationship-wave2-labels-v1.tsv
 labels/relationship-wave3-labels-v1.tsv
+labels/relationship-wave4-labels-v1.tsv
 definitions/relationship-wave2-definitions-v1.tsv
 definitions/relationship-wave3-definitions-v1.tsv
+definitions/relationship-wave4-definitions-v1.tsv
 sources/relationship-layer-sources-v1.tsv
 ```
 
-Current relationship snapshot after wave 3:
+Current relationship snapshot after wave 4:
 
-- active Concept-to-Concept relations: **17**;
+- active Concept-to-Concept relations: **20**;
 - relation review items discovered: **15**;
-- resolved review items: **11**;
-- open review items: **4**.
+- resolved review items: **15**;
+- open relation review items: **0**.
 
-Important resolved boundaries:
+Wave 4 closed the remaining four discovered relation sets:
 
-- France `Meeting` and one-day `Réunion` are separate senses;
-- `Race day / Raceday`, `Favorite / Favourite`, and `Bumper / National Hunt Flat Race` duplicate identities were collapsed;
-- `Group / Grade` remain separate `regional_counterpart` systems;
-- `Rabbit` and France tactical `leader` map to a shared tactical-pacemaker Concept;
-- France `musique` maps to Race form notation;
-- `Off time` is the actual race-start timestamp, while `Scheduled start time` / BHA `Scheduled off time` is the planned reference;
-- `Going` and `Track condition` remain separate related Concepts because regional official taxonomies differ;
-- `Racetrack` and `Track` remain polysemous with sense-scoped relations rather than global synonym merges or premature splits.
+- `Spell / Layoff`: Spell/Spelling is a narrower regional deliberate-break Concept under broader Layoff; no global 60-day threshold is asserted;
+- `Mudlark`: AU/NZ labels now map to `HORSE-034 Wet-track aptitude`, explicitly separated from track-condition state;
+- `Under double wraps` and `On the bit/bridle` map to `RUN-047 Travelling easily`; `Off the bit/bridle` maps to contrasting `RUN-048 Under pressure` within race-commentary scope;
+- `backed off the map` maps to `BET-043 Strong betting support`, while JRA `一本かぶり` maps to narrower `BET-044 Dominant betting concentration` rather than being treated as a synonym.
 
-Remaining relation-review sets:
-
-- `Spell / Layoff`;
-- Australia/New Zealand `Mudlark` wet-track aptitude;
-- `Under double wraps` / `On the bit or bridle` / `Off the bit or bridle`;
-- Japanese `一本かぶり` / Australian `backed off the map` betting-market support terminology.
-
-Relations must be scope-aware. Equivalence in one jurisdiction or sense does not authorize a global merge.
+All relation-review items discovered in waves 1–4 now have explicit resolutions. This does **not** make MASTER-005 complete by itself: the next gate is source/evidence coverage across the 658-Concept master.
 
 ## Concept file contract
 
@@ -129,6 +108,18 @@ notes
 The working master separates Concepts from labels, definitions, relations, regional/register usage, abbreviations, historical terms, sources, future search queries, coverage and review queues.
 
 Typed Concept relations include `exact_equivalent`, `close_equivalent`, `broader`, `narrower`, `related`, `contrast`, `regional_counterpart`, and `no_direct_equivalent`. Polysemy and unresolved equivalence remain explicit until reviewed.
+
+## Current completion gate
+
+`GLOSSARY-MASTER-005` remains current until an evidence-coverage audit answers at least:
+
+- how many Concepts are still `candidate` versus source-verified;
+- whether P0 Concepts have credible evidence coverage;
+- which categories/jurisdictions still contain concentrated evidence gaps;
+- whether relationship resolutions rely on sources appropriate to the claim;
+- whether any critical unresolved Concept identity conflict remains.
+
+Only after that audit may the roadmap advance to `GLOSSARY-MASTER-006`.
 
 ## Relationship to the existing public glossary
 
