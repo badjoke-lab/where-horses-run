@@ -2,22 +2,43 @@
 
 Status: active zero-based world racing terminology master  
 Authority: `docs/glossary/world-racing-terminology-master-spec.md`  
-Current work: `GLOSSARY-MASTER-005` — P1/base-seed evidence refinement
+Current work: `GLOSSARY-MASTER-005` — evidence and semantic refinement
 
-This directory is the non-public working area for the concept-first world racing terminology master. It is **not** consumed by current public glossary routes and does not authorize automatic publication.
+This directory is the non-public working area for the worldwide horse-racing terminology master. It is **not** consumed by current public glossary routes and does not authorize automatic publication.
+
+## Plain-language progress
+
+The working dictionary currently contains **654 racing terms/concepts**.
+
+- **370 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
+- **284 terms still need verification, scope correction, splitting/merging, or removal.**
+- The already researched jurisdiction-specific additions are **161/161 verified**.
+- The core highest-priority terminology set is **203/203 verified**.
+- Public glossary publication is still disabled while the remaining terms are cleaned up.
+
+The most recent completed terminology pass covered six user-facing areas:
+
+- horses: Arabian horse, American Quarter Horse, Standardbred, Entire, Juvenile, Maiden;
+- breeding: Broodmare, Registration;
+- racing people: Apprentice jockey, Breeder, Groom, Starter, Judge, Handicapper, Clerk of the course, Veterinarian;
+- in-race expressions: Checked, Bumped;
+- horse equipment: Visor, Hood, Cheekpieces, Tongue tie, Shadow roll, Bridle;
+- training: Breezing, Handily, Canter, Trackwork, Jump-out.
+
+`BREED-017 Breeder` was removed as a duplicate of the participant-role Concept `ROLE-009 Breeder`. Ambiguous terms such as `Horse`, `Stud`, and unsupported race-comment synonyms remain unverified rather than being promoted for percentage targets.
 
 ## Current master
 
-- Concepts: **655**
+- Concepts: **654**
 - categories: **18**
-- P0: **203** / P1: **299** / P2: **135** / P3: **18**
+- P0: **203** / P1: **298** / P2: **135** / P3: **18**
 - `public_ready=yes`: **0**
 - public runtime input: **false**
 - active Concept relations: **20**
 - relationship reviews: **15 discovered / 15 resolved / 0 open**
-- retired/merged Concept rows: **7**
+- retired/merged Concept rows: **8**
 
-## P0 source verification — complete
+## Core source verification — complete
 
 Canonical provenance:
 
@@ -34,81 +55,71 @@ coverage/p0-verification-wave4-v1.tsv
 coverage/p0-verification-wave5-v1.tsv
 ```
 
-- Wave 1: **16 P0** — DISC / DIST
-- Wave 2: **30 P0** — ENTRY / VENUE / WEIGHT
-- Wave 3: **51 P0** — RTYPE / SURF / MEET / RESULT / BET
-- Wave 4: **44 P0** — HORSE / BREED / ROLE / RUN / EQUIP / TRAIN / PRIZE / WELF
-- Wave 5: **11 P0** — deferred scope-sensitive Concepts; P0 closed
+The current core set is **203/203 source-verified**. `BET-028 SP` was not percentage-promoted: authority evidence identifies `SP` as the abbreviation of `Starting Price`, so the duplicate Concept was merged into `BET-027` and `SP` moved to the abbreviation layer.
 
-`BET-028 SP` was not percentage-promoted. Authority evidence identifies `SP` as the abbreviation of `Starting Price`, so the duplicate Concept was merged into `BET-027` and `SP` moved to the abbreviation layer.
+## Jurisdiction-specific research additions — complete current pass
 
-## Supplemental candidate cleanup — complete
+The three final unresolved supplemental items were previously closed with narrower evidence-backed semantics:
 
-The three candidates left outside the base seed were resolved with narrower evidence-backed semantics:
+- `Claiming Professional Jockey` — IHRB Irish licence/status category;
+- `Coupled entry` — US/Regional regulatory usage;
+- `Base rating` — Australia/Queensland RBH/programme context.
 
-- `ROLE-029 Claiming Professional Jockey` — verified as an IHRB Irish licence/status category; no universal claim amount asserted.
-- `ENTRY-029 Coupled entry` — scope narrowed to US/Regional and verified from current Kentucky regulation plus ARCI model-rule context.
-- `WEIGHT-026 Base rating` — scope narrowed to Australia/Queensland and tied to current Racing Queensland RBH/weight-setting context.
+Current supplemental set: **161/161 source-verified**.
 
-Audit: `coverage/supplemental-candidate-cleanup-v1.tsv`.
+## Lower-priority base dictionary cleanup
 
-## P1 base-seed verification
+### First pass — complete
 
-### Wave 1 — complete current pass
+Audit: `coverage/p1-verification-wave1-v1.tsv`  
+Sources: `sources/p1-core-sources-v1.tsv`
 
-Authority sources: `sources/p1-core-sources-v1.tsv`  
-Audit: `coverage/p1-verification-wave1-v1.tsv`
+Verified **27** terms across racing disciplines, entries, racecourses, distance/timing, and weights. Two duplicate/malformed rows were retired: `Dead heat distance` into `Dead heat`, and `Weight penalty` into `Penalty`.
 
-Wave 1 verified **27 P1 base-seed Concepts** across five categories:
+### Second pass — complete
 
-- DISC: **5** — National Hunt racing, Hurdle racing, Steeplechase, Arabian racing, Quarter Horse racing
-- ENTRY: **6** — Nomination, Final declaration, Acceptance, Ballot, Reserve, Scratching
-- VENUE: **5** — Main track, Inner course, Outer course, Straight course, Course width
-- DIST: **4** — Split time, Final 3 furlongs, Course record, Track record
-- WEIGHT: **7** — Set weights, Set weights and penalties, Apprentice allowance, Top weight, Minimum weight, Assigned weight, Overweight
+Audit: `coverage/p1-verification-wave2-v1.tsv`  
+Sources: `sources/p1-core-sources-v2.tsv`
 
-Scope was narrowed where evidence required it. In particular `Quarter Horse racing` moved from `Americas` to `North America/Regional` rather than extending AQHA evidence beyond its support.
+Verified **29** additional terms across horses, breeding, racing people, in-race expressions, horse equipment, and training. One duplicate row, `BREED-017 Breeder`, was retired into `ROLE-009 Breeder`.
 
-Two bad seed rows were **not** promoted:
+Across these two passes, **56 base-dictionary terms have been newly verified and 3 duplicate/malformed rows have been removed**.
 
-- `DIST-013 Dead heat distance` → retired into `RESULT-007 Dead heat`; the malformed seed label is not retained as a public synonym.
-- `WEIGHT-010 Weight penalty` → merged into `WEIGHT-009 Penalty`; `Weight penalty` is retained only as a label through the disposition layer.
+## Evidence state
 
-`ENTRY-009 Maximum field` also remains candidate because current authority material uses forms such as `Field Limit` / `Field Size Limit`; the canonical sense/label must be reviewed rather than silently verified under the seed wording.
-
-## Evidence state after P1 wave 1
-
-- all Concepts: **341 / 655 source-verified (52.1%)**; **314 candidate**
-- P0: **203 / 203 source-verified (100.0%)**; **0 candidate**
-- active base seed: **180 / 494 source-verified (36.4%)**; **314 candidate**
-- supplemental jurisdiction/relationship research: **161 / 161 source-verified (100.0%)**; **0 candidate**
-
-All current P0 rows and all current supplemental Concept rows are source-verified. The remaining Concept evidence gap is entirely in lower-priority active base-seed rows.
+- all Concepts: **370 / 654 source-verified (56.6%)**; **284 candidate**
+- core highest-priority set: **203 / 203 source-verified (100.0%)**
+- active base seed: **209 / 493 source-verified (42.4%)**; **284 candidate**
+- supplemental jurisdiction/relationship research: **161 / 161 source-verified (100.0%)**
 
 Canonical current audit state:
 
 ```text
 coverage/supplemental-candidate-cleanup-v1.tsv
 coverage/p1-verification-wave1-v1.tsv
+coverage/p1-verification-wave2-v1.tsv
 coverage/master-005-evidence-coverage-v1.tsv
 coverage/master-005-completion-gate-v1.tsv
 ```
 
 ## Current completion decision
 
-`GLOSSARY-MASTER-005` remains **HOLD — not complete**. P1 wave 1 materially improves the base seed but **314 lower-priority active base-seed candidates remain**.
+The terminology master remains **not complete**. The remaining **284 terms** must be reviewed rather than automatically promoted.
 
-Next work:
+Next user-facing areas to process are:
 
 ```text
-P1 base-seed verification wave 2
--> continue high-utility / high-risk semantic areas
--> resolve suspicious canonical labels before promotion
--> refine scope or split/merge Concepts when authority evidence requires it
--> keep candidate status when evidence does not support the current claim
--> rerun evidence coverage and MASTER-005 completion gate
--> define a defensible evidence floor before MASTER-006
+race types and classifications
+-> track/surface terminology
+-> meeting and schedule terminology
+-> results, decisions and result codes
+-> prize and betting terminology
+-> welfare / veterinary / safety terminology
+-> unresolved ambiguous terms and duplicate cleanup
+-> rerun evidence/readiness review
 ```
+
+Public implementation remains deferred until that evidence/readiness review passes.
 
 ## Register / abbreviation / historical state
 
@@ -126,6 +137,6 @@ P1 base-seed verification wave 2
 - Use evidence appropriate to the claim.
 - Retired Concept IDs must resolve through `concept-dispositions-v1.tsv`.
 - Do not set `public_ready=yes` until definitions, labels, jurisdiction claims, relationships and evidence have been reviewed.
-- Never make this working directory a public-runtime input without a later reviewed `GLOSSARY-PUBLIC-*` decision.
+- Never make this working directory a public-runtime input without a later reviewed public-glossary decision.
 
 The existing public glossary remains a disposable content/runtime baseline and is not a migration or completeness gate.

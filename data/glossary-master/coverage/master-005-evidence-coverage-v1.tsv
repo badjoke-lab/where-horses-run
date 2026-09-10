@@ -1,23 +1,23 @@
 scope_type	scope_id	total_concepts	source_verified	candidate	verified_pct	audit_state	note
-all	ALL	655	341	314	52.1	insufficient_for_completion	P0 and all 161 supplemental research Concepts are source_verified. P1 base-seed wave 1 verified 27 Concepts and retired 2 duplicate/malformed seed Concepts; whole-master coverage remains candidate-heavy in lower-priority active base seed rows.
+all	ALL	654	370	284	56.6	insufficient_for_completion	P0 and all 161 supplemental research Concepts are source_verified. The second lower-priority verification pass added 29 evidence-backed Concepts and retired one duplicate Breeder row; 284 active base-seed candidates remain.
 priority	P0	203	203	0	100.0	complete_current_scope	P0 verification is complete for the current 203-Concept P0 set after waves 1-5. BET-028 SP was removed from the Concept count because authority evidence confirms it is an abbreviation of BET-027 Starting Price.
-origin	ACTIVE_BASE_SEED	494	180	314	36.4	material_gap	P1 base-seed wave 1 verified 27 Concepts and retired DIST-013 / WEIGHT-010 as duplicate or malformed seed rows. 314 lower-priority base-seed candidates remain the sole material Concept-evidence gap.
+origin	ACTIVE_BASE_SEED	493	209	284	42.4	material_gap	Two lower-priority verification passes have now source-verified 56 base-seed Concepts and retired three duplicate/malformed seed rows. 284 base-seed candidates remain the sole material Concept-evidence gap.
 origin	SUPPLEMENTAL_RESEARCH	161	161	0	100.0	complete_current_pass	All current jurisdiction and relationship supplemental Concepts are source_verified after resolving ROLE-029, ENTRY-029 and WEIGHT-026 with scope-refined authority evidence.
-category	DISC	17	12	5	70.6	partial	P1 wave 1 verified National Hunt, Hurdle, Steeplechase, Arabian and Quarter Horse racing with scope-aware authority evidence; five lower-priority DISC rows remain candidate.
-category	RTYPE	111	81	30	73.0	partial	Wave 5 verified Stakes race with jurisdiction-scoped definition; all current P0 RTYPE Concepts are source_verified.
-category	ENTRY	31	20	11	64.5	partial	P1 wave 1 verified Nomination, Final declaration, Acceptance, Ballot, Reserve and Scratching. Maximum field remains candidate pending canonical-label review against authority terminology.
-category	HORSE	34	12	22	35.3	partial	Wave 4 verified eight P0 horse breed/sex/age Concepts; lower-priority horse-status terminology remains candidate.
-category	BREED	23	5	18	21.7	partial	Wave 4 verified all five current P0 pedigree/stud-book Concepts; lower-priority breeding terminology remains candidate.
-category	ROLE	31	10	21	32.3	partial	Supplemental cleanup verified Irish Claiming Professional Jockey as a scoped licence/status category; lower-priority role terminology remains candidate.
-category	VENUE	44	23	21	52.3	partial	P1 wave 1 verified Main track, Inner course, Outer course, Straight course and Course width using current authority programme/course data.
-category	SURF	63	42	21	66.7	partial	Wave 5 verified Sand, Synthetic surface and All-weather with IFHA scope notes; all current P0 SURF Concepts are now source_verified.
-category	DIST	21	13	8	61.9	partial	P1 wave 1 verified Split time, Final 3 furlongs, Course record and Track record; malformed duplicate DIST-013 Dead heat distance was retired into RESULT-007 Dead heat.
-category	WEIGHT	34	26	8	76.5	partial	P1 wave 1 verified Set weights, Set weights and penalties, Apprentice allowance, Top weight, Minimum weight, Assigned weight and Overweight; duplicate WEIGHT-010 Weight penalty was retired into WEIGHT-009 Penalty.
-category	RUN	48	19	29	39.6	partial	Wave 4 verified twelve P0 start/pace/running/incident Concepts; lower-priority running-style and commentary terms remain candidate.
-category	EQUIP	30	8	22	26.7	partial	Wave 4 verified all three current P0 equipment Concepts; lower-priority equipment terminology remains candidate.
-category	TRAIN	26	7	19	26.9	partial	Wave 4 verified all four current P0 training/trial Concepts; lower-priority training terminology remains candidate.
-category	MEET	40	29	11	72.5	partial	Wave 5 verified Draw, Official notice, Local time, Time zone and Postponed with scope-aware authority evidence; all current P0 MEET Concepts are now source_verified.
-category	RESULT	30	12	18	40.0	partial	All current P0 RESULT Concepts are source_verified; lower-priority result codes and regional procedures remain candidate.
-category	PRIZE	12	4	8	33.3	partial	Wave 4 verified Prize money and North American Purse; lower-priority prize/value terminology remains candidate.
-category	BET	42	13	29	31.0	partial	Wave 5 verified Tote and Starting Price; SP was merged into Starting Price and moved to the abbreviation layer. All current P0 BET Concepts are now source_verified.
-category	WELF	18	5	13	27.8	partial	Wave 4 verified all five current P0 veterinary/medication/welfare Concepts; lower-priority welfare and safety terminology remains candidate.
+category	DISC	17	12	5	70.6	partial	National Hunt, Hurdle, Steeplechase, Arabian and Quarter Horse racing are verified; five lower-priority DISC rows remain candidate.
+category	RTYPE	111	81	30	73.0	partial	Stakes race and all current P0 race-type Concepts are source-verified; lower-priority race-type rows remain candidate.
+category	ENTRY	31	20	11	64.5	partial	Nomination, Final declaration, Acceptance, Ballot, Reserve and Scratching are verified. Maximum field remains candidate pending canonical-label review against authority terminology.
+category	HORSE	34	18	16	52.9	partial	Arabian horse, American Quarter Horse, Standardbred, Entire, Juvenile and Maiden were added to the verified horse vocabulary with scope-aware definitions.
+category	BREED	22	7	15	31.8	partial	Broodmare and Registration were verified; duplicate BREED-017 Breeder was retired into the canonical participant-role Concept ROLE-009.
+category	ROLE	31	18	13	58.1	partial	Apprentice jockey, Breeder, Groom, Starter, Judge, Handicapper, Clerk of the course and Veterinarian were verified with current authority evidence.
+category	VENUE	44	23	21	52.3	partial	Main track, Inner course, Outer course, Straight course and Course width are verified using current authority programme/course data.
+category	SURF	63	42	21	66.7	partial	Sand, Synthetic surface and All-weather are verified with scope-bounded authority evidence; lower-priority surface rows remain candidate.
+category	DIST	21	13	8	61.9	partial	Split time, Final 3 furlongs, Course record and Track record are verified; malformed duplicate DIST-013 Dead heat distance was retired into RESULT-007 Dead heat.
+category	WEIGHT	34	26	8	76.5	partial	Set weights, Set weights and penalties, Apprentice allowance, Top weight, Minimum weight, Assigned weight and Overweight are verified; duplicate Weight penalty was retired into Penalty.
+category	RUN	48	21	27	43.8	partial	Checked and Bumped were verified as North American race-comment terms; other trip/commentary terms remain candidate unless meaning-level evidence is available.
+category	EQUIP	30	14	16	46.7	partial	Visor, Hood, Cheekpieces, Tongue tie, Shadow roll and Bridle were verified; translation-only or insufficiently defined gear terms remain candidate.
+category	TRAIN	26	12	14	46.2	partial	Breezing, Handily, Canter, Trackwork and Jump-out were verified with bounded regional semantics; ambiguous workout/training terms remain candidate.
+category	MEET	40	29	11	72.5	partial	Draw, Official notice, Local time, Time zone and Postponed are verified with scope-aware authority evidence; all current P0 MEET Concepts are source-verified.
+category	RESULT	30	12	18	40.0	partial	All current P0 RESULT Concepts are source-verified; lower-priority result codes and regional procedures remain candidate.
+category	PRIZE	12	4	8	33.3	partial	Prize money and North American Purse are verified; lower-priority prize/value terminology remains candidate.
+category	BET	42	13	29	31.0	partial	Tote and Starting Price are verified; SP is represented as an abbreviation rather than a duplicate Concept. Lower-priority betting terminology remains candidate.
+category	WELF	18	5	13	27.8	partial	All five current P0 veterinary/medication/welfare Concepts are source-verified; lower-priority welfare and safety terminology remains candidate.
