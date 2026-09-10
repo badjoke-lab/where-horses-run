@@ -18,8 +18,8 @@ MEET-018	MEET	開催・日程・公式文書	Declarations list	出走確定一�
 MEET-019	MEET	開催・日程・公式文書	Acceptances	出走確定一覧	主に豪州等で確定出走馬を示す公式情報。	concept	P0	AUS/NZ	ALL	working_equivalent	source_verified	yes	no	P0-SRC-011 verifies Racing Australia acceptance release/field operations; keep regional scope.
 MEET-020	MEET	開催・日程・公式文書	Weights	負担重量発表	各馬の負担重量を示す公式情報。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 MEET-021	MEET	開催・日程・公式文書	Barrier draw	枠順抽選／枠順発表	主に豪州・アジア等でゲート番号割当を示す情報。	concept	P1	AUS/NZ/Asia	Flat	working_equivalent	candidate	yes	no	
-MEET-022	MEET	開催・日程・公式文書	Draw	枠順／抽選	出走馬のスタート位置割当、またはその抽選。	concept	P0	GLOBAL	Flat	working_equivalent	candidate	yes	no	
-MEET-023	MEET	開催・日程・公式文書	Official notice	公式告知	主催者・当局が発表する変更・中止・規則等の公式情報。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+MEET-022	MEET	開催・日程・公式文書	Draw	枠順／抽選	出走馬のスタート位置を割り当てる抽選、またはその割当結果を指す語。手続・呼称は管轄で異なる。	concept	P0	GLOBAL/Regional	Flat	working_equivalent	source_verified	yes	no	P0-SRC-064;P0-SRC-067 support Draw/Barrier Position and random barrier-number assignment; procedures and labels remain jurisdiction-specific.
+MEET-023	MEET	開催・日程・公式文書	Official notice	公式告知	競馬主催者・当局が開催変更・中止・規則・運用等について公式に発表する告知類の記述的総称。	concept	P0	GLOBAL/Regional	ALL	working_equivalent	source_verified	yes	no	P0-SRC-068 verifies an authority-issued operational notice in current JRA practice. Treat Official notice as a descriptive document class, not a universal formal publication title.
 MEET-024	MEET	開催・日程・公式文書	Bulletin	公報／速報	競馬当局等が発行する公式公報・更新情報。	concept	P2	Regional	ALL	working_equivalent	candidate	yes	no	
 MEET-025	MEET	開催・日程・公式文書	Stewards' report	裁決報告	審議・制裁・競走中の事象等をまとめた公式報告。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-034 verifies BHA Stewards reports as authority-published incident/enquiry records; terminology varies by jurisdiction.
 MEET-026	MEET	開催・日程・公式文書	Official results	公式結果	主催者・当局が発表する確定結果。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-035 verifies an authority state where all uncancelled races have official results; RESULT-002 remains the result-level concept.
@@ -27,10 +27,10 @@ MEET-027	MEET	開催・日程・公式文書	Post time	発走予定時刻	主に
 MEET-028	MEET	開催・日程・公式文書	Off time	実発走時刻	競走が実際に正式発走した時刻。予定発走時刻とは別の実績時刻として扱う。	concept	P0	GB/IRE/North America/Regional	ALL	working_equivalent	source_verified	yes	no	USCA-SRC-001; REL-SRC-004; REL-SRC-005. ARCI and BHA evidence distinguish actual off time from scheduled off time.
 MEET-029	MEET	開催・日程・公式文書	Scheduled start time	発走予定時刻	事前に公表されたレース開始予定時刻。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-032 plus REL-SRC-004/REL-SRC-005 support published scheduled race times distinct from actual off time.
 MEET-030	MEET	開催・日程・公式文書	First post	第1競走発走時刻	主に北米で開催日の最初の発走予定時刻を示す語。	concept	P1	North America	Flat	working_equivalent	candidate	yes	no	
-MEET-031	MEET	開催・日程・公式文書	Local time	現地時刻	競馬場所在地のタイムゾーンで表した時刻。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-MEET-032	MEET	開催・日程・公式文書	Time zone	タイムゾーン	時刻表示の基準となる標準時の地域区分。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+MEET-031	MEET	開催・日程・公式文書	Local time	現地時刻	競馬場所在地の現地時刻として表した開催・発走時刻。UTC/GMT等の基準時とは区別して扱う。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-064;P0-SRC-066 verify local post-time semantics in IFHA data exchange and current Equibase meeting data.
+MEET-032	MEET	開催・日程・公式文書	Time zone	タイムゾーン	現地時刻を解釈するための標準時・地域区分。競馬日程データではLocal timeと分離して保持し得る。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-064;P0-SRC-066 verify explicit time-zone handling in international/current racing data; this is a racing-data semantic, not a racing-rule term.
 MEET-033	MEET	開催・日程・公式文書	Daylight saving time	夏時間	季節に応じて標準時から時刻を進める制度。	concept	P1	Regional	ALL	working_equivalent	candidate	yes	no	
-MEET-034	MEET	開催・日程・公式文書	Postponed	延期	予定日の実施を後日に変更すること。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+MEET-034	MEET	開催・日程・公式文書	Postponed	延期	予定されていた開催・競走を当初日時には実施せず、後日の実施対象として繰り延べた状態。	concept	P0	GLOBAL/Regional	ALL	working_equivalent	source_verified	yes	no	P0-SRC-069 explicitly describes BHA fixtures as postponed and then rescheduled; keep Postponed distinct from Rescheduled and simple Delayed.
 MEET-035	MEET	開催・日程・公式文書	Abandoned	開催中止／打切り	開催または残りの競走を取りやめること。	concept	P0	GB/IRE/Commonwealth/Regional	ALL	working_equivalent	source_verified	yes	no	P0-SRC-030 verifies BHA use of abandoned fixtures; exact distinction from cancelled/postponed remains jurisdiction-specific.
 MEET-036	MEET	開催・日程・公式文書	Cancelled	中止	予定された開催・競走を実施しないこと。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-035 explicitly defines CANCELLED card status as the entire card cancelled; broader global usage remains scope-aware.
 MEET-037	MEET	開催・日程・公式文書	Rescheduled	日程変更	開催日・時刻を別の予定へ変更すること。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-030 verifies BHA re-scheduling of races/fixtures; keep separate from simple delay.
