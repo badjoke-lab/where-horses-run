@@ -78,6 +78,44 @@ export function deriveJapanBestAvailableRank(meeting, rows = meeting?.timetable_
   return 'C';
 }
 
+export function classifyJapanAcquisitionCompletion({ capabilityRank, outcome = null, reason = null }) {
+  if (!RANKS.includes(capabilityRank)) throw new Error(`invalid Japan capability rank: ${capabilityRank}`);
+  if (capabilityRank === 'A+') {
+    return {
+      disposition: 'complete_current_best_available',
+      observed_rank: capabilityRank,
+      technical_capability_rank: 'A+',
+      higher_rank_open: false,
+      reason: 'Observed evidence reached A+; no higher timetable rank remains.',
+    };
+  }
+  if (outcome === 'details_pending') {
+    return {
+      disposition: 'pending_publication',
+      observed_rank: capabilityRank,
+      technical_capability_rank: 'A+',
+      higher_rank_open: true,
+      reason: reason ?? 'Known official Japan detail evidence is not yet published.',
+    };
+  }
+  if (outcome === 'acquisition_failed' || outcome === 'conflict') {
+    return {
+      disposition: 'retry_required',
+      observed_rank: capabilityRank,
+      technical_capability_rank: 'A+',
+      higher_rank_open: true,
+      reason: reason ?? 'Japan higher-detail acquisition did not complete safely.',
+    };
+  }
+  return {
+    disposition: 'implementation_gap',
+    observed_rank: capabilityRank,
+    technical_capability_rank: 'A+',
+    higher_rank_open: true,
+    reason: 'Japan detail inspection returned below A+ without an explicit proof that A+ fields were fully evaluated for this meeting.',
+  };
+}
+
 export function assertJapanCompleteness(official, reconciliations, resultingPublic = []) {
   const officialIds = new Set(official.map((row) => row.meeting_id));
   const counts = new Map();
@@ -383,6 +421,16 @@ export async function runJapanZeroBased30d({
     const inspected = await inspectWithRetry(adapters[officialMeeting.acquisition_group], officialMeeting, attempts, retryDelayMs);
     if (inspected.outcome) {
       const publicRank = ensureOfficialScheduleRow({ officialMeeting, checkedAt, canonicalMap, publicMap });
+      const retainedCanonical = canonicalMap.get(officialMeeting.meeting_id);
+      const acquisitionCompletion = classifyJapanAcquisitionCompletion({
+        capabilityRank: retainedCanonical.capability_rank,
+        outcome: inspected.outcome,
+        reason: inspected.reason,
+      });
+      canonicalMap.set(officialMeeting.meeting_id, {
+        ...retainedCanonical,
+        acquisition_completion: acquisitionCompletion,
+      });
       reconciliations.push({
         meeting_id: officialMeeting.meeting_id,
         acquisition_group: officialMeeting.acquisition_group,
@@ -390,13 +438,29 @@ export async function runJapanZeroBased30d({
         reason: inspected.reason,
         official_rank: 'C',
         public_rank: publicRank,
+        acquisition_completion: acquisitionCompletion.disposition,
       });
       continue;
     }
 
-    const normalized = safeMeeting({ ...officialMeeting, ...inspected.meeting }, checkedAt, previousCanonical);
+    const normalizedBase = safeMeeting({ ...officialMeeting, ...inspected.meeting }, checkedAt, previousCanonical);
+    const acquisitionCompletion = classifyJapanAcquisitionCompletion({ capabilityRank: normalizedBase.capability_rank });
+    const normalized = {
+      ...normalizedBase,
+      acquisition_completion: acquisitionCompletion,
+    };
     if (previousCanonical && rank(previousCanonical.capability_rank) > rank(normalized.capability_rank)) {
       const publicRank = ensureOfficialScheduleRow({ officialMeeting, checkedAt, canonicalMap, publicMap });
+      const retainedCanonical = canonicalMap.get(officialMeeting.meeting_id);
+      const conflictCompletion = classifyJapanAcquisitionCompletion({
+        capabilityRank: retainedCanonical.capability_rank,
+        outcome: 'conflict',
+        reason: 'official_rank_regression',
+      });
+      canonicalMap.set(officialMeeting.meeting_id, {
+        ...retainedCanonical,
+        acquisition_completion: conflictCompletion,
+      });
       reconciliations.push({
         meeting_id: normalized.meeting_id,
         acquisition_group: officialMeeting.acquisition_group,
@@ -404,6 +468,7 @@ export async function runJapanZeroBased30d({
         reason: 'official_rank_regression',
         official_rank: normalized.capability_rank,
         public_rank: publicRank,
+        acquisition_completion: conflictCompletion.disposition,
       });
       continue;
     }
@@ -432,6 +497,7 @@ export async function runJapanZeroBased30d({
       outcome,
       official_rank: normalized.capability_rank,
       public_rank: normalized.capability_rank,
+      acquisition_completion: acquisitionCompletion.disposition,
     });
   }
 
