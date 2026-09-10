@@ -1,25 +1,25 @@
 concept_id	category_id	category_ja	canonical_en	preferred_ja	working_definition_ja	concept_kind	priority	jurisdiction_scope	discipline_scope	translation_status	verification_status	source_required	public_ready	notes
-RTYPE-001	RTYPE	レースの種類・格・条件	Maiden race	未勝利戦	所定の定義で未勝利の馬を対象とする競走。定義は管轄により異なる。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+RTYPE-001	RTYPE	レースの種類・格・条件	Maiden race	未勝利戦	所定の定義で未勝利の馬を対象とする競走。定義は管轄により異なる。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-027 verifies the race-type concept; exact maiden eligibility remains jurisdiction-specific.
 RTYPE-002	RTYPE	レースの種類・格・条件	Maiden claiming race	メイデン・クレーミング	未勝利条件とクレーミング条件を組み合わせた競走。	concept	P2	North America	Flat	working_equivalent	candidate	yes	no	
 RTYPE-003	RTYPE	レースの種類・格・条件	Novice race	ノービス競走	経験・勝利数等に制限を設けた初級条件の競走。制度差が大きい。	concept	P1	GB/IRE/Regional	ALL	working_equivalent	candidate	yes	no	
 RTYPE-004	RTYPE	レースの種類・格・条件	Beginners' chase	ビギナーズ・チェイス	チェイス経験等に条件を設けた障害競走。	concept	P2	GB/IRE	Jump	working_equivalent	candidate	yes	no	
 RTYPE-006	RTYPE	レースの種類・格・条件	National Hunt Flat Race	ナショナルハント平地競走	障害競馬体系内で行われる障害物を用いない平地競走。	concept	P2	GB/IRE	Jump	working_equivalent	candidate	yes	no	
-RTYPE-007	RTYPE	レースの種類・格・条件	Handicap race	ハンデキャップ競走	能力差の均衡を図る目的で負担重量等を調整する競走。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-RTYPE-008	RTYPE	レースの種類・格・条件	Conditions race	条件競走	年齢・性別・勝利実績など所定条件で資格・重量を定める競走。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+RTYPE-007	RTYPE	レースの種類・格・条件	Handicap race	ハンデキャップ競走	能力差の均衡を図る目的で負担重量等を調整する競走。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-027 and P0-SRC-022 support handicap races and ability-based weight allocation; implementations vary by jurisdiction.
+RTYPE-008	RTYPE	レースの種類・格・条件	Conditions race	条件競走	年齢・性別・勝利実績など所定条件で資格・重量を定める競走。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-027 verifies conditions races; individual eligibility and weight conditions remain jurisdiction-specific.
 RTYPE-009	RTYPE	レースの種類・格・条件	Allowance race	アローワンス競走	主に北米で所定条件に基づき出走資格を定める競走。	concept	P1	North America	Flat	working_equivalent	candidate	yes	no	
 RTYPE-010	RTYPE	レースの種類・格・条件	Starter allowance	スターター・アローワンス	過去に特定クレーミング条件で出走した馬等を対象にする北米の条件競走。	concept	P2	North America	Flat	working_equivalent	candidate	yes	no	
 RTYPE-011	RTYPE	レースの種類・格・条件	Claiming race	クレーミング競走	出走馬が所定価格で購入請求の対象となる競走。	concept	P1	North America/Regional	Flat	working_equivalent	candidate	yes	no	
 RTYPE-012	RTYPE	レースの種類・格・条件	Optional claiming	オプショナル・クレーミング	条件競走とクレーミング要素を組み合わせた競走。	concept	P2	North America	Flat	working_equivalent	candidate	yes	no	
 RTYPE-013	RTYPE	レースの種類・格・条件	Selling race	セリング競走	勝馬等を競走後の売却対象とする競走形式。	concept	P2	GB/IRE/Regional	Flat	working_equivalent	candidate	yes	no	
 RTYPE-014	RTYPE	レースの種類・格・条件	Stakes race	ステークス競走	賞金・格付け等で主要競走として扱われる競走の広義呼称。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-RTYPE-015	RTYPE	レースの種類・格・条件	Listed race	リステッド競走	Listedとして指定される格付け競走。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+RTYPE-015	RTYPE	レースの種類・格・条件	Listed race	リステッド競走	Listedとして指定される格付け競走。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-027 and P0-SRC-028 verify Listed as a recognized quality/black-type race category; jurisdiction implementation remains scoped.
 RTYPE-016	RTYPE	レースの種類・格・条件	Pattern race	パターン競走	主に欧州等でGroup/Listed体系に属する主要競走を指す制度用語。	concept	P1	Europe	Flat	working_equivalent	candidate	yes	no	
-RTYPE-017	RTYPE	レースの種類・格・条件	Group race	グループ競走	Group 1・2・3等で格付けされる競走。	concept	P0	IFHA/Europe/Asia/Oceania	ALL	working_equivalent	candidate	yes	no	
-RTYPE-018	RTYPE	レースの種類・格・条件	Group 1	グループ1	Group体系の最高位区分。	concept	P0	IFHA/Regional	ALL	working_equivalent	candidate	yes	no	
+RTYPE-017	RTYPE	レースの種類・格・条件	Group race	グループ競走	Group 1・2・3等で格付けされる競走。	concept	P0	IFHA/Europe/Asia/Oceania	ALL	working_equivalent	source_verified	yes	no	P0-SRC-027;P0-SRC-028. Keep separate from Grade race and preserve regional_counterpart relations.
+RTYPE-018	RTYPE	レースの種類・格・条件	Group 1	グループ1	Group体系の最高位区分。	concept	P0	IFHA/Regional	ALL	working_equivalent	source_verified	yes	no	P0-SRC-027;P0-SRC-028 verify Group 1 as the highest Group tier; do not merge with Grade 1 globally.
 RTYPE-019	RTYPE	レースの種類・格・条件	Group 2	グループ2	Group体系の上位区分。	concept	P1	IFHA/Regional	ALL	working_equivalent	candidate	yes	no	
 RTYPE-020	RTYPE	レースの種類・格・条件	Group 3	グループ3	Group体系の格付け区分。	concept	P1	IFHA/Regional	ALL	working_equivalent	candidate	yes	no	
-RTYPE-021	RTYPE	レースの種類・格・条件	Grade race	グレード競走	Grade 1・2・3等で格付けされる競走。	concept	P0	US/Japan/Regional	ALL	working_equivalent	candidate	yes	no	
-RTYPE-022	RTYPE	レースの種類・格・条件	Grade 1	グレード1	Grade体系の最高位区分。	concept	P0	US/Japan/Regional	ALL	working_equivalent	candidate	yes	no	
+RTYPE-021	RTYPE	レースの種類・格・条件	Grade race	グレード競走	Grade 1・2・3等で格付けされる競走。	concept	P0	US/Japan/Regional	ALL	working_equivalent	source_verified	yes	no	P0-SRC-027;P0-SRC-028. Keep separate from Group race and preserve regional_counterpart relations.
+RTYPE-022	RTYPE	レースの種類・格・条件	Grade 1	グレード1	Grade体系の最高位区分。	concept	P0	US/Japan/Regional	ALL	working_equivalent	source_verified	yes	no	P0-SRC-027;P0-SRC-028 verify Grade 1 as the highest Grade tier; do not merge with Group 1 globally.
 RTYPE-023	RTYPE	レースの種類・格・条件	Grade 2	グレード2	Grade体系の上位区分。	concept	P1	US/Japan/Regional	ALL	working_equivalent	candidate	yes	no	
 RTYPE-024	RTYPE	レースの種類・格・条件	Grade 3	グレード3	Grade体系の格付け区分。	concept	P1	US/Japan/Regional	ALL	working_equivalent	candidate	yes	no	
 RTYPE-025	RTYPE	レースの種類・格・条件	Graded stakes	グレーデッド・ステークス	主に北米でGradeを付与されたステークス競走。	concept	P1	North America	Flat	working_equivalent	candidate	yes	no	
