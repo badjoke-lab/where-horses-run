@@ -1,18 +1,18 @@
 concept_id	category_id	category_ja	canonical_en	preferred_ja	working_definition_ja	concept_kind	priority	jurisdiction_scope	discipline_scope	translation_status	verification_status	source_required	public_ready	notes
-DIST-001	DIST	距離・計測	Race distance	競走距離	スタートからゴールまでの公称距離。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-DIST-002	DIST	距離・計測	Metre	メートル	競走距離で広く用いられるSI単位。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+DIST-001	DIST	距離・計測	Race distance	競走距離	スタートからゴールまでの公称距離。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-006. IFHA publishes race-distance fields, metric/imperial equivalences and measurement guidance across signatory racing authorities.
+DIST-002	DIST	距離・計測	Metre	メートル	競走距離で広く用いられるSI単位。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-006. IFHA comparative race-distance table uses metres as a standard distance unit.
 DIST-003	DIST	距離・計測	Kilometre	キロメートル	1000メートルの距離単位。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-DIST-004	DIST	距離・計測	Furlong	ハロン	1/8 mileに相当する競馬で頻用される距離単位。	concept	P0	GB/IRE/US/Commonwealth/Global	ALL	working_equivalent	candidate	yes	no	
-DIST-005	DIST	距離・計測	Mile	マイル	英米系の距離単位。競走距離にも用いる。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+DIST-004	DIST	距離・計測	Furlong	ハロン	1/8 mileに相当する競馬で頻用される距離単位。	concept	P0	GB/IRE/US/Commonwealth/Global	ALL	working_equivalent	source_verified	yes	no	P0-SRC-006. IFHA uses furlongs in its comparative race-distance table; JRA also explains 1 mile as 8 furlongs in official terminology guidance.
+DIST-005	DIST	距離・計測	Mile	マイル	英米系の距離単位。競走距離にも用いる。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-006. IFHA comparative race-distance table uses mile and furlong equivalents for international racing distances.
 DIST-006	DIST	距離・計測	Yard	ヤード	一部地域の競走距離表記で用いられる単位。	concept	P1	GB/IRE/US	ALL	working_equivalent	candidate	yes	no	
-DIST-007	DIST	距離・計測	Length	馬身	馬体長を基準に着差等を表す単位・表現。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+DIST-007	DIST	距離・計測	Length	馬身	馬体長を基準に着差等を表す単位・表現。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-007. JRA official margin guidance uses 馬身 as the unit beyond nose/head/neck margins; exact physical conversion is not fixed in this Concept.
 DIST-008	DIST	距離・計測	Half-length	1/2馬身	半馬身の着差表現。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-DIST-009	DIST	距離・計測	Neck	クビ	着差を示す表現。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-DIST-010	DIST	距離・計測	Head	アタマ	着差を示す表現。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+DIST-009	DIST	距離・計測	Neck	クビ	着差を示す表現。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-007. JRA official 着差 guidance explicitly uses クビ as a finishing-margin expression.
+DIST-010	DIST	距離・計測	Head	アタマ	着差を示す表現。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-007. JRA official 着差 guidance explicitly uses アタマ as a finishing-margin expression.
 DIST-011	DIST	距離・計測	Short head	短アタマ	僅差の着差を示す表現。	concept	P1	GB/IRE/Commonwealth/Regional	ALL	working_equivalent	candidate	yes	no	
-DIST-012	DIST	距離・計測	Nose	ハナ	非常に僅かな着差を示す表現。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+DIST-012	DIST	距離・計測	Nose	ハナ	非常に僅かな着差を示す表現。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-007. JRA official 着差 guidance explicitly uses ハナ and identifies the nose-point basis of finishing order/margins.
 DIST-013	DIST	距離・計測	Dead heat distance	同着	着差を判別できない同着状態。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-DIST-014	DIST	距離・計測	Sectional time	区間タイム	競走の一部分に要した時間。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+DIST-014	DIST	距離・計測	Sectional time	区間タイム	競走の一部分に要した時間。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-008;P0-SRC-009. BHA defines sectional timing as breaking a race into sections; JRA results explicitly publish 200m 区間タイム.
 DIST-015	DIST	距離・計測	Split time	スプリットタイム	競走中の区間通過時間。	concept	P1	North America/Global	ALL	working_equivalent	candidate	yes	no	
 DIST-016	DIST	距離・計測	Fraction	フラクション	主に北米で競走途中の分割タイムを指す語。	concept	P2	North America	Flat	working_equivalent	candidate	yes	no	
 DIST-017	DIST	距離・計測	Final fraction	上がり区間／最終区間タイム	レース終盤の分割タイム。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
