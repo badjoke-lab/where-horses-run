@@ -16,66 +16,62 @@ Current execution pointer:
 
 ```text
 Completed: GLOSSARY-MASTER-001 — specification / authority
-Completed: GLOSSARY-MASTER-002 — zero-based seed: 501 candidate Concepts / 18 categories
+Completed: GLOSSARY-MASTER-002 — zero-based seed
 Completed current pass: GLOSSARY-MASTER-003 — major-jurisdiction + local-language terminology research
 Completed current pass: GLOSSARY-MASTER-004 — slang / colloquial / industry / abbreviation / historical evidence
-Current:   GLOSSARY-MASTER-005 — source/evidence coverage audit after relation review closure
+Current:   GLOSSARY-MASTER-005 — P0-first source verification after evidence audit
 Next:      GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 New public-page expansion/redesign: deferred
 ```
 
-The current relationship-refined master contains **658 Concepts / 18 categories**. `public_ready` remains 0.
+## Current master state
 
-## Current MASTER-005 results
+- **658 Concepts / 18 categories**
+- P0 204 / P1 301 / P2 135 / P3 18
+- register usages 60; effective verified 36; effective candidates 24
+- abbreviations 26; historical rows 4
+- relationships 20
+- relationship reviews 15 discovered / 15 resolved / 0 open
+- `public_ready=0`
+- public runtime remains disconnected
 
-Waves 1–3 established and refined scoped relationships, Concept identity, time semantics, track polysemy and condition-system boundaries. Wave 4 closes every relation-review item discovered in those waves.
+MASTER-005 relation work has resolved the discovered false-synonym, homonym, sense-boundary and register-derived conflicts, including Meeting/Réunion, Group/Grade, Going/Track condition, Track/Racetrack polysemy, Off time vs scheduled time, Mudlark, easy-travelling terminology, and regional betting-support expressions.
 
-Earlier identity cleanup retained these merges:
+## Evidence coverage finding
 
-```text
-MEET-002 Meeting    -> MEET-001 Race meeting (English single-event sense)
-MEET-005 Raceday    -> MEET-004 Race day
-BET-031 Favourite   -> BET-030 Favorite
-RTYPE-005 Bumper    -> RTYPE-006 National Hunt Flat Race
-```
-
-Wave 2 added `MEET-042 Racing meeting series (France)`, `RESULT-030 Race form notation`, and `RUN-046 Tactical pacemaker for another runner`.
-
-Wave 3 fixed `Off time` as the actual race-start timestamp, retained `Scheduled start time` as planned time, kept Going/Track condition as separate regional taxonomies, and retained sense-scoped Racetrack/Track polysemy instead of forcing false global synonymy.
-
-Wave 4 adds five meaning-bearing Concepts exposed by the remaining review cases:
+The first whole-master audit is stored in:
 
 ```text
-HORSE-034 Wet-track aptitude
-RUN-047   Travelling easily
-RUN-048   Under pressure
-BET-043   Strong betting support
-BET-044   Dominant betting concentration
+data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
+data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
-This resolves:
+It found:
 
-- regional `Spell / Spelling` as narrower than generic `Layoff`;
-- AU/NZ `Mudlark` under Wet-track aptitude, not track condition;
-- AU `under double wraps` and NZ `on the bit/bridle` under Travelling easily, contrasted with NZ `off the bit/bridle` under Under pressure;
-- AU `backed off the map` under Strong betting support and JRA `一本かぶり` under narrower Dominant betting concentration.
+- **159 / 658 source-verified = 24.2%**
+- **499 / 658 still candidate**
+- P0: **51 / 204 source-verified = 25.0%**
+- P0 still candidate: **153**
+- active original/base seed: **1 / 497 source-verified**
+- supplemental jurisdiction/relationship research: **158 / 161 source-verified = 98.1%**
 
-Current relationship state:
+This means the jurisdiction expansion is strongly evidenced but the original generic seed is not. MASTER-005 therefore remains open. Search-intent work must not start on top of a core inventory where three quarters of P0 Concepts are still candidates.
 
-- **20** active Concept-to-Concept relations;
-- **15** relation review items discovered;
-- **15** resolved;
-- **0** open.
+The immediate sequence is:
 
-Register resolution has also advanced to **12** resolved usage rows, leaving **24** effective register candidates from the original 60 usage rows.
-
-The next task is not public implementation and not automatic MASTER-006 promotion. It is a **source/evidence coverage audit of the 658-Concept master**. MASTER-005 remains current until that gate is assessed.
+```text
+verify P0 base Concepts first
+-> update evidence and verification status
+-> rerun evidence coverage audit
+-> rerun MASTER-005 completion gate
+-> only if acceptable, advance to MASTER-006
+```
 
 ## Existing public glossary is disposable content baseline
 
-The existing public glossary and its older v2/bilingual documents are **not inputs or migration gates** for the new world master. There is no requirement to preserve the current glossary's 48-record content set, record IDs, headwords, categories, EN/JA-only assumptions, or old related-term graph.
+The existing public glossary and its older bilingual implementation are **not inputs or migration gates** for the new world master. There is no requirement to preserve the current 48-record content set, record IDs, headwords, categories, or EN/JA-only assumptions.
 
-When the later `GLOSSARY-PUBLIC-*` implementation is authorized, current glossary content may be deleted wholesale and regenerated from the reviewed master. Reusable routing/UI code may be retained if it still fits the new public contract.
+When later `GLOSSARY-PUBLIC-*` implementation is authorized, current glossary content may be deleted wholesale and regenerated from reviewed master data. Reusable routing/UI code may be retained only if it fits the new public contract.
 
 ## Current research rule
 
@@ -88,20 +84,8 @@ actual local official/specialist material
 -> record regional counterpart / approximate equivalence / no direct equivalent instead of forcing translation
 -> collect slang/historical usage separately
 -> review Concept identity, polysemy and relationships
--> merge only true duplicates; split real sense differences
--> audit evidence coverage before search/readiness work
-```
-
-Current normalized layers include:
-
-```text
-data/glossary-master/register/
-data/glossary-master/abbreviations/
-data/glossary-master/historical/
-data/glossary-master/relations/
-data/glossary-master/labels/
-data/glossary-master/definitions/
-data/glossary-master/sources/
+-> audit evidence coverage
+-> verify core Concepts before search/readiness work
 ```
 
 WHR-specific interface terms such as `Official live`, `Account required`, and similar access-state labels are site UI vocabulary, not the backbone of the horse-racing knowledge taxonomy.
