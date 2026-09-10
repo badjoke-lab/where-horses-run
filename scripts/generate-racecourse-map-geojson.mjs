@@ -17,7 +17,6 @@ const calendarMapRegressionIds = [
   'hipodromo-chile-racecourse',
   'ireland--laytown',
   'meknes-racecourse',
-  'yeongcheon-racecourse',
 ];
 
 const registry = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
