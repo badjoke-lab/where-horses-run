@@ -19,17 +19,18 @@ Completed: GLOSSARY-MASTER-001 — specification / authority
 Completed: GLOSSARY-MASTER-002 — zero-based seed
 Completed current pass: GLOSSARY-MASTER-003 — major-jurisdiction + local-language terminology research
 Completed current pass: GLOSSARY-MASTER-004 — slang / colloquial / industry / abbreviation / historical evidence
-Current:   GLOSSARY-MASTER-005 — P0 closed; supplemental candidate cleanup complete
-Next:      P1/base-seed verification wave 1
+Current:   GLOSSARY-MASTER-005 — P0 + supplemental complete; P1 wave 1 complete
+Next:      P1/base-seed verification wave 2
 Later:     GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 New public-page expansion/redesign: deferred
 ```
 
 ## Current master state
 
-- **657 Concepts / 18 categories**
-- P0 203 / P1 301 / P2 135 / P3 18
+- **655 Concepts / 18 categories**
+- P0 203 / P1 299 / P2 135 / P3 18
 - relationships 20; relation reviews **15/15 resolved**
+- retired/merged Concept rows 7
 - register usages 60; effective verified 36; effective candidates 24
 - abbreviations 27; historical rows 4
 - `public_ready=0`
@@ -37,51 +38,60 @@ New public-page expansion/redesign: deferred
 
 ## Evidence refinement state
 
-P0 verification is complete after five waves:
+P0 verification is complete after five waves. Current P0 is **203/203 source-verified (100.0%)**. The current supplemental research layer is also **161/161 source-verified (100.0%)**.
 
-- Wave 1: 16 P0 — DISC / DIST
-- Wave 2: 30 P0 — ENTRY / VENUE / WEIGHT
-- Wave 3: 51 P0 — RTYPE / SURF / MEET / RESULT / BET
-- Wave 4: 44 P0 — HORSE / BREED / ROLE / RUN / EQUIP / TRAIN / PRIZE / WELF
-- Wave 5: 11 P0 — scope-sensitive deferred Concepts; plus `BET-028 SP` merged into `BET-027 Starting Price`
+### P1 base-seed wave 1
 
-Current P0: **203/203 source-verified (100.0%)**. `SP` is represented as an abbreviation rather than a duplicate Concept.
+Status: **complete current pass**.
 
-The three remaining supplemental candidates have also been resolved:
+Wave 1 verified **27 P1 base-seed Concepts** in DISC, ENTRY, VENUE, DIST and WEIGHT using BHA, IHRB, IFAHR, AQHA, JRA, Racing Australia, Racing Victoria, Equibase and existing authority ledgers.
 
-- `ROLE-029 Claiming Professional Jockey` — narrowed to the IHRB licence/status sense.
-- `ENTRY-029 Coupled entry` — narrowed to US/Regional regulatory usage.
-- `WEIGHT-026 Base rating` — narrowed to the Queensland RBH/programme context.
+It also corrected the seed model rather than percentage-promoting bad rows:
+
+- `DIST-013 Dead heat distance` was retired into `RESULT-007 Dead heat`; the malformed seed label is not treated as a valid public synonym.
+- `WEIGHT-010 Weight penalty` was merged into `WEIGHT-009 Penalty`; the useful wording is retained only through the Concept disposition layer.
+- `DISC-013 Quarter Horse racing` was narrowed from `Americas` to `North America/Regional` because the authority evidence used does not justify the broader scope.
+- `ENTRY-009 Maximum field` remains candidate pending canonical review against authority labels such as `Field Limit` / `Field Size Limit`.
+
+Canonical P1 provenance:
+
+```text
+data/glossary-master/sources/p1-core-sources-v1.tsv
+data/glossary-master/coverage/p1-verification-wave1-v1.tsv
+```
 
 Current evidence state:
 
-- **314 / 657 source-verified = 47.8%**
-- **343 / 657 candidate**
+- **341 / 655 source-verified = 52.1%**
+- **314 / 655 candidate**
 - P0: **203 / 203 source-verified = 100.0%**
-- active base seed: **153 / 496 source-verified = 30.8%**
+- active base seed: **180 / 494 source-verified = 36.4%**
 - supplemental jurisdiction/relationship research: **161 / 161 source-verified = 100.0%**
 
-Canonical provenance includes:
+Canonical audit state includes:
 
 ```text
-data/glossary-master/sources/p0-core-sources-v1.tsv
-data/glossary-master/sources/p0-core-sources-v2.tsv
-data/glossary-master/sources/p0-core-sources-v3.tsv
-data/glossary-master/sources/p0-core-sources-v4.tsv
-data/glossary-master/sources/p0-core-sources-v5.tsv
-data/glossary-master/coverage/p0-verification-wave1-v1.tsv
-data/glossary-master/coverage/p0-verification-wave2-v1.tsv
-data/glossary-master/coverage/p0-verification-wave3-v1.tsv
-data/glossary-master/coverage/p0-verification-wave4-v1.tsv
-data/glossary-master/coverage/p0-verification-wave5-v1.tsv
 data/glossary-master/coverage/supplemental-candidate-cleanup-v1.tsv
+data/glossary-master/coverage/p1-verification-wave1-v1.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
-The completion gate remains **HOLD** because the lower-priority active base seed still contains 343 candidates. All current supplemental Concepts are now evidence-backed, so the next lane is exclusively systematic base-seed verification beginning with P1.
+The completion gate remains **HOLD** because 314 lower-priority active base-seed candidates remain. P1 wave 1 does not authorize MASTER-006 or public publication.
 
-Semantic boundaries remain scope-aware: `Group / Grade`, `Going / Track condition`, `Racecourse / Racetrack / Track`, `Post time / Scheduled start time / Off time`, `Stakes race`, `Tote`, and abbreviation-vs-Concept cases are not flattened into global synonym sets.
+Semantic boundaries remain scope-aware: `Group / Grade`, `Going / Track condition`, `Racecourse / Racetrack / Track`, `Post time / Scheduled start time / Off time`, `Stakes race`, `Tote`, abbreviation-vs-Concept cases, and newly reviewed duplicate seed cases are not flattened into global synonym sets.
+
+## Next execution lane
+
+```text
+P1/base-seed verification wave 2
+-> continue high-utility and high-risk semantic categories
+-> review suspicious canonical labels before promotion
+-> narrow jurisdiction scope where authority evidence is local
+-> merge/split seed Concepts where evidence shows the original model is wrong
+-> rerun MASTER-005 coverage and completion gate
+-> only after a defensible evidence floor is reached, consider MASTER-006
+```
 
 ## Existing public glossary
 
