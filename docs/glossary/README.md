@@ -19,8 +19,8 @@ Completed: GLOSSARY-MASTER-001 — specification / authority
 Completed: GLOSSARY-MASTER-002 — zero-based seed
 Completed current pass: GLOSSARY-MASTER-003 — major-jurisdiction + local-language terminology research
 Completed current pass: GLOSSARY-MASTER-004 — slang / colloquial / industry / abbreviation / historical evidence
-Current:   GLOSSARY-MASTER-005 — P0 verification closed; lower-priority evidence refinement continues
-Next:      P1/base-seed verification + 3 supplemental candidate cleanup
+Current:   GLOSSARY-MASTER-005 — P0 closed; supplemental candidate cleanup complete
+Next:      P1/base-seed verification wave 1
 Later:     GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 New public-page expansion/redesign: deferred
 ```
@@ -35,30 +35,33 @@ New public-page expansion/redesign: deferred
 - `public_ready=0`
 - public runtime remains disconnected
 
-## P0 source verification
+## Evidence refinement state
 
-The first whole-master audit showed the jurisdiction additions were strongly evidenced while the original generic seed was not. Core P0 Concepts were therefore verified with authority evidence before search/readiness work.
+P0 verification is complete after five waves:
 
-- **Wave 1:** 16 P0 — DISC 7, DIST 9
-- **Wave 2:** 30 P0 — ENTRY 9, VENUE 16, WEIGHT 5
-- **Wave 3:** 51 P0 — RTYPE 8, SURF 7, MEET 19, RESULT 10, BET 7
-- **Wave 4:** 44 P0 — HORSE 8, BREED 5, ROLE 5, RUN 12, EQUIP 3, TRAIN 4, PRIZE 2, WELF 5
-- **Wave 5:** 11 P0 — RTYPE 1, SURF 3, MEET 5, BET 2; plus one duplicate P0 Concept disposition
+- Wave 1: 16 P0 — DISC / DIST
+- Wave 2: 30 P0 — ENTRY / VENUE / WEIGHT
+- Wave 3: 51 P0 — RTYPE / SURF / MEET / RESULT / BET
+- Wave 4: 44 P0 — HORSE / BREED / ROLE / RUN / EQUIP / TRAIN / PRIZE / WELF
+- Wave 5: 11 P0 — scope-sensitive deferred Concepts; plus `BET-028 SP` merged into `BET-027 Starting Price`
 
-Wave 5 closes the current P0 layer at **203/203 source-verified (100.0%)**. `BET-028 SP` was not promoted as a second Concept: The Jockey Club identifies SP as the abbreviation of Starting Price, so it is merged into `BET-027` and represented in the abbreviation layer.
+Current P0: **203/203 source-verified (100.0%)**. `SP` is represented as an abbreviation rather than a duplicate Concept.
 
-Scope refinement was applied instead of forced universality. `Stakes race` was narrowed from GLOBAL to North America/Regional; `Tote` remains operator/system-sensitive; `Draw`, surface terms, time semantics and notice/state terms retain explicit scope notes.
+The three remaining supplemental candidates have also been resolved:
 
-Current evidence state after wave 5:
+- `ROLE-029 Claiming Professional Jockey` — narrowed to the IHRB licence/status sense.
+- `ENTRY-029 Coupled entry` — narrowed to US/Regional regulatory usage.
+- `WEIGHT-026 Base rating` — narrowed to the Queensland RBH/programme context.
 
-- **311 / 657 source-verified = 47.3%**
-- **346 / 657 candidate**
+Current evidence state:
+
+- **314 / 657 source-verified = 47.8%**
+- **343 / 657 candidate**
 - P0: **203 / 203 source-verified = 100.0%**
-- P0 candidate: **0**
 - active base seed: **153 / 496 source-verified = 30.8%**
-- supplemental jurisdiction/relationship research: **158 / 161 source-verified = 98.1%**
+- supplemental jurisdiction/relationship research: **161 / 161 source-verified = 100.0%**
 
-Canonical provenance now includes:
+Canonical provenance includes:
 
 ```text
 data/glossary-master/sources/p0-core-sources-v1.tsv
@@ -71,11 +74,12 @@ data/glossary-master/coverage/p0-verification-wave2-v1.tsv
 data/glossary-master/coverage/p0-verification-wave3-v1.tsv
 data/glossary-master/coverage/p0-verification-wave4-v1.tsv
 data/glossary-master/coverage/p0-verification-wave5-v1.tsv
+data/glossary-master/coverage/supplemental-candidate-cleanup-v1.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
-The completion gate remains **HOLD** because whole-master/base-seed evidence is still candidate-heavy. P0 closure does not silently authorize MASTER-006 or public publication. The next lane is systematic P1/base-seed verification plus resolution of the three supplemental candidates `ROLE-029`, `ENTRY-029`, and `WEIGHT-026`.
+The completion gate remains **HOLD** because the lower-priority active base seed still contains 343 candidates. All current supplemental Concepts are now evidence-backed, so the next lane is exclusively systematic base-seed verification beginning with P1.
 
 Semantic boundaries remain scope-aware: `Group / Grade`, `Going / Track condition`, `Racecourse / Racetrack / Track`, `Post time / Scheduled start time / Off time`, `Stakes race`, `Tote`, and abbreviation-vs-Concept cases are not flattened into global synonym sets.
 
