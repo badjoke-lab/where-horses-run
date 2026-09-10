@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { deriveBestAvailableRank } from './best-available-rank.mjs';
+import { classifyAcquisitionCompletion } from './acquisition-completion.mjs';
+import { loadCalendarAcquisitionRegistryV1 } from './load-calendar-acquisition-registry.mjs';
 
 const RANKS = Object.freeze(['C', 'B', 'B+', 'A', 'A+']);
 const RANK_INDEX = new Map(RANKS.map((value, index) => [value, index]));
@@ -63,6 +65,17 @@ function choosePolicy(authorityId, policyDataset) {
     .sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0));
   return matches[0] ?? policyDataset.default_policy;
 }
+function chooseAcquisitionProfile(record, defaults, registry) {
+  const systemId = record.racing_system_id ?? defaults.racing_system_id ?? null;
+  const authorityId = record.authority_id ?? defaults.authority_id ?? null;
+  if (systemId) {
+    const systemMatch = (registry.records ?? []).find((profile) => profile.system_id === systemId);
+    if (systemMatch) return systemMatch;
+  }
+  const authorityMatches = (registry.records ?? []).filter((profile) => profile.authority_id === authorityId);
+  if (authorityMatches.length === 1) return authorityMatches[0];
+  throw new Error(`missing unique acquisition profile for ${record.meeting_id}: system=${systemId ?? 'null'} authority=${authorityId ?? 'null'}`);
+}
 function stripVolatile(value) {
   if (!value) return value;
   const copy = structuredClone(value);
@@ -102,7 +115,7 @@ function normalizeStoredCanonical(meeting, detail) {
     changed: nextMeeting !== meeting || nextDetail !== detail,
   };
 }
-function makeCanonical(record, artifact, checkedAt, defaults, previous) {
+function makeCanonical(record, artifact, checkedAt, defaults, previous, acquisitionCompletion) {
   const capabilityRank = observedRank(record);
   const rows = normalizedRows(record);
   const identity = validIdentity(record, defaults, previous);
@@ -123,6 +136,7 @@ function makeCanonical(record, artifact, checkedAt, defaults, previous) {
     display_status: capabilityRank === 'C' ? 'partial' : 'displayable',
     first_race_time_local: first,
     last_race_time_local: last,
+    acquisition_completion: acquisitionCompletion,
     source_trace: {
       ...(previous?.source_trace ?? {}),
       source_id: sourceId(record, artifact),
@@ -246,11 +260,20 @@ const canonicalDetails = readJson(canonicalDetailsPath);
 const publicList = readJson(publicPath);
 const publicDetails = readJson(publicDetailsPath);
 const policyDataset = readJson(policiesPath);
+const acquisitionRegistry = loadCalendarAcquisitionRegistryV1(process.cwd());
 const canonicalById = new Map((canonical.meetings ?? []).map((row) => [row.meeting_id, row]));
 const detailsById = new Map((canonicalDetails.details ?? []).map((row) => [row.meeting_id, row]));
 const publicById = new Map((publicList.meetings ?? []).map((row) => [row.meeting_id, row]));
 const publicDetailsById = new Map((publicDetails.details ?? []).map((row) => [row.meeting_id, row]));
 const outcomes = { add: 0, update: 0, no_op: 0, protected_higher_rank: 0, normalized_stored_rank: 0, public_reprojected: 0, ignored: 0 };
+const completionCounts = Object.fromEntries([
+  'promoted',
+  'complete_current_best_available',
+  'pending_publication',
+  'retry_required',
+  'implementation_gap',
+  'not_applicable',
+].map((value) => [value, 0]));
 let changed = false;
 
 // A rolling source may omit previously observed meetings even while their stored evidence remains valid.
@@ -276,6 +299,9 @@ for (const record of records) {
   if (!record?.meeting_id) { outcomes.ignored += 1; continue; }
   const observed = observedRank(record);
   if (!RANK_INDEX.has(observed)) { outcomes.ignored += 1; continue; }
+  const acquisitionProfile = chooseAcquisitionProfile(record, defaults, acquisitionRegistry);
+  const acquisitionCompletion = classifyAcquisitionCompletion({ ...record, capability_rank: observed }, acquisitionProfile);
+  completionCounts[acquisitionCompletion.disposition] += 1;
   if (record.detail_observation?.status === 'conflict') { outcomes.ignored += 1; continue; }
   let previous = canonicalById.get(record.meeting_id) ?? null;
   let previousDetail = detailsById.get(record.meeting_id) ?? null;
@@ -295,7 +321,7 @@ for (const record of records) {
     continue;
   }
   const checkedAt = artifact.generated_at ?? artifact.retrieved_at ?? new Date().toISOString();
-  const draft = makeCanonical(record, artifact, checkedAt, defaults, previous);
+  const draft = makeCanonical(record, artifact, checkedAt, defaults, previous, acquisitionCompletion);
   let draftDetail = makeCanonicalDetail(draft, record, previousDetail);
   if (correction && rank(observed) < rank('A')) draftDetail = null;
   const substantiveChanged = !previous || !sameSubstance(previous, draft)
@@ -363,4 +389,4 @@ if (changed) {
   writeJson(publicDetailsPath, { ...publicDetails, generated_at: generatedAt, details: sortRows(publicDetailsById.values()) });
 }
 
-console.log(JSON.stringify({ artifact: artifactPath, observed: records.length, changed, outcomes }));
+console.log(JSON.stringify({ artifact: artifactPath, observed: records.length, changed, outcomes, completion_counts: completionCounts }));
