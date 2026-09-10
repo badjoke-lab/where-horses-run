@@ -19,8 +19,8 @@ Completed: GLOSSARY-MASTER-001 — specification / authority
 Completed: GLOSSARY-MASTER-002 — zero-based seed
 Completed current pass: GLOSSARY-MASTER-003 — major-jurisdiction + local-language terminology research
 Completed current pass: GLOSSARY-MASTER-004 — slang / colloquial / industry / abbreviation / historical evidence
-Current:   GLOSSARY-MASTER-005 — P0-first source verification; waves 1–2 complete
-Next:      P0 wave 3 — remaining high-impact P0 categories
+Current:   GLOSSARY-MASTER-005 — P0-first source verification; waves 1–3 complete
+Next:      P0 wave 4 — remaining P0 categories / deferred core terms
 Later:     GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 New public-page expansion/redesign: deferred
 ```
@@ -37,32 +37,23 @@ New public-page expansion/redesign: deferred
 
 ## P0 source verification
 
-The first whole-master audit showed the jurisdiction additions were strongly evidenced while the original generic seed was not. The current lane therefore verifies core P0 Concepts with authority evidence before search/readiness work.
+The first whole-master audit showed the jurisdiction additions were strongly evidenced while the original generic seed was not. Core P0 Concepts are therefore being verified with authority evidence before search/readiness work.
 
-### Wave 1 — complete
+- **Wave 1:** 16 P0 — DISC 7, DIST 9
+- **Wave 2:** 30 P0 — ENTRY 9, VENUE 16, WEIGHT 5
+- **Wave 3:** 51 P0 — RTYPE 8, SURF 7, MEET 19, RESULT 10, BET 7
 
-Promoted **16 P0 Concepts**:
+Wave 3 deliberately leaves broad/ambiguous P0 terms candidate when the current evidence does not support the intended global boundary, including `Stakes race`, `Sand`, `Synthetic surface`, `All-weather`, `Draw`, `Official notice`, `Local time`, `Time zone`, `Postponed`, `Tote`, and `Starting Price/SP`.
 
-- DISC: Flat racing, Thoroughbred racing, Jump racing, Harness racing, Trotting, Pacing, Banei racing;
-- DIST: Race distance, Metre, Furlong, Mile, Length, Neck, Head, Nose, Sectional time.
+Semantic boundaries remain scope-aware: `Group / Grade`, `Going / Track condition`, `Racecourse / Racetrack / Track`, and planned `Post time / Scheduled start time` versus actual `Off time` are not flattened into global synonym sets.
 
-### Wave 2 — complete
+Current evidence state after wave 3:
 
-Promoted **30 P0 Concepts**:
-
-- ENTRY: **9**
-- VENUE: **16**
-- WEIGHT: **5**
-
-The wave preserves existing semantic boundaries. `Racecourse / Racetrack / Track` remain distinct/polysemous rather than being forced into one synonym set. `Weight-for-age` remains a general Concept rather than absorbing jurisdiction-specific systems. `Declaration`, `Scratch`, `Withdrawal`, and `Non-runner` remain separate procedural/status Concepts.
-
-Current evidence state after wave 2:
-
-- **205 / 658 source-verified = 31.2%**
-- **453 / 658 candidate**
-- P0: **97 / 204 source-verified = 47.5%**
-- P0 candidate: **107**
-- active base seed: **47 / 497 source-verified = 9.5%**
+- **256 / 658 source-verified = 38.9%**
+- **402 / 658 candidate**
+- P0: **148 / 204 source-verified = 72.5%**
+- P0 candidate: **56**
+- active base seed: **98 / 497 source-verified = 19.7%**
 - supplemental jurisdiction/relationship research: **158 / 161 source-verified = 98.1%**
 
 Canonical provenance:
@@ -70,13 +61,15 @@ Canonical provenance:
 ```text
 data/glossary-master/sources/p0-core-sources-v1.tsv
 data/glossary-master/sources/p0-core-sources-v2.tsv
+data/glossary-master/sources/p0-core-sources-v3.tsv
 data/glossary-master/coverage/p0-verification-wave1-v1.tsv
 data/glossary-master/coverage/p0-verification-wave2-v1.tsv
+data/glossary-master/coverage/p0-verification-wave3-v1.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
-The completion gate remains **HOLD** because 107 P0 Concepts are still candidate. P0 wave 3 now targets the remaining high-impact categories before the gate is rerun again.
+The completion gate remains **HOLD** because 56 P0 Concepts remain candidate and whole-master base-seed evidence is still thin. Wave 4 targets the remaining P0 categories plus deliberately deferred core terms where adequate evidence can be obtained.
 
 ## Existing public glossary
 
