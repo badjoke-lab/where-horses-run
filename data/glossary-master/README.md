@@ -24,9 +24,11 @@ Canonical provenance:
 sources/p0-core-sources-v1.tsv
 sources/p0-core-sources-v2.tsv
 sources/p0-core-sources-v3.tsv
+sources/p0-core-sources-v4.tsv
 coverage/p0-verification-wave1-v1.tsv
 coverage/p0-verification-wave2-v1.tsv
 coverage/p0-verification-wave3-v1.tsv
+coverage/p0-verification-wave4-v1.tsv
 coverage/master-005-evidence-coverage-v1.tsv
 coverage/master-005-completion-gate-v1.tsv
 ```
@@ -41,57 +43,63 @@ Verified **30 P0 base Concepts** in ENTRY, VENUE and WEIGHT.
 
 ### Wave 3 — complete
 
-Verified **51 P0 base Concepts**:
+Verified **51 P0 base Concepts** in RTYPE, SURF, MEET, RESULT and BET.
 
-- RTYPE: **8**
-- SURF: **7**
-- MEET: **19**
-- RESULT: **10**
-- BET: **7**
+### Wave 4 — complete
 
-Deliberately deferred P0 terms remain candidate where the available evidence does not yet support the intended global Concept boundary. Examples include `Stakes race`, `Sand`, `Synthetic surface`, `All-weather`, `Draw`, `Official notice`, `Local time`, `Time zone`, `Postponed`, `Tote`, and `Starting Price/SP`.
+Verified **44 P0 base Concepts**:
 
-The verification keeps jurisdiction boundaries intact. Examples:
+- HORSE: **8**
+- BREED: **5**
+- ROLE: **5**
+- RUN: **12**
+- EQUIP: **3**
+- TRAIN: **4**
+- PRIZE: **2**
+- WELF: **5**
 
-- `Group / Grade` remain separate regional counterparts;
-- `Going / Track condition` remain separate related taxonomies;
-- `Post time / Scheduled start time` remain planned timestamps while `Off time` is actual start time;
-- `Racecourse / Racetrack / Track` remain scope-bounded/polysemous;
-- `Fixed odds / Pari-mutuel` remain separate betting mechanisms.
+The wave uses JRA, IFHA, USTA, Racing Australia and Equibase authority/official-industry evidence. Scope remains explicit: a source validating a Concept in one jurisdiction does not turn a local definition into a universal rule.
 
-## Evidence state after wave 3
+## Evidence state after wave 4
 
-- all Concepts: **256 / 658 source-verified (38.9%)**; **402 candidate**
-- P0: **148 / 204 source-verified (72.5%)**; **56 candidate**
-- active base seed: **98 / 497 source-verified (19.7%)**; **399 candidate**
+- all Concepts: **300 / 658 source-verified (45.6%)**; **358 candidate**
+- P0: **192 / 204 source-verified (94.1%)**; **12 candidate**
+- active base seed: **142 / 497 source-verified (28.6%)**; **355 candidate**
 - supplemental jurisdiction/relationship research: **158 / 161 source-verified (98.1%)**; **3 candidate**
 
-Current category snapshots include:
+All current P0 rows are now source-verified in DISC, DIST, ENTRY, HORSE, BREED, ROLE, VENUE, WEIGHT, RUN, EQUIP, TRAIN, RESULT, PRIZE and WELF.
 
-- DISC 7/17
-- RTYPE 80/111
-- ENTRY 13/31
-- VENUE 18/44
-- SURF 39/63
-- DIST 9/22
-- WEIGHT 18/35
-- MEET 24/40
-- RESULT 12/30
-- BET 11/43
+The remaining **12 P0 candidates** are deliberately deferred rather than percentage-promoted:
+
+```text
+RTYPE-014  Stakes race
+SURF-004   Sand
+SURF-005   Synthetic surface
+SURF-006   All-weather
+MEET-022   Draw
+MEET-023   Official notice
+MEET-031   Local time
+MEET-032   Time zone
+MEET-034   Postponed
+BET-004    Tote
+BET-027    Starting Price
+BET-028    SP
+```
+
+Several of these likely need narrower jurisdiction scope or sense refinement before verification, especially `Stakes race`, `Tote`, and broad time/source terms.
 
 ## Current completion decision
 
-`GLOSSARY-MASTER-005` remains **HOLD — not complete** because **56 P0 Concepts remain candidate** and the original base seed is still broadly under-evidenced.
+`GLOSSARY-MASTER-005` remains **HOLD — not complete**. P0 is near complete, but 12 high-priority Concepts still require explicit resolution and lower-priority base-seed coverage remains materially incomplete.
 
 Next work:
 
 ```text
-P0 verification wave 4 — remaining P0 categories and deliberately deferred core terms
--> update Concept evidence/provenance
--> resolve remaining supplemental candidates where evidence is available
--> rerun evidence coverage
--> rerun MASTER-005 completion gate
--> only after the gate passes, consider GLOSSARY-MASTER-006
+P0 verification wave 5 — deferred 12
+-> refine Concept scope/sense where needed
+-> verify only claims actually supported by authority evidence
+-> rerun evidence coverage and MASTER-005 completion gate
+-> then decide how much P1/P2 verification is required before MASTER-006
 ```
 
 ## Register / abbreviation / historical state
