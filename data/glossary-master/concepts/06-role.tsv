@@ -1,26 +1,26 @@
 concept_id	category_id	category_ja	canonical_en	preferred_ja	working_definition_ja	concept_kind	priority	jurisdiction_scope	discipline_scope	translation_status	verification_status	source_required	public_ready	notes
 ROLE-001	ROLE	騎手・調教師・関係者	Jockey	騎手	競走馬に騎乗してレースに参加する者。	concept	P0	GLOBAL	Flat/Jump	working_equivalent	source_verified	yes	no	P0-SRC-048. JRA describes jockey as the licensed person riding horses in races.
-ROLE-002	ROLE	騎手・調教師・関係者	Apprentice jockey	見習騎手	見習い制度下で騎乗する騎手。	concept	P1	GLOBAL	Flat	working_equivalent	candidate	yes	no	
+ROLE-002	ROLE	騎手・調教師・関係者	Apprentice jockey	見習騎手	見習い・減量制度等の対象となる段階の騎手。資格条件や減量内容は管轄で異なる。	concept	P1	GLOBAL	Flat	working_equivalent	source_verified	yes	no	P1-SRC-014; P1-SRC-015. JRA and BHA both maintain apprentice-jockey categories; licence and claim conditions are jurisdiction-specific.
 ROLE-003	ROLE	騎手・調教師・関係者	Conditional jockey	条件付騎手	主に英国障害競馬で見習い段階にある騎手。	concept	P2	GB	Jump	working_equivalent	candidate	yes	no	
 ROLE-004	ROLE	騎手・調教師・関係者	Amateur rider	アマチュア騎手	職業騎手とは別資格のアマチュア騎乗者。	concept	P2	GLOBAL	Flat/Jump	working_equivalent	candidate	yes	no	
 ROLE-005	ROLE	騎手・調教師・関係者	Driver	ドライバー	繋駕競走で車両に乗り馬を操る競走参加者。	concept	P0	GLOBAL	Harness	working_equivalent	source_verified	yes	no	P0-SRC-049. USTA current regulatory materials distinguish Driver licensing in harness racing.
 ROLE-006	ROLE	騎手・調教師・関係者	Trainer	調教師	競走馬の調教・出走管理を担う登録者。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-048; P0-SRC-049. JRA/USTA support Trainer as the registered or licensed person responsible for training and race preparation.
 ROLE-007	ROLE	騎手・調教師・関係者	Assistant trainer	調教師助手	調教師を補佐して厩舎運営・調教を担う者。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 ROLE-008	ROLE	騎手・調教師・関係者	Owner	馬主	競走馬の所有者として登録される主体。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-048. JRA owner guidance verifies Owner as the registered horse-owning participant.
-ROLE-009	ROLE	騎手・調教師・関係者	Breeder	生産者	競走馬を生産した者・主体。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+ROLE-009	ROLE	騎手・調教師・関係者	Breeder	生産者	馬の生産者を示す役割。公式なBreederの認定基準は登録制度ごとに異なる。	concept	P1	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P1-SRC-030. IFHA defines the breeder of a Thoroughbred foal as the owner(s) of the mare at foaling. Keep the generic role Concept while treating that ownership rule as Thoroughbred-system-specific.
 ROLE-010	ROLE	騎手・調教師・関係者	Owner-breeder	馬主兼生産者	所有と生産の双方を担う主体。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 ROLE-011	ROLE	騎手・調教師・関係者	Owner-trainer	馬主兼調教師	所有者と調教師を兼ねる主体。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-ROLE-012	ROLE	騎手・調教師・関係者	Groom	厩務員	馬の日常管理・手入れ等を担うスタッフ。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+ROLE-012	ROLE	騎手・調教師・関係者	Groom	厩務員	競走馬の日常管理、手入れ、厩舎での世話等を担うスタッフ。	concept	P1	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P1-SRC-014; P1-SRC-032. JRA defines 厩務員 duties and its overseas dictionary maps groom to 厩務員; employment structures vary by jurisdiction.
 ROLE-013	ROLE	騎手・調教師・関係者	Stable staff	厩舎スタッフ	厩舎で馬の管理・調教補助等を担う人員の総称。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 ROLE-014	ROLE	騎手・調教師・関係者	Exercise rider	調教騎乗者	調教時に競走馬へ騎乗する者。	concept	P2	North America/Regional	Flat	working_equivalent	candidate	yes	no	
 ROLE-015	ROLE	騎手・調教師・関係者	Work rider	調教騎乗者	調教時に競走馬へ騎乗する者の地域表現。	concept	P2	GB/IRE/Europe	ALL	working_equivalent	candidate	yes	no	
 ROLE-016	ROLE	騎手・調教師・関係者	Steward	裁決委員／スチュワード	競走の公正性・規則違反・審議等を監督する役員。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-050. JRA 裁決委員 duties support the generic adjudication/fairness role; official titles remain jurisdiction-specific.
-ROLE-017	ROLE	騎手・調教師・関係者	Starter	発走委員	発走手続を管理する役員。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-ROLE-018	ROLE	騎手・調教師・関係者	Judge	決勝審判	着順判定等を担う役員。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-ROLE-019	ROLE	騎手・調教師・関係者	Handicapper	ハンデキャッパー	能力評価・ハンデ重量等の設定に関わる担当者。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-ROLE-020	ROLE	騎手・調教師・関係者	Clerk of the course	コース管理責任者	主に英国系でコース状態・開催準備を統括する役職。	concept	P1	GB/IRE/Commonwealth	ALL	working_equivalent	candidate	yes	no	
+ROLE-017	ROLE	騎手・調教師・関係者	Starter	発走委員	競走の発走手続を管理し、公正なスタートを成立させる役員。	concept	P1	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P1-SRC-031; P1-SRC-018. BHA directly defines the Starter's fair-start function; JRA separately maintains 発走委員 as an official raceday function. Do not confuse this role with the separate runner sense of starter.
+ROLE-018	ROLE	騎手・調教師・関係者	Judge	決勝審判	決勝線での着順・着差等を判定する役員。	concept	P1	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P1-SRC-031; P1-SRC-012; P1-SRC-018. BHA defines the Judge as determining finishing order and JRA maps Judge to 決勝審判委員; exact duties and titles remain jurisdiction-specific.
+ROLE-019	ROLE	騎手・調教師・関係者	Handicapper	ハンデキャッパー	能力評価や競走条件に基づいてハンデ重量・評価を設定する担当者。	concept	P1	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P1-SRC-017; P1-SRC-018. JRA explains handicap weights as set by handicappers and lists the corresponding official raceday function; rating systems vary by jurisdiction.
+ROLE-020	ROLE	騎手・調教師・関係者	Clerk of the course	コース管理責任者	主に英国系で競馬場の走路状態、開催準備、競走実施に関わるコース管理を統括する役職。	concept	P1	GB/IRE/Commonwealth	ALL	working_equivalent	source_verified	yes	no	P1-SRC-016. BHA requires appointment of a Clerk of the Course and assigns racecourse/raceday responsibilities; retain GB/IRE/Commonwealth scope.
 ROLE-021	ROLE	騎手・調教師・関係者	Clerk of the scales	検量担当役員	騎手等の負担重量を検量する役職。	concept	P2	GB/IRE/Commonwealth	Flat/Jump	working_equivalent	candidate	yes	no	
-ROLE-022	ROLE	騎手・調教師・関係者	Veterinarian	獣医師	競走馬の健康・出走適性等を診る獣医師。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+ROLE-022	ROLE	騎手・調教師・関係者	Veterinarian	獣医師	競走馬の健康、疾病・負傷、出走適性等を診察・管理する獣医師。	concept	P1	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P1-SRC-019; P1-SRC-018. JRA maps veterinarian to 獣医師 and maintains 獣医委員 as an official raceday function; specific regulatory authority varies by role and jurisdiction.
 ROLE-023	ROLE	騎手・調教師・関係者	Farrier	装蹄師	馬の蹄鉄・蹄の管理を担う専門職。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 ROLE-024	ROLE	騎手・調教師・関係者	Race caller	実況アナウンサー	レース実況を担当する話者。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 ROLE-025	ROLE	騎手・調教師・関係者	Commentator	解説者／実況者	競走映像等で実況・解説を行う者。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
