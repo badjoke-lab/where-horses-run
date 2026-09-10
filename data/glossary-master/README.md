@@ -4,13 +4,9 @@ Status: active zero-based world racing terminology master
 Authority: `docs/glossary/world-racing-terminology-master-spec.md`  
 Current work: `GLOSSARY-MASTER-005` — relationship / equivalence / homonym / evidence refinement
 
-This directory is the non-public working area for the concept-first world racing terminology master.
-
-It is **not** consumed by current public glossary routes and does not authorize automatic publication.
+This directory is the non-public working area for the concept-first world racing terminology master. It is **not** consumed by current public glossary routes and does not authorize automatic publication.
 
 ## Current canonical candidate inventory
-
-The original zero-based seed is stored by semantic category under `concepts/` and is extended by jurisdiction/review supplement files.
 
 Original seed: **501 Concepts / 18 categories**.
 
@@ -25,34 +21,24 @@ Current relationship-refined research master:
 - verification state: **mixed candidate and source-verified**
 - `public_ready=yes`: **0**
 
-The count fell from 654 to 653 in `GLOSSARY-MASTER-005` wave 2 because four duplicate Concept rows were actually merged while three meaning-bearing Concepts were added. A lower count here is a quality improvement, not lost coverage.
+The count fell from 654 to 653 in MASTER-005 wave 2 because four duplicate Concept rows were merged while three real meanings were added. Merged identities are recorded in `concepts/concept-dispositions-v1.tsv`; retired IDs are not recycled.
 
-Merged Concept identities are recorded in:
-
-```text
-concepts/concept-dispositions-v1.tsv
-```
-
-Current merges:
+Current merged identities:
 
 - `MEET-002 Meeting` -> `MEET-001 Race meeting` for the English single-event sense;
 - `MEET-005 Raceday` -> `MEET-004 Race day`;
 - `BET-031 Favourite` -> `BET-030 Favorite`;
 - `RTYPE-005 Bumper` -> `RTYPE-006 National Hunt Flat Race`.
 
-The moved strings remain available through `labels/relationship-wave2-labels-v1.tsv`; retired Concept IDs are not silently reused.
+New meaning-bearing Concepts from wave 2:
 
-New meaning-bearing Concepts from the same review wave are stored in `concepts/relationship-wave2-additions.tsv`:
-
-- `MEET-042 Racing meeting series (France)` — France Galop `Meeting`, distinct from one-day `Réunion`;
-- `RESULT-030 Race form notation` — including France `musique` as a regional implementation;
-- `RUN-046 Tactical pacemaker for another runner` — covering North American `Rabbit` and France Galop tactical `leader`, while remaining narrower than a generic Pacesetter.
+- `MEET-042 Racing meeting series (France)`;
+- `RESULT-030 Race form notation`;
+- `RUN-046 Tactical pacemaker for another runner`.
 
 The manifest is the machine-readable count authority. Counts describe the current research master, not worldwide completeness.
 
 ## Register / abbreviation / historical layers
-
-The current pass of `GLOSSARY-MASTER-004` separated how a term is used from what the underlying Concept is. Follow-up register waves remain allowed when later research finds material gaps.
 
 ```text
 register/register-usage-v1.tsv
@@ -63,7 +49,7 @@ historical/historical-terms-v1.tsv
 sources/register-layer-sources-v1.tsv
 ```
 
-Current effective usage-layer snapshot after MASTER-005 wave 2 resolutions:
+Current usage snapshot:
 
 - register usages: **60**;
 - effective source-verified register mappings: **29**;
@@ -72,54 +58,47 @@ Current effective usage-layer snapshot after MASTER-005 wave 2 resolutions:
 - abbreviations/codes: **26**, all source-verified;
 - historical terms: **4**, all source-verified.
 
-`register-resolutions-v1.tsv` is authoritative when an older register row still points at a retired Concept ID or a now-resolved `NEW-REVIEW-*` target. This preserves research history without leaving the effective mapping ambiguous.
-
-A slang, colloquial or abbreviated form does **not** automatically create a Concept. A historically retired term in one venue/jurisdiction must not be declared globally obsolete without evidence.
+A slang, colloquial or abbreviated form does **not** automatically create a Concept. `register-resolutions-v1.tsv` is authoritative when an older row points at a retired Concept or a now-resolved `NEW-REVIEW-*` target.
 
 ## Relationship / equivalence layer
 
-`GLOSSARY-MASTER-005` makes Concept relationships explicit and prevents false global synonymy.
-
 ```text
 relations/relations-v1.tsv
-    current Concept-to-Concept relationships.
-
 relations/relation-review-queue-v1.tsv
-    discovered homonyms, sense splits, false-synonym risks, dedupe candidates and unresolved cross-system relations.
-
 relations/relation-resolutions-v1.tsv
-    reviewed decisions that close items from the relation review queue.
-
 labels/relationship-wave2-labels-v1.tsv
-    labels moved by Concept merge plus labels attached to newly resolved Concepts.
-
+labels/relationship-wave3-labels-v1.tsv
 definitions/relationship-wave2-definitions-v1.tsv
-    jurisdiction-specific definitions created by relation/sense review.
-
+definitions/relationship-wave3-definitions-v1.tsv
 sources/relationship-layer-sources-v1.tsv
-    evidence added specifically for relation and sense-boundary claims.
 ```
 
-Current relationship snapshot:
+Current relationship snapshot after wave 3:
 
-- active Concept-to-Concept relations: **16**;
+- active Concept-to-Concept relations: **17**;
 - relation review items discovered: **15**;
-- resolved review items: **7**;
-- open review items: **8**.
+- resolved review items: **11**;
+- open review items: **4**.
 
-Resolved wave-2 cases include:
+Important resolved boundaries:
 
-- France `Meeting` vs `Réunion` sense split;
-- `Race day / Raceday` spelling dedupe;
-- `Favorite / Favourite` spelling dedupe;
-- `Bumper / National Hunt Flat Race` Concept dedupe;
-- `Group / Grade` retained as separate regional-counterpart systems;
-- North American `Rabbit` and France tactical `leader` resolved under a shared tactical-pacemaker Concept;
-- France `musique` promoted under a new race-form-notation Concept.
+- France `Meeting` and one-day `Réunion` are separate senses;
+- `Race day / Raceday`, `Favorite / Favourite`, and `Bumper / National Hunt Flat Race` duplicate identities were collapsed;
+- `Group / Grade` remain separate `regional_counterpart` systems;
+- `Rabbit` and France tactical `leader` map to a shared tactical-pacemaker Concept;
+- France `musique` maps to Race form notation;
+- `Off time` is the actual race-start timestamp, while `Scheduled start time` / BHA `Scheduled off time` is the planned reference;
+- `Going` and `Track condition` remain separate related Concepts because regional official taxonomies differ;
+- `Racetrack` and `Track` remain polysemous with sense-scoped relations rather than global synonym merges or premature splits.
 
-Still-open high-risk cases include `Off time / Scheduled start time`, `Racecourse / Racetrack / Track`, `Going / Track condition`, Australasian `mudlark`, easy-travelling terminology, and cross-language betting-market support expressions.
+Remaining relation-review sets:
 
-Relations must be scope-aware. An equivalence in one jurisdiction or one sense does not authorize a global merge.
+- `Spell / Layoff`;
+- Australia/New Zealand `Mudlark` wet-track aptitude;
+- `Under double wraps` / `On the bit or bridle` / `Off the bit or bridle`;
+- Japanese `一本かぶり` / Australian `backed off the map` betting-market support terminology.
+
+Relations must be scope-aware. Equivalence in one jurisdiction or sense does not authorize a global merge.
 
 ## Concept file contract
 
@@ -143,21 +122,17 @@ public_ready
 notes
 ```
 
-`canonical_en` and `preferred_ja` are working maintenance labels. They do not assert that English or Japanese is globally authoritative.
+`canonical_en` and `preferred_ja` are working maintenance labels, not declarations of worldwide language authority.
 
 ## Normalized domains
 
 The working master separates Concepts from labels, definitions, relations, regional/register usage, abbreviations, historical terms, sources, future search queries, coverage and review queues.
 
-Typed Concept relations include `exact_equivalent`, `close_equivalent`, `broader`, `narrower`, `related`, `contrast`, `regional_counterpart`, and `no_direct_equivalent`. Polysemy and unresolved equivalence remain explicit review items until resolved.
+Typed Concept relations include `exact_equivalent`, `close_equivalent`, `broader`, `narrower`, `related`, `contrast`, `regional_counterpart`, and `no_direct_equivalent`. Polysemy and unresolved equivalence remain explicit until reviewed.
 
 ## Relationship to the existing public glossary
 
-The current public glossary is **not an input, migration gate, or completeness target** for this master. Its record IDs, headwords, categories and EN/JA-only field model need not be preserved. During later `GLOSSARY-PUBLIC-*` work it may be removed wholesale and regenerated from reviewed master data.
-
-## Site UI vocabulary is separate
-
-WHR-specific interface/access labels such as `Official live`, `Official replay`, `Account required`, `Subscription required`, `Geo-restricted`, `Live`, and `Upcoming` are not the backbone of the horse-racing knowledge taxonomy.
+The current public glossary is **not an input, migration gate, or completeness target**. Its record IDs, headwords, categories and EN/JA-only field model need not be preserved. During later `GLOSSARY-PUBLIC-*` work it may be removed wholesale and regenerated from reviewed master data.
 
 ## Write rules
 
