@@ -196,16 +196,34 @@ const detailCollection = {
   timed_out: 0,
   unavailable: 0,
   skipped_not_published: 0,
+  unsupported: 0,
 };
 for (const schedule of windowRows) {
   const key = trackKey(schedule.racecourse_id);
   if (!key || !TRACK[key].detail_supported) {
-    records.push(schedule);
+    detailCollection.unsupported += 1;
+    records.push({
+      ...schedule,
+      detail_observation: {
+        status: 'unsupported',
+        race_count: 0,
+        conflicts: [],
+        reason: 'The current production detail collector does not support this racecourse.',
+      },
+    });
     continue;
   }
   if (!detailEligible(schedule, key)) {
     detailCollection.skipped_not_published += 1;
-    records.push(schedule);
+    records.push({
+      ...schedule,
+      detail_observation: {
+        status: 'not_published',
+        race_count: 0,
+        conflicts: [],
+        reason: 'The official published-racecard probe does not yet list this meeting.',
+      },
+    });
     continue;
   }
 
@@ -217,7 +235,15 @@ for (const schedule of windowRows) {
 
   const detail = collected.detail;
   if (!detail || !['B', 'B+', 'A', 'A+'].includes(detail.capability_rank)) {
-    records.push(schedule);
+    records.push({
+      ...schedule,
+      detail_observation: {
+        status: collected.status === 'error' ? 'source_error' : collected.status,
+        race_count: 0,
+        conflicts: [],
+        reason: `KRA detail acquisition did not yield usable stronger evidence (${collected.status}).`,
+      },
+    });
     continue;
   }
   records.push({
