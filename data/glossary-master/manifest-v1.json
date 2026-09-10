@@ -1,14 +1,14 @@
 {
   "schema_version": "world-racing-terminology-master-manifest-v1",
-  "status": "candidate_seed_plus_jurisdiction_register_relation_and_p0_verification",
+  "status": "candidate_seed_plus_jurisdiction_register_relation_and_p1_verification",
   "generated_from_legacy_glossary": false,
-  "concept_count": 657,
+  "concept_count": 655,
   "category_count": 18,
-  "priority_counts": {"P0":203,"P1":301,"P2":135,"P3":18},
+  "priority_counts": {"P0":203,"P1":299,"P2":135,"P3":18},
   "verification_status": "mixed_candidate_and_source_verified",
   "public_ready_count": 0,
   "public_runtime_input": false,
-  "concept_dispositions": {"file":"concepts/concept-dispositions-v1.tsv","merged_concept_rows":5},
+  "concept_dispositions": {"file":"concepts/concept-dispositions-v1.tsv","merged_concept_rows":7},
   "categories": [
     {"id":"DISC","count":17,"file":"concepts/01-disc.tsv"},
     {"id":"RTYPE","count":111,"file":"concepts/02-rtype.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv","concepts/japan-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv","concepts/france-wave1-additions.tsv","concepts/hong-kong-korea-wave1-additions.tsv","concepts/uae-south-africa-wave1-additions.tsv","concepts/arabian-harness-wave1-additions.tsv"]},
@@ -18,8 +18,8 @@
     {"id":"ROLE","count":31,"file":"concepts/06-role.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv","concepts/france-wave1-additions.tsv"]},
     {"id":"VENUE","count":44,"file":"concepts/07-venue.tsv","supplemental_files":["concepts/japan-wave2-nar-banei-additions.tsv"]},
     {"id":"SURF","count":63,"file":"concepts/08-surf.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv","concepts/japan-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv","concepts/france-wave1-additions.tsv","concepts/hong-kong-korea-wave1-additions.tsv"]},
-    {"id":"DIST","count":22,"file":"concepts/09-dist.tsv"},
-    {"id":"WEIGHT","count":35,"file":"concepts/10-weight.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv","concepts/japan-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv","concepts/hong-kong-korea-wave1-additions.tsv","concepts/uae-south-africa-wave1-additions.tsv"]},
+    {"id":"DIST","count":21,"file":"concepts/09-dist.tsv"},
+    {"id":"WEIGHT","count":34,"file":"concepts/10-weight.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv","concepts/japan-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv","concepts/hong-kong-korea-wave1-additions.tsv","concepts/uae-south-africa-wave1-additions.tsv"]},
     {"id":"RUN","count":48,"file":"concepts/11-run.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv","concepts/arabian-harness-wave1-additions.tsv","concepts/relationship-wave2-additions.tsv","concepts/relationship-wave4-additions.tsv"]},
     {"id":"EQUIP","count":30,"file":"concepts/12-equip.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv","concepts/france-wave1-additions.tsv","concepts/arabian-harness-wave1-additions.tsv"]},
     {"id":"TRAIN","count":26,"file":"concepts/13-train.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv","concepts/hong-kong-korea-wave1-additions.tsv"]},
@@ -77,17 +77,26 @@
     "resolved_candidates":3,
     "remaining_candidates":0
   },
+  "p1_verification": {
+    "status":"wave_1_complete_current_pass",
+    "sources_files":["sources/p1-core-sources-v1.tsv"],
+    "wave_audit_files":["coverage/p1-verification-wave1-v1.tsv"],
+    "verified_wave_1":27,
+    "retired_duplicate_rows_wave_1":2,
+    "focus_categories":["DISC","ENTRY","VENUE","DIST","WEIGHT"],
+    "remaining_base_seed_candidate":314
+  },
   "evidence_coverage": {
-    "status":"audited_master_005_hold_after_supplemental_cleanup",
+    "status":"audited_master_005_hold_after_p1_wave_1",
     "coverage_file":"coverage/master-005-evidence-coverage-v1.tsv",
     "completion_gate_file":"coverage/master-005-completion-gate-v1.tsv",
-    "all_concepts":{"total":657,"source_verified":314,"candidate":343,"verified_pct":47.8},
+    "all_concepts":{"total":655,"source_verified":341,"candidate":314,"verified_pct":52.1},
     "p0":{"total":203,"source_verified":203,"candidate":0,"verified_pct":100.0},
-    "active_base_seed":{"total":496,"source_verified":153,"candidate":343,"verified_pct":30.8},
+    "active_base_seed":{"total":494,"source_verified":180,"candidate":314,"verified_pct":36.4},
     "supplemental_research":{"total":161,"source_verified":161,"candidate":0,"verified_pct":100.0},
     "master_005_completion":"hold"
   },
   "next_work_id":"GLOSSARY-MASTER-005",
-  "next_work":"p1_base_seed_verification_wave_1_then_rerun_gate",
+  "next_work":"p1_base_seed_verification_wave_2_then_rerun_gate",
   "public_implementation":"deferred"
 }

@@ -20,11 +20,13 @@ Current glossary Work ID: GLOSSARY-MASTER-005
 P0 verification waves 1–5: complete
 Current P0: 203/203 source-verified; 0 candidate
 Supplemental research: 161/161 source-verified; 0 candidate
-Next immediate lane: P1/base-seed verification wave 1
+P1/base-seed verification wave 1: complete current pass
+Next immediate lane: P1/base-seed verification wave 2
 Later: GLOSSARY-MASTER-006
-Current research master: 657 Concepts / 18 domain categories
+Current research master: 655 Concepts / 18 domain categories
 Relationship layer: 20 relations / 15 reviews / 15 resolved / 0 open
-Evidence coverage: 314/657 source-verified; 343 candidate
+Concept dispositions: 7 retired/merged rows
+Evidence coverage: 341/655 source-verified; 314 candidate
 Public glossary page expansion: deferred
 Automatic glossary publication: disabled
 Existing public glossary content: disposable legacy runtime baseline
@@ -46,7 +48,7 @@ Status: **complete**. Original seed: **501 candidate Concepts / 18 categories**;
 
 Status: **first major-jurisdiction pass complete; follow-up waves allowed**.
 
-Covered GB/Ireland, US/Canada, Australia/New Zealand, Japan including NAR/Banei, France, Hong Kong/Korea, UAE/South Africa, plus Arabian/Harness cross-system follow-up. The pass expanded the seed to 654 Concepts before relationship cleanup.
+Covered GB/Ireland, US/Canada, Australia/New Zealand, Japan including NAR/Banei, France, Hong Kong/Korea, UAE/South Africa, plus Arabian/Harness cross-system follow-up. The pass expanded the seed before relationship and evidence cleanup.
 
 ## MASTER-004 — register/abbreviation/historical terminology
 
@@ -60,54 +62,59 @@ Status: **current**.
 
 Relationship work is complete for the currently discovered queue: 20 scoped relations, 15/15 review items resolved, duplicate identities merged where justified, genuine jurisdiction/sense differences split, and high-risk polysemy retained without forced global equivalence.
 
-Current master: **657 Concepts**.
+Current master: **655 Concepts**.
 
 ### P0 evidence verification
 
-Five P0 waves promoted **152 base-seed P0 Concepts** using authority or official-industry evidence appropriate to each claim.
-
-- Wave 1: **16** — DISC 7 / DIST 9
-- Wave 2: **30** — ENTRY 9 / VENUE 16 / WEIGHT 5
-- Wave 3: **51** — RTYPE 8 / SURF 7 / MEET 19 / RESULT 10 / BET 7
-- Wave 4: **44** — HORSE 8 / BREED 5 / ROLE 5 / RUN 12 / EQUIP 3 / TRAIN 4 / PRIZE 2 / WELF 5
-- Wave 5: **11** — RTYPE 1 / SURF 3 / MEET 5 / BET 2; plus `BET-028 SP` merged into `BET-027 Starting Price`
-
-Current P0: **203/203 source-verified (100.0%)**.
+Five P0 waves promoted **152 base-seed P0 Concepts** using authority or official-industry evidence appropriate to each claim. Current P0 is **203/203 source-verified (100.0%)**.
 
 ### Supplemental candidate cleanup
 
 Status: **complete current pass**.
 
-The final three supplemental candidates were resolved with scope refinement rather than forced global claims:
+The final three supplemental candidates were resolved with scope refinement rather than forced global claims. Current supplemental research is **161/161 source-verified (100.0%)**.
 
-- `ROLE-029 Claiming Professional Jockey` — IHRB licence/status sense.
-- `ENTRY-029 Coupled entry` — US/Regional regulatory sense.
-- `WEIGHT-026 Base rating` — Australia/Queensland RBH/programme sense.
+### P1 base-seed verification wave 1
 
-Audit: `data/glossary-master/coverage/supplemental-candidate-cleanup-v1.tsv`.
+Status: **complete current pass**.
+
+Wave 1 verified **27 P1 base-seed Concepts** across DISC, ENTRY, VENUE, DIST and WEIGHT.
+
+The wave also corrected the original seed model:
+
+- `DIST-013 Dead heat distance` → retired into `RESULT-007 Dead heat`; malformed seed label not retained as a public synonym.
+- `WEIGHT-010 Weight penalty` → merged into `WEIGHT-009 Penalty`; label retained through the disposition layer.
+- `DISC-013 Quarter Horse racing` → scope narrowed from `Americas` to `North America/Regional`.
+- `ENTRY-009 Maximum field` → intentionally remains candidate until canonical wording is reconciled with current authority terms such as `Field Limit` / `Field Size Limit`.
+
+Authority and audit files:
+
+```text
+data/glossary-master/sources/p1-core-sources-v1.tsv
+data/glossary-master/coverage/p1-verification-wave1-v1.tsv
+```
 
 Current observed state:
 
-- all Concepts: **314/657 source-verified (47.8%)**, 343 candidate;
+- all Concepts: **341/655 source-verified (52.1%)**, 314 candidate;
 - P0: **203/203 source-verified (100.0%)**, 0 candidate;
-- active base seed: **153/496 source-verified (30.8%)**, 343 candidate;
+- active base seed: **180/494 source-verified (36.4%)**, 314 candidate;
 - supplemental jurisdiction/relationship research: **161/161 source-verified (100.0%)**, 0 candidate.
 
 The remaining Concept evidence gap is entirely in lower-priority active base-seed rows.
-
-Canonical provenance includes the P0 source/audit waves, `supplemental-candidate-cleanup-v1.tsv`, `master-005-evidence-coverage-v1.tsv`, and `master-005-completion-gate-v1.tsv` under `data/glossary-master/`.
 
 ### Completion decision
 
 Status: **HOLD — not complete**.
 
-P0 and current supplemental research are fully evidence-backed, but **343 lower-priority active base-seed Concepts remain candidate**.
+P0 and current supplemental research are fully evidence-backed, and P1 wave 1 materially improved the base seed, but **314 lower-priority active base-seed Concepts remain candidate**.
 
 Immediate work:
 
 ```text
-P1/base-seed verification wave 1
--> prioritize user-facing/high-risk semantic areas
+P1/base-seed verification wave 2
+-> continue high-utility / high-risk semantic areas
+-> review suspicious canonical labels before promotion
 -> refine jurisdiction scope before promotion where necessary
 -> split/merge Concepts where authority evidence shows the seed model is wrong
 -> rerun evidence coverage and completion gate
@@ -141,11 +148,12 @@ The current public glossary remains disposable content. There is no old-record m
 
 ```text
 Current Work ID: GLOSSARY-MASTER-005
-Current master: 657 Concepts
-Evidence: 314 verified / 343 candidate
+Current master: 655 Concepts
+Evidence: 341 verified / 314 candidate
 P0: 203 verified / 0 candidate
 Supplemental research: 161 verified / 0 candidate
-Next: P1/base-seed verification wave 1
+P1 wave 1: 27 verified / 2 duplicate seed rows retired
+Next: P1/base-seed verification wave 2
 MASTER-006: blocked until MASTER-005 evidence gate passes
 Public implementation: deferred
 ```
