@@ -13,7 +13,7 @@ const DAY_TOKEN = /\b(LUN|MAR|MIE|JUE|VIE|SAB|DOM)\s+([0-3]?\d)\b/g;
 const VENUES = Object.freeze([
   { canonical_label: 'Club Hípico de Concepción', normalized_label: 'club hipico de concepcion', racecourse_id: 'club-hipico-de-concepcion-racecourse' },
   { canonical_label: 'Club Hípico de Santiago', normalized_label: 'club hipico de santiago', racecourse_id: 'club-hipico-de-santiago-racecourse' },
-  { canonical_label: 'Hipódromo Chile', normalized_label: 'hipodromo chile', racecourse_id: 'hipodromo-chile-racecourse' },
+  { canonical_label: 'Hipódromo Chile', normalized_label: 'hipodromo chile', racecourse_id: 'hipodromo-chile' },
   { canonical_label: 'Valparaíso Sporting Club', normalized_label: 'valparaiso sporting club', racecourse_id: 'valparaiso-sporting-club-racecourse' },
 ]);
 
