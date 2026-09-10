@@ -1,0 +1,71 @@
+name: Ireland HRI racecard contract
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/timetable/ireland-hri-fixtures-core.mjs'
+      - 'scripts/timetable/run-ireland-hri-official-window.mjs'
+      - 'scripts/check-ireland-hri-fixtures-adapter.mjs'
+      - 'data/fixtures/ireland-hri-racecard-month-observed-v1.html'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/authority-source-inventory-ireland-hri-v1.json'
+      - 'scripts/timetable/load-authority-source-inventory.mjs'
+      - '.github/workflows/ireland-hri-racecard-contract.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/timetable/ireland-hri-fixtures-core.mjs'
+      - 'scripts/timetable/run-ireland-hri-official-window.mjs'
+      - 'scripts/check-ireland-hri-fixtures-adapter.mjs'
+      - 'data/fixtures/ireland-hri-racecard-month-observed-v1.html'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/authority-source-inventory-ireland-hri-v1.json'
+      - 'scripts/timetable/load-authority-source-inventory.mjs'
+      - '.github/workflows/ireland-hri-racecard-contract.yml'
+  workflow_dispatch:
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies
+        run: npm install --no-package-lock --no-audit --no-fund
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/ireland-hri-fixtures-core.mjs
+          node --check scripts/timetable/run-ireland-hri-official-window.mjs
+          node --check scripts/check-ireland-hri-fixtures-adapter.mjs
+      - name: Validate HRI racecard parser and completion states
+        run: node scripts/check-ireland-hri-fixtures-adapter.mjs
+      - name: Live-verify production HRI racecard runner
+        shell: bash
+        run: |
+          set -euo pipefail
+          output="$(mktemp)"
+          trap 'rm -f "$output"' EXIT
+          node scripts/timetable/run-ireland-hri-official-window.mjs \
+            --as-of=2026-09-11 \
+            --days=2 \
+            --fixture=data/fixtures/ireland-hri-fixture-list-observed-v1.txt \
+            --output="$output"
+          OUTPUT="$output" node --input-type=module -e '
+            import fs from "node:fs";
+            const artifact = JSON.parse(fs.readFileSync(process.env.OUTPUT, "utf8"));
+            const row = artifact.records.find((record) => record.date === "2026-09-11" && record.racecourse_id === "ireland--ballinrobe");
+            if (!row) throw new Error("Ballinrobe 2026-09-11 missing from live HRI runner output");
+            if (row.capability_rank !== "A") throw new Error(`Ballinrobe live rank ${row.capability_rank} != A`);
+            if (row.detail_observation?.status !== "available") throw new Error(`Ballinrobe detail status ${row.detail_observation?.status} != available`);
+            if (row.timetable_rows?.length !== 8) throw new Error(`Ballinrobe race rows ${row.timetable_rows?.length} != 8`);
+            if (row.first_race_time_local !== "15:24" || row.last_race_time_local !== "19:10") throw new Error("Ballinrobe live first/last time mismatch");
+            console.log("IRELAND_HRI_LIVE_RUNNER: pass");
+          '
+      - name: Validate Acquisition Registry resolution
+        run: node scripts/check-calendar-acquisition-registry.mjs
+      - name: Check diff formatting
+        run: git diff --check

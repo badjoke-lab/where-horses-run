@@ -31,19 +31,18 @@ The remaining Registry-level route-capability gaps are source-specific acquisiti
 | `tjk-national-racing-system` | annual/current-future fixture discovery plus per-meeting official daily programme detail fetch | Official programme parser evaluates post time plus race name/condition, distance, and `Çim`/`Kum`/`Sentetik` surface/course fields through `A+`; missing richer fields preserve a lower Best Available rank rather than fabricating A+ |
 | `sorec-racing-information-system` | Programme Réunion schedule/index acquisition | Registry technical capability is `A`, but current production route remains schedule-level with no detail source/adapter: implementation gap |
 | `chile-teletrak-racing-system` | Teletrak weekly meeting acquisition | Registry technical capability is `A`, but current production route remains schedule-level with no detail source/adapter: implementation gap |
-| `ireland-hri-racing-system` | HRI fixture-list acquisition | Registry technical capability is `A`, but current production route remains schedule-level with no detail source/adapter: implementation gap |
+| `ireland-hri-racing-system` | HRI annual fixture discovery plus official monthly Racecards AJAX evaluation | Registered route evaluates through technical ceiling `A`: published complete race rows may produce A; unpublished rows preserve lower Best Available with `pending_publication`; retrieval/parser failures remain `retry_required`; regular full/near refreshes re-evaluate pending detail |
 
 ## Registry-level implementation gaps
 
-The executable completion check now identifies exactly these three Registry profiles where the registered technical capability is above the maximum implemented observation rank:
+The executable completion check now identifies exactly these two Registry profiles where the registered technical capability is above the maximum implemented observation rank:
 
 ```text
 sorec-racing-information-system
 chile-teletrak-racing-system
-ireland-hri-racing-system
 ```
 
-TJK is no longer in this list because the official daily programme route now evaluates the A+ timetable field surface and can emit `A+` when the evidence actually satisfies the rank contract.
+TJK is no longer in this list because the official daily programme route evaluates the A+ timetable field surface and can emit `A+` when the evidence actually satisfies the rank contract. Ireland HRI is no longer in this list because the official Racecards monthly route is now evaluated through `A` for every requested source month while preserving explicit pending/retry states.
 
 This is a route-capability audit, not a claim that every meeting in those systems must reach the technical ceiling.
 
@@ -65,9 +64,8 @@ The repair must preserve these valid behaviors:
 
 1. Resolve the SOREC Morocco detail-route gap.
 2. Resolve the Chile Teletrak detail-route gap.
-3. Resolve the Ireland HRI detail-route gap.
-4. Connect unresolved `pending_publication` / `retry_required` states to later refresh/retry execution wherever the current regular refresh does not already revisit the required detail evidence.
-5. Keep the executable completion contract rejecting any future implemented route that equates valid rank emission or green workflow execution with acquisition completion.
+3. Connect unresolved `pending_publication` / `retry_required` states to later refresh/retry execution wherever the current regular refresh does not already revisit the required detail evidence.
+4. Keep the executable completion contract rejecting any future implemented route that equates valid rank emission or green workflow execution with acquisition completion.
 
 ## Canonical contract
 
