@@ -1,19 +1,19 @@
 concept_id	category_id	category_ja	canonical_en	preferred_ja	working_definition_ja	concept_kind	priority	jurisdiction_scope	discipline_scope	translation_status	verification_status	source_required	public_ready	notes
-RESULT-001	RESULT	結果・審議・裁定	Result	結果	競走終了後に公表される着順等の情報。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-RESULT-002	RESULT	結果・審議・裁定	Official result	確定結果	主催者・当局が正式に確定した結果。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+RESULT-001	RESULT	結果・審議・裁定	Result	結果	競走終了後に公表される着順等の情報。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-033 and P0-SRC-035 verify authority-published race results/status; fields and finality rules vary by jurisdiction.
+RESULT-002	RESULT	結果・審議・裁定	Official result	確定結果	主催者・当局が正式に確定した結果。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-035 explicitly distinguishes official results from unofficial results in USTA status codes.
 RESULT-003	RESULT	結果・審議・裁定	Provisional result	仮結果	審議・確定前の暫定結果。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-RESULT-004	RESULT	結果・審議・裁定	Placing	着順	競走における最終順位。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-RESULT-005	RESULT	結果・審議・裁定	Winner	勝馬	1着となった馬。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+RESULT-004	RESULT	結果・審議・裁定	Placing	着順	競走における最終順位。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-037 defines JRA 着順 as the confirmed placing, distinct from order at the line before adjudication.
+RESULT-005	RESULT	結果・審議・裁定	Winner	勝馬	1着となった馬。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-036 maps winner to 1着馬 in JRA official overseas-racing terminology.
 RESULT-006	RESULT	結果・審議・裁定	Runner-up	2着馬	2着となった馬。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-RESULT-007	RESULT	結果・審議・裁定	Dead heat	同着	複数馬を同順位と判定すること。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-RESULT-008	RESULT	結果・審議・裁定	Photo finish	写真判定	僅差の着順を決勝写真等で判定すること。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-RESULT-009	RESULT	結果・審議・裁定	Inquiry	審議	競走中の事象について公式に調査・審議すること。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-RESULT-010	RESULT	結果・審議・裁定	Stewards' inquiry	裁決委員審議	スチュワードが競走上の事象を調査する審議。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+RESULT-007	RESULT	結果・審議・裁定	Dead heat	同着	複数馬を同順位と判定すること。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-036 verifies dead heat/同着 terminology; jurisdiction-specific settlement rules remain outside the core definition.
+RESULT-008	RESULT	結果・審議・裁定	Photo finish	写真判定	僅差の着順を決勝写真等で判定すること。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-039 explains JRA finish-line imaging used by judges to determine order; P0-SRC-036 corroborates photo finish terminology.
+RESULT-009	RESULT	結果・審議・裁定	Inquiry	審議	競走中の事象について公式に調査・審議すること。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-037 and P0-SRC-038 verify JRA 審議 as formal review of incidents that may affect placings, disqualification or race validity.
+RESULT-010	RESULT	結果・審議・裁定	Stewards' inquiry	裁決委員審議	スチュワードが競走上の事象を調査する審議。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-034 verifies authority Stewards enquiries/reports; procedural scope varies by jurisdiction.
 RESULT-011	RESULT	結果・審議・裁定	Objection	異議申立て	騎手等の関係者が着順・妨害等について公式に異議を申し立てること。	concept	P1	GB/IRE/Commonwealth/Regional	ALL	working_equivalent	candidate	yes	no	
 RESULT-012	RESULT	結果・審議・裁定	Protest	異議申立て	主に豪州等で競走結果等に対する異議申立てを指す語。	concept	P1	AUS/NZ/Regional	ALL	working_equivalent	candidate	yes	no	
 RESULT-013	RESULT	結果・審議・裁定	Claim of foul	妨害申立て	主に北米で騎手等が妨害を申し立てる手続。	concept	P1	North America	Flat	working_equivalent	candidate	yes	no	
-RESULT-014	RESULT	結果・審議・裁定	Disqualification	失格	規則違反等により馬・騎手・結果等の資格を失わせる裁定。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-RESULT-015	RESULT	結果・審議・裁定	Demotion	降着	審議等により着順を下げる裁定。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+RESULT-014	RESULT	結果・審議・裁定	Disqualification	失格	規則違反等により馬・騎手・結果等の資格を失わせる裁定。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-038 and P0-SRC-036 verify disqualification/失格 as an adjudication that removes a placing; precise grounds remain jurisdiction-specific.
+RESULT-015	RESULT	結果・審議・裁定	Demotion	降着	審議等により着順を下げる裁定。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-038 and P0-SRC-036 verify demotion/降着 as an adjudicated lowering of placing; do not merge globally with every relegation regime.
 RESULT-016	RESULT	結果・審議・裁定	Relegation	降着	主に一部地域で着順を下げる裁定を指す語。	concept	P1	Europe/Regional	ALL	working_equivalent	candidate	yes	no	
 RESULT-017	RESULT	結果・審議・裁定	Void race	競走不成立	競走を有効な結果として成立させない裁定。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 RESULT-018	RESULT	結果・審議・裁定	False start	不正発走／発走やり直し	正規のスタートが成立しなかった状態。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	

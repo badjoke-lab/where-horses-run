@@ -1,7 +1,7 @@
 concept_id	category_id	category_ja	canonical_en	preferred_ja	working_definition_ja	concept_kind	priority	jurisdiction_scope	discipline_scope	translation_status	verification_status	source_required	public_ready	notes
-SURF-001	SURF	走路・馬場状態	Turf	芝	芝草を主材とする競走面。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+SURF-001	SURF	走路・馬場状態	Turf	芝	芝草を主材とする競走面。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-029 verifies turf as a distinct racing surface in JRA course structure; global material details vary.
 SURF-002	SURF	走路・馬場状態	Grass	芝	Turfと同じ競走面を指す一般語。地域・文脈で使い分ける。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-SURF-003	SURF	走路・馬場状態	Dirt	ダート	土・砂等を主体とする非芝の競走面。組成は地域で異なる。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+SURF-003	SURF	走路・馬場状態	Dirt	ダート	土・砂等を主体とする非芝の競走面。組成は地域で異なる。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-029 verifies JRA dirt as a distinct non-turf racing surface; composition and category boundaries vary by jurisdiction.
 SURF-004	SURF	走路・馬場状態	Sand	砂馬場	砂を主材とする競走面。Dirtとの分類対応は地域で異なる。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 SURF-005	SURF	走路・馬場状態	Synthetic surface	合成馬場	人工素材を用いた競走面の総称。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 SURF-006	SURF	走路・馬場状態	All-weather	オールウェザー	全天候型として運用される合成系競走面の呼称。	concept	P0	GB/IRE/Europe/Asia/Global	ALL	working_equivalent	candidate	yes	no	
@@ -9,14 +9,14 @@ SURF-007	SURF	走路・馬場状態	Tapeta	タペタ	合成馬場の製品・方
 SURF-008	SURF	走路・馬場状態	Polytrack	ポリトラック	合成馬場の製品・方式名として用いられる語。	concept	P1	GLOBAL/Regional	ALL	working_equivalent	candidate	yes	no	
 SURF-009	SURF	走路・馬場状態	Fibresand	ファイバーサンド	繊維等を混合した合成系競走面の名称。	concept	P2	GB/IRE/Historical	ALL	working_equivalent	candidate	yes	no	
 SURF-010	SURF	走路・馬場状態	Cushion Track	クッション・トラック	合成馬場の製品・方式名。	concept	P3	US/Historical/Regional	ALL	working_equivalent	candidate	yes	no	
-SURF-011	SURF	走路・馬場状態	Going	ゴーイング／馬場状態	主に芝馬場の硬さ・含水状態等を示す公式分類語。	concept	P0	GB/IRE/Commonwealth/Regional	ALL	working_equivalent	candidate	yes	no	
-SURF-012	SURF	走路・馬場状態	Track condition	馬場状態	当日の競走面状態を示す一般・公式表現。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+SURF-011	SURF	走路・馬場状態	Going	ゴーイング／馬場状態	主に芝馬場の硬さ・含水状態等を示す公式分類語。	concept	P0	GB/IRE/Commonwealth/Regional	ALL	working_equivalent	source_verified	yes	no	GBIRE-SRC-003 verifies BHA official Going categories. Keep separate from generic Track condition per REL-008.
+SURF-012	SURF	走路・馬場状態	Track condition	馬場状態	当日の競走面状態を示す一般・公式表現。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-029 and REL-SRC-006 support official track-condition/rating systems; taxonomy differs by jurisdiction and remains related rather than identical to Going.
 SURF-013	SURF	走路・馬場状態	Firm	Firm	硬く乾いた芝馬場状態を示す区分。	concept	P1	Regional	Flat	working_equivalent	candidate	yes	no	
 SURF-014	SURF	走路・馬場状態	Good to Firm	Good to Firm	GoodとFirmの中間区分。	concept	P1	GB/IRE/Commonwealth	Flat	working_equivalent	candidate	yes	no	
-SURF-015	SURF	走路・馬場状態	Good	Good／良	良好な馬場状態を示す区分。具体的意味は体系ごとに確認する。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+SURF-015	SURF	走路・馬場状態	Good	Good／良	良好な馬場状態を示す区分。具体的意味は体系ごとに確認する。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	GBIRE-SRC-003 verifies Good in BHA Going; P0-SRC-029 verifies JRA 良 as a jurisdiction-specific condition label. Do not assert exact global equivalence.
 SURF-016	SURF	走路・馬場状態	Good to Soft	Good to Soft	GoodとSoftの中間区分。	concept	P1	GB/IRE/Commonwealth	Flat/Jump	working_equivalent	candidate	yes	no	
-SURF-017	SURF	走路・馬場状態	Soft	Soft	水分を含み柔らかい芝馬場状態。	concept	P0	GLOBAL/Regional	Flat/Jump	working_equivalent	candidate	yes	no	
-SURF-018	SURF	走路・馬場状態	Heavy	Heavy	非常に水分を多く含む芝馬場状態。	concept	P0	GLOBAL/Regional	Flat/Jump	working_equivalent	candidate	yes	no	
+SURF-017	SURF	走路・馬場状態	Soft	Soft	水分を含み柔らかい芝馬場状態。	concept	P0	GLOBAL/Regional	Flat/Jump	working_equivalent	source_verified	yes	no	GBIRE-SRC-003 verifies Soft as an official BHA Going category; exact thresholds and regional counterparts vary.
+SURF-018	SURF	走路・馬場状態	Heavy	Heavy	非常に水分を多く含む芝馬場状態。	concept	P0	GLOBAL/Regional	Flat/Jump	working_equivalent	source_verified	yes	no	GBIRE-SRC-003 verifies Heavy as an official BHA Going category; exact thresholds and regional counterparts vary.
 SURF-019	SURF	走路・馬場状態	Yielding	Yielding	一部地域で用いる柔らかめの芝馬場状態。	concept	P1	IRE/Asia/Regional	Flat	working_equivalent	candidate	yes	no	
 SURF-020	SURF	走路・馬場状態	Yielding to Soft	Yielding to Soft	一部地域でYieldingとSoftの中間を表す区分。	concept	P2	IRE/Regional	Flat	working_equivalent	candidate	yes	no	
 SURF-021	SURF	走路・馬場状態	Fast	Fast	主に北米のダートで速い状態を示す区分。	concept	P1	North America	Flat	working_equivalent	candidate	yes	no	
