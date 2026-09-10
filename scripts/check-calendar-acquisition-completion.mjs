@@ -68,7 +68,6 @@ const expectedCurrentGaps = new Set([
   'sorec-racing-information-system',
   'chile-teletrak-racing-system',
   'ireland-hri-racing-system',
-  'tjk-national-racing-system',
 ]);
 assert.deepEqual(new Set(obviousImplementationGaps.map((row) => row.system_id)), expectedCurrentGaps);
 
