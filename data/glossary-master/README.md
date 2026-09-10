@@ -10,51 +10,45 @@ It is **not** consumed by current public glossary routes and does not authorize 
 
 ## Current canonical candidate inventory
 
-The original zero-based seed is stored by semantic category under `concepts/` and is extended by jurisdiction research supplement files.
+The original zero-based seed is stored by semantic category under `concepts/` and is extended by jurisdiction/review supplement files.
 
-```text
-concepts/01-disc.tsv    Racing disciplines and systems
-concepts/02-rtype.tsv   Race types, class, and conditions
-concepts/03-entry.tsv   Entry and participation process
-concepts/04-horse.tsv   Horse breed, sex, and age
-concepts/05-breed.tsv   Pedigree and breeding
-concepts/06-role.tsv    People and official roles
-concepts/07-venue.tsv   Racecourses and course structure
-concepts/08-surf.tsv    Surfaces and track/going conditions
-concepts/09-dist.tsv    Distance and measurement
-concepts/10-weight.tsv  Weight and handicapping
-concepts/11-run.tsv     Race progression and running styles
-concepts/12-equip.tsv   Tack and equipment
-concepts/13-train.tsv   Training and pre/post-race activity
-concepts/14-meet.tsv    Meetings, schedules, and official documents
-concepts/15-result.tsv  Results, inquiry, and adjudication
-concepts/16-prize.tsv   Prize money and race value
-concepts/17-bet.tsv     Betting and odds terminology
-concepts/18-welf.tsv    Veterinary, safety, and horse welfare
-```
+Original seed: **501 Concepts / 18 categories**.
 
-Original zero-based seed totals:
+Current relationship-refined research master:
 
-- Concepts: **501**
+- Concepts: **653**
 - categories: **18**
-- P0: **156**
-- P1: **212**
-- P2: **118**
-- P3: **15**
-- verification state at seed creation: **all candidate**
-
-Current research-master totals after jurisdiction waves through Arabian/Harness wave 1:
-
-- Concepts: **654**
-- categories: **18**
-- P0: **205**
+- P0: **204**
 - P1: **296**
 - P2: **135**
 - P3: **18**
 - verification state: **mixed candidate and source-verified**
 - `public_ready=yes`: **0**
 
-The manifest is the machine-readable count authority. These counts describe the current research master, not a worldwide completeness claim.
+The count fell from 654 to 653 in `GLOSSARY-MASTER-005` wave 2 because four duplicate Concept rows were actually merged while three meaning-bearing Concepts were added. A lower count here is a quality improvement, not lost coverage.
+
+Merged Concept identities are recorded in:
+
+```text
+concepts/concept-dispositions-v1.tsv
+```
+
+Current merges:
+
+- `MEET-002 Meeting` -> `MEET-001 Race meeting` for the English single-event sense;
+- `MEET-005 Raceday` -> `MEET-004 Race day`;
+- `BET-031 Favourite` -> `BET-030 Favorite`;
+- `RTYPE-005 Bumper` -> `RTYPE-006 National Hunt Flat Race`.
+
+The moved strings remain available through `labels/relationship-wave2-labels-v1.tsv`; retired Concept IDs are not silently reused.
+
+New meaning-bearing Concepts from the same review wave are stored in `concepts/relationship-wave2-additions.tsv`:
+
+- `MEET-042 Racing meeting series (France)` — France Galop `Meeting`, distinct from one-day `Réunion`;
+- `RESULT-030 Race form notation` — including France `musique` as a regional implementation;
+- `RUN-046 Tactical pacemaker for another runner` — covering North American `Rabbit` and France Galop tactical `leader`, while remaining narrower than a generic Pacesetter.
+
+The manifest is the machine-readable count authority. Counts describe the current research master, not worldwide completeness.
 
 ## Register / abbreviation / historical layers
 
@@ -62,30 +56,23 @@ The current pass of `GLOSSARY-MASTER-004` separated how a term is used from what
 
 ```text
 register/register-usage-v1.tsv
-    colloquial, industry, betting-language and other register-specific usage;
-    may point at an existing Concept or an explicit NEW-REVIEW candidate.
-
 register/register-review-queue-v1.tsv
-    unresolved register usages whose meaning is evidenced but Concept placement is not yet settled.
-
+register/register-resolutions-v1.tsv
 abbreviations/abbreviations-v1.tsv
-    official abbreviations, race-type codes, chart codes, racecard equipment codes and display codes.
-
 historical/historical-terms-v1.tsv
-    historical, predecessor, deprecated or venue-specific retired terminology with bounded periods.
-
 sources/register-layer-sources-v1.tsv
-    evidence used specifically for these usage layers.
 ```
 
-Current usage-layer snapshot:
+Current effective usage-layer snapshot after MASTER-005 wave 2 resolutions:
 
 - register usages: **60**;
-- source-verified direct register mappings: **26**;
-- register candidate usages: **34**;
-- register review targets: **33**;
+- effective source-verified register mappings: **29**;
+- effective candidate usages: **31**;
+- register review targets: **33 total / 30 still open**;
 - abbreviations/codes: **26**, all source-verified;
 - historical terms: **4**, all source-verified.
+
+`register-resolutions-v1.tsv` is authoritative when an older register row still points at a retired Concept ID or a now-resolved `NEW-REVIEW-*` target. This preserves research history without leaving the effective mapping ambiguous.
 
 A slang, colloquial or abbreviated form does **not** automatically create a Concept. A historically retired term in one venue/jurisdiction must not be declared globally obsolete without evidence.
 
@@ -95,34 +82,48 @@ A slang, colloquial or abbreviated form does **not** automatically create a Conc
 
 ```text
 relations/relations-v1.tsv
-    reviewed Concept-to-Concept relationships using exact_equivalent, close_equivalent,
-    broader, narrower, related, contrast, regional_counterpart and no_direct_equivalent.
+    current Concept-to-Concept relationships.
 
 relations/relation-review-queue-v1.tsv
-    unresolved homonyms, sense splits, false-synonym risks, candidate deduplication,
-    and cross-language/cross-jurisdiction relation decisions.
+    discovered homonyms, sense splits, false-synonym risks, dedupe candidates and unresolved cross-system relations.
+
+relations/relation-resolutions-v1.tsv
+    reviewed decisions that close items from the relation review queue.
+
+labels/relationship-wave2-labels-v1.tsv
+    labels moved by Concept merge plus labels attached to newly resolved Concepts.
+
+definitions/relationship-wave2-definitions-v1.tsv
+    jurisdiction-specific definitions created by relation/sense review.
 
 sources/relationship-layer-sources-v1.tsv
     evidence added specifically for relation and sense-boundary claims.
 ```
 
-Initial wave 1 contains **15 relations** and **15 relation-review items**. Important current review cases include:
+Current relationship snapshot:
 
-- `Meeting / Race meeting / Fixture / Race day`;
-- `Racecourse / Racetrack / Track / Course`;
-- `Going / Track condition`;
-- `Group / Grade` and their numbered levels;
-- `Off time / Scheduled start time`;
-- `Bumper / National Hunt Flat Race`;
-- France `Meeting / Réunion` sense boundaries;
-- France tactical `leader` vs North American `Rabbit`;
-- France `musique` vs other form-notation systems.
+- active Concept-to-Concept relations: **16**;
+- relation review items discovered: **15**;
+- resolved review items: **7**;
+- open review items: **8**.
 
-Relations must be scope-aware. An `exact_equivalent` relationship in one jurisdiction or sense does not authorize a global merge. Relationship files are Concept-to-Concept only; register labels continue to map through the register/label layers.
+Resolved wave-2 cases include:
+
+- France `Meeting` vs `Réunion` sense split;
+- `Race day / Raceday` spelling dedupe;
+- `Favorite / Favourite` spelling dedupe;
+- `Bumper / National Hunt Flat Race` Concept dedupe;
+- `Group / Grade` retained as separate regional-counterpart systems;
+- North American `Rabbit` and France tactical `leader` resolved under a shared tactical-pacemaker Concept;
+- France `musique` promoted under a new race-form-notation Concept.
+
+Still-open high-risk cases include `Off time / Scheduled start time`, `Racecourse / Racetrack / Track`, `Going / Track condition`, Australasian `mudlark`, easy-travelling terminology, and cross-language betting-market support expressions.
+
+Relations must be scope-aware. An equivalence in one jurisdiction or one sense does not authorize a global merge.
 
 ## Concept file contract
 
-Every category TSV uses the same fields:
+Every Concept row uses:
 
 ```text
 concept_id
@@ -142,73 +143,31 @@ public_ready
 notes
 ```
 
-`canonical_en` and `preferred_ja` are working labels for maintenance and review. They do not assert that English or Japanese is globally authoritative, nor that a direct translation exists in every jurisdiction.
+`canonical_en` and `preferred_ja` are working maintenance labels. They do not assert that English or Japanese is globally authoritative.
 
-## Additional normalized domains
+## Normalized domains
 
-### Labels
+The working master separates Concepts from labels, definitions, relations, regional/register usage, abbreviations, historical terms, sources, future search queries, coverage and review queues.
 
-Original-script official, preferred, alternate, abbreviated, regional, colloquial, slang, historical, transliterated, and descriptive-translation labels.
-
-### Definitions
-
-Reader-oriented direct and expanded explanations by language and jurisdiction.
-
-### Relations
-
-Typed relationships such as `exact_equivalent`, `close_equivalent`, `broader`, `narrower`, `related`, `contrast`, `regional_counterpart`, `no_direct_equivalent`, and explicit homonym/ambiguity review.
-
-### Regional Usage
-
-Jurisdiction, authority, discipline, audience/register, and period-specific usage.
-
-### Slang / Colloquial / Industry
-
-Informal forms with bounded usage evidence, register, currentness, evidence class, confidence and review state. A one-off social-media use is not sufficient evidence.
-
-### Historical Terms
-
-Historical/deprecated/obsolete/legacy forms with period/currentness evidence and appropriately narrow jurisdiction/venue scope.
-
-### Sources
-
-Claim-specific evidence registry covering official rules/glossaries/racecards/programmes and appropriate specialist evidence for informal or historical usage.
-
-### Search Queries
-
-Definition, comparison, regional, how/why, translation, abbreviation, and racecard-reading search intents. Search metadata never changes canonical concept truth.
-
-### Coverage / Review Queue
-
-Coverage by taxonomy, jurisdiction, language, evidence state, and unresolved terminology.
+Typed Concept relations include `exact_equivalent`, `close_equivalent`, `broader`, `narrower`, `related`, `contrast`, `regional_counterpart`, and `no_direct_equivalent`. Polysemy and unresolved equivalence remain explicit review items until resolved.
 
 ## Relationship to the existing public glossary
 
-The current public glossary is **not an input, migration gate, or completeness target** for this master.
-
-There is no requirement to preserve:
-
-- existing glossary record IDs;
-- existing headwords;
-- existing categories;
-- a one-to-one mapping from old records;
-- the existing bilingual field model.
-
-When the later `GLOSSARY-PUBLIC-*` implementation is authorized, the current glossary content may be removed wholesale and regenerated from reviewed master data. Reusable routing/UI code may be retained only if it fits the new public contract.
+The current public glossary is **not an input, migration gate, or completeness target** for this master. Its record IDs, headwords, categories and EN/JA-only field model need not be preserved. During later `GLOSSARY-PUBLIC-*` work it may be removed wholesale and regenerated from reviewed master data.
 
 ## Site UI vocabulary is separate
 
-WHR-specific interface/access labels such as `Official live`, `Official replay`, `Account required`, `Subscription required`, `Geo-restricted`, `Live`, and `Upcoming` are not horse-racing knowledge categories. Keep them in site UI/product vocabulary unless a term independently has a genuine horse-racing concept meaning.
+WHR-specific interface/access labels such as `Official live`, `Official replay`, `Account required`, `Subscription required`, `Geo-restricted`, `Live`, and `Upcoming` are not the backbone of the horse-racing knowledge taxonomy.
 
 ## Write rules
 
 - Never invent local-language equivalence to fill a blank.
 - Never treat an English working label as the worldwide official term.
-- Preserve original script when collecting local terminology.
-- Never promote a search variant into a preferred label because it is convenient.
-- Do not flatten `Meeting`, `Fixture`, `Race day`, `Racecourse`, `Racetrack`, `Going`, `Track condition`, `Group`, `Grade`, or similar near terms into global synonyms without evidence.
-- Keep slang, colloquial, historical, abbreviation and deprecated status explicit.
+- Preserve original script.
+- Do not flatten near terms into global synonyms without evidence.
+- Keep slang, historical, abbreviation and deprecated status explicit.
 - Keep unresolved taxonomy/evidence questions visible.
-- Relationship assertions must record scope and should use the weakest relation type supported by evidence rather than an optimistic synonym claim.
-- Do not set `public_ready=yes` until the relevant definition, labels, jurisdiction claims, relationships, and evidence have been reviewed.
+- Relationship assertions must record scope and use the weakest relation supported by evidence.
+- Retired Concept IDs must resolve through `concept-dispositions-v1.tsv`; do not silently recycle them.
+- Do not set `public_ready=yes` until definitions, labels, jurisdiction claims, relationships and evidence have been reviewed.
 - Never make this working directory a public-runtime input without a later reviewed `GLOSSARY-PUBLIC-*` decision.

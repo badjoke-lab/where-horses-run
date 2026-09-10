@@ -18,9 +18,9 @@ Completed first major-jurisdiction pass: GLOSSARY-MASTER-003
 Completed current register pass: GLOSSARY-MASTER-004
 Current glossary Work ID: GLOSSARY-MASTER-005
 Next: GLOSSARY-MASTER-006
-Current research master: 654 Concepts / 18 domain categories
+Current research master: 653 Concepts / 18 domain categories
 Current register layer: 60 usages / 26 abbreviations / 4 historical rows
-Current relationship layer wave 1: 15 relations / 15 review items
+Current relationship layer: 16 relations / 15 review items / 7 resolved / 8 open
 Public glossary page expansion: deferred
 Automatic glossary publication: disabled
 Existing public glossary content: disposable legacy runtime baseline
@@ -84,7 +84,7 @@ The 501 count is the original research seed, **not** a worldwide completeness cl
 
 Status: **first major-jurisdiction pass complete; follow-up waves allowed**.
 
-The first pass researched terminology bottom-up across GB/Ireland, US/Canada, Australia/New Zealand, Japan including NAR/Banei, France, Hong Kong/Korea, UAE/South Africa, plus Arabian/Harness cross-system follow-up. The research master now contains **654 Concepts** while preserving local labels, definitions, sources, no-direct-equivalent cases, and review candidates.
+The first pass researched terminology bottom-up across GB/Ireland, US/Canada, Australia/New Zealand, Japan including NAR/Banei, France, Hong Kong/Korea, UAE/South Africa, plus Arabian/Harness cross-system follow-up. That pass grew the seed to 654 Concepts before relationship cleanup. MASTER-005 may reduce or increase that number as duplicate identities are merged and missing meanings are split out.
 
 Ongoing rule:
 
@@ -105,8 +105,8 @@ Current-pass output:
 - **60** register usages with jurisdiction/register/currentness/evidence metadata;
 - **26** source-verified abbreviations, chart/racecard codes and display codes;
 - **4** source-verified historical/legacy rows;
-- **33** unresolved register targets retained in an explicit review queue;
-- evidence from official glossaries, racing authorities, national racing bodies and appropriate specialist racing sources;
+- **33** discovered register review targets;
+- register resolution overlay added when MASTER-005 resolves older candidate mappings or retired Concept IDs;
 - source-backed usage does not automatically create a new Concept;
 - polysemous terms stay unresolved until their senses are explicitly modeled.
 
@@ -115,6 +115,7 @@ Current storage:
 ```text
 data/glossary-master/register/register-usage-v1.tsv
 data/glossary-master/register/register-review-queue-v1.tsv
+data/glossary-master/register/register-resolutions-v1.tsv
 data/glossary-master/abbreviations/abbreviations-v1.tsv
 data/glossary-master/historical/historical-terms-v1.tsv
 data/glossary-master/sources/register-layer-sources-v1.tsv
@@ -132,28 +133,62 @@ Required work:
 - add explicit ambiguity/homonym treatment where one spelling has multiple meanings;
 - resolve common false-synonym risks such as Meeting/Fixture/Race day, Racecourse/Racetrack/Track, Going/Track condition, and regional race-class terminology;
 - distinguish Concept identity from spelling variants and register labels;
-- identify duplicate-Concept candidates that should later become one Concept plus multiple labels;
+- identify duplicate-Concept candidates and actually merge them when evidence supports one Concept plus multiple labels;
+- create new Concepts when relation review exposes a genuine missing meaning;
 - verify definitions and jurisdiction claims against source evidence;
 - keep unresolved conflicts visible in a review queue;
 - prefer the weakest relation supported by evidence rather than an optimistic exact-equivalence claim.
 
-Wave 1 storage:
+Current storage:
 
 ```text
 data/glossary-master/relations/relations-v1.tsv
 data/glossary-master/relations/relation-review-queue-v1.tsv
+data/glossary-master/relations/relation-resolutions-v1.tsv
+data/glossary-master/concepts/concept-dispositions-v1.tsv
+data/glossary-master/concepts/relationship-wave2-additions.tsv
+data/glossary-master/labels/relationship-wave2-labels-v1.tsv
+data/glossary-master/definitions/relationship-wave2-definitions-v1.tsv
 data/glossary-master/sources/relationship-layer-sources-v1.tsv
 ```
 
-Wave 1 starts with **15 reviewed relations** and **15 explicit review items**. Initial decisions include:
+Wave 1 established the relation ledger. Wave 2 begins real Concept-identity cleanup.
 
-- `Raceday` / `Race day` and `Favourite` / `Favorite` as exact-equivalent spelling pairs pending Concept dedupe;
-- `Bumper` / `National Hunt Flat Race` as exact-equivalent in scoped GB/IRE operational usage pending dedupe;
-- `Group` / `Grade` levels as international `regional_counterpart`, not global synonyms;
-- `Going` / `Track condition` as related but not exact-equivalent;
-- `Racecourse` / `Racetrack` only close-equivalent in the facility sense;
-- `Fixture` / `Race meeting` as related, not identical;
-- France `Meeting` held for sense split because France Galop defines it as multiple `réunions` at one racecourse over a period.
+Wave 2 merged four duplicate Concept rows:
+
+- `MEET-002 Meeting` -> `MEET-001 Race meeting` for the English single-event sense;
+- `MEET-005 Raceday` -> `MEET-004 Race day`;
+- `BET-031 Favourite` -> `BET-030 Favorite`;
+- `RTYPE-005 Bumper` -> `RTYPE-006 National Hunt Flat Race`.
+
+Wave 2 also added three distinct Concepts:
+
+- `MEET-042 Racing meeting series (France)`;
+- `RESULT-030 Race form notation`;
+- `RUN-046 Tactical pacemaker for another runner`.
+
+This changes the active research master from **654 to 653 Concepts**. The count reduction is intentional: four duplicate identities were removed while three real meanings were added.
+
+Current relation decisions include:
+
+- `Group` / `Grade` levels remain separate Concepts linked as `regional_counterpart`;
+- `Going` / `Track condition` remain related but not exact-equivalent pending deeper taxonomy review;
+- `Racecourse` / `Racetrack` are only close-equivalent in the facility sense;
+- `Fixture` / `Race meeting` are related, not identical;
+- France `Meeting` is no longer forced into the English single-event Meeting sense;
+- France `Réunion Premium` and `Réunion PMH` are narrower France-specific meeting classes under the one-day meeting Concept;
+- tactical pacemaker is narrower than generic Pacesetter;
+- North American `Rabbit` and France tactical `leader` are regional labels of the tactical-pacemaker Concept;
+- France `musique` is a regional label/definition under Race form notation.
+
+Current relationship state:
+
+- active relations: **16**;
+- review items discovered: **15**;
+- resolved: **7**;
+- open: **8**.
+
+The next MASTER-005 wave prioritizes `Off time / Scheduled start time`, `Racecourse / Racetrack / Track`, and `Going / Track condition`, followed by the remaining cross-jurisdiction register candidates.
 
 ### `GLOSSARY-MASTER-006` — search-intent, coverage, and readiness review
 
@@ -231,9 +266,10 @@ Glossary master work must not block Calendar corrections, racecourse data qualit
 
 ```text
 Current glossary Work ID: GLOSSARY-MASTER-005
-Current input: 654-Concept research master + 60 register usages + relation wave 1
+Current input: 653-Concept research master + 60 register usages + relation/resolution layers
 Current focus: false-synonym / homonym / equivalence / dedupe / evidence refinement
-Next: GLOSSARY-MASTER-006
+Next immediate wave: Off time; Racecourse/Racetrack/Track; Going/Track condition
+Next programme stage: GLOSSARY-MASTER-006
 Public implementation: deferred until post-MASTER-006 readiness review
 ```
 
