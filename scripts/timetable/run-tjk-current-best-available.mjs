@@ -111,7 +111,12 @@ async function enrichBestAvailableFromAnnualFixture(fixture, startDate) {
         detail_discovered_href: detail.provenance.discovered_href,
         detail_discovery_method: 'official_page_discovered_venue_detail',
       },
-      detail_observation: { status: 'available', race_count: detected.schedule.length, conflicts: [] },
+      detail_observation: {
+        status: 'available',
+        evaluated_capability_rank: 'A',
+        race_count: detected.schedule.length,
+        conflicts: [],
+      },
     });
   } catch (error) {
     if (String(error?.message ?? '').startsWith('Unknown TJK domestic racecourse source id:')) throw error;
