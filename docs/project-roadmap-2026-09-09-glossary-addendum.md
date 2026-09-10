@@ -11,7 +11,7 @@ This addendum creates a parallel glossary knowledge lane. It does not supersede 
 ## Current glossary stage
 
 ```text
-Glossary stage: source_evidence_coverage_gate
+Glossary stage: p0_source_verification
 Completed: GLOSSARY-MASTER-001
 Completed: GLOSSARY-MASTER-002
 Completed first major-jurisdiction pass: GLOSSARY-MASTER-003
@@ -21,18 +21,19 @@ Next: GLOSSARY-MASTER-006
 Current research master: 658 Concepts / 18 domain categories
 Current register layer: 60 usages / 36 effective verified / 24 effective candidates
 Current relationship layer: 20 relations / 15 review items / 15 resolved / 0 open
+Evidence coverage: 159/658 source-verified; P0 51/204 source-verified
 Public glossary page expansion: deferred
 Automatic glossary publication: disabled
 Existing public glossary content: disposable legacy runtime baseline
 ```
 
-The relation/equivalence review queue discovered in MASTER-005 waves 1–4 is now fully resolved. MASTER-005 does **not** complete merely because that queue reached zero: the current gate is source/evidence coverage across the full 658-Concept master.
+The relation/equivalence queue discovered in MASTER-005 waves 1–4 is fully resolved. The first whole-master evidence audit then blocked MASTER-005 completion because most of the original base seed remains candidate.
 
 ## Programme objective
 
 The glossary is first a useful user-facing horse-racing knowledge resource. Search/AI discoverability is a separate structured layer and must not distort canonical knowledge truth.
 
-Worldwide racing terminology is not globally standardized. The master represents language-independent Concepts, local/original-script labels, jurisdiction-specific usage, no-direct-equivalent cases, abbreviations and register, historical usage, typed relationships, evidence provenance, and later search intent as a separate layer.
+Worldwide racing terminology is not globally standardized. The master represents language-independent Concepts, local/original-script labels, jurisdiction-specific usage, no-direct-equivalent cases, abbreviations/register, historical usage, typed relationships, evidence provenance, and later search intent as a separate layer.
 
 ## Active glossary sequence
 
@@ -54,70 +55,67 @@ The first pass covered GB/Ireland, US/Canada, Australia/New Zealand, Japan inclu
 
 Status: **current pass complete; follow-up waves allowed**.
 
-Current layer:
-
-- 60 register usages;
-- 36 effective source-verified mappings after MASTER-005 resolutions;
-- 24 effective register candidates;
-- 26 source-verified abbreviations/codes;
-- 4 source-verified historical/legacy rows;
-- 12 register-resolution rows.
+Current layer has 60 register usages, 36 effective source-verified mappings, 24 effective candidates, 26 source-verified abbreviations/codes, 4 source-verified historical rows, and 12 register resolutions.
 
 ### `GLOSSARY-MASTER-005` — relationship/equivalence and evidence refinement
 
-Status: **current — relation review complete for discovered wave 1–4 items; evidence audit in progress**.
+Status: **current**.
 
-Identity cleanup merged:
+Relationship work has:
 
-- `MEET-002 Meeting` -> `MEET-001 Race meeting` for the English single-event sense;
-- `MEET-005 Raceday` -> `MEET-004 Race day`;
-- `BET-031 Favourite` -> `BET-030 Favorite`;
-- `RTYPE-005 Bumper` -> `RTYPE-006 National Hunt Flat Race`.
+- merged duplicate Concept identities where justified;
+- split real jurisdiction/sense differences;
+- retained polysemy where a global split would overstate evidence;
+- resolved all 15 discovered relationship-review items;
+- produced 20 scoped Concept relations;
+- added five wave-4 Concepts for wet-track aptitude, travelling state, pressure state and betting-support semantics.
 
-Relation review also created real missing meanings, including France Meeting series, Race form notation, tactical pacemaker, and wave-4 Concepts:
+Current master after wave 4: **658 Concepts**.
 
-- `HORSE-034 Wet-track aptitude`;
-- `RUN-047 Travelling easily`;
-- `RUN-048 Under pressure`;
-- `BET-043 Strong betting support`;
-- `BET-044 Dominant betting concentration`.
+#### Evidence audit result
 
-Current relation decisions include:
+Canonical files:
 
-- `Off time` = actual race-start time; scheduled start remains a separate Concept;
-- `Going` and `Track condition` remain related regional taxonomies, not global synonyms;
-- `Racecourse / Racetrack / Track` retain sense-scoped relations and documented polysemy;
-- `Group / Grade` remain separate regional-counterpart systems;
-- `Spell/Spelling` is narrower than generic Layoff;
-- AU/NZ `Mudlark` maps to horse Wet-track aptitude, not surface condition;
-- `under double wraps` / `on the bit/bridle` map to Travelling easily, contrasted with `off the bit/bridle` under Under pressure;
-- `backed off the map` maps to Strong betting support; JRA `一本かぶり` maps to narrower Dominant betting concentration.
+```text
+data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
+data/glossary-master/coverage/master-005-completion-gate-v1.tsv
+```
 
-Current relationship state:
+Observed:
 
-- active relations: **20**;
-- review items discovered: **15**;
-- resolved: **15**;
-- open: **0**.
+- all Concepts: **159/658 source-verified (24.2%)**, 499 candidate;
+- P0: **51/204 source-verified (25.0%)**, 153 candidate;
+- active base seed: **1/497 source-verified (0.2%)**, 496 candidate;
+- supplemental jurisdiction/relationship research: **158/161 source-verified (98.1%)**, 3 candidate.
 
-### MASTER-005 completion gate
+The evidence problem is therefore not the newer jurisdiction research; it is the original generic seed.
 
-Before advancing to MASTER-006, audit the 658-Concept master for:
+Categories with zero source-verified Concept rows are DISC, BREED, DIST and WELF. VENUE, RESULT, BET and several other core categories also have very low coverage.
 
-- candidate vs source-verified Concept counts;
-- P0 evidence coverage;
-- category concentrations of unsourced/candidate Concepts;
-- major-jurisdiction evidence gaps;
-- evidence-class appropriateness for formal terms versus slang/historical claims;
-- any newly exposed critical identity conflict.
+#### MASTER-005 completion decision
 
-A zero relation-review queue is necessary but not sufficient. `public_ready` remains 0 during this audit.
+Status: **HOLD — not complete**.
+
+The relationship gate passes, but the P0 evidence gate fails. The project must not move to MASTER-006 while **153 P0 Concepts remain candidate**.
+
+Immediate work:
+
+```text
+P0-first source verification
+-> prioritize official/international authority sources for generic core concepts
+-> update Concept rows and claim provenance
+-> resolve the three remaining supplemental Concept candidates during the same evidence cleanup
+-> rerun master-005-evidence-coverage-v1
+-> rerun MASTER-005 completion gate
+```
+
+No arbitrary raw-term target is sufficient. Completion is based on evidence quality and remaining material risk.
 
 ### `GLOSSARY-MASTER-006` — search-intent, coverage, and readiness review
 
 Status: **queued, not started**.
 
-Required work will map definition/comparison/regional/how/why/translation/abbreviation/racecard-reading intents, keep search metadata separate from knowledge truth, produce coverage views, identify remaining knowledge gaps, and decide whether public implementation planning is justified.
+Only after MASTER-005 passes may this stage map definition, comparison, regional, how/why, translation, abbreviation and racecard-reading intents, identify useful comparison/regional content, and decide whether public implementation planning is justified.
 
 ## Explicitly deferred public implementation lane
 
@@ -140,9 +138,10 @@ The current public glossary remains a disposable runtime/content baseline. There
 Current glossary Work ID: GLOSSARY-MASTER-005
 Current master: 658 Concepts / 18 categories
 Relationship state: 20 relations / 15 discovered reviews / 15 resolved / 0 open
-Immediate work: source/evidence coverage audit and MASTER-005 completion gate
-Next programme stage: GLOSSARY-MASTER-006 only after that gate
+Evidence state: 159 verified / 499 candidate; P0 51 verified / 153 candidate
+Immediate work: P0-first source verification
+Next programme stage: GLOSSARY-MASTER-006 only after MASTER-005 gate passes
 Public implementation: deferred until post-MASTER-006 readiness review
 ```
 
-Conversation history is not execution authority. Future glossary work should read the terminology master specification, `data/glossary-master/README.md`, and this addendum first.
+Conversation history is not execution authority. Future glossary work should read the terminology master specification, `data/glossary-master/README.md`, the coverage gate files, and this addendum first.
