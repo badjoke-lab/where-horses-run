@@ -1,6 +1,6 @@
 {
   "schema_version": "world-racing-terminology-master-manifest-v1",
-  "status": "candidate_seed_plus_jurisdiction_register_and_relation_research",
+  "status": "candidate_seed_plus_jurisdiction_register_relation_and_evidence_audit",
   "generated_from_legacy_glossary": false,
   "concept_count": 658,
   "category_count": 18,
@@ -49,7 +49,7 @@
     "sources_file":"sources/register-layer-sources-v1.tsv"
   },
   "relationship_layer": {
-    "status":"wave_4_all_discovered_review_items_resolved_pending_evidence_coverage",
+    "status":"wave_4_all_discovered_review_items_resolved",
     "relations":{"file":"relations/relations-v1.tsv","row_count":20},
     "review_queue":{"file":"relations/relation-review-queue-v1.tsv","row_count":15,"resolved_rows":15,"open_rows":0},
     "resolutions":{"file":"relations/relation-resolutions-v1.tsv","row_count":15},
@@ -57,7 +57,17 @@
     "definitions_files":["definitions/relationship-wave2-definitions-v1.tsv","definitions/relationship-wave3-definitions-v1.tsv","definitions/relationship-wave4-definitions-v1.tsv"],
     "sources_file":"sources/relationship-layer-sources-v1.tsv"
   },
+  "evidence_coverage": {
+    "status":"audited_master_005_hold",
+    "coverage_file":"coverage/master-005-evidence-coverage-v1.tsv",
+    "completion_gate_file":"coverage/master-005-completion-gate-v1.tsv",
+    "all_concepts":{"total":658,"source_verified":159,"candidate":499,"verified_pct":24.2},
+    "p0":{"total":204,"source_verified":51,"candidate":153,"verified_pct":25.0},
+    "active_base_seed":{"total":497,"source_verified":1,"candidate":496,"verified_pct":0.2},
+    "supplemental_research":{"total":161,"source_verified":158,"candidate":3,"verified_pct":98.1},
+    "master_005_completion":"hold"
+  },
   "next_work_id":"GLOSSARY-MASTER-005",
-  "next_work":"source_evidence_coverage_audit_then_master_005_completion_gate",
+  "next_work":"p0_first_source_verification_then_rerun_master_005_completion_gate",
   "public_implementation":"deferred"
 }
