@@ -1,0 +1,47 @@
+name: Ireland HRI racecard contract
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/timetable/ireland-hri-fixtures-core.mjs'
+      - 'scripts/timetable/run-ireland-hri-official-window.mjs'
+      - 'scripts/check-ireland-hri-fixtures-adapter.mjs'
+      - 'data/fixtures/ireland-hri-racecard-month-observed-v1.html'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/authority-source-inventory-ireland-hri-v1.json'
+      - 'scripts/timetable/load-authority-source-inventory.mjs'
+      - '.github/workflows/ireland-hri-racecard-contract.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/timetable/ireland-hri-fixtures-core.mjs'
+      - 'scripts/timetable/run-ireland-hri-official-window.mjs'
+      - 'scripts/check-ireland-hri-fixtures-adapter.mjs'
+      - 'data/fixtures/ireland-hri-racecard-month-observed-v1.html'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/authority-source-inventory-ireland-hri-v1.json'
+      - 'scripts/timetable/load-authority-source-inventory.mjs'
+      - '.github/workflows/ireland-hri-racecard-contract.yml'
+  workflow_dispatch:
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/ireland-hri-fixtures-core.mjs
+          node --check scripts/timetable/run-ireland-hri-official-window.mjs
+          node --check scripts/check-ireland-hri-fixtures-adapter.mjs
+      - name: Validate HRI racecard parser and completion states
+        run: node scripts/check-ireland-hri-fixtures-adapter.mjs
+      - name: Validate Acquisition Registry resolution
+        run: node scripts/check-calendar-acquisition-registry.mjs
+      - name: Check diff formatting
+        run: git diff --check
