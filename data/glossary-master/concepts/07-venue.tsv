@@ -1,8 +1,8 @@
 concept_id	category_id	category_ja	canonical_en	preferred_ja	working_definition_ja	concept_kind	priority	jurisdiction_scope	discipline_scope	translation_status	verification_status	source_required	public_ready	notes
-VENUE-001	VENUE	競馬場・コース	Racecourse	競馬場	競走を行う施設全体。	concept	P0	GB/IRE/Commonwealth/Global	ALL	working_equivalent	candidate	yes	no	
-VENUE-002	VENUE	競馬場・コース	Racetrack	競馬場／競走路	主に北米で競馬場または競走路を指す語。	concept	P0	North America/Global	ALL	working_equivalent	candidate	yes	no	
-VENUE-003	VENUE	競馬場・コース	Track	トラック／走路	競走路そのもの、または競馬場全体を略して指す語。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-VENUE-004	VENUE	競馬場・コース	Course	コース	競走に使用する走路・経路。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+VENUE-001	VENUE	競馬場・コース	Racecourse	競馬場	競走を行う施設全体。	concept	P0	GB/IRE/Commonwealth/Global	ALL	working_equivalent	source_verified	yes	no	P0-SRC-016. BHA directory treats racecourses as venue entities with location, fixture and course attributes. Facility-level sense only; relation layer preserves differences from Racetrack/Track.
+VENUE-002	VENUE	競馬場・コース	Racetrack	競馬場／競走路	主に北米で競馬場または競走路を指す語。	concept	P0	North America/Global	ALL	working_equivalent	source_verified	yes	no	P0-SRC-017;REL-SRC-007;USCA-SRC-009. North American authority usage supports both venue and physical-surface senses; keep polysemy and scoped relations rather than global equivalence.
+VENUE-003	VENUE	競馬場・コース	Track	トラック／走路	競走路そのもの、または競馬場全体を略して指す語。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-017;REL-SRC-007;USCA-SRC-009. USTA uses Track for venue/listing entities while rules also use physical-track senses; preserve polysemy.
+VENUE-004	VENUE	競馬場・コース	Course	コース	競走に使用する走路・経路。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-018. JRA course pages define course geometry, lap distance, straight and start locations; generic definition remains jurisdiction-neutral.
 VENUE-005	VENUE	競馬場・コース	Main track	本走路	競馬場の主要な走路。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 VENUE-006	VENUE	競馬場・コース	Inner course	内回りコース	同一競馬場の内側にある周回コース。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 VENUE-007	VENUE	競馬場・コース	Outer course	外回りコース	同一競馬場の外側にある周回コース。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
@@ -10,22 +10,22 @@ VENUE-008	VENUE	競馬場・コース	Straight course	直線コース	周回せ�
 VENUE-009	VENUE	競馬場・コース	Round course	周回コース	周回形状を持つ競走コース。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 VENUE-010	VENUE	競馬場・コース	Oval	オーバルコース	楕円形・周回型の競走路を示す表現。	concept	P2	North America/Regional	ALL	working_equivalent	candidate	yes	no	
 VENUE-011	VENUE	競馬場・コース	Chute	シュート／引込線	周回コースへ接続する直線状の延長走路。	concept	P1	North America/Global	Flat	working_equivalent	candidate	yes	no	
-VENUE-012	VENUE	競馬場・コース	Home straight	最後の直線／ホームストレッチ	ゴールへ向かう主要な直線区間。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+VENUE-012	VENUE	競馬場・コース	Home straight	最後の直線／ホームストレッチ	ゴールへ向かう主要な直線区間。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-018;P0-SRC-019. JRA course/facility material identifies the final straight and its geometry; regional labels remain separate.
 VENUE-013	VENUE	競馬場・コース	Homestretch	ホームストレッチ	主に北米でゴール前直線を指す語。	concept	P1	North America	ALL	working_equivalent	candidate	yes	no	
 VENUE-014	VENUE	競馬場・コース	Backstretch	向正面	ホームストレッチの反対側に位置する直線区間。	concept	P1	North America/Global	ALL	working_equivalent	candidate	yes	no	
-VENUE-015	VENUE	競馬場・コース	Turn	コーナー	コースの曲線区間。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+VENUE-015	VENUE	競馬場・コース	Turn	コーナー	コースの曲線区間。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-019. JRA facility glossary defines コーナー as curved portions of the course and explains first through fourth corner numbering.
 VENUE-016	VENUE	競馬場・コース	Bend	コーナー	主に英国系でコースの曲線区間を指す語。	concept	P1	GB/IRE/Commonwealth	ALL	working_equivalent	candidate	yes	no	
 VENUE-017	VENUE	競馬場・コース	Corner	コーナー	曲線区間を指す一般表現。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-VENUE-018	VENUE	競馬場・コース	Rail	内柵／ラチ	走路の境界を示す柵。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+VENUE-018	VENUE	競馬場・コース	Rail	内柵／ラチ	走路の境界を示す柵。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-020. JRA defines 埒 as course/racecourse fencing and distinguishes inner and outer rails.
 VENUE-019	VENUE	競馬場・コース	Running rail	移動柵／走路柵	走路内側などに設けるレール・柵。	concept	P1	GB/IRE/Commonwealth	ALL	working_equivalent	candidate	yes	no	
-VENUE-020	VENUE	競馬場・コース	Rail position	移動柵位置	内柵を通常位置から移動した設定・位置。	concept	P0	AUS/NZ/Asia/Regional	Flat	working_equivalent	candidate	yes	no	
+VENUE-020	VENUE	競馬場・コース	Rail position	移動柵位置	内柵を通常位置から移動した設定・位置。	concept	P0	AUS/NZ/Asia/Regional	Flat	working_equivalent	source_verified	yes	no	P0-SRC-021. Racing Australia current meeting data publishes Rail Position as an operational course setting; exact formats vary by authority.
 VENUE-021	VENUE	競馬場・コース	Winning post	決勝柱	ゴール位置を示す標識。	concept	P1	GB/IRE/Commonwealth	ALL	working_equivalent	candidate	yes	no	
-VENUE-022	VENUE	競馬場・コース	Finish line	決勝線	着順判定の基準となるゴール線。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-VENUE-023	VENUE	競馬場・コース	Starting point	発走地点	各距離のレースが開始される位置。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-VENUE-024	VENUE	競馬場・コース	Starting gate	発馬機	馬を区画に入れて一斉発走させる装置。	concept	P0	North America/Global	Flat	working_equivalent	candidate	yes	no	
-VENUE-025	VENUE	競馬場・コース	Starting stalls	発馬機	主に英国系で発馬機を指す語。	concept	P0	GB/IRE/Commonwealth	Flat	working_equivalent	candidate	yes	no	
+VENUE-022	VENUE	競馬場・コース	Finish line	決勝線	着順判定の基準となるゴール線。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-019. JRA goal-board explanation identifies the aligned finish line used for finish/photo-finish judgment.
+VENUE-023	VENUE	競馬場・コース	Starting point	発走地点	各距離のレースが開始される位置。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-018. JRA course pages publish starting positions for individual race distances.
+VENUE-024	VENUE	競馬場・コース	Starting gate	発馬機	馬を区画に入れて一斉発走させる装置。	concept	P0	North America/Global	Flat	working_equivalent	source_verified	yes	no	P0-SRC-019. JRA facility glossary defines the starting-gate apparatus and stall assignment used for flat-race starts.
+VENUE-025	VENUE	競馬場・コース	Starting stalls	発馬機	主に英国系で発馬機を指す語。	concept	P0	GB/IRE/Commonwealth	Flat	working_equivalent	source_verified	yes	no	P0-SRC-015. BHA current non-runner/start rules explicitly use starting stalls as the Flat-race starting apparatus.
 VENUE-026	VENUE	競馬場・コース	Mobile barrier	モバイルスタート車	繋駕競走で移動式ゲートを用いる発走装置。	concept	P1	GLOBAL	Harness	working_equivalent	candidate	yes	no	
-VENUE-027	VENUE	競馬場・コース	Paddock	パドック	競走前に馬を周回・待機させ観客等が確認する場所。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+VENUE-027	VENUE	競馬場・コース	Paddock	パドック	競走前に馬を周回・待機させ観客等が確認する場所。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-019. JRA facility glossary defines paddock as the pre-race area where runners walk and are inspected/observed.
 VENUE-028	VENUE	競馬場・コース	Parade ring	パレードリング	主に英国等で競走前に馬を見せる周回場所。	concept	P1	GB/IRE/Regional	Flat/Jump	working_equivalent	candidate	yes	no	
 VENUE-029	VENUE	競馬場・コース	Saddling paddock	装鞍所／パドック	主に北米で装鞍や競走前展示を行う区域。	concept	P2	North America	Flat	working_equivalent	candidate	yes	no	
 VENUE-030	VENUE	競馬場・コース	Winner's enclosure	ウィナーズ・サークル／表彰区域	勝馬・関係者が表彰等を受ける区域。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
@@ -34,10 +34,10 @@ VENUE-032	VENUE	競馬場・コース	Stable area	厩舎地区	競馬場内外�
 VENUE-033	VENUE	競馬場・コース	Barn	厩舎	主に北米で馬房を備えた厩舎建物。	concept	P2	North America	ALL	working_equivalent	candidate	yes	no	
 VENUE-034	VENUE	競馬場・コース	Stable	厩舎	馬を収容・管理する施設。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 VENUE-035	VENUE	競馬場・コース	Walking ring	周回場	競走前後に馬を歩かせる区域。	concept	P3	Regional	ALL	working_equivalent	candidate	yes	no	
-VENUE-036	VENUE	競馬場・コース	Course circumference	コース周長	周回コース一周の公称距離。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+VENUE-036	VENUE	競馬場・コース	Course circumference	コース周長	周回コース一周の公称距離。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-018. JRA course pages publish one-lap course distance for defined track layouts.
 VENUE-037	VENUE	競馬場・コース	Course width	コース幅	走路の横幅。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-VENUE-038	VENUE	競馬場・コース	Left-handed	左回り	反時計回りに周回するコース方向。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-VENUE-039	VENUE	競馬場・コース	Right-handed	右回り	時計回りに周回するコース方向。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+VENUE-038	VENUE	競馬場・コース	Left-handed	左回り	反時計回りに周回するコース方向。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-018;P0-SRC-019. JRA identifies Tokyo as left-handed and distinguishes left- and right-handed main courses.
+VENUE-039	VENUE	競馬場・コース	Right-handed	右回り	時計回りに周回するコース方向。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-019. JRA facility guidance distinguishes right-handed main courses from left-handed courses; generic direction Concept is not jurisdiction-specific.
 VENUE-040	VENUE	競馬場・コース	Clockwise	時計回り	右回り方向を表す一般表現。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 VENUE-041	VENUE	競馬場・コース	Anti-clockwise	反時計回り	左回り方向を表す英国系表記。	concept	P1	GB/IRE/Commonwealth	ALL	working_equivalent	candidate	yes	no	
 VENUE-042	VENUE	競馬場・コース	Counterclockwise	反時計回り	左回り方向を表す北米系表記。	concept	P1	North America	ALL	working_equivalent	candidate	yes	no	
