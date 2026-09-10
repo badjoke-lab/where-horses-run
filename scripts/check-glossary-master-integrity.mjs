@@ -31,7 +31,7 @@ function fail(message) {
 }
 
 function readTsv(filePath) {
-  const text = fs.readFileSync(filePath, 'utf8').replace(/^\uFEFF/, '').trimEnd();
+  const text = fs.readFileSync(filePath, 'utf8').replace(/^\uFEFF/, '').replace(/(?:\r?\n)+$/, '');
   const lines = text.split(/\r?\n/);
   if (!lines.length || !lines[0]) return { header: [], rows: [] };
   const header = lines[0].split('\t');
