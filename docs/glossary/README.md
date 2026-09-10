@@ -24,13 +24,13 @@ Next:      GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 New public-page expansion/redesign: deferred
 ```
 
-The current relationship-refined master contains **653 Concepts / 18 categories**. The count dropped from 654 because MASTER-005 wave 2 merged four duplicate Concept rows while adding three genuinely distinct Concepts. `public_ready` remains 0.
+The current relationship-refined master contains **653 Concepts / 18 categories**. `public_ready` remains 0.
 
 ## Current MASTER-005 results
 
-Wave 1 created the scoped relationship and review ledgers. Wave 2 began modifying Concept identity itself rather than merely documenting conflicts.
+Wave 1 created the scoped relationship and review ledgers. Wave 2 began modifying Concept identity itself. Wave 3 resolves the highest-priority time, track, and condition-boundary conflicts without forcing global synonymy.
 
-Merged Concept rows:
+Merged Concept rows from wave 2:
 
 ```text
 MEET-002 Meeting    -> MEET-001 Race meeting (English single-event sense)
@@ -41,7 +41,7 @@ RTYPE-005 Bumper    -> RTYPE-006 National Hunt Flat Race
 
 Their usable strings remain labels; retired Concept IDs are recorded in `data/glossary-master/concepts/concept-dispositions-v1.tsv` and are not recycled.
 
-New meaning-bearing Concepts:
+New meaning-bearing Concepts from wave 2:
 
 ```text
 MEET-042   Racing meeting series (France)
@@ -49,20 +49,28 @@ RESULT-030 Race form notation
 RUN-046    Tactical pacemaker for another runner
 ```
 
-This resolves three especially useful regional cases:
+Wave 3 decisions:
 
-- France Galop `Meeting` is a multi-`Réunion` series, while `Réunion` is the one-day meeting;
-- France `musique` is a regional implementation of race-form notation and uses a France-specific ordering convention;
-- North American `Rabbit` and France Galop tactical `leader` map to one abstract tactical-pacemaker Concept, which is narrower than a generic Pacesetter.
+- `MEET-028 Off time` is now the **actual race-start timestamp**, not the scheduled time;
+- BHA `Scheduled off time` is a regional label of `MEET-029 Scheduled start time`;
+- `Off time` and `Scheduled start time` remain separate related Concepts;
+- `Going` and `Track condition` remain separate but related because GB/IRE, North America, Japan and Australia use structurally different official condition taxonomies;
+- `Racetrack` and `Track` remain polysemous in the research model; facility and physical-surface/path senses are explicitly scoped rather than globally merged;
+- no new Concept split is made for Track/Racetrack until stronger cross-jurisdiction evidence justifies it.
 
 Current relationship state:
 
-- **16** active Concept-to-Concept relations;
+- **17** active Concept-to-Concept relations;
 - **15** relation review items discovered;
-- **7** resolved;
-- **8** still open.
+- **11** resolved;
+- **4** still open.
 
-Still-open high-priority sets include `Off time / Scheduled start time`, `Racecourse / Racetrack / Track`, `Going / Track condition`, Australasian wet-track aptitude, easy-travelling terminology and cross-language betting-market support terms.
+The remaining open sets are:
+
+- `Spell / Layoff`;
+- Australasian `Mudlark` wet-track aptitude;
+- `Under double wraps` / `On the bit or bridle` / `Off the bit or bridle`;
+- Japanese `一本かぶり` / Australian `backed off the map` betting-market support terminology.
 
 ## Existing public glossary is disposable content baseline
 

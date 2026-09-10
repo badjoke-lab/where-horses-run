@@ -49,15 +49,15 @@
     "sources_file":"sources/register-layer-sources-v1.tsv"
   },
   "relationship_layer": {
-    "status":"wave_2_in_progress",
-    "relations":{"file":"relations/relations-v1.tsv","row_count":16},
-    "review_queue":{"file":"relations/relation-review-queue-v1.tsv","row_count":15,"open_rows":8},
-    "resolutions":{"file":"relations/relation-resolutions-v1.tsv","row_count":7},
-    "labels_file":"labels/relationship-wave2-labels-v1.tsv",
-    "definitions_file":"definitions/relationship-wave2-definitions-v1.tsv",
+    "status":"wave_3_complete_for_current_pass",
+    "relations":{"file":"relations/relations-v1.tsv","row_count":17},
+    "review_queue":{"file":"relations/relation-review-queue-v1.tsv","row_count":15,"resolved_rows":11,"open_rows":4},
+    "resolutions":{"file":"relations/relation-resolutions-v1.tsv","row_count":11},
+    "labels_files":["labels/relationship-wave2-labels-v1.tsv","labels/relationship-wave3-labels-v1.tsv"],
+    "definitions_files":["definitions/relationship-wave2-definitions-v1.tsv","definitions/relationship-wave3-definitions-v1.tsv"],
     "sources_file":"sources/relationship-layer-sources-v1.tsv"
   },
   "next_work_id":"GLOSSARY-MASTER-005",
-  "next_work":"continue_polysemy_and_cross_jurisdiction_equivalence_then_source_refinement",
+  "next_work":"resolve_remaining_register_derived_relation_candidates_then_finish_evidence_refinement",
   "public_implementation":"deferred"
 }
