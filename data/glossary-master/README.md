@@ -23,8 +23,10 @@ Canonical provenance:
 ```text
 sources/p0-core-sources-v1.tsv
 sources/p0-core-sources-v2.tsv
+sources/p0-core-sources-v3.tsv
 coverage/p0-verification-wave1-v1.tsv
 coverage/p0-verification-wave2-v1.tsv
+coverage/p0-verification-wave3-v1.tsv
 coverage/master-005-evidence-coverage-v1.tsv
 coverage/master-005-completion-gate-v1.tsv
 ```
@@ -35,44 +37,58 @@ Verified **16 P0 base Concepts** in DISC and DIST.
 
 ### Wave 2 — complete
 
-Verified **30 P0 base Concepts**:
+Verified **30 P0 base Concepts** in ENTRY, VENUE and WEIGHT.
 
-- ENTRY: **9**
-- VENUE: **16**
-- WEIGHT: **5**
+### Wave 3 — complete
+
+Verified **51 P0 base Concepts**:
+
+- RTYPE: **8**
+- SURF: **7**
+- MEET: **19**
+- RESULT: **10**
+- BET: **7**
+
+Deliberately deferred P0 terms remain candidate where the available evidence does not yet support the intended global Concept boundary. Examples include `Stakes race`, `Sand`, `Synthetic surface`, `All-weather`, `Draw`, `Official notice`, `Local time`, `Time zone`, `Postponed`, `Tote`, and `Starting Price/SP`.
 
 The verification keeps jurisdiction boundaries intact. Examples:
 
-- `Racecourse / Racetrack / Track` remain distinct/polysemous as modeled by MASTER-005;
-- `Weight-for-age` is verified as a general Concept without collapsing regional systems such as JRA 馬齢重量 into it;
-- `Declaration`, `Scratch`, `Withdrawal`, and `Non-runner` remain separate procedural/status Concepts.
+- `Group / Grade` remain separate regional counterparts;
+- `Going / Track condition` remain separate related taxonomies;
+- `Post time / Scheduled start time` remain planned timestamps while `Off time` is actual start time;
+- `Racecourse / Racetrack / Track` remain scope-bounded/polysemous;
+- `Fixed odds / Pari-mutuel` remain separate betting mechanisms.
 
-## Evidence state after wave 2
+## Evidence state after wave 3
 
-- all Concepts: **205 / 658 source-verified (31.2%)**; **453 candidate**
-- P0: **97 / 204 source-verified (47.5%)**; **107 candidate**
-- active base seed: **47 / 497 source-verified (9.5%)**; **450 candidate**
+- all Concepts: **256 / 658 source-verified (38.9%)**; **402 candidate**
+- P0: **148 / 204 source-verified (72.5%)**; **56 candidate**
+- active base seed: **98 / 497 source-verified (19.7%)**; **399 candidate**
 - supplemental jurisdiction/relationship research: **158 / 161 source-verified (98.1%)**; **3 candidate**
 
 Current category snapshots include:
 
-- DISC 7/17 verified
-- DIST 9/22 verified
-- ENTRY 13/31 verified
-- VENUE 18/44 verified
-- WEIGHT 18/35 verified
-
-The current P0 rows in DISC, DIST, ENTRY, VENUE and WEIGHT are all source-verified. Lower-priority rows in those categories may remain candidate.
+- DISC 7/17
+- RTYPE 80/111
+- ENTRY 13/31
+- VENUE 18/44
+- SURF 39/63
+- DIST 9/22
+- WEIGHT 18/35
+- MEET 24/40
+- RESULT 12/30
+- BET 11/43
 
 ## Current completion decision
 
-`GLOSSARY-MASTER-005` remains **HOLD — not complete** because **107 P0 Concepts remain candidate**.
+`GLOSSARY-MASTER-005` remains **HOLD — not complete** because **56 P0 Concepts remain candidate** and the original base seed is still broadly under-evidenced.
 
 Next work:
 
 ```text
-P0 verification wave 3 — remaining high-impact categories
+P0 verification wave 4 — remaining P0 categories and deliberately deferred core terms
 -> update Concept evidence/provenance
+-> resolve remaining supplemental candidates where evidence is available
 -> rerun evidence coverage
 -> rerun MASTER-005 completion gate
 -> only after the gate passes, consider GLOSSARY-MASTER-006
