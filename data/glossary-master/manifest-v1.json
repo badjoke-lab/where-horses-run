@@ -2,13 +2,13 @@
   "schema_version": "world-racing-terminology-master-manifest-v1",
   "status": "candidate_seed_plus_jurisdiction_register_relation_and_p0_verification",
   "generated_from_legacy_glossary": false,
-  "concept_count": 658,
+  "concept_count": 657,
   "category_count": 18,
-  "priority_counts": {"P0":204,"P1":301,"P2":135,"P3":18},
+  "priority_counts": {"P0":203,"P1":301,"P2":135,"P3":18},
   "verification_status": "mixed_candidate_and_source_verified",
   "public_ready_count": 0,
   "public_runtime_input": false,
-  "concept_dispositions": {"file":"concepts/concept-dispositions-v1.tsv","merged_concept_rows":4},
+  "concept_dispositions": {"file":"concepts/concept-dispositions-v1.tsv","merged_concept_rows":5},
   "categories": [
     {"id":"DISC","count":17,"file":"concepts/01-disc.tsv"},
     {"id":"RTYPE","count":111,"file":"concepts/02-rtype.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv","concepts/japan-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv","concepts/france-wave1-additions.tsv","concepts/hong-kong-korea-wave1-additions.tsv","concepts/uae-south-africa-wave1-additions.tsv","concepts/arabian-harness-wave1-additions.tsv"]},
@@ -26,16 +26,16 @@
     {"id":"MEET","count":40,"file":"concepts/14-meet.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/france-wave1-additions.tsv","concepts/relationship-wave2-additions.tsv"]},
     {"id":"RESULT","count":30,"file":"concepts/15-result.tsv","supplemental_files":["concepts/france-wave1-additions.tsv","concepts/relationship-wave2-additions.tsv"]},
     {"id":"PRIZE","count":12,"file":"concepts/16-prize.tsv","supplemental_files":["concepts/japan-wave1-additions.tsv"]},
-    {"id":"BET","count":43,"file":"concepts/17-bet.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv","concepts/relationship-wave4-additions.tsv"]},
+    {"id":"BET","count":42,"file":"concepts/17-bet.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv","concepts/relationship-wave4-additions.tsv"]},
     {"id":"WELF","count":18,"file":"concepts/18-welf.tsv"}
   ],
   "jurisdiction_research": {
     "gb_ireland":{"status":"wave_2_complete_for_current_pass","research_file":"jurisdictions/gb-ireland-research-v1.tsv","concept_additions_file":"concepts/gb-ireland-wave2-additions.tsv","labels_file":"labels/gb-ireland-labels-v1.tsv","definitions_file":"definitions/gb-ireland-definitions-v1.tsv","sources_file":"sources/gb-ireland-sources-v1.tsv"},
     "us_canada":{"status":"wave_1_complete_for_current_pass","research_file":"jurisdictions/us-canada-research-v1.tsv","concept_additions_file":"concepts/us-canada-wave1-additions.tsv","labels_file":"labels/us-canada-labels-v1.tsv","definitions_file":"definitions/us-canada-definitions-v1.tsv","sources_file":"sources/us-canada-sources-v1.tsv"},
     "australia_new_zealand":{"status":"wave_1_complete_for_current_pass","research_file":"jurisdictions/australia-new-zealand-research-v1.tsv","concept_additions_file":"concepts/australia-new-zealand-wave1-additions.tsv","labels_file":"labels/australia-new-zealand-labels-v1.tsv","definitions_file":"definitions/australia-new-zealand-definitions-v1.tsv","sources_file":"sources/australia-new-zealand-sources-v1.tsv"},
-    "japan":{"status":"wave_2_complete_for_current_pass","wave_1":{"research_file":"jurisdictions/japan-research-v1.tsv","concept_additions_file":"concepts/japan-wave1-additions.tsv","labels_file":"labels/japan-labels-v1.tsv","definitions_file":"definitions/japan-definitions-v1.tsv","sources_file":"sources/japan-sources-v1.tsv"},"wave_2_nar_banei":{"research_file":"jurisdictions/japan-nar-banei-research-v2.tsv","concept_additions_file":"concepts/japan-wave2-nar-banei-additions.tsv","labels_file":"labels/japan-nar-banei-labels-v2.tsv","definitions_file":"definitions/japan-nar-banei-definitions-v2.tsv","sources_file":"sources/japan-nar-banei-sources-v2.tsv"}},
+    "japan":{"status":"wave_2_complete_for_current_pass","wave_1":{"research_file":"jurisdictions/japan-research-v1.tsv","concept_additions_file":"concepts/japan-wave1-additions.tsv","labels_file":"labels/japan-labels-v1.tsv","definitions_file":"definitions/japan-definitions-v1.tsv","sources_file":"sources/japan-sources-v1.tsv"},"wave_2_nar_banei":{"research_file":"jurisdictions/japan-nar-banei-research-v2.tsv","concept_additions_file":"concepts/japan-nar-banei-wave2-additions.tsv","labels_file":"labels/japan-nar-banei-labels-v2.tsv","definitions_file":"definitions/japan-nar-banei-definitions-v2.tsv","sources_file":"sources/japan-nar-banei-sources-v2.tsv"}},
     "france":{"status":"wave_1_complete_for_current_pass","research_file":"jurisdictions/france-research-v1.tsv","concept_additions_file":"concepts/france-wave1-additions.tsv","labels_file":"labels/france-labels-v1.tsv","definitions_file":"definitions/france-definitions-v1.tsv","sources_file":"sources/france-sources-v1.tsv"},
-    "hong_kong_korea":{"status":"wave_1_complete_for_current_pass","research_file":"jurisdictions/hong-kong-korea-research-v1.tsv","concept_additions_file":"concepts/hong-kong-korea-wave1-additions.tsv","labels_file":"labels/hong-kong-korea-labels-v1.tsv","definitions_file":"definitions/hong-kong-korea-definitions-v1.tsv","sources_file":"sources/hong-kong-korea-sources-v1.tsv"},
+    "hong_kong_korea":{"status":"wave_1_complete_for_current_pass","research_file":"jurisdictions/hong-korea-research-v1.tsv","concept_additions_file":"concepts/hong-kong-korea-wave1-additions.tsv","labels_file":"labels/hong-kong-korea-labels-v1.tsv","definitions_file":"definitions/hong-kong-korea-definitions-v1.tsv","sources_file":"sources/hong-kong-korea-sources-v1.tsv"},
     "uae_south_africa":{"status":"wave_1_complete_for_current_pass","research_file":"jurisdictions/uae-south-africa-research-v1.tsv","concept_additions_file":"concepts/uae-south-africa-wave1-additions.tsv","labels_file":"labels/uae-south-africa-labels-v1.tsv","definitions_file":"definitions/uae-south-africa-definitions-v1.tsv","sources_file":"sources/uae-south-africa-sources-v1.tsv"},
     "arabian_harness":{"status":"wave_1_complete_for_current_pass","research_file":"jurisdictions/arabian-harness-research-v1.tsv","concept_additions_file":"concepts/arabian-harness-wave1-additions.tsv","labels_file":"labels/arabian-harness-labels-v1.tsv","definitions_file":"definitions/arabian-harness-definitions-v1.tsv","sources_file":"sources/arabian-harness-sources-v1.tsv"}
   },
@@ -44,7 +44,7 @@
     "register_usage":{"file":"register/register-usage-v1.tsv","row_count":60,"effective_source_verified_rows":36,"effective_candidate_rows":24},
     "register_review_queue":{"file":"register/register-review-queue-v1.tsv","row_count":33,"effective_open_targets":24},
     "register_resolutions":{"file":"register/register-resolutions-v1.tsv","row_count":12},
-    "abbreviations":{"file":"abbreviations/abbreviations-v1.tsv","row_count":26,"source_verified_rows":26},
+    "abbreviations":{"file":"abbreviations/abbreviations-v1.tsv","row_count":27,"source_verified_rows":27},
     "historical_terms":{"file":"historical/historical-terms-v1.tsv","row_count":4,"source_verified_rows":4},
     "sources_file":"sources/register-layer-sources-v1.tsv"
   },
@@ -58,29 +58,30 @@
     "sources_file":"sources/relationship-layer-sources-v1.tsv"
   },
   "p0_verification": {
-    "status":"wave_4_complete",
-    "sources_files":["sources/p0-core-sources-v1.tsv","sources/p0-core-sources-v2.tsv","sources/p0-core-sources-v3.tsv","sources/p0-core-sources-v4.tsv"],
-    "wave_audit_files":["coverage/p0-verification-wave1-v1.tsv","coverage/p0-verification-wave2-v1.tsv","coverage/p0-verification-wave3-v1.tsv","coverage/p0-verification-wave4-v1.tsv"],
+    "status":"wave_5_complete_p0_closed",
+    "sources_files":["sources/p0-core-sources-v1.tsv","sources/p0-core-sources-v2.tsv","sources/p0-core-sources-v3.tsv","sources/p0-core-sources-v4.tsv","sources/p0-core-sources-v5.tsv"],
+    "wave_audit_files":["coverage/p0-verification-wave1-v1.tsv","coverage/p0-verification-wave2-v1.tsv","coverage/p0-verification-wave3-v1.tsv","coverage/p0-verification-wave4-v1.tsv","coverage/p0-verification-wave5-v1.tsv"],
     "verified_wave_1":16,
     "verified_wave_2":30,
     "verified_wave_3":51,
     "verified_wave_4":44,
-    "verified_cumulative_lane":141,
-    "completed_p0_categories":["DISC","DIST","ENTRY","HORSE","BREED","ROLE","VENUE","WEIGHT","RUN","EQUIP","TRAIN","RESULT","PRIZE","WELF"],
-    "partially_completed_p0_categories":["RTYPE","SURF","MEET","BET"],
-    "remaining_p0_candidate":12
+    "verified_wave_5":11,
+    "verified_cumulative_lane":152,
+    "completed_p0_categories":["DISC","RTYPE","ENTRY","HORSE","BREED","ROLE","VENUE","SURF","DIST","WEIGHT","RUN","EQUIP","TRAIN","MEET","RESULT","PRIZE","BET","WELF"],
+    "partially_completed_p0_categories":[],
+    "remaining_p0_candidate":0
   },
   "evidence_coverage": {
-    "status":"audited_master_005_hold_after_p0_wave_4",
+    "status":"audited_master_005_hold_after_p0_wave_5",
     "coverage_file":"coverage/master-005-evidence-coverage-v1.tsv",
     "completion_gate_file":"coverage/master-005-completion-gate-v1.tsv",
-    "all_concepts":{"total":658,"source_verified":300,"candidate":358,"verified_pct":45.6},
-    "p0":{"total":204,"source_verified":192,"candidate":12,"verified_pct":94.1},
-    "active_base_seed":{"total":497,"source_verified":142,"candidate":355,"verified_pct":28.6},
+    "all_concepts":{"total":657,"source_verified":311,"candidate":346,"verified_pct":47.3},
+    "p0":{"total":203,"source_verified":203,"candidate":0,"verified_pct":100.0},
+    "active_base_seed":{"total":496,"source_verified":153,"candidate":343,"verified_pct":30.8},
     "supplemental_research":{"total":161,"source_verified":158,"candidate":3,"verified_pct":98.1},
     "master_005_completion":"hold"
   },
   "next_work_id":"GLOSSARY-MASTER-005",
-  "next_work":"p0_source_verification_wave_5_deferred_12_scope_refinement_then_rerun_gate",
+  "next_work":"post_p0_base_seed_verification_and_three_supplemental_candidate_cleanup_then_rerun_gate",
   "public_implementation":"deferred"
 }
