@@ -11,151 +11,115 @@ This addendum creates a parallel glossary knowledge lane. It does not supersede 
 ## Current glossary stage
 
 ```text
-Glossary stage: relationship_equivalence_and_evidence_refinement
+Glossary stage: source_evidence_coverage_gate
 Completed: GLOSSARY-MASTER-001
 Completed: GLOSSARY-MASTER-002
 Completed first major-jurisdiction pass: GLOSSARY-MASTER-003
 Completed current register pass: GLOSSARY-MASTER-004
 Current glossary Work ID: GLOSSARY-MASTER-005
 Next: GLOSSARY-MASTER-006
-Current research master: 653 Concepts / 18 domain categories
-Current register layer: 60 usages / 26 abbreviations / 4 historical rows
-Current relationship layer: 17 relations / 15 review items / 11 resolved / 4 open
+Current research master: 658 Concepts / 18 domain categories
+Current register layer: 60 usages / 36 effective verified / 24 effective candidates
+Current relationship layer: 20 relations / 15 review items / 15 resolved / 0 open
 Public glossary page expansion: deferred
 Automatic glossary publication: disabled
 Existing public glossary content: disposable legacy runtime baseline
 ```
 
-The current task is to finish Concept relationships, homonyms, false synonyms and evidence boundaries before adding the search-intent/readiness layer. Jurisdiction and register research may still receive follow-up waves when relationship work exposes real gaps.
+The relation/equivalence review queue discovered in MASTER-005 waves 1–4 is now fully resolved. MASTER-005 does **not** complete merely because that queue reached zero: the current gate is source/evidence coverage across the full 658-Concept master.
 
 ## Programme objective
 
-The glossary is first a useful user-facing horse-racing knowledge resource. Because WHR is a later entrant, its knowledge structure must also support strong Google/Bing and AI-search discovery through explicit concepts, local terminology, relationships, evidence, regional differences, and search intents.
+The glossary is first a useful user-facing horse-racing knowledge resource. Search/AI discoverability is a separate structured layer and must not distort canonical knowledge truth.
 
-Search metadata must remain separate from canonical knowledge truth.
-
-Worldwide racing terminology is not globally standardized. The master must represent language-independent concepts, original-script/local labels, jurisdiction-specific official usage, terms with no direct translation, aliases/abbreviations, colloquial and historical usage, typed relationships, source provenance, and search intent as a separate layer.
+Worldwide racing terminology is not globally standardized. The master represents language-independent Concepts, local/original-script labels, jurisdiction-specific usage, no-direct-equivalent cases, abbreviations and register, historical usage, typed relationships, evidence provenance, and later search intent as a separate layer.
 
 ## Active glossary sequence
 
 ### `GLOSSARY-MASTER-001` — specification and authority
 
-Status: **complete**.
-
-Canonical output is `docs/glossary/world-racing-terminology-master-spec.md`. It establishes concept-first authority, multilingual/regional/slang/historical/evidence/search structure, master-first/pages-later sequencing, and excludes the existing public glossary from completeness requirements.
+Status: **complete**. Canonical output: `docs/glossary/world-racing-terminology-master-spec.md`.
 
 ### `GLOSSARY-MASTER-002` — zero-based world concept seed
 
-Status: **complete**.
-
-The zero-based seed contained **501 candidate Concepts / 18 categories** with P0 156, P1 212, P2 118 and P3 15. All began `public_ready=no`; current public glossary IDs/headwords/categories were not migration requirements.
+Status: **complete**. Original seed: **501 candidate Concepts / 18 categories**, all initially `public_ready=no`.
 
 ### `GLOSSARY-MASTER-003` — jurisdiction and local-language terminology
 
 Status: **first major-jurisdiction pass complete; follow-up waves allowed**.
 
-The first pass researched GB/Ireland, US/Canada, Australia/New Zealand, Japan including NAR/Banei, France, Hong Kong/Korea, UAE/South Africa, plus Arabian/Harness cross-system follow-up. That work expanded the seed to 654 Concepts before relationship cleanup.
-
-Ongoing rule: preserve original script, map only justified equivalents, create Concepts for genuinely missing meanings, use `no_direct_equivalent` when needed, split homonyms, retain dated source evidence, and allow later jurisdiction waves where material gaps are found.
+The first pass covered GB/Ireland, US/Canada, Australia/New Zealand, Japan including NAR/Banei, France, Hong Kong/Korea, UAE/South Africa, plus Arabian/Harness cross-system follow-up. It expanded the seed to 654 Concepts before relationship cleanup.
 
 ### `GLOSSARY-MASTER-004` — colloquial, slang, industry, abbreviation, and historical terminology
 
 Status: **current pass complete; follow-up waves allowed**.
 
-Current-pass output:
+Current layer:
 
-- **60** register usages;
-- **26** source-verified abbreviations/codes;
-- **4** source-verified historical/legacy rows;
-- **33** discovered register review targets;
-- explicit register-resolution overlays for mappings later resolved by MASTER-005.
-
-A slang or abbreviation does not create a Concept automatically. Polysemous terms remain reviewable until their senses are modeled.
+- 60 register usages;
+- 36 effective source-verified mappings after MASTER-005 resolutions;
+- 24 effective register candidates;
+- 26 source-verified abbreviations/codes;
+- 4 source-verified historical/legacy rows;
+- 12 register-resolution rows.
 
 ### `GLOSSARY-MASTER-005` — relationship/equivalence and evidence refinement
 
-Status: **current**.
+Status: **current — relation review complete for discovered wave 1–4 items; evidence audit in progress**.
 
-Required work:
-
-- review `exact_equivalent`, `close_equivalent`, `broader`, `narrower`, `related`, `contrast`, `regional_counterpart`, and `no_direct_equivalent` relations;
-- add explicit ambiguity/homonym handling;
-- resolve Meeting/Fixture/Race day, Racecourse/Racetrack/Track, Going/Track condition, regional race-class terminology and similar false-synonym risks;
-- distinguish Concept identity from spelling/register labels;
-- actually merge duplicate Concepts when one identity is justified;
-- create new Concepts when a real missing meaning is exposed;
-- verify definitions/jurisdiction claims and retain unresolved conflicts visibly;
-- prefer the weakest relation supported by evidence.
-
-Current storage:
-
-```text
-data/glossary-master/relations/relations-v1.tsv
-data/glossary-master/relations/relation-review-queue-v1.tsv
-data/glossary-master/relations/relation-resolutions-v1.tsv
-data/glossary-master/concepts/concept-dispositions-v1.tsv
-data/glossary-master/concepts/relationship-wave2-additions.tsv
-data/glossary-master/labels/relationship-wave2-labels-v1.tsv
-data/glossary-master/labels/relationship-wave3-labels-v1.tsv
-data/glossary-master/definitions/relationship-wave2-definitions-v1.tsv
-data/glossary-master/definitions/relationship-wave3-definitions-v1.tsv
-data/glossary-master/sources/relationship-layer-sources-v1.tsv
-```
-
-Wave 2 merged four duplicate Concept rows:
+Identity cleanup merged:
 
 - `MEET-002 Meeting` -> `MEET-001 Race meeting` for the English single-event sense;
 - `MEET-005 Raceday` -> `MEET-004 Race day`;
 - `BET-031 Favourite` -> `BET-030 Favorite`;
 - `RTYPE-005 Bumper` -> `RTYPE-006 National Hunt Flat Race`.
 
-Wave 2 also added three distinct Concepts:
+Relation review also created real missing meanings, including France Meeting series, Race form notation, tactical pacemaker, and wave-4 Concepts:
 
-- `MEET-042 Racing meeting series (France)`;
-- `RESULT-030 Race form notation`;
-- `RUN-046 Tactical pacemaker for another runner`.
+- `HORSE-034 Wet-track aptitude`;
+- `RUN-047 Travelling easily`;
+- `RUN-048 Under pressure`;
+- `BET-043 Strong betting support`;
+- `BET-044 Dominant betting concentration`.
 
-That changed the active research master from **654 to 653 Concepts**: four duplicate identities removed, three real meanings added.
+Current relation decisions include:
 
-Wave 3 resolves four additional high-priority review items:
-
-- `MEET-028 Off time` is the **actual race-start timestamp**; `MEET-029 Scheduled start time` is the pre-announced reference. BHA `Scheduled off time` is a regional label on MEET-029. The two Concepts remain related, not synonymous;
-- `Going` and `Track condition` remain separate related Concepts because official GB/IRE, North American, Japanese and Australian condition taxonomies differ structurally;
-- `Racetrack` remains polysemous: facility-level use may be close to Racecourse, while racing-rule usage may denote the actual racing surface;
-- `Track` remains polysemous across venue/listing, physical track/surface and course/path senses. Current relations are sense-scoped; no global merge or premature Concept split is made.
+- `Off time` = actual race-start time; scheduled start remains a separate Concept;
+- `Going` and `Track condition` remain related regional taxonomies, not global synonyms;
+- `Racecourse / Racetrack / Track` retain sense-scoped relations and documented polysemy;
+- `Group / Grade` remain separate regional-counterpart systems;
+- `Spell/Spelling` is narrower than generic Layoff;
+- AU/NZ `Mudlark` maps to horse Wet-track aptitude, not surface condition;
+- `under double wraps` / `on the bit/bridle` map to Travelling easily, contrasted with `off the bit/bridle` under Under pressure;
+- `backed off the map` maps to Strong betting support; JRA `一本かぶり` maps to narrower Dominant betting concentration.
 
 Current relationship state:
 
-- active relations: **17**;
+- active relations: **20**;
 - review items discovered: **15**;
-- resolved: **11**;
-- open: **4**.
+- resolved: **15**;
+- open: **0**.
 
-Remaining open review sets:
+### MASTER-005 completion gate
 
-1. `Spell / Layoff`;
-2. Australia/New Zealand `Mudlark` wet-track aptitude;
-3. `Under double wraps` / `On the bit or bridle` / `Off the bit or bridle`;
-4. Japanese `一本かぶり` / Australian `backed off the map` betting-market support terminology.
+Before advancing to MASTER-006, audit the 658-Concept master for:
 
-The next MASTER-005 wave should resolve these four sets, then perform a source/evidence coverage pass before deciding whether MASTER-005 is complete enough to advance to MASTER-006.
+- candidate vs source-verified Concept counts;
+- P0 evidence coverage;
+- category concentrations of unsourced/candidate Concepts;
+- major-jurisdiction evidence gaps;
+- evidence-class appropriateness for formal terms versus slang/historical claims;
+- any newly exposed critical identity conflict.
+
+A zero relation-review queue is necessary but not sufficient. `public_ready` remains 0 during this audit.
 
 ### `GLOSSARY-MASTER-006` — search-intent, coverage, and readiness review
 
-Status: **queued**.
+Status: **queued, not started**.
 
-Required work:
-
-- map definition, comparison, regional, how/why, translation, abbreviation, and racecard-reading search intents to reviewed Concepts;
-- keep search metadata separate from canonical truth;
-- identify useful comparison/regional-difference content instead of thin query pages;
-- produce coverage views by taxonomy, jurisdiction, language, evidence, relationship and review state;
-- identify remaining knowledge gaps;
-- decide whether the master is mature enough for public implementation planning.
+Required work will map definition/comparison/regional/how/why/translation/abbreviation/racecard-reading intents, keep search metadata separate from knowledge truth, produce coverage views, identify remaining knowledge gaps, and decide whether public implementation planning is justified.
 
 ## Explicitly deferred public implementation lane
-
-Do not start this lane merely because individual terms have been reviewed.
 
 ```text
 GLOSSARY-PUBLIC-001  public information architecture / URL contract
@@ -163,36 +127,22 @@ GLOSSARY-PUBLIC-002  concept-page and category-page content contract
 GLOSSARY-PUBLIC-003  multilingual/local-label presentation rules
 GLOSSARY-PUBLIC-004  comparison/regional content presentation
 GLOSSARY-PUBLIC-005  structured data / metadata / machine-readable projection
-GLOSSARY-PUBLIC-006  internal-link integration with countries, racecourses, racing types, and related pages
+GLOSSARY-PUBLIC-006  internal-link integration
 GLOSSARY-PUBLIC-007  EN/JA/responsive/accessibility/SEO/AI-discovery QA
 GLOSSARY-PUBLIC-008  reviewed public rollout
 ```
 
-## Public-page readiness gate
-
-Public glossary expansion/redesign begins only after a reviewed decision confirms the concept model, core coverage, jurisdiction/language representation, no-direct-equivalent handling, slang/historical evidence, provenance, relationships, search-intent separation and coverage/review visibility are mature enough. A raw term-count target is not sufficient. **There is no legacy-record migration gate.**
-
-## Replacement rule for the existing public glossary
-
-The current glossary is a disposable runtime/content baseline, not an input to the world master. During later `GLOSSARY-PUBLIC-*` work its content may be deleted wholesale and regenerated from reviewed master data; reusable routing/UI code may be retained only if it satisfies the new public contract.
-
-## Publication boundary
-
-Glossary knowledge may explain racecards, participants, odds, results, payouts, and betting concepts. It does not authorize republication of meeting-specific restricted datasets, predictions, tips, or raw source bodies. Existing publication/governance contracts remain authoritative.
-
-## Parallel-lane rule
-
-This glossary lane remains independent of map-first UI and Calendar maintenance. Glossary master work must not block Calendar corrections, racecourse data quality, or the active UI lane, and unrelated UI/Calendar completion does not imply glossary completion.
+The current public glossary remains a disposable runtime/content baseline. There is no legacy-record migration gate; later reviewed public work may delete and regenerate its content from the new master.
 
 ## Current execution pointer
 
 ```text
 Current glossary Work ID: GLOSSARY-MASTER-005
-Current input: 653-Concept research master + 60 register usages + relation/resolution layers
-Current relationship state: 17 relations / 15 reviews / 11 resolved / 4 open
-Next immediate wave: resolve the four remaining review sets, then evidence coverage
-Next programme stage: GLOSSARY-MASTER-006
+Current master: 658 Concepts / 18 categories
+Relationship state: 20 relations / 15 discovered reviews / 15 resolved / 0 open
+Immediate work: source/evidence coverage audit and MASTER-005 completion gate
+Next programme stage: GLOSSARY-MASTER-006 only after that gate
 Public implementation: deferred until post-MASTER-006 readiness review
 ```
 
-Conversation history is not execution authority. Future glossary-list work should read `docs/glossary/world-racing-terminology-master-spec.md`, `data/glossary-master/README.md`, and this addendum first.
+Conversation history is not execution authority. Future glossary work should read the terminology master specification, `data/glossary-master/README.md`, and this addendum first.
