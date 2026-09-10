@@ -70,6 +70,23 @@ const features = registry.locations.map((entry) => {
   };
 }).sort((a, b) => a.id.localeCompare(b.id, 'en'));
 
+const requiredTjkRacecourseIds = [
+  'adana-racecourse',
+  'ankara-racecourse',
+  'antalya-racecourse',
+  'bursa-racecourse',
+  'diyarbakir-racecourse',
+  'elazig-racecourse',
+  'istanbul-racecourse',
+  'izmir-racecourse',
+  'kocaeli-racecourse',
+  'sanliurfa-racecourse',
+];
+const missingTjkRacecourseIds = requiredTjkRacecourseIds.filter((id) => !seen.has(id));
+if (missingTjkRacecourseIds.length > 0) {
+  throw new Error(`${sourceRelativePath}: missing required TJK map locations: ${missingTjkRacecourseIds.join(', ')}`);
+}
+
 const projection = {
   type: 'FeatureCollection',
   whr_schema_version: 'racecourse-map-geojson-v1',
