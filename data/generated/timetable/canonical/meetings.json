@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-10T13:57:47.423Z",
+  "generated_at": "2026-09-10T13:59:30.858Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -13434,6 +13434,35 @@
       },
       "notes": "Approved from the official NAR September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail remain pending.",
       "racing_system_id": "japan-nar-system"
+    },
+    {
+      "meeting_id": "sorec-el-jadida-racecourse-2026-09-12",
+      "country_id": "morocco",
+      "authority_id": "sorec",
+      "racing_system_id": "sorec-racing-information-system",
+      "timezone": "Africa/Casablanca",
+      "racecourse_id": "el-jadida-racecourse",
+      "date": "2026-09-12",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "sorec-programme-reunion",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.sorec-galop.ma/pages/programmeReunion/programmeReunion.jsf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T13:59:30.858Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
     },
     {
       "meeting_id": "tjk-ankara-racecourse-2026-09-12",
