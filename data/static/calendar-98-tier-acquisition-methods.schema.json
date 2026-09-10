@@ -1,0 +1,30 @@
+{
+  "schema_version": "calendar-98-tier-acquisition-methods-schema-v1",
+  "contract_schema_version": "calendar-98-tier-acquisition-methods-v1",
+  "purpose": "Defines terminal acquisition-method coverage for all 98 WHR tiers without conflating method completeness, runner implementation, observed evidence rank, or publication policy.",
+  "record_key": ["tier", "country_id"],
+  "required_record_fields": [
+    "tier",
+    "country_id",
+    "page_kind",
+    "method_class",
+    "source_ids",
+    "primary_source_url",
+    "cadence_class",
+    "trigger_class",
+    "zero_policy",
+    "runner_state",
+    "method_complete"
+  ],
+  "page_kind_enum": ["country", "special", "explanatory", "archive"],
+  "method_class_enum": ["active_source_driven", "active_official", "status_watch", "annual_notice_watch", "explanatory_zero", "dormant_archive"],
+  "runner_state_enum": ["candidate", "status_only", "not_applicable"],
+  "closure_rules": [
+    "exactly 98 unique tiers must exist and cover 1 through 98",
+    "country_id must match the slug for the same delivery_no in docs/country-pages/98-country-tracker.tsv",
+    "every record must contain at least one source_id and an http(s) primary_source_url",
+    "method_class determines trigger_class, zero_policy, and runner_state",
+    "method_complete must be true for every record",
+    "rank fields are forbidden because acquisition method coverage does not define observed evidence rank or publication rank"
+  ]
+}
