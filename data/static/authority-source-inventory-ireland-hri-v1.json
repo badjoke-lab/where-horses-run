@@ -1,0 +1,21 @@
+{
+  "schema_version": "authority-source-inventory-ireland-hri-v1",
+  "records": [
+    {
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "authority_name_en": "Horse Racing Ireland",
+      "authority_name_local": "Horse Racing Ireland",
+      "authority_type": "national",
+      "racecourse_scope": "countrywide",
+      "official_source_id": "hri-racecards-month",
+      "official_source_url": "https://www.hri.ie/racecards",
+      "source_kind": "racecard",
+      "source_status": "verified",
+      "last_checked_date": "2026-09-11",
+      "capability_rank": "A",
+      "adapter_candidate_status": "candidate",
+      "notes": "HRI's official Racecards page loads monthly meeting/race rows through /Ajax/RaceMeetingByMonth. The response provides official meeting identity plus published race post times and race names. Where a fixture is present but race rows are not yet published, the lower schedule observation remains Best Available and detail stays pending rather than being fabricated."
+    }
+  ]
+}
