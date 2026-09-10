@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import RacecourseMap from './RacecourseMap.astro';
+import locationRegistry from '../../data/static/racecourse-locations-v1.json';
 import {
   getCountryProfileByCountryId,
   getRacecoursesByCountryId,
@@ -39,6 +40,15 @@ const meetings = getTimetableMeetingRowsForWindow(context.today, addCalendarDays
   .sort((left, right) => `${left.date}:${left.first_race_time_local ?? '99:99'}:${left.racecourse_id}`.localeCompare(`${right.date}:${right.first_race_time_local ?? '99:99'}:${right.racecourse_id}`));
 const nearMeetings = meetings.slice(0, 8);
 const racecourseById = new Map(racecourses.map((racecourse) => [racecourse.id, racecourse]));
+const reviewedRacecourseIds = new Set(
+  ((locationRegistry as any).locations ?? [])
+    .map((entry: any) => entry?.id)
+    .filter((id: unknown) => typeof id === 'string' && id.length > 0)
+);
+const countryMapRacecourseIds = [...new Set([
+  ...racecourses.map((racecourse) => racecourse.id),
+  ...meetings.map((meeting) => meeting.racecourse_id),
+])].filter((id) => reviewedRacecourseIds.has(id));
 
 const countryName = isJa ? country.name_ja : country.name_en;
 const secondaryName = isJa ? country.name_en : country.name_ja;
@@ -193,7 +203,11 @@ const pageDescription = overview || pick(
       <aside class="country-hub__side-column">
         <section class="country-hub__panel country-hub__map-panel" aria-labelledby="country-map-heading">
           <div class="country-hub__panel-heading"><h2 id="country-map-heading">{pick(`${country.name_en} racecourses`, `${country.name_ja}の競馬場`)}</h2><a href={`${tracksPath}?country=${encodeURIComponent(country.id)}`}>{pick('Open list', '一覧を見る')} →</a></div>
-          <RacecourseMap racecourseIds={racecourses.map((racecourse) => racecourse.id)} visibleRacecourseIds={racecourses.map((racecourse) => racecourse.id)} initialZoom={4} ariaLabel={pick(`${country.name_en} racecourse map`, `${country.name_ja}の競馬場地図`)} />
+          {countryMapRacecourseIds.length > 0 ? (
+            <RacecourseMap racecourseIds={countryMapRacecourseIds} visibleRacecourseIds={countryMapRacecourseIds} initialZoom={4} ariaLabel={pick(`${country.name_en} racecourse map`, `${country.name_ja}の競馬場地図`)} />
+          ) : (
+            <p class="racecourse-map__status">{pick('No reviewed racecourse location is available for this country yet.', 'この国では確認済み競馬場位置をまだ掲載していません。')}</p>
+          )}
         </section>
 
         <section class="country-hub__panel" aria-labelledby="country-sources-heading">
