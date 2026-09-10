@@ -253,7 +253,12 @@ for (const schedule of windowRows) {
     last_race_time_local: detail.last_race_time_local ?? null,
     timetable_rows: detail.timetable_rows ?? [],
     source: detail.source ?? schedule.source,
-    detail_observation: { status: 'available', race_count: detail.classifier?.race_count ?? 0, conflicts: [] },
+    detail_observation: {
+      status: 'available',
+      evaluated_capability_rank: 'A+',
+      race_count: detail.classifier?.race_count ?? 0,
+      conflicts: [],
+    },
   });
 }
 
