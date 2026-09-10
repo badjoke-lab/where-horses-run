@@ -14,41 +14,40 @@ This audit does not include tiers with no implemented Calendar acquisition route
 
 Ten implemented Registry profiles are currently in scope.
 
-The new completion contract is not yet represented uniformly in their output schemas. Existing routes fall into three groups:
+The shared acquisition-completion contract and canonical classifier are active. Japan JRA/NAR/Banei have been normalized under the shared completion semantics, and the non-Japan rolling apply records `acquisition_completion` independently from observed rank.
 
-1. routes that already attempt higher detail in the same acquisition cycle but do not expose the new normalized completion disposition;
-2. routes that preserve pending/failure detail state but need mapping into the shared completion contract;
-3. routes where a stronger registered technical capability exists but the production path cannot currently pursue it, which is an implementation gap rather than acquisition completion.
+The remaining Registry-level route-capability gaps are source-specific acquisition gaps, not rank-model gaps.
 
 ## Implemented route audit
 
-| System | Current production behavior | Lower-rank handling today | Completion-contract finding |
-|---|---|---|---|
-| `japan-jra-system` | Japan mother-set discovery followed by adapter `inspect()` | `details_pending` and `acquisition_failed` are explicit; successful lower-rank observations do not yet carry the shared completion disposition | Semantically close; needs normalized completion disposition |
-| `japan-nar-system` | Japan mother-set discovery followed by adapter `inspect()` | `details_pending` and `acquisition_failed` are explicit; successful lower-rank observations do not yet carry the shared completion disposition | Semantically close; needs normalized completion disposition |
-| `japan-banei-system` | Japan mother-set discovery followed by adapter `inspect()` | `details_pending` and `acquisition_failed` are explicit; successful lower-rank observations do not yet carry the shared completion disposition | Semantically close; needs normalized completion disposition |
-| `hong-kong-hkjc-system` | fixture discovery plus live racecard enrichment in the same Actions job | live racecard route is invoked, but schedule records that do not promote do not carry a per-meeting normalized completion disposition | Higher-detail pursuit exists; output contract incomplete |
-| `uae-national-racing-system` | season discovery plus per-fixture racecard detail attempt | `detail_observation.status` distinguishes `available`, `source_error`, and `not_published` | Higher-detail pursuit exists; map existing status into shared completion disposition |
-| `kra-national-racing-system` | operation-plan discovery plus publication-gated detail collection | successful promoted detail is explicit; skipped/not-published and failed detail are primarily aggregate counters, and unsupported track detail may remain schedule-only | Needs per-meeting completion disposition; unsupported detail is an implementation gap unless explicitly not applicable |
-| `tjk-national-racing-system` | annual fixture discovery plus per-meeting daily detail fetch | `detail_observation.status` distinguishes `available`, `not_published`, `conflict`, and `source_error` | Higher-detail pursuit exists, but Registry claims technical `A+` while implemented supported observation ranks stop at `A`; `A -> A+` remains an implementation gap unless the capability claim is corrected |
-| `sorec-racing-information-system` | Programme Réunion schedule/index acquisition | current production output is schedule-level `C`; Registry has no detail source/adapter | Registry technical capability is `A`; current production path cannot pursue it: implementation gap |
-| `chile-teletrak-racing-system` | Teletrak weekly meeting acquisition | current production output is schedule-level `C`; Registry has no detail source/adapter | Registry technical capability is `A`; current production path cannot pursue it: implementation gap |
-| `ireland-hri-racing-system` | HRI fixture-list acquisition | current production output is schedule-level `C`; Registry has no detail source/adapter | Registry technical capability is `A`; current production path cannot pursue it: implementation gap |
+| System | Current production behavior | Completion-contract state |
+|---|---|---|
+| `japan-jra-system` | Japan mother-set discovery followed by adapter `inspect()` | Shared completion normalization active: A+ terminal, pending -> `pending_publication`, failure/conflict -> `retry_required`; lower successful ranks cannot silently prove completion |
+| `japan-nar-system` | Japan mother-set discovery followed by adapter `inspect()` | Shared completion normalization active with the same preservation rules |
+| `japan-banei-system` | Japan mother-set discovery followed by adapter `inspect()` | Shared completion normalization active with the same preservation rules |
+| `hong-kong-hkjc-system` | fixture discovery plus live racecard enrichment in the same Actions job | Route explicitly records evaluation through `A+`; lower observed rank may close only after that evaluation is proven |
+| `uae-national-racing-system` | season discovery plus per-fixture racecard detail attempt | Route explicitly records evaluation through its technical ceiling `A`; pending/failure remain separate |
+| `kra-national-racing-system` | operation-plan discovery plus publication-gated detail collection | Supported detail route records evaluation through `A+`; not-published/failure remain explicit and unsupported meeting cases are not silently treated as complete |
+| `tjk-national-racing-system` | annual/current-future fixture discovery plus per-meeting official daily programme detail fetch | Official programme parser evaluates post time plus race name/condition, distance, and `Çim`/`Kum`/`Sentetik` surface/course fields through `A+`; missing richer fields preserve a lower Best Available rank rather than fabricating A+ |
+| `sorec-racing-information-system` | Programme Réunion schedule/index acquisition | Registry technical capability is `A`, but current production route remains schedule-level with no detail source/adapter: implementation gap |
+| `chile-teletrak-racing-system` | Teletrak weekly meeting acquisition | Registry technical capability is `A`, but current production route remains schedule-level with no detail source/adapter: implementation gap |
+| `ireland-hri-racing-system` | HRI fixture-list acquisition | Registry technical capability is `A`, but current production route remains schedule-level with no detail source/adapter: implementation gap |
 
 ## Registry-level implementation gaps
 
-The executable completion check currently identifies exactly these four Registry profiles where the registered technical capability is above the maximum implemented observation rank:
+The executable completion check now identifies exactly these three Registry profiles where the registered technical capability is above the maximum implemented observation rank:
 
 ```text
 sorec-racing-information-system
 chile-teletrak-racing-system
 ireland-hri-racing-system
-tjk-national-racing-system
 ```
+
+TJK is no longer in this list because the official daily programme route now evaluates the A+ timetable field surface and can emit `A+` when the evidence actually satisfies the rank contract.
 
 This is a route-capability audit, not a claim that every meeting in those systems must reach the technical ceiling.
 
-A meeting may validly remain at any lower rank when stronger verified evidence is not currently obtainable. The defect is that the current implementation cannot prove that distinction for the open capability gap.
+A meeting may validly remain at any lower rank when stronger verified evidence is not currently obtainable. The defect is an unimplemented or unevaluated richer route, not the existence of a lower Best Available rank.
 
 ## Existing behavior that must be retained
 
@@ -62,14 +61,13 @@ The repair must preserve these valid behaviors:
 - `pending_publication` is not the same as `retry_required`;
 - a route that actually evaluates all applicable higher detail may validly close below its system-level technical ceiling for an individual meeting.
 
-## Required implementation work
+## Remaining implementation work
 
-1. Add one shared acquisition-completion classifier and executable contract tests.
-2. Normalize per-meeting completion disposition for every implemented production route.
-3. Preserve pending, retry, not-applicable, and implementation-gap states separately.
-4. Connect unresolved lower-rank states to later refresh/retry eligibility where the source publishes richer detail later.
-5. Do not mark a route complete merely because it emitted a valid rank or because its collector/workflow exited successfully.
-6. Resolve the four Registry-level implementation gaps by implementing the stronger acquisition path or correcting an unsupported technical-capability claim with evidence.
+1. Resolve the SOREC Morocco detail-route gap.
+2. Resolve the Chile Teletrak detail-route gap.
+3. Resolve the Ireland HRI detail-route gap.
+4. Connect unresolved `pending_publication` / `retry_required` states to later refresh/retry execution wherever the current regular refresh does not already revisit the required detail evidence.
+5. Keep the executable completion contract rejecting any future implemented route that equates valid rank emission or green workflow execution with acquisition completion.
 
 ## Canonical contract
 
