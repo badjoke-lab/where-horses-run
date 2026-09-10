@@ -1,0 +1,37 @@
+name: Calendar acquisition completion contract
+
+on:
+  pull_request:
+    paths:
+      - 'docs/calendar/acquisition-completion-contract.md'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'scripts/timetable/acquisition-completion.mjs'
+      - 'scripts/timetable/**'
+      - 'scripts/check-calendar-acquisition-completion.mjs'
+      - '.github/workflows/calendar-acquisition-completion.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/calendar/acquisition-completion-contract.md'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'scripts/timetable/acquisition-completion.mjs'
+      - 'scripts/timetable/**'
+      - 'scripts/check-calendar-acquisition-completion.mjs'
+      - '.github/workflows/calendar-acquisition-completion.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate acquisition completion contract
+        run: node scripts/check-calendar-acquisition-completion.mjs
