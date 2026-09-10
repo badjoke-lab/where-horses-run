@@ -11,7 +11,7 @@ RTYPE-010	RTYPE	レースの種類・格・条件	Starter allowance	スタータ
 RTYPE-011	RTYPE	レースの種類・格・条件	Claiming race	クレーミング競走	出走馬が所定価格で購入請求の対象となる競走。	concept	P1	North America/Regional	Flat	working_equivalent	candidate	yes	no	
 RTYPE-012	RTYPE	レースの種類・格・条件	Optional claiming	オプショナル・クレーミング	条件競走とクレーミング要素を組み合わせた競走。	concept	P2	North America	Flat	working_equivalent	candidate	yes	no	
 RTYPE-013	RTYPE	レースの種類・格・条件	Selling race	セリング競走	勝馬等を競走後の売却対象とする競走形式。	concept	P2	GB/IRE/Regional	Flat	working_equivalent	candidate	yes	no	
-RTYPE-014	RTYPE	レースの種類・格・条件	Stakes race	ステークス競走	賞金・格付け等で主要競走として扱われる競走の広義呼称。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+RTYPE-014	RTYPE	レースの種類・格・条件	Stakes race	ステークス競走	主に北米等で、nomination・entry・starter fee等により賞金が加算されるなど、当局・データ提供者の定義でStakesと分類される競走。具体的条件は管轄により異なる。	concept	P0	North America/Regional	ALL	working_equivalent	source_verified	yes	no	P0-SRC-064;P0-SRC-065;P0-SRC-066 verify operational Stakes classification. Scope narrowed from GLOBAL because eligibility and purse criteria are jurisdiction-specific.
 RTYPE-015	RTYPE	レースの種類・格・条件	Listed race	リステッド競走	Listedとして指定される格付け競走。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-027 and P0-SRC-028 verify Listed as a recognized quality/black-type race category; jurisdiction implementation remains scoped.
 RTYPE-016	RTYPE	レースの種類・格・条件	Pattern race	パターン競走	主に欧州等でGroup/Listed体系に属する主要競走を指す制度用語。	concept	P1	Europe	Flat	working_equivalent	candidate	yes	no	
 RTYPE-017	RTYPE	レースの種類・格・条件	Group race	グループ競走	Group 1・2・3等で格付けされる競走。	concept	P0	IFHA/Europe/Asia/Oceania	ALL	working_equivalent	source_verified	yes	no	P0-SRC-027;P0-SRC-028. Keep separate from Grade race and preserve regional_counterpart relations.
