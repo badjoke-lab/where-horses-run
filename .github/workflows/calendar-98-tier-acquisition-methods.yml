@@ -1,0 +1,43 @@
+name: Calendar 98-tier acquisition methods
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/calendar-98-tier-acquisition-methods/**'
+      - 'data/static/calendar-98-tier-acquisition-methods.schema.json'
+      - 'docs/country-pages/98-country-tracker.tsv'
+      - 'docs/calendar/98-tier-acquisition-methods.md'
+      - 'scripts/check-calendar-98-tier-acquisition-methods.mjs'
+      - '.github/workflows/calendar-98-tier-acquisition-methods.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/static/calendar-98-tier-acquisition-methods/**'
+      - 'data/static/calendar-98-tier-acquisition-methods.schema.json'
+      - 'docs/country-pages/98-country-tracker.tsv'
+      - 'docs/calendar/98-tier-acquisition-methods.md'
+      - 'scripts/check-calendar-98-tier-acquisition-methods.mjs'
+      - '.github/workflows/calendar-98-tier-acquisition-methods.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate 98-tier acquisition method contract
+        run: |
+          node --check scripts/check-calendar-98-tier-acquisition-methods.mjs
+          node scripts/check-calendar-98-tier-acquisition-methods.mjs
+      - name: Check diff formatting
+        run: git diff --check
