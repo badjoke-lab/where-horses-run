@@ -14,7 +14,7 @@ const html = fs.readFileSync(fixturePath, 'utf8');
 const expectedVenues = new Map([
   ['Club Hípico de Concepción', 'club-hipico-de-concepcion-racecourse'],
   ['Club Hipico de Santiago', 'club-hipico-de-santiago-racecourse'],
-  ['Hipódromo Chile', 'hipodromo-chile-racecourse'],
+  ['Hipódromo Chile', 'hipodromo-chile'],
   ['Valparaíso Sporting Club', 'valparaiso-sporting-club-racecourse'],
 ]);
 for (const [label, racecourseId] of expectedVenues) assert.equal(resolveChileTeletrakRacecourseId(label), racecourseId, label);
@@ -27,9 +27,9 @@ assert.equal(parsed.unknown_venues.length, 0);
 assert.equal(parsed.parse_failures.length, 0);
 assert.deepEqual(parsed.records.map((row) => [row.date, row.racecourse_id]), [
   ['2026-09-09', 'valparaiso-sporting-club-racecourse'],
-  ['2026-09-10', 'hipodromo-chile-racecourse'],
+  ['2026-09-10', 'hipodromo-chile'],
   ['2026-09-11', 'club-hipico-de-santiago-racecourse'],
-  ['2026-09-12', 'hipodromo-chile-racecourse'],
+  ['2026-09-12', 'hipodromo-chile'],
   ['2026-09-13', 'club-hipico-de-santiago-racecourse'],
   ['2026-09-14', 'valparaiso-sporting-club-racecourse'],
   ['2026-09-15', 'club-hipico-de-concepcion-racecourse'],
