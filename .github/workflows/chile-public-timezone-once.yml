@@ -1,0 +1,54 @@
+name: Chile public timezone once
+
+on:
+  push:
+    branches:
+      - feat/calendar-chile-public-enable-20260910
+    paths:
+      - '.github/workflows/chile-public-timezone-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/calendar-chile-public-enable-20260910
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Add America Santiago to timezone controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('src/layouts/BaseLayout.astro')
+          text = path.read_text()
+          server_needle = "  { value: 'Africa/Casablanca', label: isJapanese ? 'モロッコ — Africa/Casablanca' : 'Morocco — Africa/Casablanca' },\n"
+          server_add = server_needle + "  { value: 'America/Santiago', label: isJapanese ? 'チリ — America/Santiago' : 'Chile — America/Santiago' },\n"
+          client_needle = "            ['Africa/Casablanca', isJa ? 'モロッコ — Africa/Casablanca' : 'Morocco — Africa/Casablanca'],\n"
+          client_add = client_needle + "            ['America/Santiago', isJa ? 'チリ — America/Santiago' : 'Chile — America/Santiago'],\n"
+          assert text.count(server_needle) == 1, text.count(server_needle)
+          assert text.count(client_needle) == 1, text.count(client_needle)
+          text = text.replace(server_needle, server_add)
+          text = text.replace(client_needle, client_add)
+          path.write_text(text)
+          assert text.count("America/Santiago") == 2
+          PY
+          npm install --no-package-lock --no-audit --no-fund
+          npm run build
+          git diff --check
+      - name: Commit Chile timezone control
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/layouts/BaseLayout.astro
+          git commit -m "feat(calendar): add Chile display timezone"
+          git push origin HEAD:feat/calendar-chile-public-enable-20260910
