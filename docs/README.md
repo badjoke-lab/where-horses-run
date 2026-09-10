@@ -58,6 +58,7 @@ Country pages:
 
 Calendar:
 
+- [Acquisition completion contract](calendar/acquisition-completion-contract.md) — canonical rule separating valid C/B/B+/A observations from acquisition-cycle completion and requiring explicit higher-detail disposition
 - [Source Test v2 contract](calendar/source-test-v2-contract.md)
 - [Calendar Readiness contract](calendar/calendar-readiness-contract.md)
 - [Calendar implementation roadmap](calendar/implementation-roadmap.md)
