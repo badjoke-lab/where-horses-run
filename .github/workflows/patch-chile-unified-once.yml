@@ -30,39 +30,66 @@ jobs:
           import json
 
           workflow_path = Path('.github/workflows/calendar-unified-official-refresh.yml')
-          text = workflow_path.read_text()
-          text = text.replace('Collect TJK and SOREC official windows', 'Collect TJK, SOREC and Chile official windows')
+          lines = workflow_path.read_text().splitlines()
+          out = []
+          collector_count = 0
+          exclusion_count = 0
+          apply_count = 0
+          in_exclusion = False
+          slash = chr(92)
+          i = 0
+          while i < len(lines):
+              line = lines[i]
+              stripped = line.strip()
+              if 'run-sorec-official-window.mjs' in line:
+                  assert i + 2 < len(lines)
+                  assert '--days=' in lines[i + 1]
+                  assert '--output=.calendar-unified/sorec.json' in lines[i + 2]
+                  out.extend([line, lines[i + 1], lines[i + 2]])
+                  command_indent = line[:len(line) - len(line.lstrip())]
+                  output_indent = lines[i + 2][:len(lines[i + 2]) - len(lines[i + 2].lstrip())]
+                  out.extend([
+                      f'{command_indent}node scripts/timetable/run-chile-teletrak-official-window.mjs {slash}',
+                      lines[i + 1],
+                      f'{output_indent}--output=.calendar-unified/chile.json',
+                  ])
+                  collector_count += 1
+                  i += 3
+                  continue
 
-          sorec_collect = '''          node scripts/timetable/run-sorec-official-window.mjs \\
-            --days="${{ steps.scope.outputs.days }}" \\
-            --output=.calendar-unified/sorec.json'''
-          chile_collect = sorec_collect + '''
-          node scripts/timetable/run-chile-teletrak-official-window.mjs \\
-            --days="${{ steps.scope.outputs.days }}" \\
-            --output=.calendar-unified/chile.json'''
-          assert text.count(sorec_collect) == 2, text.count(sorec_collect)
-          text = text.replace(sorec_collect, chile_collect)
+              if 'enforce-reviewed-calendar-exclusions.mjs' in line:
+                  in_exclusion = True
+              elif stripped.startswith('node scripts/') and 'enforce-reviewed-calendar-exclusions.mjs' not in line:
+                  in_exclusion = False
 
-          sorec_exclusion = '            --artifact=.calendar-unified/sorec.json'
-          assert text.count(sorec_exclusion) == 2, text.count(sorec_exclusion)
-          text = text.replace(sorec_exclusion, sorec_exclusion + ' \\\n            --artifact=.calendar-unified/chile.json')
+              if in_exclusion and stripped == '--artifact=.calendar-unified/sorec.json':
+                  indent = line[:len(line) - len(line.lstrip())]
+                  out.append(f'{line} {slash}')
+                  out.append(f'{indent}--artifact=.calendar-unified/chile.json')
+                  exclusion_count += 1
+                  in_exclusion = False
+                  i += 1
+                  continue
 
-          sorec_apply = '''          node scripts/timetable/apply-official-rolling-observations.mjs \\
-            --artifact=.calendar-unified/sorec.json \\
-            --country-id=morocco \\
-            --authority-id=sorec \\
-            --racing-system-id=sorec-racing-information-system \\
-            --timezone=Africa/Casablanca'''
-          chile_apply = sorec_apply + '''
-          node scripts/timetable/apply-official-rolling-observations.mjs \\
-            --artifact=.calendar-unified/chile.json \\
-            --country-id=chile \\
-            --authority-id=teletrak-chile \\
-            --racing-system-id=chile-teletrak-racing-system \\
-            --timezone=America/Santiago'''
-          assert text.count(sorec_apply) == 2, text.count(sorec_apply)
-          text = text.replace(sorec_apply, chile_apply)
-          workflow_path.write_text(text)
+              out.append(line)
+              if stripped == '--timezone=Africa/Casablanca':
+                  indent = line[:len(line) - len(line.lstrip())]
+                  command_indent = indent[:-2] if len(indent) >= 2 else indent
+                  out.extend([
+                      f'{command_indent}node scripts/timetable/apply-official-rolling-observations.mjs {slash}',
+                      f'{indent}--artifact=.calendar-unified/chile.json {slash}',
+                      f'{indent}--country-id=chile {slash}',
+                      f'{indent}--authority-id=teletrak-chile {slash}',
+                      f'{indent}--racing-system-id=chile-teletrak-racing-system {slash}',
+                      f'{indent}--timezone=America/Santiago',
+                  ])
+                  apply_count += 1
+              i += 1
+
+          assert collector_count == 2, collector_count
+          assert exclusion_count == 2, exclusion_count
+          assert apply_count == 2, apply_count
+          workflow_path.write_text('\n'.join(out) + '\n')
 
           checker_path = Path('scripts/check-chile-teletrak-weekly-adapter.mjs')
           checker = checker_path.read_text()
