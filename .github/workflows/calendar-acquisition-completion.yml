@@ -8,6 +8,7 @@ on:
       - 'scripts/timetable/acquisition-completion.mjs'
       - 'scripts/timetable/**'
       - 'scripts/check-calendar-acquisition-completion.mjs'
+      - 'scripts/check-japan-acquisition-completion.mjs'
       - '.github/workflows/calendar-acquisition-completion.yml'
   push:
     branches:
@@ -18,6 +19,7 @@ on:
       - 'scripts/timetable/acquisition-completion.mjs'
       - 'scripts/timetable/**'
       - 'scripts/check-calendar-acquisition-completion.mjs'
+      - 'scripts/check-japan-acquisition-completion.mjs'
       - '.github/workflows/calendar-acquisition-completion.yml'
   workflow_dispatch:
 
@@ -35,3 +37,5 @@ jobs:
           node-version: 22.12.0
       - name: Validate acquisition completion contract
         run: node scripts/check-calendar-acquisition-completion.mjs
+      - name: Validate Japan acquisition completion normalization
+        run: node scripts/check-japan-acquisition-completion.mjs
