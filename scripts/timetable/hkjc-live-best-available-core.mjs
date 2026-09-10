@@ -56,18 +56,47 @@ export function buildHkjcLiveBestAvailableArtifacts({ scheduleArtifacts, normali
   const scheduleRecords = scheduleArtifacts?.candidate?.records ?? [];
   const normalizedByKey = new Map((normalized?.records ?? []).map((record) => [exactDateKey(record), record]));
   const detailById = new Map((details?.details ?? []).map((detail) => [detail.meeting_id, detail]));
+  const detailSourceErrors = seriousSourceErrors(refreshReport);
+  const detailErrorMeetingIds = new Set(detailSourceErrors
+    .map((error) => String(error.scope_ref ?? '').split(':race-')[0])
+    .filter((value) => value.startsWith('hkjc-')));
 
   const records = scheduleRecords.map((record) => {
     const observed = normalizedByKey.get(exactDateKey(record));
-    if (!observed || !RANK_INDEX.has(observed.capability_rank) || RANK_INDEX.get(observed.capability_rank) <= RANK_INDEX.get(record.capability_rank)) {
-      return record;
+    if (!observed || !RANK_INDEX.has(observed.capability_rank)) {
+      const sourceError = detailErrorMeetingIds.has(record.meeting_id);
+      return {
+        ...record,
+        detail_observation: {
+          status: sourceError ? 'source_error' : 'not_published',
+          race_count: 0,
+          conflicts: [],
+          reason: sourceError
+            ? 'The live HKJC racecard route encountered a source or parser failure for this meeting.'
+            : 'The live HKJC racecard route did not expose stronger timetable evidence for this meeting yet.',
+        },
+      };
     }
+
+    const observedDetail = detailById.get(record.meeting_id);
+    if (RANK_INDEX.get(observed.capability_rank) <= RANK_INDEX.get(record.capability_rank)) {
+      return {
+        ...record,
+        detail_observation: {
+          status: 'available',
+          race_count: observedDetail?.timetable_rows?.length ?? 0,
+          conflicts: [],
+          reason: 'The live HKJC racecard route was evaluated but did not produce a higher evidence-supported rank for this meeting.',
+        },
+      };
+    }
+
     return {
       ...record,
       capability_rank: observed.capability_rank,
       first_race_time_local: observed.first_race_time_local,
       last_race_time_local: observed.last_race_time_local,
-      timetable_rows: publicRows(detailById.get(record.meeting_id), observed.capability_rank),
+      timetable_rows: publicRows(observedDetail, observed.capability_rank),
       source: {
         source_id: 'hkjc-racecard-public-timetable',
         official_url: observed.official_source_url,
@@ -76,12 +105,17 @@ export function buildHkjcLiveBestAvailableArtifacts({ scheduleArtifacts, normali
       },
       confidence: 'high',
       notes: `Official HKJC fixture identity enriched from the official racecard route to current best-available rank ${observed.capability_rank}; review remains required before promotion/publication.`,
+      detail_observation: {
+        status: 'available',
+        race_count: observedDetail?.timetable_rows?.length ?? 0,
+        conflicts: [],
+      },
     };
   });
 
   const sourceErrors = [
     ...(scheduleArtifacts.coverage?.source_errors ?? []),
-    ...seriousSourceErrors(refreshReport),
+    ...detailSourceErrors,
   ];
   const unresolvedMeetingIds = [...new Set(sourceErrors
     .map((error) => String(error.scope_ref ?? '').split(':race-')[0])
