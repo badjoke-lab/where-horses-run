@@ -8,7 +8,7 @@ RTYPE-050	RTYPE	レースの種類・格・条件	Claiming Handicap	クレーミ
 RTYPE-051	RTYPE	レースの種類・格・条件	Claiming Stakes	クレーミング・ステークス	claim対象馬による競走で、nomination・entry等の料金が賞金へ加算される北米の競走類型。	concept	P2	North America	Flat	transliteration	source_verified	yes	no	USCA-SRC-003.
 RTYPE-052	RTYPE	レースの種類・格・条件	Training Race	トレーニング・レース	Equibase体系でSteeplechaseに関連して用いられるTraining race類型。通常競走との位置付けは制度別に扱う。	concept	P3	North America	Jump	working_equivalent	source_verified	yes	no	USCA-SRC-003.
 RTYPE-053	RTYPE	レースの種類・格・条件	Claiming price	クレーミング価格	Claiming raceで当該馬を購入請求できる設定価格。	concept	P0	North America/Regional	Flat	working_equivalent	source_verified	yes	no	USCA-SRC-003 and ARCI model rules.
-ENTRY-029	ENTRY	登録・出走手続	Coupled entry	カップルド・エントリー	所有関係等により複数馬を一つのbetting entryとして扱う北米の登録・投票上の単位。	concept	P1	North America	ALL	transliteration	candidate	yes	no	Distinct from generic Entry; needs state/provincial rule verification before public use.
+ENTRY-029	ENTRY	登録・出走手続	Coupled entry	カップルド・エントリー	複数の馬をパリミュチュエル投票上の単一betting interestとして扱う米国の地域規則上の登録・投票単位。	concept	P1	US/Regional	ALL	transliteration	source_verified	yes	no	USCA-SRC-010; USCA-SRC-001. Kentucky current regulation directly defines coupled entry; ARCI model rules corroborate US regulatory usage. Do not globalize to all North America.
 ENTRY-030	ENTRY	登録・出走手続	Post position	ポストポジション	発走時に割り当てられたスタート位置・ゲート位置。	concept	P0	North America/Global	ALL	working_equivalent	source_verified	yes	no	USCA-SRC-008 and Equibase chart structure.
 RUN-042	RUN	レース進行・脚質・競走中の表現	Point of call	ポイント・オブ・コール	レース途中の所定地点で馬の位置・着差等を記録する観測点。	concept	P0	North America	Flat	transliteration	source_verified	yes	no	USCA-SRC-004.
 RUN-043	RUN	レース進行・脚質・競走中の表現	First over	ファースト・オーバー	繋駕競走で、外から最初に先頭馬へ進出していく位置取り・馬を指す用語。	concept	P1	US/Canada	Harness	transliteration	source_verified	yes	no	USCA-SRC-008.
