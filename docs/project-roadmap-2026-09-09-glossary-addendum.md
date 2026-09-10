@@ -18,11 +18,12 @@ Completed first major-jurisdiction pass: GLOSSARY-MASTER-003
 Completed current register pass: GLOSSARY-MASTER-004
 Current glossary Work ID: GLOSSARY-MASTER-005
 P0 verification wave 1: complete
-Next immediate wave: ENTRY / VENUE / WEIGHT P0 verification
+P0 verification wave 2: complete
+Next immediate wave: remaining high-impact P0 categories
 Later: GLOSSARY-MASTER-006
 Current research master: 658 Concepts / 18 domain categories
 Relationship layer: 20 relations / 15 reviews / 15 resolved / 0 open
-Evidence coverage: 175/658 source-verified; P0 67/204 source-verified
+Evidence coverage: 205/658 source-verified; P0 97/204 source-verified
 Public glossary page expansion: deferred
 Automatic glossary publication: disabled
 Existing public glossary content: disposable legacy runtime baseline
@@ -69,25 +70,24 @@ Current master: **658 Concepts**.
 
 ### Evidence gate
 
-The initial evidence audit blocked MASTER-005 completion because most of the generic seed remained candidate. P0 verification wave 1 has now promoted **16 base-seed P0 Concepts** using authority evidence.
+The initial evidence audit blocked MASTER-005 completion because most of the generic seed remained candidate. P0 verification waves 1 and 2 have now promoted **46 base-seed P0 Concepts** using authority evidence.
 
 Current observed state:
 
-- all Concepts: **175/658 source-verified (26.6%)**, 483 candidate;
-- P0: **67/204 source-verified (32.8%)**, 137 candidate;
-- active base seed: **17/497 source-verified (3.4%)**, 480 candidate;
+- all Concepts: **205/658 source-verified (31.2%)**, 453 candidate;
+- P0: **97/204 source-verified (47.5%)**, 107 candidate;
+- active base seed: **47/497 source-verified (9.5%)**, 450 candidate;
 - supplemental jurisdiction/relationship research: **158/161 source-verified (98.1%)**, 3 candidate.
 
-Wave 1 completed all current P0 rows in:
-
-- DISC — 7 P0 verified;
-- DIST — 9 P0 verified.
+Wave 1 completed all current P0 rows in DISC and DIST. Wave 2 completed all current P0 rows in ENTRY, VENUE and WEIGHT.
 
 Canonical provenance:
 
 ```text
 data/glossary-master/sources/p0-core-sources-v1.tsv
+data/glossary-master/sources/p0-core-sources-v2.tsv
 data/glossary-master/coverage/p0-verification-wave1-v1.tsv
+data/glossary-master/coverage/p0-verification-wave2-v1.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
@@ -96,15 +96,16 @@ data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 
 Status: **HOLD — not complete**.
 
-137 P0 Concepts remain candidate. Immediate work:
+107 P0 Concepts remain candidate. Immediate work:
 
 ```text
-P0 wave 2: ENTRY / VENUE / WEIGHT
+P0 wave 3: remaining high-impact categories
+-> prioritize categories with large P0 candidate counts and low verified coverage
 -> use official/international authority sources appropriate to each claim
 -> resolve remaining supplemental candidates when evidence is available
 -> recompute evidence coverage
 -> rerun MASTER-005 completion gate
--> continue P0 waves until the remaining material evidence risk is acceptable
+-> continue P0 waves until remaining material evidence risk is acceptable
 ```
 
 ## MASTER-006 — search-intent, coverage, readiness
@@ -135,9 +136,9 @@ The current public glossary remains disposable content. There is no old-record m
 ```text
 Current Work ID: GLOSSARY-MASTER-005
 Current master: 658 Concepts
-Evidence: 175 verified / 483 candidate
-P0: 67 verified / 137 candidate
-Next: P0 verification wave 2 — ENTRY / VENUE / WEIGHT
+Evidence: 205 verified / 453 candidate
+P0: 97 verified / 107 candidate
+Next: P0 verification wave 3 — remaining high-impact categories
 MASTER-006: blocked until MASTER-005 evidence gate passes
 Public implementation: deferred
 ```
