@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-10T16:50:01.056Z",
+  "generated_at": "2026-09-10T16:55:17.658Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -12514,9 +12514,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T14:17:36.057Z",
+        "generated_at": "2026-09-10T16:55:17.263Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -12806,9 +12813,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T04:07:30.241Z",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "A",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Detail was observed, but the implemented route cannot reach the registered technical capability rank."
       }
     },
     {
@@ -12835,9 +12849,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T04:07:30.241Z",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "A",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Detail was observed, but the implemented route cannot reach the registered technical capability rank."
       }
     },
     {
@@ -12864,9 +12885,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T06:26:20.204Z",
+        "generated_at": "2026-09-10T16:55:17.263Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -12893,9 +12921,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -12922,9 +12957,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:18:13.516Z",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": false,
+        "reason": "The implemented higher-detail route was evaluated and produced the current evidence-supported rank."
       }
     },
     {
@@ -12950,10 +12992,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-07",
-        "generated_at": "2026-09-07T08:21:35.619Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": false,
+        "reason": "The implemented higher-detail route was evaluated and produced the current evidence-supported rank."
       }
     },
     {
@@ -13112,9 +13161,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T04:07:30.241Z",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "A",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Detail was observed, but the implemented route cannot reach the registered technical capability rank."
       }
     },
     {
@@ -13141,9 +13197,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T04:07:30.241Z",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "A",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Detail was observed, but the implemented route cannot reach the registered technical capability rank."
       }
     },
     {
@@ -13208,9 +13271,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T14:17:36.057Z",
+        "generated_at": "2026-09-10T16:55:17.263Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -13266,9 +13336,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -13370,10 +13447,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-07",
-        "generated_at": "2026-09-07T08:21:35.619Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": false,
+        "reason": "The implemented higher-detail route was evaluated and produced the current evidence-supported rank."
       }
     },
     {
@@ -13399,10 +13483,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-09",
-        "generated_at": "2026-09-09T21:46:16.122Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": false,
+        "reason": "The implemented higher-detail route was evaluated and produced the current evidence-supported rank."
       }
     },
     {
@@ -13517,9 +13608,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T13:59:30.858Z",
+        "generated_at": "2026-09-10T16:55:15.337Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -13546,9 +13644,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:18:13.569Z",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "A",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Detail was observed, but the implemented route cannot reach the registered technical capability rank."
       }
     },
     {
@@ -13575,9 +13680,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:18:13.569Z",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "A",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Detail was observed, but the implemented route cannot reach the registered technical capability rank."
       }
     },
     {
@@ -13604,9 +13716,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:18:13.569Z",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "A",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Detail was observed, but the implemented route cannot reach the registered technical capability rank."
       }
     },
     {
@@ -13671,9 +13790,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T06:26:20.204Z",
+        "generated_at": "2026-09-10T16:55:17.263Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -13699,12 +13825,19 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T04:20:00.372Z",
+        "generated_at": "2026-09-10T16:53:58.998Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "notes": "Approved from the official HKJC September 2026 fixture. Meeting identity only; race times and programme rows remain unclaimed.",
-      "racing_system_id": "hong-kong-hkjc-system"
+      "racing_system_id": "hong-kong-hkjc-system",
+      "acquisition_completion": {
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A+",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": false,
+        "reason": "No higher timetable rank exists."
+      }
     },
     {
       "meeting_id": "ireland-ireland--curragh-2026-09-13",
@@ -13730,9 +13863,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -13835,9 +13975,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T04:20:52.854Z",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": false,
+        "reason": "The implemented higher-detail route was evaluated and produced the current evidence-supported rank."
       }
     },
     {
@@ -13863,10 +14010,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.716Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "No completion rule exists for detail status unsupported."
       }
     },
     {
@@ -14024,10 +14178,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -14053,10 +14214,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -14121,9 +14289,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T06:26:20.204Z",
+        "generated_at": "2026-09-10T16:55:17.263Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -14280,10 +14455,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -14309,10 +14491,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -14339,9 +14528,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T06:26:20.204Z",
+        "generated_at": "2026-09-10T16:55:17.263Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -14368,9 +14564,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -14613,10 +14816,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -14642,10 +14852,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -14699,13 +14916,20 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:33:07.548Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:53:58.998Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "notes": "Approved from the official HKJC September 2026 fixture. Meeting identity only; race times and programme rows remain unclaimed.",
-      "racing_system_id": "hong-kong-hkjc-system"
+      "racing_system_id": "hong-kong-hkjc-system",
+      "acquisition_completion": {
+        "disposition": "complete_current_best_available",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": false,
+        "reason": "The implemented higher-detail route was evaluated and produced the current evidence-supported rank."
+      }
     },
     {
       "meeting_id": "nar-monbetsu-racecourse-2026-09-16",
@@ -14903,10 +15127,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -14932,10 +15163,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -14962,9 +15200,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -15163,10 +15408,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -15192,10 +15444,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -15222,9 +15481,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -15251,9 +15517,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -15279,10 +15552,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.716Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -15308,10 +15588,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.716Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -15467,10 +15754,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -15496,10 +15790,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -15564,9 +15865,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -15593,9 +15901,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -15697,10 +16012,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.716Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -15726,10 +16048,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.716Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -15798,10 +16127,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -15827,10 +16163,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -15856,10 +16199,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -15922,13 +16272,20 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:33:07.548Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:53:58.998Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "notes": "Approved from the pinned official HKJC September 2026 fixture artifact. Meeting identity only; race times and programme rows remain unclaimed.",
-      "racing_system_id": "hong-kong-hkjc-system"
+      "racing_system_id": "hong-kong-hkjc-system",
+      "acquisition_completion": {
+        "disposition": "complete_current_best_available",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": false,
+        "reason": "The implemented higher-detail route was evaluated and produced the current evidence-supported rank."
+      }
     },
     {
       "meeting_id": "ireland-ireland--listowel-2026-09-20",
@@ -15954,9 +16311,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -16058,10 +16422,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.716Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -16087,10 +16458,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.716Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "No completion rule exists for detail status unsupported."
       }
     },
     {
@@ -16202,10 +16580,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -16231,10 +16616,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -16299,9 +16691,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -16328,9 +16727,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -16561,10 +16967,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -16590,10 +17003,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -16620,9 +17040,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -16912,10 +17339,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -16941,10 +17375,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -16969,13 +17410,20 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:33:07.548Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:53:58.998Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "notes": "Approved from the pinned official HKJC September 2026 fixture artifact. Meeting identity only; race times and programme rows remain unclaimed.",
-      "racing_system_id": "hong-kong-hkjc-system"
+      "racing_system_id": "hong-kong-hkjc-system",
+      "acquisition_completion": {
+        "disposition": "complete_current_best_available",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": false,
+        "reason": "The implemented higher-detail route was evaluated and produced the current evidence-supported rank."
+      }
     },
     {
       "meeting_id": "ireland-ireland--listowel-2026-09-23",
@@ -17001,9 +17449,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -17249,10 +17704,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -17278,10 +17740,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -17308,9 +17777,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -17512,10 +17988,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -17541,10 +18024,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -17571,9 +18061,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -17600,9 +18097,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -17760,10 +18264,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -17789,10 +18300,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -17857,9 +18375,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -17886,9 +18411,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -18078,10 +18610,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -18107,10 +18646,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -18136,10 +18682,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -18203,10 +18756,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:33:07.548Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:53:58.998Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "complete_current_best_available",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": false,
+        "reason": "The implemented higher-detail route was evaluated and produced the current evidence-supported rank."
       }
     },
     {
@@ -18233,9 +18793,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -18469,10 +19036,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -18498,10 +19072,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -18566,9 +19147,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -18595,9 +19183,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -18755,10 +19350,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -18784,10 +19386,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -18814,9 +19423,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -19062,10 +19678,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -19091,10 +19714,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -19121,9 +19751,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -19150,9 +19787,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -19354,10 +19998,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -19383,10 +20034,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -19412,10 +20070,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:33:07.548Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:53:58.998Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "complete_current_best_available",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": false,
+        "reason": "The implemented higher-detail route was evaluated and produced the current evidence-supported rank."
       }
     },
     {
@@ -19442,9 +20107,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -19471,9 +20143,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -19719,10 +20398,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -19748,10 +20434,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -19778,9 +20471,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -19807,9 +20507,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -19835,10 +20542,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.716Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -19864,10 +20578,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.716Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -20025,10 +20746,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -20054,10 +20782,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.765Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -20084,9 +20819,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -20188,10 +20930,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.716Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -20217,10 +20966,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T16:36:05.716Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -20290,10 +21046,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T03:54:42.480Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -20319,10 +21082,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T03:54:42.480Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -20348,10 +21118,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T03:54:42.480Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -20377,10 +21154,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T16:03:05.362Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:53:58.998Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "complete_current_best_available",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": false,
+        "reason": "The implemented higher-detail route was evaluated and produced the current evidence-supported rank."
       }
     },
     {
@@ -20407,9 +21191,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -20436,9 +21227,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -20540,10 +21338,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T15:31:34.941Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -20569,10 +21374,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T15:31:34.941Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "No completion rule exists for detail status unsupported."
       }
     },
     {
@@ -20774,10 +21586,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T22:48:35.453Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -20803,10 +21622,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-04",
-        "generated_at": "2026-09-04T22:48:35.453Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -20833,9 +21659,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -20862,9 +21695,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -20890,10 +21730,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-05",
-        "generated_at": "2026-09-05T16:06:11.444Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -20919,10 +21766,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-05",
-        "generated_at": "2026-09-05T16:06:11.444Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -21080,10 +21934,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-06",
-        "generated_at": "2026-09-06T05:49:14.006Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -21109,10 +21970,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-06",
-        "generated_at": "2026-09-06T05:49:14.006Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -21139,9 +22007,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -21387,10 +22262,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-07",
-        "generated_at": "2026-09-07T08:21:35.670Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -21416,10 +22298,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-07",
-        "generated_at": "2026-09-07T08:21:35.670Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -21445,10 +22334,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-08",
-        "generated_at": "2026-09-08T02:08:43.688Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:17.298Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "retry_required",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "Higher-detail acquisition did not complete safely (source_error)."
       }
     },
     {
@@ -21474,10 +22370,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-08",
-        "generated_at": "2026-09-08T02:08:27.755Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:53:58.998Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "complete_current_best_available",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": false,
+        "reason": "The implemented higher-detail route was evaluated and produced the current evidence-supported rank."
       }
     },
     {
@@ -21504,9 +22407,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -21708,10 +22618,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-08",
-        "generated_at": "2026-09-08T02:08:59.574Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -21737,10 +22654,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-08",
-        "generated_at": "2026-09-08T02:08:59.574Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -21767,9 +22691,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -21796,9 +22727,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -22000,10 +22938,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-09",
-        "generated_at": "2026-09-09T02:15:28.749Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -22029,10 +22974,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-09",
-        "generated_at": "2026-09-09T02:15:28.749Z",
+        "last_checked_date": "2026-09-10",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -22059,9 +23011,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -22088,9 +23047,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T08:47:04.764Z",
+        "generated_at": "2026-09-10T16:55:17.658Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
       }
     },
     {
@@ -22117,9 +23083,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T04:20:52.854Z",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -22146,9 +23119,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T04:20:52.854Z",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -22307,9 +23287,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T04:20:52.907Z",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -22336,9 +23323,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T04:20:52.907Z",
+        "generated_at": "2026-09-10T16:54:41.375Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -22441,9 +23435,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T15:47:09.679Z",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -22470,9 +23471,16 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T15:47:09.679Z",
+        "generated_at": "2026-09-10T16:54:41.326Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
