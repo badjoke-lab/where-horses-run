@@ -2,7 +2,7 @@
 
 Status: active zero-based world racing terminology master  
 Authority: `docs/glossary/world-racing-terminology-master-spec.md`  
-Current work: `GLOSSARY-MASTER-004` — colloquial / industry / abbreviation / historical research
+Current work: `GLOSSARY-MASTER-005` — relationship / equivalence / homonym / evidence refinement
 
 This directory is the non-public working area for the concept-first world racing terminology master.
 
@@ -58,12 +58,15 @@ The manifest is the machine-readable count authority. These counts describe the 
 
 ## Register / abbreviation / historical layers
 
-`GLOSSARY-MASTER-004` separates how a term is used from what the underlying Concept is.
+The current pass of `GLOSSARY-MASTER-004` separated how a term is used from what the underlying Concept is. Follow-up register waves remain allowed when later research finds material gaps.
 
 ```text
 register/register-usage-v1.tsv
     colloquial, industry, betting-language and other register-specific usage;
     may point at an existing Concept or an explicit NEW-REVIEW candidate.
+
+register/register-review-queue-v1.tsv
+    unresolved register usages whose meaning is evidenced but Concept placement is not yet settled.
 
 abbreviations/abbreviations-v1.tsv
     official abbreviations, race-type codes, chart codes, racecard equipment codes and display codes.
@@ -75,9 +78,47 @@ sources/register-layer-sources-v1.tsv
     evidence used specifically for these usage layers.
 ```
 
+Current usage-layer snapshot:
+
+- register usages: **60**;
+- source-verified direct register mappings: **26**;
+- register candidate usages: **34**;
+- register review targets: **33**;
+- abbreviations/codes: **26**, all source-verified;
+- historical terms: **4**, all source-verified.
+
 A slang, colloquial or abbreviated form does **not** automatically create a Concept. A historically retired term in one venue/jurisdiction must not be declared globally obsolete without evidence.
 
-Polysemous usage must remain visible. For example, if an authority gives multiple senses for one local term, retain a review target until those senses are modeled rather than choosing one silently.
+## Relationship / equivalence layer
+
+`GLOSSARY-MASTER-005` makes Concept relationships explicit and prevents false global synonymy.
+
+```text
+relations/relations-v1.tsv
+    reviewed Concept-to-Concept relationships using exact_equivalent, close_equivalent,
+    broader, narrower, related, contrast, regional_counterpart and no_direct_equivalent.
+
+relations/relation-review-queue-v1.tsv
+    unresolved homonyms, sense splits, false-synonym risks, candidate deduplication,
+    and cross-language/cross-jurisdiction relation decisions.
+
+sources/relationship-layer-sources-v1.tsv
+    evidence added specifically for relation and sense-boundary claims.
+```
+
+Initial wave 1 contains **15 relations** and **15 relation-review items**. Important current review cases include:
+
+- `Meeting / Race meeting / Fixture / Race day`;
+- `Racecourse / Racetrack / Track / Course`;
+- `Going / Track condition`;
+- `Group / Grade` and their numbered levels;
+- `Off time / Scheduled start time`;
+- `Bumper / National Hunt Flat Race`;
+- France `Meeting / Réunion` sense boundaries;
+- France tactical `leader` vs North American `Rabbit`;
+- France `musique` vs other form-notation systems.
+
+Relations must be scope-aware. An `exact_equivalent` relationship in one jurisdiction or sense does not authorize a global merge. Relationship files are Concept-to-Concept only; register labels continue to map through the register/label layers.
 
 ## Concept file contract
 
@@ -115,7 +156,7 @@ Reader-oriented direct and expanded explanations by language and jurisdiction.
 
 ### Relations
 
-Typed relationships such as `exact_equivalent`, `close_equivalent`, `broader`, `narrower`, `related`, `contrast`, `regional_counterpart`, `no_direct_equivalent`, and homonym/ambiguity relationships.
+Typed relationships such as `exact_equivalent`, `close_equivalent`, `broader`, `narrower`, `related`, `contrast`, `regional_counterpart`, `no_direct_equivalent`, and explicit homonym/ambiguity review.
 
 ### Regional Usage
 
@@ -165,8 +206,9 @@ WHR-specific interface/access labels such as `Official live`, `Official replay`,
 - Never treat an English working label as the worldwide official term.
 - Preserve original script when collecting local terminology.
 - Never promote a search variant into a preferred label because it is convenient.
-- Do not flatten `Meeting`, `Fixture`, `Race day`, `Racecourse`, `Racetrack`, `Going`, `Track condition`, or similar near terms into global synonyms without evidence.
+- Do not flatten `Meeting`, `Fixture`, `Race day`, `Racecourse`, `Racetrack`, `Going`, `Track condition`, `Group`, `Grade`, or similar near terms into global synonyms without evidence.
 - Keep slang, colloquial, historical, abbreviation and deprecated status explicit.
 - Keep unresolved taxonomy/evidence questions visible.
-- Do not set `public_ready=yes` until the relevant definition, labels, jurisdiction claims, and evidence have been reviewed.
+- Relationship assertions must record scope and should use the weakest relation type supported by evidence rather than an optimistic synonym claim.
+- Do not set `public_ready=yes` until the relevant definition, labels, jurisdiction claims, relationships, and evidence have been reviewed.
 - Never make this working directory a public-runtime input without a later reviewed `GLOSSARY-PUBLIC-*` decision.
