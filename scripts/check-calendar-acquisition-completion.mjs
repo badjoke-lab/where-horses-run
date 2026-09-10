@@ -16,26 +16,33 @@ function profile({ technical = 'A+', supported = ['C', 'B', 'B+', 'A', 'A+'] } =
   };
 }
 
-function record(rank, status = undefined) {
+function record(rank, status = undefined, evaluatedCapabilityRank = undefined) {
   return {
     meeting_id: `fixture-${rank.replace('+', 'plus').toLowerCase()}`,
     capability_rank: rank,
-    ...(status ? { detail_observation: { status } } : {}),
+    ...(status ? {
+      detail_observation: {
+        status,
+        ...(evaluatedCapabilityRank ? { evaluated_capability_rank: evaluatedCapabilityRank } : {}),
+      },
+    } : {}),
   };
 }
 
 assert.equal(classifyAcquisitionCompletion(record('C'), profile()).disposition, 'implementation_gap');
 assert.equal(classifyAcquisitionCompletion(record('C', 'not_published'), profile()).disposition, 'pending_publication');
 assert.equal(classifyAcquisitionCompletion(record('B', 'source_error'), profile()).disposition, 'retry_required');
-assert.equal(classifyAcquisitionCompletion(record('B+', 'available'), profile()).disposition, 'complete_current_best_available');
-assert.equal(classifyAcquisitionCompletion(record('A', 'available'), profile()).disposition, 'complete_current_best_available');
+assert.equal(classifyAcquisitionCompletion(record('B+', 'available'), profile()).disposition, 'implementation_gap');
+assert.equal(classifyAcquisitionCompletion(record('B+', 'available', 'A+'), profile()).disposition, 'complete_current_best_available');
+assert.equal(classifyAcquisitionCompletion(record('A', 'available', 'A'), profile()).disposition, 'implementation_gap');
+assert.equal(classifyAcquisitionCompletion(record('A', 'available', 'A+'), profile()).disposition, 'complete_current_best_available');
 assert.equal(classifyAcquisitionCompletion(record('A+'), profile()).disposition, 'complete_current_best_available');
 assert.equal(classifyAcquisitionCompletion(record('A', 'not_applicable'), profile()).disposition, 'not_applicable');
 
 const limitedImplementation = profile({ technical: 'A+', supported: ['C', 'A'] });
 assert.equal(routeImplementsTechnicalCapability(limitedImplementation), false);
 assert.equal(maxSupportedObservationRank(limitedImplementation), 'A');
-assert.equal(classifyAcquisitionCompletion(record('A', 'available'), limitedImplementation).disposition, 'implementation_gap');
+assert.equal(classifyAcquisitionCompletion(record('A', 'available', 'A'), limitedImplementation).disposition, 'implementation_gap');
 
 const cOnlyImplementation = profile({ technical: 'A', supported: ['C'] });
 assert.equal(classifyAcquisitionCompletion(record('C'), cOnlyImplementation).disposition, 'implementation_gap');
@@ -65,7 +72,17 @@ const expectedCurrentGaps = new Set([
 ]);
 assert.deepEqual(new Set(obviousImplementationGaps.map((row) => row.system_id)), expectedCurrentGaps);
 
-function runApplyFixture({ id, countryId, authorityId, systemId, timezone, rank, detailStatus, expectedDisposition }) {
+function runApplyFixture({
+  id,
+  countryId,
+  authorityId,
+  systemId,
+  timezone,
+  rank,
+  detailStatus,
+  evaluatedCapabilityRank,
+  expectedDisposition,
+}) {
   const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'whr-acquisition-completion-'));
   try {
     const artifactPath = path.join(temp, 'artifact.json');
@@ -96,7 +113,14 @@ function runApplyFixture({ id, countryId, authorityId, systemId, timezone, rank,
       last_race_time_local: lastRaceTime,
       timetable_rows: timetableRows,
       source: { source_id: `${id}-source`, official_url: `https://example.invalid/${id}` },
-      ...(detailStatus ? { detail_observation: { status: detailStatus, race_count: timetableRows.length, conflicts: [] } } : {}),
+      ...(detailStatus ? {
+        detail_observation: {
+          status: detailStatus,
+          ...(evaluatedCapabilityRank ? { evaluated_capability_rank: evaluatedCapabilityRank } : {}),
+          race_count: timetableRows.length,
+          conflicts: [],
+        },
+      } : {}),
     };
     fs.writeFileSync(artifactPath, JSON.stringify({ generated_at: '2026-09-11T00:00:00.000Z', records: [recordValue] }));
     fs.writeFileSync(canonicalPath, JSON.stringify({ generated_at: null, meetings: [] }));
@@ -174,13 +198,36 @@ runApplyFixture({
   timezone: 'Asia/Dubai',
   rank: 'B',
   detailStatus: 'available',
+  evaluatedCapabilityRank: 'A',
+  expectedDisposition: 'complete_current_best_available',
+});
+runApplyFixture({
+  id: 'hkjc-unproven-aplus',
+  countryId: 'hong-kong',
+  authorityId: 'hkjc',
+  systemId: 'hong-kong-hkjc-system',
+  timezone: 'Asia/Hong_Kong',
+  rank: 'A',
+  detailStatus: 'available',
+  evaluatedCapabilityRank: 'A',
+  expectedDisposition: 'implementation_gap',
+});
+runApplyFixture({
+  id: 'hkjc-proven-aplus',
+  countryId: 'hong-kong',
+  authorityId: 'hkjc',
+  systemId: 'hong-kong-hkjc-system',
+  timezone: 'Asia/Hong_Kong',
+  rank: 'A',
+  detailStatus: 'available',
+  evaluatedCapabilityRank: 'A+',
   expectedDisposition: 'complete_current_best_available',
 });
 
 console.log(JSON.stringify({
   ok: true,
-  classifier_fixture_cases: 10,
-  apply_integration_cases: 4,
+  classifier_fixture_cases: 12,
+  apply_integration_cases: 6,
   implemented_profiles_checked: (registry.records ?? []).filter((row) => ['active', 'provisional'].includes(row.profile_status)).length,
   current_registry_level_implementation_gaps: obviousImplementationGaps,
 }, null, 2));

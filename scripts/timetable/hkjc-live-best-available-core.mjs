@@ -84,9 +84,10 @@ export function buildHkjcLiveBestAvailableArtifacts({ scheduleArtifacts, normali
         ...record,
         detail_observation: {
           status: 'available',
+          evaluated_capability_rank: 'A+',
           race_count: observedDetail?.timetable_rows?.length ?? 0,
           conflicts: [],
-          reason: 'The live HKJC racecard route was evaluated but did not produce a higher evidence-supported rank for this meeting.',
+          reason: 'The live HKJC racecard route evaluated timetable times and A+ metadata fields but did not produce a higher evidence-supported rank for this meeting.',
         },
       };
     }
@@ -107,6 +108,7 @@ export function buildHkjcLiveBestAvailableArtifacts({ scheduleArtifacts, normali
       notes: `Official HKJC fixture identity enriched from the official racecard route to current best-available rank ${observed.capability_rank}; review remains required before promotion/publication.`,
       detail_observation: {
         status: 'available',
+        evaluated_capability_rank: 'A+',
         race_count: observedDetail?.timetable_rows?.length ?? 0,
         conflicts: [],
       },

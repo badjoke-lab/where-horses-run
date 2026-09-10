@@ -46,6 +46,11 @@ export function routeImplementsTechnicalCapability(profile) {
   return rankIndex(maxSupportedObservationRank(profile)) >= rankIndex(technical);
 }
 
+function evaluatedThroughRank(record) {
+  const value = record?.detail_observation?.evaluated_capability_rank ?? null;
+  return RANK_INDEX.has(value) ? value : null;
+}
+
 export function classifyAcquisitionCompletion(record, profile) {
   const observedRank = record?.capability_rank;
   if (!RANK_INDEX.has(observedRank)) {
@@ -102,21 +107,26 @@ export function classifyAcquisitionCompletion(record, profile) {
   }
 
   if (detailStatus === 'available') {
-    if (routeImplementsTechnicalCapability(profile)) {
+    const evaluatedRank = evaluatedThroughRank(record);
+    if (evaluatedRank && rankIndex(evaluatedRank) >= rankIndex(technicalRank)) {
       return {
         disposition: 'complete_current_best_available',
         observed_rank: observedRank,
         technical_capability_rank: technicalRank,
+        evaluated_capability_rank: evaluatedRank,
         higher_rank_open: false,
-        reason: 'The implemented higher-detail route was evaluated and produced the current evidence-supported rank.',
+        reason: 'The currently applicable higher-detail acquisition path was explicitly evaluated through the registered technical capability rank.',
       };
     }
     return {
       disposition: 'implementation_gap',
       observed_rank: observedRank,
       technical_capability_rank: technicalRank,
+      ...(evaluatedRank ? { evaluated_capability_rank: evaluatedRank } : {}),
       higher_rank_open: true,
-      reason: 'Detail was observed, but the implemented route cannot reach the registered technical capability rank.',
+      reason: evaluatedRank
+        ? `Higher-detail acquisition was evaluated only through ${evaluatedRank}, below registered technical capability ${technicalRank}.`
+        : 'A higher-detail observation was available, but the acquisition result did not prove how far the applicable higher-detail paths were evaluated.',
     };
   }
 
