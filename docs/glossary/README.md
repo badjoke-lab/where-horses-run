@@ -16,48 +16,45 @@ Read these first for glossary work:
 
 The working dictionary has **654 terms/concepts**.
 
-- **370 are source-verified at the meaning level**.
-- **284 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
+- **385 are source-verified at the meaning level**.
+- **269 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
 - the highest-priority core set is **203/203 verified**;
 - jurisdiction-specific research additions are **161/161 verified**;
 - publication is still disabled (`public_ready=0`, public runtime disconnected).
 
-The latest completed pass verified **29 terms** in six practical areas:
+The latest completed subject pass verified **15 race-type/classification terms**: Maiden Claiming, Novice, Beginners Chase, National Hunt Flat Race, Allowance, Starter Allowance, Claiming, Optional Claiming, Pattern, Group 2, Group 3, Grade 2, Grade 3, Nursery Handicap and Match Race.
 
-- horses — Arabian horse, American Quarter Horse, Standardbred, Entire, Juvenile, Maiden;
-- breeding — Broodmare, Registration;
-- people — Apprentice jockey, Breeder, Groom, Starter, Judge, Handicapper, Clerk of the course, Veterinarian;
-- in-race language — Checked, Bumped;
-- equipment — Visor, Hood, Cheekpieces, Tongue tie, Shadow roll, Bridle;
-- training — Breezing, Handily, Canter, Trackwork, Jump-out.
+Definitions are kept regional where the rules are regional. Allowance is not flattened into the British Conditions Race concept, Optional Claiming preserves its North American claiming/non-claiming eligibility structure, and Match Race is not treated as a universal coding rule. `Selling race` remains under review because current BHA terminology uses `Seller`.
 
-One duplicate was removed: the second `Breeder` entry under breeding was merged into the participant-role `Breeder` entry. Ambiguous terms such as `Horse` and `Stud`, and race-comment expressions whose precise meaning was not confirmed, remain under review.
+The preceding pass verified **29 terms** across horses, breeding, people, in-race language, equipment and training, and removed the duplicate breeding-category `Breeder` row.
 
 ## What has been completed
 
-The dictionary was first built from zero rather than copied from the existing public glossary. Major jurisdiction/local-language research and the current slang/abbreviation/historical pass are complete. The core terminology set is fully source-verified, and all current jurisdiction-specific additions are evidence-backed.
+The dictionary was built from zero rather than copied from the existing public glossary. Major jurisdiction/local-language research and the current slang/abbreviation/historical pass are complete. The core terminology set is fully source-verified, and all current jurisdiction-specific additions are evidence-backed.
 
-The lower-priority base dictionary is now being cleaned systematically. Two completed passes have verified **56 additional base terms** and removed **3 duplicate or malformed rows**. Current base-dictionary coverage is **209/493 verified (42.4%)**.
+The base dictionary cleanup has now verified **71 additional terms** and removed **3 duplicate or malformed rows**. Current base-dictionary coverage is **224/493 verified (45.4%)**.
 
 Canonical evidence/audit files include:
 
 ```text
 data/glossary-master/sources/p1-core-sources-v1.tsv
 data/glossary-master/sources/p1-core-sources-v2.tsv
+data/glossary-master/sources/race-type-condition-sources-v1.tsv
 data/glossary-master/coverage/p1-verification-wave1-v1.tsv
 data/glossary-master/coverage/p1-verification-wave2-v1.tsv
+data/glossary-master/coverage/race-type-condition-verification-v1.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
 ## What remains
 
-The **284 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or simply badly named. Review means choosing the correct action rather than chasing a percentage.
+The **269 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
 
 The next practical groups are:
 
 ```text
-race types / class and eligibility terminology
+remaining race-type edge cases
 surface and going terminology
 meeting / fixture / schedule terminology
 result / inquiry / result-code terminology

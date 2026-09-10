@@ -10,22 +10,17 @@ This directory is the non-public working area for the worldwide horse-racing ter
 
 The working dictionary currently contains **654 racing terms/concepts**.
 
-- **370 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
-- **284 terms still need verification, scope correction, splitting/merging, or removal.**
+- **385 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
+- **269 terms still need verification, scope correction, splitting/merging, or removal.**
 - The already researched jurisdiction-specific additions are **161/161 verified**.
 - The core highest-priority terminology set is **203/203 verified**.
 - Public glossary publication is still disabled while the remaining terms are cleaned up.
 
-The most recent completed terminology pass covered six user-facing areas:
+The latest completed subject pass is **race types and classifications**. It verified 15 additional terms including Maiden Claiming, Novice, Beginners Chase, National Hunt Flat Race, Allowance, Starter Allowance, Claiming, Optional Claiming, Pattern, Group 2/3, Grade 2/3, Nursery Handicap and Match Race.
 
-- horses: Arabian horse, American Quarter Horse, Standardbred, Entire, Juvenile, Maiden;
-- breeding: Broodmare, Registration;
-- racing people: Apprentice jockey, Breeder, Groom, Starter, Judge, Handicapper, Clerk of the course, Veterinarian;
-- in-race expressions: Checked, Bumped;
-- horse equipment: Visor, Hood, Cheekpieces, Tongue tie, Shadow roll, Bridle;
-- training: Breezing, Handily, Canter, Trackwork, Jump-out.
+Definitions were narrowed where necessary. `Optional Claiming` now describes the North American claiming/non-claiming eligibility combination instead of being treated as a generic conditions-race synonym. `Match Race` is scoped to the directly verified North American race-type sense rather than asserted as a universal coding rule. `Selling race` remains under review because current BHA terminology uses `Seller`.
 
-`BREED-017 Breeder` was removed as a duplicate of the participant-role Concept `ROLE-009 Breeder`. Ambiguous terms such as `Horse`, `Stud`, and unsupported race-comment synonyms remain unverified rather than being promoted for percentage targets.
+The preceding pass covered horses, breeding, racing people, in-race expressions, horse equipment and training. `BREED-017 Breeder` was removed as a duplicate of the participant-role Concept `ROLE-009 Breeder`. Ambiguous terms such as `Horse`, `Stud`, and unsupported race-comment synonyms remain unverified rather than being promoted for percentage targets.
 
 ## Current master
 
@@ -40,34 +35,13 @@ The most recent completed terminology pass covered six user-facing areas:
 
 ## Core source verification — complete
 
-Canonical provenance:
-
-```text
-sources/p0-core-sources-v1.tsv
-sources/p0-core-sources-v2.tsv
-sources/p0-core-sources-v3.tsv
-sources/p0-core-sources-v4.tsv
-sources/p0-core-sources-v5.tsv
-coverage/p0-verification-wave1-v1.tsv
-coverage/p0-verification-wave2-v1.tsv
-coverage/p0-verification-wave3-v1.tsv
-coverage/p0-verification-wave4-v1.tsv
-coverage/p0-verification-wave5-v1.tsv
-```
-
 The current core set is **203/203 source-verified**. `BET-028 SP` was not percentage-promoted: authority evidence identifies `SP` as the abbreviation of `Starting Price`, so the duplicate Concept was merged into `BET-027` and `SP` moved to the abbreviation layer.
 
 ## Jurisdiction-specific research additions — complete current pass
 
-The three final unresolved supplemental items were previously closed with narrower evidence-backed semantics:
+Current supplemental set: **161/161 source-verified**. Scope-sensitive terms such as Claiming Professional Jockey, Coupled entry and Base rating remain explicitly jurisdiction-bounded.
 
-- `Claiming Professional Jockey` — IHRB Irish licence/status category;
-- `Coupled entry` — US/Regional regulatory usage;
-- `Base rating` — Australia/Queensland RBH/programme context.
-
-Current supplemental set: **161/161 source-verified**.
-
-## Lower-priority base dictionary cleanup
+## Base dictionary cleanup
 
 ### First pass — complete
 
@@ -83,33 +57,41 @@ Sources: `sources/p1-core-sources-v2.tsv`
 
 Verified **29** additional terms across horses, breeding, racing people, in-race expressions, horse equipment, and training. One duplicate row, `BREED-017 Breeder`, was retired into `ROLE-009 Breeder`.
 
-Across these two passes, **56 base-dictionary terms have been newly verified and 3 duplicate/malformed rows have been removed**.
+### Race types and classifications — complete current pass
+
+Audit: `coverage/race-type-condition-verification-v1.tsv`  
+Sources: `sources/race-type-condition-sources-v1.tsv`
+
+Verified **15** additional race-type/classification terms using current Equibase, BHA, IHRB and IFHA material. The RTYPE category is now **96/111 verified**, with 15 lower-priority terms still under review.
+
+Across these passes, **71 base-dictionary terms have been newly verified and 3 duplicate/malformed rows have been removed**.
 
 ## Evidence state
 
-- all Concepts: **370 / 654 source-verified (56.6%)**; **284 candidate**
+- all Concepts: **385 / 654 source-verified (58.9%)**; **269 candidate**
 - core highest-priority set: **203 / 203 source-verified (100.0%)**
-- active base seed: **209 / 493 source-verified (42.4%)**; **284 candidate**
+- active base seed: **224 / 493 source-verified (45.4%)**; **269 candidate**
 - supplemental jurisdiction/relationship research: **161 / 161 source-verified (100.0%)**
 
-Canonical current audit state:
+Canonical current audit state includes:
 
 ```text
 coverage/supplemental-candidate-cleanup-v1.tsv
 coverage/p1-verification-wave1-v1.tsv
 coverage/p1-verification-wave2-v1.tsv
+coverage/race-type-condition-verification-v1.tsv
 coverage/master-005-evidence-coverage-v1.tsv
 coverage/master-005-completion-gate-v1.tsv
 ```
 
 ## Current completion decision
 
-The terminology master remains **not complete**. The remaining **284 terms** must be reviewed rather than automatically promoted.
+The terminology master remains **not complete**. The remaining **269 terms** must be reviewed rather than automatically promoted.
 
 Next user-facing areas to process are:
 
 ```text
-race types and classifications
+remaining race-type edge cases
 -> track/surface terminology
 -> meeting and schedule terminology
 -> results, decisions and result codes
