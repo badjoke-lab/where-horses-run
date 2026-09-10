@@ -5,9 +5,12 @@ on:
     paths:
       - 'data/static/calendar-98-tier-acquisition-methods/**'
       - 'data/static/calendar-98-tier-acquisition-methods.schema.json'
+      - 'data/static/calendar-98-tier-execution-coverage.json'
+      - 'data/static/calendar-acquisition-registry.json'
       - 'docs/country-pages/98-country-tracker.tsv'
       - 'docs/calendar/98-tier-acquisition-methods.md'
       - 'scripts/check-calendar-98-tier-acquisition-methods.mjs'
+      - 'scripts/check-calendar-98-tier-execution-coverage.mjs'
       - '.github/workflows/calendar-98-tier-acquisition-methods.yml'
   push:
     branches:
@@ -15,9 +18,12 @@ on:
     paths:
       - 'data/static/calendar-98-tier-acquisition-methods/**'
       - 'data/static/calendar-98-tier-acquisition-methods.schema.json'
+      - 'data/static/calendar-98-tier-execution-coverage.json'
+      - 'data/static/calendar-acquisition-registry.json'
       - 'docs/country-pages/98-country-tracker.tsv'
       - 'docs/calendar/98-tier-acquisition-methods.md'
       - 'scripts/check-calendar-98-tier-acquisition-methods.mjs'
+      - 'scripts/check-calendar-98-tier-execution-coverage.mjs'
       - '.github/workflows/calendar-98-tier-acquisition-methods.yml'
 
 permissions:
@@ -39,5 +45,9 @@ jobs:
         run: |
           node --check scripts/check-calendar-98-tier-acquisition-methods.mjs
           node scripts/check-calendar-98-tier-acquisition-methods.mjs
+      - name: Validate 98-tier execution coverage gap
+        run: |
+          node --check scripts/check-calendar-98-tier-execution-coverage.mjs
+          node scripts/check-calendar-98-tier-execution-coverage.mjs
       - name: Check diff formatting
         run: git diff --check
