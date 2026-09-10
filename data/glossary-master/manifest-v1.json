@@ -58,24 +58,26 @@
     "sources_file":"sources/relationship-layer-sources-v1.tsv"
   },
   "p0_verification": {
-    "status":"wave_1_complete",
-    "sources_file":"sources/p0-core-sources-v1.tsv",
-    "wave_1_audit_file":"coverage/p0-verification-wave1-v1.tsv",
-    "verified_this_wave":16,
-    "wave_1_categories":["DISC","DIST"],
-    "remaining_p0_candidate":137
+    "status":"wave_2_complete",
+    "sources_files":["sources/p0-core-sources-v1.tsv","sources/p0-core-sources-v2.tsv"],
+    "wave_audit_files":["coverage/p0-verification-wave1-v1.tsv","coverage/p0-verification-wave2-v1.tsv"],
+    "verified_wave_1":16,
+    "verified_wave_2":30,
+    "verified_cumulative_lane":46,
+    "completed_p0_categories":["DISC","DIST","ENTRY","VENUE","WEIGHT"],
+    "remaining_p0_candidate":107
   },
   "evidence_coverage": {
-    "status":"audited_master_005_hold_after_p0_wave_1",
+    "status":"audited_master_005_hold_after_p0_wave_2",
     "coverage_file":"coverage/master-005-evidence-coverage-v1.tsv",
     "completion_gate_file":"coverage/master-005-completion-gate-v1.tsv",
-    "all_concepts":{"total":658,"source_verified":175,"candidate":483,"verified_pct":26.6},
-    "p0":{"total":204,"source_verified":67,"candidate":137,"verified_pct":32.8},
-    "active_base_seed":{"total":497,"source_verified":17,"candidate":480,"verified_pct":3.4},
+    "all_concepts":{"total":658,"source_verified":205,"candidate":453,"verified_pct":31.2},
+    "p0":{"total":204,"source_verified":97,"candidate":107,"verified_pct":47.5},
+    "active_base_seed":{"total":497,"source_verified":47,"candidate":450,"verified_pct":9.5},
     "supplemental_research":{"total":161,"source_verified":158,"candidate":3,"verified_pct":98.1},
     "master_005_completion":"hold"
   },
   "next_work_id":"GLOSSARY-MASTER-005",
-  "next_work":"p0_source_verification_wave_2_entry_venue_weight_then_rerun_gate",
+  "next_work":"p0_source_verification_wave_3_high_impact_remaining_categories_then_rerun_gate",
   "public_implementation":"deferred"
 }
