@@ -1,0 +1,37 @@
+{
+  "schema_version": "calendar-98-tier-acquisition-methods-v1",
+  "work_id": "WHR-CALENDAR-98-TIER-ACQUISITION-METHODS",
+  "as_of": "2026-09-10",
+  "tracker_ref": "docs/country-pages/98-country-tracker.tsv",
+  "source_inventory_ref": "data/static/authority-source-inventory.json",
+  "semantics": {
+    "purpose": "Terminal acquisition-method coverage for every WHR tier.",
+    "method_complete": "Method completeness means a source/discovery basis, trigger class, cadence class, and fail-closed zero policy are defined. It does not claim that a live fixture exists or that a runner is implemented.",
+    "best_available": "Observed meeting rank is derived from acquired evidence elsewhere. This contract never fixes acquisition rank by country, authority, source, collector, or adapter.",
+    "fail_closed": "Stale dates, prior-year dates, recurring cultural dates, secondary-only dates, and postponed dates never become current meetings without the defined current official trigger.",
+    "runner_state": "Runner implementation readiness is separate from acquisition-method completeness."
+  },
+  "shards": [
+    {
+      "path": "data/static/calendar-98-tier-acquisition-methods/tiers-01-25.json",
+      "tier_range": [1, 25],
+      "record_count": 25
+    },
+    {
+      "path": "data/static/calendar-98-tier-acquisition-methods/tiers-26-50.json",
+      "tier_range": [26, 50],
+      "record_count": 25
+    },
+    {
+      "path": "data/static/calendar-98-tier-acquisition-methods/tiers-51-75.json",
+      "tier_range": [51, 75],
+      "record_count": 25
+    },
+    {
+      "path": "data/static/calendar-98-tier-acquisition-methods/tiers-76-98.json",
+      "tier_range": [76, 98],
+      "record_count": 23
+    }
+  ],
+  "expected_record_count": 98
+}
