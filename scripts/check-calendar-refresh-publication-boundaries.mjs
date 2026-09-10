@@ -11,7 +11,7 @@ const orderedSteps = [
   'Collect HKJC official window',
   'Collect UAE official window',
   'Collect KRA official window',
-  'Collect TJK and SOREC official windows',
+  'Collect TJK, SOREC, Chile and Ireland official windows',
   'Persist remaining canonical and public rolling state',
 ];
 
@@ -46,5 +46,32 @@ assert.equal(
 assert.match(workflow, /--racing-system-id=sorec-racing-information-system/, 'SOREC apply path must bind the canonical racing system id');
 assert.match(workflow, /--timezone=Africa\/Casablanca/, 'SOREC apply path must bind the Morocco timezone');
 
+assert.equal(
+  (workflow.match(/run-ireland-hri-official-window\.mjs/g) ?? []).length,
+  2,
+  'Ireland HRI must be collected in both normal and latest-main rebuild paths',
+);
+assert.equal(
+  (workflow.match(/--authority-id=horse-racing-ireland/g) ?? []).length,
+  2,
+  'Ireland HRI observations must be applied in both normal and latest-main rebuild paths',
+);
+assert.equal(
+  (workflow.match(/--artifact=\.calendar-unified\/ireland\.json/g) ?? []).length,
+  4,
+  'Ireland HRI artifact must pass exclusion and apply layers in both execution paths',
+);
+assert.equal(
+  (workflow.match(/--racing-system-id=ireland-hri-racing-system/g) ?? []).length,
+  2,
+  'Ireland HRI apply path must bind the canonical racing system id in both execution paths',
+);
+assert.equal(
+  (workflow.match(/--timezone=Europe\/Dublin/g) ?? []).length,
+  2,
+  'Ireland HRI apply path must bind the Ireland timezone in both execution paths',
+);
+
 console.log('CALENDAR_REFRESH_PUBLICATION_BOUNDARIES: pass');
 console.log('SOREC_UNIFIED_REFRESH_PATHS: 2');
+console.log('IRELAND_HRI_UNIFIED_REFRESH_PATHS: 2');

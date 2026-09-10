@@ -209,6 +209,29 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": ["detail_source_id", "detail_adapter_id"],
       "operator_notes": "Teletrak's official weekly domestic view supplies source-visible meeting identities for Chile's four domestic racecourses. Current normalized output is meeting-level evidence, not a fixed ceiling: collection targets best available, public output may rise through A, and official programme-detail enrichment remains pending."
+    },
+    {
+      "system_id": "ireland-hri-racing-system",
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "profile_status": "provisional",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "hri-fixtures",
+      "detail_source_id": null,
+      "schedule_adapter_id": "ireland-hri-fixture-list-best-available-v1",
+      "detail_adapter_id": null,
+      "technical_capability_rank": "A",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "A",
+      "supported_observation_ranks": ["C"],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": ["detail_source_id", "detail_adapter_id"],
+      "operator_notes": "HRI's annual official fixture list supplies nationwide date/venue discovery for the 26 current racecourses. Current normalized output is meeting-level evidence at C, not a fixed ceiling: collection targets best available and richer official race-time/detail evidence may raise individual observations through A."
     }
   ]
 }
