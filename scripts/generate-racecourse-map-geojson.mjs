@@ -9,6 +9,7 @@ const outputRelativePath = 'public/data/racecourse-locations-v1.geojson';
 const sourcePath = path.join(root, sourceRelativePath);
 const outputPath = path.join(root, outputRelativePath);
 const checkOnly = process.argv.includes('--check');
+const calendarMapRegressionIds = ['hipodromo-chile', 'ireland--laytown', 'meknes-racecourse'];
 
 const registry = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
 
@@ -70,6 +71,12 @@ const features = registry.locations.map((entry) => {
   };
 }).sort((a, b) => a.id.localeCompare(b.id, 'en'));
 
+for (const id of calendarMapRegressionIds) {
+  if (!seen.has(id)) {
+    throw new Error(`${sourceRelativePath}: Calendar map regression location missing ${id}`);
+  }
+}
+
 const projection = {
   type: 'FeatureCollection',
   whr_schema_version: 'racecourse-map-geojson-v1',
@@ -87,4 +94,5 @@ if (!checkOnly) {
 } else {
   JSON.parse(serialized);
   console.log(`Racecourse map projection OK: ${features.length} reviewed racecourse points generated from ${sourceRelativePath}.`);
+  console.log(`Calendar map regression locations OK: ${calendarMapRegressionIds.join(', ')}.`);
 }
