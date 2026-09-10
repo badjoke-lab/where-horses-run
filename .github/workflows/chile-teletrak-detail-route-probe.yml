@@ -1,0 +1,22 @@
+name: Chile Teletrak detail route probe
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/probe-chile-teletrak-detail-route.mjs'
+      - '.github/workflows/chile-teletrak-detail-route-probe.yml'
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies
+        run: npm install --no-package-lock --no-audit --no-fund
+      - name: Probe Teletrak programme links and documents
+        run: node scripts/probe-chile-teletrak-detail-route.mjs
