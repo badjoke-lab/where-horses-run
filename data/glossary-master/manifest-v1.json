@@ -58,28 +58,29 @@
     "sources_file":"sources/relationship-layer-sources-v1.tsv"
   },
   "p0_verification": {
-    "status":"wave_3_complete",
-    "sources_files":["sources/p0-core-sources-v1.tsv","sources/p0-core-sources-v2.tsv","sources/p0-core-sources-v3.tsv"],
-    "wave_audit_files":["coverage/p0-verification-wave1-v1.tsv","coverage/p0-verification-wave2-v1.tsv","coverage/p0-verification-wave3-v1.tsv"],
+    "status":"wave_4_complete",
+    "sources_files":["sources/p0-core-sources-v1.tsv","sources/p0-core-sources-v2.tsv","sources/p0-core-sources-v3.tsv","sources/p0-core-sources-v4.tsv"],
+    "wave_audit_files":["coverage/p0-verification-wave1-v1.tsv","coverage/p0-verification-wave2-v1.tsv","coverage/p0-verification-wave3-v1.tsv","coverage/p0-verification-wave4-v1.tsv"],
     "verified_wave_1":16,
     "verified_wave_2":30,
     "verified_wave_3":51,
-    "verified_cumulative_lane":97,
-    "completed_p0_categories":["DISC","DIST","ENTRY","VENUE","WEIGHT"],
-    "partially_completed_p0_categories":["RTYPE","SURF","MEET","RESULT","BET"],
-    "remaining_p0_candidate":56
+    "verified_wave_4":44,
+    "verified_cumulative_lane":141,
+    "completed_p0_categories":["DISC","DIST","ENTRY","HORSE","BREED","ROLE","VENUE","WEIGHT","RUN","EQUIP","TRAIN","RESULT","PRIZE","WELF"],
+    "partially_completed_p0_categories":["RTYPE","SURF","MEET","BET"],
+    "remaining_p0_candidate":12
   },
   "evidence_coverage": {
-    "status":"audited_master_005_hold_after_p0_wave_3",
+    "status":"audited_master_005_hold_after_p0_wave_4",
     "coverage_file":"coverage/master-005-evidence-coverage-v1.tsv",
     "completion_gate_file":"coverage/master-005-completion-gate-v1.tsv",
-    "all_concepts":{"total":658,"source_verified":256,"candidate":402,"verified_pct":38.9},
-    "p0":{"total":204,"source_verified":148,"candidate":56,"verified_pct":72.5},
-    "active_base_seed":{"total":497,"source_verified":98,"candidate":399,"verified_pct":19.7},
+    "all_concepts":{"total":658,"source_verified":300,"candidate":358,"verified_pct":45.6},
+    "p0":{"total":204,"source_verified":192,"candidate":12,"verified_pct":94.1},
+    "active_base_seed":{"total":497,"source_verified":142,"candidate":355,"verified_pct":28.6},
     "supplemental_research":{"total":161,"source_verified":158,"candidate":3,"verified_pct":98.1},
     "master_005_completion":"hold"
   },
   "next_work_id":"GLOSSARY-MASTER-005",
-  "next_work":"p0_source_verification_wave_4_remaining_p0_then_rerun_gate",
+  "next_work":"p0_source_verification_wave_5_deferred_12_scope_refinement_then_rerun_gate",
   "public_implementation":"deferred"
 }

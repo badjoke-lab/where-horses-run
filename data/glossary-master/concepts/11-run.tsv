@@ -1,16 +1,16 @@
 concept_id	category_id	category_ja	canonical_en	preferred_ja	working_definition_ja	concept_kind	priority	jurisdiction_scope	discipline_scope	translation_status	verification_status	source_required	public_ready	notes
-RUN-001	RUN	レース進行・脚質・競走中の表現	Start	スタート	競走が開始される時点・行為。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+RUN-001	RUN	レース進行・脚質・競走中の表現	Start	スタート	競走が開始される時点・行為。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-051. Equibase official-industry race-comment terminology supports the race start event.
 RUN-002	RUN	レース進行・脚質・競走中の表現	Break	ゲートを出る／発馬	主に北米でスタート時の発進を指す語。	concept	P1	North America	Flat	working_equivalent	candidate	yes	no	
 RUN-003	RUN	レース進行・脚質・競走中の表現	Jump	発馬／障害飛越	文脈によりスタートや障害飛越を指す。	concept	P2	Regional	ALL	working_equivalent	candidate	yes	no	
-RUN-004	RUN	レース進行・脚質・競走中の表現	Pace	ペース	レース全体または区間の進行速度。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+RUN-004	RUN	レース進行・脚質・競走中の表現	Pace	ペース	レース全体または区間の進行速度。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-051; P0-SRC-052. Equibase pace/commentary material verifies Pace as race or segment speed/tempo.
 RUN-005	RUN	レース進行・脚質・競走中の表現	Tempo	テンポ	レースの流れ・速度を表す一般表現。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-RUN-006	RUN	レース進行・脚質・競走中の表現	Leader	先頭馬	レース中に先頭を走る馬。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-RUN-007	RUN	レース進行・脚質・競走中の表現	Lead	先頭／リード	先頭位置または先頭との差。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+RUN-006	RUN	レース進行・脚質・競走中の表現	Leader	先頭馬	レース中に先頭を走る馬。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-051. Standardized race comments use lead/command terminology for the horse in front.
+RUN-007	RUN	レース進行・脚質・競走中の表現	Lead	先頭／リード	先頭位置または先頭との差。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-051. Equibase race comments support Lead as front position or advantage.
 RUN-008	RUN	レース進行・脚質・競走中の表現	Pacesetter	逃げ馬／ペースメーカー	先頭でレースの流れを作る馬。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-RUN-009	RUN	レース進行・脚質・競走中の表現	Front-runner	逃げ馬	序盤から前方で走る脚質・馬。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+RUN-009	RUN	レース進行・脚質・競走中の表現	Front-runner	逃げ馬	序盤から前方で走る脚質・馬。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-052. Equibase pace analysis supports front-running/front-runner classification; local terminology may differ.
 RUN-010	RUN	レース進行・脚質・競走中の表現	Stalker	好位追走馬	先行馬の直後で機を待つ脚質を示す主に北米の語。	concept	P1	North America	Flat	working_equivalent	candidate	yes	no	
 RUN-011	RUN	レース進行・脚質・競走中の表現	Presser	先行圧力型	先頭馬へ早めに圧力をかける脚質を示す北米用語。	concept	P2	North America	Flat	working_equivalent	candidate	yes	no	
-RUN-012	RUN	レース進行・脚質・競走中の表現	Closer	追込馬	終盤に強く伸びて追い込む脚質・馬。	concept	P0	North America/Global	Flat	working_equivalent	candidate	yes	no	
+RUN-012	RUN	レース進行・脚質・競走中の表現	Closer	追込馬	終盤に強く伸びて追い込む脚質・馬。	concept	P0	North America/Global	Flat	working_equivalent	source_verified	yes	no	P0-SRC-052. Equibase pace analysis/glossary supports Closer as a late-running style; global counterparts remain label-scoped.
 RUN-013	RUN	レース進行・脚質・競走中の表現	Hold-up horse	後方待機馬	序盤を後方で待機し終盤勝負する馬。	concept	P1	GB/IRE/Commonwealth	Flat/Jump	working_equivalent	candidate	yes	no	
 RUN-014	RUN	レース進行・脚質・競走中の表現	Midfield	中団	馬群の中間位置。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 RUN-015	RUN	レース進行・脚質・競走中の表現	On the rail	内ラチ沿い	内側のラチ付近を走る位置取り。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
@@ -19,24 +19,24 @@ RUN-017	RUN	レース進行・脚質・競走中の表現	Boxed in	包まれる	
 RUN-018	RUN	レース進行・脚質・競走中の表現	Pocket	ポケット	主に繋駕競走で前後左右を他馬に囲まれた位置。	concept	P2	North America/Global	Harness	working_equivalent	candidate	yes	no	
 RUN-019	RUN	レース進行・脚質・競走中の表現	Cover	カバー	主に繋駕競走で前の馬を利用して風圧を避ける位置取り。	concept	P2	GLOBAL	Harness	working_equivalent	candidate	yes	no	
 RUN-020	RUN	レース進行・脚質・競走中の表現	Parked out	外を回らされる	主に繋駕競走で外側を走り続ける状態。	concept	P2	North America	Harness	working_equivalent	candidate	yes	no	
-RUN-021	RUN	レース進行・脚質・競走中の表現	Final turn	最終コーナー	ゴール前直線へ入る最後の曲線区間。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+RUN-021	RUN	レース進行・脚質・競走中の表現	Final turn	最終コーナー	ゴール前直線へ入る最後の曲線区間。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-053. JRA defines 最終コーナー; equivalent labels remain jurisdiction-aware.
 RUN-022	RUN	レース進行・脚質・競走中の表現	Home turn	最終コーナー	主に豪州等でホームストレートへ入るコーナー。	concept	P1	AUS/NZ/Regional	ALL	working_equivalent	candidate	yes	no	
 RUN-023	RUN	レース進行・脚質・競走中の表現	Stretch run	直線の攻防	主に北米でゴール前直線の競走局面を指す語。	concept	P1	North America	Flat	working_equivalent	candidate	yes	no	
 RUN-024	RUN	レース進行・脚質・競走中の表現	Run-in	最後の直線区間	主に英国障害競馬等で最終障害からゴールまでを指す語。	concept	P1	GB/IRE	Jump	working_equivalent	candidate	yes	no	
-RUN-025	RUN	レース進行・脚質・競走中の表現	Finish	ゴール	競走の終了・決勝線通過。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+RUN-025	RUN	レース進行・脚質・競走中の表現	Finish	ゴール	競走の終了・決勝線通過。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-054. JRA finish-line/goal-board material verifies race completion at the finish line.
 RUN-026	RUN	レース進行・脚質・競走中の表現	Turn of foot	瞬発力	短時間で速度を上げる能力・末脚を表す表現。	concept	P1	GB/IRE/Commonwealth/Global	Flat	working_equivalent	candidate	yes	no	
 RUN-027	RUN	レース進行・脚質・競走中の表現	Kick	末脚／加速	終盤の強い加速を表す口語的表現。	concept	P2	Industry/Global	ALL	working_equivalent	candidate	yes	no	
 RUN-028	RUN	レース進行・脚質・競走中の表現	Checked	進路を妨げられる	他馬等の影響で速度を落とす・進路を制限されること。	concept	P1	North America/Global	Flat	working_equivalent	candidate	yes	no	
 RUN-029	RUN	レース進行・脚質・競走中の表現	Bumped	接触	他馬と接触すること。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 RUN-030	RUN	レース進行・脚質・競走中の表現	Carried wide	外へ振られる	他馬等の影響で外側へ進路を広げられること。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 RUN-031	RUN	レース進行・脚質・競走中の表現	Eased	流す／減速	騎手が馬を強く追わず速度を落とすこと。	concept	P1	North America/Global	ALL	working_equivalent	candidate	yes	no	
-RUN-032	RUN	レース進行・脚質・競走中の表現	Pulled up	競走中止	騎手が競走中に馬を止め、完走しないこと。	concept	P0	GB/IRE/Global	Jump/Flat	working_equivalent	candidate	yes	no	
-RUN-033	RUN	レース進行・脚質・競走中の表現	Fell	落馬を伴う転倒	馬が競走中に転倒したことを示す結果・事象表現。	concept	P0	GLOBAL	Jump	working_equivalent	candidate	yes	no	
-RUN-034	RUN	レース進行・脚質・競走中の表現	Unseated rider	騎手落馬	馬が転倒せず騎手が落馬した状態。	concept	P0	GB/IRE/Global	Jump	working_equivalent	candidate	yes	no	
+RUN-032	RUN	レース進行・脚質・競走中の表現	Pulled up	競走中止	騎手が競走中に馬を止め、完走しないこと。	concept	P0	GB/IRE/Global	Jump/Flat	working_equivalent	source_verified	yes	no	P0-SRC-051; P0-SRC-055. Equibase/JRA evidence supports Pulled up/PU as ceasing to continue after the start; exact chart coding is regional.
+RUN-033	RUN	レース進行・脚質・競走中の表現	Fell	落馬を伴う転倒	馬が競走中に転倒したことを示す結果・事象表現。	concept	P0	GLOBAL	Jump	working_equivalent	source_verified	yes	no	P0-SRC-051. Equibase official-industry comments verify Fell as a race incident/result descriptor.
+RUN-034	RUN	レース進行・脚質・競走中の表現	Unseated rider	騎手落馬	馬が転倒せず騎手が落馬した状態。	concept	P0	GB/IRE/Global	Jump	working_equivalent	source_verified	yes	no	P0-SRC-055. JRA overseas results guide explicitly uses UNSEATED RIDER/落馬.
 RUN-035	RUN	レース進行・脚質・競走中の表現	Refused	障害拒否	馬が障害飛越を拒否したこと。	concept	P1	GLOBAL	Jump	working_equivalent	candidate	yes	no	
 RUN-036	RUN	レース進行・脚質・競走中の表現	Ran out	コース逸脱	障害前後等で正規進路から外れて競走継続不能等となること。	concept	P1	GB/IRE/Global	Jump	working_equivalent	candidate	yes	no	
 RUN-037	RUN	レース進行・脚質・競走中の表現	Lost rider	騎手落馬	競走中に騎手を失った状態。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-RUN-038	RUN	レース進行・脚質・競走中の表現	Broke stride	歩様を崩す	繋駕競走で規定歩様を崩すこと。	concept	P0	GLOBAL	Harness	working_equivalent	candidate	yes	no	
+RUN-038	RUN	レース進行・脚質・競走中の表現	Broke stride	歩様を崩す	繋駕競走で規定歩様を崩すこと。	concept	P0	GLOBAL	Harness	working_equivalent	source_verified	yes	no	P0-SRC-049; P0-SRC-056. USTA harness rule material supports breaking from gait/stride as a regulated harness-racing event.
 RUN-039	RUN	レース進行・脚質・競走中の表現	Break	ブレーク／歩様違反	主に北米繋駕競走でトロット・ペース歩様を崩すこと。	concept	P1	North America	Harness	working_equivalent	candidate	yes	no	
 RUN-040	RUN	レース進行・脚質・競走中の表現	Galloped	ギャロップした	トロット競走等で規定外のギャロップ歩様になった状態。	concept	P1	Europe/Global	Harness	working_equivalent	candidate	yes	no	
 RUN-041	RUN	レース進行・脚質・競走中の表現	Disqualified for gait	歩様違反失格	繋駕競走で歩様規則違反により失格となること。	concept	P1	GLOBAL	Harness	working_equivalent	candidate	yes	no	

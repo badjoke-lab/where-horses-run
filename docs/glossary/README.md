@@ -19,8 +19,8 @@ Completed: GLOSSARY-MASTER-001 — specification / authority
 Completed: GLOSSARY-MASTER-002 — zero-based seed
 Completed current pass: GLOSSARY-MASTER-003 — major-jurisdiction + local-language terminology research
 Completed current pass: GLOSSARY-MASTER-004 — slang / colloquial / industry / abbreviation / historical evidence
-Current:   GLOSSARY-MASTER-005 — P0-first source verification; waves 1–3 complete
-Next:      P0 wave 4 — remaining P0 categories / deferred core terms
+Current:   GLOSSARY-MASTER-005 — P0-first source verification; waves 1–4 complete
+Next:      P0 wave 5 — resolve deferred 12 by scope/evidence refinement
 Later:     GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 New public-page expansion/redesign: deferred
 ```
@@ -42,34 +42,41 @@ The first whole-master audit showed the jurisdiction additions were strongly evi
 - **Wave 1:** 16 P0 — DISC 7, DIST 9
 - **Wave 2:** 30 P0 — ENTRY 9, VENUE 16, WEIGHT 5
 - **Wave 3:** 51 P0 — RTYPE 8, SURF 7, MEET 19, RESULT 10, BET 7
+- **Wave 4:** 44 P0 — HORSE 8, BREED 5, ROLE 5, RUN 12, EQUIP 3, TRAIN 4, PRIZE 2, WELF 5
 
-Wave 3 deliberately leaves broad/ambiguous P0 terms candidate when the current evidence does not support the intended global boundary, including `Stakes race`, `Sand`, `Synthetic surface`, `All-weather`, `Draw`, `Official notice`, `Local time`, `Time zone`, `Postponed`, `Tote`, and `Starting Price/SP`.
+Wave 4 brings the current P0 layer to **192/204 source-verified (94.1%)**. The remaining 12 are not promoted merely to reach 100%; they need stronger evidence or narrower concept boundaries.
+
+Remaining deferred P0:
+
+`Stakes race`, `Sand`, `Synthetic surface`, `All-weather`, `Draw`, `Official notice`, `Local time`, `Time zone`, `Postponed`, `Tote`, `Starting Price`, `SP`.
 
 Semantic boundaries remain scope-aware: `Group / Grade`, `Going / Track condition`, `Racecourse / Racetrack / Track`, and planned `Post time / Scheduled start time` versus actual `Off time` are not flattened into global synonym sets.
 
-Current evidence state after wave 3:
+Current evidence state after wave 4:
 
-- **256 / 658 source-verified = 38.9%**
-- **402 / 658 candidate**
-- P0: **148 / 204 source-verified = 72.5%**
-- P0 candidate: **56**
-- active base seed: **98 / 497 source-verified = 19.7%**
+- **300 / 658 source-verified = 45.6%**
+- **358 / 658 candidate**
+- P0: **192 / 204 source-verified = 94.1%**
+- P0 candidate: **12**
+- active base seed: **142 / 497 source-verified = 28.6%**
 - supplemental jurisdiction/relationship research: **158 / 161 source-verified = 98.1%**
 
-Canonical provenance:
+Canonical provenance now includes:
 
 ```text
 data/glossary-master/sources/p0-core-sources-v1.tsv
 data/glossary-master/sources/p0-core-sources-v2.tsv
 data/glossary-master/sources/p0-core-sources-v3.tsv
+data/glossary-master/sources/p0-core-sources-v4.tsv
 data/glossary-master/coverage/p0-verification-wave1-v1.tsv
 data/glossary-master/coverage/p0-verification-wave2-v1.tsv
 data/glossary-master/coverage/p0-verification-wave3-v1.tsv
+data/glossary-master/coverage/p0-verification-wave4-v1.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
-The completion gate remains **HOLD** because 56 P0 Concepts remain candidate and whole-master base-seed evidence is still thin. Wave 4 targets the remaining P0 categories plus deliberately deferred core terms where adequate evidence can be obtained.
+The completion gate remains **HOLD**. Wave 5 resolves the deferred 12, then the programme must explicitly decide whether the remaining P1/P2 evidence gap is acceptable before MASTER-006; P0 completion alone will not silently authorize publication.
 
 ## Existing public glossary
 
