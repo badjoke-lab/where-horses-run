@@ -113,7 +113,7 @@ async function enrichBestAvailableFromAnnualFixture(fixture, startDate) {
       },
       detail_observation: {
         status: 'available',
-        evaluated_capability_rank: 'A',
+        evaluated_capability_rank: 'A+',
         race_count: detected.schedule.length,
         conflicts: [],
       },
