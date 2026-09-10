@@ -101,6 +101,7 @@ jobs:
           done
           node scripts/check-calendar-refresh-publication-boundaries.mjs
           node scripts/check-kra-window-bounds.mjs
+          node scripts/check-ireland-hri-fixtures-adapter.mjs
       - name: Exercise Japan mother-set safety contracts
         run: |
           node scripts/check-japan-mother-set-safety.mjs
@@ -247,6 +248,7 @@ jobs:
           done
           node scripts/check-calendar-refresh-publication-boundaries.mjs
           node scripts/check-kra-window-bounds.mjs
+          node scripts/check-ireland-hri-fixtures-adapter.mjs
       - name: Refresh Japan official mother set and best available detail
         run: |
           node scripts/timetable/run-japan-zero-based-30d.mjs \
@@ -345,7 +347,7 @@ jobs:
           node scripts/timetable/run-kra-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/kra.json
-      - name: Collect TJK and SOREC official windows
+      - name: Collect TJK, SOREC, Chile and Ireland official windows
         run: |
           node scripts/timetable/run-tjk-current-best-available.mjs \
             --days="${{ steps.scope.outputs.days }}" \
@@ -356,6 +358,9 @@ jobs:
           node scripts/timetable/run-chile-teletrak-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/chile.json
+          node scripts/timetable/run-ireland-hri-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/ireland.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -364,7 +369,8 @@ jobs:
             --artifact=.calendar-unified/kra.json \
             --artifact=.calendar-unified/tjk.json \
             --artifact=.calendar-unified/sorec.json \
-            --artifact=.calendar-unified/chile.json
+            --artifact=.calendar-unified/chile.json \
+            --artifact=.calendar-unified/ireland.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -403,6 +409,12 @@ jobs:
             --authority-id=teletrak-chile \
             --racing-system-id=chile-teletrak-racing-system \
             --timezone=America/Santiago
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/ireland.json \
+            --country-id=ireland \
+            --authority-id=horse-racing-ireland \
+            --racing-system-id=ireland-hri-racing-system \
+            --timezone=Europe/Dublin
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Validate generated public site state
@@ -439,13 +451,17 @@ jobs:
             node scripts/timetable/run-chile-teletrak-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/chile.json
+            node scripts/timetable/run-ireland-hri-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/ireland.json
             node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --artifact=.calendar-unified/uae.json \
               --artifact=.calendar-unified/kra.json \
               --artifact=.calendar-unified/tjk.json \
               --artifact=.calendar-unified/sorec.json \
-              --artifact=.calendar-unified/chile.json
+              --artifact=.calendar-unified/chile.json \
+              --artifact=.calendar-unified/ireland.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --country-id=hong-kong \
@@ -482,6 +498,12 @@ jobs:
               --authority-id=teletrak-chile \
               --racing-system-id=chile-teletrak-racing-system \
               --timezone=America/Santiago
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/ireland.json \
+              --country-id=ireland \
+              --authority-id=horse-racing-ireland \
+              --racing-system-id=ireland-hri-racing-system \
+              --timezone=Europe/Dublin
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
             npm run build
           }
