@@ -17,13 +17,12 @@ Completed: GLOSSARY-MASTER-002
 Completed first major-jurisdiction pass: GLOSSARY-MASTER-003
 Completed current register pass: GLOSSARY-MASTER-004
 Current glossary Work ID: GLOSSARY-MASTER-005
-P0 verification wave 1: complete
-P0 verification wave 2: complete
-Next immediate wave: remaining high-impact P0 categories
+P0 verification waves 1–3: complete
+Next immediate wave: P0 wave 4 — remaining P0/deferred core terms
 Later: GLOSSARY-MASTER-006
 Current research master: 658 Concepts / 18 domain categories
 Relationship layer: 20 relations / 15 reviews / 15 resolved / 0 open
-Evidence coverage: 205/658 source-verified; P0 97/204 source-verified
+Evidence coverage: 256/658 source-verified; P0 148/204 source-verified
 Public glossary page expansion: deferred
 Automatic glossary publication: disabled
 Existing public glossary content: disposable legacy runtime baseline
@@ -57,37 +56,38 @@ Current layer: 60 register usages, 36 effective source-verified mappings, 24 eff
 
 Status: **current**.
 
-Relationship work is complete for the currently discovered queue:
-
-- 20 scoped Concept relations;
-- 15 review items discovered / 15 resolved / 0 open;
-- duplicate Concepts merged where justified;
-- genuine jurisdiction/sense differences split;
-- Track/Racetrack polysemy and Going/Track condition retained without forced global equivalence;
-- register-derived concepts such as Mudlark, easy-travelling states and betting-support states resolved.
+Relationship work is complete for the currently discovered queue: 20 scoped relations, 15/15 review items resolved, duplicate identities merged where justified, genuine jurisdiction/sense differences split, and high-risk polysemy retained without forced global equivalence.
 
 Current master: **658 Concepts**.
 
-### Evidence gate
+### P0 evidence verification
 
-The initial evidence audit blocked MASTER-005 completion because most of the generic seed remained candidate. P0 verification waves 1 and 2 have now promoted **46 base-seed P0 Concepts** using authority evidence.
+The initial evidence audit showed the generic seed was the weak layer. Three P0 waves have now promoted **97 base-seed P0 Concepts** using authority evidence.
+
+- Wave 1: **16** — DISC 7 / DIST 9
+- Wave 2: **30** — ENTRY 9 / VENUE 16 / WEIGHT 5
+- Wave 3: **51** — RTYPE 8 / SURF 7 / MEET 19 / RESULT 10 / BET 7
 
 Current observed state:
 
-- all Concepts: **205/658 source-verified (31.2%)**, 453 candidate;
-- P0: **97/204 source-verified (47.5%)**, 107 candidate;
-- active base seed: **47/497 source-verified (9.5%)**, 450 candidate;
+- all Concepts: **256/658 source-verified (38.9%)**, 402 candidate;
+- P0: **148/204 source-verified (72.5%)**, 56 candidate;
+- active base seed: **98/497 source-verified (19.7%)**, 399 candidate;
 - supplemental jurisdiction/relationship research: **158/161 source-verified (98.1%)**, 3 candidate.
 
-Wave 1 completed all current P0 rows in DISC and DIST. Wave 2 completed all current P0 rows in ENTRY, VENUE and WEIGHT.
+Wave 3 preserved the important semantic boundaries already established by MASTER-005: Group/Grade are regional counterparts, Going/Track condition are separate related taxonomies, Racecourse/Racetrack/Track remain scope-aware/polysemous, and planned Post time/Scheduled start time remain separate from actual Off time.
+
+Some P0 rows were deliberately left candidate where the current evidence does not yet justify the intended global boundary, including Stakes race, Sand, Synthetic surface, All-weather, Draw, Official notice, Local time, Time zone, Postponed, Tote and Starting Price/SP.
 
 Canonical provenance:
 
 ```text
 data/glossary-master/sources/p0-core-sources-v1.tsv
 data/glossary-master/sources/p0-core-sources-v2.tsv
+data/glossary-master/sources/p0-core-sources-v3.tsv
 data/glossary-master/coverage/p0-verification-wave1-v1.tsv
 data/glossary-master/coverage/p0-verification-wave2-v1.tsv
+data/glossary-master/coverage/p0-verification-wave3-v1.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
@@ -96,16 +96,15 @@ data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 
 Status: **HOLD — not complete**.
 
-107 P0 Concepts remain candidate. Immediate work:
+56 P0 Concepts remain candidate and whole-master base-seed evidence remains incomplete. Immediate work:
 
 ```text
-P0 wave 3: remaining high-impact categories
--> prioritize categories with large P0 candidate counts and low verified coverage
+P0 wave 4: remaining P0 categories and deferred core terms
+-> prioritize HORSE / BREED / ROLE / RUN / EQUIP / TRAIN / PRIZE / WELF plus unresolved P0 in partially verified categories
 -> use official/international authority sources appropriate to each claim
--> resolve remaining supplemental candidates when evidence is available
+-> resolve the three remaining supplemental candidates when evidence is available
 -> recompute evidence coverage
 -> rerun MASTER-005 completion gate
--> continue P0 waves until remaining material evidence risk is acceptable
 ```
 
 ## MASTER-006 — search-intent, coverage, readiness
@@ -136,9 +135,9 @@ The current public glossary remains disposable content. There is no old-record m
 ```text
 Current Work ID: GLOSSARY-MASTER-005
 Current master: 658 Concepts
-Evidence: 205 verified / 453 candidate
-P0: 97 verified / 107 candidate
-Next: P0 verification wave 3 — remaining high-impact categories
+Evidence: 256 verified / 402 candidate
+P0: 148 verified / 56 candidate
+Next: P0 verification wave 4 — remaining P0 / deferred core terms
 MASTER-006: blocked until MASTER-005 evidence gate passes
 Public implementation: deferred
 ```
