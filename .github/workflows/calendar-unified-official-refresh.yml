@@ -353,6 +353,9 @@ jobs:
           node scripts/timetable/run-sorec-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/sorec.json
+          node scripts/timetable/run-chile-teletrak-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/chile.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -360,7 +363,8 @@ jobs:
             --artifact=.calendar-unified/uae.json \
             --artifact=.calendar-unified/kra.json \
             --artifact=.calendar-unified/tjk.json \
-            --artifact=.calendar-unified/sorec.json
+            --artifact=.calendar-unified/sorec.json \
+            --artifact=.calendar-unified/chile.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -393,6 +397,12 @@ jobs:
             --authority-id=sorec \
             --racing-system-id=sorec-racing-information-system \
             --timezone=Africa/Casablanca
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/chile.json \
+            --country-id=chile \
+            --authority-id=teletrak-chile \
+            --racing-system-id=chile-teletrak-racing-system \
+            --timezone=America/Santiago
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Validate generated public site state
@@ -426,12 +436,16 @@ jobs:
             node scripts/timetable/run-sorec-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/sorec.json
+            node scripts/timetable/run-chile-teletrak-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/chile.json
             node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --artifact=.calendar-unified/uae.json \
               --artifact=.calendar-unified/kra.json \
               --artifact=.calendar-unified/tjk.json \
-              --artifact=.calendar-unified/sorec.json
+              --artifact=.calendar-unified/sorec.json \
+              --artifact=.calendar-unified/chile.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --country-id=hong-kong \
@@ -462,6 +476,12 @@ jobs:
               --authority-id=sorec \
               --racing-system-id=sorec-racing-information-system \
               --timezone=Africa/Casablanca
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/chile.json \
+              --country-id=chile \
+              --authority-id=teletrak-chile \
+              --racing-system-id=chile-teletrak-racing-system \
+              --timezone=America/Santiago
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
             npm run build
           }
