@@ -38,6 +38,11 @@ const SUPPLEMENTS = Object.freeze([
     path: 'data/static/authority-source-inventory-sorec-programme-v1.json',
     schemaVersion: 'authority-source-inventory-sorec-programme-v1',
   },
+  {
+    key: 'chile_teletrak',
+    path: 'data/static/authority-source-inventory-chile-teletrak-v1.json',
+    schemaVersion: 'authority-source-inventory-chile-teletrak-v1',
+  },
 ]);
 
 function readJson(root, relativePath) {
