@@ -43,6 +43,11 @@ const SUPPLEMENTS = Object.freeze([
     path: 'data/static/authority-source-inventory-chile-teletrak-v1.json',
     schemaVersion: 'authority-source-inventory-chile-teletrak-v1',
   },
+  {
+    key: 'ireland_hri',
+    path: 'data/static/authority-source-inventory-ireland-hri-v1.json',
+    schemaVersion: 'authority-source-inventory-ireland-hri-v1',
+  },
 ]);
 
 function readJson(root, relativePath) {
