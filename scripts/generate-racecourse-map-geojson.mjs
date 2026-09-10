@@ -1,6 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  PUBLIC_RACECOURSE_LOCATION_STATES,
+  isPublishableRacecourseMapLocation,
+} from '../src/lib/racecourseMapLocationPolicy.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
@@ -9,7 +13,12 @@ const outputRelativePath = 'public/data/racecourse-locations-v1.geojson';
 const sourcePath = path.join(root, sourceRelativePath);
 const outputPath = path.join(root, outputRelativePath);
 const checkOnly = process.argv.includes('--check');
-const calendarMapRegressionIds = ['hipodromo-chile', 'ireland--laytown', 'meknes-racecourse'];
+const calendarMapRegressionIds = [
+  'hipodromo-chile-racecourse',
+  'ireland--laytown',
+  'meknes-racecourse',
+  'yeongcheon-racecourse',
+];
 
 const registry = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
 
@@ -21,7 +30,8 @@ if (!Array.isArray(registry?.locations)) {
 }
 
 const seen = new Set();
-const features = registry.locations.map((entry) => {
+const published = new Set();
+const features = registry.locations.flatMap((entry) => {
   if (typeof entry?.id !== 'string' || entry.id.trim() === '') {
     throw new Error(`${sourceRelativePath}: location entry is missing id`);
   }
@@ -34,9 +44,10 @@ const features = registry.locations.map((entry) => {
   if (!location || typeof location !== 'object' || Array.isArray(location)) {
     throw new Error(`${entry.id}: location must be an object`);
   }
-  if (location.verification_state !== 'reviewed') {
-    throw new Error(`${entry.id}: only reviewed locations may enter the public map projection`);
-  }
+
+  if (location.publication_state === 'hold') return [];
+  if (!PUBLIC_RACECOURSE_LOCATION_STATES.has(location.verification_state)) return [];
+
   if (!Number.isFinite(location.latitude) || location.latitude < -90 || location.latitude > 90) {
     throw new Error(`${entry.id}: invalid latitude`);
   }
@@ -49,18 +60,22 @@ const features = registry.locations.map((entry) => {
   if (typeof location.location_last_checked !== 'string' || location.location_last_checked.trim() === '') {
     throw new Error(`${entry.id}: location_last_checked is required`);
   }
+  if (!isPublishableRacecourseMapLocation(entry)) {
+    throw new Error(`${entry.id}: publishable location failed map publication policy`);
+  }
 
+  published.add(entry.id);
   const properties = {
     racecourse_id: entry.id,
     precision: location.precision,
-    verification_state: 'reviewed',
+    verification_state: location.verification_state,
     location_last_checked: location.location_last_checked,
   };
   if (typeof location.address === 'string' && location.address.trim() !== '') {
     properties.address = location.address;
   }
 
-  return {
+  return [{
     type: 'Feature',
     id: entry.id,
     geometry: {
@@ -68,12 +83,12 @@ const features = registry.locations.map((entry) => {
       coordinates: [location.longitude, location.latitude],
     },
     properties,
-  };
+  }];
 }).sort((a, b) => a.id.localeCompare(b.id, 'en'));
 
 for (const id of calendarMapRegressionIds) {
-  if (!seen.has(id)) {
-    throw new Error(`${sourceRelativePath}: Calendar map regression location missing ${id}`);
+  if (!published.has(id)) {
+    throw new Error(`${sourceRelativePath}: Calendar map regression location missing or not publishable ${id}`);
   }
 }
 
@@ -90,9 +105,9 @@ const serialized = `${JSON.stringify(projection, null, 2)}\n`;
 if (!checkOnly) {
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, serialized, 'utf8');
-  console.log(`Generated ${outputRelativePath}: ${features.length} reviewed racecourse points.`);
+  console.log(`Generated ${outputRelativePath}: ${features.length} publishable racecourse points.`);
 } else {
   JSON.parse(serialized);
-  console.log(`Racecourse map projection OK: ${features.length} reviewed racecourse points generated from ${sourceRelativePath}.`);
+  console.log(`Racecourse map projection OK: ${features.length} publishable racecourse points generated from ${sourceRelativePath}.`);
   console.log(`Calendar map regression locations OK: ${calendarMapRegressionIds.join(', ')}.`);
 }
