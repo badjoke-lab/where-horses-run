@@ -1,27 +1,27 @@
 concept_id	category_id	category_ja	canonical_en	preferred_ja	working_definition_ja	concept_kind	priority	jurisdiction_scope	discipline_scope	translation_status	verification_status	source_required	public_ready	notes
-ENTRY-001	ENTRY	登録・出走手続	Entry	出走登録	馬を競走へ登録すること、または登録された馬。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+ENTRY-001	ENTRY	登録・出走手続	Entry	出走登録	馬を競走へ登録すること、または登録された馬。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-010. JRA authority evidence confirms trainer-submitted race entry as a formal entry step; exact procedure and terminology vary by jurisdiction.
 ENTRY-002	ENTRY	登録・出走手続	Nomination	予備登録／ノミネーション	競走への登録段階を示す用語。締切・効力は制度で異なる。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-ENTRY-003	ENTRY	登録・出走手続	Declaration	出走申告／宣言	出走意思や最終出走馬を確定する手続。制度差がある。	concept	P0	Europe/Regional	ALL	working_equivalent	candidate	yes	no	
+ENTRY-003	ENTRY	登録・出走手続	Declaration	出走申告／宣言	出走意思や最終出走馬を確定する手続。制度差がある。	concept	P0	Europe/Regional	ALL	working_equivalent	source_verified	yes	no	P0-SRC-026. BHA Race Entry Code treats declaration to run as a formal post-entry stage with a declaration deadline; do not universalize GB timing or mechanics.
 ENTRY-004	ENTRY	登録・出走手続	Final declaration	最終出走申告	出走馬を最終確定する申告段階。	concept	P1	Europe/Regional	ALL	working_equivalent	candidate	yes	no	
 ENTRY-005	ENTRY	登録・出走手続	Acceptance	出走受諾／確定	主に豪州等で出走馬確定段階を表す用語。	concept	P1	AUS/NZ/Regional	ALL	working_equivalent	candidate	yes	no	
-ENTRY-006	ENTRY	登録・出走手続	Final field	最終出走馬一覧	最終的に出走予定として確定した馬の集合。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-ENTRY-007	ENTRY	登録・出走手続	Field	出走馬	一つの競走に出走する馬の集合。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-ENTRY-008	ENTRY	登録・出走手続	Field size	出走頭数	一つの競走に出走する馬の頭数。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+ENTRY-006	ENTRY	登録・出走手続	Final field	最終出走馬一覧	最終的に出走予定として確定した馬の集合。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-012;P0-SRC-011. JRA publishes a racecard after runners are confirmed; Racing Australia exposes race fields after acceptance-related release stages.
+ENTRY-007	ENTRY	登録・出走手続	Field	出走馬	一つの競走に出走する馬の集合。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-011. Racing Australia uses Race Fields for the set of runners in races; generic definition stays jurisdiction-neutral.
+ENTRY-008	ENTRY	登録・出走手続	Field size	出走頭数	一つの競走に出走する馬の頭数。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-010. JRA distinguishes applications from 出走可能頭数 and applies selection when applications exceed the permissible number.
 ENTRY-009	ENTRY	登録・出走手続	Maximum field	最大出走頭数	規則・コース条件上の最大出走頭数。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 ENTRY-010	ENTRY	登録・出走手続	Ballot	抽選	出走希望馬が上限を超える場合などに出走馬を選ぶ抽選・選考。	concept	P1	GB/IRE/Commonwealth/Regional	ALL	working_equivalent	candidate	yes	no	
 ENTRY-011	ENTRY	登録・出走手続	Balloted out	抽選除外	抽選等により出走できなくなった状態。	concept	P2	GB/IRE/Commonwealth	ALL	working_equivalent	candidate	yes	no	
 ENTRY-012	ENTRY	登録・出走手続	Reserve	補欠馬	欠場馬が出た場合等に繰り上がる可能性がある馬。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 ENTRY-013	ENTRY	登録・出走手続	Also eligible	補欠馬／繰上候補	主に北米で出走枠外から繰り上がる可能性がある馬。	concept	P2	North America	Flat	working_equivalent	candidate	yes	no	
 ENTRY-014	ENTRY	登録・出走手続	Waitlist	待機リスト	空きが生じた場合に出走候補となる待機順位。	concept	P2	Regional	ALL	working_equivalent	candidate	yes	no	
-ENTRY-015	ENTRY	登録・出走手続	Scratch	出走取消	登録済みの馬を競走から取り消すこと。	concept	P0	North America/AUS/Regional	ALL	working_equivalent	candidate	yes	no	
+ENTRY-015	ENTRY	登録・出走手続	Scratch	出走取消	登録済みの馬を競走から取り消すこと。	concept	P0	North America/AUS/Regional	ALL	working_equivalent	source_verified	yes	no	P0-SRC-013. Racing Australia publishes interim/final scratchings and accepts trainer scratching transactions; regional mechanics vary.
 ENTRY-016	ENTRY	登録・出走手続	Scratching	出走取消	主に豪州等で出走取消を示す名詞表現。	concept	P1	AUS/NZ/Regional	ALL	working_equivalent	candidate	yes	no	
-ENTRY-017	ENTRY	登録・出走手続	Withdrawal	出走取消／取下げ	出走馬・登録を取り下げること。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-ENTRY-018	ENTRY	登録・出走手続	Non-runner	出走取消馬	最終的に出走しない馬。	concept	P0	GB/IRE/Commonwealth/Regional	ALL	working_equivalent	candidate	yes	no	
+ENTRY-017	ENTRY	登録・出走手続	Withdrawal	出走取消／取下げ	出走馬・登録を取り下げること。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-014. JRA 出走取消 provides authority evidence for withdrawing a horse after entry and before racing; exact legal stage differs by system.
+ENTRY-018	ENTRY	登録・出走手続	Non-runner	出走取消馬	最終的に出走しない馬。	concept	P0	GB/IRE/Commonwealth/Regional	ALL	working_equivalent	source_verified	yes	no	P0-SRC-015. BHA current rules explain when Stewards declare a horse a non-runner, including at the start.
 ENTRY-019	ENTRY	登録・出走手続	Late withdrawal	直前取消	発走直前等に出走取消となること。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 ENTRY-020	ENTRY	登録・出走手続	Supplementary entry	追加登録	通常の登録締切後に追加で認められる登録。	concept	P2	GLOBAL/Regional	ALL	working_equivalent	candidate	yes	no	
 ENTRY-021	ENTRY	登録・出走手続	Entry fee	登録料	競走への登録に必要な料金。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 ENTRY-022	ENTRY	登録・出走手続	Supplementary fee	追加登録料	追加登録等に伴い必要となる料金。	concept	P3	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-ENTRY-023	ENTRY	登録・出走手続	Eligibility	出走資格	競走へ出走するために満たすべき条件。	concept	P0	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+ENTRY-023	ENTRY	登録・出走手続	Eligibility	出走資格	競走へ出走するために満たすべき条件。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-010. JRA authority material explicitly distinguishes race-entry eligibility conditions such as class, earnings and other race restrictions; details remain jurisdiction-specific.
 ENTRY-024	ENTRY	登録・出走手続	Qualification	出走資格要件	出走権・資格を得るために必要な要件や実績。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 ENTRY-025	ENTRY	登録・出走手続	Preference	優先順位	出走希望が多数の場合等に適用される優先規則・順位。	concept	P2	Regional	ALL	working_equivalent	candidate	yes	no	
 ENTRY-026	ENTRY	登録・出走手続	Eliminated	除外	出走希望があっても規則・頭数等により出走できない状態。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
