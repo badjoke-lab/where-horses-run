@@ -19,7 +19,6 @@ export type PublicTimetableMeetingRow = {
   readonly date: string;
   readonly timezone: string;
   readonly capability_rank: CapabilityRank;
-  readonly max_public_rank: CapabilityRank;
   readonly effective_public_rank: CapabilityRank;
   readonly first_race_time_local: string | null;
   readonly last_race_time_local: string | null;
@@ -49,7 +48,6 @@ export type PublicTimetableMeetingDetail = {
   readonly date: string;
   readonly timezone: string;
   readonly capability_rank: CapabilityRank;
-  readonly max_public_rank: CapabilityRank;
   readonly effective_public_rank: Extract<CapabilityRank, 'A' | 'A+'>;
   readonly policy_id: string;
   readonly official_source_url: string;
@@ -78,13 +76,12 @@ type PublicMeetingDetailsDataset = {
 
 type JapanMeetingOverride = Pick<
   PublicTimetableMeetingRow,
-  'meeting_id' | 'max_public_rank' | 'effective_public_rank'
+  'meeting_id' | 'effective_public_rank'
 >;
 
 type JapanDetailOverride = Pick<
   PublicTimetableMeetingDetail,
   | 'meeting_id'
-  | 'max_public_rank'
   | 'effective_public_rank'
   | 'show_race_name'
   | 'show_distance'
@@ -157,7 +154,6 @@ const canApplyMeetingRankOverride = (
   override: JapanMeetingOverride,
 ): boolean =>
   canApplyReviewedOverride(meeting.last_checked_date)
-  && isRankAtLeast(override.max_public_rank, meeting.max_public_rank)
   && isRankAtLeast(override.effective_public_rank, meeting.effective_public_rank);
 
 const canApplyDetailRankOverride = (
@@ -165,7 +161,6 @@ const canApplyDetailRankOverride = (
   override: JapanDetailOverride,
 ): boolean =>
   canApplyReviewedOverride(detail.last_checked_date)
-  && isRankAtLeast(override.max_public_rank, detail.max_public_rank)
   && isRankAtLeast(override.effective_public_rank, detail.effective_public_rank);
 
 const meetingOverrideIndex = new Map(
@@ -213,28 +208,28 @@ const reviewedPublicExcludedMeetingIds = new Set<string>([
 const reviewedPublicSupplements: readonly PublicTimetableMeetingRow[] = [
   {
     meeting_id: 'hkjc-sha-tin-racecourse-2026-09-27',
-    country_id: 'hong-kong', authority_id: 'hkjc', racecourse_id: 'sha-tin-racecourse', date: '2026-09-27', timezone: 'Asia/Hong_Kong', capability_rank: 'C', max_public_rank: 'C', effective_public_rank: 'C', first_race_time_local: null, last_race_time_local: null, policy_id: 'hkjc-reviewed-a-plus', source_status: 'verified', official_source_url: 'https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=09&CalYear=2026', last_checked_date: '2026-09-03', detail_path: null, show_live_label: false, show_replay_label: false,
+    country_id: 'hong-kong', authority_id: 'hkjc', racecourse_id: 'sha-tin-racecourse', date: '2026-09-27', timezone: 'Asia/Hong_Kong', capability_rank: 'C', effective_public_rank: 'C', first_race_time_local: null, last_race_time_local: null, policy_id: 'hkjc-reviewed', source_status: 'verified', official_source_url: 'https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=09&CalYear=2026', last_checked_date: '2026-09-03', detail_path: null, show_live_label: false, show_replay_label: false,
   },
   {
-    meeting_id: 'kra-seoul-racecourse-2026-09-13', country_id: 'south-korea', authority_id: 'korea-racing-authority', racecourse_id: 'seoul-racecourse', date: '2026-09-13', timezone: 'Asia/Seoul', capability_rank: 'C', max_public_rank: 'C', effective_public_rank: 'C', first_race_time_local: null, last_race_time_local: null, policy_id: 'kra-reviewed-a', source_status: 'verified', official_source_url: 'https://race.kra.co.kr/chulmainfo/RegistStateList.do?meet=1', last_checked_date: '2026-09-03', detail_path: null, show_live_label: false, show_replay_label: false,
+    meeting_id: 'kra-seoul-racecourse-2026-09-13', country_id: 'south-korea', authority_id: 'korea-racing-authority', racecourse_id: 'seoul-racecourse', date: '2026-09-13', timezone: 'Asia/Seoul', capability_rank: 'C', effective_public_rank: 'C', first_race_time_local: null, last_race_time_local: null, policy_id: 'kra-reviewed', source_status: 'verified', official_source_url: 'https://race.kra.co.kr/chulmainfo/RegistStateList.do?meet=1', last_checked_date: '2026-09-03', detail_path: null, show_live_label: false, show_replay_label: false,
   },
   {
-    meeting_id: 'kra-busan-gyeongnam-racecourse-2026-09-11', country_id: 'south-korea', authority_id: 'korea-racing-authority', racecourse_id: 'busan-gyeongnam-racecourse', date: '2026-09-11', timezone: 'Asia/Seoul', capability_rank: 'C', max_public_rank: 'C', effective_public_rank: 'C', first_race_time_local: null, last_race_time_local: null, policy_id: 'kra-reviewed-a', source_status: 'verified', official_source_url: 'https://race.kra.co.kr/chulmainfo/RegistStateList.do?meet=3', last_checked_date: '2026-09-03', detail_path: null, show_live_label: false, show_replay_label: false,
+    meeting_id: 'kra-busan-gyeongnam-racecourse-2026-09-11', country_id: 'south-korea', authority_id: 'korea-racing-authority', racecourse_id: 'busan-gyeongnam-racecourse', date: '2026-09-11', timezone: 'Asia/Seoul', capability_rank: 'C', effective_public_rank: 'C', first_race_time_local: null, last_race_time_local: null, policy_id: 'kra-reviewed', source_status: 'verified', official_source_url: 'https://race.kra.co.kr/chulmainfo/RegistStateList.do?meet=3', last_checked_date: '2026-09-03', detail_path: null, show_live_label: false, show_replay_label: false,
   },
   {
-    meeting_id: 'kra-yeongcheon-racecourse-2026-09-13', country_id: 'south-korea', authority_id: 'korea-racing-authority', racecourse_id: 'yeongcheon-racecourse', date: '2026-09-13', timezone: 'Asia/Seoul', capability_rank: 'C', max_public_rank: 'C', effective_public_rank: 'C', first_race_time_local: null, last_race_time_local: null, policy_id: 'kra-reviewed-a', source_status: 'verified', official_source_url: 'https://race.kra.co.kr/chulmainfo/RegistStateList.do?meet=3', last_checked_date: '2026-09-03', detail_path: null, show_live_label: false, show_replay_label: false,
+    meeting_id: 'kra-yeongcheon-racecourse-2026-09-13', country_id: 'south-korea', authority_id: 'korea-racing-authority', racecourse_id: 'yeongcheon-racecourse', date: '2026-09-13', timezone: 'Asia/Seoul', capability_rank: 'C', effective_public_rank: 'C', first_race_time_local: null, last_race_time_local: null, policy_id: 'kra-reviewed', source_status: 'verified', official_source_url: 'https://race.kra.co.kr/chulmainfo/RegistStateList.do?meet=3', last_checked_date: '2026-09-03', detail_path: null, show_live_label: false, show_replay_label: false,
   },
   {
-    meeting_id: 'kra-seoul-racecourse-2026-09-20', country_id: 'south-korea', authority_id: 'korea-racing-authority', racecourse_id: 'seoul-racecourse', date: '2026-09-20', timezone: 'Asia/Seoul', capability_rank: 'C', max_public_rank: 'C', effective_public_rank: 'C', first_race_time_local: null, last_race_time_local: null, policy_id: 'kra-reviewed-a', source_status: 'verified', official_source_url: 'https://race.kra.co.kr/thisweekrace/EventRacePlan.do', last_checked_date: '2026-09-03', detail_path: null, show_live_label: false, show_replay_label: false,
+    meeting_id: 'kra-seoul-racecourse-2026-09-20', country_id: 'south-korea', authority_id: 'korea-racing-authority', racecourse_id: 'seoul-racecourse', date: '2026-09-20', timezone: 'Asia/Seoul', capability_rank: 'C', effective_public_rank: 'C', first_race_time_local: null, last_race_time_local: null, policy_id: 'kra-reviewed', source_status: 'verified', official_source_url: 'https://race.kra.co.kr/thisweekrace/EventRacePlan.do', last_checked_date: '2026-09-03', detail_path: null, show_live_label: false, show_replay_label: false,
   },
   {
-    meeting_id: 'kra-yeongcheon-racecourse-2026-09-20', country_id: 'south-korea', authority_id: 'korea-racing-authority', racecourse_id: 'yeongcheon-racecourse', date: '2026-09-20', timezone: 'Asia/Seoul', capability_rank: 'C', max_public_rank: 'C', effective_public_rank: 'C', first_race_time_local: null, last_race_time_local: null, policy_id: 'kra-reviewed-a', source_status: 'verified', official_source_url: 'https://race.kra.co.kr/raceoper/RaceoperView.do?Sub=1&meet=1', last_checked_date: '2026-09-03', detail_path: null, show_live_label: false, show_replay_label: false,
+    meeting_id: 'kra-yeongcheon-racecourse-2026-09-20', country_id: 'south-korea', authority_id: 'korea-racing-authority', racecourse_id: 'yeongcheon-racecourse', date: '2026-09-20', timezone: 'Asia/Seoul', capability_rank: 'C', effective_public_rank: 'C', first_race_time_local: null, last_race_time_local: null, policy_id: 'kra-reviewed', source_status: 'verified', official_source_url: 'https://race.kra.co.kr/raceoper/RaceoperView.do?Sub=1&meet=1', last_checked_date: '2026-09-03', detail_path: null, show_live_label: false, show_replay_label: false,
   },
   {
-    meeting_id: 'kra-busan-gyeongnam-racecourse-2026-10-02', country_id: 'south-korea', authority_id: 'korea-racing-authority', racecourse_id: 'busan-gyeongnam-racecourse', date: '2026-10-02', timezone: 'Asia/Seoul', capability_rank: 'C', max_public_rank: 'C', effective_public_rank: 'C', first_race_time_local: null, last_race_time_local: null, policy_id: 'kra-reviewed-a', source_status: 'verified', official_source_url: 'https://race.kra.co.kr/raceoper/RaceoperView.do?Sub=1&meet=1', last_checked_date: '2026-09-03', detail_path: null, show_live_label: false, show_replay_label: false,
+    meeting_id: 'kra-busan-gyeongnam-racecourse-2026-10-02', country_id: 'south-korea', authority_id: 'korea-racing-authority', racecourse_id: 'busan-gyeongnam-racecourse', date: '2026-10-02', timezone: 'Asia/Seoul', capability_rank: 'C', effective_public_rank: 'C', first_race_time_local: null, last_race_time_local: null, policy_id: 'kra-reviewed', source_status: 'verified', official_source_url: 'https://race.kra.co.kr/raceoper/RaceoperView.do?Sub=1&meet=1', last_checked_date: '2026-09-03', detail_path: null, show_live_label: false, show_replay_label: false,
   },
   {
-    meeting_id: 'kra-jeju-racecourse-2026-10-02', country_id: 'south-korea', authority_id: 'korea-racing-authority', racecourse_id: 'jeju-racecourse', date: '2026-10-02', timezone: 'Asia/Seoul', capability_rank: 'C', max_public_rank: 'C', effective_public_rank: 'C', first_race_time_local: null, last_race_time_local: null, policy_id: 'kra-reviewed-a', source_status: 'verified', official_source_url: 'https://race.kra.co.kr/raceoper/RaceoperView.do?Sub=1&meet=1', last_checked_date: '2026-09-03', detail_path: null, show_live_label: false, show_replay_label: false,
+    meeting_id: 'kra-jeju-racecourse-2026-10-02', country_id: 'south-korea', authority_id: 'korea-racing-authority', racecourse_id: 'jeju-racecourse', date: '2026-10-02', timezone: 'Asia/Seoul', capability_rank: 'C', effective_public_rank: 'C', first_race_time_local: null, last_race_time_local: null, policy_id: 'kra-reviewed', source_status: 'verified', official_source_url: 'https://race.kra.co.kr/raceoper/RaceoperView.do?Sub=1&meet=1', last_checked_date: '2026-09-03', detail_path: null, show_live_label: false, show_replay_label: false,
   },
 ];
 
@@ -260,7 +255,6 @@ function mergePublicMeetingRowsMonotonic(
       ...fallback,
       ...preferred,
       capability_rank: maxRank(existing.capability_rank, candidate.capability_rank),
-      max_public_rank: maxRank(existing.max_public_rank, candidate.max_public_rank),
       effective_public_rank: maxRank(existing.effective_public_rank, candidate.effective_public_rank),
       first_race_time_local: preferred.first_race_time_local ?? fallback.first_race_time_local,
       last_race_time_local: preferred.last_race_time_local ?? fallback.last_race_time_local,
@@ -292,7 +286,6 @@ function mergePublicMeetingDetailsMonotonic(
       ...fallback,
       ...preferred,
       capability_rank: maxRank(existing.capability_rank, candidate.capability_rank),
-      max_public_rank: maxRank(existing.max_public_rank, candidate.max_public_rank),
       effective_public_rank: maxRank(
         existing.effective_public_rank,
         candidate.effective_public_rank,
@@ -307,7 +300,7 @@ const generatedPublicMeetingRows: readonly PublicTimetableMeetingRow[] = meeting
   .map((meeting) => {
     const override = meetingOverrideIndex.get(meeting.meeting_id);
     const withRankOverride = override && canApplyMeetingRankOverride(meeting, override)
-      ? { ...meeting, ...override }
+      ? { ...meeting, effective_public_rank: override.effective_public_rank }
       : meeting;
     const correction = reviewedPublicCorrections.get(meeting.meeting_id);
     return correction ? { ...withRankOverride, ...correction } : withRankOverride;
@@ -324,7 +317,15 @@ const generatedPublicMeetingDetails: readonly PublicTimetableMeetingDetail[] = m
   .map((detail) => {
     const override = detailOverrideIndex.get(detail.meeting_id);
     const withRankOverride = override && canApplyDetailRankOverride(detail, override)
-      ? { ...detail, ...override }
+      ? {
+          ...detail,
+          effective_public_rank: override.effective_public_rank,
+          show_race_name: override.show_race_name,
+          show_distance: override.show_distance,
+          show_surface: override.show_surface,
+          show_course: override.show_course,
+          timetable_rows: override.timetable_rows,
+        }
       : detail;
     const correction = reviewedPublicDetailCorrections.get(detail.meeting_id);
     return correction ? { ...withRankOverride, ...correction } : withRankOverride;
@@ -342,7 +343,6 @@ for (const generated of generatedPublicMeetingRows) {
   if (!published) throw new Error(`Public meeting missing generated baseline: ${generated.meeting_id}`);
   if (
     !isRankAtLeast(published.capability_rank, generated.capability_rank)
-    || !isRankAtLeast(published.max_public_rank, generated.max_public_rank)
     || !isRankAtLeast(published.effective_public_rank, generated.effective_public_rank)
   ) {
     throw new Error(`Public meeting rank downgraded below generated baseline: ${generated.meeting_id}`);
@@ -355,7 +355,6 @@ for (const generated of generatedPublicMeetingDetails) {
   if (!published) throw new Error(`Public meeting detail missing generated baseline: ${generated.meeting_id}`);
   if (
     !isRankAtLeast(published.capability_rank, generated.capability_rank)
-    || !isRankAtLeast(published.max_public_rank, generated.max_public_rank)
     || !isRankAtLeast(published.effective_public_rank, generated.effective_public_rank)
   ) {
     throw new Error(`Public meeting detail rank downgraded below generated baseline: ${generated.meeting_id}`);
