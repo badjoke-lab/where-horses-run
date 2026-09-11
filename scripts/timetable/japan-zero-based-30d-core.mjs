@@ -1,11 +1,22 @@
+import { projectPublicTimetableRows } from './public-detail-projection.mjs';
+
 const RANKS = ['C', 'B', 'B+', 'A', 'A+'];
 export const JAPAN_GROUPS = ['jra', 'nar-standard', 'banei'];
 export const OUTCOMES = ['add', 'update', 'no_op', 'details_pending', 'acquisition_failed', 'conflict'];
 
 const JAPAN_PUBLIC_POLICIES = {
-  jra: 'jra-reviewed-a-plus',
-  'nar-local-government-racing': 'nar-reviewed-a-plus',
-  'banei-tokachi': 'banei-reviewed-a-plus',
+  jra: 'jra-reviewed',
+  'nar-local-government-racing': 'nar-reviewed',
+  'banei-tokachi': 'banei-reviewed',
+};
+
+const JAPAN_DETAIL_PUBLICATION = {
+  detail_fields: {
+    show_race_name: true,
+    show_distance: true,
+    show_surface: true,
+    show_course: true,
+  },
 };
 
 function rank(value) {
@@ -248,18 +259,8 @@ function safeEffectivePublicRank(meeting, detail) {
   return deriveJapanBestAvailableRank(meeting, detail?.timetable_rows ?? []);
 }
 
-function publicTimetableRows(detail, effectivePublicRank) {
-  const aPlus = effectivePublicRank === 'A+';
-  return detail.timetable_rows.map((row) => {
-    const value = { label: row.label, post_time_local: row.post_time_local };
-    if (aPlus) {
-      value.race_name = row.race_name;
-      value.distance_m = row.distance_m;
-      value.surface = row.surface;
-      value.course_label = row.course_label;
-    }
-    return value;
-  });
+function publicTimetableProjection(detail) {
+  return projectPublicTimetableRows(detail.timetable_rows, JAPAN_DETAIL_PUBLICATION);
 }
 
 function publicMeetingRecord(meeting, detail) {
@@ -273,7 +274,6 @@ function publicMeetingRecord(meeting, detail) {
     date: meeting.date,
     timezone: 'Asia/Tokyo',
     capability_rank: meeting.capability_rank,
-    max_public_rank: meeting.capability_rank,
     effective_public_rank: effectivePublicRank,
     first_race_time_local: meeting.first_race_time_local ?? null,
     last_race_time_local: meeting.last_race_time_local ?? null,
@@ -289,7 +289,7 @@ function publicMeetingRecord(meeting, detail) {
 
 function publicDetailRecord(meeting, detail, publicMeeting) {
   if (!detail || !['A', 'A+'].includes(publicMeeting.effective_public_rank)) return null;
-  const aPlus = publicMeeting.effective_public_rank === 'A+';
+  const projection = publicTimetableProjection(detail);
   return {
     meeting_id: meeting.meeting_id,
     country_id: 'japan',
@@ -298,19 +298,18 @@ function publicDetailRecord(meeting, detail, publicMeeting) {
     date: meeting.date,
     timezone: 'Asia/Tokyo',
     capability_rank: meeting.capability_rank,
-    max_public_rank: meeting.capability_rank,
     effective_public_rank: publicMeeting.effective_public_rank,
     policy_id: publicMeeting.policy_id,
     official_source_url: publicMeeting.official_source_url,
     source_status: publicMeeting.source_status,
     last_checked_date: publicMeeting.last_checked_date,
-    show_race_name: aPlus,
-    show_distance: aPlus,
-    show_surface: aPlus,
-    show_course: aPlus,
+    show_race_name: projection.visibility.show_race_name,
+    show_distance: projection.visibility.show_distance,
+    show_surface: projection.visibility.show_surface,
+    show_course: projection.visibility.show_course,
     show_live_label: false,
     show_replay_label: false,
-    timetable_rows: publicTimetableRows(detail, publicMeeting.effective_public_rank),
+    timetable_rows: projection.rows,
   };
 }
 
@@ -362,7 +361,6 @@ function ensureOfficialScheduleRow({ officialMeeting, checkedAt, canonicalMap, p
       publicMap.set(officialMeeting.meeting_id, {
         ...previousCanonical,
         effective_public_rank: previousCanonical.capability_rank,
-        max_public_rank: previousCanonical.capability_rank,
       });
     }
     return publicMap.get(officialMeeting.meeting_id)?.capability_rank ?? previousCanonical.capability_rank;
@@ -373,7 +371,6 @@ function ensureOfficialScheduleRow({ officialMeeting, checkedAt, canonicalMap, p
   publicMap.set(scheduleOnly.meeting_id, {
     ...scheduleOnly,
     effective_public_rank: 'C',
-    max_public_rank: 'C',
   });
   return 'C';
 }
@@ -483,11 +480,11 @@ export async function runJapanZeroBased30d({
 
     canonicalMap.set(normalized.meeting_id, normalized);
     const previousPublic = publicMap.get(normalized.meeting_id) ?? {};
+    const { max_public_rank: _legacyMaxPublicRank, ...previousPublicWithoutCeiling } = previousPublic;
     publicMap.set(normalized.meeting_id, {
-      ...previousPublic,
+      ...previousPublicWithoutCeiling,
       ...normalized,
       effective_public_rank: normalized.capability_rank,
-      max_public_rank: normalized.capability_rank,
     });
     if (normalizedDetail) details.set(normalized.meeting_id, normalizedDetail);
 
