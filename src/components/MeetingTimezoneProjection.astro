@@ -8,6 +8,14 @@ type Props = {
 const { sourceDate, sourceTimeZone, lang = 'en' } = Astro.props as Props;
 const isJa = lang === 'ja';
 const label = isJa ? '表示タイムゾーン' : 'Display timezone';
+const timeZoneOptions = [
+  { value: 'Asia/Tokyo', label: isJa ? '日本 — UTC+09:00' : 'Japan — UTC+09:00' },
+  { value: 'Asia/Seoul', label: isJa ? '韓国 — UTC+09:00' : 'South Korea — UTC+09:00' },
+  { value: 'Asia/Hong_Kong', label: isJa ? '香港 — UTC+08:00' : 'Hong Kong — UTC+08:00' },
+  { value: 'Asia/Dubai', label: isJa ? 'アラブ首長国連邦 — UTC+04:00' : 'United Arab Emirates — UTC+04:00' },
+  { value: 'Europe/Istanbul', label: isJa ? 'トルコ — UTC+03:00' : 'Türkiye — UTC+03:00' },
+  { value: 'UTC', label: 'UTC — UTC+00:00' },
+];
 ---
 
 <div
@@ -20,11 +28,10 @@ const label = isJa ? '表示タイムゾーン' : 'Display timezone';
   <label>
     <span>{label}</span>
     <select data-meeting-timezone-select aria-label={label}>
-      <option value="Asia/Tokyo">Asia/Tokyo</option>
-      <option value="UTC">UTC</option>
+      {timeZoneOptions.map((option) => <option value={option.value}>{option.label}</option>)}
     </select>
   </label>
-  <output data-meeting-timezone-status>Asia/Tokyo</output>
+  <output data-meeting-timezone-status>{timeZoneOptions[0].label}</output>
 </div>
 
 <script>
@@ -32,6 +39,11 @@ const label = isJa ? '表示タイムゾーン' : 'Display timezone';
     if (!timeZone) return false;
     try { new Intl.DateTimeFormat('en', { timeZone }).format(new Date(0)); return true; } catch { return false; }
   };
+  const isCuratedTimeZone = (select, timeZone) => Boolean(
+    timeZone && Array.from(select.options).some((option) => option.value === timeZone)
+  );
+  const displayTimeZone = (select, timeZone) =>
+    Array.from(select.options).find((option) => option.value === timeZone)?.textContent || timeZone;
   const dateParts = (instant, timeZone) => Object.fromEntries(new Intl.DateTimeFormat('en-US', {
     timeZone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
   }).formatToParts(instant).filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
@@ -57,22 +69,12 @@ const label = isJa ? '表示タイムゾーン' : 'Display timezone';
   const formatTime = (instant, timeZone) => new Intl.DateTimeFormat('en-GB', {
     timeZone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
   }).format(instant);
-  const populateTimeZones = (select) => {
-    const zones = typeof Intl.supportedValuesOf === 'function'
-      ? Intl.supportedValuesOf('timeZone')
-      : ['UTC', 'Asia/Tokyo', 'Asia/Hong_Kong', 'Asia/Dubai', 'Europe/Istanbul', 'Europe/London', 'America/New_York', 'Australia/Sydney'];
-    const values = Array.from(new Set(['UTC', ...zones]));
-    select.replaceChildren(...values.map((zone) => {
-      const option = document.createElement('option');
-      option.value = zone;
-      option.textContent = zone;
-      return option;
-    }));
-  };
   const projectMeeting = (root, timeZone) => {
     if (!(root instanceof HTMLElement)) return;
     const sourceDate = root.dataset.sourceDate || '';
     const sourceTimeZone = root.dataset.sourceTimezone || '';
+    const select = root.querySelector('[data-meeting-timezone-select]');
+    const displayLabel = select instanceof HTMLSelectElement ? displayTimeZone(select, timeZone) : timeZone;
     const timeCells = Array.from(document.querySelectorAll('[data-meeting-source-time]'));
     let previousInstant = null;
     let firstProjectedDate = sourceDate;
@@ -96,10 +98,10 @@ const label = isJa ? '表示タイムゾーン' : 'Display timezone';
       node.textContent = firstProjectedDate;
     });
     document.querySelectorAll('[data-timezone-label]').forEach((node) => {
-      node.textContent = timeZone;
+      node.textContent = displayLabel;
     });
     const status = root.querySelector('[data-meeting-timezone-status]');
-    if (status) status.textContent = timeZone;
+    if (status) status.textContent = displayLabel;
     window.dispatchEvent(new CustomEvent('whr:timezonechange', { detail: {
       timeZone,
       targetDate: firstProjectedDate,
@@ -109,10 +111,9 @@ const label = isJa ? '表示タイムゾーン' : 'Display timezone';
   document.querySelectorAll('[data-meeting-timezone-root]').forEach((root) => {
     const select = root.querySelector('[data-meeting-timezone-select]');
     if (!(select instanceof HTMLSelectElement)) return;
-    populateTimeZones(select);
     const requested = new URL(window.location.href).searchParams.get('tz');
     const browser = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const initial = isTimeZoneSupported(requested) ? requested : isTimeZoneSupported(browser) ? browser : 'Asia/Tokyo';
+    const initial = isCuratedTimeZone(select, requested) ? requested : isCuratedTimeZone(select, browser) ? browser : 'Asia/Tokyo';
     select.value = initial;
     const initialUrl = new URL(window.location.href);
     if (initialUrl.searchParams.get('tz') !== initial) {
@@ -121,7 +122,7 @@ const label = isJa ? '表示タイムゾーン' : 'Display timezone';
     }
     projectMeeting(root, initial);
     select.addEventListener('change', () => {
-      const selected = isTimeZoneSupported(select.value) ? select.value : 'Asia/Tokyo';
+      const selected = isCuratedTimeZone(select, select.value) ? select.value : 'Asia/Tokyo';
       const url = new URL(window.location.href);
       url.searchParams.set('tz', selected);
       window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
