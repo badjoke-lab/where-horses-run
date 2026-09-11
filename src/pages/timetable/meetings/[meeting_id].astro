@@ -69,8 +69,8 @@ const firstRaceTime = detail.timetable_rows[0]?.post_time_local ?? null;
 const lastRaceTime = detail.timetable_rows.at(-1)?.post_time_local ?? null;
 
 const timeCoverageNoteByRank: Record<string, string> = {
-  A: 'This public detail page shows race labels and post times only.',
-  'A+': 'This public detail page shows race labels, post times, and policy-approved programme summary fields only.',
+  A: 'This public detail page shows race labels, post times, and any policy-approved programme fields that are available for individual rows.',
+  'A+': 'This public detail page shows race labels, post times, and policy-approved programme summary fields from a complete A+ observation.',
 };
 ---
 
@@ -185,7 +185,7 @@ const timeCoverageNoteByRank: Record<string, string> = {
 
     <section aria-labelledby="boundary-title">
       <h2 id="boundary-title">Publication boundary</h2>
-      <p>This page uses the public meeting detail dataset. A details show only race label and post time. A+ details show only policy-approved programme summary fields.</p>
+      <p>This page uses the public meeting detail dataset. Rank A may include individually verified, policy-approved programme fields; A+ requires race name, distance, surface, and course metadata to be complete for every race row.</p>
       <p>Complete official information should be confirmed at the official source.</p>
     </section>
   </div>
