@@ -84,8 +84,36 @@ assert.doesNotMatch(applyText, /capRank\(/, 'public rank must not be capped by a
 assert.doesNotMatch(applyText, /policy\.max_public_rank/, 'public projection must not read a policy rank ceiling');
 assert.doesNotMatch(applyText, /max_public_rank:/, 'public generated rows must not emit a rank ceiling');
 
+const promotionText = fs.readFileSync('scripts/timetable/pipeline-v1/promotion-core.mjs', 'utf8');
+assert.doesNotMatch(promotionText, /rankAtMost\(/, 'canonical promotion must not cap observed rank by authority/source technical rank');
+assert.doesNotMatch(promotionText, /authoritySource\.capability_rank\s*===\s*readiness\.technical_rank/, 'source/readiness rank labels must not control canonical promotion');
+assert.doesNotMatch(promotionText, /publication_policy_change/, 'publication policy changes must never be a canonical downgrade reason');
+
+const legacyProjectionText = fs.readFileSync('scripts/timetable/pipeline-v1/public-projection-core.mjs', 'utf8');
+assert.doesNotMatch(legacyProjectionText, /max_public_rank/, 'legacy public projection must not emit or compare a rank ceiling');
+assert.doesNotMatch(legacyProjectionText, /policy\.max_public_rank/, 'legacy public projection must not read policy rank ceilings');
+assert.doesNotMatch(legacyProjectionText, /readiness\.public_ceiling/, 'readiness metadata must not cap public rank');
+assert.doesNotMatch(legacyProjectionText, /a_plus_fields/, 'legacy public projection must use rank-independent detail_fields');
+
 const viewModelText = fs.readFileSync('src/lib/timetable/publicTimetableViewModel.ts', 'utf8');
 assert.doesNotMatch(viewModelText, /max_public_rank/, 'public timetable view model must not restore a rank ceiling');
+
+for (const generatedPath of [
+  'data/generated/timetable/public/meeting-list.json',
+  'data/generated/timetable/public/meeting-details.json',
+]) {
+  const generatedText = fs.readFileSync(generatedPath, 'utf8');
+  assert.doesNotMatch(generatedText, /"max_public_rank"/, `${generatedPath} must not retain a generated rank ceiling`);
+  const generated = JSON.parse(generatedText);
+  const rows = generated.meetings ?? generated.details ?? [];
+  for (const row of rows) {
+    assert.equal(
+      row.effective_public_rank,
+      row.capability_rank,
+      `${generatedPath} ${row.meeting_id} public rank must follow evidence rank rather than an authority/source ceiling`,
+    );
+  }
+}
 
 const bootstrapText = fs.readFileSync('src/components/CalendarRuntimeBootstrap.astro', 'utf8');
 assert.match(bootstrapText, /params\.get\('diag'\) === 'calendar'/, 'diagnostics loader must be gated by ?diag=calendar');
@@ -104,3 +132,4 @@ assert.doesNotMatch(endpointText, /timetable_rows:\s*canonicalDetail/, 'diagnost
 console.log('CALENDAR_FIELD_PUBLICATION_DIAGNOSTICS: pass');
 console.log('PARTIAL_A_FIELD_PROJECTION_CASES: 5');
 console.log('AUTHORITY_PUBLIC_RANK_CEILING: prohibited');
+console.log('AUTHORITY_SOURCE_CANONICAL_RANK_CEILING: prohibited');
