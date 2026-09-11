@@ -204,7 +204,7 @@ const pageDescription = overview || pick(
         <section class="country-hub__panel country-hub__map-panel" aria-labelledby="country-map-heading">
           <div class="country-hub__panel-heading"><h2 id="country-map-heading">{pick(`${country.name_en} racecourses`, `${country.name_ja}の競馬場`)}</h2><a href={`${tracksPath}?country=${encodeURIComponent(country.id)}`}>{pick('Open list', '一覧を見る')} →</a></div>
           {countryMapRacecourseIds.length > 0 ? (
-            <RacecourseMap racecourseIds={countryMapRacecourseIds} visibleRacecourseIds={countryMapRacecourseIds} initialZoom={4} ariaLabel={pick(`${country.name_en} racecourse map`, `${country.name_ja}の競馬場地図`)} />
+            <RacecourseMap racecourseIds={countryMapRacecourseIds} visibleRacecourseIds={countryMapRacecourseIds} initialZoom={4} clusterPoints={false} ariaLabel={pick(`${country.name_en} racecourse map`, `${country.name_ja}の競馬場地図`)} />
           ) : (
             <p class="racecourse-map__status">{pick('No reviewed racecourse location is available for this country yet.', 'この国では確認済み競馬場位置をまだ掲載していません。')}</p>
           )}

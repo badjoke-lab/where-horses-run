@@ -7,6 +7,7 @@ interface Props {
   visibleRacecourseIds?: string[];
   ariaLabel?: string;
   initialZoom?: number;
+  clusterPoints?: boolean;
   geojsonUrl?: string;
   styleUrl?: string;
   fallbackMessage?: string;
@@ -17,6 +18,7 @@ const {
   visibleRacecourseIds = racecourseIds,
   ariaLabel = 'Interactive racecourse map',
   initialZoom = 2,
+  clusterPoints = true,
   geojsonUrl = '/data/racecourse-locations-v1.geojson',
   styleUrl = 'https://tiles.openfreemap.org/styles/liberty',
   fallbackMessage = 'Interactive map unavailable. Verified location details and page navigation remain available.'
@@ -31,6 +33,7 @@ const {
   data-racecourse-ids={JSON.stringify(racecourseIds)}
   data-visible-racecourse-ids={JSON.stringify(visibleRacecourseIds)}
   data-initial-zoom={String(initialZoom)}
+  data-cluster-points={clusterPoints ? 'true' : 'false'}
   data-geojson-url={geojsonUrl}
   data-style-url={styleUrl}
   data-fallback-message={fallbackMessage}
@@ -390,6 +393,7 @@ const {
     const requestedIds = parseRacecourseIds(root.dataset.racecourseIds);
     const initialVisibleIds = parseRacecourseIds(root.dataset.visibleRacecourseIds);
     const initialZoom = Number(root.dataset.initialZoom || '2');
+    const clusterPoints = root.dataset.clusterPoints !== 'false';
     const geojsonUrl = root.dataset.geojsonUrl || '/data/racecourse-locations-v1.geojson';
     const styleUrl = root.dataset.styleUrl || 'https://tiles.openfreemap.org/styles/liberty';
     const statusContext = root.closest('[data-home-racing-map], [data-today-map-sync], [data-calendar-map-switch]');
@@ -698,7 +702,7 @@ const {
               }
             }))
           },
-          cluster: features.length > 1,
+          cluster: clusterPoints && features.length > 1,
           clusterMaxZoom: 9,
           clusterRadius: 44,
           clusterProperties: {
