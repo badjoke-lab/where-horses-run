@@ -1,3 +1,5 @@
+import { projectPublicTimetableRows } from '../public-detail-projection.mjs';
+
 const RANKS = ['not_listed', 'D', 'C', 'B', 'B+', 'A', 'A+'];
 const PUBLIC_READINESS = new Set(['ready', 'prototype_ready', 'manual_ready']);
 const PUBLIC_AUTOMATION = new Set(['automatic', 'semi_automatic', 'manual_import', 'manual_confirmation']);
@@ -22,7 +24,7 @@ function matches(value, allowed) {
 }
 
 function findPolicy(record, policyData, canonicalSourceId) {
-  assert(policyData?.schema_version === 'publication-display-policies-v0', 'publication policy schema is invalid');
+  assert(policyData?.schema_version === 'publication-display-policies-v1', 'publication policy schema is invalid');
   assert(policyData.default_policy && Array.isArray(policyData.policies), 'publication policy data is incomplete');
 
   return (
@@ -111,33 +113,32 @@ function publicEligibility(readiness) {
   return null;
 }
 
-function resolveDecision(record, policyData, readinessIndex, aliasIndex) {
+function structuralPublicRank(record, hasDetail) {
+  if (!['A', 'A+'].includes(record.capability_rank) || hasDetail) return record.capability_rank;
+  if (record.first_race_time_local && record.last_race_time_local) return 'B+';
+  if (record.first_race_time_local) return 'B';
+  return 'C';
+}
+
+function resolveDecision(record, policyData, readinessIndex, aliasIndex, hasDetail) {
   const resolved = resolveReadiness(record, readinessIndex, aliasIndex);
   const policy = findPolicy(record, policyData, resolved.canonicalSourceId);
-  const effectivePublicRank = record.capability_rank;
+  const effectivePublicRank = structuralPublicRank(record, hasDetail);
   const eligibilityReason = publicEligibility(resolved.readiness);
   const include =
     !eligibilityReason &&
     policy.include_in_public_list === true &&
     !['not_listed', 'D'].includes(effectivePublicRank);
-  const showAPlus = effectivePublicRank === 'A+';
-  const fields = resolved.readiness.confirmed_fields ?? {};
 
   return {
     policy_id: policy.id,
-    policy_max_public_rank: policy.max_public_rank,
     readiness_id: resolved.readiness.readiness_id,
-    readiness_public_ceiling: resolved.readiness.public_ceiling,
     canonical_source_id: resolved.canonicalSourceId,
     source_alias_id: resolved.aliasId,
-    max_public_rank: record.capability_rank,
     effective_public_rank: effectivePublicRank,
     include_in_public_list: include,
     exclusion_reason: include ? null : eligibilityReason ?? 'policy:excluded',
-    show_race_name: showAPlus && policy.a_plus_fields.show_race_name === true && fields.race_name === true,
-    show_distance: showAPlus && policy.a_plus_fields.show_distance === true && fields.distance === true,
-    show_surface: showAPlus && policy.a_plus_fields.show_surface === true && fields.surface === true,
-    show_course: showAPlus && policy.a_plus_fields.show_course === true && fields.course === true,
+    detail_fields: policy.detail_fields ?? {},
     show_live_label: policy.show_live_label === true,
     show_replay_label: policy.show_replay_label === true
   };
@@ -180,16 +181,8 @@ function projectDetail(detail, decision) {
   if (!decision.include_in_public_list || !['A', 'A+'].includes(decision.effective_public_rank)) return null;
   assert(Array.isArray(detail.timetable_rows), `${detail.meeting_id} canonical detail has no timetable_rows`);
 
-  const timetableRows = detail.timetable_rows.map((row) => {
-    const publicRow = {
-      label: row.label,
-      post_time_local: row.post_time_local
-    };
-    if (decision.show_race_name && row.race_name) publicRow.race_name = row.race_name;
-    if (decision.show_distance && row.distance_m != null) publicRow.distance_m = row.distance_m;
-    if (decision.show_surface && row.surface) publicRow.surface = row.surface;
-    if (decision.show_course && row.course_label) publicRow.course_label = row.course_label;
-    return publicRow;
+  const projection = projectPublicTimetableRows(detail.timetable_rows, {
+    detail_fields: decision.detail_fields,
   });
 
   return {
@@ -200,19 +193,18 @@ function projectDetail(detail, decision) {
     date: detail.date,
     timezone: detail.timezone,
     capability_rank: detail.capability_rank,
-    max_public_rank: decision.max_public_rank,
     effective_public_rank: decision.effective_public_rank,
     policy_id: decision.policy_id,
     official_source_url: detail.source_trace.official_source_url,
     source_status: detail.source_trace.source_status,
     last_checked_date: detail.freshness.last_checked_date,
-    show_race_name: decision.show_race_name,
-    show_distance: decision.show_distance,
-    show_surface: decision.show_surface,
-    show_course: decision.show_course,
+    show_race_name: projection.visibility.show_race_name,
+    show_distance: projection.visibility.show_distance,
+    show_surface: projection.visibility.show_surface,
+    show_course: projection.visibility.show_course,
     show_live_label: decision.show_live_label,
     show_replay_label: decision.show_replay_label,
-    timetable_rows: timetableRows
+    timetable_rows: projection.rows
   };
 }
 
@@ -231,11 +223,18 @@ export function buildPublicProjectionV1({
   const readinessIndex = buildReadinessIndex(readinessRegistry);
   const aliasIndex = buildAliasIndex(sourceAliases);
   const meetingById = new Map(canonicalMeetings.meetings.map((meeting) => [meeting.meeting_id, meeting]));
+  const canonicalDetailIds = new Set(canonicalDetails.details.map((detail) => detail.meeting_id));
   const decisions = new Map();
   const excluded = [];
 
   for (const meeting of canonicalMeetings.meetings) {
-    const decision = resolveDecision(meeting, policyData, readinessIndex, aliasIndex);
+    const decision = resolveDecision(
+      meeting,
+      policyData,
+      readinessIndex,
+      aliasIndex,
+      canonicalDetailIds.has(meeting.meeting_id),
+    );
     decisions.set(meeting.meeting_id, decision);
     if (!decision.include_in_public_list) {
       excluded.push({ meeting_id: meeting.meeting_id, reason: decision.exclusion_reason });
@@ -249,9 +248,8 @@ export function buildPublicProjectionV1({
     for (const field of ['country_id', 'authority_id', 'racecourse_id', 'date', 'timezone']) {
       assert(detail[field] === meeting[field], `canonical detail ${detail.meeting_id} disagrees with meeting on ${field}`);
     }
-    const detailDecision = resolveDecision(detail, policyData, readinessIndex, aliasIndex);
+    const detailDecision = resolveDecision(detail, policyData, readinessIndex, aliasIndex, true);
     const meetingDecision = decisions.get(detail.meeting_id);
-    assert(detailDecision.max_public_rank === meetingDecision.max_public_rank, `detail ${detail.meeting_id} max public rank differs from meeting`);
     assert(detailDecision.effective_public_rank === meetingDecision.effective_public_rank, `detail ${detail.meeting_id} effective public rank differs from meeting`);
     const projected = projectDetail(detail, detailDecision);
     if (projected) projectedDetails.push(projected);
@@ -271,7 +269,6 @@ export function buildPublicProjectionV1({
         date: meeting.date,
         timezone: meeting.timezone,
         capability_rank: meeting.capability_rank,
-        max_public_rank: decision.max_public_rank,
         effective_public_rank: decision.effective_public_rank,
         first_race_time_local: atLeast(decision.effective_public_rank, 'B') ? meeting.first_race_time_local ?? null : null,
         last_race_time_local: atLeast(decision.effective_public_rank, 'B+') ? meeting.last_race_time_local ?? null : null,
