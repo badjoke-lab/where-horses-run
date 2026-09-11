@@ -66,8 +66,8 @@ jobs:
           ];
           for (const [label, content] of [
             ['BaseLayout', baseLayout],
-            ['TimetableMeetingList', meetingList],
-            ['MeetingTimezoneProjection', meetingProjection],
+            ['TimetableMeetingList', read('src/components/TimetableMeetingList.astro')],
+            ['MeetingTimezoneProjection', read('src/components/MeetingTimezoneProjection.astro')],
           ]) {
             const optionsBlock = content.split('const timeZoneOptions = [')[1]?.split('];')[0] ?? '';
             const actualTimeZones = [...optionsBlock.matchAll(/value:\s*'([^']+)'/g)].map((match) => match[1]);
