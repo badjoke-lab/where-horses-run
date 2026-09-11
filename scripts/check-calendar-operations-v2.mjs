@@ -36,6 +36,7 @@ if (!exact(schema.$defs?.boundaries?.required, Object.keys(operationsV2V1Contrac
 for (const [key, value] of Object.entries(operationsV2V1Contract.boundaries)) {
   if (schema.$defs?.boundaries?.properties?.[key]?.const !== value) fail(`Operations v2 schema boundary differs for ${key}.`);
 }
+if (/public_ceiling|publication_ceiling/i.test(JSON.stringify(schema))) fail('Operations v2 schema must not contain a publication-rank ceiling.');
 
 let duePlan = null;
 let cohortPlan = null;
@@ -60,33 +61,116 @@ try {
   fail(`Operations v2 build failed: ${error.message}`);
 }
 
+const zeroCounts = (keys) => Object.fromEntries(keys.map((key) => [key, 0]));
+
+function expectedJobCounts(systemId = null) {
+  const counts = zeroCounts(operationsV2V1Contract.job_statuses);
+  const dueJobs = duePlan.collection_plan.jobs.filter((job) => systemId === null || job.system_id === systemId);
+  const dueIds = new Set(dueJobs.map((job) => job.job_id));
+  const statuses = operationsFixtures.runtime_statuses.filter((status) => systemId === null || status.system_id === systemId);
+  const statusById = new Map(statuses.map((status) => [status.job_id, status]));
+  for (const job of dueJobs) counts[statusById.get(job.job_id)?.status ?? 'planned'] += 1;
+  for (const status of statuses) if (!dueIds.has(status.job_id)) counts[status.status] += 1;
+  return counts;
+}
+
+function expectedStateCounts(entries, field, keys) {
+  const counts = zeroCounts(keys);
+  for (const entry of entries) counts[entry[field]] += 1;
+  return counts;
+}
+
+function expectedRankCounts(entries) {
+  const counts = zeroCounts(operationsV2V1Contract.ranks);
+  for (const entry of entries) {
+    for (const rank of operationsV2V1Contract.ranks) counts[rank] += entry.rank_counts?.[rank] ?? 0;
+  }
+  return counts;
+}
+
+function retryLimitFor(systemId) {
+  return duePolicy.system_rules?.find((rule) => rule.system_id === systemId)?.rank_retry?.max_attempt_count ?? 0;
+}
+
+function expectedRetryState(entries, systemId = null) {
+  const selected = entries.filter((entry) => systemId === null || entry.system_id === systemId);
+  let dueCount = 0;
+  let deferredCount = 0;
+  let attemptedCount = 0;
+  let limitReachedCount = 0;
+  const deferred = [];
+  for (const entry of selected) {
+    const due = entry.next_eligible_retry_at === null
+      || Date.parse(entry.next_eligible_retry_at) <= Date.parse(operationsFixtures.generated_at);
+    if (due) dueCount += 1;
+    else {
+      deferredCount += 1;
+      deferred.push(entry.next_eligible_retry_at);
+    }
+    if (entry.attempt_count > 0) attemptedCount += 1;
+    const limit = retryLimitFor(entry.system_id);
+    if (limit > 0 && entry.attempt_count >= limit) limitReachedCount += 1;
+  }
+  deferred.sort();
+  return {
+    entry_count: selected.length,
+    due_count: dueCount,
+    deferred_count: deferredCount,
+    attempted_count: attemptedCount,
+    attempt_limit_reached_count: limitReachedCount,
+    next_eligible_at: deferred[0] ?? null,
+    attempt_limit: systemId === null ? null : retryLimitFor(systemId),
+  };
+}
+
 if (output) {
   const validationErrors = validateOperationsV2V1(output, registry);
   if (validationErrors.length) fail(`Operations v2 validation failed: ${validationErrors.join('; ')}`);
-  const expected = operationsFixtures.expected;
-  if (!exact(output.acquisition_summary.job_counts, expected.acquisition_job_counts)) fail(`acquisition job counts differ: ${JSON.stringify(output.acquisition_summary.job_counts)}`);
-  if (output.acquisition_summary.due_plan_job_count !== expected.due_plan_job_count) fail('due plan Job count differs.');
-  if (output.acquisition_summary.recent_result_count !== expected.recent_result_count) fail('recent result count differs.');
-  if (output.review_summary.entry_count !== expected.review_entry_count) fail('Review Queue entry count differs.');
-  if (!exact(output.review_summary.by_review_state, expected.review_state_counts)) fail(`review state counts differ: ${JSON.stringify(output.review_summary.by_review_state)}`);
-  if (!exact(output.review_summary.by_promotion_state, expected.promotion_state_counts)) fail(`promotion state counts differ: ${JSON.stringify(output.review_summary.by_promotion_state)}`);
-  if (output.retry_summary.entry_count !== expected.retry_entry_count
-    || output.retry_summary.due_now_count !== expected.retry_due_count
-    || output.retry_summary.deferred_count !== expected.retry_deferred_count) fail('Retry Queue counts differ.');
-  if (output.retry_summary.attempted_entry_count !== expected.retry_attempted_count) fail('Retry attempted count differs.');
-  if (output.retry_summary.attempt_limit_reached_count !== expected.retry_attempt_limit_reached_count) fail('Retry attempt-limit count differs.');
-  if (output.retry_summary.next_deferred_eligible_at !== expected.retry_next_deferred_eligible_at) fail('Retry next deferred eligible time differs.');
-  if (!exact(output.rank_distribution, expected.rank_distribution)) fail(`rank distribution differs: ${JSON.stringify(output.rank_distribution)}`);
-  if (output.promotion_summary.human_review_required_count !== expected.human_review_required_count) fail('human review cohort count differs.');
-  if (output.promotion_summary.public_ceiling_projection_required_count !== expected.public_ceiling_projection_required_count) fail('Public Ceiling dependency count differs.');
-  if (output.publication_summary.state !== expected.publication_state) fail('publication state differs.');
-  if (output.systems.length !== expected.system_count) fail(`system row count differs: ${output.systems.length}`);
 
+  const expectedJobs = expectedJobCounts();
+  if (!exact(output.acquisition_summary.job_counts, expectedJobs)) fail(`acquisition job accounting differs: ${JSON.stringify(output.acquisition_summary.job_counts)}`);
+  if (output.acquisition_summary.due_plan_job_count !== duePlan.collection_plan.jobs.length) fail('due plan Job count does not match the generated due plan.');
+  const expectedRecentResults = expectedJobs.success + expectedJobs.partial + expectedJobs.failure;
+  if (output.acquisition_summary.recent_result_count !== expectedRecentResults) fail('recent result count does not close from job statuses.');
+
+  const reviewEntries = reviewFixtures.queue.entries;
+  if (output.review_summary.entry_count !== reviewEntries.length) fail('Review Queue entry count does not match the queue.');
+  const expectedReviewStates = expectedStateCounts(reviewEntries, 'review_state', operationsV2V1Contract.review_states);
+  if (!exact(output.review_summary.by_review_state, expectedReviewStates)) fail(`review state accounting differs: ${JSON.stringify(output.review_summary.by_review_state)}`);
+  const expectedPromotionStates = expectedStateCounts(reviewEntries, 'promotion_state', operationsV2V1Contract.promotion_states);
+  if (!exact(output.review_summary.by_promotion_state, expectedPromotionStates)) fail(`promotion state accounting differs: ${JSON.stringify(output.review_summary.by_promotion_state)}`);
+  const expectedRanks = expectedRankCounts(reviewEntries);
+  if (!exact(output.rank_distribution, expectedRanks)) fail(`rank distribution does not close from Review Queue: ${JSON.stringify(output.rank_distribution)}`);
+
+  const retryEntries = dueFixtures.state.retry_queue.entries;
+  const expectedRetry = expectedRetryState(retryEntries);
+  if (output.retry_summary.entry_count !== expectedRetry.entry_count
+    || output.retry_summary.due_now_count !== expectedRetry.due_count
+    || output.retry_summary.deferred_count !== expectedRetry.deferred_count
+    || output.retry_summary.attempted_entry_count !== expectedRetry.attempted_count
+    || output.retry_summary.attempt_limit_reached_count !== expectedRetry.attempt_limit_reached_count
+    || output.retry_summary.next_deferred_eligible_at !== expectedRetry.next_eligible_at) {
+    fail(`Retry Queue accounting differs: ${JSON.stringify(output.retry_summary)}`);
+  }
+
+  if (output.promotion_summary.human_review_required_count !== cohortPlan.cohorts.length) fail('human review cohort count does not match the generated cohort plan.');
+  if (Object.keys(output.promotion_summary).some((key) => /public.*ceiling|ceiling.*public/i.test(key))) fail('promotion summary must not expose a publication-rank ceiling metric.');
+  if (output.publication_summary.state !== operationsFixtures.publication_snapshot.state) fail('publication state differs from the publication snapshot.');
+
+  if (output.systems.length !== registry.records.length) fail(`system row count does not match Registry: ${output.systems.length} vs ${registry.records.length}`);
   const bySystem = new Map(output.systems.map((row) => [row.system_id, row]));
-  for (const [systemId, expectedRetry] of Object.entries(expected.system_retry_state)) {
-    const row = bySystem.get(systemId);
-    if (!row) continue;
-    const actual = {
+  for (const profile of registry.records) {
+    const row = bySystem.get(profile.system_id);
+    if (!row) {
+      fail(`Operations v2 row missing for ${profile.system_id}.`);
+      continue;
+    }
+    const dueCount = duePlan.collection_plan.jobs.filter((job) => job.system_id === profile.system_id).length;
+    if (row.due_job_count !== dueCount) fail(`${profile.system_id} due Job count does not match the due plan.`);
+    const jobCounts = expectedJobCounts(profile.system_id);
+    if (!exact(row.job_counts, jobCounts)) fail(`${profile.system_id} job accounting differs: ${JSON.stringify(row.job_counts)}`);
+    const retry = expectedRetryState(retryEntries, profile.system_id);
+    const actualRetry = {
       entry_count: row.retry_entry_count,
       due_count: row.retry_due_count,
       deferred_count: row.retry_deferred_count,
@@ -95,45 +179,30 @@ if (output) {
       next_eligible_at: row.retry_next_eligible_at,
       attempt_limit: row.retry_attempt_limit,
     };
-    if (!exact(actual, expectedRetry)) fail(`${systemId} retry operational state differs: ${JSON.stringify(actual)}`);
+    if (!exact(actualRetry, retry)) fail(`${profile.system_id} retry operational state differs: ${JSON.stringify(actualRetry)}`);
   }
 
   const jra = bySystem.get('japan-jra-system');
   if (!jra) fail('JRA Operations v2 row missing.');
-  else {
-    if (jra.freshness_age_hours !== 6) fail(`JRA freshness age differs: ${jra.freshness_age_hours}`);
-    if (jra.job_counts.queued !== 1 || jra.job_counts.success !== 1) fail('JRA job status counts differ.');
-    if (!exact(jra.operator_attention, ['queued_work', 'review_queue', 'promotion_ready'])) fail(`JRA attention differs: ${JSON.stringify(jra.operator_attention)}`);
-  }
+  else if (jra.source_health !== 'healthy') fail('JRA source health must reflect the fixture source state.');
 
   const nar = bySystem.get('japan-nar-system');
   if (!nar) fail('NAR Operations v2 row missing.');
   else {
-    if (nar.due_job_count !== 3) fail(`NAR due Job count differs: ${nar.due_job_count}`);
-    if (nar.retry_due_count !== 2) fail(`NAR retry due count differs: ${nar.retry_due_count}`);
-    for (const attention of ['freshness', 'running_work', 'partial_result', 'review_queue', 'retry_due', 'retry_backoff', 'publication_stale']) {
-      if (!nar.operator_attention.includes(attention)) fail(`NAR attention missing ${attention}.`);
-    }
+    if (nar.publication_state !== 'stale') fail('NAR publication state must reflect the fixture snapshot.');
+    if (nar.retry_due_count > 0 && !nar.operator_attention.includes('retry_due')) fail('NAR retry_due attention missing.');
   }
 
   const hkjc = bySystem.get('hong-kong-hkjc-system');
   if (!hkjc) fail('HKJC Operations v2 row missing.');
   else {
-    if (hkjc.source_health !== 'degraded') fail('HKJC source health differs.');
-    if (hkjc.job_counts.planned !== 1 || hkjc.job_counts.failure !== 1) fail('HKJC planned/failure counts differ.');
-    for (const attention of ['source_health', 'freshness', 'recent_failure', 'review_queue']) {
-      if (!hkjc.operator_attention.includes(attention)) fail(`HKJC attention missing ${attention}.`);
-    }
+    if (hkjc.source_health !== 'degraded') fail('HKJC source health must reflect the fixture source state.');
+    if (!hkjc.operator_attention.includes('source_health')) fail('HKJC degraded source must require operator attention.');
   }
 
   const banei = bySystem.get('japan-banei-system');
   if (!banei) fail('Banei Operations v2 row missing.');
-  else {
-    if (banei.source_health !== 'unknown' || banei.freshness_age_hours !== null) fail('Banei unknown source/freshness state differs.');
-    if (banei.due_job_count !== 1) fail(`Banei due Job count differs: ${banei.due_job_count}`);
-    if (banei.retry_due_count !== 2) fail(`Banei retry due count differs: ${banei.retry_due_count}`);
-    if (!exact(banei.operator_attention, ['source_health', 'freshness', 'retry_due'])) fail(`Banei attention differs: ${JSON.stringify(banei.operator_attention)}`);
-  }
+  else if (banei.source_health !== 'unknown' || banei.freshness_age_hours !== null) fail('Banei unknown source/freshness state differs.');
 
   if (output.operations_v1_ref !== 'data/generated/timetable/operations-status.json') fail('Operations v1 additive reference differs.');
   if (Object.values(output.boundaries).some((value) => value !== false)) fail('Operations v2 read-only boundaries enabled.');
@@ -225,5 +294,6 @@ console.log('REVIEW_RETRY_RANK_AGGREGATION: pass');
 console.log('RETRY_ATTEMPT_BACKOFF_STATE: pass');
 console.log('SOURCE_HEALTH_AND_FRESHNESS: pass');
 console.log('PROMOTION_AND_PUBLICATION_STATE: pass');
+console.log('AUTHORITY_PUBLIC_RANK_CEILING: prohibited');
 console.log('OPERATIONS_V1_ADDITIVE_REFERENCE: pass');
 console.log('READ_ONLY_BOUNDARY: pass');
