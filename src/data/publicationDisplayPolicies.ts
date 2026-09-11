@@ -1,7 +1,7 @@
 import policyData from './publicationDisplayPolicies.json';
 import type { CapabilityRank } from '../lib/timetable/canonicalTypes.ts';
 
-export type APlusFieldVisibility = {
+export type DetailFieldVisibility = {
   readonly show_race_name: boolean;
   readonly show_distance: boolean;
   readonly show_surface: boolean;
@@ -20,7 +20,7 @@ export type PublicationDisplayPolicy = {
   readonly match: PublicationPolicyMatch;
   readonly max_public_rank: CapabilityRank;
   readonly include_in_public_list: boolean;
-  readonly a_plus_fields: APlusFieldVisibility;
+  readonly detail_fields: DetailFieldVisibility;
   readonly show_live_label: boolean;
   readonly show_replay_label: boolean;
   readonly notes: string;
