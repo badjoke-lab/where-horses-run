@@ -14,7 +14,6 @@ export type PublicationContext = {
 export type PublicationDecision = {
   policy_id: string;
   capability_rank: CapabilityRank;
-  max_public_rank: CapabilityRank;
   effective_public_rank: CapabilityRank;
   include_in_public_list: boolean;
   show_race_name: boolean;
@@ -24,25 +23,6 @@ export type PublicationDecision = {
   show_live_label: boolean;
   show_replay_label: boolean;
 };
-
-const ranks: CapabilityRank[] = [
-  'not_listed',
-  'D',
-  'C',
-  'B',
-  'B+',
-  'A',
-  'A+',
-];
-
-export function lowerRank(
-  capabilityRank: CapabilityRank,
-  maxPublicRank: CapabilityRank,
-): CapabilityRank {
-  return ranks.indexOf(capabilityRank) <= ranks.indexOf(maxPublicRank)
-    ? capabilityRank
-    : maxPublicRank;
-}
 
 function includesOrAny(value: string, values?: readonly string[]): boolean {
   return !values || values.length === 0 || values.includes(value);
@@ -76,22 +56,20 @@ export function resolvePublicationDecision(
   policies: readonly PublicationDisplayPolicy[] = publicationDisplayPolicies,
 ): PublicationDecision {
   const policy = findPublicationPolicy(context, policies);
-  const effectiveRank = lowerRank(capabilityRank, policy.max_public_rank);
-  const showAPlus = effectiveRank === 'A+';
+  const detailAvailable = capabilityRank === 'A' || capabilityRank === 'A+';
 
   return {
     policy_id: policy.id,
     capability_rank: capabilityRank,
-    max_public_rank: policy.max_public_rank,
-    effective_public_rank: effectiveRank,
+    effective_public_rank: capabilityRank,
     include_in_public_list:
       policy.include_in_public_list &&
-      effectiveRank !== 'not_listed' &&
-      effectiveRank !== 'D',
-    show_race_name: showAPlus && policy.a_plus_fields.show_race_name,
-    show_distance: showAPlus && policy.a_plus_fields.show_distance,
-    show_surface: showAPlus && policy.a_plus_fields.show_surface,
-    show_course: showAPlus && policy.a_plus_fields.show_course,
+      capabilityRank !== 'not_listed' &&
+      capabilityRank !== 'D',
+    show_race_name: detailAvailable && policy.detail_fields.show_race_name,
+    show_distance: detailAvailable && policy.detail_fields.show_distance,
+    show_surface: detailAvailable && policy.detail_fields.show_surface,
+    show_course: detailAvailable && policy.detail_fields.show_course,
     show_live_label: policy.show_live_label,
     show_replay_label: policy.show_replay_label,
   };
