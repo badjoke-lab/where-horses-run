@@ -16,23 +16,23 @@ Read these first for glossary work:
 
 The working dictionary has **642 terms/concepts**.
 
-- **529 are source-verified at the meaning level**.
-- **113 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
+- **547 are source-verified at the meaning level**.
+- **95 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
 - the highest-priority core set is **203/203 verified**;
 - jurisdiction-specific research additions are **161/161 verified**;
 - publication is still disabled (`public_ready=0`, public runtime disconnected).
 
-The latest pass is **venue / entry terminology wave 1**. It verified **11 additional base Concepts** from BHA, JRA, Jockey Club, Equibase/Churchill Downs, Harness Racing Australia and Harness Racing New Zealand material. ENTRY is now **26/31 verified (83.9%)** and VENUE **28/44 (63.6%)**.
+The latest pass is **broad category wave 1** across race type, surface, distance and weight terminology. It verified **18 additional base Concepts** from BHA, TOBA, Jockey Club, Equibase, NYRA, JRA and Racing Australia authority material.
 
-The pass verified Maximum field, Balloted out, Also eligible, Entry fee, Preference, Eliminated, Homestretch, Backstretch, Mobile barrier, Parade ring and Winner's enclosure. Maximum-field and elimination rules, North American also-eligible/preference mechanics, and regional facility/start terminology remain scoped rather than presented as universal rules or synonyms.
+RTYPE is now **100/111 verified (90.1%)**, SURF **57/63 (90.5%)**, DIST **17/21 (81.0%)**, and WEIGHT **31/34 (91.2%)**. The pass verified Selling race, Graded stakes, scoped British Open/Restricted race categories, Tapeta, Polytrack, historical Fibresand, Sealed track, Off turf, Yard, Short head, Final furlong, Race record, Bottom weight, Maximum weight, Underweight, Weigh out and Weigh in.
 
-HORSE remains **21/34 verified (61.8%)**, BREED **11/22 (50.0%)**, ROLE **25/31 (80.6%)**, EQUIP **27/29 (93.1%)**, TRAIN **20/26 (76.9%)**, and RUN **42/44 (95.5%)**. Deliberately weak residuals remain visible for later review.
+Regional race-programme categories, all-weather product names, historical surface status, result-margin notation and weighing procedures remain scoped to the authority evidence actually supporting them. Weak residuals are still visible rather than being percentage-promoted.
 
 ## What has been completed
 
 The dictionary was built from zero rather than copied from the existing public glossary. Major jurisdiction/local-language research and the current slang/abbreviation/historical pass are complete. The core terminology set is fully source-verified, and all current jurisdiction-specific additions are evidence-backed.
 
-Base-dictionary cleanup has now verified **215 additional terms** and removed **15 duplicate or malformed rows**. Current base-dictionary coverage is **368/481 verified (76.5%)**.
+Base-dictionary cleanup has now verified **233 additional terms** and removed **15 duplicate or malformed rows**. Current base-dictionary coverage is **386/481 verified (80.2%)**.
 
 Canonical evidence/audit files include:
 
@@ -50,6 +50,7 @@ data/glossary-master/sources/run-trip-sources-v1.tsv
 data/glossary-master/sources/equipment-training-sources-v1.tsv
 data/glossary-master/sources/horse-breeding-role-sources-v1.tsv
 data/glossary-master/sources/venue-entry-sources-v1.tsv
+data/glossary-master/sources/broad-category-sources-v1.tsv
 data/glossary-master/coverage/p1-verification-wave1-v1.tsv
 data/glossary-master/coverage/p1-verification-wave2-v1.tsv
 data/glossary-master/coverage/race-type-condition-verification-v1.tsv
@@ -66,6 +67,7 @@ data/glossary-master/coverage/equipment-training-verification-v1.tsv
 data/glossary-master/coverage/equipment-training-residual-v1.tsv
 data/glossary-master/coverage/horse-breeding-role-verification-v1.tsv
 data/glossary-master/coverage/venue-entry-verification-v1.tsv
+data/glossary-master/coverage/broad-category-verification-v1.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
@@ -80,18 +82,22 @@ The abbreviation/code layer remains at **38 source-verified rows**.
 - RESULT: **27/28 verified (96.4%)** — the remaining item is RO/result-code modeling; the RUN event Ran out is verified.
 - BET: **38/39 verified (97.4%)** — American odds remains candidate.
 - WELF: **18/18 verified (100%)**.
-- PRIZE: **10/12 verified (83.3%)** — Bonus and Stake remain candidate.
+- WEIGHT: **31/34 verified (91.2%)** — Claiming allowance, Weight rise and Weight drop remain candidate.
+- SURF: **57/63 verified (90.5%)** — six product/identity/weather/analysis residuals remain candidate.
+- RTYPE: **100/111 verified (90.1%)** — eleven broad or regional race-type labels remain candidate.
 - ENTRY: **26/31 verified (83.9%)** — five lower-priority entry/procedure rows remain under review.
+- PRIZE: **10/12 verified (83.3%)** — Bonus and Stake remain candidate.
+- DIST: **17/21 verified (81.0%)** — four measurement/timing rows remain candidate.
 - ROLE: **25/31 verified (80.6%)** — six lower-priority role rows remain under review.
 - TRAIN: **20/26 verified (76.9%)** — six edge terms remain under review.
 
 ## What remains
 
-The **113 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
+The **95 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
 
-Venue/entry wave 1 is complete for the current defensible source bundle. The next broad cleanup target is the remaining **race type / surface / distance / weight** candidates. Residual venue/entry, horse/breeding/role and other deliberately unresolved edge cases stay visible for later evidence-driven resolution rather than blocking work on clearer categories.
+Broad-category wave 1 is complete for the current defensible source bundle. The next step is **targeted residual cleanup** in the largest remaining candidate groups — especially VENUE, HORSE, BREED and residual RTYPE/ENTRY/SURF/DIST/WEIGHT — while leaving intentionally weak edge cases visible until stronger evidence or a cleaner modeling decision exists.
 
-After that cleanup, the evidence/readiness gate will be rerun. `MASTER-006` and public glossary architecture remain blocked until that review is defensible.
+After that residual cleanup, the evidence/readiness gate will be rerun. `MASTER-006` and public glossary architecture remain blocked until that review is defensible.
 
 ## Dictionary modeling rule
 
