@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-11T02:24:39.371Z",
+  "generated_at": "2026-09-11T02:30:42.178Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -12498,32 +12498,32 @@
       "timezone": "America/Santiago",
       "racecourse_id": "hipodromo-chile",
       "date": "2026-09-10",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "12:15",
+      "last_race_time_local": "21:00",
       "source_trace": {
         "source_id": "chile-teletrak-weekly-programme",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://teletrak.cl/",
+        "official_source_url": "https://storage.elturf.com/pdf_volantes/pdf_hch/101149.pdf",
         "source_label": null,
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T16:55:17.263Z",
+        "last_checked_date": "2026-09-11",
+        "generated_at": "2026-09-11T02:30:42.178Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "implementation_gap",
-        "observed_rank": "C",
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A",
         "technical_capability_rank": "A",
-        "higher_rank_open": true,
-        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
+        "higher_rank_open": false,
+        "reason": "Observed evidence reached the registered technical capability rank."
       }
     },
     {
@@ -12871,32 +12871,32 @@
       "timezone": "America/Santiago",
       "racecourse_id": "club-hipico-de-santiago-racecourse",
       "date": "2026-09-11",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "12:30",
+      "last_race_time_local": "20:50",
       "source_trace": {
         "source_id": "chile-teletrak-weekly-programme",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://teletrak.cl/",
+        "official_source_url": "https://static.clubhipico.cl/archivos/volantes/11-09-2026.pdf",
         "source_label": null,
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T16:55:17.263Z",
+        "last_checked_date": "2026-09-11",
+        "generated_at": "2026-09-11T02:30:42.178Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "implementation_gap",
-        "observed_rank": "C",
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A",
         "technical_capability_rank": "A",
-        "higher_rank_open": true,
-        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
+        "higher_rank_open": false,
+        "reason": "Observed evidence reached the registered technical capability rank."
       }
     },
     {
@@ -12945,7 +12945,7 @@
       "date": "2026-09-11",
       "capability_rank": "A",
       "display_status": "displayable",
-      "first_race_time_local": "11:15",
+      "first_race_time_local": "12:20",
       "last_race_time_local": "17:55",
       "source_trace": {
         "source_id": "kra-today-race",
@@ -12958,8 +12958,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T17:48:41.746Z",
+        "last_checked_date": "2026-09-11",
+        "generated_at": "2026-09-11T02:29:53.146Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -12982,7 +12982,7 @@
       "date": "2026-09-11",
       "capability_rank": "A",
       "display_status": "displayable",
-      "first_race_time_local": "10:50",
+      "first_race_time_local": "11:40",
       "last_race_time_local": "16:30",
       "source_trace": {
         "source_id": "kra-today-race",
@@ -12995,8 +12995,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T17:48:41.746Z",
+        "last_checked_date": "2026-09-11",
+        "generated_at": "2026-09-11T02:29:53.146Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -13304,17 +13304,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T16:55:17.263Z",
+        "last_checked_date": "2026-09-11",
+        "generated_at": "2026-09-11T02:30:42.178Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "implementation_gap",
+        "disposition": "pending_publication",
         "observed_rank": "C",
         "technical_capability_rank": "A",
         "higher_rank_open": true,
-        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -13863,17 +13863,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T16:55:17.263Z",
+        "last_checked_date": "2026-09-11",
+        "generated_at": "2026-09-11T02:30:42.178Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "implementation_gap",
+        "disposition": "pending_publication",
         "observed_rank": "C",
         "technical_capability_rank": "A",
         "higher_rank_open": true,
-        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -14062,8 +14062,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T17:48:41.746Z",
+        "last_checked_date": "2026-09-11",
+        "generated_at": "2026-09-11T02:29:53.146Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -14405,17 +14405,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T16:55:17.263Z",
+        "last_checked_date": "2026-09-11",
+        "generated_at": "2026-09-11T02:30:42.178Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "implementation_gap",
+        "disposition": "pending_publication",
         "observed_rank": "C",
         "technical_capability_rank": "A",
         "higher_rank_open": true,
-        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -14665,17 +14665,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T16:55:17.263Z",
+        "last_checked_date": "2026-09-11",
+        "generated_at": "2026-09-11T02:30:42.178Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "implementation_gap",
+        "disposition": "pending_publication",
         "observed_rank": "C",
         "technical_capability_rank": "A",
         "higher_rank_open": true,
-        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
@@ -15061,17 +15061,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T17:49:18.196Z",
+        "last_checked_date": "2026-09-11",
+        "generated_at": "2026-09-11T02:30:42.178Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "implementation_gap",
+        "disposition": "pending_publication",
         "observed_rank": "C",
         "technical_capability_rank": "A",
         "higher_rank_open": true,
-        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       }
     },
     {
