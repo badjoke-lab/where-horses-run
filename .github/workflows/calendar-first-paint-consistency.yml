@@ -19,6 +19,9 @@ on:
       - 'src/pages/timetable/meetings/**'
       - 'src/pages/ja/timetable/meetings/**'
       - 'scripts/check-calendar-first-paint-consistency.mjs'
+      - 'scripts/country-page-metadata-integration.mjs'
+      - 'scripts/racecourse-page-metadata-integration.mjs'
+      - 'scripts/title-description-normalization-integration.mjs'
       - '.github/workflows/calendar-first-paint-consistency.yml'
   workflow_dispatch:
 
