@@ -15,7 +15,6 @@ const CORRECTIVE_DOWNGRADE_REASONS = new Set([
   'official_correction',
   'discovered_data_error',
   'source_invalidation',
-  'publication_policy_change',
   'rollback'
 ]);
 
@@ -28,12 +27,6 @@ function parseDateTime(value, label) {
   const timestamp = Date.parse(value);
   assert(!Number.isNaN(timestamp), `${label} must be a valid ISO date-time`);
   return timestamp;
-}
-
-function rankAtMost(actual, maximum, label) {
-  assert(RANK_ORDER.has(actual), `${label} has unsupported rank ${actual}`);
-  assert(RANK_ORDER.has(maximum), `${label} has unsupported reviewed maximum ${maximum}`);
-  assert(RANK_ORDER.get(actual) <= RANK_ORDER.get(maximum), `${label} rank ${actual} exceeds reviewed maximum ${maximum}`);
 }
 
 function rankIsLower(actual, existing) {
@@ -255,7 +248,6 @@ export function promoteApprovedCandidateV1({
   assert(!BLOCKED_AUTOMATION.has(readiness.automation_mode), `automation mode ${readiness.automation_mode} does not permit canonical promotion`);
   assert(!BLOCKED_SOURCE_STATUS.has(readiness.source_status), `source status ${readiness.source_status} does not permit canonical promotion`);
   assert(readiness.system_id && typeof readiness.system_id === 'string', 'Calendar Readiness system_id is required');
-  assert(authoritySource.capability_rank === readiness.technical_rank, 'authority/source and readiness technical ranks disagree');
 
   const existingMeetings = new Map(meetingsDataset.meetings.map((record) => [record.meeting_id, record]));
   const existingDetails = new Map(detailsDataset.details.map((record) => [record.meeting_id, record]));
@@ -279,8 +271,6 @@ export function promoteApprovedCandidateV1({
       assert(readiness.racecourse_ids.includes(record.racecourse_id), `${record.candidate_id} racecourse_id is outside reviewed readiness scope`);
     }
 
-    rankAtMost(record.capability_rank, authoritySource.capability_rank, record.candidate_id);
-    rankAtMost(record.capability_rank, readiness.technical_rank, record.candidate_id);
     assertRankShape(record);
     assertConfirmedFields(record, readiness);
 
