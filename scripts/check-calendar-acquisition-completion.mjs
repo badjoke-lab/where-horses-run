@@ -45,26 +45,35 @@ const cOnlyImplementation = profile({ technical: 'A', supported: ['C'] });
 assert.equal(classifyAcquisitionCompletion(record('C'), cOnlyImplementation).disposition, 'implementation_gap');
 
 const lowerTechnicalCeiling = profile({ technical: 'B+', supported: ['C', 'B', 'B+'] });
-assert.equal(classifyAcquisitionCompletion(record('B+'), lowerTechnicalCeiling).disposition, 'complete_current_best_available');
+assert.equal(classifyAcquisitionCompletion(record('B+'), lowerTechnicalCeiling).disposition, 'implementation_gap');
+assert.equal(classifyAcquisitionCompletion(record('B+', 'available', 'B+'), lowerTechnicalCeiling).disposition, 'complete_current_best_available');
 
 const registry = JSON.parse(fs.readFileSync('data/static/calendar-acquisition-registry.json', 'utf8'));
-const obviousImplementationGaps = [];
+const registryLevelImplementationGaps = [];
+const undeclaredImplementationGaps = [];
 for (const entry of registry.records ?? []) {
   if (!['active', 'provisional'].includes(entry.profile_status)) continue;
   if (routeImplementsTechnicalCapability(entry)) continue;
-  obviousImplementationGaps.push({
+
+  const missingRouteFields = [
+    ...(!entry.detail_source_id ? ['detail_source_id'] : []),
+    ...(!entry.detail_adapter_id ? ['detail_adapter_id'] : []),
+  ];
+  const pendingFields = new Set(entry.pending_fields ?? []);
+  const explicitlyDeclared = missingRouteFields.length > 0
+    && missingRouteFields.every((field) => pendingFields.has(field));
+  const gap = {
     system_id: entry.system_id,
     technical_capability_rank: entry.technical_capability_rank,
     max_supported_observation_rank: maxSupportedObservationRank(entry),
-    detail_source_id: entry.detail_source_id,
-    detail_adapter_id: entry.detail_adapter_id,
-  });
+    missing_route_fields: missingRouteFields,
+    pending_fields: entry.pending_fields ?? [],
+    explicitly_declared: explicitlyDeclared,
+  };
+  registryLevelImplementationGaps.push(gap);
+  if (!explicitlyDeclared) undeclaredImplementationGaps.push(gap);
 }
-
-const expectedCurrentGaps = new Set([
-  'sorec-racing-information-system',
-]);
-assert.deepEqual(new Set(obviousImplementationGaps.map((row) => row.system_id)), expectedCurrentGaps);
+assert.deepEqual(undeclaredImplementationGaps, [], 'Every registry-level implementation gap must be explicit in pending_fields; do not hardcode an expected system list.');
 
 function runApplyFixture({
   id,
@@ -126,7 +135,7 @@ function runApplyFixture({
       default_policy: {
         id: 'test-default',
         max_public_rank: 'A+',
-        a_plus_fields: { show_race_name: true, show_distance: true, show_surface: true, show_course: true },
+        detail_fields: { show_race_name: true, show_distance: true, show_surface: true, show_course: true },
       },
     }));
 
@@ -167,8 +176,8 @@ runApplyFixture({ id: 'ireland-available', countryId: 'ireland', authorityId: 'h
 
 console.log(JSON.stringify({
   ok: true,
-  classifier_fixture_cases: 12,
+  classifier_fixture_cases: 13,
   apply_integration_cases: 9,
   implemented_profiles_checked: (registry.records ?? []).filter((row) => ['active', 'provisional'].includes(row.profile_status)).length,
-  current_registry_level_implementation_gaps: obviousImplementationGaps,
+  registry_level_implementation_gaps: registryLevelImplementationGaps,
 }, null, 2));
