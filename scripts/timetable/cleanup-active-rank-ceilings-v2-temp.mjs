@@ -15,20 +15,6 @@ function walk(dir, out = []) {
   return out;
 }
 
-function replaceRequired(file, oldValue, newValue, label = oldValue) {
-  let text = read(file);
-  if (!text.includes(oldValue)) throw new Error(`${file}: missing ${label}`);
-  text = text.replace(oldValue, newValue);
-  write(file, text);
-}
-
-function replaceRegex(file, pattern, replacement, label) {
-  const text = read(file);
-  const next = text.replace(pattern, replacement);
-  if (next === text) throw new Error(`${file}: regex did not match ${label}`);
-  write(file, next);
-}
-
 function removeLines(file, patterns) {
   if (!exists(file)) return;
   const before = read(file);
@@ -40,11 +26,11 @@ function removeLines(file, patterns) {
 const ceilingKeyPattern = /(?:public|publication).*ceiling|ceiling.*(?:public|publication)/i;
 const ceilingTokenPattern = /public_ceiling|publication_ceiling|expected_public_ceiling|public_ceiling_projection_required/i;
 
-function scrubStaticJson(value) {
+function scrubJson(value) {
   if (Array.isArray(value)) {
     return value
       .filter((item) => !(typeof item === 'string' && ceilingTokenPattern.test(item)))
-      .map(scrubStaticJson);
+      .map(scrubJson);
   }
   if (value && typeof value === 'object') {
     const result = {};
@@ -54,17 +40,19 @@ function scrubStaticJson(value) {
         result[key] = 'promotion_validation_required';
         continue;
       }
-      result[key] = scrubStaticJson(child);
+      result[key] = scrubJson(child);
     }
     return result;
   }
   return value;
 }
 
-for (const file of walk('data/static').filter((file) => file.endsWith('.json'))) {
+for (const file of [
+  ...walk('data/static').filter((file) => file.endsWith('.json')),
+  ...walk('data/fixtures').filter((file) => file.endsWith('.json')),
+]) {
   const data = JSON.parse(read(file));
-  const scrubbed = scrubStaticJson(data);
-  write(file, `${JSON.stringify(scrubbed, null, 2)}\n`);
+  write(file, `${JSON.stringify(scrubJson(data), null, 2)}\n`);
 }
 
 // Acquisition registry validation: technical capability is descriptive, never a public rank cap.
@@ -97,7 +85,7 @@ for (const file of walk('data/static').filter((file) => file.endsWith('.json')))
 {
   const file = 'scripts/timetable/operations-v2.mjs';
   let text = read(file);
-  text = text.replace(/\n  const publicCeilingDependencies = \(reviewCohortPlan\?\.cohorts \?\? \[\]\)\n    \.filter\(\(cohort\) => cohort\.promotion_dependency === 'public_ceiling_projection_required'\)\.length;\n/, '\n');
+  text = text.replace(/\n  const publicCeilingDependencies = reviewCohortPlan\.cohorts\.filter\(\(cohort\) => cohort\.promotion_dependency === 'public_ceiling_projection_required'\)\.length;/, '');
   text = text.replace(/\n\s*public_ceiling_projection_required_count: publicCeilingDependencies,/, '');
   write(file, text);
 }
@@ -122,37 +110,14 @@ for (const file of walk('data/static').filter((file) => file.endsWith('.json')))
 }
 
 // Active route/operator code must never assert or emit public/publication ceilings.
-removeLines('scripts/timetable/hkjc-rank-upgrade-operations-core.mjs', [
-  /profile\.public_ceiling/,
-]);
-removeLines('scripts/timetable/build-tjk-2026-09-01-approved-candidate.mjs', [
-  /review\.public_ceiling/,
-  /publication_ceiling:/,
-]);
-removeLines('scripts/timetable/tjk-bounded-adapter.mjs', [
-  /revalidation\?\.public_ceiling/,
-  /publication_ceiling:/,
-]);
-removeLines('scripts/timetable/tjk-current-bounded-adapter.mjs', [
-  /public_ceiling/,
-  /publication_ceiling:/,
-]);
-removeLines('scripts/timetable/tjk-parameterized-body-probe.mjs', [
-  /public_ceiling/,
-  /publication_ceiling:/,
-]);
-removeLines('scripts/timetable/build-calendar-jra-2026-08-29-30-reviewed-import-approved.mjs', [
-  /public_ceiling/,
-  /publication_ceiling:/,
-]);
-removeLines('scripts/timetable/japan-current-window-audit-core.mjs', [
-  /public_ceiling/,
-  /publication_ceiling:/,
-]);
-removeLines('scripts/timetable/uae-era-detail-artifact-core.mjs', [
-  /public_ceiling/,
-  /publication_ceiling:/,
-]);
+removeLines('scripts/timetable/hkjc-rank-upgrade-operations-core.mjs', [/profile\.public_ceiling/]);
+removeLines('scripts/timetable/build-tjk-2026-09-01-approved-candidate.mjs', [/review\.public_ceiling/, /publication_ceiling:/]);
+removeLines('scripts/timetable/tjk-bounded-adapter.mjs', [/revalidation\?\.public_ceiling/, /publication_ceiling:/]);
+removeLines('scripts/timetable/tjk-current-bounded-adapter.mjs', [/public_ceiling/, /publication_ceiling:/]);
+removeLines('scripts/timetable/tjk-parameterized-body-probe.mjs', [/public_ceiling/, /publication_ceiling:/]);
+removeLines('scripts/timetable/build-calendar-jra-2026-08-29-30-reviewed-import-approved.mjs', [/public_ceiling/, /publication_ceiling:/]);
+removeLines('scripts/timetable/japan-current-window-audit-core.mjs', [/public_ceiling/, /publication_ceiling:/]);
+removeLines('scripts/timetable/uae-era-detail-artifact-core.mjs', [/public_ceiling/, /publication_ceiling:/]);
 
 {
   const file = 'scripts/timetable/pipeline-v1/registry-overrides.mjs';
@@ -161,7 +126,7 @@ removeLines('scripts/timetable/uae-era-detail-artifact-core.mjs', [
 
 // Remove old ceiling assertions from timetable scripts while preserving technical capability checks.
 for (const file of walk('scripts/timetable').filter((file) => file.endsWith('.mjs'))) {
-  let text = read(file);
+  const text = read(file);
   if (!ceilingTokenPattern.test(text)) continue;
   const lines = text.split('\n');
   const next = lines.filter((line) => !ceilingTokenPattern.test(line)).join('\n');
