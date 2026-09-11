@@ -8,30 +8,30 @@ This directory is the non-public working area for the worldwide horse-racing ter
 
 ## Plain-language progress
 
-The working dictionary currently contains **645 racing terms/concepts**.
+The working dictionary currently contains **643 racing terms/concepts**.
 
-- **474 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
-- **171 terms still need verification, scope correction, splitting/merging, or removal.**
+- **483 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
+- **160 terms still need verification, scope correction, splitting/merging, or removal.**
 - The already researched jurisdiction-specific additions are **161/161 verified**.
 - The core highest-priority terminology set is **203/203 verified**.
 - Public glossary publication is still disabled while the remaining terms are cleaned up.
 
-The latest pass is **running / trip / race-comment terminology wave 2**. It verified Stalker, Presser, Pocket, Cover and Parked out. Generic `Pacesetter` was retired into `Front-runner`, while the separate tactical pacemaker Concept remains intact.
+The latest pass completes the current broad cleanup of **running / trip / race-comment terminology**. It verified Midfield, Home turn, Stretch run, Run-in, Carried wide, Refused, Ran out, Galloped and Disqualified for gait. `Tempo` was retired into `Pace`, and `Kick/closing kick` into `Turn of foot`.
 
-This continues the rule that coverage is not raised by preserving duplicate labels as fake Concepts. Harness positioning terms remain explicitly Harness-scoped, and Equibase running-style labels remain North American rather than globalized.
+RUN is now **42/44 source-verified (95.5%)**. Only `Jump` and `Hold-up horse` remain candidate: `Jump` is too polysemous to publish unchanged, and `Hold-up horse` still lacks a strong enough current authority definition as a stable canonical running-style label.
 
-Five earlier edge cases remain deliberately unresolved: `Daylight saving time`, `Ran Out`, generic `Bonus`, polysemous `Stake`, and `American odds`.
+Earlier residual edge cases outside RUN remain deliberately unresolved where the Concept boundary or authority evidence is still weak, including Daylight saving time, RO result-code modeling, generic Bonus, polysemous Stake and American odds.
 
 ## Current master
 
-- Concepts: **645**
+- Concepts: **643**
 - categories: **18**
-- P0: **203** / P1: **292** / P2: **132** / P3: **18**
+- P0: **203** / P1: **291** / P2: **131** / P3: **18**
 - `public_ready=yes`: **0**
 - public runtime input: **false**
 - active Concept relations: **20**
 - relationship reviews: **15 discovered / 15 resolved / 0 open**
-- retired/merged Concept rows: **17**
+- retired/merged Concept rows: **19**
 
 ## Core source verification — complete
 
@@ -56,13 +56,13 @@ Verified **15** race-type/classification terms. RTYPE is **96/111 verified**.
 Verified **10** additional surface-condition terms. SURF is **52/63 verified (82.5%)**.
 
 ### Meeting and schedule terminology — complete current pass
-The initial pass verified 6 terms and retired 1 duplicate. Residual cleanup later verified Season and Bulletin and retired `Program` into `Programme`. MEET is now **37/38 verified (97.4%)**; only `Daylight saving time` remains candidate.
+The initial pass verified 6 terms and retired 1 duplicate. Residual cleanup later verified Season and Bulletin and retired `Program` into `Programme`. MEET is **37/38 verified (97.4%)**; only `Daylight saving time` remains candidate.
 
 ### Results and decisions — complete current pass
-The initial pass verified 13 semantic Concepts and retired 2 duplicate code Concepts. Residual cleanup verified Relegation and False start. RESULT is now **27/28 verified (96.4%)**; `Ran Out` remains candidate.
+The initial pass verified 13 semantic Concepts and retired 2 duplicate code Concepts. Residual cleanup verified Relegation and False start. RESULT is **27/28 verified (96.4%)**; its remaining item is the RO/result-code modeling question. The separate RUN event `Ran out` is now source-verified from current IHRB evidence.
 
 ### Prize and betting terminology — complete current pass
-The initial pass verified 28 Concepts and retired 3 duplicate regional wager Concepts. Residual cleanup verified Totalisator, Fractional odds and On the board. PRIZE remains **10/12 verified (83.3%)** and BET is now **38/39 verified (97.4%)**; `American odds` remains candidate.
+The initial pass verified 28 Concepts and retired 3 duplicate regional wager Concepts. Residual cleanup verified Totalisator, Fractional odds and On the board. PRIZE remains **10/12 verified (83.3%)** and BET is **38/39 verified (97.4%)**.
 
 ### Welfare, veterinary and safety terminology — complete current pass
 Verified **13** additional Concepts. WELF is **18/18 source-verified (100.0%)**. Definitions keep HISA/BHA/Racing Australia/IFHA-specific operational and reporting boundaries explicit.
@@ -71,27 +71,23 @@ Verified **13** additional Concepts. WELF is **18/18 source-verified (100.0%)**.
 Audit: `coverage/residual-edgecase-verification-v1.tsv`  
 Sources: `sources/residual-edgecase-sources-v1.tsv` plus existing authority sources.
 
-Verified **7** additional Concepts and retired **1 duplicate Program Concept**. This pass intentionally leaves five weak/polysemous/non-racing-specific edge cases unresolved rather than promoting them for percentage gain.
+Verified **7** additional Concepts and retired **1 duplicate Program Concept**.
 
-### Running / trip / race-comment terminology — wave 1 complete
-Audit: `coverage/run-trip-verification-v1.tsv`  
-Sources: `sources/run-trip-sources-v1.tsv` plus existing Equibase/USTA evidence.
+### Running / trip / race-comment terminology — current broad pass complete
+Audits: `coverage/run-trip-verification-v1.tsv`, `coverage/run-trip-verification-v2.tsv`, `coverage/run-trip-verification-v3.tsv`  
+Sources: `sources/run-trip-sources-v1.tsv` plus existing authority evidence.
 
-Verified **7** additional RUN Concepts and retired **1 duplicate Harness Break Concept**.
+Across the three focused RUN bundles, **21 additional RUN Concepts were source-verified and 4 duplicate/label Concepts were retired**. The final bundle verified nine course-position, race-stage, jump-event and harness-gait terms; `Tempo` was merged into `Pace` and `Kick` into `Turn of foot`.
 
-### Running / trip / race-comment terminology — wave 2 complete
-Audit: `coverage/run-trip-verification-v2.tsv`  
-Sources: `sources/run-trip-sources-v1.tsv`.
+RUN is now **42/44 source-verified (95.5%)**, with only `Jump` and `Hold-up horse` deliberately unresolved.
 
-Verified **5** additional RUN Concepts: Stalker, Presser, Pocket, Cover and Parked out. Generic `Pacesetter` was retired into `Front-runner`; tactical pacemaker remains separately modeled. RUN is now **33/46 source-verified (71.7%)**, with **13 candidates** remaining.
-
-Across the lower-priority cleanup passes, **160 base-dictionary terms have been newly verified and 12 duplicate/malformed rows have been removed**.
+Across the lower-priority cleanup passes, **169 base-dictionary terms have been newly verified and 14 duplicate/malformed rows have been removed**.
 
 ## Evidence state
 
-- all Concepts: **474 / 645 source-verified (73.5%)**; **171 candidate**
+- all Concepts: **483 / 643 source-verified (75.1%)**; **160 candidate**
 - core highest-priority set: **203 / 203 source-verified (100.0%)**
-- active base seed: **313 / 484 source-verified (64.7%)**; **171 candidate**
+- active base seed: **322 / 482 source-verified (66.8%)**; **160 candidate**
 - supplemental jurisdiction/relationship research: **161 / 161 source-verified (100.0%)**
 
 Canonical current audit state includes:
@@ -108,15 +104,16 @@ coverage/welfare-safety-verification-v1.tsv
 coverage/residual-edgecase-verification-v1.tsv
 coverage/run-trip-verification-v1.tsv
 coverage/run-trip-verification-v2.tsv
+coverage/run-trip-verification-v3.tsv
 coverage/master-005-evidence-coverage-v1.tsv
 coverage/master-005-completion-gate-v1.tsv
 ```
 
 ## Current completion decision
 
-The terminology master remains **not complete**. The remaining **171 terms** must be reviewed rather than automatically promoted.
+The terminology master remains **not complete**. The remaining **160 terms** must be reviewed rather than automatically promoted.
 
-The immediate next phase is to finish the remaining **13 RUN candidates**: ambiguous generic labels, regional Jump terms, course-stage labels and remaining Harness gait terminology. After RUN, the broader remaining categories are equipment, training, horse/breeding/role, venue, entry, race type, surface, distance and weight. The five unresolved edge cases remain visible and can be revisited only when stronger evidence or a clearer modeling decision exists.
+The next broad cleanup target is **equipment and training terminology**, followed by horse/breeding/role, venue/entry, and the remaining race type/surface/distance/weight candidates. The two unresolved RUN labels and other residual edge cases remain visible for later evidence-driven resolution rather than blocking progress on clearer categories.
 
 Public implementation remains deferred until the evidence/readiness review passes.
 
