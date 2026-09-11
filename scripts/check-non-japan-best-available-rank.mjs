@@ -23,37 +23,40 @@ assert.equal(
 assert.equal(
   deriveBestAvailableRank({ capability_rank: 'A+', first_race_time_local: '12:00', last_race_time_local: '18:00', timetable_rows: [] }),
   'B+',
-  'first and last time evidence must derive B+',
 );
-assert.equal(
-  deriveBestAvailableRank({ capability_rank: 'A+', first_race_time_local: '12:00', timetable_rows: [] }),
-  'B',
-  'first-time-only evidence must derive B',
-);
-assert.equal(
-  deriveBestAvailableRank({ capability_rank: 'A+', timetable_rows: [] }),
-  'C',
-  'meeting-only evidence must derive C',
-);
+assert.equal(deriveBestAvailableRank({ capability_rank: 'A+', first_race_time_local: '12:00', timetable_rows: [] }), 'B');
+assert.equal(deriveBestAvailableRank({ capability_rank: 'A+', timetable_rows: [] }), 'C');
 
-const policies = JSON.parse(fs.readFileSync('src/data/publicationDisplayPolicies.json', 'utf8'));
-for (const authorityId of ['hkjc', 'emirates-racing-authority', 'korea-racing-authority', 'turkiye-jokey-kulubu']) {
+const policyText = fs.readFileSync('src/data/publicationDisplayPolicies.json', 'utf8');
+const policies = JSON.parse(policyText);
+assert.doesNotMatch(policyText, /"max_public_rank"/, 'publication policy must not contain authority/source rank ceilings');
+for (const authorityId of [
+  'hkjc',
+  'emirates-racing-authority',
+  'korea-racing-authority',
+  'turkiye-jokey-kulubu',
+  'sorec',
+  'teletrak-chile',
+  'horse-racing-ireland',
+]) {
   const policy = policies.policies.find((row) => (row.match?.authority_ids ?? []).includes(authorityId));
   assert.ok(policy, `missing public policy for ${authorityId}`);
-  assert.equal(policy.max_public_rank, 'A+', `${authorityId} must not retain a fixed public cap below A+`);
-  assert.equal(policy.a_plus_fields?.show_race_name, true, `${authorityId} A+ must expose race name`);
-  assert.equal(policy.a_plus_fields?.show_distance, true, `${authorityId} A+ must expose distance`);
-  assert.equal(policy.a_plus_fields?.show_surface, true, `${authorityId} A+ must expose surface`);
-  assert.equal(policy.a_plus_fields?.show_course, true, `${authorityId} A+ must expose course`);
+  assert.deepEqual(policy.detail_fields, {
+    show_race_name: true,
+    show_distance: true,
+    show_surface: true,
+    show_course: true,
+  }, `${authorityId} must publish verified detail fields independently instead of using a rank-derived block`);
 }
 
 const applySource = fs.readFileSync('scripts/timetable/apply-official-rolling-observations.mjs', 'utf8');
 assert.match(applySource, /deriveBestAvailableRank\(record, record\?\.timetable_rows \?\? \[\]\)/, 'non-Japan apply layer must derive rank from observation evidence');
-assert.match(applySource, /normalizeStoredCanonical/, 'non-Japan apply layer must re-derive legacy stored canonical rank before higher-rank protection');
-assert.match(applySource, /targetAuthorityIds/, 'non-Japan apply layer must normalize stored rows for the whole authority, not only meetings in the incoming artifact');
-assert.match(applySource, /public_reprojected/, 'non-Japan apply layer must reproject existing public rows against the current policy');
-assert.match(applySource, /storedEvidenceRank\(meeting, detail\)/, 'public rank must be projected from stored evidence rather than a stale capability label');
-assert.doesNotMatch(applySource, /return record\.capability_rank \?\? record\.candidate_rank/, 'non-Japan apply layer must not trust collector rank as canonical rank');
+assert.match(applySource, /normalizeStoredCanonical/, 'non-Japan apply layer must re-derive legacy stored canonical rank');
+assert.match(applySource, /public_reprojected/, 'non-Japan apply layer must reproject existing public rows');
+assert.match(applySource, /storedEvidenceRank\(meeting, detail\)/, 'public rank must be projected from stored evidence');
+assert.doesNotMatch(applySource, /capRank\(/, 'public rank must not be capped by policy');
+assert.doesNotMatch(applySource, /policy\.max_public_rank/, 'public rank must not read an authority/source ceiling');
+assert.doesNotMatch(applySource, /max_public_rank:/, 'generated public rows must not emit a ceiling');
 
 const tjkSource = fs.readFileSync('scripts/timetable/run-tjk-current-best-available.mjs', 'utf8');
 assert.doesNotMatch(tjkSource, /publication_ceiling:\s*'A'/, 'TJK must not retain a fixed public A ceiling');
@@ -68,85 +71,48 @@ try {
   const publicDetailsPath = path.join(tmp, 'public-details.json');
   const artifactPath = path.join(tmp, 'artifact.json');
   const generatedAt = '2026-09-06T00:00:00Z';
-  const kraRows = [
+  const meetingId = 'kra-busan-gyeongnam-racecourse-2026-09-06';
+  const rows = [
     { label: 'Race 1', post_time_local: '11:25', race_name: 'Busan opener', distance_m: 1200 },
     { label: 'Race 2', post_time_local: '12:25', race_name: 'Busan feature', distance_m: 1600 },
   ];
-  const tjkRows = [
-    { label: 'Race 1', post_time_local: '14:30' },
-    { label: 'Race 2', post_time_local: '15:00' },
-  ];
-  const sourceTrace = (url) => ({
-    source_id: 'fixture-source', route_id: null, source_status: 'verified', official_source_url: url,
+  const sourceTrace = {
+    source_id: 'fixture-source', route_id: null, source_status: 'verified', official_source_url: 'https://race.kra.co.kr/example',
     source_label: null, extraction_method: 'adapter', source_snapshot_path: null, normalized_from_path: 'fixture',
-  });
+  };
   const freshness = { last_checked_date: '2026-09-06', generated_at: generatedAt, stale_after_date: null, freshness_note: null };
 
   fs.writeFileSync(canonicalPath, `${JSON.stringify({
-    schema_version: 'canonical-timetable-v0', generated_at: generatedAt, meetings: [
-      {
-        meeting_id: 'kra-seoul-racecourse-2026-09-05', country_id: 'south-korea', authority_id: 'korea-racing-authority',
-        racing_system_id: 'kra-national-racing-system', racecourse_id: 'seoul-racecourse', date: '2026-09-05', timezone: 'Asia/Seoul',
-        capability_rank: 'A+', display_status: 'displayable', first_race_time_local: '12:55', last_race_time_local: '19:55',
-        source_trace: sourceTrace('https://race.kra.co.kr/prior-example'), freshness,
-      },
-      {
-        meeting_id: 'kra-busan-gyeongnam-racecourse-2026-09-06', country_id: 'south-korea', authority_id: 'korea-racing-authority',
-        racing_system_id: 'kra-national-racing-system', racecourse_id: 'busan-gyeongnam-racecourse', date: '2026-09-06', timezone: 'Asia/Seoul',
-        capability_rank: 'A+', display_status: 'displayable', first_race_time_local: '11:25', last_race_time_local: '12:25',
-        source_trace: sourceTrace('https://race.kra.co.kr/example'), freshness,
-      },
-      {
-        meeting_id: 'tjk-ankara-racecourse-2026-09-06', country_id: 'turkey', authority_id: 'turkiye-jokey-kulubu',
-        racing_system_id: 'tjk-national-racing-system', racecourse_id: 'ankara-racecourse', date: '2026-09-06', timezone: 'Europe/Istanbul',
-        capability_rank: 'A', display_status: 'displayable', first_race_time_local: '14:30', last_race_time_local: '15:00',
-        source_trace: sourceTrace('https://www.tjk.org/example'), freshness,
-      },
-    ],
+    schema_version: 'canonical-timetable-v0', generated_at: generatedAt, meetings: [{
+      meeting_id: meetingId, country_id: 'south-korea', authority_id: 'korea-racing-authority',
+      racing_system_id: 'kra-national-racing-system', racecourse_id: 'busan-gyeongnam-racecourse', date: '2026-09-06', timezone: 'Asia/Seoul',
+      capability_rank: 'A', display_status: 'displayable', first_race_time_local: '11:25', last_race_time_local: '12:25',
+      source_trace: sourceTrace, freshness,
+    }],
   }, null, 2)}\n`);
-
   fs.writeFileSync(canonicalDetailsPath, `${JSON.stringify({
-    schema_version: 'canonical-meeting-details-v0', generated_at: generatedAt, details: [
-      {
-        meeting_id: 'kra-seoul-racecourse-2026-09-05', country_id: 'south-korea', authority_id: 'korea-racing-authority',
-        racecourse_id: 'seoul-racecourse', date: '2026-09-05', timezone: 'Asia/Seoul', capability_rank: 'A+',
-        source_trace: sourceTrace('https://race.kra.co.kr/prior-example'), freshness, timetable_rows: kraRows,
-      },
-      {
-        meeting_id: 'kra-busan-gyeongnam-racecourse-2026-09-06', country_id: 'south-korea', authority_id: 'korea-racing-authority',
-        racecourse_id: 'busan-gyeongnam-racecourse', date: '2026-09-06', timezone: 'Asia/Seoul', capability_rank: 'A+',
-        source_trace: sourceTrace('https://race.kra.co.kr/example'), freshness, timetable_rows: kraRows,
-      },
-      {
-        meeting_id: 'tjk-ankara-racecourse-2026-09-06', country_id: 'turkey', authority_id: 'turkiye-jokey-kulubu',
-        racecourse_id: 'ankara-racecourse', date: '2026-09-06', timezone: 'Europe/Istanbul', capability_rank: 'A',
-        source_trace: sourceTrace('https://www.tjk.org/example'), freshness, timetable_rows: tjkRows,
-      },
-    ],
+    schema_version: 'canonical-meeting-details-v0', generated_at: generatedAt, details: [{
+      meeting_id: meetingId, country_id: 'south-korea', authority_id: 'korea-racing-authority', racecourse_id: 'busan-gyeongnam-racecourse',
+      date: '2026-09-06', timezone: 'Asia/Seoul', capability_rank: 'A', source_trace: sourceTrace, freshness, timetable_rows: rows,
+    }],
   }, null, 2)}\n`);
-
-  const stalePublic = (meetingId, countryId, authorityId, racecourseId, date, timezone, first, last, oldPolicy) => ({
-    meeting_id: meetingId, country_id: countryId, authority_id: authorityId, racecourse_id: racecourseId, date, timezone,
-    capability_rank: authorityId === 'korea-racing-authority' ? 'A+' : 'A', max_public_rank: 'A', effective_public_rank: 'A',
-    first_race_time_local: first, last_race_time_local: last, policy_id: oldPolicy, source_status: 'verified',
-    official_source_url: authorityId === 'korea-racing-authority' ? 'https://race.kra.co.kr/example' : 'https://www.tjk.org/example',
-    last_checked_date: '2026-09-06', detail_path: `/timetable/meetings/${meetingId}/`, show_live_label: false, show_replay_label: false,
-  });
-  const kraPriorPublic = stalePublic('kra-seoul-racecourse-2026-09-05', 'south-korea', 'korea-racing-authority', 'seoul-racecourse', '2026-09-05', 'Asia/Seoul', '12:55', '19:55', 'kra-reviewed-a');
-  const kraPublic = stalePublic('kra-busan-gyeongnam-racecourse-2026-09-06', 'south-korea', 'korea-racing-authority', 'busan-gyeongnam-racecourse', '2026-09-06', 'Asia/Seoul', '11:25', '12:25', 'kra-reviewed-a');
-  const tjkPublic = stalePublic('tjk-ankara-racecourse-2026-09-06', 'turkey', 'turkiye-jokey-kulubu', 'ankara-racecourse', '2026-09-06', 'Europe/Istanbul', '14:30', '15:00', 'tjk-reviewed-a');
-  fs.writeFileSync(publicPath, `${JSON.stringify({ schema_version: 'public-timetable-meeting-list-v0', generated_at: generatedAt, meetings: [kraPriorPublic, kraPublic, tjkPublic] }, null, 2)}\n`);
+  fs.writeFileSync(publicPath, `${JSON.stringify({
+    schema_version: 'public-timetable-meeting-list-v0', generated_at: generatedAt, meetings: [{
+      meeting_id: meetingId, country_id: 'south-korea', authority_id: 'korea-racing-authority', racecourse_id: 'busan-gyeongnam-racecourse',
+      date: '2026-09-06', timezone: 'Asia/Seoul', capability_rank: 'A', max_public_rank: 'A', effective_public_rank: 'A',
+      first_race_time_local: '11:25', last_race_time_local: '12:25', policy_id: 'kra-reviewed-a', source_status: 'verified',
+      official_source_url: sourceTrace.official_source_url, last_checked_date: '2026-09-06', detail_path: `/timetable/meetings/${meetingId}/`,
+      show_live_label: false, show_replay_label: false,
+    }],
+  }, null, 2)}\n`);
   fs.writeFileSync(publicDetailsPath, `${JSON.stringify({ schema_version: 'public-timetable-meeting-details-v0', generated_at: generatedAt, details: [] }, null, 2)}\n`);
-
   fs.writeFileSync(artifactPath, `${JSON.stringify({
-    schema_version: 'kra-official-window-candidates-v1', generated_at: generatedAt, records: [
-      {
-        meeting_id: 'kra-busan-gyeongnam-racecourse-2026-09-06', country_id: 'south-korea', authority_id: 'korea-racing-authority',
-        racing_system_id: 'kra-national-racing-system', racecourse_id: 'busan-gyeongnam-racecourse', date: '2026-09-06', timezone: 'Asia/Seoul',
-        capability_rank: 'A+', first_race_time_local: '11:25', last_race_time_local: '12:25', timetable_rows: kraRows,
-        source: { source_id: 'kra-today-race', official_url: 'https://race.kra.co.kr/example' },
-      },
-    ],
+    schema_version: 'kra-official-window-candidates-v1', generated_at: generatedAt, records: [{
+      meeting_id: meetingId, country_id: 'south-korea', authority_id: 'korea-racing-authority', racing_system_id: 'kra-national-racing-system',
+      racecourse_id: 'busan-gyeongnam-racecourse', date: '2026-09-06', timezone: 'Asia/Seoul', capability_rank: 'A+',
+      first_race_time_local: '11:25', last_race_time_local: '12:25', timetable_rows: rows,
+      source: { source_id: 'kra-today-race', official_url: sourceTrace.official_source_url },
+    }],
   }, null, 2)}\n`);
 
   const applied = spawnSync(process.execPath, [
@@ -161,45 +127,22 @@ try {
   ], { cwd: process.cwd(), encoding: 'utf8' });
   assert.equal(applied.status, 0, `persistence regression fixture failed: ${applied.stderr || applied.stdout}`);
 
-  const canonicalAfter = JSON.parse(fs.readFileSync(canonicalPath, 'utf8'));
-  const canonicalDetailsAfter = JSON.parse(fs.readFileSync(canonicalDetailsPath, 'utf8'));
   const publicAfter = JSON.parse(fs.readFileSync(publicPath, 'utf8'));
   const publicDetailsAfter = JSON.parse(fs.readFileSync(publicDetailsPath, 'utf8'));
-  const canonicalById = new Map(canonicalAfter.meetings.map((row) => [row.meeting_id, row]));
-  const detailsById = new Map(canonicalDetailsAfter.details.map((row) => [row.meeting_id, row]));
-  const publicById = new Map(publicAfter.meetings.map((row) => [row.meeting_id, row]));
-  const publicDetailsById = new Map(publicDetailsAfter.details.map((row) => [row.meeting_id, row]));
-
-  const priorKraCanonical = canonicalById.get('kra-seoul-racecourse-2026-09-05');
-  const priorKraDetail = detailsById.get('kra-seoul-racecourse-2026-09-05');
-  const priorKraPublished = publicById.get('kra-seoul-racecourse-2026-09-05');
-  assert.equal(priorKraCanonical.capability_rank, 'A', 'stored KRA row omitted from the incoming artifact must self-heal from stale A+ to evidence-derived A');
-  assert.equal(priorKraDetail.capability_rank, 'A', 'stored KRA detail omitted from the incoming artifact must self-heal to evidence-derived A');
-  assert.equal(priorKraPublished.capability_rank, 'A', 'public projection for an omitted stored KRA row must follow normalized canonical evidence');
-  assert.equal(priorKraPublished.max_public_rank, 'A+', 'omitted stored KRA row must still use the current A+ publication policy');
-  assert.equal(priorKraPublished.effective_public_rank, 'A', 'omitted stored KRA row with incomplete A+ evidence must remain public A');
-  assert.equal(priorKraPublished.policy_id, 'kra-reviewed-a-plus', 'omitted stored KRA row must not retain the old A policy id');
-
-  const kraCanonical = canonicalById.get('kra-busan-gyeongnam-racecourse-2026-09-06');
-  const kraDetail = detailsById.get('kra-busan-gyeongnam-racecourse-2026-09-06');
-  const kraPublished = publicById.get('kra-busan-gyeongnam-racecourse-2026-09-06');
-  const kraPublishedDetail = publicDetailsById.get('kra-busan-gyeongnam-racecourse-2026-09-06');
-  assert.equal(kraCanonical.capability_rank, 'A', 'legacy KRA A+ must self-heal to A when stored rows lack A+ surface/course evidence');
-  assert.equal(kraDetail.capability_rank, 'A', 'canonical KRA detail rank must follow stored evidence rank');
-  assert.equal(kraPublished.capability_rank, 'A', 'public KRA capability must be derived from canonical evidence');
-  assert.equal(kraPublished.max_public_rank, 'A+', 'KRA current policy must be reprojected even when the old public row was capped at A');
-  assert.equal(kraPublished.effective_public_rank, 'A', 'KRA incomplete A+ evidence must remain public A');
-  assert.equal(kraPublished.policy_id, 'kra-reviewed-a-plus', 'KRA stale old policy id must be replaced');
-  assert.equal(kraPublishedDetail.show_race_name, false, 'Rank A KRA must not expose A+ metadata flags');
-  assert.equal(kraPublishedDetail.show_distance, false, 'Rank A KRA must not expose A+ metadata flags');
-  assert.equal(kraPublishedDetail.show_surface, false, 'Rank A KRA must not expose A+ metadata flags');
-  assert.equal(kraPublishedDetail.show_course, false, 'Rank A KRA must not expose A+ metadata flags');
-
-  const tjkPublished = publicById.get('tjk-ankara-racecourse-2026-09-06');
-  assert.equal(tjkPublished.capability_rank, 'A');
-  assert.equal(tjkPublished.max_public_rank, 'A+', 'untouched TJK canonical row must still receive current A+ publication policy');
-  assert.equal(tjkPublished.effective_public_rank, 'A');
-  assert.equal(tjkPublished.policy_id, 'tjk-reviewed-a-plus', 'TJK stale old policy id must be replaced without a canonical change');
+  const published = publicAfter.meetings.find((row) => row.meeting_id === meetingId);
+  const detail = publicDetailsAfter.details.find((row) => row.meeting_id === meetingId);
+  assert.equal(published.capability_rank, 'A');
+  assert.equal(published.effective_public_rank, 'A');
+  assert.ok(!('max_public_rank' in published), 'reprojection must remove a stale legacy public rank ceiling');
+  assert.equal(published.policy_id, 'kra-reviewed');
+  assert.equal(detail.show_race_name, true, 'rank A may expose verified race names');
+  assert.equal(detail.show_distance, true, 'rank A may expose verified distances');
+  assert.equal(detail.show_surface, true, 'field visibility is policy-level, not A+ gated');
+  assert.equal(detail.show_course, true, 'field visibility is policy-level, not A+ gated');
+  assert.equal(detail.timetable_rows[0].race_name, 'Busan opener');
+  assert.equal(detail.timetable_rows[0].distance_m, 1200);
+  assert.ok(!('surface' in detail.timetable_rows[0]));
+  assert.ok(!('course_label' in detail.timetable_rows[0]));
 } finally {
   fs.rmSync(tmp, { recursive: true, force: true });
 }

@@ -4,7 +4,7 @@ const COUNTRY_ID = 'japan';
 const AUTHORITY_ID = 'nar-local-government-racing';
 const RACECOURSE_ID = 'kawasaki-racecourse';
 const TIMEZONE = 'Asia/Tokyo';
-const POLICY_ID = 'nar-reviewed-a-plus';
+const POLICY_ID = 'nar-reviewed';
 
 type KawasakiReviewedRow = {
   readonly label: string;
@@ -42,7 +42,6 @@ export const kawasakiReviewedMeetingRows = data.meetings.map(({ date, source_url
     date,
     timezone: TIMEZONE,
     capability_rank: 'A+',
-    max_public_rank: 'A+',
     effective_public_rank: 'A+',
     first_race_time_local: timetable_rows[0]?.post_time_local ?? null,
     last_race_time_local: timetable_rows.at(-1)?.post_time_local ?? null,
@@ -66,7 +65,6 @@ export const kawasakiReviewedMeetingDetails = data.meetings.map(({ date, source_
     date,
     timezone: TIMEZONE,
     capability_rank: 'A+',
-    max_public_rank: 'A+',
     effective_public_rank: 'A+',
     policy_id: POLICY_ID,
     official_source_url: source_url,

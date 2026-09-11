@@ -9,9 +9,8 @@ export const PUBLIC_COVERAGE_STATUSES = [
 ];
 
 export const PUBLIC_GAP_STATUSES = [
-  'more_detail_not_reviewed',
-  'publication_ceiling_applied',
-  'at_current_public_ceiling',
+  'evidence_projection_aligned',
+  'public_structure_fallback',
 ];
 
 const coverageByRank = {
@@ -30,26 +29,15 @@ function rankIndex(rank, label) {
 
 export function derivePublicCoverageState({
   capability_rank,
-  max_public_rank,
   effective_public_rank,
 }) {
   const capabilityIndex = rankIndex(capability_rank, 'capability_rank');
-  const maximumIndex = rankIndex(max_public_rank, 'max_public_rank');
   const effectiveIndex = rankIndex(effective_public_rank, 'effective_public_rank');
-
-  if (effectiveIndex > maximumIndex) {
-    throw new Error(`effective_public_rank ${effective_public_rank} exceeds max_public_rank ${max_public_rank}`);
-  }
-
-  let public_gap_status = 'at_current_public_ceiling';
-  if (capabilityIndex > effectiveIndex && effectiveIndex === maximumIndex) {
-    public_gap_status = 'publication_ceiling_applied';
-  } else if (effectiveIndex < maximumIndex) {
-    public_gap_status = 'more_detail_not_reviewed';
-  }
 
   return {
     coverage_status: coverageByRank[effective_public_rank],
-    public_gap_status,
+    public_gap_status: effectiveIndex < capabilityIndex
+      ? 'public_structure_fallback'
+      : 'evidence_projection_aligned',
   };
 }

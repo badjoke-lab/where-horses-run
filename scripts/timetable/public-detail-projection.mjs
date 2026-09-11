@@ -1,5 +1,5 @@
 export function resolveDetailFieldVisibility(policy = {}) {
-  const fields = policy.detail_fields ?? policy.a_plus_fields ?? {};
+  const fields = policy.detail_fields ?? {};
   return {
     show_race_name: fields.show_race_name === true,
     show_distance: fields.show_distance === true,

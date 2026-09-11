@@ -1,31 +1,29 @@
 {
-  "schema_version": "publication-display-policies-v0",
+  "schema_version": "publication-display-policies-v1",
   "default_policy": {
-    "id": "default-conservative-c",
+    "id": "default-evidence-derived",
     "priority": 0,
     "match": {},
-    "max_public_rank": "C",
     "include_in_public_list": true,
     "detail_fields": {
-      "show_race_name": false,
-      "show_distance": false,
-      "show_surface": false,
-      "show_course": false
+      "show_race_name": true,
+      "show_distance": true,
+      "show_surface": true,
+      "show_course": true
     },
     "show_live_label": false,
     "show_replay_label": false,
-    "notes": "Unknown or unreviewed source families remain limited to meeting-level C until an explicit reviewed policy is added."
+    "notes": "Publication rank follows verified meeting evidence. Verified canonical timetable detail fields are publishable independently unless an explicit non-rank restriction is documented."
   },
   "policies": [
     {
-      "id": "hkjc-reviewed-a-plus",
+      "id": "hkjc-reviewed",
       "priority": 500,
       "match": {
         "authority_ids": [
           "hkjc"
         ]
       },
-      "max_public_rank": "A+",
       "include_in_public_list": true,
       "detail_fields": {
         "show_race_name": true,
@@ -35,17 +33,16 @@
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "HKJC may publish reviewed timetable detail fields independently at A or A+. Complete verified programme metadata still derives as A+."
+      "notes": "HKJC publication follows verified meeting evidence; complete programme metadata derives as A+."
     },
     {
-      "id": "jra-reviewed-a-plus",
+      "id": "jra-reviewed",
       "priority": 500,
       "match": {
         "authority_ids": [
           "jra"
         ]
       },
-      "max_public_rank": "A+",
       "include_in_public_list": true,
       "detail_fields": {
         "show_race_name": true,
@@ -55,17 +52,16 @@
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "JRA may publish reviewed timetable detail fields independently at A or A+; complete verified programme metadata still derives as A+."
+      "notes": "JRA publication follows verified meeting evidence; complete programme metadata derives as A+."
     },
     {
-      "id": "nar-reviewed-a-plus",
+      "id": "nar-reviewed",
       "priority": 400,
       "match": {
         "authority_ids": [
           "nar-local-government-racing"
         ]
       },
-      "max_public_rank": "A+",
       "include_in_public_list": true,
       "detail_fields": {
         "show_race_name": true,
@@ -75,17 +71,16 @@
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "NAR may publish reviewed timetable detail fields independently at A or A+; complete verified programme metadata still derives as A+."
+      "notes": "NAR publication follows verified meeting evidence; complete programme metadata derives as A+."
     },
     {
-      "id": "banei-reviewed-a-plus",
+      "id": "banei-reviewed",
       "priority": 400,
       "match": {
         "authority_ids": [
           "banei-tokachi"
         ]
       },
-      "max_public_rank": "A+",
       "include_in_public_list": true,
       "detail_fields": {
         "show_race_name": true,
@@ -95,17 +90,16 @@
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "Banei may publish reviewed timetable detail fields independently at A or A+; complete verified programme metadata still derives as A+."
+      "notes": "Banei publication follows verified meeting evidence; complete programme metadata derives as A+."
     },
     {
-      "id": "kra-reviewed-a-plus",
+      "id": "kra-reviewed",
       "priority": 400,
       "match": {
         "authority_ids": [
           "korea-racing-authority"
         ]
       },
-      "max_public_rank": "A+",
       "include_in_public_list": true,
       "detail_fields": {
         "show_race_name": true,
@@ -115,17 +109,16 @@
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "KRA publishes the centrally derived best-available rank. Reviewed detail fields may publish independently at A; complete verified programme metadata derives as A+."
+      "notes": "KRA publication follows the centrally derived Best Available evidence rank and independently publishes verified detail fields."
     },
     {
-      "id": "uae-reviewed-a-plus",
+      "id": "uae-reviewed",
       "priority": 400,
       "match": {
         "authority_ids": [
           "emirates-racing-authority"
         ]
       },
-      "max_public_rank": "A+",
       "include_in_public_list": true,
       "detail_fields": {
         "show_race_name": true,
@@ -135,17 +128,16 @@
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "UAE publishes the centrally derived best-available rank. Reviewed detail fields may publish independently at A; complete verified programme metadata derives as A+."
+      "notes": "UAE publication follows the centrally derived Best Available evidence rank and independently publishes verified detail fields."
     },
     {
-      "id": "tjk-reviewed-a-plus",
+      "id": "tjk-reviewed",
       "priority": 400,
       "match": {
         "authority_ids": [
           "turkiye-jokey-kulubu"
         ]
       },
-      "max_public_rank": "A+",
       "include_in_public_list": true,
       "detail_fields": {
         "show_race_name": true,
@@ -155,67 +147,64 @@
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "TJK publishes the centrally derived best-available rank. Reviewed detail fields may publish independently at A; complete verified programme metadata derives as A+."
+      "notes": "TJK publication follows the centrally derived Best Available evidence rank and independently publishes verified detail fields."
     },
     {
-      "id": "sorec-reviewed-a",
+      "id": "sorec-reviewed",
       "priority": 350,
       "match": {
         "authority_ids": [
           "sorec"
         ]
       },
-      "max_public_rank": "A",
       "include_in_public_list": true,
       "detail_fields": {
-        "show_race_name": false,
-        "show_distance": false,
-        "show_surface": false,
-        "show_course": false
+        "show_race_name": true,
+        "show_distance": true,
+        "show_surface": true,
+        "show_course": true
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "SOREC public output may rise automatically with verified evidence through A. Rich timetable fields remain disabled pending explicit publication review."
+      "notes": "SOREC publication follows verified meeting evidence. No authority-specific rank ceiling is applied."
     },
     {
-      "id": "chile-teletrak-reviewed-a",
+      "id": "chile-teletrak-reviewed",
       "priority": 350,
       "match": {
         "authority_ids": [
           "teletrak-chile"
         ]
       },
-      "max_public_rank": "A",
       "include_in_public_list": true,
       "detail_fields": {
-        "show_race_name": false,
-        "show_distance": false,
-        "show_surface": false,
-        "show_course": false
+        "show_race_name": true,
+        "show_distance": true,
+        "show_surface": true,
+        "show_course": true
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "Chile Teletrak public output may rise automatically with verified evidence through A. Rich timetable fields remain disabled pending explicit publication review."
+      "notes": "Chile Teletrak publication follows verified meeting evidence. No authority-specific rank ceiling is applied."
     },
     {
-      "id": "ireland-hri-reviewed-a",
+      "id": "ireland-hri-reviewed",
       "priority": 350,
       "match": {
         "authority_ids": [
           "horse-racing-ireland"
         ]
       },
-      "max_public_rank": "A",
       "include_in_public_list": true,
       "detail_fields": {
-        "show_race_name": false,
-        "show_distance": false,
-        "show_surface": false,
-        "show_course": false
+        "show_race_name": true,
+        "show_distance": true,
+        "show_surface": true,
+        "show_course": true
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "Horse Racing Ireland public output may rise automatically with verified evidence through A. Rich timetable fields remain disabled pending explicit publication review."
+      "notes": "Horse Racing Ireland publication follows verified meeting evidence. No authority-specific rank ceiling is applied."
     }
   ]
 }

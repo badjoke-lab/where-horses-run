@@ -18,7 +18,6 @@ function writeJson(file, value) {
   fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
 }
 function rank(value) { return RANK_INDEX.get(value) ?? -1; }
-function capRank(value, ceiling) { return rank(value) <= rank(ceiling) ? value : ceiling; }
 function normalizedRows(record) {
   const rows = Array.isArray(record.timetable_rows) ? record.timetable_rows : [];
   return rows.map((row, index) => ({
@@ -177,9 +176,8 @@ function makeCanonicalDetail(meeting, record, previousDetail) {
   };
 }
 function makePublicMeeting(meeting, detail, policy, previousPublic) {
-  const ceiling = policy.max_public_rank ?? 'C';
   const evidenceRank = storedEvidenceRank(meeting, detail);
-  let effective = capRank(evidenceRank, ceiling);
+  let effective = evidenceRank;
   if (rank(effective) >= rank('A') && (!detail || !completeRankA(detail.timetable_rows ?? []))) {
     effective = meeting.first_race_time_local && meeting.last_race_time_local ? 'B+' : meeting.first_race_time_local ? 'B' : 'C';
   }
@@ -191,7 +189,6 @@ function makePublicMeeting(meeting, detail, policy, previousPublic) {
     date: meeting.date,
     timezone: meeting.timezone,
     capability_rank: evidenceRank,
-    max_public_rank: ceiling,
     effective_public_rank: effective,
     first_race_time_local: meeting.first_race_time_local ?? null,
     last_race_time_local: meeting.last_race_time_local ?? null,
@@ -216,7 +213,6 @@ function makePublicDetail(meeting, detail, listRow, policy, previousPublicDetail
     date: meeting.date,
     timezone: meeting.timezone,
     capability_rank: listRow.capability_rank,
-    max_public_rank: listRow.max_public_rank,
     effective_public_rank: listRow.effective_public_rank,
     policy_id: listRow.policy_id,
     official_source_url: listRow.official_source_url,
