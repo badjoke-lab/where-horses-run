@@ -1,0 +1,49 @@
+name: Racecourse map regression
+
+on:
+  pull_request:
+    paths:
+      - 'data/static/racecourse-locations-v1.json'
+      - 'data/static/racecourse-location-supplement-evidence-v1.json'
+      - 'data/static/country-page-racecourses-12-zimbabwe.json'
+      - 'scripts/generate-racecourse-map-geojson.mjs'
+      - 'scripts/check-country-page-map-scope.mjs'
+      - 'src/components/CountryHubPage.astro'
+      - 'src/lib/data.ts'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/racecourse-map-regression.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: racecourse-map-regression-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate racecourse map projection
+        run: npm run validate:racecourse-map-projection
+
+      - name: Validate country-page map scope
+        run: npm run validate:country-page-map-scope
+
+      - name: Build site
+        run: npm run build
