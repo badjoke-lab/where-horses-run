@@ -67,9 +67,9 @@
   },
   "supplemental_cleanup": {"status":"complete_current_pass","audit_file":"coverage/supplemental-candidate-cleanup-v1.tsv","resolved_candidates":3,"remaining_candidates":0},
   "p1_verification": {
-    "status":"prize_betting_pass_complete_current_pass",
-    "sources_files":["sources/p1-core-sources-v1.tsv","sources/p1-core-sources-v2.tsv","sources/race-type-condition-sources-v1.tsv","sources/surface-going-sources-v1.tsv","sources/meeting-schedule-sources-v1.tsv","sources/result-decision-sources-v1.tsv","sources/prize-betting-sources-v1.tsv"],
-    "wave_audit_files":["coverage/p1-verification-wave1-v1.tsv","coverage/p1-verification-wave2-v1.tsv","coverage/race-type-condition-verification-v1.tsv","coverage/surface-going-verification-v1.tsv","coverage/meeting-schedule-verification-v1.tsv","coverage/result-decision-verification-v1.tsv","coverage/prize-betting-verification-v1.tsv"],
+    "status":"welfare_safety_pass_complete_current_pass",
+    "sources_files":["sources/p1-core-sources-v1.tsv","sources/p1-core-sources-v2.tsv","sources/race-type-condition-sources-v1.tsv","sources/surface-going-sources-v1.tsv","sources/meeting-schedule-sources-v1.tsv","sources/result-decision-sources-v1.tsv","sources/prize-betting-sources-v1.tsv","sources/welfare-safety-sources-v1.tsv"],
+    "wave_audit_files":["coverage/p1-verification-wave1-v1.tsv","coverage/p1-verification-wave2-v1.tsv","coverage/race-type-condition-verification-v1.tsv","coverage/surface-going-verification-v1.tsv","coverage/meeting-schedule-verification-v1.tsv","coverage/result-decision-verification-v1.tsv","coverage/prize-betting-verification-v1.tsv","coverage/welfare-safety-verification-v1.tsv"],
     "verified_wave_1":27,
     "verified_wave_2":29,
     "verified_race_type_condition_pass":15,
@@ -77,21 +77,22 @@
     "verified_meeting_schedule_pass":6,
     "verified_result_decision_pass":13,
     "verified_prize_betting_pass":28,
-    "verified_cumulative":128,
+    "verified_welfare_safety_pass":13,
+    "verified_cumulative":141,
     "retired_duplicate_rows_total":9,
-    "remaining_base_seed_candidate":206
+    "remaining_base_seed_candidate":193
   },
   "evidence_coverage": {
-    "status":"audited_master_005_hold_after_prize_betting_pass",
+    "status":"audited_master_005_hold_after_welfare_safety_pass",
     "coverage_file":"coverage/master-005-evidence-coverage-v1.tsv",
     "completion_gate_file":"coverage/master-005-completion-gate-v1.tsv",
-    "all_concepts":{"total":648,"source_verified":442,"candidate":206,"verified_pct":68.2},
+    "all_concepts":{"total":648,"source_verified":455,"candidate":193,"verified_pct":70.2},
     "p0":{"total":203,"source_verified":203,"candidate":0,"verified_pct":100.0},
-    "active_base_seed":{"total":487,"source_verified":281,"candidate":206,"verified_pct":57.7},
+    "active_base_seed":{"total":487,"source_verified":294,"candidate":193,"verified_pct":60.4},
     "supplemental_research":{"total":161,"source_verified":161,"candidate":0,"verified_pct":100.0},
     "master_005_completion":"hold"
   },
   "next_work_id":"GLOSSARY-MASTER-005",
-  "next_work":"welfare_veterinary_safety_then_remaining_ambiguous_terms_and_readiness_rerun",
+  "next_work":"remaining_ambiguous_semantic_groups_and_category_cleanup_then_rerun_readiness_gate",
   "public_implementation":"deferred"
 }
