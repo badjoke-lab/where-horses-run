@@ -14,8 +14,8 @@ Plain-language state:
 
 ```text
 Working dictionary: 642 terms/concepts
-Meaning-level source verified: 529
-Still under review: 113
+Meaning-level source verified: 547
+Still under review: 95
 Highest-priority core terms: 203/203 verified
 Jurisdiction-specific research additions: 161/161 verified
 Public glossary publication: disabled
@@ -31,8 +31,10 @@ Completed current pass: GLOSSARY-MASTER-004 — slang / colloquial / industry / 
 Current: GLOSSARY-MASTER-005 — evidence / semantic cleanup
 Base-dictionary pass 1: complete
 Base-dictionary pass 2: complete
-Race types / classifications pass: complete current pass
-Surface / going / track-condition pass: complete current pass
+Race types / classifications pass: broad current pass complete; residuals retained
+Surface / going / track-condition pass: broad current pass complete; residuals retained
+Distance / measurement pass: broad current pass complete; residuals retained
+Weight / handicapping pass: broad current pass complete; residuals retained
 Meeting / schedule / official-document pass: complete current pass
 Results / inquiries / decisions / result-code pass: complete current pass
 Prize money / betting / odds pass: complete current pass
@@ -42,7 +44,8 @@ Running / trip / race-comment pass: broad current pass complete; 2 deliberate un
 Equipment / training pass: current defensible pass complete; weak residuals retained
 Horse / breeding / participant roles: wave 1 complete current pass; weak residuals retained
 Venue / entry terminology: wave 1 complete current pass; weak residuals retained
-Next: remaining race type / surface / distance / weight candidates
+Broad category wave 1: complete — 18 RTYPE/SURF/DIST/WEIGHT Concepts verified
+Next: targeted residual cleanup across remaining base-seed categories
 Later: GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 ```
 
@@ -66,8 +69,10 @@ The remaining task is to clean the lower-priority base dictionary. This does **n
 
 - Base dictionary pass 1: **27 verified**, 2 malformed/duplicate rows retired.
 - Base dictionary pass 2: **29 verified**, duplicate `Breeder` consolidated.
-- Race types/classifications: **15 verified**.
-- Surface/going/track condition: **10 verified**, regional condition systems kept separate.
+- Race types/classifications: initial **15 verified**, plus **4** in broad-category wave 1.
+- Surface/going/track condition: initial **10 verified**, plus **5** in broad-category wave 1.
+- Distance/measurement: **4 verified** in broad-category wave 1 beyond the earlier base cleanup.
+- Weight/handicapping: **5 verified** in broad-category wave 1 beyond the earlier base cleanup.
 - Meeting/schedule/official documents: **6 verified**, duplicate `Condition book` consolidated.
 - Results/inquiries/decisions/result codes: **13 verified**, duplicate result-code Concepts retired and codes moved to the abbreviation layer.
 - Prize money/betting/odds: **28 verified**, duplicate regional wager mechanics consolidated.
@@ -80,6 +85,7 @@ The remaining task is to clean the lower-priority base dictionary. This does **n
 - Equipment/training residual: **1 verified**, `Bike/Racebike` consolidated into `Sulky`.
 - Horse/breeding/participant roles wave 1: **14 verified** — 3 HORSE, 4 BREED and 7 ROLE Concepts with scoped JRA/IFHA/BHA/Jockey Club evidence.
 - Venue/entry terminology wave 1: **11 verified** — 6 ENTRY and 5 VENUE Concepts with scoped BHA, JRA, Jockey Club, Equibase/Churchill Downs, HRA and HRNZ evidence.
+- Broad category wave 1: **18 verified** — 4 RTYPE, 5 SURF, 4 DIST and 5 WEIGHT Concepts.
 
 ### Residual edge-case pass
 
@@ -109,6 +115,12 @@ Wave 1 verified `Maximum field`, `Balloted out`, `Also eligible`, `Entry fee`, `
 
 ENTRY is now **26/31 source-verified (83.9%)** and VENUE is **28/44 (63.6%)**. BHA's maximum-field/elimination language remains GB-scoped; current North American stakes conditions support also-eligible, entry-fee and preference mechanics without universalizing one race's rules; JRA/Jockey Club and harness authorities support regional course/facility labels without flattening `Homestretch` into `Home straight`, `Parade ring` into `Paddock`, `Winner's enclosure` into `Winners' circle`, or `Mobile barrier` into every starting-gate system.
 
+### Broad category wave 1
+
+This pass verified `Selling race`, `Graded stakes`, scoped British `Open race` and `Restricted race`; `Tapeta`, `Polytrack`, historical British `Fibresand`, `Sealed track` and `Off turf`; `Yard`, `Short head`, `Final furlong` and `Race record`; plus `Bottom weight`, `Maximum weight`, `Underweight`, `Weigh out` and `Weigh in`.
+
+RTYPE is now **100/111 source-verified (90.1%)**, SURF **57/63 (90.5%)**, DIST **17/21 (81.0%)**, and WEIGHT **31/34 (91.2%)**. BHA/TOBA programme categories, all-weather product names, historical surface status, North American track-state/surface-switch labels, British result notation and regional weighing terminology remain scoped to the evidence rather than generalized worldwide.
+
 Authority/audit files now include:
 
 ```text
@@ -125,6 +137,7 @@ data/glossary-master/sources/run-trip-sources-v1.tsv
 data/glossary-master/sources/equipment-training-sources-v1.tsv
 data/glossary-master/sources/horse-breeding-role-sources-v1.tsv
 data/glossary-master/sources/venue-entry-sources-v1.tsv
+data/glossary-master/sources/broad-category-sources-v1.tsv
 data/glossary-master/coverage/p1-verification-wave1-v1.tsv
 data/glossary-master/coverage/p1-verification-wave2-v1.tsv
 data/glossary-master/coverage/race-type-condition-verification-v1.tsv
@@ -141,21 +154,26 @@ data/glossary-master/coverage/equipment-training-verification-v1.tsv
 data/glossary-master/coverage/equipment-training-residual-v1.tsv
 data/glossary-master/coverage/horse-breeding-role-verification-v1.tsv
 data/glossary-master/coverage/venue-entry-verification-v1.tsv
+data/glossary-master/coverage/broad-category-verification-v1.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
 Current observed state:
 
-- all Concepts: **529/642 source-verified (82.4%)**, 113 candidate;
+- all Concepts: **547/642 source-verified (85.2%)**, 95 candidate;
 - core highest-priority set: **203/203 source-verified (100.0%)**;
-- active base seed: **368/481 source-verified (76.5%)**, 113 candidate;
+- active base seed: **386/481 source-verified (80.2%)**, 95 candidate;
 - supplemental jurisdiction/relationship research: **161/161 source-verified (100.0%)**;
+- RTYPE: **100/111 source-verified (90.1%)**;
 - ENTRY: **26/31 source-verified (83.9%)**;
-- VENUE: **28/44 source-verified (63.6%)**;
 - HORSE: **21/34 source-verified (61.8%)**;
 - BREED: **11/22 source-verified (50.0%)**;
 - ROLE: **25/31 source-verified (80.6%)**;
+- VENUE: **28/44 source-verified (63.6%)**;
+- SURF: **57/63 source-verified (90.5%)**;
+- DIST: **17/21 source-verified (81.0%)**;
+- WEIGHT: **31/34 source-verified (91.2%)**;
 - RUN: **42/44 source-verified (95.5%)**;
 - EQUIP: **27/29 source-verified (93.1%)**;
 - TRAIN: **20/26 source-verified (76.9%)**;
@@ -168,15 +186,16 @@ Current observed state:
 
 ## What happens next
 
-The remaining **113 terms** continue by the clearest unresolved broad categories:
+The remaining **95 terms** continue through targeted residual review rather than another percentage-driven blanket promotion:
 
 ```text
-remaining race type / surface / distance / weight candidates
--> revisit deliberately unresolved horse / breeding / roles, venue / entry, RUN, EQUIP, TRAIN and cross-category edge cases only with stronger evidence
+largest residual groups: VENUE / HORSE / BREED / RTYPE
+-> remaining ENTRY / SURF / DIST / WEIGHT and other mid-size categories
+-> deliberately unresolved RUN / EQUIP / TRAIN / cross-category edge cases only with stronger evidence or cleaner modeling
 -> rerun evidence/readiness gate
 ```
 
-`GLOSSARY-MASTER-005` remains **HOLD — not complete**. An 82.4% verified master with 113 unresolved seed Concepts is not ready to advance.
+`GLOSSARY-MASTER-005` remains **HOLD — not complete**. An 85.2% verified master with 95 unresolved seed Concepts is not ready to advance.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
@@ -206,9 +225,9 @@ The current public glossary remains disposable content. There is no old-record m
 ```text
 Current Work ID: GLOSSARY-MASTER-005
 Working dictionary: 642 terms
-Verified: 529
-Still under review: 113
-Next subject group: remaining race type / surface / distance / weight candidates
+Verified: 547
+Still under review: 95
+Next subject group: targeted residual cleanup across remaining base-seed categories
 MASTER-006: blocked until the evidence/readiness gate passes
 Public implementation: deferred
 ```
