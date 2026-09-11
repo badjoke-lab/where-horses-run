@@ -8,30 +8,30 @@ This directory is the non-public working area for the worldwide horse-racing ter
 
 ## Plain-language progress
 
-The working dictionary currently contains **647 racing terms/concepts**.
+The working dictionary currently contains **646 racing terms/concepts**.
 
-- **462 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
-- **185 terms still need verification, scope correction, splitting/merging, or removal.**
+- **469 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
+- **177 terms still need verification, scope correction, splitting/merging, or removal.**
 - The already researched jurisdiction-specific additions are **161/161 verified**.
 - The core highest-priority terminology set is **203/203 verified**.
 - Public glossary publication is still disabled while the remaining terms are cleaned up.
 
-The latest pass is **residual edge-case cleanup**. It verified seven additional Concepts: Season, Bulletin, Relegation, False start, Totalisator, Fractional odds and On the board. `Program` was retired as a duplicate/regional spelling label of `Programme`, reducing the Concept count by one.
+The latest pass is the first **running / trip / race-comment terminology** bundle. It verified Break at the start, On the rail, Wide, Boxed in, Turn of foot, Eased and Lost rider. Harness `Break` was retired as a duplicate regional label of `Broke stride`; the Flat start-event `Break` remains a separate Concept.
 
-Five edge cases remain deliberately unresolved: `Daylight saving time`, `Ran Out`, generic `Bonus`, polysemous `Stake`, and `American odds`. They remain candidates because current evidence or dictionary-value boundaries are not strong enough to justify promotion.
+This pass also corrected scope rather than only changing status. `Eased` now follows the Equibase chart-comment sense instead of generic slowing, `Wide` is region-scoped, and HKJC evidence keeps `Lost rider` distinct from `Unseated rider`.
 
-The preceding welfare/veterinary/safety pass brought WELF to **18/18 source-verified**.
+Five earlier edge cases remain deliberately unresolved: `Daylight saving time`, `Ran Out`, generic `Bonus`, polysemous `Stake`, and `American odds`.
 
 ## Current master
 
-- Concepts: **647**
+- Concepts: **646**
 - categories: **18**
-- P0: **203** / P1: **294** / P2: **132** / P3: **18**
+- P0: **203** / P1: **293** / P2: **132** / P3: **18**
 - `public_ready=yes`: **0**
 - public runtime input: **false**
 - active Concept relations: **20**
 - relationship reviews: **15 discovered / 15 resolved / 0 open**
-- retired/merged Concept rows: **15**
+- retired/merged Concept rows: **16**
 
 ## Core source verification — complete
 
@@ -73,13 +73,19 @@ Sources: `sources/residual-edgecase-sources-v1.tsv` plus existing authority sour
 
 Verified **7** additional Concepts and retired **1 duplicate Program Concept**. This pass intentionally leaves five weak/polysemous/non-racing-specific edge cases unresolved rather than promoting them for percentage gain.
 
-Across the lower-priority cleanup passes, **148 base-dictionary terms have been newly verified and 10 duplicate/malformed rows have been removed**.
+### Running / trip / race-comment terminology — first bundle complete
+Audit: `coverage/run-trip-verification-v1.tsv`  
+Sources: `sources/run-trip-sources-v1.tsv` plus existing Equibase/USTA evidence.
+
+Verified **7** additional RUN Concepts and retired **1 duplicate Harness Break Concept**. RUN is now **28/47 source-verified (59.6%)**, with **19 candidates** remaining. Running-style nouns, regional Jump language and remaining Harness terms stay for later bundles until authority evidence supports the exact sense.
+
+Across the lower-priority cleanup passes, **155 base-dictionary terms have been newly verified and 11 duplicate/malformed rows have been removed**.
 
 ## Evidence state
 
-- all Concepts: **462 / 647 source-verified (71.4%)**; **185 candidate**
+- all Concepts: **469 / 646 source-verified (72.6%)**; **177 candidate**
 - core highest-priority set: **203 / 203 source-verified (100.0%)**
-- active base seed: **301 / 486 source-verified (61.9%)**; **185 candidate**
+- active base seed: **308 / 485 source-verified (63.5%)**; **177 candidate**
 - supplemental jurisdiction/relationship research: **161 / 161 source-verified (100.0%)**
 
 Canonical current audit state includes:
@@ -94,15 +100,16 @@ coverage/result-decision-verification-v1.tsv
 coverage/prize-betting-verification-v1.tsv
 coverage/welfare-safety-verification-v1.tsv
 coverage/residual-edgecase-verification-v1.tsv
+coverage/run-trip-verification-v1.tsv
 coverage/master-005-evidence-coverage-v1.tsv
 coverage/master-005-completion-gate-v1.tsv
 ```
 
 ## Current completion decision
 
-The terminology master remains **not complete**. The remaining **185 terms** must be reviewed rather than automatically promoted.
+The terminology master remains **not complete**. The remaining **177 terms** must be reviewed rather than automatically promoted.
 
-The next phase is systematic cleanup of the broad categories that still contain substantial candidate counts: running/trip terminology, equipment, training, horse/breeding/role, venue, entry, race type, surface, distance and weight. The five unresolved edge cases remain visible and can be revisited only when stronger evidence or a clearer modeling decision exists.
+The next phase continues RUN with running-style, Jump and Harness terminology where authority evidence supports the exact sense. After RUN, the broader remaining categories are equipment, training, horse/breeding/role, venue, entry, race type, surface, distance and weight. The five unresolved edge cases remain visible and can be revisited only when stronger evidence or a clearer modeling decision exists.
 
 Public implementation remains deferred until the evidence/readiness review passes.
 
