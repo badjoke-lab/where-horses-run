@@ -23,9 +23,8 @@ export type PublicCoverageStatus =
   | 'race_times'
   | 'programme_summary';
 export type PublicGapStatus =
-  | 'more_detail_not_reviewed'
-  | 'publication_ceiling_applied'
-  | 'at_current_public_ceiling';
+  | 'evidence_projection_aligned'
+  | 'public_structure_fallback';
 
 export type TimetableMeetingRow = {
   meeting_id: string;
@@ -131,7 +130,6 @@ function toMeetingRow(record: PublicTimetableMeetingRow): TimetableMeetingRow {
     record.detail_path !== null;
   const coverageState = derivePublicCoverageState({
     capability_rank: record.capability_rank,
-    max_public_rank: record.max_public_rank,
     effective_public_rank: record.effective_public_rank,
   }) as {
     coverage_status: PublicCoverageStatus;
