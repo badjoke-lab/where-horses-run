@@ -1,0 +1,169 @@
+name: Calendar rank ceiling migration
+
+on:
+  push:
+    branches:
+      - fix/remove-calendar-authority-rank-ceilings-20260911
+    paths:
+      - '.github/workflows/calendar-rank-ceiling-migration.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/remove-calendar-authority-rank-ceilings-20260911
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Remove source-rank ceilings and reproject public snapshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { deriveBestAvailableRank } from './scripts/timetable/best-available-rank.mjs';
+          import { projectPublicTimetableRows } from './scripts/timetable/public-detail-projection.mjs';
+
+          const promotionPath = 'scripts/timetable/pipeline-v1/promotion-core.mjs';
+          let promotion = fs.readFileSync(promotionPath, 'utf8');
+          promotion = promotion.replace("  'publication_policy_change',\n", '');
+          promotion = promotion.replace(/function rankAtMost\(actual, maximum, label\) \{[\s\S]*?\n\}\n\n/, '');
+          promotion = promotion.replace("  assert(authoritySource.capability_rank === readiness.technical_rank, 'authority/source and readiness technical ranks disagree');\n", '');
+          promotion = promotion.replace("    rankAtMost(record.capability_rank, authoritySource.capability_rank, record.candidate_id);\n    rankAtMost(record.capability_rank, readiness.technical_rank, record.candidate_id);\n", '');
+          fs.writeFileSync(promotionPath, promotion);
+
+          const read = (path) => JSON.parse(fs.readFileSync(path, 'utf8'));
+          const write = (path, value) => fs.writeFileSync(path, `${JSON.stringify(value, null, 2)}\n`);
+          const canonical = read('data/generated/timetable/canonical/meetings.json');
+          const canonicalDetails = read('data/generated/timetable/canonical/meeting-details.json');
+          const publicList = read('data/generated/timetable/public/meeting-list.json');
+          const publicDetails = read('data/generated/timetable/public/meeting-details.json');
+          const policyData = read('src/data/publicationDisplayPolicies.json');
+
+          const canonicalById = new Map((canonical.meetings ?? []).map((row) => [row.meeting_id, row]));
+          const detailById = new Map((canonicalDetails.details ?? []).map((row) => [row.meeting_id, row]));
+          const oldPublicById = new Map((publicList.meetings ?? []).map((row) => [row.meeting_id, row]));
+          const oldDetailById = new Map((publicDetails.details ?? []).map((row) => [row.meeting_id, row]));
+
+          const choosePolicy = (authorityId) => {
+            const matches = (policyData.policies ?? [])
+              .filter((policy) => (policy.match?.authority_ids ?? []).includes(authorityId))
+              .sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0));
+            return matches[0] ?? policyData.default_policy;
+          };
+
+          const publicMeetings = [];
+          const publicMeetingDetails = [];
+          for (const [meetingId, oldPublic] of oldPublicById) {
+            const meeting = canonicalById.get(meetingId);
+            if (!meeting) {
+              const { max_public_rank, ...legacyWithoutCeiling } = oldPublic;
+              publicMeetings.push(legacyWithoutCeiling);
+              const oldDetail = oldDetailById.get(meetingId);
+              if (oldDetail) {
+                const { max_public_rank: _legacyDetailCeiling, ...detailWithoutCeiling } = oldDetail;
+                publicMeetingDetails.push(detailWithoutCeiling);
+              }
+              continue;
+            }
+
+            const canonicalDetail = detailById.get(meetingId) ?? null;
+            const evidenceRank = deriveBestAvailableRank(meeting, canonicalDetail?.timetable_rows ?? []);
+            const policy = choosePolicy(meeting.authority_id);
+            const effectiveRank = evidenceRank;
+            const canShowDetail = ['A', 'A+'].includes(effectiveRank) && canonicalDetail;
+            const first = meeting.first_race_time_local ?? canonicalDetail?.timetable_rows?.[0]?.post_time_local ?? null;
+            const last = meeting.last_race_time_local ?? canonicalDetail?.timetable_rows?.at(-1)?.post_time_local ?? null;
+
+            publicMeetings.push({
+              meeting_id: meeting.meeting_id,
+              country_id: meeting.country_id,
+              authority_id: meeting.authority_id,
+              racecourse_id: meeting.racecourse_id,
+              date: meeting.date,
+              timezone: meeting.timezone,
+              capability_rank: evidenceRank,
+              effective_public_rank: effectiveRank,
+              first_race_time_local: first,
+              last_race_time_local: last,
+              policy_id: policy.id,
+              source_status: meeting.source_trace?.source_status ?? oldPublic.source_status ?? 'verified',
+              official_source_url: meeting.source_trace?.official_source_url ?? oldPublic.official_source_url,
+              last_checked_date: meeting.freshness?.last_checked_date ?? oldPublic.last_checked_date ?? null,
+              detail_path: canShowDetail ? `/timetable/meetings/${meeting.meeting_id}/` : null,
+              show_live_label: policy.show_live_label ?? oldPublic.show_live_label ?? false,
+              show_replay_label: policy.show_replay_label ?? oldPublic.show_replay_label ?? false,
+            });
+
+            if (canShowDetail) {
+              const projection = projectPublicTimetableRows(canonicalDetail.timetable_rows ?? [], policy);
+              publicMeetingDetails.push({
+                meeting_id: meeting.meeting_id,
+                country_id: meeting.country_id,
+                authority_id: meeting.authority_id,
+                racecourse_id: meeting.racecourse_id,
+                date: meeting.date,
+                timezone: meeting.timezone,
+                capability_rank: evidenceRank,
+                effective_public_rank: effectiveRank,
+                policy_id: policy.id,
+                official_source_url: meeting.source_trace?.official_source_url ?? oldPublic.official_source_url,
+                source_status: meeting.source_trace?.source_status ?? oldPublic.source_status ?? 'verified',
+                last_checked_date: meeting.freshness?.last_checked_date ?? oldPublic.last_checked_date ?? null,
+                show_race_name: projection.visibility.show_race_name,
+                show_distance: projection.visibility.show_distance,
+                show_surface: projection.visibility.show_surface,
+                show_course: projection.visibility.show_course,
+                show_live_label: policy.show_live_label ?? false,
+                show_replay_label: policy.show_replay_label ?? false,
+                timetable_rows: projection.rows,
+              });
+            }
+          }
+
+          publicMeetings.sort((a, b) => a.date.localeCompare(b.date) || a.meeting_id.localeCompare(b.meeting_id));
+          publicMeetingDetails.sort((a, b) => a.date.localeCompare(b.date) || a.meeting_id.localeCompare(b.meeting_id));
+          write('data/generated/timetable/public/meeting-list.json', { ...publicList, meetings: publicMeetings });
+          write('data/generated/timetable/public/meeting-details.json', { ...publicDetails, details: publicMeetingDetails });
+
+          for (const path of [
+            promotionPath,
+            'data/generated/timetable/public/meeting-list.json',
+            'data/generated/timetable/public/meeting-details.json',
+          ]) {
+            const text = fs.readFileSync(path, 'utf8');
+            if (text.includes('max_public_rank')) throw new Error(`${path} still contains max_public_rank`);
+          }
+          if (promotion.includes('rankAtMost(record.capability_rank')) throw new Error('promotion core still caps observed rank by source rank');
+          if (promotion.includes('publication_policy_change')) throw new Error('publication policy may still downgrade canonical rank');
+          NODE
+      - name: Install dependencies and validate
+        run: |
+          npm install --no-package-lock --no-audit --no-fund
+          node scripts/check-calendar-refresh-publication-boundaries.mjs
+          node scripts/check-japan-best-available-rank.mjs
+          node scripts/check-non-japan-best-available-rank.mjs
+          npm run build
+          git diff --check
+      - name: Commit migration result to branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/timetable/pipeline-v1/promotion-core.mjs \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json
+          if git diff --cached --quiet; then
+            echo "No migration changes needed."
+            exit 0
+          fi
+          git commit -m "fix: migrate Calendar public snapshots off rank ceilings"
+          git push origin HEAD:fix/remove-calendar-authority-rank-ceilings-20260911
