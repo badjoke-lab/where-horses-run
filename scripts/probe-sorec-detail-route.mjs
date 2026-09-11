@@ -11,12 +11,6 @@ function cookiesFrom(headers) {
   const values = typeof headers.getSetCookie === 'function' ? headers.getSetCookie() : [headers.get('set-cookie')].filter(Boolean);
   return values.map((value) => value.split(';', 1)[0]).join('; ');
 }
-async function getPage() {
-  const res = await fetch(PAGE, { headers: { 'user-agent': UA, accept: 'text/html,application/xhtml+xml' }, redirect: 'follow' });
-  const html = await res.text();
-  if (!res.ok) throw new Error(`GET ${res.status}`);
-  return { res, html, cookies: cookiesFrom(res.headers) };
-}
 function parseMainForm(html) {
   const match = html.match(/<form\b([^>]*\bid=["']form["'][^>]*)>([\s\S]*?)<\/form>/i);
   if (!match) throw new Error('main form missing');
@@ -37,41 +31,47 @@ function parseMainForm(html) {
   return { action: new URL(action, PAGE).href, hidden, rows };
 }
 
-const first = await getPage();
-const parsed = parseMainForm(first.html);
-console.log(JSON.stringify({ type: 'page', status: first.res.status, final_url: first.res.url, bytes: first.html.length, action: parsed.action, cookie_names: first.cookies.split('; ').map((v) => v.split('=')[0]), rows: parsed.rows.slice(0, 10), hidden_names: Object.keys(parsed.hidden) }));
+const res = await fetch(PAGE, { headers: { 'user-agent': UA, accept: 'text/html,application/xhtml+xml' }, redirect: 'follow' });
+const html = await res.text();
+if (!res.ok) throw new Error(`GET ${res.status}`);
+const cookies = cookiesFrom(res.headers);
+const form = parseMainForm(html);
+console.log(JSON.stringify({ type: 'page', status: res.status, final_url: res.url, bytes: html.length, action: form.action, cookie_names: cookies.split('; ').map((v) => v.split('=')[0]), rows: form.rows.slice(0, 10), hidden_names: Object.keys(form.hidden) }));
 
-async function downloadMeeting({ date, venue }) {
-  const page = await getPage();
-  const form = parseMainForm(page.html);
-  const row = form.rows.find((item) => item.date === date && item.venue.toLowerCase() === venue.toLowerCase());
-  if (!row?.button_name) throw new Error(`download button missing for ${date} ${venue}`);
-  const params = new URLSearchParams();
-  params.set('form', 'form');
-  params.set('form:j_idt41', '');
-  params.set('form:j_idt45_input', '');
-  params.set('form:j_idt49_input', '');
-  for (const [name, value] of Object.entries(form.hidden)) {
-    if (name !== 'form') params.set(name, value);
-  }
-  params.set(row.button_name, '');
-  const res = await fetch(form.action, {
-    method: 'POST',
-    headers: {
-      'user-agent': UA,
-      accept: 'application/pdf,application/octet-stream,*/*',
-      'content-type': 'application/x-www-form-urlencoded',
-      cookie: page.cookies,
-      origin: new URL(PAGE).origin,
-      referer: page.res.url,
-    },
-    body: params,
-    redirect: 'manual',
-  });
-  const bytes = new Uint8Array(await res.arrayBuffer());
-  const prefix = Buffer.from(bytes.slice(0, 24)).toString('latin1');
-  console.log(JSON.stringify({ type: 'download', date, venue, button_name: row.button_name, status: res.status, location: res.headers.get('location'), content_type: res.headers.get('content-type'), content_disposition: res.headers.get('content-disposition'), bytes: bytes.length, prefix }));
+const target = form.rows.find((item) => item.date === '10/09/2026' && item.venue.toLowerCase() === 'meknes');
+if (!target?.button_name) throw new Error('Meknes download button missing');
+const params = new URLSearchParams();
+params.set('form', 'form');
+params.set('form:j_idt41', '');
+params.set('form:j_idt45_input', '');
+params.set('form:j_idt49_input', '');
+for (const [name, value] of Object.entries(form.hidden)) {
+  if (name !== 'form') params.set(name, value);
 }
-
-await downloadMeeting({ date: '10/09/2026', venue: 'Meknes' });
-await downloadMeeting({ date: '12/09/2026', venue: 'El jadida' });
+params.set(target.button_name, '');
+const download = await fetch(form.action, {
+  method: 'POST',
+  headers: {
+    'user-agent': UA,
+    accept: 'application/pdf,application/octet-stream,*/*',
+    'content-type': 'application/x-www-form-urlencoded',
+    cookie: cookies,
+    origin: new URL(PAGE).origin,
+    referer: res.url,
+  },
+  body: params,
+  redirect: 'manual',
+});
+const bytes = new Uint8Array(await download.arrayBuffer());
+console.log(JSON.stringify({
+  type: 'download',
+  date: target.date,
+  venue: target.venue,
+  button_name: target.button_name,
+  status: download.status,
+  location: download.headers.get('location'),
+  content_type: download.headers.get('content-type'),
+  content_disposition: download.headers.get('content-disposition'),
+  bytes: bytes.length,
+  prefix: Buffer.from(bytes.slice(0, 32)).toString('latin1'),
+}));
