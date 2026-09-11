@@ -1,0 +1,365 @@
+name: Calendar rank ceiling finalize
+
+on:
+  push:
+    branches:
+      - fix/remove-calendar-authority-rank-ceilings-20260911
+    paths:
+      - '.github/workflows/calendar-rank-ceiling-finalize.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/remove-calendar-authority-rank-ceilings-20260911
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Merge current main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          echo "Merging main $(git rev-parse origin/main)"
+          git merge --no-commit --no-ff origin/main || true
+          allowed='^(data/generated/timetable/canonical/meeting-details.json|data/generated/timetable/canonical/meetings.json|data/generated/timetable/japan-zero-based-30d-reconciliation.json|data/generated/timetable/public/meeting-details.json|data/generated/timetable/public/meeting-list.json)$'
+          unexpected="$(git diff --name-only --diff-filter=U | grep -Ev "$allowed" || true)"
+          if [[ -n "$unexpected" ]]; then
+            echo "Unexpected merge conflicts:" >&2
+            echo "$unexpected" >&2
+            exit 1
+          fi
+          while IFS= read -r file; do
+            [[ -z "$file" ]] && continue
+            git checkout --theirs -- "$file"
+            git add "$file"
+          done < <(git diff --name-only --diff-filter=U)
+      - name: Remove remaining fixed-rank writers and overlays
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+
+          def replace_once(text, old, new, label):
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'{label}: expected 1 occurrence, got {count}')
+              return text.replace(old, new, 1)
+
+          # Reviewed observations must derive rank from evidence and publish through rank-neutral field policy.
+          path = Path('scripts/timetable/apply-reviewed-calendar-observations.mjs')
+          text = path.read_text()
+          text = replace_once(
+              text,
+              "import path from 'node:path';\n",
+              "import path from 'node:path';\nimport { deriveBestAvailableRank } from './best-available-rank.mjs';\nimport { projectPublicTimetableRows } from './public-detail-projection.mjs';\n",
+              'reviewed imports',
+          )
+          text, n = re.subn(r"function capRank\(value, ceiling\) \{\n  return rank\(value\) <= rank\(ceiling\) \? value : ceiling;\n\}\n", '', text)
+          if n != 1:
+              raise SystemExit(f'capRank removal: expected 1, got {n}')
+
+          start = text.index('function publicDetailFromCanonical(')
+          end = text.index('\n\nconst manifest =', start)
+          replacement = '''function publicDetailFromCanonical(meeting, detail, listRow, policy, previousPublicDetail) {
+  if (!detail || !['A', 'A+'].includes(listRow.effective_public_rank)) return null;
+  const projection = projectPublicTimetableRows(detail.timetable_rows ?? [], policy);
+  return {
+    ...(previousPublicDetail ?? {}),
+    meeting_id: meeting.meeting_id,
+    country_id: meeting.country_id,
+    authority_id: meeting.authority_id,
+    racecourse_id: meeting.racecourse_id,
+    date: meeting.date,
+    timezone: meeting.timezone,
+    capability_rank: listRow.capability_rank,
+    effective_public_rank: listRow.effective_public_rank,
+    policy_id: listRow.policy_id,
+    official_source_url: listRow.official_source_url,
+    source_status: 'verified',
+    last_checked_date: listRow.last_checked_date,
+    show_race_name: projection.visibility.show_race_name,
+    show_distance: projection.visibility.show_distance,
+    show_surface: projection.visibility.show_surface,
+    show_course: projection.visibility.show_course,
+    show_live_label: policy.show_live_label ?? false,
+    show_replay_label: policy.show_replay_label ?? false,
+    timetable_rows: projection.rows,
+  };
+}'''
+          text = text[:start] + replacement + text[end:]
+
+          marker = 'for (const record of reviewedById.values()) {\n'
+          if text.count(marker) != 2:
+              raise SystemExit(f'reviewed loops: expected 2, got {text.count(marker)}')
+          text = text.replace(marker, marker + '  const reviewedRank = deriveBestAvailableRank(record, record.timetable_rows ?? []);\n')
+          text = text.replace('rank(record.capability_rank)', 'rank(reviewedRank)')
+          text = text.replace('capability_rank: rankNeedsRepair ? record.capability_rank : previous.capability_rank,', 'capability_rank: rankNeedsRepair ? reviewedRank : previous.capability_rank,')
+          text = text.replace("const detailNeedsRepair = rank(reviewedRank) >= rank('A') && !detail && reviewedRows.length > 0;", "const detailNeedsRepair = rank(reviewedRank) >= rank('A') && reviewedRows.length > 0\n    && (!detail || rank(deriveBestAvailableRank(meeting, detail.timetable_rows ?? [])) < rank(reviewedRank));")
+
+          old_policy = '''  const policy = choosePolicy(meeting.authority_id, policyDataset);
+  const ceiling = policy.max_public_rank ?? 'C';
+  let desiredPublicRank = capRank(meeting.capability_rank, ceiling);
+  if (rank(desiredPublicRank) >= rank('A') && (!detail || !(detail.timetable_rows ?? []).length)) {
+    desiredPublicRank = meeting.first_race_time_local && meeting.last_race_time_local
+      ? 'B+'
+      : meeting.first_race_time_local ? 'B' : 'C';
+  }
+  const minimumReviewedPublicRank = capRank(record.capability_rank, ceiling);
+  if (rank(desiredPublicRank) < rank(minimumReviewedPublicRank)) {
+    throw new Error(`reviewed data cannot satisfy policy-projected minimum rank for ${record.meeting_id}`);
+  }
+'''
+          new_policy = '''  const canonicalEvidenceRank = deriveBestAvailableRank(meeting, detail?.timetable_rows ?? []);
+  if (meeting.capability_rank !== canonicalEvidenceRank) {
+    meeting = {
+      ...meeting,
+      capability_rank: canonicalEvidenceRank,
+      display_status: canonicalEvidenceRank === 'C' ? 'partial' : 'displayable',
+    };
+    canonicalById.set(record.meeting_id, meeting);
+    changed = true;
+    outcomes.canonical_rank_repairs += 1;
+  }
+
+  const policy = choosePolicy(meeting.authority_id, policyDataset);
+  const desiredPublicRank = canonicalEvidenceRank;
+  const minimumReviewedPublicRank = reviewedRank;
+  if (rank(desiredPublicRank) < rank(minimumReviewedPublicRank)) {
+    throw new Error(`reviewed evidence was not persisted strongly enough for ${record.meeting_id}`);
+  }
+'''
+          text = replace_once(text, old_policy, new_policy, 'reviewed public-rank block')
+
+          old_needs = '''  const publicNeedsRepair = !previousPublic
+    || rank(previousPublic.effective_public_rank) < rank(minimumReviewedPublicRank)
+    || (record.first_race_time_local && !previousPublic.first_race_time_local)
+    || (rank(reviewedRank) >= rank('B+') && record.last_race_time_local && !previousPublic.last_race_time_local);
+'''
+          new_needs = '''  const publicNeedsRepair = !previousPublic
+    || previousPublic.capability_rank !== desiredPublicRank
+    || previousPublic.effective_public_rank !== desiredPublicRank
+    || previousPublic.policy_id !== policy.id
+    || (record.first_race_time_local && !previousPublic.first_race_time_local)
+    || (rank(reviewedRank) >= rank('B+') && record.last_race_time_local && !previousPublic.last_race_time_local);
+'''
+          text = replace_once(text, old_needs, new_needs, 'reviewed public repair predicate')
+          text = text.replace('      capability_rank: meeting.capability_rank,\n      max_public_rank: ceiling,\n      effective_public_rank: desiredPublicRank,', '      capability_rank: desiredPublicRank,\n      effective_public_rank: desiredPublicRank,')
+
+          old_detail = '''  const previousPublicDetail = publicDetailsById.get(record.meeting_id) ?? null;
+  const publicDetailNeedsRepair = rank(minimumReviewedPublicRank) >= rank('A') && !previousPublicDetail;
+  if (publicDetailNeedsRepair) {
+    const repaired = publicDetailFromCanonical(meeting, detail, publicMeeting, policy, previousPublicDetail);
+    if (!repaired) throw new Error(`reviewed public detail could not be rebuilt for ${record.meeting_id}`);
+    publicDetailsById.set(record.meeting_id, repaired);
+    changed = true;
+    if (!selected.some((item) => item.meeting_id === record.meeting_id)) selected.push(record);
+    outcomes.public_detail_repairs += 1;
+  }
+'''
+          new_detail = '''  const previousPublicDetail = publicDetailsById.get(record.meeting_id) ?? null;
+  const desiredPublicDetail = publicDetailFromCanonical(meeting, detail, publicMeeting, policy, previousPublicDetail);
+  const publicDetailNeedsRepair = JSON.stringify(previousPublicDetail) !== JSON.stringify(desiredPublicDetail);
+  if (publicDetailNeedsRepair) {
+    if (desiredPublicDetail) publicDetailsById.set(record.meeting_id, desiredPublicDetail);
+    else publicDetailsById.delete(record.meeting_id);
+    changed = true;
+    if (!selected.some((item) => item.meeting_id === record.meeting_id)) selected.push(record);
+    outcomes.public_detail_repairs += 1;
+  }
+'''
+          text = replace_once(text, old_detail, new_detail, 'reviewed public detail repair')
+          text = text.replace("  const minimumPublicRank = capRank(record.capability_rank, policy.max_public_rank ?? 'C');", '  const minimumPublicRank = reviewedRank;')
+          path.write_text(text)
+
+          # The public view model must never promote/downgrade generated evidence with static rank overrides.
+          path = Path('src/lib/timetable/publicTimetableViewModel.ts')
+          text = path.read_text()
+          text = text.replace("import japanAPlusOverridesData from '../../../data/generated/timetable/public/japan-a-plus-overrides.json';\n", '')
+          text, n = re.subn(r"type JapanMeetingOverride = Pick<[\s\S]*?type PublicTimetableMeetingCorrection =", 'type PublicTimetableMeetingCorrection =', text, count=1)
+          if n != 1:
+              raise SystemExit(f'view-model override types removal: expected 1, got {n}')
+          text, n = re.subn(r"const japanAPlusOverrides = japanAPlusOverridesData as JapanAPlusPublicOverrides;[\s\S]*?const detailOverrideIndex = new Map\([\s\S]*?\);\n\n", '', text, count=1)
+          if n != 1:
+              raise SystemExit(f'view-model override indexes removal: expected 1, got {n}')
+          text = re.sub(r"const maxRank = \(left: CapabilityRank, right: CapabilityRank\): CapabilityRank =>\n  RANK_ORDER\[left\] >= RANK_ORDER\[right\] \? left : right;\n\n", '', text, count=1)
+
+          old_meetings = '''const generatedPublicMeetingRows: readonly PublicTimetableMeetingRow[] = meetingListDataset.meetings
+  .filter((meeting) => !reviewedPublicExcludedMeetingIds.has(meeting.meeting_id))
+  .map((meeting) => {
+    const override = meetingOverrideIndex.get(meeting.meeting_id);
+    const withRankOverride = override && canApplyMeetingRankOverride(meeting, override)
+      ? { ...meeting, effective_public_rank: override.effective_public_rank }
+      : meeting;
+    const correction = reviewedPublicCorrections.get(meeting.meeting_id);
+    return correction ? { ...withRankOverride, ...correction } : withRankOverride;
+  });
+'''
+          new_meetings = '''const generatedPublicMeetingRows: readonly PublicTimetableMeetingRow[] = meetingListDataset.meetings
+  .filter((meeting) => !reviewedPublicExcludedMeetingIds.has(meeting.meeting_id))
+  .map((meeting) => {
+    const correction = reviewedPublicCorrections.get(meeting.meeting_id);
+    return correction ? { ...meeting, ...correction } : meeting;
+  });
+'''
+          text = replace_once(text, old_meetings, new_meetings, 'view-model meeting overrides')
+
+          old_details = '''const generatedPublicMeetingDetails: readonly PublicTimetableMeetingDetail[] = meetingDetailsDataset.details
+  .map((detail) => {
+    const override = detailOverrideIndex.get(detail.meeting_id);
+    const withRankOverride = override && canApplyDetailRankOverride(detail, override)
+      ? {
+          ...detail,
+          effective_public_rank: override.effective_public_rank,
+          show_race_name: override.show_race_name,
+          show_distance: override.show_distance,
+          show_surface: override.show_surface,
+          show_course: override.show_course,
+          timetable_rows: override.timetable_rows,
+        }
+      : detail;
+    const correction = reviewedPublicDetailCorrections.get(detail.meeting_id);
+    return correction ? { ...withRankOverride, ...correction } : withRankOverride;
+  });
+'''
+          new_details = '''const generatedPublicMeetingDetails: readonly PublicTimetableMeetingDetail[] = meetingDetailsDataset.details
+  .map((detail) => {
+    const correction = reviewedPublicDetailCorrections.get(detail.meeting_id);
+    return correction ? { ...detail, ...correction } : detail;
+  });
+'''
+          text = replace_once(text, old_details, new_details, 'view-model detail overrides')
+
+          text = text.replace('      capability_rank: maxRank(existing.capability_rank, candidate.capability_rank),\n      effective_public_rank: maxRank(existing.effective_public_rank, candidate.effective_public_rank),', '      capability_rank: existing.capability_rank,\n      effective_public_rank: existing.effective_public_rank,')
+          text, n = re.subn(r"      capability_rank: maxRank\(existing\.capability_rank, candidate\.capability_rank\),\n      effective_public_rank: maxRank\(\n        existing\.effective_public_rank,\n        candidate\.effective_public_rank,\n      \) as PublicTimetableMeetingDetail\['effective_public_rank'\],", "      capability_rank: existing.capability_rank,\n      effective_public_rank: existing.effective_public_rank,", text, count=1)
+          if n != 1:
+              raise SystemExit(f'view-model detail monotonic rank removal: expected 1, got {n}')
+          path.write_text(text)
+
+          # A compatibility cleanup must not keep the old field name alive in runtime code.
+          path = Path('scripts/timetable/japan-zero-based-30d-core.mjs')
+          text = path.read_text()
+          text = replace_once(text, '    const { max_public_rank: _legacyMaxPublicRank, ...previousPublicWithoutCeiling } = previousPublic;\n', '    const previousPublicWithoutCeiling = previousPublic;\n', 'Japan legacy public ceiling cleanup')
+          path.write_text(text)
+          PY
+
+          git rm -f \
+            data/generated/timetable/public/japan-a-plus-overrides.json \
+            scripts/timetable/build-japan-a-plus-public-overrides.mjs \
+            scripts/timetable/migrate-public-projection-validator-to-rank-parity.mjs \
+            scripts/timetable/remove-public-rank-caps.mjs
+      - name: Reproject public snapshots from merged canonical evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { deriveBestAvailableRank } from './scripts/timetable/best-available-rank.mjs';
+          import { projectPublicTimetableRows } from './scripts/timetable/public-detail-projection.mjs';
+          const read = (path) => JSON.parse(fs.readFileSync(path, 'utf8'));
+          const write = (path, value) => fs.writeFileSync(path, `${JSON.stringify(value, null, 2)}\n`);
+          const canonical = read('data/generated/timetable/canonical/meetings.json');
+          const canonicalDetails = read('data/generated/timetable/canonical/meeting-details.json');
+          const oldPublic = read('data/generated/timetable/public/meeting-list.json');
+          const oldDetails = read('data/generated/timetable/public/meeting-details.json');
+          const policyData = read('src/data/publicationDisplayPolicies.json');
+          const detailById = new Map((canonicalDetails.details ?? []).map((row) => [row.meeting_id, row]));
+          const oldPublicById = new Map((oldPublic.meetings ?? []).map((row) => [row.meeting_id, row]));
+          const choosePolicy = (authorityId) => (policyData.policies ?? [])
+            .filter((policy) => (policy.match?.authority_ids ?? []).includes(authorityId))
+            .sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0))[0] ?? policyData.default_policy;
+          const meetings = [];
+          const details = [];
+          for (const meeting of canonical.meetings ?? []) {
+            const detail = detailById.get(meeting.meeting_id) ?? null;
+            const rank = deriveBestAvailableRank(meeting, detail?.timetable_rows ?? []);
+            const policy = choosePolicy(meeting.authority_id);
+            if (policy.include_in_public_list === false) continue;
+            const old = oldPublicById.get(meeting.meeting_id) ?? {};
+            const canDetail = ['A', 'A+'].includes(rank) && detail;
+            meetings.push({
+              meeting_id: meeting.meeting_id,
+              country_id: meeting.country_id,
+              authority_id: meeting.authority_id,
+              racecourse_id: meeting.racecourse_id,
+              date: meeting.date,
+              timezone: meeting.timezone,
+              capability_rank: rank,
+              effective_public_rank: rank,
+              first_race_time_local: meeting.first_race_time_local ?? detail?.timetable_rows?.[0]?.post_time_local ?? null,
+              last_race_time_local: meeting.last_race_time_local ?? detail?.timetable_rows?.at(-1)?.post_time_local ?? null,
+              policy_id: policy.id,
+              source_status: meeting.source_trace?.source_status ?? old.source_status ?? 'verified',
+              official_source_url: meeting.source_trace?.official_source_url ?? old.official_source_url,
+              last_checked_date: meeting.freshness?.last_checked_date ?? old.last_checked_date ?? null,
+              detail_path: canDetail ? `/timetable/meetings/${meeting.meeting_id}/` : null,
+              show_live_label: policy.show_live_label ?? old.show_live_label ?? false,
+              show_replay_label: policy.show_replay_label ?? old.show_replay_label ?? false,
+            });
+            if (canDetail) {
+              const projection = projectPublicTimetableRows(detail.timetable_rows ?? [], policy);
+              details.push({
+                meeting_id: meeting.meeting_id,
+                country_id: meeting.country_id,
+                authority_id: meeting.authority_id,
+                racecourse_id: meeting.racecourse_id,
+                date: meeting.date,
+                timezone: meeting.timezone,
+                capability_rank: rank,
+                effective_public_rank: rank,
+                policy_id: policy.id,
+                official_source_url: meeting.source_trace?.official_source_url ?? old.official_source_url,
+                source_status: meeting.source_trace?.source_status ?? old.source_status ?? 'verified',
+                last_checked_date: meeting.freshness?.last_checked_date ?? old.last_checked_date ?? null,
+                show_race_name: projection.visibility.show_race_name,
+                show_distance: projection.visibility.show_distance,
+                show_surface: projection.visibility.show_surface,
+                show_course: projection.visibility.show_course,
+                show_live_label: policy.show_live_label ?? false,
+                show_replay_label: policy.show_replay_label ?? false,
+                timetable_rows: projection.rows,
+              });
+            }
+          }
+          meetings.sort((a, b) => a.date.localeCompare(b.date) || a.meeting_id.localeCompare(b.meeting_id));
+          details.sort((a, b) => a.date.localeCompare(b.date) || a.meeting_id.localeCompare(b.meeting_id));
+          write('data/generated/timetable/public/meeting-list.json', { ...oldPublic, generated_at: canonical.generated_at, meetings });
+          write('data/generated/timetable/public/meeting-details.json', { ...oldDetails, generated_at: canonicalDetails.generated_at, details });
+          NODE
+      - name: Assert fixed-rank concepts are absent from executable paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          matches="$(git grep -n 'max_public_rank' -- data/generated/timetable/public src/data/publicationDisplayPolicies.json src/data/publicationDisplayPolicies.ts src/lib/timetable/publicTimetableViewModel.ts src/data/timetableMeetingRows.ts src/lib/timetable/publicCoverageState.mjs scripts/timetable || true)"
+          if [[ -n "$matches" ]]; then echo "$matches" >&2; exit 1; fi
+          overlays="$(git grep -n 'japan-a-plus-overrides\|canApplyMeetingRankOverride\|canApplyDetailRankOverride' -- src scripts .github package.json || true)"
+          if [[ -n "$overlays" ]]; then echo "$overlays" >&2; exit 1; fi
+      - name: Validate and build
+        run: |
+          npm install --no-package-lock --no-audit --no-fund
+          node scripts/check-calendar-field-publication-diagnostics.mjs
+          node scripts/check-calendar-refresh-publication-boundaries.mjs
+          node scripts/check-japan-best-available-rank.mjs
+          node scripts/check-non-japan-best-available-rank.mjs
+          node scripts/timetable/apply-reviewed-calendar-observations.mjs
+          node scripts/check-calendar-field-publication-diagnostics.mjs
+          npm run build
+          git diff --check
+      - name: Commit final synchronized branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add -A
+          git commit -m "merge: finalize evidence-derived Calendar rank contract on latest main"
+          git push origin HEAD:fix/remove-calendar-authority-rank-ceilings-20260911
