@@ -71,9 +71,9 @@ for (const file of walk('data/static').filter((file) => file.endsWith('.json')))
 {
   const file = 'scripts/check-calendar-acquisition-registry.mjs';
   let text = read(file);
-  text = text.replace(/const rankOrder =[^;]+;\n/s, '');
-  text = text.replace(/\n\s*if \(rankOrder\[entry\.public_ceiling\][\s\S]*?\n\s*\}/, '');
-  text = text.replaceAll('public_ceiling', '');
+  text = text.replace("  if (!ranks.includes(record.public_ceiling)) fail(`${label} has invalid public_ceiling.`);\n", '');
+  text = text.replace("  if (rankIndex.has(record.public_ceiling) && rankIndex.get(record.public_ceiling) > rankIndex.get(record.technical_capability_rank)) fail(`${label} public ceiling exceeds technical capability.`);\n", '');
+  text = text.replace("    if (record.public_ceiling !== policy.public_ceiling) fail(`${label} public ceiling differs from Japan policy.`);\n", '');
   write(file, text);
 }
 
