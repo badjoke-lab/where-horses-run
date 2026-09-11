@@ -53,13 +53,10 @@ const languageSwitchHref = explicitAlternateHref ?? defaultLanguageSwitchHref;
 const alternateLabel = isJapanese ? 'English' : '日本語';
 const timeZoneOptions = [
   { value: 'Asia/Tokyo', label: isJapanese ? '日本 — UTC+09:00' : 'Japan — UTC+09:00' },
-  { value: 'Asia/Seoul', label: isJapanese ? '韓国 — UTC+09:00' : 'Korea — UTC+09:00' },
+  { value: 'Asia/Seoul', label: isJapanese ? '韓国 — UTC+09:00' : 'South Korea — UTC+09:00' },
   { value: 'Asia/Hong_Kong', label: isJapanese ? '香港 — UTC+08:00' : 'Hong Kong — UTC+08:00' },
-  { value: 'Asia/Dubai', label: 'UAE — UTC+04:00' },
+  { value: 'Asia/Dubai', label: isJapanese ? 'アラブ首長国連邦 — UTC+04:00' : 'United Arab Emirates — UTC+04:00' },
   { value: 'Europe/Istanbul', label: isJapanese ? 'トルコ — UTC+03:00' : 'Türkiye — UTC+03:00' },
-  { value: 'Africa/Casablanca', label: isJapanese ? 'モロッコ — Africa/Casablanca' : 'Morocco — Africa/Casablanca' },
-  { value: 'Europe/Dublin', label: isJapanese ? 'アイルランド — Europe/Dublin' : 'Ireland — Europe/Dublin' },
-  { value: 'America/Santiago', label: isJapanese ? 'チリ — America/Santiago' : 'Chile — America/Santiago' },
   { value: 'UTC', label: 'UTC — UTC+00:00' },
 ];
 
@@ -353,12 +350,10 @@ const socialImageAlt = isJapanese
           const isJa = document.documentElement.lang === 'ja';
           return [
             ['Asia/Tokyo', isJa ? '日本 — UTC+09:00' : 'Japan — UTC+09:00'],
-            ['Asia/Seoul', isJa ? '韓国 — UTC+09:00' : 'Korea — UTC+09:00'],
+            ['Asia/Seoul', isJa ? '韓国 — UTC+09:00' : 'South Korea — UTC+09:00'],
             ['Asia/Hong_Kong', isJa ? '香港 — UTC+08:00' : 'Hong Kong — UTC+08:00'],
-            ['Asia/Dubai', 'UAE — UTC+04:00'],
+            ['Asia/Dubai', isJa ? 'アラブ首長国連邦 — UTC+04:00' : 'United Arab Emirates — UTC+04:00'],
             ['Europe/Istanbul', isJa ? 'トルコ — UTC+03:00' : 'Türkiye — UTC+03:00'],
-            ['Africa/Casablanca', isJa ? 'モロッコ — Africa/Casablanca' : 'Morocco — Africa/Casablanca'],
-            ['America/Santiago', isJa ? 'チリ — America/Santiago' : 'Chile — America/Santiago'],
             ['UTC', 'UTC — UTC+00:00'],
           ];
         };
