@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import './check-calendar-field-publication-diagnostics.mjs';
 
 const workflow = fs.readFileSync('.github/workflows/calendar-unified-official-refresh.yml', 'utf8');
 
