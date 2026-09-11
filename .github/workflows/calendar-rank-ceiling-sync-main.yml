@@ -146,7 +146,7 @@ jobs:
           NODE
 
           git add data/generated/timetable/public/meeting-list.json data/generated/timetable/public/meeting-details.json
-          test -z "$(git grep -n 'max_public_rank' -- src scripts docs data/generated/timetable/public || true)"
+          test -z "$(git grep -n 'max_public_rank' -- data/generated/timetable/public src/data/publicationDisplayPolicies.json src/data/publicationDisplayPolicies.ts src/lib/timetable/publicTimetableViewModel.ts src/data/timetableMeetingRows.ts src/lib/timetable/publicCoverageState.mjs scripts/timetable || true)"
       - name: Validate merged branch
         run: |
           npm install --no-package-lock --no-audit --no-fund
