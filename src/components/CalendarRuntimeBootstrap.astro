@@ -39,6 +39,12 @@ const {
       }
     };
     const params = new URL(window.location.href).searchParams;
+    if (params.get('diag') === 'calendar') {
+      const diagnosticsScript = document.createElement('script');
+      diagnosticsScript.src = '/calendar-diagnostics.js';
+      diagnosticsScript.defer = true;
+      document.head.append(diagnosticsScript);
+    }
     const browserTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const requestedTimeZone = params.get('tz');
     const timeZone = mode === 'meeting-detail'
