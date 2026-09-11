@@ -13,9 +13,9 @@ This addendum creates a parallel glossary knowledge lane. It does not supersede 
 Plain-language state:
 
 ```text
-Working dictionary: 651 terms/concepts
-Meaning-level source verified: 414
-Still under review: 237
+Working dictionary: 648 terms/concepts
+Meaning-level source verified: 442
+Still under review: 206
 Highest-priority core terms: 203/203 verified
 Jurisdiction-specific research additions: 161/161 verified
 Public glossary publication: disabled
@@ -35,6 +35,7 @@ Race types / classifications pass: complete current pass
 Surface / going / track-condition pass: complete current pass
 Meeting / schedule / official-document pass: complete current pass
 Results / inquiries / decisions / result-code pass: complete current pass
+Prize money / betting / odds pass: complete current pass
 Later: GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 ```
 
@@ -46,13 +47,13 @@ The glossary is first a useful user-facing worldwide horse-racing dictionary and
 
 `GLOSSARY-MASTER-001` through `004` established the specification, a zero-based 18-category seed, major-jurisdiction/local-language research, and the current register/abbreviation/historical layer.
 
-The relationship review currently has 20 scoped relations and 15/15 reviewed conflicts resolved. The abbreviation/code layer now has **38 source-verified rows** and historical terminology has 4 source-verified rows.
+The relationship review currently has 20 scoped relations and 15/15 reviewed conflicts resolved. The abbreviation/code layer has **38 source-verified rows** and historical terminology has 4 source-verified rows.
 
 ## Current evidence and semantic cleanup
 
 The highest-priority core terminology is **203/203 source-verified**. The current jurisdiction/relationship research additions are **161/161 source-verified**.
 
-The remaining task is to clean the lower-priority base dictionary. This does **not** mean automatically marking every seed row as valid. For each term the review may verify it, narrow its regional scope, rewrite its definition, split senses, merge a duplicate, move a code to the abbreviation layer, or remove a bad seed row.
+The remaining task is to clean the lower-priority base dictionary. This does **not** mean automatically marking every seed row as valid. For each term the review may verify it, narrow its regional scope, rewrite its definition, split senses, merge a duplicate, move a code/regional label to the appropriate layer, or remove a bad seed row.
 
 ### Completed base-dictionary pass 1
 
@@ -64,27 +65,25 @@ Verified **29 more terms** across horses, breeding, racing people, in-race expre
 
 ### Completed race types / classifications pass
 
-Verified **15 additional terms**: Maiden Claiming, Novice, Beginners Chase, National Hunt Flat Race, Allowance, Starter Allowance, Claiming, Optional Claiming, Pattern, Group 2 / Group 3, Grade 2 / Grade 3, Nursery Handicap and Match Race.
-
-The pass corrected semantics instead of merely changing status. `Beginners Chase` was normalized to current BHA wording, Allowance was kept separate from a global Conditions Race synonym claim, Optional Claiming was rewritten around its North American claiming/non-claiming eligibility structure, and Match Race was narrowed to the directly supported North American sense. `Selling race` remains under review because current BHA terminology uses `Seller`.
+Verified **15 additional terms** including Maiden Claiming, Novice, National Hunt Flat Race, Allowance/Claiming forms, Pattern, Group/Grade 2-3, Nursery Handicap and Match Race. Regional race-type semantics remain bounded rather than forced into global synonyms.
 
 ### Completed surface / going / track-condition pass
 
-Verified **10 additional terms**: Firm, Good to Firm, Good to Soft, Yielding, Yielding to Soft, Fast, Wet Fast, Muddy, Sloppy and dirt-qualified Good.
-
-The pass keeps regional systems separate. BHA Going, IHRB yielding-based terminology, US dirt conditions and JRA 良/稍重/重/不良 are not flattened into exact global equivalents. `Frozen`, `Snow-covered` and `Off turf` remain under review because their seed labels still require canonical-label reconciliation.
+Verified **10 additional terms** while keeping BHA Going, IHRB yielding-based terminology, US dirt conditions and JRA 良/稍重/重/不良 as separate jurisdictional systems. `Frozen`, `Snow-covered` and `Off turf` remain under review.
 
 ### Completed meeting / schedule / official-document pass
 
-Verified **6 additional terms**: Meeting number, Day number, Condition book, Weights, Barrier draw and First post.
-
-`MEET-015 Condition book` was retired as a duplicate of `MEET-014`, and the canonical English label for `MEET-014` was normalized from `Conditions book` to current NYRA-style `Condition book`. `Weights` is explicitly modeled as the publication/programme-stage sense rather than a second horse-weight Concept. `Program`, `Season`, `Bulletin` and `Daylight saving time` remain under review.
+Verified **6 additional terms** and retired duplicate `MEET-015 Condition book` into `MEET-014`. `Program`, `Season`, `Bulletin` and `Daylight saving time` remain under review.
 
 ### Completed results / inquiries / decisions / result-code pass
 
-Verified **13 additional semantic Concepts**: Provisional result, Runner-up, Objection, Protest, Claim of foul, Void race, No contest, Did not finish, Pulled up, Fell, Unseated rider, Brought down and Refused.
+Verified **13 additional semantic Concepts** and corrected code modeling. Result codes such as `DNF / PU / F / UR / BD / DQ / DH` are represented as abbreviations of semantic Concepts where appropriate. `Relegation`, `False start` and `RO / Ran Out` remain candidate.
 
-The pass also corrected code modeling. `DNF / P / PU / F / U / UR / BD / R` are now abbreviations attached to semantic result Concepts. Duplicate `RESULT-027 DQ` was retired into `RESULT-014 Disqualification`; duplicate `RESULT-028 DH` was retired into `RESULT-007 Dead heat`. `DQ`, `DISQ` and `DH` now live in the abbreviation layer. `Relegation`, `False start` and `RO / Ran Out` remain candidate until current authority semantics and regional code usage are reconciled.
+### Completed prize money / betting / odds pass
+
+Verified **28 additional Concepts**: six prize/value terms and 22 betting/pool/odds terms.
+
+The pass keeps prize schemes jurisdiction-specific and separates wager mechanics from regional names. `Forecast / Straight Forecast` resolves to the exact-order `Exacta` mechanic in the supported sense, `Reverse Forecast / Dual Forecast` resolves to `Quinella`, and `Tricast / Tierce` resolves to `Trifecta`; the three duplicate wager rows were retired through dispositions. Generic `Bonus`, polysemous `Stake`, `Totalisator`, `Fractional odds`, `American odds` and `On the board` remain candidate rather than being promoted from incomplete evidence.
 
 Authority/audit files now include:
 
@@ -95,37 +94,38 @@ data/glossary-master/sources/race-type-condition-sources-v1.tsv
 data/glossary-master/sources/surface-going-sources-v1.tsv
 data/glossary-master/sources/meeting-schedule-sources-v1.tsv
 data/glossary-master/sources/result-decision-sources-v1.tsv
+data/glossary-master/sources/prize-betting-sources-v1.tsv
 data/glossary-master/coverage/p1-verification-wave1-v1.tsv
 data/glossary-master/coverage/p1-verification-wave2-v1.tsv
 data/glossary-master/coverage/race-type-condition-verification-v1.tsv
 data/glossary-master/coverage/surface-going-verification-v1.tsv
 data/glossary-master/coverage/meeting-schedule-verification-v1.tsv
 data/glossary-master/coverage/result-decision-verification-v1.tsv
+data/glossary-master/coverage/prize-betting-verification-v1.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
 Current observed state:
 
-- all Concepts: **414/651 source-verified (63.6%)**, 237 candidate;
+- all Concepts: **442/648 source-verified (68.2%)**, 206 candidate;
 - core highest-priority set: **203/203 source-verified (100.0%)**;
-- active base seed: **253/490 source-verified (51.6%)**, 237 candidate;
+- active base seed: **281/487 source-verified (57.7%)**, 206 candidate;
 - supplemental jurisdiction/relationship research: **161/161 source-verified (100.0%)**;
-- retired/merged Concept rows: **11**;
+- retired/merged Concept rows: **14**;
 - abbreviations/codes: **38/38 source-verified**.
 
 ## What happens next
 
-The remaining **237 terms** will continue by understandable subject groups:
+The remaining **206 terms** will continue by understandable subject groups:
 
 ```text
-prize money and betting
--> welfare, veterinary and safety
--> remaining result / surface / meeting edge cases when stronger evidence exists
+welfare, veterinary and safety
+-> remaining result / prize / betting / surface / meeting edge cases when stronger evidence exists
 -> unresolved ambiguous terms and duplicate cleanup
 ```
 
-After those groups are processed, the evidence/readiness gate will be rerun. `GLOSSARY-MASTER-005` remains **HOLD — not complete** because 237 base terms still require review.
+After those groups are processed, the evidence/readiness gate will be rerun. `GLOSSARY-MASTER-005` remains **HOLD — not complete** because 206 base terms still require review.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
@@ -154,10 +154,10 @@ The current public glossary remains disposable content. There is no old-record m
 
 ```text
 Current Work ID: GLOSSARY-MASTER-005
-Working dictionary: 651 terms
-Verified: 414
-Still under review: 237
-Next subject group: prize money and betting
+Working dictionary: 648 terms
+Verified: 442
+Still under review: 206
+Next subject group: welfare / veterinary / safety
 MASTER-006: blocked until the evidence/readiness gate passes
 Public implementation: deferred
 ```
