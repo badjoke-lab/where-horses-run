@@ -14,17 +14,17 @@ Read these first for glossary work:
 
 ## Current state in plain language
 
-The working dictionary has **646 terms/concepts**.
+The working dictionary has **645 terms/concepts**.
 
-- **469 are source-verified at the meaning level**.
-- **177 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
+- **474 are source-verified at the meaning level**.
+- **171 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
 - the highest-priority core set is **203/203 verified**;
 - jurisdiction-specific research additions are **161/161 verified**;
 - publication is still disabled (`public_ready=0`, public runtime disconnected).
 
-The latest completed pass is the first **running / trip / race-comment terminology** bundle. Seven Concepts were verified: Break at the start, On the rail, Wide, Boxed in, Turn of foot, Eased and Lost rider. The duplicate North American Harness `Break` Concept was retired into `Broke stride` while the separate Flat start-event sense remains modeled independently.
+The latest completed pass is the second **running / trip / race-comment terminology** bundle. Five more Concepts were verified: Stalker, Presser, Pocket, Cover and Parked out. Generic `Pacesetter` was retired into `Front-runner`; the separate tactical-pacemaker Concept remains intact.
 
-The pass also corrected scope rather than just changing status. `Eased` now uses the specific Equibase chart-comment meaning, `Wide` is bounded to the directly supported regional usage, and HKJC evidence keeps `Lost rider` distinct from `Unseated rider`.
+The RUN passes preserve discipline and regional boundaries rather than treating every racing-comment label as globally interchangeable. Harness positioning stays Harness-scoped, while the Equibase running-style labels remain North American.
 
 Five earlier edge cases remain deliberately unresolved: `Daylight saving time`, `Ran Out`, generic `Bonus`, polysemous `Stake`, and `American odds`.
 
@@ -32,7 +32,7 @@ Five earlier edge cases remain deliberately unresolved: `Daylight saving time`, 
 
 The dictionary was built from zero rather than copied from the existing public glossary. Major jurisdiction/local-language research and the current slang/abbreviation/historical pass are complete. The core terminology set is fully source-verified, and all current jurisdiction-specific additions are evidence-backed.
 
-Base-dictionary cleanup has now verified **155 additional terms** and removed **11 duplicate or malformed rows**. Current base-dictionary coverage is **308/485 verified (63.5%)**.
+Base-dictionary cleanup has now verified **160 additional terms** and removed **12 duplicate or malformed rows**. Current base-dictionary coverage is **313/484 verified (64.7%)**.
 
 Canonical evidence/audit files include:
 
@@ -57,6 +57,7 @@ data/glossary-master/coverage/prize-betting-verification-v1.tsv
 data/glossary-master/coverage/welfare-safety-verification-v1.tsv
 data/glossary-master/coverage/residual-edgecase-verification-v1.tsv
 data/glossary-master/coverage/run-trip-verification-v1.tsv
+data/glossary-master/coverage/run-trip-verification-v2.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
@@ -71,13 +72,13 @@ The abbreviation/code layer remains at **38 source-verified rows**.
 - WELF: **18/18 verified (100%)**.
 - PRIZE: **10/12 verified (83.3%)** — Bonus and Stake remain candidate.
 
-RUN is now **28/47 verified (59.6%)** after the first focused running/trip pass. Nineteen RUN candidates remain, including running-style nouns, regional Jump language and Harness-specific terms that need exact authority evidence or further duplicate review.
+RUN is now **33/46 verified (71.7%)** after two focused running/trip passes. Thirteen RUN candidates remain; these are mainly ambiguous generic labels, regional Jump terms, course-stage labels and remaining Harness gait terminology.
 
 ## What remains
 
-The **177 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
+The **171 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
 
-The immediate next step is to continue RUN with the remaining defensible running-style, Jump and Harness terminology. After RUN, the next broad categories are equipment, training, horse/breeding/roles, venue, entry, race type, surface, distance and weight. The five residual edge cases stay visible for later evidence-driven resolution.
+The immediate next step is to finish the remaining 13 RUN candidates where authority evidence supports the exact sense. After RUN, the next broad categories are equipment, training, horse/breeding/roles, venue, entry, race type, surface, distance and weight. The five residual edge cases stay visible for later evidence-driven resolution.
 
 After that cleanup, the evidence/readiness gate will be rerun. `MASTER-006` and public glossary architecture remain blocked until that review is defensible.
 

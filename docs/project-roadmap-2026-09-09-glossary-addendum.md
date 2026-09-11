@@ -13,9 +13,9 @@ This addendum creates a parallel glossary knowledge lane. It does not supersede 
 Plain-language state:
 
 ```text
-Working dictionary: 646 terms/concepts
-Meaning-level source verified: 469
-Still under review: 177
+Working dictionary: 645 terms/concepts
+Meaning-level source verified: 474
+Still under review: 171
 Highest-priority core terms: 203/203 verified
 Jurisdiction-specific research additions: 161/161 verified
 Public glossary publication: disabled
@@ -38,7 +38,7 @@ Results / inquiries / decisions / result-code pass: complete current pass
 Prize money / betting / odds pass: complete current pass
 Welfare / veterinary / safety pass: complete current pass
 Residual edge-case pass: complete current pass
-Running / trip / race-comment pass: first bundle complete, further bundles active
+Running / trip / race-comment pass: wave 2 complete; final RUN cleanup active
 Later: GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 ```
 
@@ -69,7 +69,8 @@ The remaining task is to clean the lower-priority base dictionary. This does **n
 - Prize money/betting/odds: **28 verified**, duplicate regional wager mechanics consolidated.
 - Welfare/veterinary/safety: **13 verified**, bringing WELF to **18/18 source-verified**.
 - Residual edge cases: **7 verified**, duplicate `Program` consolidated into `Programme`.
-- Running/trip/race comments first bundle: **7 verified**, duplicate Harness `Break` consolidated into `Broke stride`.
+- Running/trip/race comments wave 1: **7 verified**, duplicate Harness `Break` consolidated into `Broke stride`.
+- Running/trip/race comments wave 2: **5 verified**, generic `Pacesetter` consolidated into `Front-runner`.
 
 ### Residual edge-case pass
 
@@ -77,13 +78,13 @@ The residual pass verified Season, Bulletin, Relegation, False start, Totalisato
 
 The pass deliberately did **not** promote five remaining edge cases: `Daylight saving time`, `Ran Out`, generic `Bonus`, polysemous `Stake`, and `American odds`. Their current evidence or Concept boundary is insufficient for a clean worldwide racing-dictionary entry.
 
-### Running / trip / race-comment pass — first bundle
+### Running / trip / race-comment pass
 
-The first RUN bundle verified `Break` at the start, `On the rail`, `Wide`, `Boxed in`, `Turn of foot`, `Eased`, and `Lost rider` using current Equibase, The Jockey Club, HKJC and USTA material.
+Wave 1 verified `Break` at the start, `On the rail`, `Wide`, `Boxed in`, `Turn of foot`, `Eased`, and `Lost rider` using current Equibase, The Jockey Club, HKJC and USTA material. The Harness `Break` row was retired into `Broke stride`, while the Flat start-event sense remains separate.
 
-The pass corrected semantic boundaries rather than just raising coverage. The Flat start-event `Break` remains distinct from Harness `Break`; the Harness row was retired into `Broke stride`. `Eased` is bounded to the Equibase chart-comment sense, and `Lost rider` remains distinct from `Unseated rider` because HKJC explicitly carries separate LR and UR result codes.
+Wave 2 verified `Stalker`, `Presser`, `Pocket`, `Cover` and `Parked out`. `Pacesetter` was retired into `Front-runner` because the generic running-style sense is not a second semantic Concept; the separate tactical pacemaker Concept remains independently modeled.
 
-RUN is now **28/47 source-verified (59.6%)**, with 19 candidates still requiring running-style, regional Jump or Harness-specific evidence/modeling.
+RUN is now **33/46 source-verified (71.7%)**, with **13 candidates** remaining. Those candidates are mainly ambiguous generic labels, regional Jump terms, course-stage labels and remaining Harness gait terminology.
 
 Authority/audit files now include:
 
@@ -108,30 +109,31 @@ data/glossary-master/coverage/prize-betting-verification-v1.tsv
 data/glossary-master/coverage/welfare-safety-verification-v1.tsv
 data/glossary-master/coverage/residual-edgecase-verification-v1.tsv
 data/glossary-master/coverage/run-trip-verification-v1.tsv
+data/glossary-master/coverage/run-trip-verification-v2.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
 Current observed state:
 
-- all Concepts: **469/646 source-verified (72.6%)**, 177 candidate;
+- all Concepts: **474/645 source-verified (73.5%)**, 171 candidate;
 - core highest-priority set: **203/203 source-verified (100.0%)**;
-- active base seed: **308/485 source-verified (63.5%)**, 177 candidate;
+- active base seed: **313/484 source-verified (64.7%)**, 171 candidate;
 - supplemental jurisdiction/relationship research: **161/161 source-verified (100.0%)**;
-- RUN: **28/47 source-verified (59.6%)**;
+- RUN: **33/46 source-verified (71.7%)**;
 - MEET: **37/38 source-verified (97.4%)**;
 - RESULT: **27/28 source-verified (96.4%)**;
 - BET: **38/39 source-verified (97.4%)**;
 - WELF: **18/18 source-verified (100.0%)**;
-- retired/merged Concept rows: **16**;
+- retired/merged Concept rows: **17**;
 - abbreviations/codes: **38/38 source-verified**.
 
 ## What happens next
 
-The remaining **177 terms** continue by the categories with the largest unresolved candidate sets:
+The remaining **171 terms** continue by the categories with the largest unresolved candidate sets:
 
 ```text
-continue running styles / Jump / Harness trip terminology
+finish the remaining 13 RUN candidates where evidence supports the exact sense
 -> equipment and training terminology
 -> horse / breeding / participant roles
 -> venue and entry terminology
@@ -140,7 +142,7 @@ continue running styles / Jump / Harness trip terminology
 -> rerun evidence/readiness gate
 ```
 
-`GLOSSARY-MASTER-005` remains **HOLD — not complete**. A 72.6% verified master with 177 unresolved seed Concepts is not ready to advance.
+`GLOSSARY-MASTER-005` remains **HOLD — not complete**. A 73.5% verified master with 171 unresolved seed Concepts is not ready to advance.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
@@ -169,10 +171,10 @@ The current public glossary remains disposable content. There is no old-record m
 
 ```text
 Current Work ID: GLOSSARY-MASTER-005
-Working dictionary: 646 terms
-Verified: 469
-Still under review: 177
-Next subject group: continue RUN running-style / Jump / Harness terminology
+Working dictionary: 645 terms
+Verified: 474
+Still under review: 171
+Next subject group: finish remaining RUN candidates, then equipment/training
 MASTER-006: blocked until the evidence/readiness gate passes
 Public implementation: deferred
 ```
