@@ -58,6 +58,7 @@ jobs:
           rm -f scripts/check-calendar-first-paint-consistency.mjs
           rm -f scripts/check-calendar-dynamic-dates.mjs
           rm -f scripts/check-calendar-30d-timetable-ui.mjs
+          rm -f .github/workflows/calendar-rank-ceiling-finalize.yml
       - name: Assert obsolete rank and audit paths are absent
         shell: bash
         run: |
@@ -98,7 +99,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          rm -f .github/workflows/calendar-rank-ceiling-finalize.yml
           git add -A
           git commit -m "fix: finish evidence-derived Calendar rank contract"
           git push origin HEAD:fix/remove-calendar-authority-rank-ceilings-20260911
