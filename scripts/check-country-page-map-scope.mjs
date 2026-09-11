@@ -21,16 +21,59 @@ assert.doesNotMatch(
   'Country pages must not pass every active racecourse directly to the strict map component.'
 );
 
-for (const id of [
+const expectedCountryMapIds = [
+  // Chile (4)
+  'club-hipico-de-concepcion-racecourse',
+  'club-hipico-de-santiago-racecourse',
   'hipodromo-chile',
+  'valparaiso-sporting-club-racecourse',
+  // Ireland (26)
+  'ireland--ballinrobe',
+  'ireland--bellewstown',
+  'ireland--clonmel',
+  'ireland--cork-mallow',
+  'ireland--curragh',
+  'ireland--downpatrick',
+  'ireland--down-royal',
+  'ireland--dundalk',
+  'ireland--fairyhouse',
+  'ireland--galway',
+  'ireland--gowran-park',
+  'ireland--kilbeggan',
+  'ireland--killarney',
   'ireland--laytown',
-  'meknes-racecourse',
+  'ireland--leopardstown',
+  'ireland--limerick',
+  'ireland--listowel',
+  'ireland--naas',
+  'ireland--navan',
+  'ireland--punchestown',
+  'ireland--roscommon',
+  'ireland--sligo',
+  'ireland--thurles',
+  'ireland--tipperary',
+  'ireland--tramore',
+  'ireland--wexford',
+  // South Korea (4)
   'seoul-racecourse',
   'busan-gyeongnam-racecourse',
+  'yeongcheon-racecourse',
   'jeju-racecourse',
-]) {
+  // Morocco (7)
+  'casablanca-anfa-racecourse',
+  'meknes-racecourse',
+  'marrakech-racecourse',
+  'rabat-racecourse',
+  'settat-racecourse',
+  'el-jadida-racecourse',
+  'khemisset-racecourse',
+];
+
+assert.equal(expectedCountryMapIds.length, 41, 'expected 41 regression racecourses');
+for (const id of expectedCountryMapIds) {
   assert(reviewedIds.has(id), `${id}: expected reviewed country-map location`);
 }
 
 console.log('COUNTRY_PAGE_MAP_SCOPE: pass');
+console.log('ACTIVE_COUNTRY_MAP_41_LOCATIONS: pass');
 console.log('PARTIAL_LOCATION_COVERAGE_DOES_NOT_KILL_COUNTRY_MAP: pass');
