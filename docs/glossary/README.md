@@ -16,23 +16,23 @@ Read these first for glossary work:
 
 The working dictionary has **654 terms/concepts**.
 
-- **385 are source-verified at the meaning level**.
-- **269 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
+- **395 are source-verified at the meaning level**.
+- **259 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
 - the highest-priority core set is **203/203 verified**;
 - jurisdiction-specific research additions are **161/161 verified**;
 - publication is still disabled (`public_ready=0`, public runtime disconnected).
 
-The latest completed subject pass verified **15 race-type/classification terms**: Maiden Claiming, Novice, Beginners Chase, National Hunt Flat Race, Allowance, Starter Allowance, Claiming, Optional Claiming, Pattern, Group 2, Group 3, Grade 2, Grade 3, Nursery Handicap and Match Race.
+The latest completed subject pass is **surface / going / track-condition terminology**. Ten terms were verified: Firm, Good to Firm, Good to Soft, Yielding, Yielding to Soft, Fast, Wet Fast, Muddy, Sloppy and dirt-qualified Good.
 
-Definitions are kept regional where the rules are regional. Allowance is not flattened into the British Conditions Race concept, Optional Claiming preserves its North American claiming/non-claiming eligibility structure, and Match Race is not treated as a universal coding rule. `Selling race` remains under review because current BHA terminology uses `Seller`.
+These are not flattened into one worldwide condition scale. British Going, Irish yielding-based labels, US dirt conditions and Japanese 良/稍重/重/不良 remain separate jurisdictional systems. `Frozen`, `Snow-covered` and `Off turf` remain under review because their seed labels still need canonical-label reconciliation.
 
-The preceding pass verified **29 terms** across horses, breeding, people, in-race language, equipment and training, and removed the duplicate breeding-category `Breeder` row.
+The preceding race-type/classification pass verified 15 terms including Maiden Claiming, Novice, National Hunt Flat Race, Allowance/Claiming forms, Pattern, Group/Grade 2-3, Nursery Handicap and Match Race.
 
 ## What has been completed
 
 The dictionary was built from zero rather than copied from the existing public glossary. Major jurisdiction/local-language research and the current slang/abbreviation/historical pass are complete. The core terminology set is fully source-verified, and all current jurisdiction-specific additions are evidence-backed.
 
-The base dictionary cleanup has now verified **71 additional terms** and removed **3 duplicate or malformed rows**. Current base-dictionary coverage is **224/493 verified (45.4%)**.
+Base-dictionary cleanup has now verified **81 additional terms** and removed **3 duplicate or malformed rows**. Current base-dictionary coverage is **234/493 verified (47.5%)**.
 
 Canonical evidence/audit files include:
 
@@ -40,22 +40,23 @@ Canonical evidence/audit files include:
 data/glossary-master/sources/p1-core-sources-v1.tsv
 data/glossary-master/sources/p1-core-sources-v2.tsv
 data/glossary-master/sources/race-type-condition-sources-v1.tsv
+data/glossary-master/sources/surface-going-sources-v1.tsv
 data/glossary-master/coverage/p1-verification-wave1-v1.tsv
 data/glossary-master/coverage/p1-verification-wave2-v1.tsv
 data/glossary-master/coverage/race-type-condition-verification-v1.tsv
+data/glossary-master/coverage/surface-going-verification-v1.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
 ## What remains
 
-The **269 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
+The **259 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
 
 The next practical groups are:
 
 ```text
-remaining race-type edge cases
-surface and going terminology
+remaining surface/product edge cases
 meeting / fixture / schedule terminology
 result / inquiry / result-code terminology
 prize and betting terminology
