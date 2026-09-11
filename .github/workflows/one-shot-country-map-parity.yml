@@ -32,8 +32,6 @@ jobs:
             return text.slice(0, first) + to + text.slice(first + from.length);
           };
 
-          // Chile: remove the stale duplicate physical venue identity. The canonical
-          // Calendar/master identity is hipodromo-chile in racecourses.json.
           const chilePath = 'data/static/country-page-racecourses-01-04.json';
           const chileText = fs.readFileSync(chilePath, 'utf8');
           const chileLines = chileText.split('\n');
@@ -42,7 +40,6 @@ jobs:
           chileLines.splice(legacyIndex, 1);
           fs.writeFileSync(chilePath, chileLines.join('\n'));
 
-          // Country pages should show one physical marker per listed racecourse.
           const mapPath = 'src/components/RacecourseMap.astro';
           let map = fs.readFileSync(mapPath, 'utf8');
           map = replaceOnce(map,
@@ -94,27 +91,13 @@ jobs:
             "console.log('ACTIVE_COUNTRY_MAP_41_LOCATIONS: pass');\nconsole.log('CHILE_LIST_MAP_PARITY_4_OF_4: pass');\nconsole.log('SOUTH_KOREA_LIST_MAP_PARITY_4_OF_4: pass');\nconsole.log('COUNTRY_MAP_UNCLUSTERED_PHYSICAL_POINTS: pass');",
             'validator parity logs');
           fs.writeFileSync(checkPath, check);
-
-          const workflowPath = '.github/workflows/racecourse-map-regression.yml';
-          let workflow = fs.readFileSync(workflowPath, 'utf8');
-          workflow = replaceOnce(workflow,
-            "      - 'data/static/racecourse-locations-v1.json'\n      - 'data/static/racecourse-location-supplement-evidence-v1.json'",
-            "      - 'data/static/racecourse-locations-v1.json'\n      - 'data/static/racecourse-location-supplement-evidence-v1.json'\n      - 'data/static/racecourses.json'\n      - 'data/static/country-page-racecourses-01-04.json'",
-            'regression workflow data paths');
-          workflow = replaceOnce(workflow,
-            "      - 'src/components/CountryHubPage.astro'",
-            "      - 'src/components/CountryHubPage.astro'\n      - 'src/components/RacecourseMap.astro'",
-            'regression workflow component paths');
-          fs.writeFileSync(workflowPath, workflow);
-
-          fs.unlinkSync('.github/workflows/one-shot-country-map-parity.yml');
           NODE
 
       - name: Commit fix
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
+          git add data/static/country-page-racecourses-01-04.json src/components/RacecourseMap.astro src/components/CountryHubPage.astro scripts/check-country-page-map-scope.mjs
           git diff --cached --check
           git commit -m 'fix: align country racecourse counts with map points'
           git push origin HEAD:fix/country-racecourse-count-map-parity-20260911
