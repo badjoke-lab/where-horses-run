@@ -63,7 +63,6 @@ for (const entry of registry.records ?? []) {
 
 const expectedCurrentGaps = new Set([
   'sorec-racing-information-system',
-  'chile-teletrak-racing-system',
 ]);
 assert.deepEqual(new Set(obviousImplementationGaps.map((row) => row.system_id)), expectedCurrentGaps);
 
@@ -156,7 +155,8 @@ function runApplyFixture({
   }
 }
 
-runApplyFixture({ id: 'chile-contract', countryId: 'chile', authorityId: 'teletrak-chile', systemId: 'chile-teletrak-racing-system', timezone: 'America/Santiago', rank: 'C', expectedDisposition: 'implementation_gap' });
+runApplyFixture({ id: 'chile-pending', countryId: 'chile', authorityId: 'teletrak-chile', systemId: 'chile-teletrak-racing-system', timezone: 'America/Santiago', rank: 'C', detailStatus: 'not_published', expectedDisposition: 'pending_publication' });
+runApplyFixture({ id: 'chile-available', countryId: 'chile', authorityId: 'teletrak-chile', systemId: 'chile-teletrak-racing-system', timezone: 'America/Santiago', rank: 'A', detailStatus: 'available', evaluatedCapabilityRank: 'A', expectedDisposition: 'complete_current_best_available' });
 runApplyFixture({ id: 'uae-pending', countryId: 'united-arab-emirates', authorityId: 'emirates-racing-authority', systemId: 'uae-national-racing-system', timezone: 'Asia/Dubai', rank: 'C', detailStatus: 'not_published', expectedDisposition: 'pending_publication' });
 runApplyFixture({ id: 'kra-retry', countryId: 'south-korea', authorityId: 'korea-racing-authority', systemId: 'kra-national-racing-system', timezone: 'Asia/Seoul', rank: 'C', detailStatus: 'source_error', expectedDisposition: 'retry_required' });
 runApplyFixture({ id: 'uae-current-best', countryId: 'united-arab-emirates', authorityId: 'emirates-racing-authority', systemId: 'uae-national-racing-system', timezone: 'Asia/Dubai', rank: 'B', detailStatus: 'available', evaluatedCapabilityRank: 'A', expectedDisposition: 'complete_current_best_available' });
@@ -168,7 +168,7 @@ runApplyFixture({ id: 'ireland-available', countryId: 'ireland', authorityId: 'h
 console.log(JSON.stringify({
   ok: true,
   classifier_fixture_cases: 12,
-  apply_integration_cases: 8,
+  apply_integration_cases: 9,
   implemented_profiles_checked: (registry.records ?? []).filter((row) => ['active', 'provisional'].includes(row.profile_status)).length,
   current_registry_level_implementation_gaps: obviousImplementationGaps,
 }, null, 2));
