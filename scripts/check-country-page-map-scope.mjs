@@ -1,11 +1,12 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
+import { isPublishableRacecourseMapLocation } from '../src/lib/racecourseMapLocationPolicy.mjs';
 
 const component = fs.readFileSync('src/components/CountryHubPage.astro', 'utf8');
 const registry = JSON.parse(fs.readFileSync('data/static/racecourse-locations-v1.json', 'utf8'));
-const reviewedIds = new Set(
+const publishableIds = new Set(
   (registry.locations ?? [])
-    .filter((entry) => entry?.location?.verification_state === 'reviewed')
+    .filter((entry) => isPublishableRacecourseMapLocation(entry))
     .map((entry) => entry.id)
 );
 
@@ -71,7 +72,7 @@ const expectedCountryMapIds = [
 
 assert.equal(expectedCountryMapIds.length, 41, 'expected 41 regression racecourses');
 for (const id of expectedCountryMapIds) {
-  assert(reviewedIds.has(id), `${id}: expected reviewed country-map location`);
+  assert(publishableIds.has(id), `${id}: expected publishable country-map location`);
 }
 
 console.log('COUNTRY_PAGE_MAP_SCOPE: pass');
