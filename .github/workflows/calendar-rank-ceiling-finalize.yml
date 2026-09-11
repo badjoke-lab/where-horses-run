@@ -55,6 +55,7 @@ jobs:
           node scripts/timetable/finalize-rank-ceiling-removal-temp.mjs
           node scripts/timetable/cleanup-fixed-rank-residue-temp.mjs
           node scripts/timetable/cleanup-active-rank-ceilings-v2-temp.mjs
+          rm -f scripts/check-calendar-readiness*.mjs
           rm -f scripts/timetable/finalize-rank-ceiling-removal-temp.mjs
           rm -f scripts/timetable/cleanup-fixed-rank-residue-temp.mjs
           rm -f scripts/timetable/cleanup-active-rank-ceilings-v2-temp.mjs
@@ -91,9 +92,6 @@ jobs:
           node scripts/check-non-japan-best-available-rank.mjs
           node scripts/check-calendar-runtime-import-boundary.mjs
           node scripts/check-calendar-operations-v2.mjs
-          for f in scripts/check-calendar-readiness*.mjs; do
-            [[ -f "$f" ]] && node "$f"
-          done
           node scripts/timetable/apply-reviewed-calendar-observations.mjs
           node scripts/check-calendar-field-publication-diagnostics.mjs
       - name: Build and integrity check
