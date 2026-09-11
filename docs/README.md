@@ -15,7 +15,7 @@ Parallel programme authority is listed below; a parallel addendum does not super
 ## Programme sections
 
 - [Country page programme](country-pages/README.md) — roadmap, tracker, completion contract, and active addenda
-- [Calendar programme](calendar/README.md) — Source Test v2, Calendar Readiness, implementation roadmap, and baseline audit
+- [Calendar programme](calendar/README.md) — Source Test v2, Calendar Readiness, implementation roadmap, acquisition completion, field publication/diagnostics, and active addenda
 - [Glossary programme](glossary/README.md) — world racing terminology master, multilingual/regional knowledge model, evidence rules, and deferred public-page lane
 - [Specifications](specs/README.md) — product, data, UI, display, acquisition, and operations specifications
 - [Research](research/README.md) — country/source surveys and feasibility notes
@@ -59,6 +59,8 @@ Country pages:
 Calendar:
 
 - [Acquisition completion contract](calendar/acquisition-completion-contract.md) — canonical rule separating valid C/B/B+/A observations from acquisition-cycle completion and requiring explicit higher-detail disposition
+- [Field publication and diagnostics contract](calendar/field-publication-and-diagnostics-contract.md) — canonical rule preserving verified richer fields independently of rank, using `detail_fields`, and gating operator diagnostics behind `?diag=calendar`
+- [2026-09-11 Calendar implementation addendum](calendar/implementation-roadmap-2026-09-11-addendum.md) — current operating-model pointer; supersedes older Calendar roadmap/index wording where it conflicts with the 2026-09-11 contracts
 - [Source Test v2 contract](calendar/source-test-v2-contract.md)
 - [Calendar Readiness contract](calendar/calendar-readiness-contract.md)
 - [Calendar implementation roadmap](calendar/implementation-roadmap.md)
