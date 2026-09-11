@@ -8,30 +8,30 @@ This directory is the non-public working area for the worldwide horse-racing ter
 
 ## Plain-language progress
 
-The working dictionary currently contains **648 racing terms/concepts**.
+The working dictionary currently contains **647 racing terms/concepts**.
 
-- **455 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
-- **193 terms still need verification, scope correction, splitting/merging, or removal.**
+- **462 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
+- **185 terms still need verification, scope correction, splitting/merging, or removal.**
 - The already researched jurisdiction-specific additions are **161/161 verified**.
 - The core highest-priority terminology set is **203/203 verified**.
 - Public glossary publication is still disabled while the remaining terms are cleaned up.
 
-The latest subject pass is **獣医・安全・競走馬福祉 / welfare, veterinary and safety terminology**. It verified all 13 previously unresolved WELF Concepts, bringing WELF to **18/18 source-verified**.
+The latest pass is **residual edge-case cleanup**. It verified seven additional Concepts: Season, Bulletin, Relegation, False start, Totalisator, Fractional odds and On the board. `Program` was retired as a duplicate/regional spelling label of `Programme`, reducing the Concept count by one.
 
-This pass preserves regulatory and reporting scope rather than flattening everything globally. `Unsound` is explicitly modeled as a current HISA/US regulatory-veterinary usage. Veterinary scratches, race-day injuries, fatalities, euthanasia, retirement and rehoming retain jurisdiction-specific procedures and reporting boundaries. Pre-race/post-race examinations, sample collection, whip rules and track safety are supported by current authority material without claiming one worldwide operating protocol.
+Five edge cases remain deliberately unresolved: `Daylight saving time`, `Ran Out`, generic `Bonus`, polysemous `Stake`, and `American odds`. They remain candidates because current evidence or dictionary-value boundaries are not strong enough to justify promotion.
 
-The preceding prize/betting pass verified 28 Concepts and retired three duplicate regional wager mechanics.
+The preceding welfare/veterinary/safety pass brought WELF to **18/18 source-verified**.
 
 ## Current master
 
-- Concepts: **648**
+- Concepts: **647**
 - categories: **18**
-- P0: **203** / P1: **295** / P2: **132** / P3: **18**
+- P0: **203** / P1: **294** / P2: **132** / P3: **18**
 - `public_ready=yes`: **0**
 - public runtime input: **false**
 - active Concept relations: **20**
 - relationship reviews: **15 discovered / 15 resolved / 0 open**
-- retired/merged Concept rows: **14**
+- retired/merged Concept rows: **15**
 
 ## Core source verification — complete
 
@@ -56,27 +56,30 @@ Verified **15** race-type/classification terms. RTYPE is **96/111 verified**.
 Verified **10** additional surface-condition terms. SURF is **52/63 verified (82.5%)**.
 
 ### Meeting and schedule terminology — complete current pass
-Verified **6** additional terms and retired **1 duplicate**. MEET is **35/39 verified (89.7%)**.
+The initial pass verified 6 terms and retired 1 duplicate. Residual cleanup later verified Season and Bulletin and retired `Program` into `Programme`. MEET is now **37/38 verified (97.4%)**; only `Daylight saving time` remains candidate.
 
 ### Results and decisions — complete current pass
-Verified **13** additional semantic Concepts and retired **2 duplicate code Concepts**. RESULT is **25/28 verified (89.3%)**.
+The initial pass verified 13 semantic Concepts and retired 2 duplicate code Concepts. Residual cleanup verified Relegation and False start. RESULT is now **27/28 verified (96.4%)**; `Ran Out` remains candidate.
 
 ### Prize and betting terminology — complete current pass
-Verified **28** additional Concepts and retired **3 duplicate regional wager Concepts**. PRIZE is **10/12 verified (83.3%)** and BET is **35/39 verified (89.7%)**.
+The initial pass verified 28 Concepts and retired 3 duplicate regional wager Concepts. Residual cleanup verified Totalisator, Fractional odds and On the board. PRIZE remains **10/12 verified (83.3%)** and BET is now **38/39 verified (97.4%)**; `American odds` remains candidate.
 
 ### Welfare, veterinary and safety terminology — complete current pass
-Audit: `coverage/welfare-safety-verification-v1.tsv`  
-Sources: `sources/welfare-safety-sources-v1.tsv` plus existing IFHA medication/welfare evidence.
+Verified **13** additional Concepts. WELF is **18/18 source-verified (100.0%)**. Definitions keep HISA/BHA/Racing Australia/IFHA-specific operational and reporting boundaries explicit.
 
-Verified **13** additional Concepts. WELF is now **18/18 source-verified (100.0%)**. Definitions keep HISA/BHA/Racing Australia/IFHA-specific operational and reporting boundaries explicit.
+### Residual edge-case cleanup — complete current pass
+Audit: `coverage/residual-edgecase-verification-v1.tsv`  
+Sources: `sources/residual-edgecase-sources-v1.tsv` plus existing authority sources.
 
-Across these lower-priority passes, **141 base-dictionary terms have been newly verified and 9 duplicate/malformed rows have been removed**.
+Verified **7** additional Concepts and retired **1 duplicate Program Concept**. This pass intentionally leaves five weak/polysemous/non-racing-specific edge cases unresolved rather than promoting them for percentage gain.
+
+Across the lower-priority cleanup passes, **148 base-dictionary terms have been newly verified and 10 duplicate/malformed rows have been removed**.
 
 ## Evidence state
 
-- all Concepts: **455 / 648 source-verified (70.2%)**; **193 candidate**
+- all Concepts: **462 / 647 source-verified (71.4%)**; **185 candidate**
 - core highest-priority set: **203 / 203 source-verified (100.0%)**
-- active base seed: **294 / 487 source-verified (60.4%)**; **193 candidate**
+- active base seed: **301 / 486 source-verified (61.9%)**; **185 candidate**
 - supplemental jurisdiction/relationship research: **161 / 161 source-verified (100.0%)**
 
 Canonical current audit state includes:
@@ -90,17 +93,18 @@ coverage/meeting-schedule-verification-v1.tsv
 coverage/result-decision-verification-v1.tsv
 coverage/prize-betting-verification-v1.tsv
 coverage/welfare-safety-verification-v1.tsv
+coverage/residual-edgecase-verification-v1.tsv
 coverage/master-005-evidence-coverage-v1.tsv
 coverage/master-005-completion-gate-v1.tsv
 ```
 
 ## Current completion decision
 
-The terminology master remains **not complete**. The remaining **193 terms** must be reviewed rather than automatically promoted.
+The terminology master remains **not complete**. The remaining **185 terms** must be reviewed rather than automatically promoted.
 
-Next work is no longer another broad subject lane. It is systematic cleanup of the remaining ambiguous/category-specific candidates, including residual surface, meeting, result, prize/betting and other base-dictionary terms, followed by a fresh evidence/readiness gate.
+The next phase is systematic cleanup of the broad categories that still contain substantial candidate counts: running/trip terminology, equipment, training, horse/breeding/role, venue, entry, race type, surface, distance and weight. The five unresolved edge cases remain visible and can be revisited only when stronger evidence or a clearer modeling decision exists.
 
-Public implementation remains deferred until that evidence/readiness review passes.
+Public implementation remains deferred until the evidence/readiness review passes.
 
 ## Register / abbreviation / historical state
 

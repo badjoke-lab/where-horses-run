@@ -13,9 +13,9 @@ This addendum creates a parallel glossary knowledge lane. It does not supersede 
 Plain-language state:
 
 ```text
-Working dictionary: 648 terms/concepts
-Meaning-level source verified: 455
-Still under review: 193
+Working dictionary: 647 terms/concepts
+Meaning-level source verified: 462
+Still under review: 185
 Highest-priority core terms: 203/203 verified
 Jurisdiction-specific research additions: 161/161 verified
 Public glossary publication: disabled
@@ -37,6 +37,7 @@ Meeting / schedule / official-document pass: complete current pass
 Results / inquiries / decisions / result-code pass: complete current pass
 Prize money / betting / odds pass: complete current pass
 Welfare / veterinary / safety pass: complete current pass
+Residual edge-case pass: complete current pass
 Later: GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 ```
 
@@ -66,12 +67,13 @@ The remaining task is to clean the lower-priority base dictionary. This does **n
 - Results/inquiries/decisions/result codes: **13 verified**, duplicate result-code Concepts retired and codes moved to the abbreviation layer.
 - Prize money/betting/odds: **28 verified**, duplicate regional wager mechanics consolidated.
 - Welfare/veterinary/safety: **13 verified**, bringing WELF to **18/18 source-verified**.
+- Residual edge cases: **7 verified**, duplicate `Program` consolidated into `Programme`.
 
-### Welfare / veterinary / safety pass
+### Residual edge-case pass
 
-The welfare pass uses current BHA, HISA, HIWU, Racing Australia and IFHA evidence. Pre-race and post-race veterinary examinations, lameness, veterinary scratches, sample collection, whip rules, track safety, race-day injury, fatality, euthanasia, retirement and rehoming are now evidence-backed.
+The residual pass verified Season, Bulletin, Relegation, False start, Totalisator, Fractional odds and On the board. It also retired `MEET-013 Program` into `MEET-012 Programme`, preserving `Program` as a regional spelling/document label rather than a second Concept.
 
-`Unsound` is intentionally scoped to a current HISA/US regulatory-veterinary usage rather than treated as a universal synonym for poor health. Injury/fatality reporting periods, scratch procedure, euthanasia decisions and aftercare pathways remain jurisdiction-sensitive.
+The pass deliberately did **not** promote five remaining edge cases: `Daylight saving time`, `Ran Out`, generic `Bonus`, polysemous `Stake`, and `American odds`. Their current evidence or Concept boundary is insufficient for a clean worldwide racing-dictionary entry.
 
 Authority/audit files now include:
 
@@ -84,6 +86,7 @@ data/glossary-master/sources/meeting-schedule-sources-v1.tsv
 data/glossary-master/sources/result-decision-sources-v1.tsv
 data/glossary-master/sources/prize-betting-sources-v1.tsv
 data/glossary-master/sources/welfare-safety-sources-v1.tsv
+data/glossary-master/sources/residual-edgecase-sources-v1.tsv
 data/glossary-master/coverage/p1-verification-wave1-v1.tsv
 data/glossary-master/coverage/p1-verification-wave2-v1.tsv
 data/glossary-master/coverage/race-type-condition-verification-v1.tsv
@@ -92,32 +95,39 @@ data/glossary-master/coverage/meeting-schedule-verification-v1.tsv
 data/glossary-master/coverage/result-decision-verification-v1.tsv
 data/glossary-master/coverage/prize-betting-verification-v1.tsv
 data/glossary-master/coverage/welfare-safety-verification-v1.tsv
+data/glossary-master/coverage/residual-edgecase-verification-v1.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
 Current observed state:
 
-- all Concepts: **455/648 source-verified (70.2%)**, 193 candidate;
+- all Concepts: **462/647 source-verified (71.4%)**, 185 candidate;
 - core highest-priority set: **203/203 source-verified (100.0%)**;
-- active base seed: **294/487 source-verified (60.4%)**, 193 candidate;
+- active base seed: **301/486 source-verified (61.9%)**, 185 candidate;
 - supplemental jurisdiction/relationship research: **161/161 source-verified (100.0%)**;
+- MEET: **37/38 source-verified (97.4%)**;
+- RESULT: **27/28 source-verified (96.4%)**;
+- BET: **38/39 source-verified (97.4%)**;
 - WELF: **18/18 source-verified (100.0%)**;
-- retired/merged Concept rows: **14**;
+- retired/merged Concept rows: **15**;
 - abbreviations/codes: **38/38 source-verified**.
 
 ## What happens next
 
-The broad subject passes are now complete for their current scope. The remaining **193 terms** move into systematic residual cleanup:
+The broad subject passes and first residual edge-case pass are complete for their current scope. The remaining **185 terms** now move through the categories with the largest unresolved candidate sets:
 
 ```text
-category-by-category unresolved candidates
--> polysemy / duplicate / bad-seed cleanup
--> residual surface / meeting / result / prize / betting edge cases
+running / trip / race-comment terminology
+-> equipment and training terminology
+-> horse / breeding / participant roles
+-> venue and entry terminology
+-> remaining race type / surface / distance / weight candidates
+-> revisit the five residual edge cases only with stronger evidence
 -> rerun evidence/readiness gate
 ```
 
-`GLOSSARY-MASTER-005` remains **HOLD — not complete**. A 70.2% verified master with 193 unresolved seed Concepts is not ready to advance merely because the broad subject passes have been covered.
+`GLOSSARY-MASTER-005` remains **HOLD — not complete**. A 71.4% verified master with 185 unresolved seed Concepts is not ready to advance merely because the near-complete categories have been cleaned up.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
@@ -146,10 +156,10 @@ The current public glossary remains disposable content. There is no old-record m
 
 ```text
 Current Work ID: GLOSSARY-MASTER-005
-Working dictionary: 648 terms
-Verified: 455
-Still under review: 193
-Next subject group: residual category-by-category semantic cleanup
+Working dictionary: 647 terms
+Verified: 462
+Still under review: 185
+Next subject group: running / trip / race-comment terminology
 MASTER-006: blocked until the evidence/readiness gate passes
 Public implementation: deferred
 ```
