@@ -10,17 +10,17 @@ This directory is the non-public working area for the worldwide horse-racing ter
 
 The working dictionary currently contains **642 racing terms/concepts**.
 
-- **529 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
-- **113 terms still need verification, scope correction, splitting/merging, or removal.**
+- **547 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
+- **95 terms still need verification, scope correction, splitting/merging, or removal.**
 - The already researched jurisdiction-specific additions are **161/161 verified**.
 - The core highest-priority terminology set is **203/203 verified**.
 - Public glossary publication is still disabled while the remaining terms are cleaned up.
 
-The latest pass is **venue / entry terminology wave 1**. It source-verified **11 additional base Concepts** using current BHA, JRA, Jockey Club, Equibase/Churchill Downs, Harness Racing Australia and Harness Racing New Zealand material while preserving regional rule and facility-label boundaries.
+The latest pass is **broad category wave 1** across race type, surface, distance and weight terminology. It source-verified **18 additional base Concepts** while narrowing labels to the authority scope actually supported.
 
-ENTRY is now **26/31 source-verified (83.9%)** and VENUE is **28/44 (63.6%)**. Newly verified Concepts include Maximum field, Balloted out, Also eligible, Entry fee, Preference, Eliminated, Homestretch, Backstretch, Mobile barrier, Parade ring and Winner's enclosure.
+RTYPE is now **100/111 source-verified (90.1%)**, SURF **57/63 (90.5%)**, DIST **17/21 (81.0%)**, and WEIGHT **31/34 (91.2%)**. Newly verified Concepts include Selling race, Graded stakes, British Open/Restricted race categories, Tapeta, Polytrack, historical Fibresand, Sealed track, Off turf, Yard, Short head, Final furlong, Race record, Bottom weight, Maximum weight, Underweight, Weigh out and Weigh in.
 
-HORSE remains **21/34 source-verified (61.8%)**, BREED **11/22 (50.0%)**, ROLE **25/31 (80.6%)**, EQUIP **27/29 (93.1%)**, TRAIN **20/26 (76.9%)**, and RUN **42/44 (95.5%)**. Weak residual labels remain visible instead of being promoted for percentage gain.
+Weak residual labels remain visible rather than being promoted for percentage gain. In particular, broad generic race categories, Turf/Grass identity, historical/cold-weather surface labels, some timing units and informal weight-comparison terms still require stronger evidence or cleaner modeling.
 
 ## Current master
 
@@ -49,11 +49,17 @@ Verified **27** terms across racing disciplines, entries, racecourses, distance/
 ### Second pass — complete
 Verified **29** terms across horses, breeding, racing people, in-race expressions, horse equipment and training. Duplicate `Breeder` was consolidated into the participant-role Concept.
 
-### Race types and classifications — complete current pass
-Verified **15** race-type/classification terms. RTYPE is **96/111 verified**.
+### Race types and classifications — broad current pass
+The initial race-type/classification pass verified **15** terms. Broad-category wave 1 added `Selling race`, `Graded stakes`, and scoped British `Open race` / `Restricted race` Concepts. RTYPE is now **100/111 verified (90.1%)**.
 
-### Surface and going terminology — complete current pass
-Verified **10** additional surface-condition terms. SURF is **52/63 verified (82.5%)**.
+### Surface and going terminology — broad current pass
+The initial surface-condition pass verified **10** terms. Broad-category wave 1 added `Tapeta`, `Polytrack`, historical British `Fibresand`, `Sealed track`, and `Off turf`. SURF is now **57/63 verified (90.5%)**. Product identity, historical status and surface-switch semantics remain scope-aware.
+
+### Distance and measurement terminology — broad current pass
+Broad-category wave 1 verified `Yard`, `Short head`, `Final furlong` and `Race record`. DIST is now **17/21 verified (81.0%)**. `Kilometre`, `Half-length`, `Fraction` and `Final fraction` remain candidate pending cleaner racing-specific evidence or Concept boundaries.
+
+### Weight and handicapping terminology — broad current pass
+Broad-category wave 1 verified `Bottom weight`, `Maximum weight`, `Underweight`, `Weigh out` and `Weigh in`. WEIGHT is now **31/34 verified (91.2%)**. `Claiming allowance`, `Weight rise` and `Weight drop` remain candidate.
 
 ### Meeting and schedule terminology — complete current pass
 The initial pass verified 6 terms and retired 1 duplicate. Residual cleanup later verified Season and Bulletin and retired `Program` into `Programme`. MEET is **37/38 verified (97.4%)**; only `Daylight saving time` remains candidate.
@@ -103,13 +109,19 @@ Wave 1 verified **11** Concepts: 6 ENTRY and 5 VENUE. BHA evidence closes maximu
 
 ENTRY is **26/31 verified (83.9%)** and VENUE is **28/44 verified (63.6%)**. `Homestretch`/`Home straight`, `Parade ring`/`Paddock`, `Winner's enclosure`/`Winners' circle`, and mobile-start terminology remain jurisdiction-scoped rather than flattened into global synonyms.
 
-Across the lower-priority cleanup passes, **215 base-dictionary terms have been newly verified and 15 duplicate/malformed rows have been removed**.
+### Broad category wave 1 — complete current pass
+Audit: `coverage/broad-category-verification-v1.tsv`  
+Sources: `sources/broad-category-sources-v1.tsv` plus existing authority evidence.
+
+This pass verified **18** Concepts: 4 RTYPE, 5 SURF, 4 DIST and 5 WEIGHT. BHA, TOBA, Jockey Club, Equibase, NYRA, JRA and Racing Australia sources were used only for the claims and regional scopes they actually support.
+
+Across the lower-priority cleanup passes, **233 base-dictionary terms have been newly verified and 15 duplicate/malformed rows have been removed**.
 
 ## Evidence state
 
-- all Concepts: **529 / 642 source-verified (82.4%)**; **113 candidate**
+- all Concepts: **547 / 642 source-verified (85.2%)**; **95 candidate**
 - core highest-priority set: **203 / 203 source-verified (100.0%)**
-- active base seed: **368 / 481 source-verified (76.5%)**; **113 candidate**
+- active base seed: **386 / 481 source-verified (80.2%)**; **95 candidate**
 - supplemental jurisdiction/relationship research: **161 / 161 source-verified (100.0%)**
 
 Canonical current audit state includes:
@@ -125,21 +137,24 @@ coverage/prize-betting-verification-v1.tsv
 coverage/welfare-safety-verification-v1.tsv
 coverage/residual-edgecase-verification-v1.tsv
 coverage/run-trip-verification-v1.tsv
-coverage/run-trip-verification-v2.tsv
+coverage/run-trip-verification-v2-v1.tsv
 coverage/run-trip-verification-v3.tsv
 coverage/equipment-training-verification-v1.tsv
 coverage/equipment-training-residual-v1.tsv
 coverage/horse-breeding-role-verification-v1.tsv
 coverage/venue-entry-verification-v1.tsv
+coverage/broad-category-verification-v1.tsv
 coverage/master-005-evidence-coverage-v1.tsv
 coverage/master-005-completion-gate-v1.tsv
 ```
 
 ## Current completion decision
 
-The terminology master remains **not complete**. The remaining **113 terms** must be reviewed rather than automatically promoted.
+The terminology master remains **not complete**. The remaining **95 terms** must be reviewed rather than automatically promoted.
 
-The next broad cleanup target is the remaining **race type / surface / distance / weight** candidates. Weak horse/breeding/role, venue/entry, EQUIP/TRAIN and RUN edge cases remain visible for later evidence-driven resolution rather than blocking progress on clearer categories.
+The next work is **targeted residual cleanup** across the largest remaining candidate groups, especially VENUE, HORSE, BREED and the residual RTYPE/ENTRY/SURF/DIST/WEIGHT sets. Deliberately weak RUN, EQUIP, TRAIN and cross-category edge cases remain visible until stronger evidence or a cleaner modeling decision exists.
+
+After that residual work, rerun the evidence/readiness gate before advancing to `GLOSSARY-MASTER-006`.
 
 Public implementation remains deferred until the evidence/readiness review passes.
 
