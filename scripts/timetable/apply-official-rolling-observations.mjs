@@ -205,8 +205,7 @@ function makePublicMeeting(meeting, detail, policy, previousPublic) {
 }
 function makePublicDetail(meeting, detail, listRow, policy, previousPublicDetail) {
   if (!detail || !['A', 'A+'].includes(listRow.effective_public_rank)) return null;
-  const fields = policy.a_plus_fields ?? {};
-  const showPlus = listRow.effective_public_rank === 'A+';
+  const fields = policy.detail_fields ?? policy.a_plus_fields ?? {};
   return {
     ...(previousPublicDetail ?? {}),
     meeting_id: meeting.meeting_id,
@@ -222,19 +221,19 @@ function makePublicDetail(meeting, detail, listRow, policy, previousPublicDetail
     official_source_url: listRow.official_source_url,
     source_status: listRow.source_status,
     last_checked_date: listRow.last_checked_date,
-    show_race_name: showPlus && fields.show_race_name === true,
-    show_distance: showPlus && fields.show_distance === true,
-    show_surface: showPlus && fields.show_surface === true,
-    show_course: showPlus && fields.show_course === true,
+    show_race_name: fields.show_race_name === true,
+    show_distance: fields.show_distance === true,
+    show_surface: fields.show_surface === true,
+    show_course: fields.show_course === true,
     show_live_label: policy.show_live_label ?? false,
     show_replay_label: policy.show_replay_label ?? false,
     timetable_rows: (detail.timetable_rows ?? []).map((row) => ({
       label: row.label,
       post_time_local: row.post_time_local,
-      ...(showPlus && fields.show_race_name === true && row.race_name ? { race_name: row.race_name } : {}),
-      ...(showPlus && fields.show_distance === true && Number.isFinite(row.distance_m) ? { distance_m: row.distance_m } : {}),
-      ...(showPlus && fields.show_surface === true && row.surface ? { surface: row.surface } : {}),
-      ...(showPlus && fields.show_course === true && row.course_label ? { course_label: row.course_label } : {}),
+      ...(fields.show_race_name === true && row.race_name ? { race_name: row.race_name } : {}),
+      ...(fields.show_distance === true && Number.isFinite(row.distance_m) ? { distance_m: row.distance_m } : {}),
+      ...(fields.show_surface === true && row.surface ? { surface: row.surface } : {}),
+      ...(fields.show_course === true && row.course_label ? { course_label: row.course_label } : {}),
     })),
   };
 }
