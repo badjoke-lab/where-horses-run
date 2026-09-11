@@ -137,7 +137,7 @@ coverage/prize-betting-verification-v1.tsv
 coverage/welfare-safety-verification-v1.tsv
 coverage/residual-edgecase-verification-v1.tsv
 coverage/run-trip-verification-v1.tsv
-coverage/run-trip-verification-v2-v1.tsv
+coverage/run-trip-verification-v2.tsv
 coverage/run-trip-verification-v3.tsv
 coverage/equipment-training-verification-v1.tsv
 coverage/equipment-training-residual-v1.tsv
