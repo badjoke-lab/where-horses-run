@@ -2,13 +2,13 @@
   "schema_version": "world-racing-terminology-master-manifest-v1",
   "status": "candidate_seed_plus_jurisdiction_register_relation_and_p1_verification",
   "generated_from_legacy_glossary": false,
-  "concept_count": 651,
+  "concept_count": 648,
   "category_count": 18,
-  "priority_counts": {"P0":203,"P1":296,"P2":134,"P3":18},
+  "priority_counts": {"P0":203,"P1":295,"P2":132,"P3":18},
   "verification_status": "mixed_candidate_and_source_verified",
   "public_ready_count": 0,
   "public_runtime_input": false,
-  "concept_dispositions": {"file":"concepts/concept-dispositions-v1.tsv","merged_concept_rows":11},
+  "concept_dispositions": {"file":"concepts/concept-dispositions-v1.tsv","merged_concept_rows":14},
   "categories": [
     {"id":"DISC","count":17,"file":"concepts/01-disc.tsv"},
     {"id":"RTYPE","count":111,"file":"concepts/02-rtype.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/us-canada-wave1-additions.tsv","concepts/australia-new-zealand-wave1-additions.tsv","concepts/japan-wave1-additions.tsv","concepts/japan-wave2-nar-banei-additions.tsv","concepts/france-wave1-additions.tsv","concepts/hong-kong-korea-wave1-additions.tsv","concepts/uae-south-africa-wave1-additions.tsv","concepts/arabian-harness-wave1-additions.tsv"]},
@@ -26,7 +26,7 @@
     {"id":"MEET","count":39,"file":"concepts/14-meet.tsv","supplemental_files":["concepts/gb-ireland-wave2-additions.tsv","concepts/france-wave1-additions.tsv","concepts/relationship-wave2-additions.tsv"]},
     {"id":"RESULT","count":28,"file":"concepts/15-result.tsv","supplemental_files":["concepts/france-wave1-additions.tsv","concepts/relationship-wave2-additions.tsv"]},
     {"id":"PRIZE","count":12,"file":"concepts/16-prize.tsv","supplemental_files":["concepts/japan-wave1-additions.tsv"]},
-    {"id":"BET","count":42,"file":"concepts/17-bet.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv","concepts/relationship-wave4-additions.tsv"]},
+    {"id":"BET","count":39,"file":"concepts/17-bet.tsv","supplemental_files":["concepts/us-canada-wave1-additions.tsv","concepts/relationship-wave4-additions.tsv"]},
     {"id":"WELF","count":18,"file":"concepts/18-welf.tsv"}
   ],
   "jurisdiction_research": {
@@ -67,30 +67,31 @@
   },
   "supplemental_cleanup": {"status":"complete_current_pass","audit_file":"coverage/supplemental-candidate-cleanup-v1.tsv","resolved_candidates":3,"remaining_candidates":0},
   "p1_verification": {
-    "status":"result_decision_pass_complete_current_pass",
-    "sources_files":["sources/p1-core-sources-v1.tsv","sources/p1-core-sources-v2.tsv","sources/race-type-condition-sources-v1.tsv","sources/surface-going-sources-v1.tsv","sources/meeting-schedule-sources-v1.tsv","sources/result-decision-sources-v1.tsv"],
-    "wave_audit_files":["coverage/p1-verification-wave1-v1.tsv","coverage/p1-verification-wave2-v1.tsv","coverage/race-type-condition-verification-v1.tsv","coverage/surface-going-verification-v1.tsv","coverage/meeting-schedule-verification-v1.tsv","coverage/result-decision-verification-v1.tsv"],
+    "status":"prize_betting_pass_complete_current_pass",
+    "sources_files":["sources/p1-core-sources-v1.tsv","sources/p1-core-sources-v2.tsv","sources/race-type-condition-sources-v1.tsv","sources/surface-going-sources-v1.tsv","sources/meeting-schedule-sources-v1.tsv","sources/result-decision-sources-v1.tsv","sources/prize-betting-sources-v1.tsv"],
+    "wave_audit_files":["coverage/p1-verification-wave1-v1.tsv","coverage/p1-verification-wave2-v1.tsv","coverage/race-type-condition-verification-v1.tsv","coverage/surface-going-verification-v1.tsv","coverage/meeting-schedule-verification-v1.tsv","coverage/result-decision-verification-v1.tsv","coverage/prize-betting-verification-v1.tsv"],
     "verified_wave_1":27,
     "verified_wave_2":29,
     "verified_race_type_condition_pass":15,
     "verified_surface_condition_pass":10,
     "verified_meeting_schedule_pass":6,
     "verified_result_decision_pass":13,
-    "verified_cumulative":100,
-    "retired_duplicate_rows_total":6,
-    "remaining_base_seed_candidate":237
+    "verified_prize_betting_pass":28,
+    "verified_cumulative":128,
+    "retired_duplicate_rows_total":9,
+    "remaining_base_seed_candidate":206
   },
   "evidence_coverage": {
-    "status":"audited_master_005_hold_after_result_decision_pass",
+    "status":"audited_master_005_hold_after_prize_betting_pass",
     "coverage_file":"coverage/master-005-evidence-coverage-v1.tsv",
     "completion_gate_file":"coverage/master-005-completion-gate-v1.tsv",
-    "all_concepts":{"total":651,"source_verified":414,"candidate":237,"verified_pct":63.6},
+    "all_concepts":{"total":648,"source_verified":442,"candidate":206,"verified_pct":68.2},
     "p0":{"total":203,"source_verified":203,"candidate":0,"verified_pct":100.0},
-    "active_base_seed":{"total":490,"source_verified":253,"candidate":237,"verified_pct":51.6},
+    "active_base_seed":{"total":487,"source_verified":281,"candidate":206,"verified_pct":57.7},
     "supplemental_research":{"total":161,"source_verified":161,"candidate":0,"verified_pct":100.0},
     "master_005_completion":"hold"
   },
   "next_work_id":"GLOSSARY-MASTER-005",
-  "next_work":"prize_and_betting_terminology_then_welfare_safety_and_remaining_ambiguous_terms",
+  "next_work":"welfare_veterinary_safety_then_remaining_ambiguous_terms_and_readiness_rerun",
   "public_implementation":"deferred"
 }

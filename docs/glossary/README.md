@@ -14,23 +14,23 @@ Read these first for glossary work:
 
 ## Current state in plain language
 
-The working dictionary has **651 terms/concepts**.
+The working dictionary has **648 terms/concepts**.
 
-- **414 are source-verified at the meaning level**.
-- **237 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
+- **442 are source-verified at the meaning level**.
+- **206 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
 - the highest-priority core set is **203/203 verified**;
 - jurisdiction-specific research additions are **161/161 verified**;
 - publication is still disabled (`public_ready=0`, public runtime disconnected).
 
-The latest completed subject pass is **results / inquiries / decisions / result codes**. It verified thirteen semantic Concepts and retired two duplicate code Concepts. Provisional result, Runner-up, Objection, Protest, Claim of foul, Void race, No contest, Did not finish, Pulled up, Fell, Unseated rider, Brought down and Refused now have meaning-level evidence.
+The latest completed subject pass is **prize money / betting / odds terminology**. It verified six prize/value Concepts and 22 betting Concepts. PRIZE is now **10/12 verified** and BET is **35/39 verified**.
 
-The result-code model was corrected at the same time. `DNF / P / PU / F / U / UR / BD / R` are stored as abbreviations of semantic Concepts. `DQ` and `DISQ` map to Disqualification, and `DH` maps to Dead heat; the former duplicate `DQ` and `DH` Concept rows were retired. `Relegation`, `False start` and `RO / Ran Out` remain under review rather than being forced through the gate.
+The wager model was also cleaned up. `Forecast / Straight Forecast` is preserved as a regional label for the exact-order `Exacta` mechanic where applicable; `Reverse Forecast / Dual Forecast` resolves to `Quinella`; `Tricast / Tierce` resolves to `Trifecta`. Those regional labels are no longer duplicate wager Concepts. `Bonus`, `Stake`, `Totalisator`, `Fractional odds`, `American odds` and `On the board` remain deliberately unresolved.
 
 ## What has been completed
 
 The dictionary was built from zero rather than copied from the existing public glossary. Major jurisdiction/local-language research and the current slang/abbreviation/historical pass are complete. The core terminology set is fully source-verified, and all current jurisdiction-specific additions are evidence-backed.
 
-Base-dictionary cleanup has now verified **100 additional terms** and removed **6 duplicate or malformed rows**. Current base-dictionary coverage is **253/490 verified (51.6%)**.
+Base-dictionary cleanup has now verified **128 additional terms** and removed **9 duplicate or malformed rows**. Current base-dictionary coverage is **281/487 verified (57.7%)**.
 
 Canonical evidence/audit files include:
 
@@ -41,28 +41,29 @@ data/glossary-master/sources/race-type-condition-sources-v1.tsv
 data/glossary-master/sources/surface-going-sources-v1.tsv
 data/glossary-master/sources/meeting-schedule-sources-v1.tsv
 data/glossary-master/sources/result-decision-sources-v1.tsv
+data/glossary-master/sources/prize-betting-sources-v1.tsv
 data/glossary-master/coverage/p1-verification-wave1-v1.tsv
 data/glossary-master/coverage/p1-verification-wave2-v1.tsv
 data/glossary-master/coverage/race-type-condition-verification-v1.tsv
 data/glossary-master/coverage/surface-going-verification-v1.tsv
 data/glossary-master/coverage/meeting-schedule-verification-v1.tsv
 data/glossary-master/coverage/result-decision-verification-v1.tsv
+data/glossary-master/coverage/prize-betting-verification-v1.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
-The abbreviation/code layer now has **38 source-verified rows** after moving result codes out of duplicate Concept positions.
+The abbreviation/code layer remains at **38 source-verified rows**; this pass moved regional wager names through dispositions/labels rather than inflating the abbreviation layer.
 
 ## What remains
 
-The **237 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
+The **206 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
 
 The next practical groups are:
 
 ```text
-prize and betting terminology
 welfare / veterinary / safety terminology
-remaining result / surface / meeting edge cases when stronger evidence exists
+remaining result / prize / betting / surface / meeting edge cases when stronger evidence exists
 remaining ambiguous terms and duplicate cleanup
 ```
 
@@ -76,7 +77,7 @@ find the term in actual racing material
 -> preserve country/region and local-language usage
 -> add a source that supports that claim
 -> split meanings that are genuinely different
--> merge abbreviations, spelling variants, codes, or duplicate identities when appropriate
+-> merge abbreviations, spelling variants, codes, regional labels, or duplicate identities when appropriate
 -> leave uncertain entries under review instead of inventing certainty
 ```
 

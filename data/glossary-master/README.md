@@ -8,34 +8,34 @@ This directory is the non-public working area for the worldwide horse-racing ter
 
 ## Plain-language progress
 
-The working dictionary currently contains **651 racing terms/concepts**.
+The working dictionary currently contains **648 racing terms/concepts**.
 
-- **414 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
-- **237 terms still need verification, scope correction, splitting/merging, or removal.**
+- **442 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
+- **206 terms still need verification, scope correction, splitting/merging, or removal.**
 - The already researched jurisdiction-specific additions are **161/161 verified**.
 - The core highest-priority terminology set is **203/203 verified**.
 - Public glossary publication is still disabled while the remaining terms are cleaned up.
 
-The latest subject pass is **結果・審議・裁定 / results and decisions**. It verified thirteen additional Concepts: Provisional result, Runner-up, Objection, Protest, Claim of foul, Void race, No contest, Did not finish, Pulled up, Fell, Unseated rider, Brought down and Refused.
+The latest subject pass is **賞金・馬券・オッズ / prize and betting terminology**. It verified 28 additional Concepts: six prize/value terms and 22 betting/pool/odds terms.
 
-The pass also fixed the data model for result codes. `DNF / P / PU / F / U / UR / BD / R` are now abbreviations of semantic result Concepts rather than the canonical Concept names. Duplicate `RESULT-027 DQ` was retired into `RESULT-014 Disqualification`, and duplicate `RESULT-028 DH` was retired into `RESULT-007 Dead heat`; regional codes `DQ`, `DISQ` and `DH` now live in the abbreviation layer. `Relegation`, `False start` and `RO / Ran Out` remain under review because current authority evidence has not yet resolved their exact regional semantics or canonical code.
+The pass also removed duplicate wager mechanics from the Concept layer. `Forecast / Straight Forecast` now resolves to the exact-order `Exacta` mechanic where that sense is intended; `Reverse Forecast / Dual Forecast` resolves to `Quinella`; `Tricast / Tierce` resolves to `Trifecta`. The labels remain preserved through dispositions rather than being counted as separate worldwide wager Concepts. `Bonus`, `Stake`, `Totalisator`, `Fractional odds`, `American odds` and `On the board` remain under review because the present seed meaning is too broad, polysemous or insufficiently backed by current racing-authority evidence.
 
-The preceding meeting/schedule pass verified six terms and retired one duplicate Condition book row.
+The preceding result/decision pass verified thirteen semantic Concepts, moved result codes to the abbreviation layer and retired duplicate DQ/DH Concept rows.
 
 ## Current master
 
-- Concepts: **651**
+- Concepts: **648**
 - categories: **18**
-- P0: **203** / P1: **296** / P2: **134** / P3: **18**
+- P0: **203** / P1: **295** / P2: **132** / P3: **18**
 - `public_ready=yes`: **0**
 - public runtime input: **false**
 - active Concept relations: **20**
 - relationship reviews: **15 discovered / 15 resolved / 0 open**
-- retired/merged Concept rows: **11**
+- retired/merged Concept rows: **14**
 
 ## Core source verification — complete
 
-The current core set is **203/203 source-verified**. Abbreviations such as `SP`, `DQ` and `DH` are not counted as duplicate Concepts.
+The current core set is **203/203 source-verified**. Abbreviations, codes and regional labels are not counted as duplicate Concepts.
 
 ## Jurisdiction-specific research additions — complete current pass
 
@@ -59,18 +59,21 @@ Verified **10** additional surface-condition terms. SURF is **52/63 verified (82
 Verified **6** additional terms and retired **1 duplicate**. MEET is **35/39 verified (89.7%)**.
 
 ### Results and decisions — complete current pass
-Audit: `coverage/result-decision-verification-v1.tsv`  
-Sources: `sources/result-decision-sources-v1.tsv` plus existing JRA/USTA authority sources.
+Verified **13** additional semantic Concepts and retired **2 duplicate code Concepts**. RESULT is **25/28 verified (89.3%)**. Result codes were moved to the abbreviation layer where appropriate.
 
-Verified **13** additional semantic Concepts and retired **2 duplicate code Concepts**. RESULT is now **25/28 verified (89.3%)**. Eleven current result abbreviations were added to the abbreviation layer, taking that layer from 27 to **38 source-verified rows**.
+### Prize and betting terminology — complete current pass
+Audit: `coverage/prize-betting-verification-v1.tsv`  
+Sources: `sources/prize-betting-sources-v1.tsv` plus existing JRA/Equibase/Tote source rows.
 
-Across these lower-priority passes, **100 base-dictionary terms have been newly verified and 6 duplicate/malformed rows have been removed**.
+Verified **28** additional Concepts and retired **3 duplicate regional wager Concepts**. PRIZE is now **10/12 verified (83.3%)** and BET is **35/39 verified (89.7%)**. The pass keeps wager mechanics separate from regional labels and keeps prize/premium systems jurisdiction-aware.
+
+Across these lower-priority passes, **128 base-dictionary terms have been newly verified and 9 duplicate/malformed rows have been removed**.
 
 ## Evidence state
 
-- all Concepts: **414 / 651 source-verified (63.6%)**; **237 candidate**
+- all Concepts: **442 / 648 source-verified (68.2%)**; **206 candidate**
 - core highest-priority set: **203 / 203 source-verified (100.0%)**
-- active base seed: **253 / 490 source-verified (51.6%)**; **237 candidate**
+- active base seed: **281 / 487 source-verified (57.7%)**; **206 candidate**
 - supplemental jurisdiction/relationship research: **161 / 161 source-verified (100.0%)**
 
 Canonical current audit state includes:
@@ -82,20 +85,20 @@ coverage/race-type-condition-verification-v1.tsv
 coverage/surface-going-verification-v1.tsv
 coverage/meeting-schedule-verification-v1.tsv
 coverage/result-decision-verification-v1.tsv
+coverage/prize-betting-verification-v1.tsv
 coverage/master-005-evidence-coverage-v1.tsv
 coverage/master-005-completion-gate-v1.tsv
 ```
 
 ## Current completion decision
 
-The terminology master remains **not complete**. The remaining **237 terms** must be reviewed rather than automatically promoted.
+The terminology master remains **not complete**. The remaining **206 terms** must be reviewed rather than automatically promoted.
 
 Next user-facing areas to process are:
 
 ```text
-prize and betting terminology
--> welfare / veterinary / safety terminology
--> remaining result / surface / meeting edge cases where better evidence exists
+welfare / veterinary / safety terminology
+-> remaining result / prize / betting / surface / meeting edge cases where better evidence exists
 -> unresolved ambiguous terms and duplicate cleanup
 -> rerun evidence/readiness review
 ```
