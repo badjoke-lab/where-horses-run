@@ -62,15 +62,13 @@ export function classifyAcquisitionCompletion(record, profile) {
     throw new Error(`invalid technical capability rank: ${technicalRank}`);
   }
 
-  if (observedRank === 'A+' || rankIndex(observedRank) >= rankIndex(technicalRank)) {
+  if (observedRank === 'A+') {
     return {
       disposition: 'complete_current_best_available',
       observed_rank: observedRank,
       technical_capability_rank: technicalRank,
       higher_rank_open: false,
-      reason: observedRank === 'A+'
-        ? 'No higher timetable rank exists.'
-        : 'Observed evidence reached the registered technical capability rank.',
+      reason: 'No higher timetable rank exists.',
     };
   }
 
