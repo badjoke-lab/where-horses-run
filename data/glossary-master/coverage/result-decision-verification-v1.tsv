@@ -1,0 +1,16 @@
+verification_id	concept_id	category_id	previous_status	new_status	source_ids	verified_at	note
+RDV-001	RESULT-003	RESULT	candidate	source_verified	RES-SRC-001	2026-09-11	JRA directly maps provisional/unofficial result to a temporary placing before confirmation.
+RDV-002	RESULT-006	RESULT	candidate	source_verified	RES-SRC-001	2026-09-11	JRA directly maps runner-up to the second-placed horse.
+RDV-003	RESULT-011	RESULT	candidate	source_verified	RES-SRC-001;RES-SRC-002	2026-09-11	JRA terminology plus a current IHRB stewards report support Objection while preserving jurisdiction-specific procedure.
+RDV-004	RESULT-012	RESULT	candidate	source_verified	RES-SRC-003	2026-09-11	Official Australian stewards reporting supports Protest as a rider-lodged placing/interference challenge.
+RDV-005	RESULT-013	RESULT	candidate	source_verified	RES-SRC-004	2026-09-11	Equibase official charting supports Claim of foul as a North American interference complaint before the result stands or changes.
+RDV-006	RESULT-017	RESULT	candidate	source_verified	RES-SRC-008	2026-09-11	Current HKJC result guidance identifies VOID as an invalid/void race state; scope narrowed to Hong Kong/Regional.
+RDV-007	RESULT-019	RESULT	candidate	source_verified	RES-SRC-005;RES-SRC-006	2026-09-11	Current ARCI/USTA material supports No contest as a North American race status with no winner; settlement rules remain local.
+RDV-008	RESULT-020	RESULT	candidate	source_verified	RES-SRC-008	2026-09-11	Seed code DNF is normalized to the semantic Concept Did not finish; DNF moved to the abbreviation layer.
+RDV-009	RESULT-021	RESULT	candidate	source_verified	RES-SRC-001;RES-SRC-007;RES-SRC-008	2026-09-11	Seed code PU is normalized to Pulled up; P/PU moved to the abbreviation layer.
+RDV-010	RESULT-022	RESULT	candidate	source_verified	RES-SRC-007	2026-09-11	Seed code F is normalized to Fell; F moved to the abbreviation layer.
+RDV-011	RESULT-023	RESULT	candidate	source_verified	RES-SRC-007;RES-SRC-008	2026-09-11	Seed code UR is normalized to Unseated rider; U/UR moved to the abbreviation layer.
+RDV-012	RESULT-024	RESULT	candidate	source_verified	RES-SRC-007	2026-09-11	Seed code BD is normalized to Brought down; BD moved to the abbreviation layer.
+RDV-013	RESULT-026	RESULT	candidate	source_verified	RES-SRC-007	2026-09-11	Seed label REF is replaced by semantic Concept Refused because current Jockey Club form guidance uses R; R moved to the abbreviation layer.
+RDV-014	RESULT-027	RESULT	candidate	retired_merge	RES-SRC-006	2026-09-11	DQ is a current USTA abbreviation for Disqualified and is retired into RESULT-014 Disqualification.
+RDV-015	RESULT-028	RESULT	candidate	retired_merge	RES-SRC-006	2026-09-11	DH is a current USTA abbreviation for Dead Heat and is retired into RESULT-007 Dead heat.
