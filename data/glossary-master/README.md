@@ -10,17 +10,17 @@ This directory is the non-public working area for the worldwide horse-racing ter
 
 The working dictionary currently contains **648 racing terms/concepts**.
 
-- **442 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
-- **206 terms still need verification, scope correction, splitting/merging, or removal.**
+- **455 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
+- **193 terms still need verification, scope correction, splitting/merging, or removal.**
 - The already researched jurisdiction-specific additions are **161/161 verified**.
 - The core highest-priority terminology set is **203/203 verified**.
 - Public glossary publication is still disabled while the remaining terms are cleaned up.
 
-The latest subject pass is **賞金・馬券・オッズ / prize and betting terminology**. It verified 28 additional Concepts: six prize/value terms and 22 betting/pool/odds terms.
+The latest subject pass is **獣医・安全・競走馬福祉 / welfare, veterinary and safety terminology**. It verified all 13 previously unresolved WELF Concepts, bringing WELF to **18/18 source-verified**.
 
-The pass also removed duplicate wager mechanics from the Concept layer. `Forecast / Straight Forecast` now resolves to the exact-order `Exacta` mechanic where that sense is intended; `Reverse Forecast / Dual Forecast` resolves to `Quinella`; `Tricast / Tierce` resolves to `Trifecta`. The labels remain preserved through dispositions rather than being counted as separate worldwide wager Concepts. `Bonus`, `Stake`, `Totalisator`, `Fractional odds`, `American odds` and `On the board` remain under review because the present seed meaning is too broad, polysemous or insufficiently backed by current racing-authority evidence.
+This pass preserves regulatory and reporting scope rather than flattening everything globally. `Unsound` is explicitly modeled as a current HISA/US regulatory-veterinary usage. Veterinary scratches, race-day injuries, fatalities, euthanasia, retirement and rehoming retain jurisdiction-specific procedures and reporting boundaries. Pre-race/post-race examinations, sample collection, whip rules and track safety are supported by current authority material without claiming one worldwide operating protocol.
 
-The preceding result/decision pass verified thirteen semantic Concepts, moved result codes to the abbreviation layer and retired duplicate DQ/DH Concept rows.
+The preceding prize/betting pass verified 28 Concepts and retired three duplicate regional wager mechanics.
 
 ## Current master
 
@@ -59,21 +59,24 @@ Verified **10** additional surface-condition terms. SURF is **52/63 verified (82
 Verified **6** additional terms and retired **1 duplicate**. MEET is **35/39 verified (89.7%)**.
 
 ### Results and decisions — complete current pass
-Verified **13** additional semantic Concepts and retired **2 duplicate code Concepts**. RESULT is **25/28 verified (89.3%)**. Result codes were moved to the abbreviation layer where appropriate.
+Verified **13** additional semantic Concepts and retired **2 duplicate code Concepts**. RESULT is **25/28 verified (89.3%)**.
 
 ### Prize and betting terminology — complete current pass
-Audit: `coverage/prize-betting-verification-v1.tsv`  
-Sources: `sources/prize-betting-sources-v1.tsv` plus existing JRA/Equibase/Tote source rows.
+Verified **28** additional Concepts and retired **3 duplicate regional wager Concepts**. PRIZE is **10/12 verified (83.3%)** and BET is **35/39 verified (89.7%)**.
 
-Verified **28** additional Concepts and retired **3 duplicate regional wager Concepts**. PRIZE is now **10/12 verified (83.3%)** and BET is **35/39 verified (89.7%)**. The pass keeps wager mechanics separate from regional labels and keeps prize/premium systems jurisdiction-aware.
+### Welfare, veterinary and safety terminology — complete current pass
+Audit: `coverage/welfare-safety-verification-v1.tsv`  
+Sources: `sources/welfare-safety-sources-v1.tsv` plus existing IFHA medication/welfare evidence.
 
-Across these lower-priority passes, **128 base-dictionary terms have been newly verified and 9 duplicate/malformed rows have been removed**.
+Verified **13** additional Concepts. WELF is now **18/18 source-verified (100.0%)**. Definitions keep HISA/BHA/Racing Australia/IFHA-specific operational and reporting boundaries explicit.
+
+Across these lower-priority passes, **141 base-dictionary terms have been newly verified and 9 duplicate/malformed rows have been removed**.
 
 ## Evidence state
 
-- all Concepts: **442 / 648 source-verified (68.2%)**; **206 candidate**
+- all Concepts: **455 / 648 source-verified (70.2%)**; **193 candidate**
 - core highest-priority set: **203 / 203 source-verified (100.0%)**
-- active base seed: **281 / 487 source-verified (57.7%)**; **206 candidate**
+- active base seed: **294 / 487 source-verified (60.4%)**; **193 candidate**
 - supplemental jurisdiction/relationship research: **161 / 161 source-verified (100.0%)**
 
 Canonical current audit state includes:
@@ -86,22 +89,16 @@ coverage/surface-going-verification-v1.tsv
 coverage/meeting-schedule-verification-v1.tsv
 coverage/result-decision-verification-v1.tsv
 coverage/prize-betting-verification-v1.tsv
+coverage/welfare-safety-verification-v1.tsv
 coverage/master-005-evidence-coverage-v1.tsv
 coverage/master-005-completion-gate-v1.tsv
 ```
 
 ## Current completion decision
 
-The terminology master remains **not complete**. The remaining **206 terms** must be reviewed rather than automatically promoted.
+The terminology master remains **not complete**. The remaining **193 terms** must be reviewed rather than automatically promoted.
 
-Next user-facing areas to process are:
-
-```text
-welfare / veterinary / safety terminology
--> remaining result / prize / betting / surface / meeting edge cases where better evidence exists
--> unresolved ambiguous terms and duplicate cleanup
--> rerun evidence/readiness review
-```
+Next work is no longer another broad subject lane. It is systematic cleanup of the remaining ambiguous/category-specific candidates, including residual surface, meeting, result, prize/betting and other base-dictionary terms, followed by a fresh evidence/readiness gate.
 
 Public implementation remains deferred until that evidence/readiness review passes.
 
