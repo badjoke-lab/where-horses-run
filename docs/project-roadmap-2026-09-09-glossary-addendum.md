@@ -14,8 +14,8 @@ Plain-language state:
 
 ```text
 Working dictionary: 643 terms/concepts
-Meaning-level source verified: 483
-Still under review: 160
+Meaning-level source verified: 503
+Still under review: 140
 Highest-priority core terms: 203/203 verified
 Jurisdiction-specific research additions: 161/161 verified
 Public glossary publication: disabled
@@ -39,7 +39,8 @@ Prize money / betting / odds pass: complete current pass
 Welfare / veterinary / safety pass: complete current pass
 Residual edge-case pass: complete current pass
 Running / trip / race-comment pass: broad current pass complete; 2 deliberate unresolved labels retained
-Next: equipment / training
+Equipment / training pass: wave 1 complete; small residual set remains
+Next: small EQUIP/TRAIN residual review, then horse / breeding / roles
 Later: GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 ```
 
@@ -73,6 +74,7 @@ The remaining task is to clean the lower-priority base dictionary. This does **n
 - Running/trip/race comments wave 1: **7 verified**, duplicate Harness `Break` consolidated into `Broke stride`.
 - Running/trip/race comments wave 2: **5 verified**, generic `Pacesetter` consolidated into `Front-runner`.
 - Running/trip/race comments final broad bundle: **9 verified**, `Tempo` consolidated into `Pace`, `Kick/closing kick` consolidated into `Turn of foot`.
+- Equipment/training wave 1: **20 verified** — 13 EQUIP and 7 TRAIN Concepts with scoped authority evidence.
 
 ### Residual edge-case pass
 
@@ -90,6 +92,14 @@ The final broad RUN bundle verified `Midfield`, `Home turn`, `Stretch run`, `Run
 
 RUN is now **42/44 source-verified (95.5%)**. The two deliberate candidates are `Jump`, whose seed conflates multiple senses, and `Hold-up horse`, whose exact canonical label still lacks strong enough current authority definition.
 
+### Equipment / training pass — wave 1
+
+Equipment wave 1 verified `Noseband`, `Ear plugs`, `Pacifiers`, `Bit`, `Reins`, `Stirrups`, `Girth`, `Breastplate`, `Martingale`, `Shoes`, `Bar shoes`, `Glue-on shoes` and `Whip`. The evidence comes from current JRA terminology, Equibase equipment coding, USTA harness guidance and current Australian gear usage. The definitions do not treat one jurisdiction's approval rule or construction as universal.
+
+Training wave 1 verified `Gallop`, `Schooling`, `Qualifier`, `Warm-up`, `Post parade`, `Going to post` and `Spell`. Regional procedure remains explicit: for example, Racing Victoria's 60-day definition of a spell is not asserted as a worldwide rule.
+
+EQUIP is now **27/30 source-verified (90.0%)** and TRAIN is **19/26 source-verified (73.1%)**.
+
 Authority/audit files now include:
 
 ```text
@@ -103,6 +113,7 @@ data/glossary-master/sources/prize-betting-sources-v1.tsv
 data/glossary-master/sources/welfare-safety-sources-v1.tsv
 data/glossary-master/sources/residual-edgecase-sources-v1.tsv
 data/glossary-master/sources/run-trip-sources-v1.tsv
+data/glossary-master/sources/equipment-training-sources-v1.tsv
 data/glossary-master/coverage/p1-verification-wave1-v1.tsv
 data/glossary-master/coverage/p1-verification-wave2-v1.tsv
 data/glossary-master/coverage/race-type-condition-verification-v1.tsv
@@ -115,17 +126,20 @@ data/glossary-master/coverage/residual-edgecase-verification-v1.tsv
 data/glossary-master/coverage/run-trip-verification-v1.tsv
 data/glossary-master/coverage/run-trip-verification-v2.tsv
 data/glossary-master/coverage/run-trip-verification-v3.tsv
+data/glossary-master/coverage/equipment-training-verification-v1.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
 Current observed state:
 
-- all Concepts: **483/643 source-verified (75.1%)**, 160 candidate;
+- all Concepts: **503/643 source-verified (78.2%)**, 140 candidate;
 - core highest-priority set: **203/203 source-verified (100.0%)**;
-- active base seed: **322/482 source-verified (66.8%)**, 160 candidate;
+- active base seed: **342/482 source-verified (71.0%)**, 140 candidate;
 - supplemental jurisdiction/relationship research: **161/161 source-verified (100.0%)**;
 - RUN: **42/44 source-verified (95.5%)**;
+- EQUIP: **27/30 source-verified (90.0%)**;
+- TRAIN: **19/26 source-verified (73.1%)**;
 - MEET: **37/38 source-verified (97.4%)**;
 - RESULT: **27/28 source-verified (96.4%)**;
 - BET: **38/39 source-verified (97.4%)**;
@@ -135,18 +149,18 @@ Current observed state:
 
 ## What happens next
 
-The remaining **160 terms** continue by the categories with the largest unresolved candidate sets:
+The remaining **140 terms** continue by the categories with the largest unresolved candidate sets:
 
 ```text
-equipment and training terminology
+small EQUIP / TRAIN residual review where evidence is defensible
 -> horse / breeding / participant roles
 -> venue and entry terminology
 -> remaining race type / surface / distance / weight candidates
--> revisit RUN's two deliberate unresolved labels and other residual edge cases only with stronger evidence
+-> revisit deliberately unresolved RUN and cross-category edge cases only with stronger evidence
 -> rerun evidence/readiness gate
 ```
 
-`GLOSSARY-MASTER-005` remains **HOLD — not complete**. A 75.1% verified master with 160 unresolved seed Concepts is not ready to advance.
+`GLOSSARY-MASTER-005` remains **HOLD — not complete**. A 78.2% verified master with 140 unresolved seed Concepts is not ready to advance.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
@@ -176,9 +190,9 @@ The current public glossary remains disposable content. There is no old-record m
 ```text
 Current Work ID: GLOSSARY-MASTER-005
 Working dictionary: 643 terms
-Verified: 483
-Still under review: 160
-Next subject group: equipment / training terminology
+Verified: 503
+Still under review: 140
+Next subject group: small EQUIP/TRAIN residual review, then horse/breeding/roles
 MASTER-006: blocked until the evidence/readiness gate passes
 Public implementation: deferred
 ```
