@@ -6,6 +6,9 @@ on:
       - fix/remove-calendar-authority-rank-ceilings-20260911
     paths:
       - '.github/workflows/calendar-rank-ceiling-finalize.yml'
+      - 'scripts/timetable/finalize-rank-ceiling-removal-temp.mjs'
+      - 'scripts/timetable/cleanup-fixed-rank-residue-temp.mjs'
+      - 'scripts/timetable/cleanup-active-rank-ceilings-v2-temp.mjs'
 
 permissions:
   contents: write
