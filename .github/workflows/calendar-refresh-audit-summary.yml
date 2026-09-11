@@ -1,0 +1,119 @@
+name: Calendar refresh audit summary
+
+on:
+  workflow_run:
+    workflows:
+      - Calendar unified official refresh
+    types:
+      - completed
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Calendar unified official refresh run ID to audit
+        required: true
+        type: string
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-refresh-audit-summary.yml'
+      - 'scripts/timetable/build-refresh-audit-summary.mjs'
+      - 'scripts/check-refresh-audit-summary.mjs'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  smoke:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Validate audit summary builder
+        run: |
+          node --check scripts/timetable/build-refresh-audit-summary.mjs
+          node --check scripts/check-refresh-audit-summary.mjs
+          node scripts/check-refresh-audit-summary.mjs
+
+  audit:
+    if: github.event_name == 'workflow_run' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - id: source
+        name: Resolve source refresh run
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MANUAL_RUN_ID: ${{ inputs.run_id }}
+          EVENT_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          set -euo pipefail
+          run_id="${EVENT_RUN_ID:-${MANUAL_RUN_ID:-}}"
+          if [[ -z "$run_id" ]]; then
+            echo "Missing source refresh run ID." >&2
+            exit 1
+          fi
+          meta="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}")"
+          head_sha="$(jq -r '.head_sha' <<<"$meta")"
+          started_at="$(jq -r '.run_started_at // .created_at' <<<"$meta")"
+          completed_at="$(jq -r '.updated_at' <<<"$meta")"
+          conclusion="$(jq -r '.conclusion // "unknown"' <<<"$meta")"
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$head_sha" >> "$GITHUB_OUTPUT"
+          echo "started_at=$started_at" >> "$GITHUB_OUTPUT"
+          echo "completed_at=$completed_at" >> "$GITHUB_OUTPUT"
+          echo "conclusion=$conclusion" >> "$GITHUB_OUTPUT"
+          git fetch --no-tags origin main
+          git cat-file -e "${head_sha}^{commit}"
+      - name: Download source refresh artifact
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ steps.source.outputs.run_id }}
+        run: |
+          set -euo pipefail
+          mkdir -p .source-refresh-artifact
+          if ! gh run download "$RUN_ID" \
+            --name "calendar-unified-official-refresh-${RUN_ID}" \
+            --dir .source-refresh-artifact; then
+            echo "Source refresh artifact was unavailable; summary will record missing artifacts." >&2
+          fi
+      - name: Build deterministic refresh audit summary
+        run: |
+          node scripts/timetable/build-refresh-audit-summary.mjs \
+            --repo-root=. \
+            --artifact-root=.source-refresh-artifact \
+            --source-run-id="${{ steps.source.outputs.run_id }}" \
+            --source-head-sha="${{ steps.source.outputs.head_sha }}" \
+            --run-started-at="${{ steps.source.outputs.started_at }}" \
+            --run-completed-at="${{ steps.source.outputs.completed_at }}" \
+            --source-conclusion="${{ steps.source.outputs.conclusion }}" \
+            --output=.calendar-audit/refresh-audit-summary.json
+      - name: Publish audit table to run summary
+        shell: bash
+        run: |
+          {
+            echo '## Calendar refresh audit'
+            echo
+            echo "Source run: ${{ steps.source.outputs.run_id }}"
+            echo
+            echo '| Country / system | Checked | Changed | Unchanged | Promoted | Added | Pending | Fetch failed | Parse failed |'
+            echo '|---|---:|---:|---:|---:|---:|---:|---:|---:|'
+            jq -r '.systems[] | select(.acquisition_group != "source-health") | [(.country_id + " / " + (.acquisition_group // .authority_id // .racing_system_id // "unknown")), .checked, .changed, .unchanged, .promoted, .added, .pending, .fetch_failed, .parse_failed] | "| \(.[0]) | \(.[1]) | \(.[2]) | \(.[3]) | \(.[4]) | \(.[5]) | \(.[6]) | \(.[7]) | \(.[8]) |"' .calendar-audit/refresh-audit-summary.json
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: calendar-refresh-audit-summary-${{ steps.source.outputs.run_id }}
+          retention-days: 30
+          path: .calendar-audit/refresh-audit-summary.json
