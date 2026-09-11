@@ -23,7 +23,11 @@ const forbiddenSourceFiles = new Set([
 const allowedPublicFiles = new Set([
   'data/generated/timetable/public/meeting-list.json',
   'data/generated/timetable/public/meeting-details.json',
-  'data/generated/timetable/public/japan-a-plus-overrides.json',
+]);
+const diagnosticsPage = 'src/pages/calendar/diagnostics.json.ts';
+const diagnosticsCanonicalFiles = new Set([
+  'data/generated/timetable/canonical/meetings.json',
+  'data/generated/timetable/canonical/meeting-details.json',
 ]);
 
 function toRepoPath(file) {
@@ -61,8 +65,9 @@ function resolveLocalImport(importer, specifier) {
   return candidates.find((candidate) => existsSync(candidate) && statSync(candidate).isFile()) ?? null;
 }
 
-function forbiddenReason(repoPath) {
+function forbiddenReason(repoPath, pagePath) {
   if (allowedPublicFiles.has(repoPath)) return null;
+  if (pagePath === diagnosticsPage && diagnosticsCanonicalFiles.has(repoPath)) return null;
   if (forbiddenSourceFiles.has(repoPath)) return `forbidden legacy runtime source ${repoPath}`;
   const prefix = forbiddenPrefixes.find((entry) => repoPath.startsWith(entry));
   return prefix ? `forbidden runtime dependency outside public projection: ${prefix}` : null;
@@ -82,12 +87,12 @@ for (const page of pages) {
     if (visited.has(current.file)) continue;
     visited.add(current.file);
     const currentPath = toRepoPath(current.file);
-    const directReason = forbiddenReason(currentPath);
+    const directReason = forbiddenReason(currentPath, pagePath);
     if (directReason) {
       violations.push({ page: pagePath, dependency: currentPath, reason: directReason, chain: current.chain });
       continue;
     }
-    if (allowedPublicFiles.has(currentPath)) continue;
+    if (allowedPublicFiles.has(currentPath) || (pagePath === diagnosticsPage && diagnosticsCanonicalFiles.has(currentPath))) continue;
 
     const text = readFileSync(current.file, 'utf8');
     for (const specifier of importSpecifiers(text)) {
@@ -98,7 +103,7 @@ for (const page of pages) {
         continue;
       }
       const resolvedPath = toRepoPath(resolved);
-      const reason = forbiddenReason(resolvedPath);
+      const reason = forbiddenReason(resolvedPath, pagePath);
       const chain = [...current.chain, resolvedPath];
       if (reason) violations.push({ page: pagePath, dependency: resolvedPath, reason, chain });
       else stack.push({ file: resolved, chain });
@@ -129,6 +134,7 @@ if (uniqueViolations.length || uniqueUnresolved.length) {
 
 const totalVisited = [...visitedFromPage.values()].reduce((sum, value) => sum + value, 0);
 console.log(`CALENDAR_RUNTIME_IMPORT_BOUNDARY: pass pages=${pages.length} traversed_dependencies=${totalVisited}`);
-console.log('RUNTIME_TIMETABLE_INPUTS: public-projection-only');
-console.log('NON_PUBLIC_TIMETABLE_GENERATED_IMPORTS: 0');
+console.log('RUNTIME_TIMETABLE_INPUTS: public-projection-only except query-gated diagnostics endpoint');
+console.log('DIAGNOSTICS_CANONICAL_INPUTS: 2');
+console.log('NON_PUBLIC_TIMETABLE_GENERATED_IMPORTS_OUTSIDE_DIAGNOSTICS: 0');
 console.log('HISTORICAL_GENERATED_PATH_BLACKLIST_REQUIRED: false');
