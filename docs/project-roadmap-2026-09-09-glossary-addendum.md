@@ -13,9 +13,9 @@ This addendum creates a parallel glossary knowledge lane. It does not supersede 
 Plain-language state:
 
 ```text
-Working dictionary: 645 terms/concepts
-Meaning-level source verified: 474
-Still under review: 171
+Working dictionary: 643 terms/concepts
+Meaning-level source verified: 483
+Still under review: 160
 Highest-priority core terms: 203/203 verified
 Jurisdiction-specific research additions: 161/161 verified
 Public glossary publication: disabled
@@ -38,7 +38,8 @@ Results / inquiries / decisions / result-code pass: complete current pass
 Prize money / betting / odds pass: complete current pass
 Welfare / veterinary / safety pass: complete current pass
 Residual edge-case pass: complete current pass
-Running / trip / race-comment pass: wave 2 complete; final RUN cleanup active
+Running / trip / race-comment pass: broad current pass complete; 2 deliberate unresolved labels retained
+Next: equipment / training
 Later: GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 ```
 
@@ -71,20 +72,23 @@ The remaining task is to clean the lower-priority base dictionary. This does **n
 - Residual edge cases: **7 verified**, duplicate `Program` consolidated into `Programme`.
 - Running/trip/race comments wave 1: **7 verified**, duplicate Harness `Break` consolidated into `Broke stride`.
 - Running/trip/race comments wave 2: **5 verified**, generic `Pacesetter` consolidated into `Front-runner`.
+- Running/trip/race comments final broad bundle: **9 verified**, `Tempo` consolidated into `Pace`, `Kick/closing kick` consolidated into `Turn of foot`.
 
 ### Residual edge-case pass
 
 The residual pass verified Season, Bulletin, Relegation, False start, Totalisator, Fractional odds and On the board. It also retired `MEET-013 Program` into `MEET-012 Programme`, preserving `Program` as a regional spelling/document label rather than a second Concept.
 
-The pass deliberately did **not** promote five remaining edge cases: `Daylight saving time`, `Ran Out`, generic `Bonus`, polysemous `Stake`, and `American odds`. Their current evidence or Concept boundary is insufficient for a clean worldwide racing-dictionary entry.
+Several cross-category edge cases remain deliberately unresolved where current evidence or the Concept boundary is insufficient, including Daylight saving time, RO/result-code modeling, generic Bonus, polysemous Stake and American odds.
 
 ### Running / trip / race-comment pass
 
-Wave 1 verified `Break` at the start, `On the rail`, `Wide`, `Boxed in`, `Turn of foot`, `Eased`, and `Lost rider` using current Equibase, The Jockey Club, HKJC and USTA material. The Harness `Break` row was retired into `Broke stride`, while the Flat start-event sense remains separate.
+Wave 1 verified `Break` at the start, `On the rail`, `Wide`, `Boxed in`, `Turn of foot`, `Eased`, and `Lost rider`. Harness `Break` was retired into `Broke stride`.
 
-Wave 2 verified `Stalker`, `Presser`, `Pocket`, `Cover` and `Parked out`. `Pacesetter` was retired into `Front-runner` because the generic running-style sense is not a second semantic Concept; the separate tactical pacemaker Concept remains independently modeled.
+Wave 2 verified `Stalker`, `Presser`, `Pocket`, `Cover` and `Parked out`. Generic `Pacesetter` was retired into `Front-runner`; the separate tactical pacemaker Concept remains independently modeled.
 
-RUN is now **33/46 source-verified (71.7%)**, with **13 candidates** remaining. Those candidates are mainly ambiguous generic labels, regional Jump terms, course-stage labels and remaining Harness gait terminology.
+The final broad RUN bundle verified `Midfield`, `Home turn`, `Stretch run`, `Run-in`, `Carried wide`, `Refused`, `Ran out`, `Galloped` and `Disqualified for gait`. `Tempo` was retired into `Pace`, and `Kick/closing kick` into `Turn of foot`.
+
+RUN is now **42/44 source-verified (95.5%)**. The two deliberate candidates are `Jump`, whose seed conflates multiple senses, and `Hold-up horse`, whose exact canonical label still lacks strong enough current authority definition.
 
 Authority/audit files now include:
 
@@ -110,39 +114,39 @@ data/glossary-master/coverage/welfare-safety-verification-v1.tsv
 data/glossary-master/coverage/residual-edgecase-verification-v1.tsv
 data/glossary-master/coverage/run-trip-verification-v1.tsv
 data/glossary-master/coverage/run-trip-verification-v2.tsv
+data/glossary-master/coverage/run-trip-verification-v3.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
 Current observed state:
 
-- all Concepts: **474/645 source-verified (73.5%)**, 171 candidate;
+- all Concepts: **483/643 source-verified (75.1%)**, 160 candidate;
 - core highest-priority set: **203/203 source-verified (100.0%)**;
-- active base seed: **313/484 source-verified (64.7%)**, 171 candidate;
+- active base seed: **322/482 source-verified (66.8%)**, 160 candidate;
 - supplemental jurisdiction/relationship research: **161/161 source-verified (100.0%)**;
-- RUN: **33/46 source-verified (71.7%)**;
+- RUN: **42/44 source-verified (95.5%)**;
 - MEET: **37/38 source-verified (97.4%)**;
 - RESULT: **27/28 source-verified (96.4%)**;
 - BET: **38/39 source-verified (97.4%)**;
 - WELF: **18/18 source-verified (100.0%)**;
-- retired/merged Concept rows: **17**;
+- retired/merged Concept rows: **19**;
 - abbreviations/codes: **38/38 source-verified**.
 
 ## What happens next
 
-The remaining **171 terms** continue by the categories with the largest unresolved candidate sets:
+The remaining **160 terms** continue by the categories with the largest unresolved candidate sets:
 
 ```text
-finish the remaining 13 RUN candidates where evidence supports the exact sense
--> equipment and training terminology
+equipment and training terminology
 -> horse / breeding / participant roles
 -> venue and entry terminology
 -> remaining race type / surface / distance / weight candidates
--> revisit the five residual edge cases only with stronger evidence
+-> revisit RUN's two deliberate unresolved labels and other residual edge cases only with stronger evidence
 -> rerun evidence/readiness gate
 ```
 
-`GLOSSARY-MASTER-005` remains **HOLD — not complete**. A 73.5% verified master with 171 unresolved seed Concepts is not ready to advance.
+`GLOSSARY-MASTER-005` remains **HOLD — not complete**. A 75.1% verified master with 160 unresolved seed Concepts is not ready to advance.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
@@ -171,10 +175,10 @@ The current public glossary remains disposable content. There is no old-record m
 
 ```text
 Current Work ID: GLOSSARY-MASTER-005
-Working dictionary: 645 terms
-Verified: 474
-Still under review: 171
-Next subject group: finish remaining RUN candidates, then equipment/training
+Working dictionary: 643 terms
+Verified: 483
+Still under review: 160
+Next subject group: equipment / training terminology
 MASTER-006: blocked until the evidence/readiness gate passes
 Public implementation: deferred
 ```
