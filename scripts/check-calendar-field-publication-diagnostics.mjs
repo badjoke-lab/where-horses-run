@@ -59,17 +59,33 @@ const denyDistance = {
 };
 projection = projectPublicTimetableRows(baseRows, denyDistance);
 assert.equal(projection.rows[0].race_name, 'Race One');
-assert.ok(!('distance_m' in projection.rows[0]), 'publication policy must be able to deny one canonical field independently');
+assert.ok(!('distance_m' in projection.rows[0]), 'an explicit non-rank field policy must be able to deny one canonical field independently');
 assert.equal(projection.rows[0].surface, 'Turf');
 assert.equal(projection.rows[0].course_label, 'Outer');
 
 const policyText = fs.readFileSync('src/data/publicationDisplayPolicies.json', 'utf8');
+const policyData = JSON.parse(policyText);
 assert.match(policyText, /"detail_fields"/, 'publication policy must use rank-independent detail_fields');
 assert.doesNotMatch(policyText, /"a_plus_fields"/, 'deprecated a_plus_fields policy key must not remain in canonical policy data');
+assert.doesNotMatch(policyText, /"max_public_rank"/, 'publication policy must not contain authority/source rank ceilings');
+for (const policy of [policyData.default_policy, ...(policyData.policies ?? [])]) {
+  assert.ok(policy?.detail_fields, `${policy?.id ?? 'unknown policy'} must define field-level publication controls`);
+}
+for (const authorityId of ['sorec', 'teletrak-chile', 'horse-racing-ireland']) {
+  const policy = policyData.policies.find((entry) => entry.match?.authority_ids?.includes(authorityId));
+  assert.ok(policy, `${authorityId} publication policy must exist`);
+  assert.deepEqual(policy.detail_fields, allowAll.detail_fields, `${authorityId} must not retain a legacy rank-derived rich-field block`);
+}
 
 const applyText = fs.readFileSync('scripts/timetable/apply-official-rolling-observations.mjs', 'utf8');
 assert.match(applyText, /projectPublicTimetableRows/, 'official observation application must use the tested field projection helper');
 assert.doesNotMatch(applyText, /const showPlus = listRow\.effective_public_rank === 'A\+'/, 'A+ must not gate all richer field publication');
+assert.doesNotMatch(applyText, /capRank\(/, 'public rank must not be capped by an authority/source policy');
+assert.doesNotMatch(applyText, /policy\.max_public_rank/, 'public projection must not read a policy rank ceiling');
+assert.doesNotMatch(applyText, /max_public_rank:/, 'public generated rows must not emit a rank ceiling');
+
+const viewModelText = fs.readFileSync('src/lib/timetable/publicTimetableViewModel.ts', 'utf8');
+assert.doesNotMatch(viewModelText, /max_public_rank/, 'public timetable view model must not restore a rank ceiling');
 
 const bootstrapText = fs.readFileSync('src/components/CalendarRuntimeBootstrap.astro', 'utf8');
 assert.match(bootstrapText, /params\.get\('diag'\) === 'calendar'/, 'diagnostics loader must be gated by ?diag=calendar');
@@ -87,3 +103,4 @@ assert.doesNotMatch(endpointText, /timetable_rows:\s*canonicalDetail/, 'diagnost
 
 console.log('CALENDAR_FIELD_PUBLICATION_DIAGNOSTICS: pass');
 console.log('PARTIAL_A_FIELD_PROJECTION_CASES: 5');
+console.log('AUTHORITY_PUBLIC_RANK_CEILING: prohibited');
