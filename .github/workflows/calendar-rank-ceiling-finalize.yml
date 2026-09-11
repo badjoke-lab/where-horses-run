@@ -13,7 +13,7 @@ permissions:
 jobs:
   finalize:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
         with:
@@ -43,35 +43,50 @@ jobs:
             git checkout --theirs -- "$file"
             git add "$file"
           done < <(git diff --name-only --diff-filter=U)
-      - name: Finalize evidence-derived rank model
-        run: |
-          node scripts/timetable/finalize-rank-ceiling-removal-temp.mjs
-          rm scripts/timetable/finalize-rank-ceiling-removal-temp.mjs
-      - name: Assert fixed-rank concepts are absent
+      - name: Remove fixed-rank implementation residue
         shell: bash
         run: |
           set -euo pipefail
-          matches="$(git grep -n 'max_public_rank' -- data/generated/timetable/public src/data/publicationDisplayPolicies.json src/data/publicationDisplayPolicies.ts src/lib/timetable/publicTimetableViewModel.ts src/data/timetableMeetingRows.ts src/lib/timetable/publicCoverageState.mjs scripts/timetable || true)"
-          if [[ -n "$matches" ]]; then
-            echo "$matches" >&2
+          node scripts/timetable/finalize-rank-ceiling-removal-temp.mjs
+          node scripts/timetable/cleanup-fixed-rank-residue-temp.mjs
+          rm -f scripts/timetable/finalize-rank-ceiling-removal-temp.mjs
+          rm -f scripts/timetable/cleanup-fixed-rank-residue-temp.mjs
+          rm -f .github/workflows/calendar-first-paint-consistency.yml
+          rm -f .github/workflows/calendar-dynamic-dates.yml
+          rm -f scripts/check-calendar-first-paint-consistency.mjs
+          rm -f scripts/check-calendar-dynamic-dates.mjs
+          rm -f scripts/check-calendar-30d-timetable-ui.mjs
+      - name: Assert obsolete rank and audit paths are absent
+        shell: bash
+        run: |
+          set -euo pipefail
+          runtime_matches="$(git grep -n -E 'max_public_rank|public_ceiling|japan-a-plus-overrides' -- data/static data/generated/timetable/public src scripts/timetable package.json || true)"
+          if [[ -n "$runtime_matches" ]]; then
+            echo "$runtime_matches" >&2
             exit 1
           fi
-          overlays="$(git grep -n 'japan-a-plus-overrides\|canApplyMeetingRankOverride\|canApplyDetailRankOverride' -- src scripts package.json || true)"
-          if [[ -n "$overlays" ]]; then
-            echo "$overlays" >&2
+          stale_refs="$(git grep -n -E 'build-japan-a-plus-public-overrides|check-japan-a-plus-public-overrides|calendar-first-paint-consistency|check-calendar-dynamic-dates|check-calendar-30d-timetable-ui' -- .github package.json scripts src || true)"
+          if [[ -n "$stale_refs" ]]; then
+            echo "$stale_refs" >&2
             exit 1
           fi
       - name: Install dependencies
         run: npm install --no-package-lock --no-audit --no-fund
-      - name: Validate evidence-derived Calendar rank contract
+      - name: Validate Calendar rank contract
+        shell: bash
         run: |
+          set -euo pipefail
           node scripts/check-calendar-field-publication-diagnostics.mjs
           node scripts/check-calendar-refresh-publication-boundaries.mjs
           node scripts/check-japan-best-available-rank.mjs
           node scripts/check-non-japan-best-available-rank.mjs
+          node scripts/check-calendar-runtime-import-boundary.mjs
+          for f in scripts/check-calendar-readiness*.mjs; do
+            [[ -f "$f" ]] && node "$f"
+          done
           node scripts/timetable/apply-reviewed-calendar-observations.mjs
           node scripts/check-calendar-field-publication-diagnostics.mjs
-      - name: Build and diff check
+      - name: Build and integrity check
         run: |
           npm run build
           git diff --check
@@ -79,6 +94,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          rm -f .github/workflows/calendar-rank-ceiling-finalize.yml
           git add -A
-          git commit -m "merge: finalize evidence-derived Calendar rank contract on latest main"
+          git commit -m "fix: finish evidence-derived Calendar rank contract"
           git push origin HEAD:fix/remove-calendar-authority-rank-ceilings-20260911
