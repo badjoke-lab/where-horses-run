@@ -18,7 +18,7 @@ jobs:
           ref: fix/sitewide-timezone-contract-20260911
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.12.0
+          node-version: 22.19.0
       - name: Enforce one six-option timezone contract
         run: |
           python - <<'PY'
@@ -69,7 +69,7 @@ jobs:
             ['TimetableMeetingList', meetingList],
             ['MeetingTimezoneProjection', meetingProjection],
           ]) {
-            const optionsBlock = /const timeZoneOptions = \[([\s\S]*?)\n\];/.exec(content)?.[1] ?? '';
+            const optionsBlock = content.split('const timeZoneOptions = [')[1]?.split('];')[0] ?? '';
             const actualTimeZones = [...optionsBlock.matchAll(/value:\s*'([^']+)'/g)].map((match) => match[1]);
             if (JSON.stringify(actualTimeZones) !== JSON.stringify(expectedCuratedDisplayTimeZones)) {
               fail(`${label} display-timezone choices must be exactly ${expectedCuratedDisplayTimeZones.join(', ')}; got ${actualTimeZones.join(', ')}.`);
