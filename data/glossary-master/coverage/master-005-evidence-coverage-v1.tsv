@@ -1,7 +1,7 @@
 scope_type	scope_id	total_concepts	source_verified	candidate	verified_pct	audit_state	note
-all	ALL	648	455	193	70.2	insufficient_for_completion	P0 and all 161 supplemental research Concepts are source_verified. The welfare/veterinary/safety pass verified all thirteen remaining WELF candidates; 193 active base-seed candidates remain.
+all	ALL	647	462	185	71.4	insufficient_for_completion	P0 and all 161 supplemental research Concepts are source_verified. The residual edge-case pass verified seven additional base Concepts and retired duplicate Program into Programme; 185 active base-seed candidates remain.
 priority	P0	203	203	0	100.0	complete_current_scope	P0 verification is complete for the current 203-Concept P0 set. Abbreviation, regional label or duplicate cleanup does not inflate the Concept count.
-origin	ACTIVE_BASE_SEED	487	294	193	60.4	material_gap	Lower-priority subject passes have now source-verified 141 base-seed Concepts and retired nine duplicate/malformed seed rows. 193 base-seed candidates remain.
+origin	ACTIVE_BASE_SEED	486	301	185	61.9	material_gap	Lower-priority subject passes have now source-verified 148 base-seed Concepts and retired ten duplicate/malformed seed rows. 185 base-seed candidates remain.
 origin	SUPPLEMENTAL_RESEARCH	161	161	0	100.0	complete_current_pass	All current jurisdiction and relationship supplemental Concepts are source_verified.
 category	DISC	17	12	5	70.6	partial	National Hunt, Hurdle, Steeplechase, Arabian and Quarter Horse racing are verified; five lower-priority DISC rows remain candidate.
 category	RTYPE	111	96	15	86.5	partial	The race-type/class pass verified 15 additional terms; 15 lower-priority RTYPE rows remain candidate.
@@ -16,8 +16,8 @@ category	WEIGHT	34	26	8	76.5	partial	Set weights, Set weights and penalties, App
 category	RUN	48	21	27	43.8	partial	Checked and Bumped are verified as North American race-comment terms; other trip/commentary terms remain candidate.
 category	EQUIP	30	14	16	46.7	partial	Visor, Hood, Cheekpieces, Tongue tie, Shadow roll and Bridle are verified; other equipment terms remain candidate.
 category	TRAIN	26	12	14	46.2	partial	Breezing, Handily, Canter, Trackwork and Jump-out are verified with bounded regional semantics.
-category	MEET	39	35	4	89.7	partial	Meeting number, Day number, Condition book, Weights, Barrier draw and First post are verified. Season, Program, Bulletin and Daylight saving time remain under review.
-category	RESULT	28	25	3	89.3	partial	Provisional result, Runner-up, Objection, Protest, Claim of foul, Void race, No contest and six semantic non-finish/adjudication states were verified. DQ and DH were retired as abbreviations of existing Concepts. Relegation, False start and RO/Ran Out remain under review.
+category	MEET	38	37	1	97.4	partial	Season and Bulletin are verified, and duplicate Program was retired into Programme. Daylight saving time remains candidate because it is primarily a generic civil-time concept whose independent racing-dictionary value is not yet established.
+category	RESULT	28	27	1	96.4	partial	Relegation and False start are now verified with regional authority evidence. RO/Ran Out remains under review because the current canonical code/label evidence is still insufficient.
 category	PRIZE	12	10	2	83.3	partial	Total prize money, Winner's prize, Place money, Added money, Breeders' premium and Owners' premium are verified with jurisdiction-aware definitions. Generic Bonus and polysemous Stake remain candidate.
-category	BET	39	35	4	89.7	partial	Pool/dividend/takeout, major current wager mechanics, Morning line and several odds-market expressions are verified. Forecast/Reverse Forecast/Tricast were retired into Exacta/Quinella/Trifecta mechanics. Totalisator, Fractional odds, American odds and On the board remain candidate.
+category	BET	39	38	1	97.4	partial	Totalisator, Fractional odds and On the board are now verified in scoped regional senses. American odds remains candidate pending sufficiently strong horse-racing authority evidence.
 category	WELF	18	18	0	100.0	complete_current_pass	All current WELF Concepts are source-verified. Unsound is explicitly scoped to current HISA regulatory-veterinary usage; injury/fatality/euthanasia/aftercare definitions preserve jurisdiction-specific reporting and welfare procedures.
