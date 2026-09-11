@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-11T15:57:40.306Z",
+  "generated_at": "2026-09-11T16:03:22.261Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -13191,12 +13191,11 @@
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "implementation_gap",
-        "observed_rank": "A",
+        "disposition": "retry_required",
+        "observed_rank": "C",
         "technical_capability_rank": "A+",
-        "evaluated_capability_rank": "A",
         "higher_rank_open": true,
-        "reason": "Higher-detail acquisition was evaluated only through A, below registered technical capability A+."
+        "reason": "Higher-detail acquisition did not complete safely (conflict)."
       }
     },
     {
@@ -13228,12 +13227,11 @@
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "implementation_gap",
-        "observed_rank": "A",
+        "disposition": "retry_required",
+        "observed_rank": "C",
         "technical_capability_rank": "A+",
-        "evaluated_capability_rank": "A",
         "higher_rank_open": true,
-        "reason": "Higher-detail acquisition was evaluated only through A, below registered technical capability A+."
+        "reason": "Higher-detail acquisition did not complete safely (conflict)."
       }
     },
     {
@@ -13713,12 +13711,11 @@
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "implementation_gap",
-        "observed_rank": "A",
+        "disposition": "retry_required",
+        "observed_rank": "C",
         "technical_capability_rank": "A+",
-        "evaluated_capability_rank": "A",
         "higher_rank_open": true,
-        "reason": "Higher-detail acquisition was evaluated only through A, below registered technical capability A+."
+        "reason": "Higher-detail acquisition did not complete safely (conflict)."
       }
     },
     {
@@ -13750,12 +13747,11 @@
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "implementation_gap",
-        "observed_rank": "A",
+        "disposition": "retry_required",
+        "observed_rank": "C",
         "technical_capability_rank": "A+",
-        "evaluated_capability_rank": "A",
         "higher_rank_open": true,
-        "reason": "Higher-detail acquisition was evaluated only through A, below registered technical capability A+."
+        "reason": "Higher-detail acquisition did not complete safely (conflict)."
       }
     },
     {
@@ -13787,12 +13783,11 @@
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "implementation_gap",
-        "observed_rank": "A",
+        "disposition": "retry_required",
+        "observed_rank": "C",
         "technical_capability_rank": "A+",
-        "evaluated_capability_rank": "A",
         "higher_rank_open": true,
-        "reason": "Higher-detail acquisition was evaluated only through A, below registered technical capability A+."
+        "reason": "Higher-detail acquisition did not complete safely (conflict)."
       }
     },
     {
@@ -14330,11 +14325,11 @@
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "pending_publication",
+        "disposition": "retry_required",
         "observed_rank": "C",
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
-        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+        "reason": "Higher-detail acquisition did not complete safely (conflict)."
       }
     },
     {
@@ -14366,11 +14361,11 @@
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "pending_publication",
+        "disposition": "retry_required",
         "observed_rank": "C",
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
-        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+        "reason": "Higher-detail acquisition did not complete safely (conflict)."
       }
     },
     {
@@ -14599,6 +14594,42 @@
         "technical_capability_rank": "A+",
         "higher_rank_open": false,
         "reason": "Observed evidence reached A+; no higher timetable rank remains."
+      }
+    },
+    {
+      "meeting_id": "sorec-el-jadida-racecourse-2026-09-14",
+      "country_id": "morocco",
+      "authority_id": "sorec",
+      "racing_system_id": "sorec-racing-information-system",
+      "timezone": "Africa/Casablanca",
+      "racecourse_id": "el-jadida-racecourse",
+      "date": "2026-09-14",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
+      },
+      "source_trace": {
+        "source_id": "sorec-programme-reunion",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.sorec-galop.ma/pages/programmeReunion/programmeReunion.jsf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-11",
+        "generated_at": "2026-09-11T16:03:20.592Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
       }
     },
     {
@@ -15402,6 +15433,42 @@
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
         "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      }
+    },
+    {
+      "meeting_id": "chile-club-hipico-de-concepcion-racecourse-2026-09-17",
+      "country_id": "chile",
+      "authority_id": "teletrak-chile",
+      "racing_system_id": "chile-teletrak-racing-system",
+      "timezone": "America/Santiago",
+      "racecourse_id": "club-hipico-de-concepcion-racecourse",
+      "date": "2026-09-17",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      },
+      "source_trace": {
+        "source_id": "chile-teletrak-weekly-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://teletrak.cl/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-11",
+        "generated_at": "2026-09-11T16:03:22.261Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
       }
     },
     {
@@ -24612,6 +24679,43 @@
       }
     },
     {
+      "meeting_id": "hkjc-sha-tin-racecourse-2026-10-11",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racing_system_id": "hong-kong-hkjc-system",
+      "timezone": "Asia/Hong_Kong",
+      "racecourse_id": "sha-tin-racecourse",
+      "date": "2026-10-11",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "complete_current_best_available",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "evaluated_capability_rank": "A+",
+        "higher_rank_open": false,
+        "reason": "The currently applicable higher-detail acquisition path was explicitly evaluated through the registered technical capability rank."
+      },
+      "source_trace": {
+        "source_id": "hkjc-fixture-list",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=10&CalYear=2026",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-11",
+        "generated_at": "2026-09-11T16:02:21.023Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
       "meeting_id": "jra-kyoto-racecourse-2026-10-11",
       "country_id": "japan",
       "authority_id": "jra",
@@ -24699,6 +24803,78 @@
         "technical_capability_rank": "A+",
         "higher_rank_open": false,
         "reason": "Observed evidence reached A+; no higher timetable rank remains."
+      }
+    },
+    {
+      "meeting_id": "kra-seoul-racecourse-2026-10-11",
+      "country_id": "south-korea",
+      "authority_id": "korea-racing-authority",
+      "racing_system_id": "kra-national-racing-system",
+      "timezone": "Asia/Seoul",
+      "racecourse_id": "seoul-racecourse",
+      "date": "2026-10-11",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      },
+      "source_trace": {
+        "source_id": "kra-annual-race-operation-plan",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://race.kra.co.kr/raceoper/RaceoperView.do?Sub=1&meet=1",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-11",
+        "generated_at": "2026-09-11T16:02:51.393Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
+      "meeting_id": "kra-yeongcheon-racecourse-2026-10-11",
+      "country_id": "south-korea",
+      "authority_id": "korea-racing-authority",
+      "racing_system_id": "kra-national-racing-system",
+      "timezone": "Asia/Seoul",
+      "racecourse_id": "yeongcheon-racecourse",
+      "date": "2026-10-11",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "No completion rule exists for detail status unsupported."
+      },
+      "source_trace": {
+        "source_id": "kra-annual-race-operation-plan",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://race.kra.co.kr/raceoper/RaceoperView.do?Sub=1&meet=1",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-11",
+        "generated_at": "2026-09-11T16:02:51.393Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
       }
     },
     {
