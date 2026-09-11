@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { isPublishableRacecourseMapLocation } from '../src/lib/racecourseMapLocationPolicy.mjs';
 
 const component = fs.readFileSync('src/components/CountryHubPage.astro', 'utf8');
+const mapComponent = fs.readFileSync('src/components/RacecourseMap.astro', 'utf8');
 const registry = JSON.parse(fs.readFileSync('data/static/racecourse-locations-v1.json', 'utf8'));
 const publishableIds = new Set(
   (registry.locations ?? [])
@@ -16,6 +17,8 @@ assert.match(component, /\.\.\.meetings\.map\(\(meeting\) => meeting\.racecourse
 assert.match(component, /filter\(\(id\) => reviewedRacecourseIds\.has\(id\)\)/);
 assert.match(component, /racecourseIds=\{countryMapRacecourseIds\}/);
 assert.match(component, /visibleRacecourseIds=\{countryMapRacecourseIds\}/);
+assert.match(component, /clusterPoints=\{false\}/, 'Country pages must render physical racecourses without clustering them together.');
+assert.match(mapComponent, /cluster: clusterPoints && features\.length > 1,/, 'RacecourseMap must honor the clusterPoints switch.');
 assert.doesNotMatch(
   component,
   /<RacecourseMap racecourseIds=\{racecourses\.map\(/,
@@ -70,6 +73,32 @@ const expectedCountryMapIds = [
   'khemisset-racecourse',
 ];
 
+const racecourseDataPaths = [
+  'data/static/racecourses.json',
+  'data/static/racecourses-extensions.json',
+  'data/static/racecourses-public-timetable-identities-v1.json',
+  'data/static/country-page-racecourses-01-04.json',
+  'data/static/country-page-racecourses-11-oman.json',
+  'data/static/country-page-racecourses-12-zimbabwe.json',
+];
+const racecourseRecords = racecourseDataPaths.flatMap((path) => JSON.parse(fs.readFileSync(path, 'utf8')));
+const activeIdsForCountry = (countryId) => [...new Set(racecourseRecords
+  .filter((record) => record?.country_id === countryId && ['active', 'current'].includes(record?.status))
+  .map((record) => record.id))].sort();
+
+assert.deepEqual(activeIdsForCountry('chile'), [
+  'club-hipico-de-concepcion-racecourse',
+  'club-hipico-de-santiago-racecourse',
+  'hipodromo-chile',
+  'valparaiso-sporting-club-racecourse',
+].sort(), 'Chile must expose four physical active racecourses with no legacy duplicate identity.');
+assert.deepEqual(activeIdsForCountry('south-korea'), [
+  'busan-gyeongnam-racecourse',
+  'jeju-racecourse',
+  'seoul-racecourse',
+  'yeongcheon-racecourse',
+].sort(), 'South Korea must expose four active racecourses.');
+
 assert.equal(expectedCountryMapIds.length, 41, 'expected 41 regression racecourses');
 for (const id of expectedCountryMapIds) {
   assert(publishableIds.has(id), `${id}: expected publishable country-map location`);
@@ -77,4 +106,7 @@ for (const id of expectedCountryMapIds) {
 
 console.log('COUNTRY_PAGE_MAP_SCOPE: pass');
 console.log('ACTIVE_COUNTRY_MAP_41_LOCATIONS: pass');
+console.log('CHILE_LIST_MAP_PARITY_4_OF_4: pass');
+console.log('SOUTH_KOREA_LIST_MAP_PARITY_4_OF_4: pass');
+console.log('COUNTRY_MAP_UNCLUSTERED_PHYSICAL_POINTS: pass');
 console.log('PARTIAL_LOCATION_COVERAGE_DOES_NOT_KILL_COUNTRY_MAP: pass');
