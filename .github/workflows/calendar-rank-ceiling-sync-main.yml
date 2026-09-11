@@ -1,0 +1,164 @@
+name: Calendar rank ceiling sync main
+
+on:
+  push:
+    branches:
+      - fix/remove-calendar-authority-rank-ceilings-20260911
+    paths:
+      - '.github/workflows/calendar-rank-ceiling-sync-main.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/remove-calendar-authority-rank-ceilings-20260911
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Merge latest main and resolve generated Calendar state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          main_sha="$(git rev-parse origin/main)"
+          echo "Merging main $main_sha into branch."
+          git merge --no-commit --no-ff origin/main || true
+
+          allowed='^(data/generated/timetable/canonical/meeting-details.json|data/generated/timetable/canonical/meetings.json|data/generated/timetable/japan-zero-based-30d-reconciliation.json|data/generated/timetable/public/meeting-details.json|data/generated/timetable/public/meeting-list.json)$'
+          unexpected="$(git diff --name-only --diff-filter=U | grep -Ev "$allowed" || true)"
+          if [[ -n "$unexpected" ]]; then
+            echo "Unexpected merge conflicts:" >&2
+            echo "$unexpected" >&2
+            exit 1
+          fi
+
+          while IFS= read -r file; do
+            [[ -z "$file" ]] && continue
+            git checkout --theirs -- "$file"
+            git add "$file"
+          done < <(git diff --name-only --diff-filter=U)
+
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { deriveBestAvailableRank } from './scripts/timetable/best-available-rank.mjs';
+          import { projectPublicTimetableRows } from './scripts/timetable/public-detail-projection.mjs';
+
+          const read = (path) => JSON.parse(fs.readFileSync(path, 'utf8'));
+          const write = (path, value) => fs.writeFileSync(path, `${JSON.stringify(value, null, 2)}\n`);
+          const canonical = read('data/generated/timetable/canonical/meetings.json');
+          const canonicalDetails = read('data/generated/timetable/canonical/meeting-details.json');
+          const publicList = read('data/generated/timetable/public/meeting-list.json');
+          const publicDetails = read('data/generated/timetable/public/meeting-details.json');
+          const policyData = read('src/data/publicationDisplayPolicies.json');
+
+          const canonicalById = new Map((canonical.meetings ?? []).map((row) => [row.meeting_id, row]));
+          const detailById = new Map((canonicalDetails.details ?? []).map((row) => [row.meeting_id, row]));
+          const oldPublicById = new Map((publicList.meetings ?? []).map((row) => [row.meeting_id, row]));
+          const oldDetailById = new Map((publicDetails.details ?? []).map((row) => [row.meeting_id, row]));
+          const choosePolicy = (authorityId) => {
+            const matches = (policyData.policies ?? [])
+              .filter((policy) => (policy.match?.authority_ids ?? []).includes(authorityId))
+              .sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0));
+            return matches[0] ?? policyData.default_policy;
+          };
+
+          const meetings = [];
+          const details = [];
+          for (const [meetingId, oldPublic] of oldPublicById) {
+            const meeting = canonicalById.get(meetingId);
+            if (!meeting) {
+              const { max_public_rank, ...withoutCeiling } = oldPublic;
+              meetings.push(withoutCeiling);
+              const oldDetail = oldDetailById.get(meetingId);
+              if (oldDetail) {
+                const { max_public_rank: _oldDetailCeiling, ...detailWithoutCeiling } = oldDetail;
+                details.push(detailWithoutCeiling);
+              }
+              continue;
+            }
+
+            const canonicalDetail = detailById.get(meetingId) ?? null;
+            const evidenceRank = deriveBestAvailableRank(meeting, canonicalDetail?.timetable_rows ?? []);
+            const policy = choosePolicy(meeting.authority_id);
+            const canShowDetail = ['A', 'A+'].includes(evidenceRank) && canonicalDetail;
+            const first = meeting.first_race_time_local ?? canonicalDetail?.timetable_rows?.[0]?.post_time_local ?? null;
+            const last = meeting.last_race_time_local ?? canonicalDetail?.timetable_rows?.at(-1)?.post_time_local ?? null;
+
+            meetings.push({
+              meeting_id: meeting.meeting_id,
+              country_id: meeting.country_id,
+              authority_id: meeting.authority_id,
+              racecourse_id: meeting.racecourse_id,
+              date: meeting.date,
+              timezone: meeting.timezone,
+              capability_rank: evidenceRank,
+              effective_public_rank: evidenceRank,
+              first_race_time_local: first,
+              last_race_time_local: last,
+              policy_id: policy.id,
+              source_status: meeting.source_trace?.source_status ?? oldPublic.source_status ?? 'verified',
+              official_source_url: meeting.source_trace?.official_source_url ?? oldPublic.official_source_url,
+              last_checked_date: meeting.freshness?.last_checked_date ?? oldPublic.last_checked_date ?? null,
+              detail_path: canShowDetail ? `/timetable/meetings/${meeting.meeting_id}/` : null,
+              show_live_label: policy.show_live_label ?? oldPublic.show_live_label ?? false,
+              show_replay_label: policy.show_replay_label ?? oldPublic.show_replay_label ?? false,
+            });
+
+            if (canShowDetail) {
+              const projection = projectPublicTimetableRows(canonicalDetail.timetable_rows ?? [], policy);
+              details.push({
+                meeting_id: meeting.meeting_id,
+                country_id: meeting.country_id,
+                authority_id: meeting.authority_id,
+                racecourse_id: meeting.racecourse_id,
+                date: meeting.date,
+                timezone: meeting.timezone,
+                capability_rank: evidenceRank,
+                effective_public_rank: evidenceRank,
+                policy_id: policy.id,
+                official_source_url: meeting.source_trace?.official_source_url ?? oldPublic.official_source_url,
+                source_status: meeting.source_trace?.source_status ?? oldPublic.source_status ?? 'verified',
+                last_checked_date: meeting.freshness?.last_checked_date ?? oldPublic.last_checked_date ?? null,
+                show_race_name: projection.visibility.show_race_name,
+                show_distance: projection.visibility.show_distance,
+                show_surface: projection.visibility.show_surface,
+                show_course: projection.visibility.show_course,
+                show_live_label: policy.show_live_label ?? false,
+                show_replay_label: policy.show_replay_label ?? false,
+                timetable_rows: projection.rows,
+              });
+            }
+          }
+
+          meetings.sort((a, b) => a.date.localeCompare(b.date) || a.meeting_id.localeCompare(b.meeting_id));
+          details.sort((a, b) => a.date.localeCompare(b.date) || a.meeting_id.localeCompare(b.meeting_id));
+          write('data/generated/timetable/public/meeting-list.json', { ...publicList, meetings });
+          write('data/generated/timetable/public/meeting-details.json', { ...publicDetails, details });
+          NODE
+
+          git add data/generated/timetable/public/meeting-list.json data/generated/timetable/public/meeting-details.json
+          test -z "$(git grep -n 'max_public_rank' -- src scripts docs data/generated/timetable/public || true)"
+      - name: Validate merged branch
+        run: |
+          npm install --no-package-lock --no-audit --no-fund
+          node scripts/check-calendar-refresh-publication-boundaries.mjs
+          node scripts/check-japan-best-available-rank.mjs
+          node scripts/check-non-japan-best-available-rank.mjs
+          npm run build
+          git diff --check
+      - name: Commit and push merged branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add -A
+          git commit -m "merge: sync Calendar rank ceiling removal with latest main"
+          git push origin HEAD:fix/remove-calendar-authority-rank-ceilings-20260911
