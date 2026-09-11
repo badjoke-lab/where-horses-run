@@ -1,0 +1,20 @@
+name: SOREC detail route probe
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/probe-sorec-detail-route.mjs'
+      - '.github/workflows/sorec-detail-route-probe.yml'
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Probe SOREC programme JSF route
+        run: node scripts/probe-sorec-detail-route.mjs
