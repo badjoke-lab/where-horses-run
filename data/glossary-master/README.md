@@ -8,30 +8,30 @@ This directory is the non-public working area for the worldwide horse-racing ter
 
 ## Plain-language progress
 
-The working dictionary currently contains **654 racing terms/concepts**.
+The working dictionary currently contains **653 racing terms/concepts**.
 
-- **395 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
-- **259 terms still need verification, scope correction, splitting/merging, or removal.**
+- **401 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
+- **252 terms still need verification, scope correction, splitting/merging, or removal.**
 - The already researched jurisdiction-specific additions are **161/161 verified**.
 - The core highest-priority terminology set is **203/203 verified**.
 - Public glossary publication is still disabled while the remaining terms are cleaned up.
 
-The latest subject pass is **芝・ダート・馬場状態 / surface and going terminology**. It verified 10 additional terms: Firm, Good to Firm, Good to Soft, Yielding, Yielding to Soft, Fast, Wet Fast, Muddy, Sloppy and dirt-qualified Good.
+The latest subject pass is **開催・日程・公式文書 / meeting and schedule terminology**. It verified six additional terms: Meeting number, Day number, Condition book, Weights, Barrier draw and First post.
 
-The important rule is that regional condition systems are not collapsed into one global scale. BHA Going, IHRB Yielding terminology, US dirt conditions and JRA 良/稍重/重/不良 are kept as jurisdiction-specific systems. `Frozen`, `Snow-covered` and `Off turf` remain under review because the current seed wording does not yet match the strongest authority label evidence cleanly enough.
+This pass also retired duplicate `MEET-015 Condition book` into `MEET-014`, whose canonical English label was normalized from `Conditions book` to current NYRA-style `Condition book`. `Program` remains candidate because the seed conflates an American spelling variant of Programme with possible racecard/document senses. `Daylight saving time` remains candidate because it is a generic civil-time concept whose independent value in the racing dictionary still needs justification. `Season` and `Bulletin` also remain under review rather than being promoted without sharper racing-specific evidence.
 
-The preceding race-type/classification pass verified 15 terms including Maiden Claiming, Novice, Beginners Chase, National Hunt Flat Race, Allowance, Starter Allowance, Claiming, Optional Claiming, Pattern, Group/Grade 2-3, Nursery Handicap and Match Race.
+The preceding surface/going pass verified 10 terms while keeping BHA, IHRB, North American dirt and JRA condition systems separate.
 
 ## Current master
 
-- Concepts: **654**
+- Concepts: **653**
 - categories: **18**
-- P0: **203** / P1: **298** / P2: **135** / P3: **18**
+- P0: **203** / P1: **298** / P2: **134** / P3: **18**
 - `public_ready=yes`: **0**
 - public runtime input: **false**
 - active Concept relations: **20**
 - relationship reviews: **15 discovered / 15 resolved / 0 open**
-- retired/merged Concept rows: **8**
+- retired/merged Concept rows: **9**
 
 ## Core source verification — complete
 
@@ -50,21 +50,27 @@ Verified **27** terms across racing disciplines, entries, racecourses, distance/
 Verified **29** terms across horses, breeding, racing people, in-race expressions, horse equipment and training. Duplicate `Breeder` was consolidated into the participant-role Concept.
 
 ### Race types and classifications — complete current pass
-Verified **15** race-type/classification terms. RTYPE is now **96/111 verified**.
+Verified **15** race-type/classification terms. RTYPE is **96/111 verified**.
 
 ### Surface and going terminology — complete current pass
 Audit: `coverage/surface-going-verification-v1.tsv`  
 Sources: `sources/surface-going-sources-v1.tsv` plus existing BHA/USTA authority ledgers.
 
-Verified **10** additional surface-condition terms. SURF is now **52/63 verified (82.5%)**. Seed wording was narrowed where necessary instead of treating every regional label as equivalent.
+Verified **10** additional surface-condition terms. SURF is **52/63 verified (82.5%)**.
 
-Across these passes, **81 base-dictionary terms have been newly verified and 3 duplicate/malformed rows have been removed**.
+### Meeting and schedule terminology — complete current pass
+Audit: `coverage/meeting-schedule-verification-v1.tsv`  
+Sources: `sources/meeting-schedule-sources-v1.tsv` plus existing Equibase/Racing Australia source rows.
+
+Verified **6** additional terms and retired **1 duplicate**. MEET is now **35/39 verified (89.7%)**. The four remaining candidates are intentionally unresolved: Season, Program, Bulletin and Daylight saving time.
+
+Across these passes, **87 base-dictionary terms have been newly verified and 4 duplicate/malformed rows have been removed**.
 
 ## Evidence state
 
-- all Concepts: **395 / 654 source-verified (60.4%)**; **259 candidate**
+- all Concepts: **401 / 653 source-verified (61.4%)**; **252 candidate**
 - core highest-priority set: **203 / 203 source-verified (100.0%)**
-- active base seed: **234 / 493 source-verified (47.5%)**; **259 candidate**
+- active base seed: **240 / 492 source-verified (48.8%)**; **252 candidate**
 - supplemental jurisdiction/relationship research: **161 / 161 source-verified (100.0%)**
 
 Canonical current audit state includes:
@@ -74,22 +80,22 @@ coverage/p1-verification-wave1-v1.tsv
 coverage/p1-verification-wave2-v1.tsv
 coverage/race-type-condition-verification-v1.tsv
 coverage/surface-going-verification-v1.tsv
+coverage/meeting-schedule-verification-v1.tsv
 coverage/master-005-evidence-coverage-v1.tsv
 coverage/master-005-completion-gate-v1.tsv
 ```
 
 ## Current completion decision
 
-The terminology master remains **not complete**. The remaining **259 terms** must be reviewed rather than automatically promoted.
+The terminology master remains **not complete**. The remaining **252 terms** must be reviewed rather than automatically promoted.
 
 Next user-facing areas to process are:
 
 ```text
-remaining surface/product edge cases
--> meeting and schedule terminology
--> results, decisions and result codes
+results, decisions and result codes
 -> prize and betting terminology
 -> welfare / veterinary / safety terminology
+-> remaining surface / meeting edge cases where better evidence exists
 -> unresolved ambiguous terms and duplicate cleanup
 -> rerun evidence/readiness review
 ```

@@ -13,9 +13,9 @@ This addendum creates a parallel glossary knowledge lane. It does not supersede 
 Plain-language state:
 
 ```text
-Working dictionary: 654 terms/concepts
-Meaning-level source verified: 395
-Still under review: 259
+Working dictionary: 653 terms/concepts
+Meaning-level source verified: 401
+Still under review: 252
 Highest-priority core terms: 203/203 verified
 Jurisdiction-specific research additions: 161/161 verified
 Public glossary publication: disabled
@@ -33,6 +33,7 @@ Base-dictionary pass 1: complete
 Base-dictionary pass 2: complete
 Race types / classifications pass: complete current pass
 Surface / going / track-condition pass: complete current pass
+Meeting / schedule / official-document pass: complete current pass
 Later: GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 ```
 
@@ -72,6 +73,12 @@ Verified **10 additional terms**: Firm, Good to Firm, Good to Soft, Yielding, Yi
 
 The pass keeps regional systems separate. BHA Going, IHRB yielding-based terminology, US dirt conditions and JRA 良/稍重/重/不良 are not flattened into exact global equivalents. `Frozen`, `Snow-covered` and `Off turf` remain under review because their seed labels still require canonical-label reconciliation.
 
+### Completed meeting / schedule / official-document pass
+
+Verified **6 additional terms**: Meeting number, Day number, Condition book, Weights, Barrier draw and First post.
+
+`MEET-015 Condition book` was retired as a duplicate of `MEET-014`, and the canonical English label for `MEET-014` was normalized from `Conditions book` to current NYRA-style `Condition book`. `Weights` is explicitly modeled as the publication/programme-stage sense rather than a second horse-weight Concept. `Program` remains candidate because the seed conflates an orthographic variant of Programme with possible racecard/document senses. `Season`, `Bulletin` and `Daylight saving time` also remain under review rather than being promoted without stronger racing-specific value or evidence.
+
 Authority/audit files now include:
 
 ```text
@@ -79,36 +86,37 @@ data/glossary-master/sources/p1-core-sources-v1.tsv
 data/glossary-master/sources/p1-core-sources-v2.tsv
 data/glossary-master/sources/race-type-condition-sources-v1.tsv
 data/glossary-master/sources/surface-going-sources-v1.tsv
+data/glossary-master/sources/meeting-schedule-sources-v1.tsv
 data/glossary-master/coverage/p1-verification-wave1-v1.tsv
 data/glossary-master/coverage/p1-verification-wave2-v1.tsv
 data/glossary-master/coverage/race-type-condition-verification-v1.tsv
 data/glossary-master/coverage/surface-going-verification-v1.tsv
+data/glossary-master/coverage/meeting-schedule-verification-v1.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
 Current observed state:
 
-- all Concepts: **395/654 source-verified (60.4%)**, 259 candidate;
+- all Concepts: **401/653 source-verified (61.4%)**, 252 candidate;
 - core highest-priority set: **203/203 source-verified (100.0%)**;
-- active base seed: **234/493 source-verified (47.5%)**, 259 candidate;
+- active base seed: **240/492 source-verified (48.8%)**, 252 candidate;
 - supplemental jurisdiction/relationship research: **161/161 source-verified (100.0%)**;
-- retired/merged Concept rows: **8**.
+- retired/merged Concept rows: **9**.
 
 ## What happens next
 
-The remaining **259 terms** will continue by understandable subject groups:
+The remaining **252 terms** will continue by understandable subject groups:
 
 ```text
-remaining surface/product edge cases
--> meetings, fixtures and scheduling
--> results, inquiries, decisions and result codes
+results, inquiries, decisions and result codes
 -> prize money and betting
 -> welfare, veterinary and safety
+-> remaining surface / meeting edge cases when stronger evidence exists
 -> unresolved ambiguous terms and duplicate cleanup
 ```
 
-After those groups are processed, the evidence/readiness gate will be rerun. `GLOSSARY-MASTER-005` remains **HOLD — not complete** because 259 base terms still require review.
+After those groups are processed, the evidence/readiness gate will be rerun. `GLOSSARY-MASTER-005` remains **HOLD — not complete** because 252 base terms still require review.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
@@ -137,10 +145,10 @@ The current public glossary remains disposable content. There is no old-record m
 
 ```text
 Current Work ID: GLOSSARY-MASTER-005
-Working dictionary: 654 terms
-Verified: 395
-Still under review: 259
-Next subject group: remaining surface/product edge cases, then meetings / fixtures / scheduling
+Working dictionary: 653 terms
+Verified: 401
+Still under review: 252
+Next subject group: results / inquiries / decisions / result codes
 MASTER-006: blocked until the evidence/readiness gate passes
 Public implementation: deferred
 ```
