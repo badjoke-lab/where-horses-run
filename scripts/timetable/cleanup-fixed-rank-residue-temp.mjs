@@ -113,18 +113,8 @@ removeLinesContaining('scripts/check-calendar-runtime-import-boundary.mjs', [
   }
 }
 
-for (const file of [
-  'scripts/check-japan-a-plus-public-overrides.mjs',
-]) {
-  if (fs.existsSync(file)) fs.rmSync(file);
-}
-
-// Remove stale references to the deleted checker from operator/workflow/package text where it can only be a standalone command.
-for (const file of [...walk('.github/workflows'), 'package.json'].filter((file) => fs.existsSync(file))) {
-  const before = read(file);
-  const lines = before.split('\n');
-  const next = lines.filter((line) => !line.includes('check-japan-a-plus-public-overrides.mjs') && !line.includes('build-japan-a-plus-public-overrides.mjs'));
-  if (next.join('\n') !== before) write(file, next.join('\n'));
+if (fs.existsSync('scripts/check-japan-a-plus-public-overrides.mjs')) {
+  fs.rmSync('scripts/check-japan-a-plus-public-overrides.mjs');
 }
 
 console.log('FIXED_RANK_RESIDUE_CLEANUP: applied');
