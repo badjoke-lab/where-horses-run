@@ -14,8 +14,8 @@ Plain-language state:
 
 ```text
 Working dictionary: 654 terms/concepts
-Meaning-level source verified: 385
-Still under review: 269
+Meaning-level source verified: 395
+Still under review: 259
 Highest-priority core terms: 203/203 verified
 Jurisdiction-specific research additions: 161/161 verified
 Public glossary publication: disabled
@@ -32,6 +32,7 @@ Current: GLOSSARY-MASTER-005 — evidence / semantic cleanup
 Base-dictionary pass 1: complete
 Base-dictionary pass 2: complete
 Race types / classifications pass: complete current pass
+Surface / going / track-condition pass: complete current pass
 Later: GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 ```
 
@@ -61,23 +62,15 @@ Verified **29 more terms** across horses, breeding, racing people, in-race expre
 
 ### Completed race types / classifications pass
 
-Verified **15 additional terms**:
+Verified **15 additional terms**: Maiden Claiming, Novice, Beginners Chase, National Hunt Flat Race, Allowance, Starter Allowance, Claiming, Optional Claiming, Pattern, Group 2 / Group 3, Grade 2 / Grade 3, Nursery Handicap and Match Race.
 
-- Maiden Claiming;
-- Novice;
-- Beginners Chase;
-- National Hunt Flat Race;
-- Allowance;
-- Starter Allowance;
-- Claiming;
-- Optional Claiming;
-- Pattern;
-- Group 2 / Group 3;
-- Grade 2 / Grade 3;
-- Nursery Handicap;
-- Match Race.
+The pass corrected semantics instead of merely changing status. `Beginners Chase` was normalized to current BHA wording, Allowance was kept separate from a global Conditions Race synonym claim, Optional Claiming was rewritten around its North American claiming/non-claiming eligibility structure, and Match Race was narrowed to the directly supported North American sense. `Selling race` remains under review because current BHA terminology uses `Seller`.
 
-The pass also corrected semantics instead of merely changing status. `Beginners Chase` was normalized to current BHA wording, Allowance was kept separate from a global Conditions Race synonym claim, Optional Claiming was rewritten around its North American claiming/non-claiming eligibility structure, and Match Race was narrowed to the directly supported North American sense. `Selling race` remains under review because current BHA terminology uses `Seller`.
+### Completed surface / going / track-condition pass
+
+Verified **10 additional terms**: Firm, Good to Firm, Good to Soft, Yielding, Yielding to Soft, Fast, Wet Fast, Muddy, Sloppy and dirt-qualified Good.
+
+The pass keeps regional systems separate. BHA Going, IHRB yielding-based terminology, US dirt conditions and JRA 良/稍重/重/不良 are not flattened into exact global equivalents. `Frozen`, `Snow-covered` and `Off turf` remain under review because their seed labels still require canonical-label reconciliation.
 
 Authority/audit files now include:
 
@@ -85,28 +78,29 @@ Authority/audit files now include:
 data/glossary-master/sources/p1-core-sources-v1.tsv
 data/glossary-master/sources/p1-core-sources-v2.tsv
 data/glossary-master/sources/race-type-condition-sources-v1.tsv
+data/glossary-master/sources/surface-going-sources-v1.tsv
 data/glossary-master/coverage/p1-verification-wave1-v1.tsv
 data/glossary-master/coverage/p1-verification-wave2-v1.tsv
 data/glossary-master/coverage/race-type-condition-verification-v1.tsv
+data/glossary-master/coverage/surface-going-verification-v1.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
 Current observed state:
 
-- all Concepts: **385/654 source-verified (58.9%)**, 269 candidate;
+- all Concepts: **395/654 source-verified (60.4%)**, 259 candidate;
 - core highest-priority set: **203/203 source-verified (100.0%)**;
-- active base seed: **224/493 source-verified (45.4%)**, 269 candidate;
+- active base seed: **234/493 source-verified (47.5%)**, 259 candidate;
 - supplemental jurisdiction/relationship research: **161/161 source-verified (100.0%)**;
 - retired/merged Concept rows: **8**.
 
 ## What happens next
 
-The remaining **269 terms** will continue by understandable subject groups:
+The remaining **259 terms** will continue by understandable subject groups:
 
 ```text
-remaining race-type edge cases
--> track surface / going / condition
+remaining surface/product edge cases
 -> meetings, fixtures and scheduling
 -> results, inquiries, decisions and result codes
 -> prize money and betting
@@ -114,7 +108,7 @@ remaining race-type edge cases
 -> unresolved ambiguous terms and duplicate cleanup
 ```
 
-After those groups are processed, the evidence/readiness gate will be rerun. `GLOSSARY-MASTER-005` remains **HOLD — not complete** because 269 base terms still require review.
+After those groups are processed, the evidence/readiness gate will be rerun. `GLOSSARY-MASTER-005` remains **HOLD — not complete** because 259 base terms still require review.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
@@ -144,9 +138,9 @@ The current public glossary remains disposable content. There is no old-record m
 ```text
 Current Work ID: GLOSSARY-MASTER-005
 Working dictionary: 654 terms
-Verified: 385
-Still under review: 269
-Next subject group: remaining race-type edge cases, then track surface / going / condition
+Verified: 395
+Still under review: 259
+Next subject group: remaining surface/product edge cases, then meetings / fixtures / scheduling
 MASTER-006: blocked until the evidence/readiness gate passes
 Public implementation: deferred
 ```
