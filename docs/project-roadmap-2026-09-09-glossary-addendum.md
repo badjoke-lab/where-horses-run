@@ -14,8 +14,8 @@ Plain-language state:
 
 ```text
 Working dictionary: 642 terms/concepts
-Meaning-level source verified: 518
-Still under review: 124
+Meaning-level source verified: 529
+Still under review: 113
 Highest-priority core terms: 203/203 verified
 Jurisdiction-specific research additions: 161/161 verified
 Public glossary publication: disabled
@@ -41,7 +41,8 @@ Residual edge-case pass: complete current pass
 Running / trip / race-comment pass: broad current pass complete; 2 deliberate unresolved labels retained
 Equipment / training pass: current defensible pass complete; weak residuals retained
 Horse / breeding / participant roles: wave 1 complete current pass; weak residuals retained
-Next: venue / entry terminology
+Venue / entry terminology: wave 1 complete current pass; weak residuals retained
+Next: remaining race type / surface / distance / weight candidates
 Later: GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 ```
 
@@ -78,6 +79,7 @@ The remaining task is to clean the lower-priority base dictionary. This does **n
 - Equipment/training wave 1: **20 verified** — 13 EQUIP and 7 TRAIN Concepts with scoped authority evidence.
 - Equipment/training residual: **1 verified**, `Bike/Racebike` consolidated into `Sulky`.
 - Horse/breeding/participant roles wave 1: **14 verified** — 3 HORSE, 4 BREED and 7 ROLE Concepts with scoped JRA/IFHA/BHA/Jockey Club evidence.
+- Venue/entry terminology wave 1: **11 verified** — 6 ENTRY and 5 VENUE Concepts with scoped BHA, JRA, Jockey Club, Equibase/Churchill Downs, HRA and HRNZ evidence.
 
 ### Residual edge-case pass
 
@@ -101,6 +103,12 @@ Wave 1 verified `Horse`, `Foal`, `Yearling`, `Broodmare sire`, `Mating`, `Foalin
 
 HORSE is now **21/34 source-verified (61.8%)**, BREED is **11/22 (50.0%)**, and ROLE is **25/31 (80.6%)**. Local age conventions, Thoroughbred registration procedures, and British licensing thresholds remain explicitly scoped. The remaining horse/breeding/role seed rows are retained as candidates where this source bundle does not support promotion.
 
+### Venue / entry terminology pass
+
+Wave 1 verified `Maximum field`, `Balloted out`, `Also eligible`, `Entry fee`, `Preference`, `Eliminated`, `Homestretch`, `Backstretch`, `Mobile barrier`, `Parade ring` and `Winner's enclosure`.
+
+ENTRY is now **26/31 source-verified (83.9%)** and VENUE is **28/44 (63.6%)**. BHA's maximum-field/elimination language remains GB-scoped; current North American stakes conditions support also-eligible, entry-fee and preference mechanics without universalizing one race's rules; JRA/Jockey Club and harness authorities support regional course/facility labels without flattening `Homestretch` into `Home straight`, `Parade ring` into `Paddock`, `Winner's enclosure` into `Winners' circle`, or `Mobile barrier` into every starting-gate system.
+
 Authority/audit files now include:
 
 ```text
@@ -116,6 +124,7 @@ data/glossary-master/sources/residual-edgecase-sources-v1.tsv
 data/glossary-master/sources/run-trip-sources-v1.tsv
 data/glossary-master/sources/equipment-training-sources-v1.tsv
 data/glossary-master/sources/horse-breeding-role-sources-v1.tsv
+data/glossary-master/sources/venue-entry-sources-v1.tsv
 data/glossary-master/coverage/p1-verification-wave1-v1.tsv
 data/glossary-master/coverage/p1-verification-wave2-v1.tsv
 data/glossary-master/coverage/race-type-condition-verification-v1.tsv
@@ -131,16 +140,19 @@ data/glossary-master/coverage/run-trip-verification-v3.tsv
 data/glossary-master/coverage/equipment-training-verification-v1.tsv
 data/glossary-master/coverage/equipment-training-residual-v1.tsv
 data/glossary-master/coverage/horse-breeding-role-verification-v1.tsv
+data/glossary-master/coverage/venue-entry-verification-v1.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
 Current observed state:
 
-- all Concepts: **518/642 source-verified (80.7%)**, 124 candidate;
+- all Concepts: **529/642 source-verified (82.4%)**, 113 candidate;
 - core highest-priority set: **203/203 source-verified (100.0%)**;
-- active base seed: **357/481 source-verified (74.2%)**, 124 candidate;
+- active base seed: **368/481 source-verified (76.5%)**, 113 candidate;
 - supplemental jurisdiction/relationship research: **161/161 source-verified (100.0%)**;
+- ENTRY: **26/31 source-verified (83.9%)**;
+- VENUE: **28/44 source-verified (63.6%)**;
 - HORSE: **21/34 source-verified (61.8%)**;
 - BREED: **11/22 source-verified (50.0%)**;
 - ROLE: **25/31 source-verified (80.6%)**;
@@ -156,16 +168,15 @@ Current observed state:
 
 ## What happens next
 
-The remaining **124 terms** continue by the categories with the largest unresolved candidate sets:
+The remaining **113 terms** continue by the clearest unresolved broad categories:
 
 ```text
-venue and entry terminology
--> remaining race type / surface / distance / weight candidates
--> revisit deliberately unresolved horse / breeding / roles, RUN, EQUIP, TRAIN and cross-category edge cases only with stronger evidence
+remaining race type / surface / distance / weight candidates
+-> revisit deliberately unresolved horse / breeding / roles, venue / entry, RUN, EQUIP, TRAIN and cross-category edge cases only with stronger evidence
 -> rerun evidence/readiness gate
 ```
 
-`GLOSSARY-MASTER-005` remains **HOLD — not complete**. An 80.7% verified master with 124 unresolved seed Concepts is not ready to advance.
+`GLOSSARY-MASTER-005` remains **HOLD — not complete**. An 82.4% verified master with 113 unresolved seed Concepts is not ready to advance.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
@@ -195,9 +206,9 @@ The current public glossary remains disposable content. There is no old-record m
 ```text
 Current Work ID: GLOSSARY-MASTER-005
 Working dictionary: 642 terms
-Verified: 518
-Still under review: 124
-Next subject group: venue / entry terminology
+Verified: 529
+Still under review: 113
+Next subject group: remaining race type / surface / distance / weight candidates
 MASTER-006: blocked until the evidence/readiness gate passes
 Public implementation: deferred
 ```
