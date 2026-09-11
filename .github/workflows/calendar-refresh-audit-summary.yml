@@ -16,6 +16,7 @@ on:
     paths:
       - '.github/workflows/calendar-refresh-audit-summary.yml'
       - 'scripts/timetable/build-refresh-audit-summary.mjs'
+      - 'scripts/check-refresh-audit-summary.mjs'
 
 permissions:
   contents: read
@@ -30,8 +31,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - name: Validate audit summary builder syntax
-        run: node --check scripts/timetable/build-refresh-audit-summary.mjs
+      - name: Validate audit summary builder
+        run: |
+          node --check scripts/timetable/build-refresh-audit-summary.mjs
+          node --check scripts/check-refresh-audit-summary.mjs
+          node scripts/check-refresh-audit-summary.mjs
 
   audit:
     if: github.event_name == 'workflow_run' || github.event_name == 'workflow_dispatch'
