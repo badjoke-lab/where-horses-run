@@ -11,7 +11,6 @@ on:
       - 'src/components/CountryHubPage.astro'
       - 'src/lib/data.ts'
       - 'package.json'
-      - 'package-lock.json'
       - '.github/workflows/racecourse-map-regression.yml'
   workflow_dispatch:
 
@@ -34,10 +33,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install --no-audit --no-fund
 
       - name: Validate racecourse map projection
         run: npm run validate:racecourse-map-projection
