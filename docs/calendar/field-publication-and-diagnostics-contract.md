@@ -6,15 +6,16 @@ Last reviewed: 2026-09-11
 
 ## Purpose
 
-This contract separates five facts that must not be conflated:
+This contract separates four facts that must not be conflated:
 
 ```text
 observed evidence rank
 canonical field availability
-publication rank ceiling
 per-field publication permission
 operator diagnostics
 ```
+
+There is no country-, authority-, source-, adapter-, collector-, or publication-policy rank ceiling.
 
 The Calendar rank ladder remains:
 
@@ -24,9 +25,9 @@ C < B < B+ < A < A+
 
 This contract does not add an `S` rank and does not weaken the existing `A+` completeness requirement.
 
-## Rank semantics remain unchanged
+## Rank semantics
 
-Rank is a completeness classification for one meeting observation.
+Rank is a completeness classification for one meeting observation and is derived from verified evidence actually present for that meeting.
 
 - `C`: meeting/date-level evidence only.
 - `B`: valid first race time.
@@ -46,6 +47,28 @@ Surface   12/12
 Course    12/12
 => observed evidence rank A
 ```
+
+No source label or authority identity may change that result.
+
+## One evidence-derived rank path
+
+Canonical and public rank must start from the same evidence-derived result.
+
+Prohibited patterns include:
+
+```text
+SOREC => max A
+Chile => max A
+HRI => max A
+unknown source => max C
+JRA/HKJC/KRA => max A+
+```
+
+Those are source/authority classifications, not meeting evidence.
+
+The field `max_public_rank` is prohibited in the Calendar publication policy and generated public projection.
+
+`effective_public_rank` may remain as a compatibility/output field while existing UI code uses it, but it must not encode an authority/source ceiling. It is the evidence-derived public rank after structural validation only. For example, an `A`/`A+` public detail claim may fall back when the required public timetable row structure is absent; it may not fall merely because a policy says the authority is limited to a lower rank.
 
 ## Field preservation invariant
 
@@ -89,38 +112,26 @@ surface
 course_label
 ```
 
-## Publication rank and field publication are separate
+## Public rank rule
 
-`max_public_rank` / `effective_public_rank` determine how much of the timetable structure may be published.
+Publication policy does not cap rank.
 
-They do not, by themselves, decide whether each richer field may be published.
+For a canonical meeting with evidence-derived rank `R`, public projection begins at `R` regardless of country, authority, source, collector, adapter, or policy id.
 
-For an `A` or `A+` public detail page, a richer field value may be projected when both conditions are true:
-
-1. the canonical row contains the verified value; and
-2. the publication policy permits that field.
-
-The meeting does not need to be `A+` for an individually verified, policy-approved richer field to be published.
-
-Therefore:
+Examples:
 
 ```text
-effective_public_rank A
-canonical distance_m present
-publication detail_fields.show_distance true
-=> publish distance_m
+SOREC meeting with complete A+ evidence => public A+
+Chile meeting with A evidence           => public A
+HRI meeting with B+ evidence            => public B+
+JRA meeting with C evidence              => public C
 ```
 
-This is distinct from the rank rule:
-
-```text
-all rows have name + distance + surface + course
-=> A+
-```
+A later refresh may promote or normalize the rank whenever the verified evidence changes.
 
 ## Per-field publication policy
 
-The canonical publication policy key for richer timetable metadata is:
+The publication policy key for richer timetable metadata is:
 
 ```text
 detail_fields
@@ -135,13 +146,17 @@ show_surface
 show_course
 ```
 
-The former name `a_plus_fields` is deprecated because those permissions are not restricted to `A+` observations.
+These are field-level permissions, not rank permissions.
 
-A policy may still deny a field even when canonical evidence exists. That is a publication decision, not an acquisition failure and not evidence that the canonical value should be deleted.
+A field may be denied only for an explicit, documented non-rank publication reason such as a legal, contractual, licensing, or other deliberate publication restriction. A lower historical source capability, an old authority classification, or a prior rank ceiling is not a valid reason to deny the field.
+
+Absent such an explicit restriction, verified canonical timetable detail fields are publishable independently.
+
+The former names/concepts `a_plus_fields` and `max_public_rank` are deprecated/prohibited because they tied field or rank visibility to a completeness/source classification.
 
 ## Public row and table behavior
 
-Public timetable rows must preserve each policy-approved value independently.
+Public timetable rows must preserve each policy-approved verified value independently.
 
 Examples:
 
@@ -155,7 +170,8 @@ For table presentation:
 
 - show a richer-data column when at least one public row contains a value for that column;
 - render an individual missing cell as an em dash or equivalent absent-value marker;
-- do not hide sibling values merely because one field or one row is incomplete.
+- do not hide sibling values merely because one field or one row is incomplete;
+- never fabricate a field value to satisfy a rank.
 
 ## Acquisition completion and later enrichment
 
@@ -194,7 +210,7 @@ The supported diagnostic query is:
 
 Without that query, Calendar and meeting-detail pages must not render the diagnostic block.
 
-With that query, diagnostics should expose enough safe aggregate state to distinguish acquisition gaps from publication-projection gaps.
+With that query, diagnostics expose enough safe aggregate state to distinguish acquisition gaps from publication-projection gaps.
 
 Minimum diagnostic fields per meeting:
 
@@ -220,14 +236,12 @@ Canonical T12/12 N0/12 D12/12 S12/12 C12/12
 Public    T12/12 N0/12 D12/12 S12/12 C12/12
 ```
 
-A mismatch such as the following must be visible to the operator:
+A mismatch such as the following indicates a publication/projection problem rather than an acquisition failure:
 
 ```text
 Canonical T12/12 N0/12 D12/12 S12/12 C12/12
 Public    T12/12 N0/12 D0/12  S0/12  C0/12
 ```
-
-That pattern indicates a publication/projection problem rather than an acquisition failure.
 
 ## Diagnostic exposure rule
 
@@ -237,20 +251,22 @@ The default public view must remain visually unchanged by this diagnostic featur
 
 Diagnostic text should not be permanently rendered as ordinary visible page content and hidden only with styling. The diagnostic data/render path should be activated by the diagnostic query.
 
-The diagnostics endpoint must expose aggregate coverage and state only; it must not become a bypass for publication policy by exposing unpublished rich field values.
+The diagnostics endpoint must expose aggregate coverage and state only; it must not become a bypass for an explicit field-level publication restriction by exposing unpublished rich field values.
 
 ## Validation requirements
 
 Executable regression validation must cover at least:
 
-1. all richer fields complete on every row -> `A+`, all policy-approved fields published;
+1. all richer fields complete on every row -> `A+`, all permitted fields published;
 2. race name missing while distance/surface/course are complete -> `A`, those sibling fields remain publishable;
 3. distance missing while race name/surface/course are complete -> `A`, those sibling fields remain publishable;
 4. one row missing race name -> `A`, names from other rows remain publishable;
 5. only `A` timetable structure exists -> race labels/times remain public with no fabricated richer fields;
-6. canonical field exists but publication policy denies it -> canonical evidence remains, denied public field is absent;
+6. an explicit non-rank field restriction may suppress that field without changing canonical/public rank;
 7. query-gated diagnostics distinguish canonical coverage from public coverage;
-8. the rank ladder remains exactly `C/B/B+/A/A+` unless a later explicit decision supersedes this contract.
+8. the rank ladder remains exactly `C/B/B+/A/A+` unless a later explicit decision supersedes this contract;
+9. `max_public_rank` does not exist in publication policy or generated public projection code;
+10. an authority/source identity cannot prevent stronger verified evidence from publishing at its derived rank.
 
 ## Relationship to other contracts
 
@@ -265,4 +281,4 @@ Read this contract together with:
 
 `acquisition-completion-contract.md` remains authoritative for whether lower-rank acquisition may close, retry, or await later publication.
 
-This contract is authoritative for preserving richer fields, separating field visibility from rank, and query-gated operator diagnostics.
+This contract is authoritative for evidence-derived public rank, preserving richer fields, rank-independent field visibility, and query-gated operator diagnostics.
