@@ -69,8 +69,8 @@ const firstRaceTime = detail.timetable_rows[0]?.post_time_local ?? null;
 const lastRaceTime = detail.timetable_rows.at(-1)?.post_time_local ?? null;
 
 const timeCoverageNoteByRank: Record<string, string> = {
-  A: 'この公開詳細ページでは、レースラベルと発走時刻のみを表示します。',
-  'A+': 'この公開詳細ページでは、レースラベル、発走時刻、公開ポリシーで許可された番組概要項目のみを表示します。',
+  A: 'この公開詳細ページでは、レースラベル、発走時刻に加え、各レースで取得できた公開許可済みの番組項目を表示します。',
+  'A+': 'この公開詳細ページでは、レースラベル、発走時刻と、全レースで揃った公開許可済みの番組概要項目を表示します。',
 };
 ---
 
@@ -186,7 +186,7 @@ const timeCoverageNoteByRank: Record<string, string> = {
 
     <section aria-labelledby="boundary-title">
       <h2 id="boundary-title">公開表示の境界</h2>
-      <p>このページは公開用meeting detail datasetだけを使用します。Aはレースラベルと発走時刻のみ、A+は公開ポリシーで許可された番組概要項目のみを表示します。</p>
+      <p>このページは公開用meeting detail datasetだけを使用します。Aでも各レースで取得・検証済みかつ公開許可された番組項目を表示できます。A+は全レースでレース名、距離、馬場、コースが揃った場合だけです。</p>
       <p>完全な公式情報は、公式ソースで確認してください。</p>
     </section>
   </div>

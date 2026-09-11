@@ -6,7 +6,7 @@
     "match": {},
     "max_public_rank": "C",
     "include_in_public_list": true,
-    "a_plus_fields": {
+    "detail_fields": {
       "show_race_name": false,
       "show_distance": false,
       "show_surface": false,
@@ -27,7 +27,7 @@
       },
       "max_public_rank": "A+",
       "include_in_public_list": true,
-      "a_plus_fields": {
+      "detail_fields": {
         "show_race_name": true,
         "show_distance": true,
         "show_surface": true,
@@ -35,7 +35,7 @@
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "HKJC publishes the centrally derived best-available rank up to A+ when complete verified programme metadata is present."
+      "notes": "HKJC may publish reviewed timetable detail fields independently at A or A+. Complete verified programme metadata still derives as A+."
     },
     {
       "id": "jra-reviewed-a-plus",
@@ -47,7 +47,7 @@
       },
       "max_public_rank": "A+",
       "include_in_public_list": true,
-      "a_plus_fields": {
+      "detail_fields": {
         "show_race_name": true,
         "show_distance": true,
         "show_surface": true,
@@ -55,7 +55,7 @@
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "JRA may publish up to A+ when A+ canonical data becomes available; current lower-capability records remain lower automatically."
+      "notes": "JRA may publish reviewed timetable detail fields independently at A or A+; complete verified programme metadata still derives as A+."
     },
     {
       "id": "nar-reviewed-a-plus",
@@ -67,7 +67,7 @@
       },
       "max_public_rank": "A+",
       "include_in_public_list": true,
-      "a_plus_fields": {
+      "detail_fields": {
         "show_race_name": true,
         "show_distance": true,
         "show_surface": true,
@@ -75,7 +75,7 @@
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "NAR may publish up to A+ when valid A+ canonical data exists."
+      "notes": "NAR may publish reviewed timetable detail fields independently at A or A+; complete verified programme metadata still derives as A+."
     },
     {
       "id": "banei-reviewed-a-plus",
@@ -87,7 +87,7 @@
       },
       "max_public_rank": "A+",
       "include_in_public_list": true,
-      "a_plus_fields": {
+      "detail_fields": {
         "show_race_name": true,
         "show_distance": true,
         "show_surface": true,
@@ -95,7 +95,7 @@
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "Banei may publish up to A+ for display and switching tests."
+      "notes": "Banei may publish reviewed timetable detail fields independently at A or A+; complete verified programme metadata still derives as A+."
     },
     {
       "id": "kra-reviewed-a-plus",
@@ -107,7 +107,7 @@
       },
       "max_public_rank": "A+",
       "include_in_public_list": true,
-      "a_plus_fields": {
+      "detail_fields": {
         "show_race_name": true,
         "show_distance": true,
         "show_surface": true,
@@ -115,7 +115,7 @@
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "KRA publishes the centrally derived best-available rank. Complete verified programme metadata may reach A+; time-only programmes remain A or lower."
+      "notes": "KRA publishes the centrally derived best-available rank. Reviewed detail fields may publish independently at A; complete verified programme metadata derives as A+."
     },
     {
       "id": "uae-reviewed-a-plus",
@@ -127,7 +127,7 @@
       },
       "max_public_rank": "A+",
       "include_in_public_list": true,
-      "a_plus_fields": {
+      "detail_fields": {
         "show_race_name": true,
         "show_distance": true,
         "show_surface": true,
@@ -135,7 +135,7 @@
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "UAE publishes the centrally derived best-available rank. Complete verified ERA programme metadata may reach A+; partial observations remain lower automatically."
+      "notes": "UAE publishes the centrally derived best-available rank. Reviewed detail fields may publish independently at A; complete verified programme metadata derives as A+."
     },
     {
       "id": "tjk-reviewed-a-plus",
@@ -147,7 +147,7 @@
       },
       "max_public_rank": "A+",
       "include_in_public_list": true,
-      "a_plus_fields": {
+      "detail_fields": {
         "show_race_name": true,
         "show_distance": true,
         "show_surface": true,
@@ -155,7 +155,7 @@
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "TJK publishes the centrally derived best-available rank. Current time-only rows derive as A; complete verified programme metadata may reach A+."
+      "notes": "TJK publishes the centrally derived best-available rank. Reviewed detail fields may publish independently at A; complete verified programme metadata derives as A+."
     },
     {
       "id": "sorec-reviewed-a",
@@ -167,7 +167,7 @@
       },
       "max_public_rank": "A",
       "include_in_public_list": true,
-      "a_plus_fields": {
+      "detail_fields": {
         "show_race_name": false,
         "show_distance": false,
         "show_surface": false,
@@ -175,7 +175,7 @@
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "SOREC public output may rise automatically with verified evidence through A. Meeting-only observations remain C by evidence; A+ remains disabled pending explicit review."
+      "notes": "SOREC public output may rise automatically with verified evidence through A. Rich timetable fields remain disabled pending explicit publication review."
     },
     {
       "id": "chile-teletrak-reviewed-a",
@@ -187,7 +187,7 @@
       },
       "max_public_rank": "A",
       "include_in_public_list": true,
-      "a_plus_fields": {
+      "detail_fields": {
         "show_race_name": false,
         "show_distance": false,
         "show_surface": false,
@@ -195,7 +195,7 @@
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "Chile Teletrak public output may rise automatically with verified evidence through A. Meeting-only observations remain C by evidence; A+ remains disabled pending explicit review."
+      "notes": "Chile Teletrak public output may rise automatically with verified evidence through A. Rich timetable fields remain disabled pending explicit publication review."
     },
     {
       "id": "ireland-hri-reviewed-a",
@@ -207,7 +207,7 @@
       },
       "max_public_rank": "A",
       "include_in_public_list": true,
-      "a_plus_fields": {
+      "detail_fields": {
         "show_race_name": false,
         "show_distance": false,
         "show_surface": false,
@@ -215,7 +215,7 @@
       },
       "show_live_label": false,
       "show_replay_label": false,
-      "notes": "Horse Racing Ireland public output may rise automatically with verified evidence through A. Annual fixture-list meeting observations remain C by evidence; A+ remains disabled pending explicit review."
+      "notes": "Horse Racing Ireland public output may rise automatically with verified evidence through A. Rich timetable fields remain disabled pending explicit publication review."
     }
   ]
 }
