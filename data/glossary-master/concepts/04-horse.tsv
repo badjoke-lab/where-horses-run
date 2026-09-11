@@ -10,10 +10,10 @@ HORSE-008	HORSE	馬の品種・性別・年齢	Mare	牝馬	成長した雌馬を
 HORSE-009	HORSE	馬の品種・性別・年齢	Stallion	種牡馬／牡馬	去勢されていない成長した雄馬。繁殖文脈では種牡馬を指す。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-045; P0-SRC-047. Breeding and adult-male senses are context-aware; not every entire male is asserted to be an active breeding stallion.
 HORSE-010	HORSE	馬の品種・性別・年齢	Gelding	せん馬	去勢された雄馬。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-047. Current Racing Australia race-form legend verifies Gelding.
 HORSE-011	HORSE	馬の品種・性別・年齢	Entire	去勢されていない牡馬	主に英国・豪州等で去勢されていない雄馬を示す性別表現。	concept	P1	GB/AUS/Commonwealth	ALL	working_equivalent	source_verified	yes	no	P0-SRC-047. Racing Australia current race-form legend uses entire as an intact-male sex descriptor; keep jurisdiction scope rather than treating it as a global preferred label.
-HORSE-012	HORSE	馬の品種・性別・年齢	Horse	成馬／馬	文脈により成長した雄馬または馬一般を指す。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-HORSE-013	HORSE	馬の品種・性別・年齢	Foal	当歳馬／仔馬	出生後の幼い馬を指す語。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+HORSE-012	HORSE	馬の品種・性別・年齢	Horse	成馬／馬	文脈により成長した雄馬または馬一般を指す。	concept	P1	GLOBAL	ALL	working_equivalent	source_verified	yes	no	HBR-SRC-001. JRA overseas terminology directly gives horse both an adult-male racing sense and the generic horse sense; the specific age threshold shown by JRA is not generalized worldwide.
+HORSE-013	HORSE	馬の品種・性別・年齢	Foal	当歳馬／仔馬	出生後の幼い馬を指す語。	concept	P1	GLOBAL	ALL	working_equivalent	source_verified	yes	no	HBR-SRC-001; HBR-SRC-002. JRA maps foal to 当歳馬, while IFHA Article 12 uses Foal and records foaling details in Thoroughbred stud-book administration; registry procedure remains system-specific.
 HORSE-014	HORSE	馬の品種・性別・年齢	Weanling	離乳馬	離乳後から概ね年末まで等の成長段階を指す語。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-HORSE-015	HORSE	馬の品種・性別・年齢	Yearling	1歳馬	年齢区分としての1歳馬。競馬・セールで頻出する。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+HORSE-015	HORSE	馬の品種・性別・年齢	Yearling	1歳馬	年齢区分としての1歳馬。競馬・セールで頻出する。	concept	P1	GLOBAL	ALL	working_equivalent	source_verified	yes	no	HBR-SRC-001; HBR-SRC-006. JRA maps yearling to 1歳馬 and The Jockey Club directly defines a yearling as a one-year-old horse.
 HORSE-016	HORSE	馬の品種・性別・年齢	Two-year-old	2歳馬	競走馬の年齢区分としての2歳馬。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-047. Current official race-form age field verifies two-year-old age classification.
 HORSE-017	HORSE	馬の品種・性別・年齢	Three-year-old	3歳馬	競走馬の年齢区分としての3歳馬。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-047. Current official race-form age field verifies three-year-old age classification.
 HORSE-018	HORSE	馬の品種・性別・年齢	Four-year-old	4歳馬	競走馬の年齢区分としての4歳馬。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	

@@ -10,17 +10,17 @@ This directory is the non-public working area for the worldwide horse-racing ter
 
 The working dictionary currently contains **642 racing terms/concepts**.
 
-- **504 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
-- **138 terms still need verification, scope correction, splitting/merging, or removal.**
+- **518 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
+- **124 terms still need verification, scope correction, splitting/merging, or removal.**
 - The already researched jurisdiction-specific additions are **161/161 verified**.
 - The core highest-priority terminology set is **203/203 verified**.
 - Public glossary publication is still disabled while the remaining terms are cleaned up.
 
-The latest residual pass closed two defensible EQUIP/TRAIN issues without forcing the weak ones. `Pre-parade` is now source-verified from current Jockey Club material, while `Bike/Racebike` was retired into the canonical `Sulky` Concept because USTA explicitly identifies the racebike as the sulky.
+The latest pass is **horse / breeding / participant roles wave 1**. It source-verified **14 additional base Concepts** using current JRA, IFHA, BHA and Jockey Club authority material while preserving regional and registry boundaries.
 
-EQUIP is now **27/29 source-verified (93.1%)**; only `Blinders` and `Barefoot` remain candidate. TRAIN is **20/26 source-verified (76.9%)**; `Breeze`, `Gate schooling`, `Qualifying trial`, `Cool down`, `Layoff` and `Freshened` remain under review.
+HORSE is now **21/34 source-verified (61.8%)**, BREED is **11/22 (50.0%)**, and ROLE is **25/31 (80.6%)**. Newly verified Concepts include Horse, Foal, Yearling, Broodmare sire, Mating, Foaling, Inbreeding, Conditional jockey, Amateur rider, Owner-breeder, Exercise rider, Work rider, Clerk of the scales and Farrier.
 
-RUN remains **42/44 source-verified (95.5%)** with only `Jump` and `Hold-up horse` deliberately unresolved. Weak residual labels are kept visible instead of being promoted for percentage gain.
+EQUIP remains **27/29 source-verified (93.1%)**, TRAIN **20/26 (76.9%)**, and RUN **42/44 (95.5%)**. Weak residual labels remain visible instead of being promoted for percentage gain.
 
 ## Current master
 
@@ -87,13 +87,21 @@ Wave 1 verified **20** base Concepts: 13 equipment terms and 7 training/pre-race
 
 EQUIP is **27/29 verified (93.1%)** and TRAIN is **20/26 verified (76.9%)**. The remaining weak labels stay candidate until stronger authority evidence or a cleaner modeling decision exists.
 
-Across the lower-priority cleanup passes, **190 base-dictionary terms have been newly verified and 15 duplicate/malformed rows have been removed**.
+### Horse / breeding / participant roles — wave 1 complete current pass
+Audit: `coverage/horse-breeding-role-verification-v1.tsv`  
+Sources: `sources/horse-breeding-role-sources-v1.tsv` plus existing authority evidence.
+
+Wave 1 verified **14** Concepts: 3 HORSE, 4 BREED and 7 ROLE. Definitions keep local age rules, Thoroughbred registration procedure and British licensing thresholds scoped rather than turning them into universal rules.
+
+HORSE is **21/34 verified (61.8%)**, BREED is **11/22 verified (50.0%)**, and ROLE is **25/31 verified (80.6%)**. Remaining seed rows stay candidate where current wave-1 evidence is insufficient or the Concept boundary still needs review.
+
+Across the lower-priority cleanup passes, **204 base-dictionary terms have been newly verified and 15 duplicate/malformed rows have been removed**.
 
 ## Evidence state
 
-- all Concepts: **504 / 642 source-verified (78.5%)**; **138 candidate**
+- all Concepts: **518 / 642 source-verified (80.7%)**; **124 candidate**
 - core highest-priority set: **203 / 203 source-verified (100.0%)**
-- active base seed: **343 / 481 source-verified (71.3%)**; **138 candidate**
+- active base seed: **357 / 481 source-verified (74.2%)**; **124 candidate**
 - supplemental jurisdiction/relationship research: **161 / 161 source-verified (100.0%)**
 
 Canonical current audit state includes:
@@ -113,15 +121,16 @@ coverage/run-trip-verification-v2.tsv
 coverage/run-trip-verification-v3.tsv
 coverage/equipment-training-verification-v1.tsv
 coverage/equipment-training-residual-v1.tsv
+coverage/horse-breeding-role-verification-v1.tsv
 coverage/master-005-evidence-coverage-v1.tsv
 coverage/master-005-completion-gate-v1.tsv
 ```
 
 ## Current completion decision
 
-The terminology master remains **not complete**. The remaining **138 terms** must be reviewed rather than automatically promoted.
+The terminology master remains **not complete**. The remaining **124 terms** must be reviewed rather than automatically promoted.
 
-The next broad cleanup target is **horse / breeding / participant roles**, followed by venue/entry and the remaining race type/surface/distance/weight candidates. Weak EQUIP/TRAIN and RUN edge cases remain visible for later evidence-driven resolution rather than blocking progress on clearer categories.
+The next broad cleanup target is **venue / entry terminology**, followed by remaining race type/surface/distance/weight candidates. Weak horse/breeding/role, EQUIP/TRAIN and RUN edge cases remain visible for later evidence-driven resolution rather than blocking progress on clearer categories.
 
 Public implementation remains deferred until the evidence/readiness review passes.
 

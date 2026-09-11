@@ -14,8 +14,8 @@ Plain-language state:
 
 ```text
 Working dictionary: 642 terms/concepts
-Meaning-level source verified: 504
-Still under review: 138
+Meaning-level source verified: 518
+Still under review: 124
 Highest-priority core terms: 203/203 verified
 Jurisdiction-specific research additions: 161/161 verified
 Public glossary publication: disabled
@@ -40,7 +40,8 @@ Welfare / veterinary / safety pass: complete current pass
 Residual edge-case pass: complete current pass
 Running / trip / race-comment pass: broad current pass complete; 2 deliberate unresolved labels retained
 Equipment / training pass: current defensible pass complete; weak residuals retained
-Next: horse / breeding / participant roles
+Horse / breeding / participant roles: wave 1 complete current pass; weak residuals retained
+Next: venue / entry terminology
 Later: GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 ```
 
@@ -76,6 +77,7 @@ The remaining task is to clean the lower-priority base dictionary. This does **n
 - Running/trip/race comments final broad bundle: **9 verified**, `Tempo` consolidated into `Pace`, `Kick/closing kick` consolidated into `Turn of foot`.
 - Equipment/training wave 1: **20 verified** — 13 EQUIP and 7 TRAIN Concepts with scoped authority evidence.
 - Equipment/training residual: **1 verified**, `Bike/Racebike` consolidated into `Sulky`.
+- Horse/breeding/participant roles wave 1: **14 verified** — 3 HORSE, 4 BREED and 7 ROLE Concepts with scoped JRA/IFHA/BHA/Jockey Club evidence.
 
 ### Residual edge-case pass
 
@@ -93,6 +95,12 @@ Wave 1 verified 13 equipment Concepts and 7 training/pre-race Concepts using JRA
 
 EQUIP is now **27/29 source-verified (93.1%)**. `Blinders` and `Barefoot` remain candidate. TRAIN is **20/26 source-verified (76.9%)**. `Breeze`, `Gate schooling`, `Qualifying trial`, `Cool down`, `Layoff` and `Freshened` remain candidate. These weak residuals are retained rather than promoted without sufficient evidence.
 
+### Horse / breeding / participant-role pass
+
+Wave 1 verified `Horse`, `Foal`, `Yearling`, `Broodmare sire`, `Mating`, `Foaling`, `Inbreeding`, `Conditional jockey`, `Amateur rider`, `Owner-breeder`, `Exercise rider`, `Work rider`, `Clerk of the scales` and `Farrier` using current JRA, IFHA, BHA and Jockey Club material.
+
+HORSE is now **21/34 source-verified (61.8%)**, BREED is **11/22 (50.0%)**, and ROLE is **25/31 (80.6%)**. Local age conventions, Thoroughbred registration procedures, and British licensing thresholds remain explicitly scoped. The remaining horse/breeding/role seed rows are retained as candidates where this source bundle does not support promotion.
+
 Authority/audit files now include:
 
 ```text
@@ -107,6 +115,7 @@ data/glossary-master/sources/welfare-safety-sources-v1.tsv
 data/glossary-master/sources/residual-edgecase-sources-v1.tsv
 data/glossary-master/sources/run-trip-sources-v1.tsv
 data/glossary-master/sources/equipment-training-sources-v1.tsv
+data/glossary-master/sources/horse-breeding-role-sources-v1.tsv
 data/glossary-master/coverage/p1-verification-wave1-v1.tsv
 data/glossary-master/coverage/p1-verification-wave2-v1.tsv
 data/glossary-master/coverage/race-type-condition-verification-v1.tsv
@@ -121,16 +130,20 @@ data/glossary-master/coverage/run-trip-verification-v2.tsv
 data/glossary-master/coverage/run-trip-verification-v3.tsv
 data/glossary-master/coverage/equipment-training-verification-v1.tsv
 data/glossary-master/coverage/equipment-training-residual-v1.tsv
+data/glossary-master/coverage/horse-breeding-role-verification-v1.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
 Current observed state:
 
-- all Concepts: **504/642 source-verified (78.5%)**, 138 candidate;
+- all Concepts: **518/642 source-verified (80.7%)**, 124 candidate;
 - core highest-priority set: **203/203 source-verified (100.0%)**;
-- active base seed: **343/481 source-verified (71.3%)**, 138 candidate;
+- active base seed: **357/481 source-verified (74.2%)**, 124 candidate;
 - supplemental jurisdiction/relationship research: **161/161 source-verified (100.0%)**;
+- HORSE: **21/34 source-verified (61.8%)**;
+- BREED: **11/22 source-verified (50.0%)**;
+- ROLE: **25/31 source-verified (80.6%)**;
 - RUN: **42/44 source-verified (95.5%)**;
 - EQUIP: **27/29 source-verified (93.1%)**;
 - TRAIN: **20/26 source-verified (76.9%)**;
@@ -143,17 +156,16 @@ Current observed state:
 
 ## What happens next
 
-The remaining **138 terms** continue by the categories with the largest unresolved candidate sets:
+The remaining **124 terms** continue by the categories with the largest unresolved candidate sets:
 
 ```text
-horse / breeding / participant roles
--> venue and entry terminology
+venue and entry terminology
 -> remaining race type / surface / distance / weight candidates
--> revisit deliberately unresolved RUN, EQUIP, TRAIN and cross-category edge cases only with stronger evidence
+-> revisit deliberately unresolved horse / breeding / roles, RUN, EQUIP, TRAIN and cross-category edge cases only with stronger evidence
 -> rerun evidence/readiness gate
 ```
 
-`GLOSSARY-MASTER-005` remains **HOLD — not complete**. A 78.5% verified master with 138 unresolved seed Concepts is not ready to advance.
+`GLOSSARY-MASTER-005` remains **HOLD — not complete**. An 80.7% verified master with 124 unresolved seed Concepts is not ready to advance.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
@@ -183,9 +195,9 @@ The current public glossary remains disposable content. There is no old-record m
 ```text
 Current Work ID: GLOSSARY-MASTER-005
 Working dictionary: 642 terms
-Verified: 504
-Still under review: 138
-Next subject group: horse / breeding / participant roles
+Verified: 518
+Still under review: 124
+Next subject group: venue / entry terminology
 MASTER-006: blocked until the evidence/readiness gate passes
 Public implementation: deferred
 ```

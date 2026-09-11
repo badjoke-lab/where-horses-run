@@ -67,9 +67,9 @@
   },
   "supplemental_cleanup": {"status":"complete_current_pass","audit_file":"coverage/supplemental-candidate-cleanup-v1.tsv","resolved_candidates":3,"remaining_candidates":0},
   "p1_verification": {
-    "status":"equipment_training_residual_cleanup_complete_current_pass",
-    "sources_files":["sources/p1-core-sources-v1.tsv","sources/p1-core-sources-v2.tsv","sources/race-type-condition-sources-v1.tsv","sources/surface-going-sources-v1.tsv","sources/meeting-schedule-sources-v1.tsv","sources/result-decision-sources-v1.tsv","sources/prize-betting-sources-v1.tsv","sources/welfare-safety-sources-v1.tsv","sources/residual-edgecase-sources-v1.tsv","sources/run-trip-sources-v1.tsv","sources/equipment-training-sources-v1.tsv"],
-    "wave_audit_files":["coverage/p1-verification-wave1-v1.tsv","coverage/p1-verification-wave2-v1.tsv","coverage/race-type-condition-verification-v1.tsv","coverage/surface-going-verification-v1.tsv","coverage/meeting-schedule-verification-v1.tsv","coverage/result-decision-verification-v1.tsv","coverage/prize-betting-verification-v1.tsv","coverage/welfare-safety-verification-v1.tsv","coverage/residual-edgecase-verification-v1.tsv","coverage/run-trip-verification-v1.tsv","coverage/run-trip-verification-v2.tsv","coverage/run-trip-verification-v3.tsv","coverage/equipment-training-verification-v1.tsv","coverage/equipment-training-residual-v1.tsv"],
+    "status":"horse_breeding_role_wave1_complete_current_pass",
+    "sources_files":["sources/p1-core-sources-v1.tsv","sources/p1-core-sources-v2.tsv","sources/race-type-condition-sources-v1.tsv","sources/surface-going-sources-v1.tsv","sources/meeting-schedule-sources-v1.tsv","sources/result-decision-sources-v1.tsv","sources/prize-betting-sources-v1.tsv","sources/welfare-safety-sources-v1.tsv","sources/residual-edgecase-sources-v1.tsv","sources/run-trip-sources-v1.tsv","sources/equipment-training-sources-v1.tsv","sources/horse-breeding-role-sources-v1.tsv"],
+    "wave_audit_files":["coverage/p1-verification-wave1-v1.tsv","coverage/p1-verification-wave2-v1.tsv","coverage/race-type-condition-verification-v1.tsv","coverage/surface-going-verification-v1.tsv","coverage/meeting-schedule-verification-v1.tsv","coverage/result-decision-verification-v1.tsv","coverage/prize-betting-verification-v1.tsv","coverage/welfare-safety-verification-v1.tsv","coverage/residual-edgecase-verification-v1.tsv","coverage/run-trip-verification-v1.tsv","coverage/run-trip-verification-v2.tsv","coverage/run-trip-verification-v3.tsv","coverage/equipment-training-verification-v1.tsv","coverage/equipment-training-residual-v1.tsv","coverage/horse-breeding-role-verification-v1.tsv"],
     "verified_wave_1":27,
     "verified_wave_2":29,
     "verified_race_type_condition_pass":15,
@@ -84,21 +84,22 @@
     "verified_run_trip_final":9,
     "verified_equipment_training_wave1":20,
     "verified_equipment_training_residual":1,
-    "verified_cumulative":190,
+    "verified_horse_breeding_role_wave1":14,
+    "verified_cumulative":204,
     "retired_duplicate_rows_total":15,
-    "remaining_base_seed_candidate":138
+    "remaining_base_seed_candidate":124
   },
   "evidence_coverage": {
-    "status":"audited_master_005_hold_after_equipment_training_residual_cleanup",
+    "status":"audited_master_005_hold_after_horse_breeding_role_wave1",
     "coverage_file":"coverage/master-005-evidence-coverage-v1.tsv",
     "completion_gate_file":"coverage/master-005-completion-gate-v1.tsv",
-    "all_concepts":{"total":642,"source_verified":504,"candidate":138,"verified_pct":78.5},
+    "all_concepts":{"total":642,"source_verified":518,"candidate":124,"verified_pct":80.7},
     "p0":{"total":203,"source_verified":203,"candidate":0,"verified_pct":100.0},
-    "active_base_seed":{"total":481,"source_verified":343,"candidate":138,"verified_pct":71.3},
+    "active_base_seed":{"total":481,"source_verified":357,"candidate":124,"verified_pct":74.2},
     "supplemental_research":{"total":161,"source_verified":161,"candidate":0,"verified_pct":100.0},
     "master_005_completion":"hold"
   },
   "next_work_id":"GLOSSARY-MASTER-005",
-  "next_work":"horse_breeding_roles_cleanup_then_venue_entry_and_remaining_broad_categories_with_weak_equipment_training_edges_retained",
+  "next_work":"venue_entry_cleanup_then_remaining_broad_categories_with_horse_breeding_role_and_other_weak_edges_retained",
   "public_implementation":"deferred"
 }
