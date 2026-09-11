@@ -1,0 +1,108 @@
+name: One-shot timezone contract v6
+
+on:
+  push:
+    branches:
+      - fix/sitewide-timezone-contract-20260911
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/sitewide-timezone-contract-20260911
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Enforce one six-option timezone contract
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          expected = ['Asia/Tokyo', 'Asia/Seoul', 'Asia/Hong_Kong', 'Asia/Dubai', 'Europe/Istanbul', 'UTC']
+
+          base_path = Path('src/layouts/BaseLayout.astro')
+          base = base_path.read_text()
+          for zone in ('Africa/Casablanca', 'Europe/Dublin', 'America/Santiago'):
+              base = ''.join(line for line in base.splitlines(True) if zone not in line)
+          base_path.write_text(base)
+
+          def read_values(path):
+              text = Path(path).read_text()
+              match = re.search(r"const timeZoneOptions = \[([\s\S]*?)\n\];", text)
+              if not match:
+                  raise SystemExit(f'{path}: timeZoneOptions block missing')
+              return re.findall(r"value:\s*'([^']+)'", match.group(1)), text
+
+          for path in (
+              'src/layouts/BaseLayout.astro',
+              'src/components/TimetableMeetingList.astro',
+              'src/components/MeetingTimezoneProjection.astro',
+          ):
+              actual, text = read_values(path)
+              if actual != expected:
+                  raise SystemExit(f'{path}: expected {expected}, got {actual}')
+              if "Intl.supportedValuesOf('timeZone')" in text:
+                  raise SystemExit(f'{path}: full IANA timezone expansion is forbidden')
+
+          check_path = Path('scripts/check-calendar-dynamic-dates.mjs')
+          check = check_path.read_text()
+          marker = 'const expectedCuratedDisplayTimeZones = ['
+          if marker not in check:
+              anchor = "const baseLayout = read('src/layouts/BaseLayout.astro');\n"
+              block = """const expectedCuratedDisplayTimeZones = [
+            'Asia/Tokyo',
+            'Asia/Seoul',
+            'Asia/Hong_Kong',
+            'Asia/Dubai',
+            'Europe/Istanbul',
+            'UTC',
+          ];
+          for (const [label, content] of [
+            ['BaseLayout', baseLayout],
+            ['TimetableMeetingList', meetingList],
+            ['MeetingTimezoneProjection', meetingProjection],
+          ]) {
+            const optionsBlock = /const timeZoneOptions = \[([\s\S]*?)\n\];/.exec(content)?.[1] ?? '';
+            const actualTimeZones = [...optionsBlock.matchAll(/value:\s*'([^']+)'/g)].map((match) => match[1]);
+            if (JSON.stringify(actualTimeZones) !== JSON.stringify(expectedCuratedDisplayTimeZones)) {
+              fail(`${label} display-timezone choices must be exactly ${expectedCuratedDisplayTimeZones.join(', ')}; got ${actualTimeZones.join(', ')}.`);
+            }
+          }
+
+          """
+              if anchor not in check:
+                  raise SystemExit('calendar checker BaseLayout anchor missing')
+              check = check.replace(anchor, anchor + block, 1)
+              check_path.write_text(check)
+
+          workflow_path = Path('.github/workflows/calendar-dynamic-dates.yml')
+          workflow = workflow_path.read_text()
+          trigger_line = "      - 'src/components/TimetableMeetingList.astro'\n"
+          addition = "      - 'src/components/MeetingTimezoneProjection.astro'\n      - 'src/layouts/BaseLayout.astro'\n"
+          if "      - 'src/components/MeetingTimezoneProjection.astro'\n" not in workflow:
+              workflow = workflow.replace(trigger_line, trigger_line + addition)
+          workflow_path.write_text(workflow)
+          PY
+      - name: Install dependencies
+        run: npm install --package-lock=false
+      - name: Validate timezone contract
+        run: node scripts/check-calendar-dynamic-dates.mjs
+      - name: Build site
+        run: npm run build
+      - name: Validate patch hygiene
+        run: git diff --check
+      - name: Remove one-shot workflow and commit
+        run: |
+          rm .github/workflows/one-shot-timezone-contract-v6.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/layouts/BaseLayout.astro src/components/MeetingTimezoneProjection.astro scripts/check-calendar-dynamic-dates.mjs .github/workflows/calendar-dynamic-dates.yml .github/workflows/one-shot-timezone-contract-v6.yml
+          git commit -m 'fix: enforce curated timezone choices sitewide'
+          git push origin HEAD:fix/sitewide-timezone-contract-20260911
