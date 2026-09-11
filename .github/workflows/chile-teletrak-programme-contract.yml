@@ -1,0 +1,49 @@
+name: Chile Teletrak programme contract
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/timetable/chile-teletrak-weekly-core.mjs'
+      - 'scripts/timetable/run-chile-teletrak-official-window.mjs'
+      - 'scripts/check-chile-teletrak-weekly-adapter.mjs'
+      - 'data/fixtures/chile-teletrak-weekly-observed-v1.html'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/authority-source-inventory-chile-teletrak-v1.json'
+      - 'scripts/timetable/load-authority-source-inventory.mjs'
+      - '.github/workflows/chile-teletrak-programme-contract.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/timetable/chile-teletrak-weekly-core.mjs'
+      - 'scripts/timetable/run-chile-teletrak-official-window.mjs'
+      - 'scripts/check-chile-teletrak-weekly-adapter.mjs'
+      - 'data/fixtures/chile-teletrak-weekly-observed-v1.html'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/authority-source-inventory-chile-teletrak-v1.json'
+      - 'scripts/timetable/load-authority-source-inventory.mjs'
+      - '.github/workflows/chile-teletrak-programme-contract.yml'
+  workflow_dispatch:
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies
+        run: npm install --no-package-lock --no-audit --no-fund
+      - name: Check Node syntax
+        run: |
+          node --check scripts/timetable/chile-teletrak-weekly-core.mjs
+          node --check scripts/timetable/run-chile-teletrak-official-window.mjs
+          node --check scripts/check-chile-teletrak-weekly-adapter.mjs
+      - name: Validate Teletrak programme parser and completion states
+        run: node scripts/check-chile-teletrak-weekly-adapter.mjs
+      - name: Validate Acquisition Registry resolution
+        run: node scripts/check-calendar-acquisition-registry.mjs
+      - name: Check diff formatting
+        run: git diff --check

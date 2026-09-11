@@ -12,10 +12,26 @@
       "official_source_url": "https://teletrak.cl/",
       "source_kind": "programme",
       "source_status": "verified",
-      "last_checked_date": "2026-09-10",
+      "last_checked_date": "2026-09-11",
       "capability_rank": "A",
-      "adapter_candidate_status": "candidate",
-      "notes": "Teletrak's official weekly domestic view identifies meetings for Club Hipico de Santiago, Hipodromo Chile, Valparaiso Sporting Club and Club Hipico de Concepcion and links programme material when available. Individual observation rank is derived only from normalized evidence actually acquired; the current weekly adapter emits meeting identity until programme-detail enrichment is normalized."
+      "adapter_candidate_status": "active",
+      "notes": "Teletrak's official weekly domestic view identifies meetings for Club Hipico de Santiago, Hipodromo Chile, Valparaiso Sporting Club and Club Hipico de Concepcion. It exposes source-linked official programme documents when available; observation rank remains evidence-derived."
+    },
+    {
+      "country_id": "chile",
+      "authority_id": "teletrak-chile",
+      "authority_name_en": "Teletrak Chile linked official programmes",
+      "authority_name_local": "Programas oficiales enlazados por Teletrak",
+      "authority_type": "national",
+      "racecourse_scope": "four_domestic_racecourses",
+      "official_source_id": "chile-teletrak-linked-programme",
+      "official_source_url": "https://teletrak.cl/",
+      "source_kind": "programme_detail",
+      "source_status": "verified",
+      "last_checked_date": "2026-09-11",
+      "capability_rank": "A",
+      "adapter_candidate_status": "active",
+      "notes": "Teletrak publishes real programme hrefs on the weekly meeting cards. Verified 2026-09-11 from GitHub Actions: Hipodromo Chile programme at storage.elturf.com and Club Hipico de Santiago programme at static.clubhipico.cl both returned official PDFs with complete race post-time headers. The acquisition route follows only hrefs emitted by Teletrak and does not guess venue URLs."
     }
   ]
 }

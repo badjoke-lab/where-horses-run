@@ -16,7 +16,7 @@ Ten implemented Registry profiles are currently in scope.
 
 The shared acquisition-completion contract and canonical classifier are active. Japan JRA/NAR/Banei have been normalized under the shared completion semantics, and the non-Japan rolling apply records `acquisition_completion` independently from observed rank.
 
-The remaining Registry-level route-capability gaps are source-specific acquisition gaps, not rank-model gaps.
+The remaining Registry-level route-capability gap is source-specific acquisition work, not a rank-model gap.
 
 ## Implemented route audit
 
@@ -30,19 +30,18 @@ The remaining Registry-level route-capability gaps are source-specific acquisiti
 | `kra-national-racing-system` | operation-plan discovery plus publication-gated detail collection | Supported detail route records evaluation through `A+`; not-published/failure remain explicit and unsupported meeting cases are not silently treated as complete |
 | `tjk-national-racing-system` | annual/current-future fixture discovery plus per-meeting official daily programme detail fetch | Official programme parser evaluates post time plus race name/condition, distance, and `Çim`/`Kum`/`Sentetik` surface/course fields through `A+`; missing richer fields preserve a lower Best Available rank rather than fabricating A+ |
 | `sorec-racing-information-system` | Programme Réunion schedule/index acquisition | Registry technical capability is `A`, but current production route remains schedule-level with no detail source/adapter: implementation gap |
-| `chile-teletrak-racing-system` | Teletrak weekly meeting acquisition | Registry technical capability is `A`, but current production route remains schedule-level with no detail source/adapter: implementation gap |
+| `chile-teletrak-racing-system` | Teletrak weekly meeting acquisition plus source-linked official programme evaluation | Registered route evaluates through technical ceiling `A`: real programme hrefs emitted by Teletrak are followed and parsed into complete post-time rows; unpublished programme links preserve valid C with `pending_publication`; retrieval/parser failures preserve valid C with `retry_required`; no venue URL is guessed |
 | `ireland-hri-racing-system` | HRI annual fixture discovery plus official monthly Racecards AJAX evaluation | Registered route evaluates through technical ceiling `A`: published complete race rows may produce A; unpublished rows preserve lower Best Available with `pending_publication`; retrieval/parser failures remain `retry_required`; regular full/near refreshes re-evaluate pending detail |
 
 ## Registry-level implementation gaps
 
-The executable completion check now identifies exactly these two Registry profiles where the registered technical capability is above the maximum implemented observation rank:
+The executable completion check now identifies exactly one Registry profile where the registered technical capability is above the maximum implemented observation rank:
 
 ```text
 sorec-racing-information-system
-chile-teletrak-racing-system
 ```
 
-TJK is no longer in this list because the official daily programme route evaluates the A+ timetable field surface and can emit `A+` when the evidence actually satisfies the rank contract. Ireland HRI is no longer in this list because the official Racecards monthly route is now evaluated through `A` for every requested source month while preserving explicit pending/retry states.
+TJK is no longer in this list because the official daily programme route evaluates the A+ timetable field surface and can emit `A+` when the evidence actually satisfies the rank contract. Ireland HRI is no longer in this list because the official Racecards monthly route is evaluated through `A`. Chile Teletrak is no longer in this list because the weekly source-linked programme route now evaluates every source-visible meeting through `A`, while retaining explicit pending/retry states when richer evidence is not yet available or cannot be safely parsed.
 
 This is a route-capability audit, not a claim that every meeting in those systems must reach the technical ceiling.
 
@@ -63,9 +62,8 @@ The repair must preserve these valid behaviors:
 ## Remaining implementation work
 
 1. Resolve the SOREC Morocco detail-route gap.
-2. Resolve the Chile Teletrak detail-route gap.
-3. Connect unresolved `pending_publication` / `retry_required` states to later refresh/retry execution wherever the current regular refresh does not already revisit the required detail evidence.
-4. Keep the executable completion contract rejecting any future implemented route that equates valid rank emission or green workflow execution with acquisition completion.
+2. Connect unresolved `pending_publication` / `retry_required` states to later refresh/retry execution wherever the current regular refresh does not already revisit the required detail evidence.
+3. Keep the executable completion contract rejecting any future implemented route that equates valid rank emission or green workflow execution with acquisition completion.
 
 ## Canonical contract
 
