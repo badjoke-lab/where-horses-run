@@ -1,0 +1,8 @@
+verification_id	concept_id	category_id	previous_status	new_status	source_ids	verified_at	note
+MSV-001	MEET-008	MEET	candidate	source_verified	MS-SRC-001;MS-SRC-002	2026-09-11	Current JRA material directly uses numbered meetings such as 1回中山 and 第1回中山第1日; scope remains Japan/Regional.
+MSV-002	MEET-009	MEET	candidate	source_verified	MS-SRC-001;MS-SRC-002	2026-09-11	Current JRA programmes and raceday notices directly use 第1日 and day ranges within a numbered meeting.
+MSV-003	MEET-014	MEET	candidate	source_verified	MS-SRC-003	2026-09-11	NYRA current horsemen resources use Condition Book/Condition Books for the racing-office conditions document; canonical English normalized to singular Condition book.
+MSV-004	MEET-015	MEET	candidate	retired_merge	MS-SRC-003	2026-09-11	Duplicate Condition book seed retired into MEET-014; plural Conditions book retained as a moved label rather than a second Concept.
+MSV-005	MEET-020	MEET	candidate	source_verified	MS-SRC-004	2026-09-11	Racing Australia current programme exposes Weights declared as an official programme stage; scope narrowed to AUS/Regional publication sense.
+MSV-006	MEET-021	MEET	candidate	source_verified	P0-SRC-067;MS-SRC-004	2026-09-11	Racing Australia verifies barrier-number assignment and a current scheduled Barrier Draw event.
+MSV-007	MEET-030	MEET	candidate	source_verified	P0-SRC-066	2026-09-11	Equibase current meeting data exposes 1st Post Local as a meeting-level field, supporting the North American first-post sense.

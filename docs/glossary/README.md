@@ -14,25 +14,25 @@ Read these first for glossary work:
 
 ## Current state in plain language
 
-The working dictionary has **654 terms/concepts**.
+The working dictionary has **653 terms/concepts**.
 
-- **395 are source-verified at the meaning level**.
-- **259 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
+- **401 are source-verified at the meaning level**.
+- **252 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
 - the highest-priority core set is **203/203 verified**;
 - jurisdiction-specific research additions are **161/161 verified**;
 - publication is still disabled (`public_ready=0`, public runtime disconnected).
 
-The latest completed subject pass is **surface / going / track-condition terminology**. Ten terms were verified: Firm, Good to Firm, Good to Soft, Yielding, Yielding to Soft, Fast, Wet Fast, Muddy, Sloppy and dirt-qualified Good.
+The latest completed subject pass is **meeting / schedule / official-document terminology**. Six terms were verified: Meeting number, Day number, Condition book, Weights, Barrier draw and First post. Duplicate `MEET-015 Condition book` was retired into `MEET-014`, which now carries the canonical singular NYRA-style label.
 
-These are not flattened into one worldwide condition scale. British Going, Irish yielding-based labels, US dirt conditions and Japanese 良/稍重/重/不良 remain separate jurisdictional systems. `Frozen`, `Snow-covered` and `Off turf` remain under review because their seed labels still need canonical-label reconciliation.
+Four MEET seed terms remain deliberately unresolved. `Program` conflates spelling and document senses; `Daylight saving time` is a generic civil-time concept whose independent racing-dictionary value is not yet justified; `Season` and `Bulletin` still need sharper racing-specific semantics or authority evidence.
 
-The preceding race-type/classification pass verified 15 terms including Maiden Claiming, Novice, National Hunt Flat Race, Allowance/Claiming forms, Pattern, Group/Grade 2-3, Nursery Handicap and Match Race.
+The preceding surface/going pass verified 10 terms without flattening British, Irish, North American dirt and Japanese condition taxonomies into false global equivalents.
 
 ## What has been completed
 
 The dictionary was built from zero rather than copied from the existing public glossary. Major jurisdiction/local-language research and the current slang/abbreviation/historical pass are complete. The core terminology set is fully source-verified, and all current jurisdiction-specific additions are evidence-backed.
 
-Base-dictionary cleanup has now verified **81 additional terms** and removed **3 duplicate or malformed rows**. Current base-dictionary coverage is **234/493 verified (47.5%)**.
+Base-dictionary cleanup has now verified **87 additional terms** and removed **4 duplicate or malformed rows**. Current base-dictionary coverage is **240/492 verified (48.8%)**.
 
 Canonical evidence/audit files include:
 
@@ -41,26 +41,27 @@ data/glossary-master/sources/p1-core-sources-v1.tsv
 data/glossary-master/sources/p1-core-sources-v2.tsv
 data/glossary-master/sources/race-type-condition-sources-v1.tsv
 data/glossary-master/sources/surface-going-sources-v1.tsv
+data/glossary-master/sources/meeting-schedule-sources-v1.tsv
 data/glossary-master/coverage/p1-verification-wave1-v1.tsv
 data/glossary-master/coverage/p1-verification-wave2-v1.tsv
 data/glossary-master/coverage/race-type-condition-verification-v1.tsv
 data/glossary-master/coverage/surface-going-verification-v1.tsv
+data/glossary-master/coverage/meeting-schedule-verification-v1.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
 ## What remains
 
-The **259 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
+The **252 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
 
 The next practical groups are:
 
 ```text
-remaining surface/product edge cases
-meeting / fixture / schedule terminology
-result / inquiry / result-code terminology
+result / inquiry / decision / result-code terminology
 prize and betting terminology
 welfare / veterinary / safety terminology
+remaining surface and meeting edge cases when better evidence exists
 remaining ambiguous terms and duplicate cleanup
 ```
 
