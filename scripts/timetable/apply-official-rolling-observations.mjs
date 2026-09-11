@@ -116,6 +116,16 @@ function normalizeStoredCanonical(meeting, detail) {
     changed: nextMeeting !== meeting || nextDetail !== detail,
   };
 }
+function withCurrentAcquisitionCompletion(meeting, acquisitionCompletion) {
+  if (!meeting) return { meeting, changed: false };
+  if (JSON.stringify(meeting.acquisition_completion ?? null) === JSON.stringify(acquisitionCompletion)) {
+    return { meeting, changed: false };
+  }
+  return {
+    meeting: { ...meeting, acquisition_completion: acquisitionCompletion },
+    changed: true,
+  };
+}
 function makeCanonical(record, artifact, checkedAt, defaults, previous, acquisitionCompletion) {
   const capabilityRank = observedRank(record);
   const rows = normalizedRows(record);
@@ -295,7 +305,6 @@ for (const record of records) {
   const acquisitionProfile = chooseAcquisitionProfile(record, defaults, acquisitionRegistry);
   const acquisitionCompletion = classifyAcquisitionCompletion({ ...record, capability_rank: observed }, acquisitionProfile);
   completionCounts[acquisitionCompletion.disposition] += 1;
-  if (record.detail_observation?.status === 'conflict') { outcomes.ignored += 1; continue; }
   let previous = canonicalById.get(record.meeting_id) ?? null;
   let previousDetail = detailsById.get(record.meeting_id) ?? null;
   const normalizedStored = normalizeStoredCanonical(previous, previousDetail);
@@ -308,8 +317,24 @@ for (const record of records) {
     changed = true;
     outcomes.normalized_stored_rank += 1;
   }
+  if (record.detail_observation?.status === 'conflict') {
+    const completionUpdate = withCurrentAcquisitionCompletion(previous, acquisitionCompletion);
+    if (completionUpdate.changed) {
+      previous = completionUpdate.meeting;
+      canonicalById.set(previous.meeting_id, previous);
+      changed = true;
+    }
+    outcomes.ignored += 1;
+    continue;
+  }
   const correction = record.official_correction === true;
   if (previous && rank(previous.capability_rank) > rank(observed) && !correction) {
+    const completionUpdate = withCurrentAcquisitionCompletion(previous, acquisitionCompletion);
+    if (completionUpdate.changed) {
+      previous = completionUpdate.meeting;
+      canonicalById.set(previous.meeting_id, previous);
+      changed = true;
+    }
     outcomes.protected_higher_rank += 1;
     continue;
   }
