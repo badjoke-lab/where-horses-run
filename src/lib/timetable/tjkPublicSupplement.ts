@@ -9,7 +9,7 @@ import {
 const AUTHORITY_ID = 'turkiye-jokey-kulubu';
 const COUNTRY_ID = 'turkey';
 const TIMEZONE = 'Europe/Istanbul';
-const POLICY_ID = 'tjk-reviewed-a';
+const POLICY_ID = 'tjk-reviewed';
 const ANNUAL_SOURCE_URL = 'https://www.tjk.org/TR/YarisSever/Query/Page/YillikYarisProgramiCoklu';
 const WINDOW_START = '2026-09-03';
 const WINDOW_END_EXCLUSIVE = '2026-10-03';
@@ -65,7 +65,6 @@ const tjkRows = supplement.meeting_ids.map((meetingId) => {
     date,
     timezone: TIMEZONE,
     capability_rank: rank,
-    max_public_rank: rank,
     effective_public_rank: rank,
     first_race_time_local: times[0] ?? null,
     last_race_time_local: times.at(-1) ?? null,
@@ -96,7 +95,6 @@ export const tjkPublicMeetingDetails = Object.entries(supplement.rank_a).map(([m
     date,
     timezone: TIMEZONE,
     capability_rank: 'A',
-    max_public_rank: 'A',
     effective_public_rank: 'A',
     policy_id: POLICY_ID,
     official_source_url: rankA.source_url,
