@@ -1,6 +1,6 @@
 {
   "schema_version": "japan-zero-based-30d-reconciliation-v1",
-  "checked_at": "2026-09-11T15:04:02.626Z",
+  "checked_at": "2026-09-11T21:45:53.228Z",
   "range": {
     "start": "2026-09-12",
     "end_exclusive": "2026-09-15",
@@ -248,6 +248,12 @@
           "role": "mother_set",
           "source_label": "地方競馬全国協会",
           "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=20&k_raceDate=2026%2F09%2F14"
+        },
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/bangumi/20262009.do"
         }
       ]
     },
@@ -301,7 +307,7 @@
     }
   ],
   "stale_audit": [],
-  "complete": false,
+  "complete": true,
   "public_rank_lower_than_official": 0,
   "scope": "near",
   "requested_days": 3,
@@ -360,8 +366,8 @@
         "https://www.jra.go.jp/keiba/calendar2026/2026/9/0913.html"
       ],
       "failures": [],
-      "fetch_started_at": "2026-09-11T15:04:02.627Z",
-      "fetch_ended_at": "2026-09-11T15:04:05.120Z"
+      "fetch_started_at": "2026-09-11T21:45:53.228Z",
+      "fetch_ended_at": "2026-09-11T21:45:55.930Z"
     },
     {
       "source_id": "nar-monthly-convene-info",
@@ -375,8 +381,8 @@
           "2026-09-14"
         ]
       },
-      "fetch_started_at": "2026-09-11T15:04:05.120Z",
-      "fetch_ended_at": "2026-09-11T15:04:06.149Z",
+      "fetch_started_at": "2026-09-11T21:45:55.930Z",
+      "fetch_ended_at": "2026-09-11T21:45:57.945Z",
       "result": "complete",
       "completeness": "complete",
       "parsed_meeting_count": 8,
@@ -401,8 +407,8 @@
           "2026-09-14"
         ]
       },
-      "fetch_started_at": "2026-09-11T15:04:18.316Z",
-      "fetch_ended_at": "2026-09-11T15:04:21.028Z",
+      "fetch_started_at": "2026-09-11T21:46:16.873Z",
+      "fetch_ended_at": "2026-09-11T21:46:18.715Z",
       "result": "complete",
       "completeness": "complete",
       "parsed_meeting_count": 3,
@@ -427,26 +433,21 @@
           "2026-09-14"
         ]
       },
-      "result": "failed",
-      "completeness": "failed",
-      "parsed_meeting_count": 0,
+      "result": "complete",
+      "completeness": "complete",
+      "parsed_meeting_count": 1,
       "parsed_detail_count": 0,
       "pending_count": 0,
-      "failure_count": 1,
+      "failure_count": 0,
       "supplemental_failure_count": 0,
       "source_visible_horizon": "2026-09-14",
       "source_urls": [
         "https://www.nankankeiba.com/calendar/202607.do"
       ],
-      "failures": [
-        {
-          "source_url": "https://www.nankankeiba.com/calendar/202607.do",
-          "reason": "HTTP 503: https://www.nankankeiba.com/calendar/202607.do"
-        }
-      ],
+      "failures": [],
       "supplemental_failures": [],
-      "fetch_started_at": "2026-09-11T15:04:06.149Z",
-      "fetch_ended_at": "2026-09-11T15:04:07.247Z"
+      "fetch_started_at": "2026-09-11T21:45:57.945Z",
+      "fetch_ended_at": "2026-09-11T21:45:59.826Z"
     },
     {
       "source_id": "iwatekeiba-official-calendar",
@@ -471,8 +472,8 @@
         "https://www.iwatekeiba.or.jp/calendar/2026_09"
       ],
       "failures": [],
-      "fetch_started_at": "2026-09-11T15:04:07.247Z",
-      "fetch_ended_at": "2026-09-11T15:04:08.499Z"
+      "fetch_started_at": "2026-09-11T21:45:59.826Z",
+      "fetch_ended_at": "2026-09-11T21:46:01.430Z"
     },
     {
       "source_id": "hyogo-urban-keiba-official-calendar",
@@ -497,8 +498,8 @@
         "https://www.sonoda-himeji.jp/schedule/2026/09"
       ],
       "failures": [],
-      "fetch_started_at": "2026-09-11T15:04:08.499Z",
-      "fetch_ended_at": "2026-09-11T15:04:09.232Z"
+      "fetch_started_at": "2026-09-11T21:46:01.431Z",
+      "fetch_ended_at": "2026-09-11T21:46:02.519Z"
     },
     {
       "source_id": "tokai-region-joint-official-calendar",
@@ -530,8 +531,8 @@
         "end": "2027-03-31"
       },
       "failures": [],
-      "fetch_started_at": "2026-09-11T15:04:09.232Z",
-      "fetch_ended_at": "2026-09-11T15:04:10.957Z"
+      "fetch_started_at": "2026-09-11T21:46:02.519Z",
+      "fetch_ended_at": "2026-09-11T21:46:04.820Z"
     },
     {
       "source_id": "hokkaido-keiba-official-calendar",
@@ -558,8 +559,8 @@
       "requested_month_count": 1,
       "successful_month_count": 1,
       "failures": [],
-      "fetch_started_at": "2026-09-11T15:04:10.957Z",
-      "fetch_ended_at": "2026-09-11T15:04:11.953Z"
+      "fetch_started_at": "2026-09-11T21:46:04.820Z",
+      "fetch_ended_at": "2026-09-11T21:46:08.635Z"
     },
     {
       "source_id": "kanazawa-keiba-official-calendar",
@@ -625,8 +626,8 @@
         }
       ],
       "failures": [],
-      "fetch_started_at": "2026-09-11T15:04:11.953Z",
-      "fetch_ended_at": "2026-09-11T15:04:15.281Z"
+      "fetch_started_at": "2026-09-11T21:46:08.635Z",
+      "fetch_ended_at": "2026-09-11T21:46:12.786Z"
     },
     {
       "source_id": "kochi-keiba-official-calendar",
@@ -670,8 +671,8 @@
       "published_plan_as_of": "2026-02-26",
       "schedule_status": "official_published_plan_subject_to_change",
       "failures": [],
-      "fetch_started_at": "2026-09-11T15:04:15.281Z",
-      "fetch_ended_at": "2026-09-11T15:04:16.432Z"
+      "fetch_started_at": "2026-09-11T21:46:12.786Z",
+      "fetch_ended_at": "2026-09-11T21:46:14.245Z"
     },
     {
       "source_id": "saga-keiba-official-calendar",
@@ -838,23 +839,21 @@
       },
       "schedule_status": "annual_official_plan_plus_published_monthly_positive_union",
       "failures": [],
-      "fetch_started_at": "2026-09-11T15:04:16.432Z",
-      "fetch_ended_at": "2026-09-11T15:04:18.316Z"
+      "fetch_started_at": "2026-09-11T21:46:14.245Z",
+      "fetch_ended_at": "2026-09-11T21:46:16.873Z"
     }
   ],
-  "mother_set_complete": false,
+  "mother_set_complete": true,
   "mother_set_completeness_assessment": {
-    "complete": false,
+    "complete": true,
     "missing_source_ids": [],
-    "incomplete_source_ids": [
-      "nankankeiba-south-kanto-calendar"
-    ]
+    "incomplete_source_ids": []
   },
   "absence_reconciliation_mode": "per_family",
   "absence_reconciliation_families": {
     "jra": true,
     "banei": true,
-    "south_kanto": false,
+    "south_kanto": true,
     "iwate": true,
     "hyogo": true,
     "tokai": true,
