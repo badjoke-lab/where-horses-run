@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-12T21:28:40.135Z",
+  "generated_at": "2026-09-12T21:31:24.625Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -13847,32 +13847,33 @@
       "timezone": "America/Santiago",
       "racecourse_id": "club-hipico-de-santiago-racecourse",
       "date": "2026-09-13",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "12:20",
+      "last_race_time_local": "21:00",
       "source_trace": {
         "source_id": "chile-teletrak-weekly-programme",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://teletrak.cl/",
+        "official_source_url": "https://static.clubhipico.cl/archivos/volantes/13-09-2026.pdf",
         "source_label": null,
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-11",
-        "generated_at": "2026-09-11T02:30:42.178Z",
+        "last_checked_date": "2026-09-12",
+        "generated_at": "2026-09-12T21:31:24.625Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "pending_publication",
-        "observed_rank": "C",
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A",
         "technical_capability_rank": "A",
-        "higher_rank_open": true,
-        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+        "evaluated_capability_rank": "A",
+        "higher_rank_open": false,
+        "reason": "The currently applicable higher-detail acquisition path was explicitly evaluated through the registered technical capability rank."
       }
     },
     {
