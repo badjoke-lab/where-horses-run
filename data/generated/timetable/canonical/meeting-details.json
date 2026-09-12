@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-meeting-details-v0",
-  "generated_at": "2026-09-11T21:47:46.143Z",
+  "generated_at": "2026-09-12T07:53:33.921Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -27439,7 +27439,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T21:45:53.228Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -27595,7 +27595,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T21:45:53.228Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -28729,7 +28729,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T21:45:53.228Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -28885,7 +28885,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T21:45:53.228Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -29611,7 +29611,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T21:45:53.228Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -30072,11 +30072,11 @@
       "timezone": "Asia/Tokyo",
       "capability_rank": "A+",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-racelist",
+        "source_id": "nankankeiba-south-kanto-programme",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=20&k_raceDate=2026%2F09%2F14",
-        "source_label": "地方競馬全国協会",
+        "official_source_url": "https://www.nankankeiba.com/program/20260914200901.do",
+        "source_label": "南関東4競馬場",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
@@ -30086,12 +30086,18 @@
             "role": "mother_set",
             "source_label": "地方競馬全国協会",
             "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=20&k_raceDate=2026%2F09%2F14"
+          },
+          {
+            "source_id": "nankankeiba-south-kanto-calendar",
+            "role": "mother_set",
+            "source_label": "南関東4競馬場",
+            "official_source_url": "https://www.nankankeiba.com/bangumi/20262009.do"
           }
         ]
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T21:45:53.228Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -30099,120 +30105,120 @@
         {
           "label": "Race 1",
           "post_time_local": "14:15",
-          "race_name": "Ｃ３六",
+          "race_name": "Ｃ３(六)",
           "distance_m": 1200,
           "surface": "Dirt",
-          "course_label": "Dirt Outer Right-handed",
+          "course_label": "Dirt Right-handed",
           "metadata_status": "verified",
           "source_label": null
         },
         {
           "label": "Race 2",
           "post_time_local": "14:50",
-          "race_name": "２歳六",
+          "race_name": "２歳(六)",
           "distance_m": 1200,
           "surface": "Dirt",
-          "course_label": "Dirt Outer Right-handed",
+          "course_label": "Dirt Right-handed",
           "metadata_status": "verified",
           "source_label": null
         },
         {
           "label": "Race 3",
           "post_time_local": "15:25",
-          "race_name": "３歳選抜牝馬",
+          "race_name": "３歳 選抜牝馬",
           "distance_m": 1200,
           "surface": "Dirt",
-          "course_label": "Dirt Outer Right-handed",
+          "course_label": "Dirt Right-handed",
           "metadata_status": "verified",
           "source_label": null
         },
         {
           "label": "Race 4",
           "post_time_local": "16:00",
-          "race_name": "３歳十１１",
+          "race_name": "３歳(十)(十一)",
           "distance_m": 1400,
           "surface": "Dirt",
-          "course_label": "Dirt Outer Right-handed",
+          "course_label": "Dirt Right-handed",
           "metadata_status": "verified",
           "source_label": null
         },
         {
           "label": "Race 5",
           "post_time_local": "16:35",
-          "race_name": "３歳十１１",
+          "race_name": "３歳(十)(十一)",
           "distance_m": 1200,
           "surface": "Dirt",
-          "course_label": "Dirt Outer Right-handed",
+          "course_label": "Dirt Right-handed",
           "metadata_status": "verified",
           "source_label": null
         },
         {
           "label": "Race 6",
           "post_time_local": "17:10",
-          "race_name": "Ｃ２十 十一",
+          "race_name": "Ｃ２(十)(十一)",
           "distance_m": 1600,
           "surface": "Dirt",
-          "course_label": "Dirt Inner Right-handed",
+          "course_label": "Dirt Right-handed",
           "metadata_status": "verified",
           "source_label": null
         },
         {
           "label": "Race 7",
           "post_time_local": "17:45",
-          "race_name": "Ｃ２十 十一",
+          "race_name": "Ｃ２(十)(十一)",
           "distance_m": 1200,
           "surface": "Dirt",
-          "course_label": "Dirt Outer Right-handed",
+          "course_label": "Dirt Right-handed",
           "metadata_status": "verified",
           "source_label": null
         },
         {
           "label": "Race 8",
           "post_time_local": "18:20",
-          "race_name": "ビジュー賞Ｃ２八 九",
+          "race_name": "ビジュー賞 Ｃ２(八)(九)",
           "distance_m": 1600,
           "surface": "Dirt",
-          "course_label": "Dirt Inner Right-handed",
+          "course_label": "Dirt Right-handed",
           "metadata_status": "verified",
           "source_label": null
         },
         {
           "label": "Race 9",
           "post_time_local": "18:55",
-          "race_name": "Ｃ２八 九",
+          "race_name": "Ｃ２(八)(九)",
           "distance_m": 1200,
           "surface": "Dirt",
-          "course_label": "Dirt Outer Right-handed",
+          "course_label": "Dirt Right-handed",
           "metadata_status": "verified",
           "source_label": null
         },
         {
           "label": "Race 10",
           "post_time_local": "19:30",
-          "race_name": "カシオペア座特別Ｃ１一選抜",
+          "race_name": "カシオペア座特別 Ｃ１(一) 選抜特別",
           "distance_m": 1800,
           "surface": "Dirt",
-          "course_label": "Dirt Outer Right-handed",
+          "course_label": "Dirt Right-handed",
           "metadata_status": "verified",
           "source_label": null
         },
         {
           "label": "Race 11",
           "post_time_local": "20:10",
-          "race_name": "長月賞Ｂ２三選抜特別",
+          "race_name": "長月賞 Ｂ２(三) 選抜特別",
           "distance_m": 1400,
           "surface": "Dirt",
-          "course_label": "Dirt Outer Right-handed",
+          "course_label": "Dirt Right-handed",
           "metadata_status": "verified",
           "source_label": null
         },
         {
           "label": "Race 12",
           "post_time_local": "20:50",
-          "race_name": "八景坂賞Ｂ３三選抜特別",
+          "race_name": "八景坂賞 Ｂ３(三) 選抜特別",
           "distance_m": 1600,
           "surface": "Dirt",
-          "course_label": "Dirt Inner Right-handed",
+          "course_label": "Dirt Right-handed",
           "metadata_status": "verified",
           "source_label": null
         }
@@ -30305,18 +30311,12 @@
             "role": "mother_set",
             "source_label": "地方競馬全国協会",
             "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=20&k_raceDate=2026%2F09%2F15"
-          },
-          {
-            "source_id": "nankankeiba-south-kanto-calendar",
-            "role": "mother_set",
-            "source_label": "南関東4競馬場",
-            "official_source_url": "https://www.nankankeiba.com/bangumi/20262009.do"
           }
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-11",
-        "generated_at": "2026-09-11T08:01:07.813Z",
+        "last_checked_date": "2026-09-12",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -30467,18 +30467,12 @@
             "role": "mother_set",
             "source_label": "地方競馬全国協会",
             "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=20&k_raceDate=2026%2F09%2F16"
-          },
-          {
-            "source_id": "nankankeiba-south-kanto-calendar",
-            "role": "mother_set",
-            "source_label": "南関東4競馬場",
-            "official_source_url": "https://www.nankankeiba.com/bangumi/20262009.do"
           }
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-11",
-        "generated_at": "2026-09-11T08:01:07.813Z",
+        "last_checked_date": "2026-09-12",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -30697,18 +30691,12 @@
             "role": "mother_set",
             "source_label": "地方競馬全国協会",
             "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=20&k_raceDate=2026%2F09%2F17"
-          },
-          {
-            "source_id": "nankankeiba-south-kanto-calendar",
-            "role": "mother_set",
-            "source_label": "南関東4競馬場",
-            "official_source_url": "https://www.nankankeiba.com/bangumi/20262009.do"
           }
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-11",
-        "generated_at": "2026-09-11T08:01:07.813Z",
+        "last_checked_date": "2026-09-12",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -30859,18 +30847,12 @@
             "role": "mother_set",
             "source_label": "地方競馬全国協会",
             "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=20&k_raceDate=2026%2F09%2F18"
-          },
-          {
-            "source_id": "nankankeiba-south-kanto-calendar",
-            "role": "mother_set",
-            "source_label": "南関東4競馬場",
-            "official_source_url": "https://www.nankankeiba.com/bangumi/20262009.do"
           }
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-11",
-        "generated_at": "2026-09-11T08:01:07.813Z",
+        "last_checked_date": "2026-09-12",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -31026,7 +31008,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T17:26:44.627Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -31215,7 +31197,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T17:26:44.627Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -31371,7 +31353,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T17:26:44.627Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -31527,7 +31509,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T17:26:44.627Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -31683,7 +31665,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T17:26:44.627Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -31839,7 +31821,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T17:26:44.627Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -31995,7 +31977,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T17:26:44.627Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -32151,7 +32133,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T17:26:44.627Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -32307,7 +32289,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T17:26:44.627Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -32501,7 +32483,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T17:26:44.627Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -32657,7 +32639,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T17:26:44.627Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -32851,7 +32833,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T17:26:44.627Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -33007,7 +32989,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T17:26:44.627Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -33163,7 +33145,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T17:26:44.627Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -33319,7 +33301,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T17:26:44.627Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -33475,7 +33457,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T17:26:44.627Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -33631,7 +33613,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T17:26:44.627Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -33787,7 +33769,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T17:26:44.627Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -33943,7 +33925,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T17:26:44.627Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -34099,7 +34081,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T17:26:44.627Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -34255,7 +34237,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-11T17:26:44.627Z",
+        "generated_at": "2026-09-12T07:53:33.921Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -34377,6 +34359,168 @@
           "distance_m": 1300,
           "surface": "Dirt",
           "course_label": "Dirt",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
+    },
+    {
+      "meeting_id": "nar-monbetsu-racecourse-2026-09-15",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "monbetsu-racecourse",
+      "date": "2026-09-15",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "monbetsu-official-raceinfo-fallback",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.hokkaidokeiba.net/raceinfo/syuso.php?bid=nittei&bk_nd=&p_day=20260915&p_rno=001",
+        "source_label": "ホッカイドウ競馬",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=36&k_raceDate=2026%2F09%2F15"
+          },
+          {
+            "source_id": "hokkaido-keiba-official-calendar",
+            "role": "mother_set",
+            "source_label": "ホッカイドウ競馬",
+            "official_source_url": "https://www.hokkaidokeiba.net/kaisai/nittei.php?p_ym=202609"
+          }
+        ]
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-12",
+        "generated_at": "2026-09-12T07:53:33.921Z",
+        "stale_after_date": null,
+        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "14:20",
+          "race_name": "コンサドールズ賞",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:50",
+          "race_name": "ＣＯＮＳＡＯＬＤＳ賞",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "15:20",
+          "race_name": "赤黒の勇者賞",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "15:55",
+          "race_name": "30周年賞",
+          "distance_m": 1100,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "16:25",
+          "race_name": "ドーレくん賞",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "17:00",
+          "race_name": "クラブコンサドーレ賞",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "17:35",
+          "race_name": "松山光プロジェクト賞",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "18:05",
+          "race_name": "宮の沢白い恋人サッカー場賞",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "18:40",
+          "race_name": "雪印メグミルク株式会社協賛 雪印北海道100特別",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "19:15",
+          "race_name": "グランシャリオドリーム59",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "19:55",
+          "race_name": "ポッカサッポロ北海道株式会社協賛 ポッカレモン100特別",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "20:35",
+          "race_name": "株式会社コンサドーレ協賛 北海道コンサドーレ札幌特別",
+          "distance_m": 1600,
+          "surface": "Dirt",
+          "course_label": "Inner",
           "metadata_status": "verified",
           "source_label": null
         }
