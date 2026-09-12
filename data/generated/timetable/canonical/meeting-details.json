@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-meeting-details-v0",
-  "generated_at": "2026-09-12T07:53:33.921Z",
+  "generated_at": "2026-09-12T08:03:02.000Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -27742,8 +27742,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T17:48:41.746Z",
+        "last_checked_date": "2026-09-12",
+        "generated_at": "2026-09-12T08:02:16.519Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -27751,43 +27751,43 @@
         {
           "label": "Race 1",
           "post_time_local": "11:00",
-          "race_name": "1 제주 제6등급 성별오픈 4세이하 별정A 700만원 미만 1 제주 제6등급",
+          "race_name": "1 제주 제6등급 7 5 3 1 제주 제6등급",
           "distance_m": 900
         },
         {
           "label": "Race 2",
           "post_time_local": "12:05",
-          "race_name": "2 제주 제5등급 성별오픈 2세이상 핸디캡 R1~20 2 제주 제5등급",
+          "race_name": "2 제주 제5등급 1 2 4 2 제주 제5등급",
           "distance_m": 1000
         },
         {
           "label": "Race 3",
           "post_time_local": "13:10",
-          "race_name": "3 제주 제5등급 성별오픈 2세이상 핸디캡 R1~20 3 제주 제5등급",
+          "race_name": "3 제주 제5등급 3 7 4 3 제주 제5등급",
           "distance_m": 1000
         },
         {
           "label": "Race 4",
-          "post_time_local": "14:00",
-          "race_name": "4 제주 제4등급 성별오픈 2세이상 핸디캡 R21~40 4 제주 제4등급",
+          "post_time_local": "14:03",
+          "race_name": "4 제주 제4등급 속보1건 3 1 6 4 제주 제4등급",
           "distance_m": 1110
         },
         {
           "label": "Race 5",
           "post_time_local": "14:50",
-          "race_name": "5 제주 제4등급 성별오픈 2세이상 핸디캡 R21~40 5 제주 제4등급",
+          "race_name": "5 제주 제4등급 7 3 5 5 제주 제4등급",
           "distance_m": 1110
         },
         {
           "label": "Race 6",
           "post_time_local": "15:40",
-          "race_name": "6 제주 제3등급 성별오픈 2세이상 핸디캡 R41~60 6 제주 제3등급",
+          "race_name": "6 제주 제3등급 3 6 1 6 제주 제3등급",
           "distance_m": 1200
         },
         {
           "label": "Race 7",
           "post_time_local": "16:30",
-          "race_name": "7 제주 제1등급 성별오픈 2세이상 핸디캡 R81~100 7 제주 제1등급",
+          "race_name": "7 제주 제1등급 6 4 1 7 제주 제1등급",
           "distance_m": 1200
         }
       ],
@@ -30287,6 +30287,168 @@
         }
       ],
       "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "nar-monbetsu-racecourse-2026-09-15",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "monbetsu-racecourse",
+      "date": "2026-09-15",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "monbetsu-official-raceinfo-fallback",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.hokkaidokeiba.net/raceinfo/syuso.php?bid=nittei&bk_nd=&p_day=20260915&p_rno=001",
+        "source_label": "ホッカイドウ競馬",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=36&k_raceDate=2026%2F09%2F15"
+          },
+          {
+            "source_id": "hokkaido-keiba-official-calendar",
+            "role": "mother_set",
+            "source_label": "ホッカイドウ競馬",
+            "official_source_url": "https://www.hokkaidokeiba.net/kaisai/nittei.php?p_ym=202609"
+          }
+        ]
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-12",
+        "generated_at": "2026-09-12T07:53:33.921Z",
+        "stale_after_date": null,
+        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "14:20",
+          "race_name": "コンサドールズ賞",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:50",
+          "race_name": "ＣＯＮＳＡＯＬＤＳ賞",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "15:20",
+          "race_name": "赤黒の勇者賞",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "15:55",
+          "race_name": "30周年賞",
+          "distance_m": 1100,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "16:25",
+          "race_name": "ドーレくん賞",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "17:00",
+          "race_name": "クラブコンサドーレ賞",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "17:35",
+          "race_name": "松山光プロジェクト賞",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "18:05",
+          "race_name": "宮の沢白い恋人サッカー場賞",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "18:40",
+          "race_name": "雪印メグミルク株式会社協賛 雪印北海道100特別",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "19:15",
+          "race_name": "グランシャリオドリーム59",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "19:55",
+          "race_name": "ポッカサッポロ北海道株式会社協賛 ポッカレモン100特別",
+          "distance_m": 1000,
+          "surface": "Dirt",
+          "course_label": "Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "20:35",
+          "race_name": "株式会社コンサドーレ協賛 北海道コンサドーレ札幌特別",
+          "distance_m": 1600,
+          "surface": "Dirt",
+          "course_label": "Inner",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
     },
     {
       "meeting_id": "nar-oi-racecourse-2026-09-15",
@@ -34054,6 +34216,39 @@
       "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
     },
     {
+      "meeting_id": "ireland-ireland--naas-2026-10-11",
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "racecourse_id": "ireland--naas",
+      "date": "2026-10-11",
+      "timezone": "Europe/Dublin",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "hri-racecards-month",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.hri.ie/racecards",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-12",
+        "generated_at": "2026-09-12T08:03:02.000Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "14:30",
+          "race_name": "The Irish EBF Auction Series Race Final"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
       "meeting_id": "jra-kyoto-racecourse-2026-10-11",
       "country_id": "japan",
       "authority_id": "jra",
@@ -34359,168 +34554,6 @@
           "distance_m": 1300,
           "surface": "Dirt",
           "course_label": "Dirt",
-          "metadata_status": "verified",
-          "source_label": null
-        }
-      ],
-      "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
-    },
-    {
-      "meeting_id": "nar-monbetsu-racecourse-2026-09-15",
-      "country_id": "japan",
-      "authority_id": "nar-local-government-racing",
-      "racecourse_id": "monbetsu-racecourse",
-      "date": "2026-09-15",
-      "timezone": "Asia/Tokyo",
-      "capability_rank": "A+",
-      "source_trace": {
-        "source_id": "monbetsu-official-raceinfo-fallback",
-        "route_id": null,
-        "source_status": "verified",
-        "official_source_url": "https://www.hokkaidokeiba.net/raceinfo/syuso.php?bid=nittei&bk_nd=&p_day=20260915&p_rno=001",
-        "source_label": "ホッカイドウ競馬",
-        "extraction_method": "adapter",
-        "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
-        "source_observations": [
-          {
-            "source_id": "nar-monthly-schedule-racelist",
-            "role": "mother_set",
-            "source_label": "地方競馬全国協会",
-            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=36&k_raceDate=2026%2F09%2F15"
-          },
-          {
-            "source_id": "hokkaido-keiba-official-calendar",
-            "role": "mother_set",
-            "source_label": "ホッカイドウ競馬",
-            "official_source_url": "https://www.hokkaidokeiba.net/kaisai/nittei.php?p_ym=202609"
-          }
-        ]
-      },
-      "freshness": {
-        "last_checked_date": "2026-09-12",
-        "generated_at": "2026-09-12T07:53:33.921Z",
-        "stale_after_date": null,
-        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
-      },
-      "timetable_rows": [
-        {
-          "label": "Race 1",
-          "post_time_local": "14:20",
-          "race_name": "コンサドールズ賞",
-          "distance_m": 1000,
-          "surface": "Dirt",
-          "course_label": "Outer",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 2",
-          "post_time_local": "14:50",
-          "race_name": "ＣＯＮＳＡＯＬＤＳ賞",
-          "distance_m": 1000,
-          "surface": "Dirt",
-          "course_label": "Outer",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 3",
-          "post_time_local": "15:20",
-          "race_name": "赤黒の勇者賞",
-          "distance_m": 1000,
-          "surface": "Dirt",
-          "course_label": "Outer",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 4",
-          "post_time_local": "15:55",
-          "race_name": "30周年賞",
-          "distance_m": 1100,
-          "surface": "Dirt",
-          "course_label": "Outer",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 5",
-          "post_time_local": "16:25",
-          "race_name": "ドーレくん賞",
-          "distance_m": 1000,
-          "surface": "Dirt",
-          "course_label": "Outer",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 6",
-          "post_time_local": "17:00",
-          "race_name": "クラブコンサドーレ賞",
-          "distance_m": 1000,
-          "surface": "Dirt",
-          "course_label": "Outer",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 7",
-          "post_time_local": "17:35",
-          "race_name": "松山光プロジェクト賞",
-          "distance_m": 1200,
-          "surface": "Dirt",
-          "course_label": "Outer",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 8",
-          "post_time_local": "18:05",
-          "race_name": "宮の沢白い恋人サッカー場賞",
-          "distance_m": 1200,
-          "surface": "Dirt",
-          "course_label": "Outer",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 9",
-          "post_time_local": "18:40",
-          "race_name": "雪印メグミルク株式会社協賛 雪印北海道100特別",
-          "distance_m": 1000,
-          "surface": "Dirt",
-          "course_label": "Outer",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 10",
-          "post_time_local": "19:15",
-          "race_name": "グランシャリオドリーム59",
-          "distance_m": 1000,
-          "surface": "Dirt",
-          "course_label": "Outer",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 11",
-          "post_time_local": "19:55",
-          "race_name": "ポッカサッポロ北海道株式会社協賛 ポッカレモン100特別",
-          "distance_m": 1000,
-          "surface": "Dirt",
-          "course_label": "Outer",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 12",
-          "post_time_local": "20:35",
-          "race_name": "株式会社コンサドーレ協賛 北海道コンサドーレ札幌特別",
-          "distance_m": 1600,
-          "surface": "Dirt",
-          "course_label": "Inner",
           "metadata_status": "verified",
           "source_label": null
         }

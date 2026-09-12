@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-12T07:53:33.921Z",
+  "generated_at": "2026-09-12T08:03:02.000Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -13496,8 +13496,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-10T17:48:41.746Z",
+        "last_checked_date": "2026-09-12",
+        "generated_at": "2026-09-12T08:02:16.519Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -13540,7 +13540,7 @@
       },
       "acquisition_completion": {
         "disposition": "complete_current_best_available",
-        "observed_rank": "A",
+        "observed_rank": "B+",
         "technical_capability_rank": "A+",
         "evaluated_capability_rank": "A+",
         "higher_rank_open": false,
@@ -14623,11 +14623,11 @@
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "pending_publication",
+        "disposition": "retry_required",
         "observed_rank": "C",
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
-        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+        "reason": "Higher-detail acquisition did not complete safely (conflict)."
       }
     },
     {
@@ -14659,11 +14659,11 @@
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "pending_publication",
+        "disposition": "retry_required",
         "observed_rank": "C",
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
-        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+        "reason": "Higher-detail acquisition did not complete safely (conflict)."
       }
     },
     {
@@ -24252,6 +24252,79 @@
       }
     },
     {
+      "meeting_id": "ireland-ireland--cork-mallow-2026-10-11",
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "racing_system_id": "ireland-hri-racing-system",
+      "timezone": "Europe/Dublin",
+      "racecourse_id": "ireland--cork-mallow",
+      "date": "2026-10-11",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      },
+      "source_trace": {
+        "source_id": "hri-fixtures",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.hri.ie/HRI/media/HRI/Comms/Documents/2026-Fixture-List-%28Weekly%29-%28Incl-Tipperary-Changes%29.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-12",
+        "generated_at": "2026-09-12T08:03:02.000Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
+      "meeting_id": "ireland-ireland--naas-2026-10-11",
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "racing_system_id": "ireland-hri-racing-system",
+      "timezone": "Europe/Dublin",
+      "racecourse_id": "ireland--naas",
+      "date": "2026-10-11",
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "14:30",
+      "last_race_time_local": "14:30",
+      "acquisition_completion": {
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A",
+        "technical_capability_rank": "A",
+        "evaluated_capability_rank": "A",
+        "higher_rank_open": false,
+        "reason": "The currently applicable higher-detail acquisition path was explicitly evaluated through the registered technical capability rank."
+      },
+      "source_trace": {
+        "source_id": "hri-racecards-month",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.hri.ie/racecards",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-12",
+        "generated_at": "2026-09-12T08:03:02.000Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
       "meeting_id": "jra-kyoto-racecourse-2026-10-11",
       "country_id": "japan",
       "authority_id": "jra",
@@ -24591,6 +24664,78 @@
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
         "reason": "scheduled_pending_details"
+      }
+    },
+    {
+      "meeting_id": "tjk-adana-racecourse-2026-10-11",
+      "country_id": "turkey",
+      "authority_id": "turkiye-jokey-kulubu",
+      "racing_system_id": "tjk-national-racing-system",
+      "timezone": "Europe/Istanbul",
+      "racecourse_id": "adana-racecourse",
+      "date": "2026-10-11",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      },
+      "source_trace": {
+        "source_id": "tjk-annual-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?SehirId=1&QueryParameter_Tarih=11%2F10%2F2026&SehirAdi=Adana",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-12",
+        "generated_at": "2026-09-12T08:02:16.561Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
+      "meeting_id": "tjk-istanbul-racecourse-2026-10-11",
+      "country_id": "turkey",
+      "authority_id": "turkiye-jokey-kulubu",
+      "racing_system_id": "tjk-national-racing-system",
+      "timezone": "Europe/Istanbul",
+      "racecourse_id": "istanbul-racecourse",
+      "date": "2026-10-11",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      },
+      "source_trace": {
+        "source_id": "tjk-annual-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?SehirId=3&QueryParameter_Tarih=11%2F10%2F2026&SehirAdi=%C4%B0stanbul",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-12",
+        "generated_at": "2026-09-12T08:02:16.561Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
       }
     }
   ]
