@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-13T08:16:17.609Z",
+  "generated_at": "2026-09-13T08:23:14.806Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -14063,8 +14063,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-11",
-        "generated_at": "2026-09-11T02:29:53.146Z",
+        "last_checked_date": "2026-09-13",
+        "generated_at": "2026-09-13T08:22:28.623Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -15073,11 +15073,11 @@
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "pending_publication",
+        "disposition": "retry_required",
         "observed_rank": "C",
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
-        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+        "reason": "Higher-detail acquisition did not complete safely (conflict)."
       }
     },
     {
@@ -15109,11 +15109,11 @@
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "pending_publication",
+        "disposition": "retry_required",
         "observed_rank": "C",
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
-        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+        "reason": "Higher-detail acquisition did not complete safely (conflict)."
       }
     },
     {
@@ -16221,6 +16221,42 @@
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
         "reason": "Japan detail inspection returned below A+ without an explicit proof that A+ fields were fully evaluated for this meeting."
+      }
+    },
+    {
+      "meeting_id": "chile-hipodromo-chile-2026-09-19",
+      "country_id": "chile",
+      "authority_id": "teletrak-chile",
+      "racing_system_id": "chile-teletrak-racing-system",
+      "timezone": "America/Santiago",
+      "racecourse_id": "hipodromo-chile",
+      "date": "2026-09-19",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      },
+      "source_trace": {
+        "source_id": "chile-teletrak-weekly-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://teletrak.cl/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-13",
+        "generated_at": "2026-09-13T08:23:13.756Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
       }
     },
     {
@@ -25363,6 +25399,42 @@
       }
     },
     {
+      "meeting_id": "ireland-ireland--roscommon-2026-10-12",
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "racing_system_id": "ireland-hri-racing-system",
+      "timezone": "Europe/Dublin",
+      "racecourse_id": "ireland--roscommon",
+      "date": "2026-10-12",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      },
+      "source_trace": {
+        "source_id": "hri-fixtures",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.hri.ie/HRI/media/HRI/Comms/Documents/2026-Fixture-List-%28Weekly%29-%28Incl-Tipperary-Changes%29.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-13",
+        "generated_at": "2026-09-13T08:23:14.806Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
       "meeting_id": "jra-kyoto-racecourse-2026-10-12",
       "country_id": "japan",
       "authority_id": "jra",
@@ -25603,6 +25675,78 @@
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
         "reason": "scheduled_pending_details"
+      }
+    },
+    {
+      "meeting_id": "tjk-bursa-racecourse-2026-10-12",
+      "country_id": "turkey",
+      "authority_id": "turkiye-jokey-kulubu",
+      "racing_system_id": "tjk-national-racing-system",
+      "timezone": "Europe/Istanbul",
+      "racecourse_id": "bursa-racecourse",
+      "date": "2026-10-12",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      },
+      "source_trace": {
+        "source_id": "tjk-annual-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?SehirId=4&QueryParameter_Tarih=12%2F10%2F2026&SehirAdi=Bursa",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-13",
+        "generated_at": "2026-09-13T08:22:28.667Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
+      "meeting_id": "tjk-sanliurfa-racecourse-2026-10-12",
+      "country_id": "turkey",
+      "authority_id": "turkiye-jokey-kulubu",
+      "racing_system_id": "tjk-national-racing-system",
+      "timezone": "Europe/Istanbul",
+      "racecourse_id": "sanliurfa-racecourse",
+      "date": "2026-10-12",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      },
+      "source_trace": {
+        "source_id": "tjk-annual-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?SehirId=6&QueryParameter_Tarih=12%2F10%2F2026&SehirAdi=%C5%9Eanl%C4%B1urfa",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-13",
+        "generated_at": "2026-09-13T08:22:28.667Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
       }
     }
   ]
