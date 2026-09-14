@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-meeting-details-v0",
-  "generated_at": "2026-09-14T22:33:06.637Z",
+  "generated_at": "2026-09-14T22:35:28.832Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -32112,6 +32112,168 @@
       "summary_note": "Current official rolling-window race programme observation."
     },
     {
+      "meeting_id": "nar-nagoya-racecourse-2026-09-17",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "nagoya-racecourse",
+      "date": "2026-09-17",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "nar-monthly-schedule-racelist",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F09%2F17",
+        "source_label": "地方競馬全国協会",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F09%2F17"
+          },
+          {
+            "source_id": "tokai-region-joint-official-calendar",
+            "role": "mother_set",
+            "source_label": "東海地区競馬開催日程 / 笠松けいば開催日程",
+            "official_source_url": "https://www.kasamatsu-keiba.com/schedule/2026/09"
+          }
+        ]
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-15",
+        "generated_at": "2026-09-14T22:33:06.637Z",
+        "stale_after_date": null,
+        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "14:05",
+          "race_name": "３歳８組",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:40",
+          "race_name": "３歳７組",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "15:15",
+          "race_name": "Ｃ５組",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "15:50",
+          "race_name": "Ｃ４組",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "16:20",
+          "race_name": "彼岸花賞Ｃ３",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "16:55",
+          "race_name": "仲田院長生誕５１周年おめでとうＢ８",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "17:30",
+          "race_name": "Ｂ７組",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "18:00",
+          "race_name": "クレセントドリーム戦３歳特別",
+          "distance_m": 1700,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "18:35",
+          "race_name": "長月疾風特別Ａ３",
+          "distance_m": 920,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "19:10",
+          "race_name": "予月特別Ａ１ｂ",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "20:00",
+          "race_name": "秋の鞍３歳オープン",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "20:40",
+          "race_name": "金シャチ最終戦Ｃ",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
+    },
+    {
       "meeting_id": "nar-oi-racecourse-2026-09-17",
       "country_id": "japan",
       "authority_id": "nar-local-government-racing",
@@ -37435,168 +37597,6 @@
           "distance_m": 1300,
           "surface": "Dirt",
           "course_label": "Dirt",
-          "metadata_status": "verified",
-          "source_label": null
-        }
-      ],
-      "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
-    },
-    {
-      "meeting_id": "nar-nagoya-racecourse-2026-09-17",
-      "country_id": "japan",
-      "authority_id": "nar-local-government-racing",
-      "racecourse_id": "nagoya-racecourse",
-      "date": "2026-09-17",
-      "timezone": "Asia/Tokyo",
-      "capability_rank": "A+",
-      "source_trace": {
-        "source_id": "nar-monthly-schedule-racelist",
-        "route_id": null,
-        "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F09%2F17",
-        "source_label": "地方競馬全国協会",
-        "extraction_method": "adapter",
-        "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
-        "source_observations": [
-          {
-            "source_id": "nar-monthly-schedule-racelist",
-            "role": "mother_set",
-            "source_label": "地方競馬全国協会",
-            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F09%2F17"
-          },
-          {
-            "source_id": "tokai-region-joint-official-calendar",
-            "role": "mother_set",
-            "source_label": "東海地区競馬開催日程 / 笠松けいば開催日程",
-            "official_source_url": "https://www.kasamatsu-keiba.com/schedule/2026/09"
-          }
-        ]
-      },
-      "freshness": {
-        "last_checked_date": "2026-09-15",
-        "generated_at": "2026-09-14T22:33:06.637Z",
-        "stale_after_date": null,
-        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
-      },
-      "timetable_rows": [
-        {
-          "label": "Race 1",
-          "post_time_local": "14:05",
-          "race_name": "３歳８組",
-          "distance_m": 1500,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 2",
-          "post_time_local": "14:40",
-          "race_name": "３歳７組",
-          "distance_m": 1500,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 3",
-          "post_time_local": "15:15",
-          "race_name": "Ｃ５組",
-          "distance_m": 1500,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 4",
-          "post_time_local": "15:50",
-          "race_name": "Ｃ４組",
-          "distance_m": 1500,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 5",
-          "post_time_local": "16:20",
-          "race_name": "彼岸花賞Ｃ３",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 6",
-          "post_time_local": "16:55",
-          "race_name": "仲田院長生誕５１周年おめでとうＢ８",
-          "distance_m": 1500,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 7",
-          "post_time_local": "17:30",
-          "race_name": "Ｂ７組",
-          "distance_m": 1500,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 8",
-          "post_time_local": "18:00",
-          "race_name": "クレセントドリーム戦３歳特別",
-          "distance_m": 1700,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 9",
-          "post_time_local": "18:35",
-          "race_name": "長月疾風特別Ａ３",
-          "distance_m": 920,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 10",
-          "post_time_local": "19:10",
-          "race_name": "予月特別Ａ１ｂ",
-          "distance_m": 1500,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 11",
-          "post_time_local": "20:00",
-          "race_name": "秋の鞍３歳オープン",
-          "distance_m": 1500,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 12",
-          "post_time_local": "20:40",
-          "race_name": "金シャチ最終戦Ｃ",
-          "distance_m": 1500,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
           "metadata_status": "verified",
           "source_label": null
         }

@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-14T22:33:06.637Z",
+  "generated_at": "2026-09-14T22:35:28.832Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -14442,17 +14442,17 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-11",
-        "generated_at": "2026-09-11T02:30:42.178Z",
+        "last_checked_date": "2026-09-14",
+        "generated_at": "2026-09-14T22:35:28.832Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "pending_publication",
+        "disposition": "retry_required",
         "observed_rank": "C",
         "technical_capability_rank": "A",
         "higher_rank_open": true,
-        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+        "reason": "Higher-detail acquisition did not complete safely (source_error)."
       }
     },
     {
@@ -15042,6 +15042,42 @@
         "technical_capability_rank": "A+",
         "higher_rank_open": false,
         "reason": "Observed evidence reached A+; no higher timetable rank remains."
+      }
+    },
+    {
+      "meeting_id": "sorec-rabat-racecourse-2026-09-15",
+      "country_id": "morocco",
+      "authority_id": "sorec",
+      "racing_system_id": "sorec-racing-information-system",
+      "timezone": "Africa/Casablanca",
+      "racecourse_id": "rabat-racecourse",
+      "date": "2026-09-15",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
+      },
+      "source_trace": {
+        "source_id": "sorec-programme-reunion",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.sorec-galop.ma/pages/programmeReunion/programmeReunion.jsf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-14",
+        "generated_at": "2026-09-14T22:35:27.882Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
       }
     },
     {
