@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-meeting-details-v0",
-  "generated_at": "2026-09-17T08:37:15.886Z",
+  "generated_at": "2026-09-17T08:42:59.037Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -35150,6 +35150,168 @@
       "summary_note": "Current official rolling-window race programme observation."
     },
     {
+      "meeting_id": "nar-kochi-racecourse-2026-09-20",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "kochi-racecourse",
+      "date": "2026-09-20",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "nar-monthly-schedule-racelist",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=31&k_raceDate=2026%2F09%2F20",
+        "source_label": "地方競馬全国協会",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=31&k_raceDate=2026%2F09%2F20"
+          },
+          {
+            "source_id": "kochi-keiba-official-calendar",
+            "role": "mother_set",
+            "source_label": "高知けいば",
+            "official_source_url": "https://www.keiba.or.jp/wp/wp-content/uploads/2026/02/c408d71a0237f46b0a96517eaac55217.pdf"
+          }
+        ]
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
+        "stale_after_date": null,
+        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "15:00",
+          "race_name": "２歳新馬",
+          "distance_m": 1300,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "15:35",
+          "race_name": "カシオペア特別２歳－４",
+          "distance_m": 1300,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "16:05",
+          "race_name": "グルス特別２歳－３",
+          "distance_m": 1300,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "16:40",
+          "race_name": "こけら寿司特別Ｃ３－６",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "17:15",
+          "race_name": "ミラク特別３歳以上牝馬",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "17:45",
+          "race_name": "Ｃ３－５",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "18:20",
+          "race_name": "Ｃ１－５",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "18:50",
+          "race_name": "Ｃ１－４",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "19:20",
+          "race_name": "Ｃ２－３",
+          "distance_m": 1300,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "19:50",
+          "race_name": "Ｃ２－２",
+          "distance_m": 1300,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "20:20",
+          "race_name": "お彼岸特別Ｃ２－１選抜馬",
+          "distance_m": 1300,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "20:50",
+          "race_name": "ファイナルレースＣ３－７記者選抜",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
+    },
+    {
       "meeting_id": "nar-saga-racecourse-2026-09-20",
       "country_id": "japan",
       "authority_id": "nar-local-government-racing",
@@ -35436,6 +35598,137 @@
         }
       ],
       "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
+    },
+    {
+      "meeting_id": "ireland-ireland--fairyhouse-2026-09-21",
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "racecourse_id": "ireland--fairyhouse",
+      "date": "2026-09-21",
+      "timezone": "Europe/Dublin",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "hri-racecards-month",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.hri.ie/racecards",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:42:59.037Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "15:50",
+          "race_name": "The Winter Festival Early Bird Ticket Claiming Race"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "16:25",
+          "race_name": "The Kilminfoyle House Stud Fillies Maiden"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "16:57",
+          "race_name": "The La Bucca Restaurant Handicap"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "17:27",
+          "race_name": "The Irish Stallion Farms EBF Fillies Handicap"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "17:57",
+          "race_name": "The Castlebridge Consignment Blenheim Stakes (Listed)"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "18:27",
+          "race_name": "The Fairyhouse.ie Nursery Handicap"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "18:57",
+          "race_name": "The Fairyhouse Return Of The Jumps On October 10th Handicap"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "ireland-ireland--listowel-2026-09-21",
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "racecourse_id": "ireland--listowel",
+      "date": "2026-09-21",
+      "timezone": "Europe/Dublin",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "hri-racecards-month",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.hri.ie/racecards",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:42:59.037Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "13:23",
+          "race_name": "The Irish EBF Median Sires Series Maiden (Smullen Series)"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "13:53",
+          "race_name": "GAIN The Advantage Series Handicap"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "14:23",
+          "race_name": "The Tote, Never Beaten By SP Maiden"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "14:55",
+          "race_name": "The Liam & Joan Healy Memorial Handicap"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "15:30",
+          "race_name": "The Kevin`s Bar, Listowel/Exchange Inn, Ballybunion Handicap"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "16:05",
+          "race_name": "The John McGuire Handicap"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "16:40",
+          "race_name": "The Eric Browne Memorial Maiden"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "17:12",
+          "race_name": "The Gerard Lynch Memorial Handicap"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
     },
     {
       "meeting_id": "jra-hanshin-racecourse-2026-09-21",
@@ -35882,6 +36175,168 @@
       "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
     },
     {
+      "meeting_id": "nar-urawa-racecourse-2026-09-22",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "urawa-racecourse",
+      "date": "2026-09-22",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "nankankeiba-south-kanto-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.nankankeiba.com/program/20260922180601.do",
+        "source_label": "南関東4競馬場",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F09%2F22"
+          },
+          {
+            "source_id": "nankankeiba-south-kanto-calendar",
+            "role": "mother_set",
+            "source_label": "南関東4競馬場",
+            "official_source_url": "https://www.nankankeiba.com/calendar/202607.do"
+          }
+        ]
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
+        "stale_after_date": null,
+        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "13:30",
+          "race_name": "ランチタイム Ｃ３(六)",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:00",
+          "race_name": "２歳(三)",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "14:30",
+          "race_name": "２歳(二)",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "15:00",
+          "race_name": "３歳(二)",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "15:30",
+          "race_name": "特選 Ｃ２(イ)Ｃ３(ア) 選抜馬",
+          "distance_m": 800,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "16:00",
+          "race_name": "東京に半分食い込むまち新座賞 Ｃ１(イ)Ｃ２(ア) 選抜馬",
+          "distance_m": 800,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "16:35",
+          "race_name": "秋うらら（あきうらら）特別 ３歳(一)",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "17:10",
+          "race_name": "秋の夜（あきのよ）特別 Ｃ３ 選抜馬イ",
+          "distance_m": 2000,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "17:45",
+          "race_name": "秋晴（あきばれ）特別 Ｃ２(二)",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "18:20",
+          "race_name": "秋桜（こすもす）特別 Ｂ３(三)Ｃ１(一)",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "18:55",
+          "race_name": "秋彼岸（あきひがん）特別 Ｂ３(一)",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "19:30",
+          "race_name": "月見（つきみ）特別 Ｂ２Ｂ３(ア) 選抜馬",
+          "distance_m": 2000,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
+    },
+    {
       "meeting_id": "ireland-ireland--listowel-2026-09-23",
       "country_id": "ireland",
       "authority_id": "horse-racing-ireland",
@@ -35915,6 +36370,330 @@
       "summary_note": "Current official rolling-window race programme observation."
     },
     {
+      "meeting_id": "nar-urawa-racecourse-2026-09-23",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "urawa-racecourse",
+      "date": "2026-09-23",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "nankankeiba-south-kanto-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.nankankeiba.com/program/20260923180602.do",
+        "source_label": "南関東4競馬場",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F09%2F23"
+          },
+          {
+            "source_id": "nankankeiba-south-kanto-calendar",
+            "role": "mother_set",
+            "source_label": "南関東4競馬場",
+            "official_source_url": "https://www.nankankeiba.com/calendar/202607.do"
+          }
+        ]
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
+        "stale_after_date": null,
+        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "13:30",
+          "race_name": "ランチタイム Ｃ３(三)(四)(五)",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:00",
+          "race_name": "Ｃ３(三)(四)(五)",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "14:30",
+          "race_name": "Ｃ３(三)(四)(五)",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "15:00",
+          "race_name": "Ｃ２(三)(四)",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "15:30",
+          "race_name": "緑と清流のまち ときがわ賞 Ｃ２(三)(四)",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "16:00",
+          "race_name": "冬桜舞う神川町賞 Ｃ１(三)(四)",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "16:30",
+          "race_name": "おいしい梨がてんこもり シラオ仮面賞 Ｃ１(三)(四)",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "17:05",
+          "race_name": "秋の空（あきのそら）特別 ３歳 未格付選抜馬",
+          "distance_m": 2000,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "17:40",
+          "race_name": "爽秋（そうしゅう）特別 Ｃ２(一)",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "18:15",
+          "race_name": "オーバルスプリント（ＪｐｎIII）［指定交流］",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "18:55",
+          "race_name": "月光（げっこう）特別 Ｂ２Ｂ３ 選抜馬",
+          "distance_m": 800,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "19:30",
+          "race_name": "秋分の日（しゅうぶんのひ）特別 Ｂ３(イ)Ｃ１(ア) 選抜馬",
+          "distance_m": 2000,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
+    },
+    {
+      "meeting_id": "nar-urawa-racecourse-2026-09-24",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "urawa-racecourse",
+      "date": "2026-09-24",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "nankankeiba-south-kanto-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.nankankeiba.com/program/20260924180603.do",
+        "source_label": "南関東4競馬場",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F09%2F24"
+          },
+          {
+            "source_id": "nankankeiba-south-kanto-calendar",
+            "role": "mother_set",
+            "source_label": "南関東4競馬場",
+            "official_source_url": "https://www.nankankeiba.com/calendar/202607.do"
+          }
+        ]
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
+        "stale_after_date": null,
+        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "13:30",
+          "race_name": "ランチタイム ３歳(五)",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:00",
+          "race_name": "３歳(四)",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "14:30",
+          "race_name": "ドリームチャレンジ ２歳 新馬エ",
+          "distance_m": 800,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "15:00",
+          "race_name": "ドリームチャレンジ ２歳 新馬ウ",
+          "distance_m": 800,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "15:30",
+          "race_name": "３歳(三)",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "16:00",
+          "race_name": "Ｃ３ 選抜馬イ",
+          "distance_m": 800,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "16:35",
+          "race_name": "特選 Ｃ２(ウ)Ｃ３(ア) 選抜馬",
+          "distance_m": 2000,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "17:10",
+          "race_name": "スイートアリッサム賞 ２歳 選抜牝馬",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "17:45",
+          "race_name": "曼珠沙華（まんじゅしゃげ）特別 Ｃ１(二)",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "18:20",
+          "race_name": "祝月（いわいづき）特別 Ｂ３(二)",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "18:55",
+          "race_name": "シラコバト賞 Ａ２(下)",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "19:30",
+          "race_name": "夜長月（よながづき）特別 Ｃ２ 選抜馬イ",
+          "distance_m": 2000,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
+    },
+    {
       "meeting_id": "ireland-ireland--listowel-2026-09-25",
       "country_id": "ireland",
       "authority_id": "horse-racing-ireland",
@@ -35946,6 +36725,168 @@
         }
       ],
       "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "nar-urawa-racecourse-2026-09-25",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "urawa-racecourse",
+      "date": "2026-09-25",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "nankankeiba-south-kanto-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.nankankeiba.com/program/20260925180604.do",
+        "source_label": "南関東4競馬場",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F09%2F25"
+          },
+          {
+            "source_id": "nankankeiba-south-kanto-calendar",
+            "role": "mother_set",
+            "source_label": "南関東4競馬場",
+            "official_source_url": "https://www.nankankeiba.com/calendar/202607.do"
+          }
+        ]
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
+        "stale_after_date": null,
+        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "13:30",
+          "race_name": "ランチタイム ３歳 未格付選抜馬イ",
+          "distance_m": 800,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:00",
+          "race_name": "３歳 未格付選抜馬ア",
+          "distance_m": 800,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "14:30",
+          "race_name": "ドリームチャレンジ ２歳 新馬イ",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "15:00",
+          "race_name": "ドリームチャレンジ ２歳 新馬ア",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "15:30",
+          "race_name": "３歳(六)",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "16:00",
+          "race_name": "特選 Ｃ３(二)",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "16:35",
+          "race_name": "特選 Ｃ２ 選抜牝馬",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "17:10",
+          "race_name": "新生（しんせい）特別 ２歳(一)",
+          "distance_m": 1500,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "17:45",
+          "race_name": "サファイア特別 Ｃ３(一)",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "18:20",
+          "race_name": "秋明菊（しゅうめいぎく）特別 Ｃ１ 選抜馬ア",
+          "distance_m": 800,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "18:55",
+          "race_name": "紅葉月（もみじづき）特別 Ｂ１(二)Ｂ２",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "19:30",
+          "race_name": "テレ玉ＢＡＣＨプラザ（てれたまばっはぷらざ）特別 Ｃ１(イ)Ｃ２(ア) 選抜馬",
+          "distance_m": 2000,
+          "surface": "Dirt",
+          "course_label": "Dirt Left-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
     },
     {
       "meeting_id": "ireland-ireland--curragh-2026-09-26",
@@ -38650,816 +39591,6 @@
           "distance_m": 1300,
           "surface": "Dirt",
           "course_label": "Dirt",
-          "metadata_status": "verified",
-          "source_label": null
-        }
-      ],
-      "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
-    },
-    {
-      "meeting_id": "nar-kochi-racecourse-2026-09-20",
-      "country_id": "japan",
-      "authority_id": "nar-local-government-racing",
-      "racecourse_id": "kochi-racecourse",
-      "date": "2026-09-20",
-      "timezone": "Asia/Tokyo",
-      "capability_rank": "A+",
-      "source_trace": {
-        "source_id": "nar-monthly-schedule-racelist",
-        "route_id": null,
-        "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=31&k_raceDate=2026%2F09%2F20",
-        "source_label": "地方競馬全国協会",
-        "extraction_method": "adapter",
-        "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
-        "source_observations": [
-          {
-            "source_id": "nar-monthly-schedule-racelist",
-            "role": "mother_set",
-            "source_label": "地方競馬全国協会",
-            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=31&k_raceDate=2026%2F09%2F20"
-          },
-          {
-            "source_id": "kochi-keiba-official-calendar",
-            "role": "mother_set",
-            "source_label": "高知けいば",
-            "official_source_url": "https://www.keiba.or.jp/wp/wp-content/uploads/2026/02/c408d71a0237f46b0a96517eaac55217.pdf"
-          }
-        ]
-      },
-      "freshness": {
-        "last_checked_date": "2026-09-17",
-        "generated_at": "2026-09-17T08:37:15.886Z",
-        "stale_after_date": null,
-        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
-      },
-      "timetable_rows": [
-        {
-          "label": "Race 1",
-          "post_time_local": "15:00",
-          "race_name": "２歳新馬",
-          "distance_m": 1300,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 2",
-          "post_time_local": "15:35",
-          "race_name": "カシオペア特別２歳－４",
-          "distance_m": 1300,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 3",
-          "post_time_local": "16:05",
-          "race_name": "グルス特別２歳－３",
-          "distance_m": 1300,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 4",
-          "post_time_local": "16:40",
-          "race_name": "こけら寿司特別Ｃ３－６",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 5",
-          "post_time_local": "17:15",
-          "race_name": "ミラク特別３歳以上牝馬",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 6",
-          "post_time_local": "17:45",
-          "race_name": "Ｃ３－５",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 7",
-          "post_time_local": "18:20",
-          "race_name": "Ｃ１－５",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 8",
-          "post_time_local": "18:50",
-          "race_name": "Ｃ１－４",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 9",
-          "post_time_local": "19:20",
-          "race_name": "Ｃ２－３",
-          "distance_m": 1300,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 10",
-          "post_time_local": "19:50",
-          "race_name": "Ｃ２－２",
-          "distance_m": 1300,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 11",
-          "post_time_local": "20:20",
-          "race_name": "お彼岸特別Ｃ２－１選抜馬",
-          "distance_m": 1300,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 12",
-          "post_time_local": "20:50",
-          "race_name": "ファイナルレースＣ３－７記者選抜",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        }
-      ],
-      "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
-    },
-    {
-      "meeting_id": "nar-urawa-racecourse-2026-09-22",
-      "country_id": "japan",
-      "authority_id": "nar-local-government-racing",
-      "racecourse_id": "urawa-racecourse",
-      "date": "2026-09-22",
-      "timezone": "Asia/Tokyo",
-      "capability_rank": "A+",
-      "source_trace": {
-        "source_id": "nankankeiba-south-kanto-programme",
-        "route_id": null,
-        "source_status": "verified",
-        "official_source_url": "https://www.nankankeiba.com/program/20260922180601.do",
-        "source_label": "南関東4競馬場",
-        "extraction_method": "adapter",
-        "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
-        "source_observations": [
-          {
-            "source_id": "nar-monthly-schedule-racelist",
-            "role": "mother_set",
-            "source_label": "地方競馬全国協会",
-            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F09%2F22"
-          },
-          {
-            "source_id": "nankankeiba-south-kanto-calendar",
-            "role": "mother_set",
-            "source_label": "南関東4競馬場",
-            "official_source_url": "https://www.nankankeiba.com/calendar/202607.do"
-          }
-        ]
-      },
-      "freshness": {
-        "last_checked_date": "2026-09-17",
-        "generated_at": "2026-09-17T08:37:15.886Z",
-        "stale_after_date": null,
-        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
-      },
-      "timetable_rows": [
-        {
-          "label": "Race 1",
-          "post_time_local": "13:30",
-          "race_name": "ランチタイム Ｃ３(六)",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 2",
-          "post_time_local": "14:00",
-          "race_name": "２歳(三)",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 3",
-          "post_time_local": "14:30",
-          "race_name": "２歳(二)",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 4",
-          "post_time_local": "15:00",
-          "race_name": "３歳(二)",
-          "distance_m": 1500,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 5",
-          "post_time_local": "15:30",
-          "race_name": "特選 Ｃ２(イ)Ｃ３(ア) 選抜馬",
-          "distance_m": 800,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 6",
-          "post_time_local": "16:00",
-          "race_name": "東京に半分食い込むまち新座賞 Ｃ１(イ)Ｃ２(ア) 選抜馬",
-          "distance_m": 800,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 7",
-          "post_time_local": "16:35",
-          "race_name": "秋うらら（あきうらら）特別 ３歳(一)",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 8",
-          "post_time_local": "17:10",
-          "race_name": "秋の夜（あきのよ）特別 Ｃ３ 選抜馬イ",
-          "distance_m": 2000,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 9",
-          "post_time_local": "17:45",
-          "race_name": "秋晴（あきばれ）特別 Ｃ２(二)",
-          "distance_m": 1500,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 10",
-          "post_time_local": "18:20",
-          "race_name": "秋桜（こすもす）特別 Ｂ３(三)Ｃ１(一)",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 11",
-          "post_time_local": "18:55",
-          "race_name": "秋彼岸（あきひがん）特別 Ｂ３(一)",
-          "distance_m": 1500,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 12",
-          "post_time_local": "19:30",
-          "race_name": "月見（つきみ）特別 Ｂ２Ｂ３(ア) 選抜馬",
-          "distance_m": 2000,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        }
-      ],
-      "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
-    },
-    {
-      "meeting_id": "nar-urawa-racecourse-2026-09-23",
-      "country_id": "japan",
-      "authority_id": "nar-local-government-racing",
-      "racecourse_id": "urawa-racecourse",
-      "date": "2026-09-23",
-      "timezone": "Asia/Tokyo",
-      "capability_rank": "A+",
-      "source_trace": {
-        "source_id": "nankankeiba-south-kanto-programme",
-        "route_id": null,
-        "source_status": "verified",
-        "official_source_url": "https://www.nankankeiba.com/program/20260923180602.do",
-        "source_label": "南関東4競馬場",
-        "extraction_method": "adapter",
-        "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
-        "source_observations": [
-          {
-            "source_id": "nar-monthly-schedule-racelist",
-            "role": "mother_set",
-            "source_label": "地方競馬全国協会",
-            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F09%2F23"
-          },
-          {
-            "source_id": "nankankeiba-south-kanto-calendar",
-            "role": "mother_set",
-            "source_label": "南関東4競馬場",
-            "official_source_url": "https://www.nankankeiba.com/calendar/202607.do"
-          }
-        ]
-      },
-      "freshness": {
-        "last_checked_date": "2026-09-17",
-        "generated_at": "2026-09-17T08:37:15.886Z",
-        "stale_after_date": null,
-        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
-      },
-      "timetable_rows": [
-        {
-          "label": "Race 1",
-          "post_time_local": "13:30",
-          "race_name": "ランチタイム Ｃ３(三)(四)(五)",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 2",
-          "post_time_local": "14:00",
-          "race_name": "Ｃ３(三)(四)(五)",
-          "distance_m": 1500,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 3",
-          "post_time_local": "14:30",
-          "race_name": "Ｃ３(三)(四)(五)",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 4",
-          "post_time_local": "15:00",
-          "race_name": "Ｃ２(三)(四)",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 5",
-          "post_time_local": "15:30",
-          "race_name": "緑と清流のまち ときがわ賞 Ｃ２(三)(四)",
-          "distance_m": 1500,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 6",
-          "post_time_local": "16:00",
-          "race_name": "冬桜舞う神川町賞 Ｃ１(三)(四)",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 7",
-          "post_time_local": "16:30",
-          "race_name": "おいしい梨がてんこもり シラオ仮面賞 Ｃ１(三)(四)",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 8",
-          "post_time_local": "17:05",
-          "race_name": "秋の空（あきのそら）特別 ３歳 未格付選抜馬",
-          "distance_m": 2000,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 9",
-          "post_time_local": "17:40",
-          "race_name": "爽秋（そうしゅう）特別 Ｃ２(一)",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 10",
-          "post_time_local": "18:15",
-          "race_name": "オーバルスプリント（ＪｐｎIII）［指定交流］",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 11",
-          "post_time_local": "18:55",
-          "race_name": "月光（げっこう）特別 Ｂ２Ｂ３ 選抜馬",
-          "distance_m": 800,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 12",
-          "post_time_local": "19:30",
-          "race_name": "秋分の日（しゅうぶんのひ）特別 Ｂ３(イ)Ｃ１(ア) 選抜馬",
-          "distance_m": 2000,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        }
-      ],
-      "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
-    },
-    {
-      "meeting_id": "nar-urawa-racecourse-2026-09-24",
-      "country_id": "japan",
-      "authority_id": "nar-local-government-racing",
-      "racecourse_id": "urawa-racecourse",
-      "date": "2026-09-24",
-      "timezone": "Asia/Tokyo",
-      "capability_rank": "A+",
-      "source_trace": {
-        "source_id": "nankankeiba-south-kanto-programme",
-        "route_id": null,
-        "source_status": "verified",
-        "official_source_url": "https://www.nankankeiba.com/program/20260924180603.do",
-        "source_label": "南関東4競馬場",
-        "extraction_method": "adapter",
-        "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
-        "source_observations": [
-          {
-            "source_id": "nar-monthly-schedule-racelist",
-            "role": "mother_set",
-            "source_label": "地方競馬全国協会",
-            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F09%2F24"
-          },
-          {
-            "source_id": "nankankeiba-south-kanto-calendar",
-            "role": "mother_set",
-            "source_label": "南関東4競馬場",
-            "official_source_url": "https://www.nankankeiba.com/calendar/202607.do"
-          }
-        ]
-      },
-      "freshness": {
-        "last_checked_date": "2026-09-17",
-        "generated_at": "2026-09-17T08:37:15.886Z",
-        "stale_after_date": null,
-        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
-      },
-      "timetable_rows": [
-        {
-          "label": "Race 1",
-          "post_time_local": "13:30",
-          "race_name": "ランチタイム ３歳(五)",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 2",
-          "post_time_local": "14:00",
-          "race_name": "３歳(四)",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 3",
-          "post_time_local": "14:30",
-          "race_name": "ドリームチャレンジ ２歳 新馬エ",
-          "distance_m": 800,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 4",
-          "post_time_local": "15:00",
-          "race_name": "ドリームチャレンジ ２歳 新馬ウ",
-          "distance_m": 800,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 5",
-          "post_time_local": "15:30",
-          "race_name": "３歳(三)",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 6",
-          "post_time_local": "16:00",
-          "race_name": "Ｃ３ 選抜馬イ",
-          "distance_m": 800,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 7",
-          "post_time_local": "16:35",
-          "race_name": "特選 Ｃ２(ウ)Ｃ３(ア) 選抜馬",
-          "distance_m": 2000,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 8",
-          "post_time_local": "17:10",
-          "race_name": "スイートアリッサム賞 ２歳 選抜牝馬",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 9",
-          "post_time_local": "17:45",
-          "race_name": "曼珠沙華（まんじゅしゃげ）特別 Ｃ１(二)",
-          "distance_m": 1500,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 10",
-          "post_time_local": "18:20",
-          "race_name": "祝月（いわいづき）特別 Ｂ３(二)",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 11",
-          "post_time_local": "18:55",
-          "race_name": "シラコバト賞 Ａ２(下)",
-          "distance_m": 1500,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 12",
-          "post_time_local": "19:30",
-          "race_name": "夜長月（よながづき）特別 Ｃ２ 選抜馬イ",
-          "distance_m": 2000,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        }
-      ],
-      "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
-    },
-    {
-      "meeting_id": "nar-urawa-racecourse-2026-09-25",
-      "country_id": "japan",
-      "authority_id": "nar-local-government-racing",
-      "racecourse_id": "urawa-racecourse",
-      "date": "2026-09-25",
-      "timezone": "Asia/Tokyo",
-      "capability_rank": "A+",
-      "source_trace": {
-        "source_id": "nankankeiba-south-kanto-programme",
-        "route_id": null,
-        "source_status": "verified",
-        "official_source_url": "https://www.nankankeiba.com/program/20260925180604.do",
-        "source_label": "南関東4競馬場",
-        "extraction_method": "adapter",
-        "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
-        "source_observations": [
-          {
-            "source_id": "nar-monthly-schedule-racelist",
-            "role": "mother_set",
-            "source_label": "地方競馬全国協会",
-            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F09%2F25"
-          },
-          {
-            "source_id": "nankankeiba-south-kanto-calendar",
-            "role": "mother_set",
-            "source_label": "南関東4競馬場",
-            "official_source_url": "https://www.nankankeiba.com/calendar/202607.do"
-          }
-        ]
-      },
-      "freshness": {
-        "last_checked_date": "2026-09-17",
-        "generated_at": "2026-09-17T08:37:15.886Z",
-        "stale_after_date": null,
-        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
-      },
-      "timetable_rows": [
-        {
-          "label": "Race 1",
-          "post_time_local": "13:30",
-          "race_name": "ランチタイム ３歳 未格付選抜馬イ",
-          "distance_m": 800,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 2",
-          "post_time_local": "14:00",
-          "race_name": "３歳 未格付選抜馬ア",
-          "distance_m": 800,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 3",
-          "post_time_local": "14:30",
-          "race_name": "ドリームチャレンジ ２歳 新馬イ",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 4",
-          "post_time_local": "15:00",
-          "race_name": "ドリームチャレンジ ２歳 新馬ア",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 5",
-          "post_time_local": "15:30",
-          "race_name": "３歳(六)",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 6",
-          "post_time_local": "16:00",
-          "race_name": "特選 Ｃ３(二)",
-          "distance_m": 1500,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 7",
-          "post_time_local": "16:35",
-          "race_name": "特選 Ｃ２ 選抜牝馬",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 8",
-          "post_time_local": "17:10",
-          "race_name": "新生（しんせい）特別 ２歳(一)",
-          "distance_m": 1500,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 9",
-          "post_time_local": "17:45",
-          "race_name": "サファイア特別 Ｃ３(一)",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 10",
-          "post_time_local": "18:20",
-          "race_name": "秋明菊（しゅうめいぎく）特別 Ｃ１ 選抜馬ア",
-          "distance_m": 800,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 11",
-          "post_time_local": "18:55",
-          "race_name": "紅葉月（もみじづき）特別 Ｂ１(二)Ｂ２",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 12",
-          "post_time_local": "19:30",
-          "race_name": "テレ玉ＢＡＣＨプラザ（てれたまばっはぷらざ）特別 Ｃ１(イ)Ｃ２(ア) 選抜馬",
-          "distance_m": 2000,
-          "surface": "Dirt",
-          "course_label": "Dirt Left-handed",
           "metadata_status": "verified",
           "source_label": null
         }
