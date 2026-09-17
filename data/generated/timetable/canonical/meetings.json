@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-16T22:14:42.030Z",
+  "generated_at": "2026-09-17T08:37:15.886Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -15647,7 +15647,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-17",
-        "generated_at": "2026-09-16T22:13:25.141Z",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -15698,7 +15698,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-17",
-        "generated_at": "2026-09-16T22:13:25.141Z",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -15749,7 +15749,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-17",
-        "generated_at": "2026-09-16T22:13:25.141Z",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -15800,7 +15800,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-17",
-        "generated_at": "2026-09-16T22:13:25.141Z",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -16071,7 +16071,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-17",
-        "generated_at": "2026-09-16T22:13:25.141Z",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -16122,7 +16122,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-17",
-        "generated_at": "2026-09-16T22:13:25.141Z",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -16173,7 +16173,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-17",
-        "generated_at": "2026-09-16T22:13:25.141Z",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -16267,7 +16267,7 @@
       "racecourse_id": "obihiro-racecourse",
       "date": "2026-09-19",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "A",
+      "capability_rank": "A+",
       "display_status": "displayable",
       "first_race_time_local": "14:40",
       "last_race_time_local": "20:35",
@@ -16275,7 +16275,7 @@
         "source_id": "banei-official-monthly-schedule-nar-detail",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.banei-keiba.or.jp/race_program_detail.php?d=2026&n=12",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=3&k_raceDate=2026%2F09%2F19",
         "source_label": "ばんえい十勝",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
@@ -16291,17 +16291,17 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-17",
-        "generated_at": "2026-09-16T22:13:25.141Z",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
       "notes": "Deterministic public-safe timetable fields reconciled from the official source.",
       "acquisition_completion": {
-        "disposition": "implementation_gap",
-        "observed_rank": "A",
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A+",
         "technical_capability_rank": "A+",
-        "higher_rank_open": true,
-        "reason": "Japan detail inspection returned below A+ without an explicit proof that A+ fields were fully evaluated for this meeting."
+        "higher_rank_open": false,
+        "reason": "Observed evidence reached A+; no higher timetable rank remains."
       }
     },
     {
@@ -16447,7 +16447,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-17",
-        "generated_at": "2026-09-16T22:13:25.141Z",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -16492,7 +16492,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-17",
-        "generated_at": "2026-09-16T22:13:25.141Z",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -16586,16 +16586,16 @@
       "racecourse_id": "saga-racecourse",
       "date": "2026-09-19",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "A",
+      "capability_rank": "A+",
       "display_status": "displayable",
       "first_race_time_local": "16:05",
       "last_race_time_local": "20:50",
       "source_trace": {
-        "source_id": "saga-official-start-times-fallback",
+        "source_id": "nar-monthly-schedule-racelist",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.sagakeiba.net/raceinfo/start/",
-        "source_label": "佐賀競馬",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=32&k_raceDate=2026%2F09%2F19",
+        "source_label": "地方競馬全国協会",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
@@ -16616,17 +16616,17 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-17",
-        "generated_at": "2026-09-16T22:13:25.141Z",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
       "notes": "Approved from the official NAR September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail remain pending after detail parser failure.",
       "acquisition_completion": {
-        "disposition": "implementation_gap",
-        "observed_rank": "A",
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A+",
         "technical_capability_rank": "A+",
-        "higher_rank_open": true,
-        "reason": "Japan detail inspection returned below A+ without an explicit proof that A+ fields were fully evaluated for this meeting."
+        "higher_rank_open": false,
+        "reason": "Observed evidence reached A+; no higher timetable rank remains."
       },
       "racing_system_id": "japan-nar-system"
     },
@@ -16769,8 +16769,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -16889,8 +16889,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -16934,8 +16934,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -17028,19 +17028,19 @@
       "racecourse_id": "kochi-racecourse",
       "date": "2026-09-20",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "15:00",
+      "last_race_time_local": "20:50",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-grid",
+        "source_id": "nar-monthly-schedule-racelist",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=9&k_year=2026",
-        "source_label": "National Association of Racing / local government racing",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=31&k_raceDate=2026%2F09%2F20",
+        "source_label": "地方競馬全国協会",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
-        "normalized_from_path": "data/candidates/nar-horizon-extension-2026-09-20-approved.json",
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
         "source_observations": [
           {
             "source_id": "nar-monthly-schedule-racelist",
@@ -17057,19 +17057,20 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-08-22",
-        "generated_at": "2026-08-22T15:58:09.771Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
-        "freshness_note": "Promoted from approved timetable-candidate-v1 by badjoke-lab at 2026-08-22T16:58:00Z."
+        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
       "notes": "Approved from the official NAR September 2026 monthly schedule. Meeting date and racecourse only; race times and programme detail remain pending after detail parser failure.",
       "acquisition_completion": {
-        "disposition": "pending_publication",
-        "observed_rank": "C",
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A+",
         "technical_capability_rank": "A+",
-        "higher_rank_open": true,
-        "reason": "scheduled_pending_details"
-      }
+        "higher_rank_open": false,
+        "reason": "Observed evidence reached A+; no higher timetable rank remains."
+      },
+      "racing_system_id": "japan-nar-system"
     },
     {
       "meeting_id": "nar-saga-racecourse-2026-09-20",
@@ -17107,8 +17108,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -17225,8 +17226,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -17378,8 +17379,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -17423,8 +17424,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -17523,8 +17524,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -17574,8 +17575,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -17756,16 +17757,16 @@
       "racecourse_id": "kasamatsu-racecourse",
       "date": "2026-09-22",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
+      "capability_rank": "B",
+      "display_status": "displayable",
+      "first_race_time_local": "10:50",
       "last_race_time_local": null,
       "source_trace": {
-        "source_id": "nar-monthly-schedule-racelist",
+        "source_id": "kasamatsu-official-first-race-fallback",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F09%2F22",
-        "source_label": "地方競馬全国協会",
+        "official_source_url": "https://www.kasamatsu-keiba.com/news/detail/1501",
+        "source_label": "笠松けいば",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
@@ -17785,18 +17786,18 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T04:53:06.698Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
       "notes": "Deterministic public-safe timetable fields reconciled from the official source.",
       "acquisition_completion": {
-        "disposition": "pending_publication",
-        "observed_rank": "C",
+        "disposition": "implementation_gap",
+        "observed_rank": "B",
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
-        "reason": "scheduled_pending_details"
+        "reason": "Japan detail inspection returned below A+ without an explicit proof that A+ fields were fully evaluated for this meeting."
       }
     },
     {
@@ -17887,8 +17888,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -17960,16 +17961,16 @@
       "racecourse_id": "urawa-racecourse",
       "date": "2026-09-22",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "13:30",
+      "last_race_time_local": "19:30",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-racelist",
+        "source_id": "nankankeiba-south-kanto-programme",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F09%2F22",
-        "source_label": "地方競馬全国協会",
+        "official_source_url": "https://www.nankankeiba.com/program/20260922180601.do",
+        "source_label": "南関東4競馬場",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
@@ -17989,18 +17990,18 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T04:53:06.698Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
       "notes": "Deterministic public-safe timetable fields reconciled from the official source.",
       "acquisition_completion": {
-        "disposition": "pending_publication",
-        "observed_rank": "C",
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A+",
         "technical_capability_rank": "A+",
-        "higher_rank_open": true,
-        "reason": "scheduled_pending_details"
+        "higher_rank_open": false,
+        "reason": "Observed evidence reached A+; no higher timetable rank remains."
       }
     },
     {
@@ -18158,16 +18159,16 @@
       "racecourse_id": "kasamatsu-racecourse",
       "date": "2026-09-23",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
+      "capability_rank": "B",
+      "display_status": "displayable",
+      "first_race_time_local": "10:55",
       "last_race_time_local": null,
       "source_trace": {
-        "source_id": "nar-monthly-schedule-racelist",
+        "source_id": "kasamatsu-official-first-race-fallback",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F09%2F23",
-        "source_label": "地方競馬全国協会",
+        "official_source_url": "https://www.kasamatsu-keiba.com/news/detail/1501",
+        "source_label": "笠松けいば",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
@@ -18187,18 +18188,18 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T04:53:06.698Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
       "notes": "Deterministic public-safe timetable fields reconciled from the official source.",
       "acquisition_completion": {
-        "disposition": "pending_publication",
-        "observed_rank": "C",
+        "disposition": "implementation_gap",
+        "observed_rank": "B",
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
-        "reason": "scheduled_pending_details"
+        "reason": "Japan detail inspection returned below A+ without an explicit proof that A+ fields were fully evaluated for this meeting."
       }
     },
     {
@@ -18238,8 +18239,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -18362,16 +18363,16 @@
       "racecourse_id": "urawa-racecourse",
       "date": "2026-09-23",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "13:30",
+      "last_race_time_local": "19:30",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-racelist",
+        "source_id": "nankankeiba-south-kanto-programme",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F09%2F23",
-        "source_label": "地方競馬全国協会",
+        "official_source_url": "https://www.nankankeiba.com/program/20260923180602.do",
+        "source_label": "南関東4競馬場",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
@@ -18391,18 +18392,18 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T04:53:06.698Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
       "notes": "Deterministic public-safe timetable fields reconciled from the official source.",
       "acquisition_completion": {
-        "disposition": "pending_publication",
-        "observed_rank": "C",
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A+",
         "technical_capability_rank": "A+",
-        "higher_rank_open": true,
-        "reason": "scheduled_pending_details"
+        "higher_rank_open": false,
+        "reason": "Observed evidence reached A+; no higher timetable rank remains."
       }
     },
     {
@@ -18521,16 +18522,16 @@
       "racecourse_id": "kasamatsu-racecourse",
       "date": "2026-09-24",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
+      "capability_rank": "B",
+      "display_status": "displayable",
+      "first_race_time_local": "11:20",
       "last_race_time_local": null,
       "source_trace": {
-        "source_id": "nar-monthly-schedule-racelist",
+        "source_id": "kasamatsu-official-first-race-fallback",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F09%2F24",
-        "source_label": "地方競馬全国協会",
+        "official_source_url": "https://www.kasamatsu-keiba.com/news/detail/1501",
+        "source_label": "笠松けいば",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
@@ -18550,18 +18551,18 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T04:53:06.698Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
       "notes": "Deterministic public-safe timetable fields reconciled from the official source.",
       "acquisition_completion": {
-        "disposition": "pending_publication",
-        "observed_rank": "C",
+        "disposition": "implementation_gap",
+        "observed_rank": "B",
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
-        "reason": "scheduled_pending_details"
+        "reason": "Japan detail inspection returned below A+ without an explicit proof that A+ fields were fully evaluated for this meeting."
       }
     },
     {
@@ -18674,16 +18675,16 @@
       "racecourse_id": "urawa-racecourse",
       "date": "2026-09-24",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "13:30",
+      "last_race_time_local": "19:30",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-racelist",
+        "source_id": "nankankeiba-south-kanto-programme",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F09%2F24",
-        "source_label": "地方競馬全国協会",
+        "official_source_url": "https://www.nankankeiba.com/program/20260924180603.do",
+        "source_label": "南関東4競馬場",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
@@ -18703,18 +18704,18 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T04:53:06.698Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
       "notes": "Deterministic public-safe timetable fields reconciled from the official source.",
       "acquisition_completion": {
-        "disposition": "pending_publication",
-        "observed_rank": "C",
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A+",
         "technical_capability_rank": "A+",
-        "higher_rank_open": true,
-        "reason": "scheduled_pending_details"
+        "higher_rank_open": false,
+        "reason": "Observed evidence reached A+; no higher timetable rank remains."
       }
     },
     {
@@ -18870,16 +18871,16 @@
       "racecourse_id": "kasamatsu-racecourse",
       "date": "2026-09-25",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
+      "capability_rank": "B",
+      "display_status": "displayable",
+      "first_race_time_local": "11:25",
       "last_race_time_local": null,
       "source_trace": {
-        "source_id": "nar-monthly-schedule-racelist",
+        "source_id": "kasamatsu-official-first-race-fallback",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F09%2F25",
-        "source_label": "地方競馬全国協会",
+        "official_source_url": "https://www.kasamatsu-keiba.com/news/detail/1501",
+        "source_label": "笠松けいば",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
@@ -18899,18 +18900,18 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T04:53:06.698Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
       "notes": "Deterministic public-safe timetable fields reconciled from the official source.",
       "acquisition_completion": {
-        "disposition": "pending_publication",
-        "observed_rank": "C",
+        "disposition": "implementation_gap",
+        "observed_rank": "B",
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
-        "reason": "scheduled_pending_details"
+        "reason": "Japan detail inspection returned below A+ without an explicit proof that A+ fields were fully evaluated for this meeting."
       }
     },
     {
@@ -18972,16 +18973,16 @@
       "racecourse_id": "urawa-racecourse",
       "date": "2026-09-25",
       "timezone": "Asia/Tokyo",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "13:30",
+      "last_race_time_local": "19:30",
       "source_trace": {
-        "source_id": "nar-monthly-schedule-racelist",
+        "source_id": "nankankeiba-south-kanto-programme",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F09%2F25",
-        "source_label": "地方競馬全国協会",
+        "official_source_url": "https://www.nankankeiba.com/program/20260925180604.do",
+        "source_label": "南関東4競馬場",
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
@@ -19001,18 +19002,18 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-03",
-        "generated_at": "2026-09-03T04:53:06.698Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
       "notes": "Deterministic public-safe timetable fields reconciled from the official source.",
       "acquisition_completion": {
-        "disposition": "pending_publication",
-        "observed_rank": "C",
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A+",
         "technical_capability_rank": "A+",
-        "higher_rank_open": true,
-        "reason": "scheduled_pending_details"
+        "higher_rank_open": false,
+        "reason": "Observed evidence reached A+; no higher timetable rank remains."
       }
     },
     {
@@ -19236,8 +19237,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -19281,8 +19282,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -19383,8 +19384,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -19655,8 +19656,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -19700,8 +19701,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -19802,8 +19803,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -19853,8 +19854,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -20195,8 +20196,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -20456,8 +20457,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -21291,8 +21292,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -21864,8 +21865,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -21909,8 +21910,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -22294,8 +22295,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -22339,8 +22340,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -24638,8 +24639,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -24683,8 +24684,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -25120,8 +25121,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -25165,8 +25166,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -25594,8 +25595,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -25639,8 +25640,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:32:37.019Z",
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -26936,6 +26937,159 @@
         "generated_at": "2026-09-16T08:37:24.872Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
+      "meeting_id": "nar-kawasaki-racecourse-2026-10-16",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "kawasaki-racecourse",
+      "date": "2026-10-16",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "nar-monthly-schedule-racelist",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F10%2F16",
+        "source_label": "地方競馬全国協会",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F10%2F16"
+          },
+          {
+            "source_id": "nankankeiba-south-kanto-calendar",
+            "role": "mother_set",
+            "source_label": "南関東4競馬場",
+            "official_source_url": "https://www.nankankeiba.com/calendar/202610.do"
+          }
+        ]
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
+        "stale_after_date": null,
+        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+      },
+      "notes": "Deterministic public-safe timetable fields reconciled from the official source.",
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "scheduled_pending_details"
+      }
+    },
+    {
+      "meeting_id": "nar-nagoya-racecourse-2026-10-16",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "nagoya-racecourse",
+      "date": "2026-10-16",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "nar-monthly-schedule-racelist",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F10%2F16",
+        "source_label": "地方競馬全国協会",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F10%2F16"
+          },
+          {
+            "source_id": "tokai-region-joint-official-calendar",
+            "role": "mother_set",
+            "source_label": "東海地区競馬開催日程 / 笠松けいば開催日程",
+            "official_source_url": "https://www.kasamatsu-keiba.com/schedule/2026/10"
+          }
+        ]
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
+        "stale_after_date": null,
+        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+      },
+      "notes": "Deterministic public-safe timetable fields reconciled from the official source.",
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "scheduled_pending_details"
+      }
+    },
+    {
+      "meeting_id": "nar-sonoda-racecourse-2026-10-16",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "sonoda-racecourse",
+      "date": "2026-10-16",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "nar-monthly-schedule-racelist",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=27&k_raceDate=2026%2F10%2F16",
+        "source_label": "地方競馬全国協会",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=27&k_raceDate=2026%2F10%2F16"
+          },
+          {
+            "source_id": "hyogo-urban-keiba-official-calendar",
+            "role": "mother_set",
+            "source_label": "兵庫県競馬組合",
+            "official_source_url": "https://www.sonoda-himeji.jp/schedule/2026/10"
+          }
+        ]
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-17",
+        "generated_at": "2026-09-17T08:37:15.886Z",
+        "stale_after_date": null,
+        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+      },
+      "notes": "Deterministic public-safe timetable fields reconciled from the official source.",
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "scheduled_pending_details"
       }
     }
   ]
