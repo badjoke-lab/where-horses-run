@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-18T15:01:41.879Z",
+  "generated_at": "2026-09-18T15:03:55.998Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -16188,6 +16188,42 @@
       "racing_system_id": "japan-nar-system"
     },
     {
+      "meeting_id": "sorec-settat-racecourse-2026-09-18",
+      "country_id": "morocco",
+      "authority_id": "sorec",
+      "racing_system_id": "sorec-racing-information-system",
+      "timezone": "Africa/Casablanca",
+      "racecourse_id": "settat-racecourse",
+      "date": "2026-09-18",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
+      },
+      "source_trace": {
+        "source_id": "sorec-programme-reunion",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.sorec-galop.ma/pages/programmeReunion/programmeReunion.jsf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-18",
+        "generated_at": "2026-09-18T15:03:55.998Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
       "meeting_id": "tjk-bursa-racecourse-2026-09-18",
       "country_id": "turkey",
       "authority_id": "turkiye-jokey-kulubu",
@@ -17158,6 +17194,42 @@
         "reason": "Observed evidence reached A+; no higher timetable rank remains."
       },
       "racing_system_id": "japan-nar-system"
+    },
+    {
+      "meeting_id": "sorec-marrakech-racecourse-2026-09-20",
+      "country_id": "morocco",
+      "authority_id": "sorec",
+      "racing_system_id": "sorec-racing-information-system",
+      "timezone": "Africa/Casablanca",
+      "racecourse_id": "marrakech-racecourse",
+      "date": "2026-09-20",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
+      },
+      "source_trace": {
+        "source_id": "sorec-programme-reunion",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.sorec-galop.ma/pages/programmeReunion/programmeReunion.jsf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-18",
+        "generated_at": "2026-09-18T15:03:55.998Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
     },
     {
       "meeting_id": "tjk-adana-racecourse-2026-09-20",
