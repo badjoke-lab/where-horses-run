@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-19T21:29:03.131Z",
+  "generated_at": "2026-09-19T21:31:09.425Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -17361,11 +17361,11 @@
       "first_race_time_local": null,
       "last_race_time_local": null,
       "acquisition_completion": {
-        "disposition": "pending_publication",
+        "disposition": "retry_required",
         "observed_rank": "C",
         "technical_capability_rank": "A",
         "higher_rank_open": true,
-        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+        "reason": "Higher-detail acquisition did not complete safely (source_error)."
       },
       "source_trace": {
         "source_id": "chile-teletrak-weekly-programme",
@@ -17378,8 +17378,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:38:00.446Z",
+        "last_checked_date": "2026-09-19",
+        "generated_at": "2026-09-19T21:31:09.425Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
