@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-19T14:28:57.803Z",
+  "generated_at": "2026-09-19T14:30:37.503Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -16589,7 +16589,7 @@
       "capability_rank": "A",
       "display_status": "displayable",
       "first_race_time_local": "10:35",
-      "last_race_time_local": "17:55",
+      "last_race_time_local": "18:00",
       "source_trace": {
         "source_id": "kra-today-race",
         "route_id": null,
@@ -16601,14 +16601,14 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:37:24.820Z",
+        "last_checked_date": "2026-09-19",
+        "generated_at": "2026-09-19T14:30:37.454Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
         "disposition": "complete_current_best_available",
-        "observed_rank": "B+",
+        "observed_rank": "A",
         "technical_capability_rank": "A+",
         "evaluated_capability_rank": "A+",
         "higher_rank_open": false,
@@ -17730,11 +17730,11 @@
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "pending_publication",
+        "disposition": "retry_required",
         "observed_rank": "C",
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
-        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+        "reason": "Higher-detail acquisition did not complete safely (conflict)."
       }
     },
     {
@@ -17766,11 +17766,11 @@
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "pending_publication",
+        "disposition": "retry_required",
         "observed_rank": "C",
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
-        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+        "reason": "Higher-detail acquisition did not complete safely (conflict)."
       }
     },
     {
