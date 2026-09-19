@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-19T08:00:49.027Z",
+  "generated_at": "2026-09-19T08:07:24.329Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -16564,8 +16564,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-14",
-        "generated_at": "2026-09-14T08:56:53.552Z",
+        "last_checked_date": "2026-09-19",
+        "generated_at": "2026-09-19T08:06:32.575Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -16608,7 +16608,7 @@
       },
       "acquisition_completion": {
         "disposition": "complete_current_best_available",
-        "observed_rank": "A",
+        "observed_rank": "B+",
         "technical_capability_rank": "A+",
         "evaluated_capability_rank": "A+",
         "higher_rank_open": false,
@@ -17043,8 +17043,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-16",
-        "generated_at": "2026-09-16T08:37:24.820Z",
+        "last_checked_date": "2026-09-19",
+        "generated_at": "2026-09-19T08:06:32.575Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -18663,6 +18663,42 @@
       }
     },
     {
+      "meeting_id": "chile-hipodromo-chile-2026-09-24",
+      "country_id": "chile",
+      "authority_id": "teletrak-chile",
+      "racing_system_id": "chile-teletrak-racing-system",
+      "timezone": "America/Santiago",
+      "racecourse_id": "hipodromo-chile",
+      "date": "2026-09-24",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      },
+      "source_trace": {
+        "source_id": "chile-teletrak-weekly-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://teletrak.cl/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-19",
+        "generated_at": "2026-09-19T08:07:21.527Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
       "meeting_id": "ireland-ireland--listowel-2026-09-24",
       "country_id": "ireland",
       "authority_id": "horse-racing-ireland",
@@ -18973,6 +19009,42 @@
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
         "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      }
+    },
+    {
+      "meeting_id": "chile-club-hipico-de-santiago-racecourse-2026-09-25",
+      "country_id": "chile",
+      "authority_id": "teletrak-chile",
+      "racing_system_id": "chile-teletrak-racing-system",
+      "timezone": "America/Santiago",
+      "racecourse_id": "club-hipico-de-santiago-racecourse",
+      "date": "2026-09-25",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      },
+      "source_trace": {
+        "source_id": "chile-teletrak-weekly-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://teletrak.cl/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-19",
+        "generated_at": "2026-09-19T08:07:21.527Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
       }
     },
     {
@@ -27947,6 +28019,78 @@
       }
     },
     {
+      "meeting_id": "ireland-ireland--leopardstown-2026-10-18",
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "racing_system_id": "ireland-hri-racing-system",
+      "timezone": "Europe/Dublin",
+      "racecourse_id": "ireland--leopardstown",
+      "date": "2026-10-18",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      },
+      "source_trace": {
+        "source_id": "hri-fixtures",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.hri.ie/HRI/media/HRI/Comms/Documents/2026-Fixture-List-%28Weekly%29-%28Incl-Tipperary-Changes%29.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-19",
+        "generated_at": "2026-09-19T08:07:24.329Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
+      "meeting_id": "ireland-ireland--limerick-2026-10-18",
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "racing_system_id": "ireland-hri-racing-system",
+      "timezone": "Europe/Dublin",
+      "racecourse_id": "ireland--limerick",
+      "date": "2026-10-18",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      },
+      "source_trace": {
+        "source_id": "hri-fixtures",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.hri.ie/HRI/media/HRI/Comms/Documents/2026-Fixture-List-%28Weekly%29-%28Incl-Tipperary-Changes%29.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-19",
+        "generated_at": "2026-09-19T08:07:24.329Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
       "meeting_id": "jra-kyoto-racecourse-2026-10-18",
       "country_id": "japan",
       "authority_id": "jra",
@@ -28079,6 +28223,78 @@
         "technical_capability_rank": "A+",
         "higher_rank_open": false,
         "reason": "Observed evidence reached A+; no higher timetable rank remains."
+      }
+    },
+    {
+      "meeting_id": "kra-seoul-racecourse-2026-10-18",
+      "country_id": "south-korea",
+      "authority_id": "korea-racing-authority",
+      "racing_system_id": "kra-national-racing-system",
+      "timezone": "Asia/Seoul",
+      "racecourse_id": "seoul-racecourse",
+      "date": "2026-10-18",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      },
+      "source_trace": {
+        "source_id": "kra-annual-race-operation-plan",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://race.kra.co.kr/raceoper/RaceoperView.do?Sub=1&meet=1",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-19",
+        "generated_at": "2026-09-19T08:06:32.575Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
+      "meeting_id": "kra-yeongcheon-racecourse-2026-10-18",
+      "country_id": "south-korea",
+      "authority_id": "korea-racing-authority",
+      "racing_system_id": "kra-national-racing-system",
+      "timezone": "Asia/Seoul",
+      "racecourse_id": "yeongcheon-racecourse",
+      "date": "2026-10-18",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "No completion rule exists for detail status unsupported."
+      },
+      "source_trace": {
+        "source_id": "kra-annual-race-operation-plan",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://race.kra.co.kr/raceoper/RaceoperView.do?Sub=1&meet=1",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-19",
+        "generated_at": "2026-09-19T08:06:32.575Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
       }
     },
     {
@@ -28283,6 +28499,78 @@
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
         "reason": "scheduled_pending_details"
+      }
+    },
+    {
+      "meeting_id": "tjk-adana-racecourse-2026-10-18",
+      "country_id": "turkey",
+      "authority_id": "turkiye-jokey-kulubu",
+      "racing_system_id": "tjk-national-racing-system",
+      "timezone": "Europe/Istanbul",
+      "racecourse_id": "adana-racecourse",
+      "date": "2026-10-18",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      },
+      "source_trace": {
+        "source_id": "tjk-annual-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?SehirId=1&QueryParameter_Tarih=18%2F10%2F2026&SehirAdi=Adana",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-19",
+        "generated_at": "2026-09-19T08:06:32.628Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
+      "meeting_id": "tjk-istanbul-racecourse-2026-10-18",
+      "country_id": "turkey",
+      "authority_id": "turkiye-jokey-kulubu",
+      "racing_system_id": "tjk-national-racing-system",
+      "timezone": "Europe/Istanbul",
+      "racecourse_id": "istanbul-racecourse",
+      "date": "2026-10-18",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      },
+      "source_trace": {
+        "source_id": "tjk-annual-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami?SehirId=3&QueryParameter_Tarih=18%2F10%2F2026&SehirAdi=%C4%B0stanbul",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-19",
+        "generated_at": "2026-09-19T08:06:32.628Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
       }
     }
   ]
