@@ -265,4 +265,12 @@ Read this contract together with:
 
 `acquisition-completion-contract.md` remains authoritative for whether lower-rank acquisition may close, retry, or await later publication.
 
+Wave 4 publication authority is:
+
+```text
+scripts/timetable/pipeline-v1/public-projection-core.mjs
+```
+
+All current production public writers must delegate final list/detail construction to that core. Producer-specific reviewed supplements and absence/exclusion reconciliation may alter canonical evidence or provide explicit publication exclusions, but may not bypass `detail_fields`, Calendar Readiness, or the correlated publication snapshot.
+
 This contract is authoritative for preserving richer fields, separating field visibility from rank, and query-gated operator diagnostics.

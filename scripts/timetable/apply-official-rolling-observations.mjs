@@ -7,13 +7,10 @@ import {
   normalizeStoredCanonicalV1,
   retainCurrentAcquisitionStateV1,
 } from './canonical-acceptance.mjs';
-import {
-  attachPublicationSnapshotV1,
-  mergeEvidenceSupportV1,
-  validateCalendarAuthorityMetadataV1,
-} from './calendar-authority-metadata.mjs';
+import { validateCalendarAuthorityMetadataV1 } from './calendar-authority-metadata.mjs';
 import { loadCalendarAcquisitionRegistryV1 } from './load-calendar-acquisition-registry.mjs';
-import { projectPublicTimetableRows } from './public-detail-projection.mjs';
+import { loadCalendarReadinessV1 } from './load-calendar-readiness.mjs';
+import { reconcilePublicProjectionV1 } from './pipeline-v1/public-projection-core.mjs';
 
 const RANKS = Object.freeze(['C', 'B', 'B+', 'A', 'A+']);
 const RANK_INDEX = new Map(RANKS.map((value, index) => [value, index]));
@@ -27,8 +24,6 @@ function writeJson(file, value) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
 }
-function rank(value) { return RANK_INDEX.get(value) ?? -1; }
-function capRank(value, ceiling) { return rank(value) <= rank(ceiling) ? value : ceiling; }
 function normalizedRows(record) {
   const rows = Array.isArray(record.timetable_rows) ? record.timetable_rows : [];
   return rows.map((row, index) => ({
@@ -46,9 +41,6 @@ function normalizedRows(record) {
 }
 function observedRank(record) {
   return deriveBestAvailableRank(record, record?.timetable_rows ?? []);
-}
-function storedEvidenceRank(meeting, detail) {
-  return deriveBestAvailableRank(meeting, detail?.timetable_rows ?? []);
 }
 function sourceUrl(record, artifact) {
   return record.official_source_url
@@ -74,12 +66,6 @@ function recordsFromArtifact(artifact) {
   }
   throw new Error('official observation artifact contains no supported candidate collection');
 }
-function choosePolicy(authorityId, policyDataset) {
-  const matches = (policyDataset.policies ?? [])
-    .filter((policy) => (policy.match?.authority_ids ?? []).includes(authorityId))
-    .sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0));
-  return matches[0] ?? policyDataset.default_policy;
-}
 function chooseAcquisitionProfile(record, defaults, registry) {
   const systemId = record.racing_system_id ?? defaults.racing_system_id ?? null;
   const authorityId = record.authority_id ?? defaults.authority_id ?? null;
@@ -99,12 +85,6 @@ function stripVolatile(value) {
 }
 function sameSubstance(left, right) {
   return JSON.stringify(stripVolatile(left)) === JSON.stringify(stripVolatile(right));
-}
-function mergeEvidenceChanges(previous = [], current = []) {
-  return [...new Map([...previous, ...current].map((change) => [JSON.stringify(change), change])).values()];
-}
-function completeRankA(rows) {
-  return rows.length > 0 && rows.every((row) => row.label && row.post_time_local);
 }
 function validIdentity(record, defaults, previous) {
   return {
@@ -173,62 +153,6 @@ function makeCanonicalDetail(meeting, record) {
     summary_note: 'Current official rolling-window race programme observation.',
   };
 }
-function makePublicMeeting(meeting, detail, policy, previousPublic) {
-  const ceiling = policy.max_public_rank ?? 'C';
-  const evidenceRank = storedEvidenceRank(meeting, detail);
-  let effective = capRank(evidenceRank, ceiling);
-  if (rank(effective) >= rank('A') && (!detail || !completeRankA(detail.timetable_rows ?? []))) {
-    effective = meeting.first_race_time_local && meeting.last_race_time_local ? 'B+' : meeting.first_race_time_local ? 'B' : 'C';
-  }
-  return {
-    meeting_id: meeting.meeting_id,
-    country_id: meeting.country_id,
-    authority_id: meeting.authority_id,
-    racecourse_id: meeting.racecourse_id,
-    date: meeting.date,
-    timezone: meeting.timezone,
-    capability_rank: evidenceRank,
-    max_public_rank: ceiling,
-    effective_public_rank: effective,
-    first_race_time_local: meeting.first_race_time_local ?? null,
-    last_race_time_local: meeting.last_race_time_local ?? null,
-    policy_id: policy.id,
-    source_status: 'verified',
-    official_source_url: meeting.source_trace.official_source_url,
-    last_checked_date: meeting.freshness?.last_checked_date ?? previousPublic?.last_checked_date ?? null,
-    detail_path: ['A', 'A+'].includes(effective) ? `/timetable/meetings/${meeting.meeting_id}/` : null,
-    show_live_label: policy.show_live_label ?? previousPublic?.show_live_label ?? false,
-    show_replay_label: policy.show_replay_label ?? previousPublic?.show_replay_label ?? false,
-  };
-}
-function makePublicDetail(meeting, detail, listRow, policy, previousPublicDetail) {
-  if (!detail || !['A', 'A+'].includes(listRow.effective_public_rank)) return null;
-  const projection = projectPublicTimetableRows(detail.timetable_rows ?? [], policy);
-  return {
-    ...(previousPublicDetail ?? {}),
-    meeting_id: meeting.meeting_id,
-    country_id: meeting.country_id,
-    authority_id: meeting.authority_id,
-    racecourse_id: meeting.racecourse_id,
-    date: meeting.date,
-    timezone: meeting.timezone,
-    capability_rank: listRow.capability_rank,
-    max_public_rank: listRow.max_public_rank,
-    effective_public_rank: listRow.effective_public_rank,
-    policy_id: listRow.policy_id,
-    official_source_url: listRow.official_source_url,
-    source_status: listRow.source_status,
-    last_checked_date: listRow.last_checked_date,
-    show_race_name: projection.visibility.show_race_name,
-    show_distance: projection.visibility.show_distance,
-    show_surface: projection.visibility.show_surface,
-    show_course: projection.visibility.show_course,
-    show_live_label: policy.show_live_label ?? false,
-    show_replay_label: policy.show_replay_label ?? false,
-    timetable_rows: projection.rows,
-  };
-}
-
 const artifactPath = arg('artifact');
 if (!artifactPath) throw new Error('--artifact=<official observation json> is required');
 const canonicalPath = arg('canonical', 'data/generated/timetable/canonical/meetings.json');
@@ -236,6 +160,8 @@ const canonicalDetailsPath = arg('canonical-details', 'data/generated/timetable/
 const publicPath = arg('public', 'data/generated/timetable/public/meeting-list.json');
 const publicDetailsPath = arg('public-details', 'data/generated/timetable/public/meeting-details.json');
 const policiesPath = arg('policies', 'src/data/publicationDisplayPolicies.json');
+const readinessPath = arg('readiness');
+const sourceAliasesPath = arg('source-aliases', 'data/static/timetable-source-aliases-v1.json');
 const defaults = {
   country_id: arg('country-id'),
   authority_id: arg('authority-id'),
@@ -250,11 +176,11 @@ const canonicalDetails = readJson(canonicalDetailsPath);
 const publicList = readJson(publicPath);
 const publicDetails = readJson(publicDetailsPath);
 const policyDataset = readJson(policiesPath);
+const sourceAliases = readJson(sourceAliasesPath);
+const readinessRegistry = readinessPath ? readJson(readinessPath) : loadCalendarReadinessV1(process.cwd());
 const acquisitionRegistry = loadCalendarAcquisitionRegistryV1(process.cwd());
 const canonicalById = new Map((canonical.meetings ?? []).map((row) => [row.meeting_id, row]));
 const detailsById = new Map((canonicalDetails.details ?? []).map((row) => [row.meeting_id, row]));
-const publicById = new Map((publicList.meetings ?? []).map((row) => [row.meeting_id, row]));
-const publicDetailsById = new Map((publicDetails.details ?? []).map((row) => [row.meeting_id, row]));
 const outcomes = { add: 0, update: 0, no_op: 0, protected_higher_rank: 0, normalized_stored_rank: 0, public_reprojected: 0, ignored: 0 };
 const completionCounts = Object.fromEntries([
   'promoted',
@@ -367,51 +293,58 @@ for (const record of records) {
   if (nextDetail) detailsById.set(next.meeting_id, nextDetail);
   else detailsById.delete(next.meeting_id);
 
-  const previousPublic = publicById.get(next.meeting_id) ?? null;
-  const previousPublicDetail = publicDetailsById.get(next.meeting_id) ?? null;
-  const policy = choosePolicy(next.authority_id, policyDataset);
-  const listRow = makePublicMeeting(next, nextDetail, policy, previousPublic);
-  publicById.set(next.meeting_id, listRow);
-  const detailRow = makePublicDetail(next, nextDetail, listRow, policy, previousPublicDetail);
-  if (detailRow) publicDetailsById.set(next.meeting_id, detailRow);
-  else publicDetailsById.delete(next.meeting_id);
   if (accepted.decision === 'retained_stronger_evidence') outcomes.protected_higher_rank += 1;
   else outcomes[previous ? 'update' : 'add'] += 1;
 }
 
-// Public output is a projection of canonical evidence plus the current display policy.
-// Recompute existing public rows even when the collector observation was a canonical no-op,
-// so policy changes and stricter evidence-derived ranks cannot remain stale indefinitely.
-for (const [meetingId, previousPublic] of [...publicById.entries()]) {
-  const meeting = canonicalById.get(meetingId);
-  if (!meeting) continue;
-  const detail = detailsById.get(meetingId) ?? null;
-  const policy = choosePolicy(meeting.authority_id, policyDataset);
-  const nextPublic = makePublicMeeting(meeting, detail, policy, previousPublic);
-  const previousPublicDetail = publicDetailsById.get(meetingId) ?? null;
-  const nextPublicDetail = makePublicDetail(meeting, detail, nextPublic, policy, previousPublicDetail);
-  const listChanged = JSON.stringify(previousPublic) !== JSON.stringify(nextPublic);
-  const detailChanged = JSON.stringify(previousPublicDetail) !== JSON.stringify(nextPublicDetail);
-  if (!listChanged && !detailChanged) continue;
-  publicById.set(meetingId, nextPublic);
-  if (nextPublicDetail) publicDetailsById.set(meetingId, nextPublicDetail);
-  else publicDetailsById.delete(meetingId);
-  changed = true;
-  outcomes.public_reprojected += 1;
+const generatedAt = artifact.generated_at ?? artifact.retrieved_at ?? new Date().toISOString();
+const sortRows = (rows) => [...rows].sort((a, b) => a.date.localeCompare(b.date) || a.meeting_id.localeCompare(b.meeting_id));
+const nextCanonical = { ...canonical, generated_at: generatedAt, meetings: sortRows(canonicalById.values()) };
+const nextCanonicalDetails = { ...canonicalDetails, generated_at: generatedAt, details: sortRows(detailsById.values()) };
+
+const scopedIds = new Set([
+  ...records.map((record) => record?.meeting_id).filter(Boolean),
+  ...nextCanonical.meetings
+    .filter((meeting) => targetAuthorityIds.has(meeting.authority_id))
+    .map((meeting) => meeting.meeting_id),
+  ...(publicList.meetings ?? [])
+    .filter((meeting) => targetAuthorityIds.has(meeting.authority_id))
+    .map((meeting) => meeting.meeting_id),
+]);
+
+const publicProjection = reconcilePublicProjectionV1({
+  canonicalMeetings: nextCanonical,
+  canonicalDetails: nextCanonicalDetails,
+  policyData: policyDataset,
+  readinessRegistry,
+  sourceAliases,
+  existingMeetingList: publicList,
+  existingMeetingDetails: publicDetails,
+  scopeMeetingIds: scopedIds,
+  generatedAt,
+});
+
+function publicSubstance(dataset, key) {
+  const copy = structuredClone(dataset);
+  delete copy.generated_at;
+  delete copy.publication_snapshot;
+  return JSON.stringify(copy[key] ?? []);
 }
 
+const publicChanged =
+  publicSubstance(publicProjection.meetingListDataset, 'meetings') !== publicSubstance(publicList, 'meetings')
+  || publicSubstance(publicProjection.meetingDetailsDataset, 'details') !== publicSubstance(publicDetails, 'details');
+
+if (publicChanged) outcomes.public_reprojected = scopedIds.size;
+
 if (changed) {
-  const generatedAt = artifact.generated_at ?? artifact.retrieved_at ?? new Date().toISOString();
-  const sortRows = (rows) => [...rows].sort((a, b) => a.date.localeCompare(b.date) || a.meeting_id.localeCompare(b.meeting_id));
-  const publicDatasets = attachPublicationSnapshotV1(
-    { ...publicList, generated_at: generatedAt, meetings: sortRows(publicById.values()) },
-    { ...publicDetails, generated_at: generatedAt, details: sortRows(publicDetailsById.values()) },
-    generatedAt,
-  );
-  writeJson(canonicalPath, { ...canonical, generated_at: generatedAt, meetings: sortRows(canonicalById.values()) });
-  writeJson(canonicalDetailsPath, { ...canonicalDetails, generated_at: generatedAt, details: sortRows(detailsById.values()) });
-  writeJson(publicPath, publicDatasets.meetingListDataset);
-  writeJson(publicDetailsPath, publicDatasets.meetingDetailsDataset);
+  writeJson(canonicalPath, nextCanonical);
+  writeJson(canonicalDetailsPath, nextCanonicalDetails);
 }
+if (changed || publicChanged) {
+  writeJson(publicPath, publicProjection.meetingListDataset);
+  writeJson(publicDetailsPath, publicProjection.meetingDetailsDataset);
+}
+changed = changed || publicChanged;
 
 console.log(JSON.stringify({ artifact: artifactPath, observed: records.length, changed, outcomes, completion_counts: completionCounts }));

@@ -1,11 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import {
-  attachPublicationSnapshotV1,
-  validateCalendarAuthorityMetadataV1,
-} from './calendar-authority-metadata.mjs';
+import { validateCalendarAuthorityMetadataV1 } from './calendar-authority-metadata.mjs';
 import { deriveBestAvailableRank } from './best-available-rank.mjs';
 import { acceptCanonicalObservationV1 } from './canonical-acceptance.mjs';
+import { loadCalendarReadinessV1 } from './load-calendar-readiness.mjs';
+import { reconcilePublicProjectionV1 } from './pipeline-v1/public-projection-core.mjs';
 
 const RANKS = Object.freeze(['C', 'B', 'B+', 'A', 'A+']);
 const RANK_INDEX = new Map(RANKS.map((value, index) => [value, index]));
@@ -27,19 +26,10 @@ function writeJson(file, value) {
 function rank(value) {
   return RANK_INDEX.get(value) ?? -1;
 }
-function capRank(value, ceiling) {
-  return rank(value) <= rank(ceiling) ? value : ceiling;
-}
 function assertHttps(url, meetingId) {
   if (typeof url !== 'string' || !url.startsWith('https://')) {
     throw new Error(`reviewed observation missing HTTPS official source for ${meetingId}`);
   }
-}
-function choosePolicy(authorityId, policyDataset) {
-  const matches = (policyDataset.policies ?? [])
-    .filter((policy) => (policy.match?.authority_ids ?? []).includes(authorityId))
-    .sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0));
-  return matches[0] ?? policyDataset.default_policy;
 }
 function normalizeMeetingDetail(meeting, detail, origin, fallbackLastCheckedDate = null) {
   if (!meeting?.meeting_id) throw new Error(`reviewed supplement ${origin} has no meeting_id`);
@@ -114,7 +104,7 @@ function recordsFromSupplement(spec) {
 function reviewedSourceTrace(previous, record) {
   return {
     ...(previous?.source_trace ?? {}),
-    source_id: record.source_id,
+    source_id: previous?.source_trace?.source_id ?? record.source_id,
     route_id: previous?.source_trace?.route_id ?? null,
     source_status: 'verified',
     official_source_url: record.official_source_url,
@@ -133,42 +123,6 @@ function reviewedFreshness(previous, record, generatedAt) {
     freshness_note: 'Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date.',
   };
 }
-function publicDetailFromCanonical(meeting, detail, listRow, policy, previousPublicDetail) {
-  if (!detail || !['A', 'A+'].includes(listRow.effective_public_rank)) return null;
-  const fields = policy.a_plus_fields ?? {};
-  const showPlus = listRow.effective_public_rank === 'A+';
-  return {
-    ...(previousPublicDetail ?? {}),
-    meeting_id: meeting.meeting_id,
-    country_id: meeting.country_id,
-    authority_id: meeting.authority_id,
-    racecourse_id: meeting.racecourse_id,
-    date: meeting.date,
-    timezone: meeting.timezone,
-    capability_rank: meeting.capability_rank,
-    max_public_rank: listRow.max_public_rank,
-    effective_public_rank: listRow.effective_public_rank,
-    policy_id: listRow.policy_id,
-    official_source_url: listRow.official_source_url,
-    source_status: 'verified',
-    last_checked_date: listRow.last_checked_date,
-    show_race_name: showPlus && fields.show_race_name === true,
-    show_distance: showPlus && fields.show_distance === true,
-    show_surface: showPlus && fields.show_surface === true,
-    show_course: showPlus && fields.show_course === true,
-    show_live_label: policy.show_live_label ?? false,
-    show_replay_label: policy.show_replay_label ?? false,
-    timetable_rows: (detail.timetable_rows ?? []).map((row) => ({
-      label: row.label,
-      post_time_local: row.post_time_local,
-      ...(showPlus && fields.show_race_name === true && row.race_name ? { race_name: row.race_name } : {}),
-      ...(showPlus && fields.show_distance === true && Number.isFinite(row.distance_m) ? { distance_m: row.distance_m } : {}),
-      ...(showPlus && fields.show_surface === true && row.surface ? { surface: row.surface } : {}),
-      ...(showPlus && fields.show_course === true && row.course_label ? { course_label: row.course_label } : {}),
-    })),
-  };
-}
-
 const manifest = readJson(MANIFEST_PATH);
 if (manifest.schema_version !== 'reviewed-calendar-public-observations-v1') {
   throw new Error(`unsupported reviewed Calendar manifest schema: ${manifest.schema_version}`);
@@ -202,10 +156,10 @@ const canonicalDetails = readJson(CANONICAL_DETAILS_PATH);
 const publicList = readJson(PUBLIC_PATH);
 const publicDetails = readJson(PUBLIC_DETAILS_PATH);
 const policyDataset = readJson(POLICIES_PATH);
+const sourceAliases = readJson('data/static/timetable-source-aliases-v1.json');
+const readinessRegistry = loadCalendarReadinessV1(process.cwd());
 const canonicalById = new Map((canonical.meetings ?? []).map((row) => [row.meeting_id, row]));
 const canonicalDetailsById = new Map((canonicalDetails.details ?? []).map((row) => [row.meeting_id, row]));
-const publicById = new Map((publicList.meetings ?? []).map((row) => [row.meeting_id, row]));
-const publicDetailsById = new Map((publicDetails.details ?? []).map((row) => [row.meeting_id, row]));
 const generatedAt = new Date().toISOString();
 const selected = [];
 const outcomes = {
@@ -309,68 +263,7 @@ for (const record of reviewedById.values()) {
     outcomes.canonical_detail_repairs += 1;
   }
 
-  const policy = choosePolicy(meeting.authority_id, policyDataset);
-  const ceiling = policy.max_public_rank ?? 'C';
-  let desiredPublicRank = capRank(meeting.capability_rank, ceiling);
-  if (rank(desiredPublicRank) >= rank('A') && (!detail || !(detail.timetable_rows ?? []).length)) {
-    desiredPublicRank = meeting.first_race_time_local && meeting.last_race_time_local
-      ? 'B+'
-      : meeting.first_race_time_local ? 'B' : 'C';
-  }
-  const minimumReviewedPublicRank = capRank(
-    hasReviewedEvidenceChanges ? meeting.capability_rank : reviewedEvidenceRank,
-    ceiling,
-  );
-  if (rank(desiredPublicRank) < rank(minimumReviewedPublicRank)) {
-    throw new Error(`reviewed data cannot satisfy policy-projected minimum rank for ${record.meeting_id}`);
-  }
-
-  const previousPublic = publicById.get(record.meeting_id) ?? null;
-  const publicNeedsRepair = !previousPublic
-    || rank(previousPublic.effective_public_rank) < rank(minimumReviewedPublicRank)
-    || (record.first_race_time_local && !previousPublic.first_race_time_local)
-    || (rank(reviewedEvidenceRank) >= rank('B+') && record.last_race_time_local && !previousPublic.last_race_time_local);
-
-  let publicMeeting = previousPublic;
-  if (publicNeedsRepair) {
-    publicMeeting = {
-      meeting_id: meeting.meeting_id,
-      country_id: meeting.country_id,
-      authority_id: meeting.authority_id,
-      racecourse_id: meeting.racecourse_id,
-      date: meeting.date,
-      timezone: meeting.timezone,
-      capability_rank: meeting.capability_rank,
-      max_public_rank: ceiling,
-      effective_public_rank: desiredPublicRank,
-      first_race_time_local: meeting.first_race_time_local ?? record.first_race_time_local ?? null,
-      last_race_time_local: meeting.last_race_time_local ?? record.last_race_time_local ?? null,
-      policy_id: policy.id,
-      source_status: 'verified',
-      official_source_url: meeting.source_trace?.official_source_url ?? record.official_source_url,
-      last_checked_date: meeting.freshness?.last_checked_date ?? record.last_checked_date ?? null,
-      detail_path: ['A', 'A+'].includes(desiredPublicRank) ? `/timetable/meetings/${meeting.meeting_id}/` : null,
-      show_live_label: policy.show_live_label ?? previousPublic?.show_live_label ?? false,
-      show_replay_label: policy.show_replay_label ?? previousPublic?.show_replay_label ?? false,
-    };
-    publicById.set(record.meeting_id, publicMeeting);
-    changed = true;
-    if (!selected.some((item) => item.meeting_id === record.meeting_id)) selected.push(record);
-    outcomes.public_repairs += 1;
-  }
-
-  const previousPublicDetail = publicDetailsById.get(record.meeting_id) ?? null;
-  const publicDetailNeedsRepair = rank(minimumReviewedPublicRank) >= rank('A') && !previousPublicDetail;
-  if (publicDetailNeedsRepair) {
-    const repaired = publicDetailFromCanonical(meeting, detail, publicMeeting, policy, previousPublicDetail);
-    if (!repaired) throw new Error(`reviewed public detail could not be rebuilt for ${record.meeting_id}`);
-    publicDetailsById.set(record.meeting_id, repaired);
-    changed = true;
-    if (!selected.some((item) => item.meeting_id === record.meeting_id)) selected.push(record);
-    outcomes.public_detail_repairs += 1;
-  }
-
-  if (!canonicalChanged && !detailChanged && !publicNeedsRepair && !publicDetailNeedsRepair) {
+  if (!canonicalChanged && !detailChanged) {
     outcomes.already_preserved += 1;
   }
 }
@@ -382,18 +275,46 @@ writeJson(ARTIFACT_PATH, {
   records: selected,
 });
 
-if (changed) {
-  const sortRows = (rows) => [...rows].sort((a, b) => a.date.localeCompare(b.date) || a.meeting_id.localeCompare(b.meeting_id));
-  const publicDatasets = attachPublicationSnapshotV1(
-    { ...publicList, generated_at: generatedAt, meetings: sortRows(publicById.values()) },
-    { ...publicDetails, generated_at: generatedAt, details: sortRows(publicDetailsById.values()) },
-    generatedAt,
-  );
-  writeJson(CANONICAL_PATH, { ...canonical, generated_at: generatedAt, meetings: sortRows(canonicalById.values()) });
-  writeJson(CANONICAL_DETAILS_PATH, { ...canonicalDetails, generated_at: generatedAt, details: sortRows(canonicalDetailsById.values()) });
-  writeJson(PUBLIC_PATH, publicDatasets.meetingListDataset);
-  writeJson(PUBLIC_DETAILS_PATH, publicDatasets.meetingDetailsDataset);
+const sortRows = (rows) => [...rows].sort((a, b) => a.date.localeCompare(b.date) || a.meeting_id.localeCompare(b.meeting_id));
+const nextCanonical = { ...canonical, generated_at: generatedAt, meetings: sortRows(canonicalById.values()) };
+const nextCanonicalDetails = { ...canonicalDetails, generated_at: generatedAt, details: sortRows(canonicalDetailsById.values()) };
+const reviewedScopeIds = new Set([...reviewedById.keys()]);
+
+const publicProjection = reconcilePublicProjectionV1({
+  canonicalMeetings: nextCanonical,
+  canonicalDetails: nextCanonicalDetails,
+  policyData: policyDataset,
+  readinessRegistry,
+  sourceAliases,
+  existingMeetingList: publicList,
+  existingMeetingDetails: publicDetails,
+  scopeMeetingIds: reviewedScopeIds,
+  generatedAt,
+});
+
+function publicRowsOnly(dataset, key) {
+  return JSON.stringify(dataset[key] ?? []);
 }
+const publicChanged =
+  publicRowsOnly(publicProjection.meetingListDataset, 'meetings') !== publicRowsOnly(publicList, 'meetings')
+  || publicRowsOnly(publicProjection.meetingDetailsDataset, 'details') !== publicRowsOnly(publicDetails, 'details');
+
+if (publicChanged) {
+  outcomes.public_repairs = reviewedScopeIds.size;
+  outcomes.public_detail_repairs = publicProjection.audit.decisions
+    .filter((decision) => ['A', 'A+'].includes(decision.effective_public_rank))
+    .length;
+}
+
+if (changed) {
+  writeJson(CANONICAL_PATH, nextCanonical);
+  writeJson(CANONICAL_DETAILS_PATH, nextCanonicalDetails);
+}
+if (changed || publicChanged) {
+  writeJson(PUBLIC_PATH, publicProjection.meetingListDataset);
+  writeJson(PUBLIC_DETAILS_PATH, publicProjection.meetingDetailsDataset);
+}
+changed = changed || publicChanged;
 
 const finalCanonical = readJson(CANONICAL_PATH);
 const finalCanonicalDetails = readJson(CANONICAL_DETAILS_PATH);
@@ -409,15 +330,8 @@ for (const record of reviewedById.values()) {
   const reviewedEvidenceRank = deriveBestAvailableRank(record, reviewedRows);
   const hasReviewedEvidenceChanges = (record.evidence_changes ?? []).length > 0;
   const meeting = finalCanonicalById.get(record.meeting_id);
-  const publicMeeting = finalPublicById.get(record.meeting_id);
-  const policy = choosePolicy(record.authority_id, policyDataset);
-  const minimumCanonicalRank = hasReviewedEvidenceChanges ? meeting?.capability_rank ?? 'C' : reviewedEvidenceRank;
-  const minimumPublicRank = capRank(minimumCanonicalRank, policy.max_public_rank ?? 'C');
   if (!meeting || (!hasReviewedEvidenceChanges && rank(meeting.capability_rank) < rank(reviewedEvidenceRank))) {
     throw new Error(`reviewed canonical evidence was not preserved for ${record.meeting_id}`);
-  }
-  if (!publicMeeting || rank(publicMeeting.effective_public_rank) < rank(minimumPublicRank)) {
-    throw new Error(`reviewed public evidence was not preserved for ${record.meeting_id}`);
   }
   if (rank(reviewedEvidenceRank) >= rank('B') && !meeting.first_race_time_local) {
     throw new Error(`reviewed first-race time was not preserved for ${record.meeting_id}`);
@@ -427,10 +341,23 @@ for (const record of reviewedById.values()) {
   }
   if (rank(reviewedEvidenceRank) >= rank('A')) {
     const canonicalDetail = finalCanonicalDetailsById.get(record.meeting_id);
-    const publicDetail = finalPublicDetailsById.get(record.meeting_id);
-    if (!canonicalDetail || !(canonicalDetail.timetable_rows ?? []).length || !publicDetail || !(publicDetail.timetable_rows ?? []).length) {
-      throw new Error(`reviewed race detail was not preserved for ${record.meeting_id}`);
+    if (!canonicalDetail || !(canonicalDetail.timetable_rows ?? []).length) {
+      throw new Error(`reviewed canonical race detail was not preserved for ${record.meeting_id}`);
     }
+  }
+
+  const decision = publicProjection.audit.decisions.find((item) => item.meeting_id === record.meeting_id);
+  const publicMeeting = finalPublicById.get(record.meeting_id) ?? null;
+  const publicDetail = finalPublicDetailsById.get(record.meeting_id) ?? null;
+  if (decision?.include_in_public_list) {
+    if (!publicMeeting || publicMeeting.effective_public_rank !== decision.effective_public_rank) {
+      throw new Error(`reviewed public projection differs from shared publication authority for ${record.meeting_id}`);
+    }
+    if (['A', 'A+'].includes(decision.effective_public_rank) && !publicDetail) {
+      throw new Error(`reviewed public detail was not projected by shared publication authority for ${record.meeting_id}`);
+    }
+  } else if (publicMeeting || publicDetail) {
+    throw new Error(`reviewed observation bypassed shared publication exclusion for ${record.meeting_id}`);
   }
 }
 

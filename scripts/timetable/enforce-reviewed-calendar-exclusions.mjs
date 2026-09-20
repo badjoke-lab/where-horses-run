@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { attachPublicationSnapshotV1 } from './calendar-authority-metadata.mjs';
+import { loadCalendarReadinessV1 } from './load-calendar-readiness.mjs';
+import { reconcilePublicProjectionV1 } from './pipeline-v1/public-projection-core.mjs';
 
 function arg(name, fallback = null) {
   const inline = process.argv.find((value) => value.startsWith(`--${name}=`));
@@ -49,33 +50,45 @@ for (const artifactPath of artifactPaths) {
   }
 }
 
-const datasets = [
-  { file: canonicalPath, key: 'meetings' },
-  { file: canonicalDetailsPath, key: 'details' },
-  { file: publicPath, key: 'meetings' },
-  { file: publicDetailsPath, key: 'details' },
-];
-let purgedStateCount = 0;
-for (const { file, key } of datasets) {
-  const dataset = readJson(file);
-  const rows = Array.isArray(dataset[key]) ? dataset[key] : [];
-  const next = rows.filter((row) => !excludedIds.has(row?.meeting_id));
-  const removed = rows.length - next.length;
-  if (removed > 0) {
-    purgedStateCount += removed;
-    writeJson(file, { ...dataset, generated_at: new Date().toISOString(), [key]: next });
-  }
+const generatedAt = new Date().toISOString();
+const canonical = readJson(canonicalPath);
+const canonicalDetails = readJson(canonicalDetailsPath);
+const publicList = readJson(publicPath);
+const publicDetails = readJson(publicDetailsPath);
+
+const nextMeetings = (canonical.meetings ?? []).filter((row) => !excludedIds.has(row?.meeting_id));
+const nextDetails = (canonicalDetails.details ?? []).filter((row) => !excludedIds.has(row?.meeting_id));
+const removedCanonicalMeetings = (canonical.meetings ?? []).length - nextMeetings.length;
+const removedCanonicalDetails = (canonicalDetails.details ?? []).length - nextDetails.length;
+let purgedStateCount = removedCanonicalMeetings + removedCanonicalDetails;
+
+const nextCanonical = { ...canonical, generated_at: generatedAt, meetings: nextMeetings };
+const nextCanonicalDetails = { ...canonicalDetails, generated_at: generatedAt, details: nextDetails };
+if (purgedStateCount > 0) {
+  writeJson(canonicalPath, nextCanonical);
+  writeJson(canonicalDetailsPath, nextCanonicalDetails);
 }
 
+const publicProjection = reconcilePublicProjectionV1({
+  canonicalMeetings: nextCanonical,
+  canonicalDetails: nextCanonicalDetails,
+  policyData: readJson('src/data/publicationDisplayPolicies.json'),
+  readinessRegistry: loadCalendarReadinessV1(process.cwd()),
+  sourceAliases: readJson('data/static/timetable-source-aliases-v1.json'),
+  existingMeetingList: publicList,
+  existingMeetingDetails: publicDetails,
+  scopeMeetingIds: excludedIds,
+  excludedMeetingIds: excludedIds,
+  generatedAt,
+});
+const publicRemoved =
+  (publicList.meetings ?? []).filter((row) => excludedIds.has(row?.meeting_id)).length
+  + (publicDetails.details ?? []).filter((row) => excludedIds.has(row?.meeting_id)).length;
+purgedStateCount += publicRemoved;
+
 if (purgedStateCount > 0) {
-  const snapshotGeneratedAt = new Date().toISOString();
-  const publicDatasets = attachPublicationSnapshotV1(
-    readJson(publicPath),
-    readJson(publicDetailsPath),
-    snapshotGeneratedAt,
-  );
-  writeJson(publicPath, publicDatasets.meetingListDataset);
-  writeJson(publicDetailsPath, publicDatasets.meetingDetailsDataset);
+  writeJson(publicPath, publicProjection.meetingListDataset);
+  writeJson(publicDetailsPath, publicProjection.meetingDetailsDataset);
 }
 
 console.log(JSON.stringify({

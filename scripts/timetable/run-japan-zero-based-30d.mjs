@@ -1,7 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { attachPublicationSnapshotV1 } from './calendar-authority-metadata.mjs';
 import { runJapanZeroBased30d } from './japan-zero-based-30d-core.mjs';
+import { loadCalendarReadinessV1 } from './load-calendar-readiness.mjs';
+import { reconcilePublicProjectionV1 } from './pipeline-v1/public-projection-core.mjs';
 import { japanOfficial30dAdapters } from './japan-official-30d-adapters.mjs';
 import { discoverJraOfficial30dWithCompleteness } from './jra-official-30d-discovery.mjs';
 import { discoverBaneiOfficial30d } from './banei-official-30d-discovery.mjs';
@@ -493,16 +494,6 @@ const attachObservations = (row) => {
 };
 const canonical = result.canonical.filter((row) => !isInvalidMombetsuAlias(row)).map(attachObservations);
 const details = result.details.filter((row) => !isInvalidMombetsuAlias(row));
-const publicMeetings = result.public.filter((row) => !isInvalidMombetsuAlias(row) && !removedStaleSet.has(row.meeting_id));
-const publicDetails = result.publicDetails.filter((row) => !isInvalidMombetsuAlias(row) && !removedStaleSet.has(row.meeting_id));
-const remainingReconcilablePublic = publicMeetings.filter((row) => isAbsentPublicMeeting(row) && canReconcileMeetingAbsence(row, completenessRows));
-if (remainingReconcilablePublic.length) {
-  throw new Error(`Japan public mother set retains reconcilable absent ${scope} meetings: ${remainingReconcilablePublic.map((row) => row.meeting_id).join(', ')}`);
-}
-const missingOfficialPublic = [...officialIds].filter((meetingId) => !publicMeetings.some((row) => row.meeting_id === meetingId));
-if (missingOfficialPublic.length) {
-  throw new Error(`Japan public mother set is missing official meetings: ${missingOfficialPublic.join(', ')}`);
-}
 const removedInvalidAliases = result.canonical.filter(isInvalidMombetsuAlias).map((row) => row.meeting_id);
 const visibleStaleAudit = result.stale_audit.filter((row) => rangeDates.has(row.date));
 const reconciliations = result.reconciliations.map((row) => ({
@@ -510,19 +501,59 @@ const reconciliations = result.reconciliations.map((row) => ({
   source_observations: sourceObservations.get(row.meeting_id) ?? [],
 }));
 
+const existingPublicList = read(publicPath);
+const existingPublicDetails = read(publicDetailsPath);
+const nextCanonical = { ...read(canonicalPath), generated_at: result.checked_at, meetings: canonical };
+const nextCanonicalDetails = { ...read(detailsPath), generated_at: result.checked_at, details };
+const readinessRegistry = loadCalendarReadinessV1(process.cwd());
+const sourceAliases = read('data/static/timetable-source-aliases-v1.json');
+const policyData = read('src/data/publicationDisplayPolicies.json');
+
+const japanProjectionScope = new Set([
+  ...officialIds,
+  ...removedStaleSet,
+  ...removedInvalidAliases,
+  ...canonical
+    .filter((row) => row.country_id === 'japan' && rangeDates.has(row.date))
+    .map((row) => row.meeting_id),
+  ...(existingPublicList.meetings ?? [])
+    .filter((row) => row.country_id === 'japan' && rangeDates.has(row.date))
+    .map((row) => row.meeting_id),
+]);
+const excludedPublicIds = new Set([...removedStaleSet, ...removedInvalidAliases]);
+
+const publicProjection = reconcilePublicProjectionV1({
+  canonicalMeetings: nextCanonical,
+  canonicalDetails: nextCanonicalDetails,
+  policyData,
+  readinessRegistry,
+  sourceAliases,
+  existingMeetingList: existingPublicList,
+  existingMeetingDetails: existingPublicDetails,
+  scopeMeetingIds: japanProjectionScope,
+  excludedMeetingIds: excludedPublicIds,
+  generatedAt: result.checked_at,
+});
+const publicMeetings = publicProjection.meetingListDataset.meetings;
+const publicDetails = publicProjection.meetingDetailsDataset.details;
+
+const remainingReconcilablePublic = publicMeetings.filter((row) => isAbsentPublicMeeting(row) && canReconcileMeetingAbsence(row, completenessRows));
+if (remainingReconcilablePublic.length) {
+  throw new Error(`Japan public mother set retains reconcilable absent ${scope} meetings: ${remainingReconcilablePublic.map((row) => row.meeting_id).join(', ')}`);
+}
+const missingOfficialPublic = [...officialIds].filter((meetingId) => !publicMeetings.some((row) => row.meeting_id === meetingId));
+if (missingOfficialPublic.length) {
+  throw new Error(`Japan shared public projection is missing official meetings: ${missingOfficialPublic.join(', ')}`);
+}
+
 const write = (file, value) => {
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
 };
-write(canonicalPath, { ...read(canonicalPath), generated_at: result.checked_at, meetings: canonical });
-write(detailsPath, { ...read(detailsPath), generated_at: result.checked_at, details });
-const publicDatasets = attachPublicationSnapshotV1(
-  { ...read(publicPath), generated_at: result.checked_at, meetings: publicMeetings },
-  { ...read(publicDetailsPath), generated_at: result.checked_at, details: publicDetails },
-  result.checked_at,
-);
-write(publicPath, publicDatasets.meetingListDataset);
-write(publicDetailsPath, publicDatasets.meetingDetailsDataset);
+write(canonicalPath, nextCanonical);
+write(detailsPath, nextCanonicalDetails);
+write(publicPath, publicProjection.meetingListDataset);
+write(publicDetailsPath, publicProjection.meetingDetailsDataset);
 write(output, {
   ...result,
   scope,
