@@ -16,23 +16,23 @@ Read these first for glossary work:
 
 The working dictionary has **642 terms/concepts**.
 
-- **547 are source-verified at the meaning level**.
-- **95 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
+- **562 are source-verified at the meaning level**.
+- **80 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
 - the highest-priority core set is **203/203 verified**;
 - jurisdiction-specific research additions are **161/161 verified**;
 - publication is still disabled (`public_ready=0`, public runtime disconnected).
 
-The latest pass is **broad category wave 1** across race type, surface, distance and weight terminology. It verified **18 additional base Concepts** from BHA, TOBA, Jockey Club, Equibase, NYRA, JRA and Racing Australia authority material.
+The latest pass is **targeted residual wave 1**. It verified **15 additional base Concepts** across HORSE, BREED, ROLE and VENUE from scoped JRA, BHA, IFHA and Racing Australia authority material.
 
-RTYPE is now **100/111 verified (90.1%)**, SURF **57/63 (90.5%)**, DIST **17/21 (81.0%)**, and WEIGHT **31/34 (91.2%)**. The pass verified Selling race, Graded stakes, scoped British Open/Restricted race categories, Tapeta, Polytrack, historical Fibresand, Sealed track, Off turf, Yard, Short head, Final furlong, Race record, Bottom weight, Maximum weight, Underweight, Weigh out and Weigh in.
+HORSE is now **25/34 verified (73.5%)**, BREED **12/22 (54.5%)**, ROLE **27/31 (87.1%)**, and VENUE **36/44 (81.8%)**. The pass verified Four-year-old, Foreign-bred, Ridgling, Rig, Foaled, Assistant trainer, Stable staff, Chute, Bend, Running rail, Winning post, Grandstand, Barn, Clockwise and Anti-clockwise.
 
-Regional race-programme categories, all-weather product names, historical surface status, result-margin notation and weighing procedures remain scoped to the authority evidence actually supporting them. Weak residuals are still visible rather than being percentage-promoted.
+The pass also narrows scope where required instead of treating similar labels as global synonyms or universal rules.
 
 ## What has been completed
 
 The dictionary was built from zero rather than copied from the existing public glossary. Major jurisdiction/local-language research and the current slang/abbreviation/historical pass are complete. The core terminology set is fully source-verified, and all current jurisdiction-specific additions are evidence-backed.
 
-Base-dictionary cleanup has now verified **233 additional terms** and removed **15 duplicate or malformed rows**. Current base-dictionary coverage is **386/481 verified (80.2%)**.
+Base-dictionary cleanup has now verified **248 additional terms** and removed **15 duplicate or malformed rows**. Current base-dictionary coverage is **401/481 verified (83.4%)**.
 
 Canonical evidence/audit files include:
 
@@ -51,6 +51,7 @@ data/glossary-master/sources/equipment-training-sources-v1.tsv
 data/glossary-master/sources/horse-breeding-role-sources-v1.tsv
 data/glossary-master/sources/venue-entry-sources-v1.tsv
 data/glossary-master/sources/broad-category-sources-v1.tsv
+data/glossary-master/sources/targeted-residual-sources-v1.tsv
 data/glossary-master/coverage/p1-verification-wave1-v1.tsv
 data/glossary-master/coverage/p1-verification-wave2-v1.tsv
 data/glossary-master/coverage/race-type-condition-verification-v1.tsv
@@ -68,6 +69,7 @@ data/glossary-master/coverage/equipment-training-residual-v1.tsv
 data/glossary-master/coverage/horse-breeding-role-verification-v1.tsv
 data/glossary-master/coverage/venue-entry-verification-v1.tsv
 data/glossary-master/coverage/broad-category-verification-v1.tsv
+data/glossary-master/coverage/targeted-residual-verification-v1.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
@@ -88,14 +90,17 @@ The abbreviation/code layer remains at **38 source-verified rows**.
 - ENTRY: **26/31 verified (83.9%)** — five lower-priority entry/procedure rows remain under review.
 - PRIZE: **10/12 verified (83.3%)** — Bonus and Stake remain candidate.
 - DIST: **17/21 verified (81.0%)** — four measurement/timing rows remain candidate.
-- ROLE: **25/31 verified (80.6%)** — six lower-priority role rows remain under review.
+- ROLE: **27/31 verified (87.1%)** — six lower-priority role rows remain under review.
 - TRAIN: **20/26 verified (76.9%)** — six edge terms remain under review.
+- VENUE: **36/44 verified (81.8%)** — eight facility/orientation residuals remain under review.
+- HORSE: **25/34 verified (73.5%)** — nine horse identity/age/origin residuals remain under review.
+- BREED: **12/22 verified (54.5%)** — ten breeding/facility/industry residuals remain under review.
 
 ## What remains
 
-The **95 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
+The **80 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
 
-Broad-category wave 1 is complete for the current defensible source bundle. The next step is **targeted residual cleanup** in the largest remaining candidate groups — especially VENUE, HORSE, BREED and residual RTYPE/ENTRY/SURF/DIST/WEIGHT — while leaving intentionally weak edge cases visible until stronger evidence or a cleaner modeling decision exists.
+Targeted residual wave 1 is complete for the current defensible source bundle. The next step is to continue residual cleanup across the remaining base-seed categories while leaving intentionally weak edge cases visible until stronger evidence or a cleaner modeling decision exists.
 
 After that residual cleanup, the evidence/readiness gate will be rerun. `MASTER-006` and public glossary architecture remain blocked until that review is defensible.
 

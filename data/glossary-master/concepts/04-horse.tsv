@@ -16,7 +16,7 @@ HORSE-014	HORSE	馬の品種・性別・年齢	Weanling	離乳馬	離乳後か�
 HORSE-015	HORSE	馬の品種・性別・年齢	Yearling	1歳馬	年齢区分としての1歳馬。競馬・セールで頻出する。	concept	P1	GLOBAL	ALL	working_equivalent	source_verified	yes	no	HBR-SRC-001; HBR-SRC-006. JRA maps yearling to 1歳馬 and The Jockey Club directly defines a yearling as a one-year-old horse.
 HORSE-016	HORSE	馬の品種・性別・年齢	Two-year-old	2歳馬	競走馬の年齢区分としての2歳馬。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-047. Current official race-form age field verifies two-year-old age classification.
 HORSE-017	HORSE	馬の品種・性別・年齢	Three-year-old	3歳馬	競走馬の年齢区分としての3歳馬。	concept	P0	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P0-SRC-047. Current official race-form age field verifies three-year-old age classification.
-HORSE-018	HORSE	馬の品種・性別・年齢	Four-year-old	4歳馬	競走馬の年齢区分としての4歳馬。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+HORSE-018	HORSE	馬の品種・性別・年齢	Four-year-old	4歳馬	競走馬の年齢区分としての4歳馬。	concept	P1	GLOBAL	ALL	working_equivalent	source_verified	yes	no	TR-SRC-008. Current Racing Australia race data explicitly uses Four-Years-Old and Upwards race conditions and publishes Age=4 for runners; local official-birthday conventions remain jurisdiction-specific.
 HORSE-019	HORSE	馬の品種・性別・年齢	Juvenile	若馬／2歳馬等	若い競走馬を指す語。具体的な年齢範囲は管轄・競走体系によって異なる。	concept	P1	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P1-SRC-013. JRA overseas dictionary maps juvenile to 若馬／2歳馬, directly supporting the age sense while preserving jurisdiction-dependent boundaries.
 HORSE-020	HORSE	馬の品種・性別・年齢	Older horse	古馬	若齢限定競走を卒業した年齢層の馬を指す一般表現。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 HORSE-021	HORSE	馬の品種・性別・年齢	Veteran horse	ベテラン馬	高齢または長く競走経験を持つ馬を指す一般表現。	concept	P3	GLOBAL	ALL	working_equivalent	candidate	yes	no	
@@ -26,6 +26,6 @@ HORSE-024	HORSE	馬の品種・性別・年齢	First-time starter	初出走馬	�
 HORSE-025	HORSE	馬の品種・性別・年齢	Homebred	自家生産馬	馬主・生産者が自ら生産した馬を指す語。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 HORSE-026	HORSE	馬の品種・性別・年齢	Imported horse	輸入馬	国外から輸入された競走馬。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 HORSE-027	HORSE	馬の品種・性別・年齢	Locally bred	国内産馬／地元産馬	対象管轄・地域内で生産された馬。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-HORSE-028	HORSE	馬の品種・性別・年齢	Foreign-bred	外国産馬	対象管轄外で生産された馬。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-HORSE-029	HORSE	馬の品種・性別・年齢	Ridgling	停留精巣馬	片側または両側の精巣が下降していない雄馬を示す用語。	concept	P3	North America/Regional	ALL	working_equivalent	candidate	yes	no	
-HORSE-030	HORSE	馬の品種・性別・年齢	Rig	停留精巣馬等	主に英国系で停留精巣の雄馬を指す語。使用範囲を要検証。	concept	P3	GB/IRE/Regional	ALL	working_equivalent	candidate	yes	no	
+HORSE-028	HORSE	馬の品種・性別・年齢	Foreign-bred	外国産馬	日本の登録・競走文脈で、国外で生産され外国の登録・馬名情報を持つ馬を示す分類。具体的な登録・出走条件はJRA等の制度による。	concept	P2	Japan/Regional	ALL	working_equivalent	source_verified	yes	no	TR-SRC-009. JRA owner/registration guidance explicitly uses foreign-bred horses and addresses their pre-existing overseas names/registration; scope narrowed from GLOBAL to Japan/Regional rather than projecting JRA eligibility rules worldwide.
+HORSE-029	HORSE	馬の品種・性別・年齢	Ridgling	停留精巣馬	片側または両側の精巣が陰嚢内へ下降していない雄馬を示す競走馬性別表現。	concept	P3	North America/Regional	ALL	working_equivalent	source_verified	yes	no	TR-SRC-006. JRA's current Equibase profile guide directly defines the North American R (Ridgling) sex code as a male with one or both testes not descended into the scrotum.
+HORSE-030	HORSE	馬の品種・性別・年齢	Rig	停留精巣馬	国際競走馬ランキング等でRidglingと同じRコード群として扱われる停留精巣馬の性別表現。	concept	P3	International/Regional	ALL	working_equivalent	source_verified	yes	no	TR-SRC-006; TR-SRC-007. The current international ranking key explicitly gives R = Rig/Ridgling, while JRA's Equibase guide defines the Ridgling condition; scope changed from unverified GB/IRE assumption to International/Regional reporting usage.
