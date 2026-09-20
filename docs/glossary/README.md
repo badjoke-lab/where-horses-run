@@ -14,25 +14,25 @@ Read these first for glossary work:
 
 ## Current state in plain language
 
-The working dictionary has **635 terms/concepts**.
+The working dictionary has **629 terms/concepts**.
 
 - **594 are source-verified at the meaning level**.
-- **41 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
+- **35 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
 - the highest-priority core set is **203/203 verified**;
 - jurisdiction-specific research additions are **161/161 verified**;
 - publication is still disabled (`public_ready=0`, public runtime disconnected).
 
-The latest pass is **targeted residual resolution wave 8**. It verified the current USTA `Freezing` and `Snow` track-condition labels after correcting the seed canonicals, and retired generic `Daylight saving time` as contextual Time zone handling.
+The latest pass is **targeted residual resolution wave 9**. It retired **6** vague, derived, generic or malformed seed Concepts: Qualification, Kilometre, Weight rise, Weight drop, American odds and Commentator.
 
-Current whole-master coverage is **594/635 verified (93.5%)** with **41 candidates**. Active base seed is **433/474 verified (91.4%)**. SURF is **59/62 verified (95.2%)** and MEET is **37/37 verified (100%)**.
+Current whole-master coverage is **594/629 verified (94.4%)** with **35 candidates**. Active base seed is **433/468 verified (92.5%)**. WEIGHT, BET and ROLE are now **100% verified in the active Concept set**; ENTRY is **29/30 (96.7%)** and DIST **18/20 (90.0%)**.
 
-This pass combines current authority terminology with semantic pruning rather than preserving generic or outdated seed labels.
+These rows were removed because the active glossary already models the underlying racing meaning more cleanly, or because the seed represented generic analytical/presentation context rather than an independent racing term.
 
 ## What has been completed
 
 The dictionary was built from zero rather than copied from the existing public glossary. Major jurisdiction/local-language research and the current slang/abbreviation/historical pass are complete. The core terminology set is fully source-verified, and all current jurisdiction-specific additions are evidence-backed.
 
-Base-dictionary cleanup has now verified **280 additional terms** and removed **22 duplicate, malformed or non-independent rows**. Current base-dictionary coverage is **433/474 verified (91.4%)**.
+Base-dictionary cleanup has now verified **280 additional terms** and removed **28 duplicate, malformed or non-independent rows**. Current base-dictionary coverage is **433/468 verified (92.5%)**.
 
 Canonical evidence/audit files include:
 
@@ -82,6 +82,7 @@ data/glossary-master/coverage/targeted-residual-verification-v5.tsv
 data/glossary-master/coverage/targeted-residual-verification-v6.tsv
 data/glossary-master/coverage/targeted-residual-resolution-v7.tsv
 data/glossary-master/coverage/targeted-residual-resolution-v8.tsv
+data/glossary-master/coverage/targeted-residual-resolution-v9.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
@@ -94,16 +95,16 @@ The abbreviation/code layer remains at **38 source-verified rows**.
 - EQUIP: **27/29 verified (93.1%)** — Blinders and Barefoot remain candidate.
 - MEET: **37/37 verified (100%)** — wave 8 retired generic Daylight saving time as Time zone context.
 - RESULT: **27/27 verified (100%)** — wave 7 retired the unsupported RO code row into the verified Ran out event Concept.
-- BET: **38/39 verified (97.4%)** — American odds remains candidate.
+- BET: **38/38 verified (100%)** — wave 9 retired generic sportsbook American odds as contextual Odds presentation.
 - WELF: **18/18 verified (100%)**.
 - DISC: **16/17 verified (94.1%)** — Endurance racing remains under modeling review.
 - RTYPE: **106/111 verified (95.5%)** — five race-type residuals remain under review.
-- DIST: **18/21 verified (85.7%)** — Kilometre, Fraction and Final fraction remain under review.
+- DIST: **18/20 verified (90.0%)** — Fraction and Final fraction remain under review.
 - SURF: **59/62 verified (95.2%)** — wave 8 corrected/verified USTA Freezing and Snow; Cushion Track, Surface switch and Track bias remain candidate.
-- WEIGHT: **32/34 verified (94.1%)** — Weight rise and Weight drop remain under review.
-- ENTRY: **29/31 verified (93.5%)** — Waitlist and Qualification remain under review.
+- WEIGHT: **32/32 verified (100%)** — wave 9 retired derived Weight rise/drop comparison labels.
+- ENTRY: **29/30 verified (96.7%)** — Waitlist remains the only active ENTRY candidate.
 - PRIZE: **10/12 verified (83.3%)** — Bonus and Stake remain candidate.
-- ROLE: **30/31 verified (96.8%)** — Commentator remains under review.
+- ROLE: **30/30 verified (100%)** — wave 9 retired malformed Commentator; Track announcer remains the verified race-calling role.
 - TRAIN: **24/26 verified (92.3%)** — Cool down and Freshened remain under review.
 - VENUE: **39/42 verified (92.9%)** — Round course, Oval and Walking ring remain under review.
 - HORSE: **27/33 verified (81.8%)** — six horse identity/age/origin residuals remain under review.
@@ -111,9 +112,9 @@ The abbreviation/code layer remains at **38 source-verified rows**.
 
 ## What remains
 
-The **41 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
+The **35 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
 
-Targeted residual resolution wave 8 is complete for the current defensible source bundle. The next step is to continue residual cleanup across the remaining base-seed categories while leaving intentionally weak edge cases visible until stronger evidence or a cleaner modeling decision exists.
+Targeted residual resolution wave 9 is complete for the current defensible source bundle. The next step is to continue residual cleanup across the remaining base-seed categories while leaving intentionally weak edge cases visible until stronger evidence or a cleaner modeling decision exists.
 
 After that residual cleanup, the evidence/readiness gate will be rerun. `MASTER-006` and public glossary architecture remain blocked until that review is defensible.
 
