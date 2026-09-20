@@ -9,7 +9,7 @@ BREED-007	BREED	血統・繁殖	Broodmare sire	母父種牡馬	繁殖牝馬の�
 BREED-008	BREED	血統・繁殖	Stud	種馬場／種牡馬	文脈により繁殖施設または繁殖用雄馬を指す。	concept	P1	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 BREED-009	BREED	血統・繁殖	Stud farm	種馬場	馬の繁殖・繋養を行う施設。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 BREED-010	BREED	血統・繁殖	Stallion service	種付け	種牡馬を繁殖に供するサービス・行為。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-BREED-011	BREED	血統・繁殖	Covering	種付け	牝馬と種牡馬を交配する繁殖行為。	concept	P2	GB/IRE/Commonwealth	ALL	working_equivalent	candidate	yes	no	
+BREED-011	BREED	血統・繁殖	Covering	種付け	サラブレッド繁殖で、種牡馬が牝馬に自然交配して種付けする行為。	concept	P2	International/Thoroughbred	Thoroughbred	working_equivalent	source_verified	yes	no	TR2-SRC-004. IFHA/ISBC/ITBF Minimum Welfare Guidelines v1.1 explicitly define Covering as a stallion mating with a mare by physical mounting and insemination. Scope is narrowed to Thoroughbred breeding rather than asserted for every equine breeding system.
 BREED-012	BREED	血統・繁殖	Mating	配合	繁殖における交配・配合。	concept	P2	GLOBAL	ALL	working_equivalent	source_verified	yes	no	HBR-SRC-002; HBR-SRC-004. IFHA Article 12 repeatedly uses mating for the stallion-mare breeding event, and JRA independently defines 種付 as breeding by mating a stallion with a broodmare; detailed Thoroughbred eligibility rules are not generalized.
 BREED-013	BREED	血統・繁殖	Foaling	出産	牝馬が仔馬を出産すること。	concept	P2	GLOBAL	ALL	working_equivalent	source_verified	yes	no	HBR-SRC-002. IFHA Article 12 explicitly records the exact date and country of foaling and the Foal's details, directly supporting foaling as the birth event within Thoroughbred breeding administration.
 BREED-014	BREED	血統・繁殖	Foaled	生産／出生	血統・登録情報で馬が出生したことを示す表現。出生年月日・生産国等の具体的な記録方式は登録制度による。	concept	P2	GLOBAL	ALL	working_equivalent	source_verified	yes	no	TR-SRC-012. IFHA Article 12 requires exact date and country of foaling in Thoroughbred Stud Book records, directly supporting foaled/foaling as an official birth-record expression while leaving registry procedure system-specific.
@@ -20,4 +20,4 @@ BREED-019	BREED	血統・繁殖	Nick	血統配合相性	特定父系と母系の
 BREED-020	BREED	血統・繁殖	Inbreeding	インブリード／近親交配	血統上で比較的近い世代に共通祖先を持つ配合。	concept	P2	GLOBAL	ALL	working_equivalent	source_verified	yes	no	HBR-SRC-003. JRA directly defines インブリード／近親交配 through repeated common ancestors in the pedigree and explains generation notation; the exact five-generation illustration is not asserted as a universal threshold.
 BREED-021	BREED	血統・繁殖	Outcross	アウトクロス	近い共通祖先を避ける配合。	concept	P3	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 BREED-022	BREED	血統・繁殖	Family	牝系／ファミリー	血統上の牝系などを示す分類・呼称。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
-BREED-023	BREED	血統・繁殖	Female family	牝系	母系を連続してたどる血統系統。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
+BREED-023	BREED	血統・繁殖	Female family	牝系	母系を連続してたどる血統系統。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no
