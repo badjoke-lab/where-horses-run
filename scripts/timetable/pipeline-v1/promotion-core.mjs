@@ -207,10 +207,10 @@ function makeDetail(record, authoritySource, inputPath, review) {
     timetable_rows: record.timetable_rows.map((row) => ({
       label: row.label,
       post_time_local: row.post_time_local,
-      ...(row.race_name ? { race_name: row.race_name } : {}),
-      ...(row.distance_m != null ? { distance_m: row.distance_m } : {}),
-      ...(row.surface ? { surface: row.surface } : {}),
-      ...(row.course_label ? { course_label: row.course_label } : {}),
+      race_name: row.race_name ?? null,
+      distance_m: row.distance_m ?? null,
+      surface: row.surface ?? null,
+      course_label: row.course_label ?? null,
       metadata_status: metadataStatus(record.confidence),
       source_label: null,
     })),
@@ -308,6 +308,10 @@ export function promoteApprovedCandidateV1({
     const existingMeeting = existingMeetings.get(record.meeting_id);
     assertIdentityCollision(existingMeeting, record, 'canonical meeting');
     assertIdentityCollision(existingDetails.get(record.meeting_id), record, 'canonical meeting detail');
+
+    if (existingMeeting && rankIsLower(record.capability_rank, existingMeeting.capability_rank) && promotionMode !== 'corrective_downgrade') {
+      throw new Error(`${record.candidate_id} rank regression ${existingMeeting.capability_rank} -> ${record.capability_rank} is not allowed in normal promotion`);
+    }
 
     const candidateMeeting = makeMeeting(record, authoritySource, inputPath, review);
     const candidateDetail = makeDetail(record, authoritySource, inputPath, review);

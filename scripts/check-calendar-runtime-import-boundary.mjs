@@ -23,8 +23,8 @@ const forbiddenSourceFiles = new Set([
 const allowedPublicFiles = new Set([
   'data/generated/timetable/public/meeting-list.json',
   'data/generated/timetable/public/meeting-details.json',
-  'data/generated/timetable/public/japan-a-plus-overrides.json',
 ]);
+const diagnosticsPagePath = 'src/pages/calendar/diagnostics.json.ts';
 
 function toRepoPath(file) {
   return path.relative(root, file).replaceAll(path.sep, '/');
@@ -68,7 +68,19 @@ function forbiddenReason(repoPath) {
   return prefix ? `forbidden runtime dependency outside public projection: ${prefix}` : null;
 }
 
-const pages = walk(pageRoot).filter((file) => ['.astro', '.ts', '.tsx', '.js', '.mjs'].includes(path.extname(file)));
+const pages = walk(pageRoot)
+  .filter((file) => ['.astro', '.ts', '.tsx', '.js', '.mjs'].includes(path.extname(file)))
+  .filter((file) => toRepoPath(file) !== diagnosticsPagePath);
+
+const diagnosticsSource = readFileSync(path.join(root, diagnosticsPagePath), 'utf8');
+if (!/export const prerender\s*=\s*true/.test(diagnosticsSource)) {
+  console.error('CALENDAR_RUNTIME_IMPORT_BOUNDARY: diagnostics exception must remain prerendered');
+  process.exit(1);
+}
+if (/timetable_rows\s*:/.test(diagnosticsSource)) {
+  console.error('CALENDAR_RUNTIME_IMPORT_BOUNDARY: diagnostics exception must not expose canonical timetable rows');
+  process.exit(1);
+}
 const violations = [];
 const unresolved = [];
 const visitedFromPage = new Map();
@@ -129,6 +141,7 @@ if (uniqueViolations.length || uniqueUnresolved.length) {
 
 const totalVisited = [...visitedFromPage.values()].reduce((sum, value) => sum + value, 0);
 console.log(`CALENDAR_RUNTIME_IMPORT_BOUNDARY: pass pages=${pages.length} traversed_dependencies=${totalVisited}`);
-console.log('RUNTIME_TIMETABLE_INPUTS: public-projection-only');
+console.log('RUNTIME_TIMETABLE_INPUTS: final-public-snapshot-only');
+console.log('RUNTIME_PUBLIC_SUPPLEMENTS: 0');
 console.log('NON_PUBLIC_TIMETABLE_GENERATED_IMPORTS: 0');
-console.log('HISTORICAL_GENERATED_PATH_BLACKLIST_REQUIRED: false');
+console.log('OPERATOR_DIAGNOSTICS_EXCEPTION: prerendered-aggregate-only');

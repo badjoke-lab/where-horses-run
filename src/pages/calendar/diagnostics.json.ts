@@ -62,7 +62,9 @@ export function GET() {
   });
 
   return new Response(JSON.stringify({
-    generated_at: (canonicalMeetingsData as any).generated_at ?? null,
+    canonical_generated_at: (canonicalMeetingsData as any).generated_at ?? null,
+    public_generated_at: (publicMeetingsData as any).generated_at ?? null,
+    publication_snapshot_id: (publicMeetingsData as any).publication_snapshot?.snapshot_id ?? null,
     meetings,
   }), {
     headers: {
