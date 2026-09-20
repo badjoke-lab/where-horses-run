@@ -22,7 +22,7 @@ HORSE-020	HORSE	馬の品種・性別・年齢	Older horse	古馬	若齢限定�
 HORSE-021	HORSE	馬の品種・性別・年齢	Veteran horse	ベテラン馬	高齢または長く競走経験を持つ馬を指す一般表現。	concept	P3	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 HORSE-022	HORSE	馬の品種・性別・年齢	Maiden	未勝利馬	当該競走体系・コードで定める勝利実績をまだ持たない馬。Maiden raceという競走種別とは区別する。	concept	P1	GLOBAL	ALL	working_equivalent	source_verified	yes	no	P1-SRC-012; P1-SRC-017; P1-SRC-001. JRA maps maiden to 未出走／未勝利 and BHA defines Maiden races through horses that have not won under the relevant code; exact eligibility remains jurisdiction-specific.
 HORSE-023	HORSE	馬の品種・性別・年齢	Debutant	デビュー馬	初出走する馬を指す表現。	concept	P2	Europe/Regional	ALL	working_equivalent	candidate	yes	no	
-HORSE-024	HORSE	馬の品種・性別・年齢	First-time starter	初出走馬	主に北米等で初出走する馬を示す表現。	concept	P1	North America	Flat	working_equivalent	candidate	yes	no	
+HORSE-024	HORSE	馬の品種・性別・年齢	First-time starter	初出走馬	主に北米の出馬表・分析データで、まだ競走出走歴がない初出走馬を示す表現。	concept	P1	North America	Flat	working_equivalent	source_verified	yes	no	TR3-SRC-008. Equibase/TrackMaster pace-analysis guidance explicitly handles a first time starter as a horse without prior usable race/running-position history in its past performances.
 HORSE-025	HORSE	馬の品種・性別・年齢	Homebred	自家生産馬	馬主・生産者が自ら生産した馬を指す語。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 HORSE-026	HORSE	馬の品種・性別・年齢	Imported horse	輸入馬	国外から輸入された競走馬。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
 HORSE-027	HORSE	馬の品種・性別・年齢	Locally bred	国内産馬／地元産馬	対象管轄・地域内で生産された馬。	concept	P2	GLOBAL	ALL	working_equivalent	candidate	yes	no	
