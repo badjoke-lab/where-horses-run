@@ -9,7 +9,9 @@ import {
   CHILE_TIMEZONE,
   buildChileTeletrakCandidate,
   enrichChileTeletrakCandidateWithProgrammeResults,
+  extractClubHipicoSantiagoOfficialPdfHref,
   parseChileTeletrakProgrammeText,
+  resolveClubHipicoSantiagoProgrammePdfCandidate,
 } from './chile-teletrak-weekly-core.mjs';
 
 function arg(name, fallback = null) {
@@ -84,7 +86,7 @@ async function extractPdfText(bytes) {
   return lines.join('\n');
 }
 
-async function fetchProgrammeText(url) {
+async function fetchProgrammeDocument(url) {
   const response = await fetch(url, {
     redirect: 'follow',
     headers: {
@@ -102,9 +104,40 @@ async function fetchProgrammeText(url) {
   }
   if (/html/i.test(contentType) || !contentType) {
     const html = await response.text();
-    return { text: htmlToText(html), final_url: response.url, content_type: contentType, document_kind: 'html' };
+    return { text: htmlToText(html), raw_html: html, final_url: response.url, content_type: contentType, document_kind: 'html' };
   }
   throw new Error(`Chile programme returned unsupported content type ${contentType}`);
+}
+
+async function fetchProgrammeText(url, { racecourseId } = {}) {
+  const primary = await fetchProgrammeDocument(url);
+  if (primary.document_kind !== 'html' || racecourseId !== 'club-hipico-de-santiago-racecourse') return primary;
+
+  const explicitPdfUrl = extractClubHipicoSantiagoOfficialPdfHref(primary.raw_html, { baseUrl: primary.final_url });
+  const candidatePdfUrl = explicitPdfUrl ?? resolveClubHipicoSantiagoProgrammePdfCandidate(primary.final_url, { racecourseId });
+  if (!candidatePdfUrl || candidatePdfUrl === primary.final_url) return primary;
+
+  try {
+    const resolved = await fetchProgrammeDocument(candidatePdfUrl);
+    if (resolved.document_kind !== 'pdf') {
+      return {
+        ...primary,
+        resolution_attempted_url: candidatePdfUrl,
+        resolution_error: 'resolved_official_programme_not_pdf',
+      };
+    }
+    return {
+      ...resolved,
+      resolved_from_url: primary.final_url,
+      resolution_method: explicitPdfUrl ? 'club_hipico_viewer_pdf_href' : 'club_hipico_viewer_date_pdf_candidate',
+    };
+  } catch (error) {
+    return {
+      ...primary,
+      resolution_attempted_url: candidatePdfUrl,
+      resolution_error: String(error?.message ?? error),
+    };
+  }
 }
 
 const output = arg('output');
@@ -131,15 +164,15 @@ for (const record of scheduleCandidate.records) {
   }
   const key = `${record.date}/${record.racecourse_id}`;
   try {
-    const fetched = await fetchProgrammeText(record.programme_url);
+    const fetched = await fetchProgrammeText(record.programme_url, { racecourseId: record.racecourse_id });
     const parsed = parseChileTeletrakProgrammeText(fetched.text, { racecourseId: record.racecourse_id });
     if (parsed.status !== 'available') {
       programmeResults[key] = { status: 'source_error', error_code: 'programme_parse_failed' };
-      detailDiagnostics.push({ date: record.date, racecourse_id: record.racecourse_id, status: 'source_error', error_code: 'programme_parse_failed', programme_url: record.programme_url, final_url: fetched.final_url, document_kind: fetched.document_kind, programme_format: parsed.format });
+      detailDiagnostics.push({ date: record.date, racecourse_id: record.racecourse_id, status: 'source_error', error_code: 'programme_parse_failed', programme_url: record.programme_url, final_url: fetched.final_url, document_kind: fetched.document_kind, programme_format: parsed.format, resolved_from_url: fetched.resolved_from_url ?? null, resolution_method: fetched.resolution_method ?? null, resolution_attempted_url: fetched.resolution_attempted_url ?? null, resolution_error: fetched.resolution_error ?? null });
       continue;
     }
     programmeResults[key] = parsed;
-    detailDiagnostics.push({ date: record.date, racecourse_id: record.racecourse_id, status: 'available', programme_url: record.programme_url, final_url: fetched.final_url, document_kind: fetched.document_kind, programme_format: parsed.format, race_count: parsed.timetable_rows.length });
+    detailDiagnostics.push({ date: record.date, racecourse_id: record.racecourse_id, status: 'available', programme_url: record.programme_url, final_url: fetched.final_url, document_kind: fetched.document_kind, programme_format: parsed.format, race_count: parsed.timetable_rows.length, resolved_from_url: fetched.resolved_from_url ?? null, resolution_method: fetched.resolution_method ?? null });
   } catch (error) {
     programmeResults[key] = { status: 'source_error', error_code: 'programme_fetch_failed' };
     detailDiagnostics.push({ date: record.date, racecourse_id: record.racecourse_id, status: 'source_error', error_code: 'programme_fetch_failed', programme_url: record.programme_url, error: String(error?.message ?? error) });
