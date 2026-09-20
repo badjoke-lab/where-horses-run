@@ -3,6 +3,11 @@ import path from 'node:path';
 import { deriveBestAvailableRank } from './best-available-rank.mjs';
 import { classifyAcquisitionCompletion } from './acquisition-completion.mjs';
 import {
+  acceptCanonicalObservationV1,
+  normalizeStoredCanonicalV1,
+  retainCurrentAcquisitionStateV1,
+} from './canonical-acceptance.mjs';
+import {
   attachPublicationSnapshotV1,
   mergeEvidenceSupportV1,
   validateCalendarAuthorityMetadataV1,
@@ -105,42 +110,6 @@ function validIdentity(record, defaults, previous) {
     timezone: record.timezone ?? previous?.timezone ?? defaults.timezone,
   };
 }
-function normalizeStoredCanonical(meeting, detail) {
-  if (!meeting) return { meeting: null, detail, changed: false };
-  const evidenceRank = storedEvidenceRank(meeting, detail);
-  const nextMeeting = meeting.capability_rank === evidenceRank
-    ? meeting
-    : {
-        ...meeting,
-        capability_rank: evidenceRank,
-        display_status: evidenceRank === 'C' ? 'partial' : 'displayable',
-      };
-  const nextDetail = ['A', 'A+'].includes(evidenceRank) && detail
-    ? (detail.capability_rank === evidenceRank ? detail : { ...detail, capability_rank: evidenceRank })
-    : null;
-  return {
-    meeting: nextMeeting,
-    detail: nextDetail,
-    changed: nextMeeting !== meeting || nextDetail !== detail,
-  };
-}
-export function withCurrentAcquisitionState(meeting, acquisitionCompletion, record) {
-  if (!meeting) return { meeting, changed: false };
-  const nextMeeting = {
-    ...meeting,
-    acquisition_completion: acquisitionCompletion,
-    ...('acquisition_attempt' in record ? {
-      acquisition_attempt: structuredClone(record.acquisition_attempt),
-    } : {}),
-  };
-  if (JSON.stringify(meeting) === JSON.stringify(nextMeeting)) {
-    return { meeting, changed: false };
-  }
-  return {
-    meeting: nextMeeting,
-    changed: true,
-  };
-}
 function makeCanonical(record, artifact, checkedAt, defaults, previous, acquisitionCompletion) {
   const capabilityRank = observedRank(record);
   const rows = normalizedRows(record);
@@ -150,10 +119,9 @@ function makeCanonical(record, artifact, checkedAt, defaults, previous, acquisit
   }
   const url = sourceUrl(record, artifact) ?? previous?.source_trace?.official_source_url ?? null;
   if (!url) throw new Error(`missing official source URL for ${record.meeting_id}`);
-  const first = record.first_race_time_local ?? rows[0]?.post_time_local ?? previous?.first_race_time_local ?? null;
-  const last = record.last_race_time_local ?? rows.at(-1)?.post_time_local ?? previous?.last_race_time_local ?? null;
+  const first = record.first_race_time_local ?? rows[0]?.post_time_local ?? null;
+  const last = record.last_race_time_local ?? rows.at(-1)?.post_time_local ?? null;
   return {
-    ...(previous ?? {}),
     meeting_id: record.meeting_id,
     ...identity,
     racecourse_id: record.racecourse_id ?? previous?.racecourse_id,
@@ -162,9 +130,7 @@ function makeCanonical(record, artifact, checkedAt, defaults, previous, acquisit
     display_status: capabilityRank === 'C' ? 'partial' : 'displayable',
     first_race_time_local: first,
     last_race_time_local: last,
-    acquisition_completion: acquisitionCompletion,
     source_trace: {
-      ...(previous?.source_trace ?? {}),
       source_id: sourceId(record, artifact),
       route_id: record.route_id ?? previous?.source_trace?.route_id ?? null,
       source_status: 'verified',
@@ -174,27 +140,20 @@ function makeCanonical(record, artifact, checkedAt, defaults, previous, acquisit
       source_snapshot_path: null,
       normalized_from_path: 'scripts/timetable/apply-official-rolling-observations.mjs',
     },
-    freshness: previous?.freshness ?? {
+    freshness: {
       last_checked_date: checkedAt.slice(0, 10),
       generated_at: checkedAt,
       stale_after_date: null,
       freshness_note: 'Upserted from a verified official rolling-window observation.',
     },
-    ...('acquisition_attempt' in record ? { acquisition_attempt: structuredClone(record.acquisition_attempt) } : {}),
-    ...(record.evidence_support ? {
-      evidence_support: mergeEvidenceSupportV1(previous?.evidence_support, record.evidence_support),
-    } : {}),
-    ...(record.evidence_changes ? {
-      evidence_changes: mergeEvidenceChanges(previous?.evidence_changes, structuredClone(record.evidence_changes)),
-    } : {}),
+    ...(record.evidence_support ? { evidence_support: structuredClone(record.evidence_support) } : {}),
+    ...(record.evidence_changes ? { evidence_changes: structuredClone(record.evidence_changes) } : {}),
   };
 }
-function makeCanonicalDetail(meeting, record, previousDetail) {
+function makeCanonicalDetail(meeting, record) {
   const rows = normalizedRows(record);
-  if (!['A', 'A+'].includes(meeting.capability_rank)) return null;
-  if (!rows.length) return previousDetail ?? null;
+  if (!['A', 'A+'].includes(meeting.capability_rank) || !rows.length) return null;
   return {
-    ...(previousDetail ?? {}),
     meeting_id: meeting.meeting_id,
     country_id: meeting.country_id,
     authority_id: meeting.authority_id,
@@ -204,12 +163,8 @@ function makeCanonicalDetail(meeting, record, previousDetail) {
     capability_rank: meeting.capability_rank,
     source_trace: meeting.source_trace,
     freshness: meeting.freshness,
-    ...(record.evidence_support ? {
-      evidence_support: mergeEvidenceSupportV1(previousDetail?.evidence_support, record.evidence_support),
-    } : {}),
-    ...(record.evidence_changes ? {
-      evidence_changes: mergeEvidenceChanges(previousDetail?.evidence_changes, structuredClone(record.evidence_changes)),
-    } : {}),
+    ...(record.evidence_support ? { evidence_support: structuredClone(record.evidence_support) } : {}),
+    ...(record.evidence_changes ? { evidence_changes: structuredClone(record.evidence_changes) } : {}),
     timetable_rows: rows,
     summary_note: 'Current official rolling-window race programme observation.',
   };
@@ -317,7 +272,7 @@ const targetAuthorityIds = new Set([
 for (const [meetingId, storedMeeting] of [...canonicalById.entries()]) {
   if (!targetAuthorityIds.has(storedMeeting?.authority_id)) continue;
   const storedDetail = detailsById.get(meetingId) ?? null;
-  const normalizedStored = normalizeStoredCanonical(storedMeeting, storedDetail);
+  const normalizedStored = normalizeStoredCanonicalV1(storedMeeting, storedDetail);
   if (!normalizedStored.changed) continue;
   canonicalById.set(meetingId, normalizedStored.meeting);
   if (normalizedStored.detail) detailsById.set(meetingId, normalizedStored.detail);
@@ -342,7 +297,7 @@ for (const record of records) {
   completionCounts[acquisitionCompletion.disposition] += 1;
   let previous = canonicalById.get(record.meeting_id) ?? null;
   let previousDetail = detailsById.get(record.meeting_id) ?? null;
-  const normalizedStored = normalizeStoredCanonical(previous, previousDetail);
+  const normalizedStored = normalizeStoredCanonicalV1(previous, previousDetail);
   if (normalizedStored.changed) {
     previous = normalizedStored.meeting;
     previousDetail = normalizedStored.detail;
@@ -353,7 +308,10 @@ for (const record of records) {
     outcomes.normalized_stored_rank += 1;
   }
   if (record.detail_observation?.status === 'conflict') {
-    const completionUpdate = withCurrentAcquisitionState(previous, acquisitionCompletion, record);
+    const completionUpdate = retainCurrentAcquisitionStateV1(previous, {
+      acquisitionCompletion,
+      ...('acquisition_attempt' in record ? { acquisitionAttempt: record.acquisition_attempt } : {}),
+    });
     if (completionUpdate.changed) {
       previous = completionUpdate.meeting;
       canonicalById.set(previous.meeting_id, previous);
@@ -363,53 +321,58 @@ for (const record of records) {
     continue;
   }
   const correction = record.official_correction === true;
-  if (previous && rank(previous.capability_rank) > rank(observed) && !correction) {
-    const completionUpdate = withCurrentAcquisitionState(previous, acquisitionCompletion, record);
-    if (completionUpdate.changed) {
-      previous = completionUpdate.meeting;
-      canonicalById.set(previous.meeting_id, previous);
-      changed = true;
-    }
-    outcomes.protected_higher_rank += 1;
-    continue;
-  }
   const checkedAt = artifact.generated_at ?? artifact.retrieved_at ?? new Date().toISOString();
-  const draft = makeCanonical(record, artifact, checkedAt, defaults, previous, acquisitionCompletion);
-  let draftDetail = makeCanonicalDetail(draft, record, previousDetail);
-  if (correction && rank(observed) < rank('A')) draftDetail = null;
-  const substantiveChanged = !previous || !sameSubstance(previous, draft)
-    || JSON.stringify(previousDetail) !== JSON.stringify(draftDetail);
-  if (!substantiveChanged) {
-    outcomes.no_op += 1;
-    continue;
-  }
-  changed = true;
+  const candidate = makeCanonical(record, artifact, checkedAt, defaults, previous, acquisitionCompletion);
+  const candidateDetail = makeCanonicalDetail(candidate, record);
+  const accepted = acceptCanonicalObservationV1({
+    previousMeeting: previous,
+    previousDetail,
+    candidateMeeting: candidate,
+    candidateDetail,
+    acquisitionCompletion,
+    ...('acquisition_attempt' in record ? { acquisitionAttempt: record.acquisition_attempt } : {}),
+    explicitCorrection: correction,
+    evidenceChanges: record.evidence_changes ?? [],
+  });
   const next = {
-    ...draft,
+    ...accepted.meeting,
     freshness: {
-      ...(draft.freshness ?? {}),
+      ...(accepted.meeting.freshness ?? {}),
       last_checked_date: checkedAt.slice(0, 10),
       generated_at: checkedAt,
       stale_after_date: null,
       freshness_note: correction
         ? 'Updated from an explicit official correction.'
-        : 'Upserted from a verified official rolling-window observation.',
+        : accepted.decision === 'retained_stronger_evidence'
+          ? 'Retained stronger accepted evidence while recording the current official observation state.'
+          : 'Upserted from a verified official rolling-window observation.',
     },
   };
-  if (draftDetail) draftDetail = { ...draftDetail, freshness: next.freshness, source_trace: next.source_trace };
+  let nextDetail = accepted.detail;
+  if (nextDetail) nextDetail = { ...nextDetail, freshness: next.freshness, source_trace: next.source_trace };
+
+  const substantiveChanged = !previous || !sameSubstance(previous, next)
+    || JSON.stringify(previousDetail) !== JSON.stringify(nextDetail);
+  if (!substantiveChanged) {
+    outcomes.no_op += 1;
+    continue;
+  }
+
+  changed = true;
   canonicalById.set(next.meeting_id, next);
-  if (draftDetail) detailsById.set(next.meeting_id, draftDetail);
+  if (nextDetail) detailsById.set(next.meeting_id, nextDetail);
   else detailsById.delete(next.meeting_id);
 
   const previousPublic = publicById.get(next.meeting_id) ?? null;
   const previousPublicDetail = publicDetailsById.get(next.meeting_id) ?? null;
   const policy = choosePolicy(next.authority_id, policyDataset);
-  const listRow = makePublicMeeting(next, draftDetail, policy, previousPublic);
+  const listRow = makePublicMeeting(next, nextDetail, policy, previousPublic);
   publicById.set(next.meeting_id, listRow);
-  const detailRow = makePublicDetail(next, draftDetail, listRow, policy, previousPublicDetail);
+  const detailRow = makePublicDetail(next, nextDetail, listRow, policy, previousPublicDetail);
   if (detailRow) publicDetailsById.set(next.meeting_id, detailRow);
   else publicDetailsById.delete(next.meeting_id);
-  outcomes[previous ? 'update' : 'add'] += 1;
+  if (accepted.decision === 'retained_stronger_evidence') outcomes.protected_higher_rank += 1;
+  else outcomes[previous ? 'update' : 'add'] += 1;
 }
 
 // Public output is a projection of canonical evidence plus the current display policy.

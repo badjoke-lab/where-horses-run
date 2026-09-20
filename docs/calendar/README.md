@@ -5,6 +5,7 @@ Last reviewed: 2026-09-20
 
 Current operating pointer:
 
+- `scripts/timetable/canonical-acceptance.mjs` — Wave 3 shared canonical evidence acceptance authority for official rolling, Japan, and reviewed observations; weak observations retain stronger evidence while explicit corrections may replace it.
 - [`authority-evidence-metadata-contract.md`](authority-evidence-metadata-contract.md) — distinct acquisition-attempt, successful-verification, field-group provenance, correction/invalidation, reviewed-evidence, and coherent public-snapshot representation; unknown legacy facts remain unknown.
 - [`acquisition-completion-contract.md`](acquisition-completion-contract.md) — valid `C/B/B+/A` evidence is not acquisition completion by itself; lower-rank cycles require explicit higher-detail disposition.
 - [`field-publication-and-diagnostics-contract.md`](field-publication-and-diagnostics-contract.md) — verified richer fields are preserved/published independently of rank when policy permits; `?diag=calendar` is operator-only.
