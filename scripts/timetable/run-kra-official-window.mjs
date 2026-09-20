@@ -7,6 +7,7 @@ import {
   parseKraOperationPlan,
   validateKraGeneratedPlan,
 } from './kra-operation-plan-core.mjs';
+import { buildKraDetailObservation } from './kra-todayrace-core.mjs';
 
 const OFFICIAL_PLAN_URL = 'https://race.kra.co.kr/raceoper/RaceoperView.do?Sub=1&meet=1';
 const PUBLISHED_RACECARD_URL = 'https://race.kra.co.kr/thisweekrace/ThisWeekDetailInfoList.do?Act=01&Sub=1&meet=0';
@@ -234,15 +235,11 @@ for (const schedule of windowRows) {
   else detailCollection.unavailable += 1;
 
   const detail = collected.detail;
+  const detailObservation = buildKraDetailObservation({ detail, collectedStatus: collected.status });
   if (!detail || !['B', 'B+', 'A', 'A+'].includes(detail.capability_rank)) {
     records.push({
       ...schedule,
-      detail_observation: {
-        status: collected.status === 'error' ? 'source_error' : collected.status,
-        race_count: 0,
-        conflicts: [],
-        reason: `KRA detail acquisition did not yield usable stronger evidence (${collected.status}).`,
-      },
+      detail_observation: detailObservation,
     });
     continue;
   }
@@ -253,12 +250,7 @@ for (const schedule of windowRows) {
     last_race_time_local: detail.last_race_time_local ?? null,
     timetable_rows: detail.timetable_rows ?? [],
     source: detail.source ?? schedule.source,
-    detail_observation: {
-      status: 'available',
-      evaluated_capability_rank: 'A+',
-      race_count: detail.classifier?.race_count ?? 0,
-      conflicts: [],
-    },
+    detail_observation: detailObservation,
   });
 }
 

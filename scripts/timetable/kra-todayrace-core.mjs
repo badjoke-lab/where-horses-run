@@ -239,6 +239,41 @@ export function classifyKraObservation(rows) {
   };
 }
 
+export function kraSourceStatusesHaveFailure(sourceStatuses = []) {
+  return sourceStatuses.some((row) => row?.status && row.status !== 'success');
+}
+
+export function buildKraDetailObservation({ detail, collectedStatus }) {
+  const usable = detail && ['B', 'B+', 'A', 'A+'].includes(detail.capability_rank);
+  const sourceFailure = ['error', 'timeout', 'unavailable', 'invalid_json'].includes(collectedStatus)
+    || kraSourceStatusesHaveFailure(detail?.source_statuses ?? []);
+
+  if (!usable) {
+    return {
+      status: sourceFailure ? 'source_error' : collectedStatus,
+      race_count: 0,
+      conflicts: [],
+      reason: `KRA detail acquisition did not yield usable stronger evidence (${collectedStatus}).`,
+    };
+  }
+
+  if (sourceFailure) {
+    return {
+      status: 'source_error',
+      race_count: detail.classifier?.race_count ?? 0,
+      conflicts: [],
+      reason: 'KRA detail acquisition retained usable official evidence but the current collection also contains a source failure.',
+    };
+  }
+
+  return {
+    status: 'available',
+    evaluated_capability_rank: 'A+',
+    race_count: detail.classifier?.race_count ?? 0,
+    conflicts: [],
+  };
+}
+
 export function buildKraMeetingObservation({ meetingId, date, racecourseId, meetCode, rows, checkedAt, sourceStatuses }) {
   const classification = classifyKraObservation(rows);
   const first = rows.find((row) => row.post_time_local)?.post_time_local ?? null;
@@ -247,8 +282,8 @@ export function buildKraMeetingObservation({ meetingId, date, racecourseId, meet
     ? rows.filter((row) => row.post_time_local).map((row) => ({
         label: `Race ${row.race_number}`,
         post_time_local: row.post_time_local,
-        ...(classification.rank === 'A+' && row.distance_m ? { distance_m: row.distance_m } : {}),
-        ...(classification.rank === 'A+' && row.race_description ? { race_name: row.race_description } : {}),
+        ...(row.distance_m != null ? { distance_m: row.distance_m } : {}),
+        ...(row.race_description ? { race_name: row.race_description } : {}),
       }))
     : [];
   return {
