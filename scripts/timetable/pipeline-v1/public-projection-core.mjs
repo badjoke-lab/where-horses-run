@@ -1,3 +1,5 @@
+import { attachPublicationSnapshotV1 } from '../calendar-authority-metadata.mjs';
+
 const RANKS = ['not_listed', 'D', 'C', 'B', 'B+', 'A', 'A+'];
 const PUBLIC_READINESS = new Set(['ready', 'prototype_ready', 'manual_ready']);
 const PUBLIC_AUTOMATION = new Set(['automatic', 'semi_automatic', 'manual_import', 'manual_confirmation']);
@@ -288,8 +290,8 @@ export function buildPublicProjectionV1({
   sortMeetingRows(projectedMeetings);
 
   const generatedAt = deterministicGeneratedAt(canonicalMeetings, canonicalDetails);
-  return {
-    meetingListDataset: {
+  const snapshotDatasets = attachPublicationSnapshotV1(
+    {
       schema_version: 'public-timetable-meeting-list-v0',
       generated_at: generatedAt,
       canonical_source: 'data/generated/timetable/canonical/meetings.json',
@@ -298,7 +300,7 @@ export function buildPublicProjectionV1({
       source_aliases_source: 'data/static/timetable-source-aliases-v1.json',
       meetings: projectedMeetings
     },
-    meetingDetailsDataset: {
+    {
       schema_version: 'public-timetable-meeting-details-v0',
       generated_at: generatedAt,
       canonical_source: 'data/generated/timetable/canonical/meeting-details.json',
@@ -307,6 +309,10 @@ export function buildPublicProjectionV1({
       source_aliases_source: 'data/static/timetable-source-aliases-v1.json',
       details: projectedDetails
     },
+    generatedAt,
+  );
+  return {
+    ...snapshotDatasets,
     audit: {
       schema_version: 'public-timetable-projection-audit-v1',
       generated_at: generatedAt,

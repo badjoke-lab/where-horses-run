@@ -1,10 +1,11 @@
 # Calendar programme documentation
 
 Status: active documentation index  
-Last reviewed: 2026-09-11
+Last reviewed: 2026-09-20
 
-Current 2026-09-11 operating pointer:
+Current operating pointer:
 
+- [`authority-evidence-metadata-contract.md`](authority-evidence-metadata-contract.md) — distinct acquisition-attempt, successful-verification, field-group provenance, correction/invalidation, reviewed-evidence, and coherent public-snapshot representation; unknown legacy facts remain unknown.
 - [`acquisition-completion-contract.md`](acquisition-completion-contract.md) — valid `C/B/B+/A` evidence is not acquisition completion by itself; lower-rank cycles require explicit higher-detail disposition.
 - [`field-publication-and-diagnostics-contract.md`](field-publication-and-diagnostics-contract.md) — verified richer fields are preserved/published independently of rank when policy permits; `?diag=calendar` is operator-only.
 - [`implementation-roadmap-2026-09-11-addendum.md`](implementation-roadmap-2026-09-11-addendum.md) — current Calendar implementation addendum. Where older roadmap/index wording conflicts with the 2026-09-11 contracts, this addendum and those contracts control.

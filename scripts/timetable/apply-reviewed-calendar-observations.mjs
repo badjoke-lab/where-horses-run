@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { attachPublicationSnapshotV1 } from './calendar-authority-metadata.mjs';
 
 const RANKS = Object.freeze(['C', 'B', 'B+', 'A', 'A+']);
 const RANK_INDEX = new Map(RANKS.map((value, index) => [value, index]));
@@ -340,10 +341,15 @@ writeJson(ARTIFACT_PATH, {
 
 if (changed) {
   const sortRows = (rows) => [...rows].sort((a, b) => a.date.localeCompare(b.date) || a.meeting_id.localeCompare(b.meeting_id));
+  const publicDatasets = attachPublicationSnapshotV1(
+    { ...publicList, generated_at: generatedAt, meetings: sortRows(publicById.values()) },
+    { ...publicDetails, generated_at: generatedAt, details: sortRows(publicDetailsById.values()) },
+    generatedAt,
+  );
   writeJson(CANONICAL_PATH, { ...canonical, generated_at: generatedAt, meetings: sortRows(canonicalById.values()) });
   writeJson(CANONICAL_DETAILS_PATH, { ...canonicalDetails, generated_at: generatedAt, details: sortRows(canonicalDetailsById.values()) });
-  writeJson(PUBLIC_PATH, { ...publicList, generated_at: generatedAt, meetings: sortRows(publicById.values()) });
-  writeJson(PUBLIC_DETAILS_PATH, { ...publicDetails, generated_at: generatedAt, details: sortRows(publicDetailsById.values()) });
+  writeJson(PUBLIC_PATH, publicDatasets.meetingListDataset);
+  writeJson(PUBLIC_DETAILS_PATH, publicDatasets.meetingDetailsDataset);
 }
 
 const finalCanonical = readJson(CANONICAL_PATH);

@@ -2,6 +2,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { deriveBestAvailableRank } from './best-available-rank.mjs';
 import { classifyAcquisitionCompletion } from './acquisition-completion.mjs';
+import {
+  attachPublicationSnapshotV1,
+  mergeEvidenceSupportV1,
+  validateCalendarAuthorityMetadataV1,
+} from './calendar-authority-metadata.mjs';
 import { loadCalendarAcquisitionRegistryV1 } from './load-calendar-acquisition-registry.mjs';
 import { projectPublicTimetableRows } from './public-detail-projection.mjs';
 
@@ -86,6 +91,9 @@ function stripVolatile(value) {
 function sameSubstance(left, right) {
   return JSON.stringify(stripVolatile(left)) === JSON.stringify(stripVolatile(right));
 }
+function mergeEvidenceChanges(previous = [], current = []) {
+  return [...new Map([...previous, ...current].map((change) => [JSON.stringify(change), change])).values()];
+}
 function completeRankA(rows) {
   return rows.length > 0 && rows.every((row) => row.label && row.post_time_local);
 }
@@ -116,13 +124,20 @@ function normalizeStoredCanonical(meeting, detail) {
     changed: nextMeeting !== meeting || nextDetail !== detail,
   };
 }
-function withCurrentAcquisitionCompletion(meeting, acquisitionCompletion) {
+export function withCurrentAcquisitionState(meeting, acquisitionCompletion, record) {
   if (!meeting) return { meeting, changed: false };
-  if (JSON.stringify(meeting.acquisition_completion ?? null) === JSON.stringify(acquisitionCompletion)) {
+  const nextMeeting = {
+    ...meeting,
+    acquisition_completion: acquisitionCompletion,
+    ...('acquisition_attempt' in record ? {
+      acquisition_attempt: structuredClone(record.acquisition_attempt),
+    } : {}),
+  };
+  if (JSON.stringify(meeting) === JSON.stringify(nextMeeting)) {
     return { meeting, changed: false };
   }
   return {
-    meeting: { ...meeting, acquisition_completion: acquisitionCompletion },
+    meeting: nextMeeting,
     changed: true,
   };
 }
@@ -165,6 +180,13 @@ function makeCanonical(record, artifact, checkedAt, defaults, previous, acquisit
       stale_after_date: null,
       freshness_note: 'Upserted from a verified official rolling-window observation.',
     },
+    ...('acquisition_attempt' in record ? { acquisition_attempt: structuredClone(record.acquisition_attempt) } : {}),
+    ...(record.evidence_support ? {
+      evidence_support: mergeEvidenceSupportV1(previous?.evidence_support, record.evidence_support),
+    } : {}),
+    ...(record.evidence_changes ? {
+      evidence_changes: mergeEvidenceChanges(previous?.evidence_changes, structuredClone(record.evidence_changes)),
+    } : {}),
   };
 }
 function makeCanonicalDetail(meeting, record, previousDetail) {
@@ -182,6 +204,12 @@ function makeCanonicalDetail(meeting, record, previousDetail) {
     capability_rank: meeting.capability_rank,
     source_trace: meeting.source_trace,
     freshness: meeting.freshness,
+    ...(record.evidence_support ? {
+      evidence_support: mergeEvidenceSupportV1(previousDetail?.evidence_support, record.evidence_support),
+    } : {}),
+    ...(record.evidence_changes ? {
+      evidence_changes: mergeEvidenceChanges(previousDetail?.evidence_changes, structuredClone(record.evidence_changes)),
+    } : {}),
     timetable_rows: rows,
     summary_note: 'Current official rolling-window race programme observation.',
   };
@@ -300,6 +328,13 @@ for (const [meetingId, storedMeeting] of [...canonicalById.entries()]) {
 
 for (const record of records) {
   if (!record?.meeting_id) { outcomes.ignored += 1; continue; }
+  const authorityMetadata = Object.fromEntries(
+    ['acquisition_attempt', 'acquisition_completion', 'evidence_support', 'evidence_changes']
+      .filter((key) => key in record)
+      .map((key) => [key, record[key]]),
+  );
+  const metadataErrors = validateCalendarAuthorityMetadataV1(authorityMetadata, record.meeting_id);
+  if (metadataErrors.length) throw new Error(metadataErrors.join('; '));
   const observed = observedRank(record);
   if (!RANK_INDEX.has(observed)) { outcomes.ignored += 1; continue; }
   const acquisitionProfile = chooseAcquisitionProfile(record, defaults, acquisitionRegistry);
@@ -318,7 +353,7 @@ for (const record of records) {
     outcomes.normalized_stored_rank += 1;
   }
   if (record.detail_observation?.status === 'conflict') {
-    const completionUpdate = withCurrentAcquisitionCompletion(previous, acquisitionCompletion);
+    const completionUpdate = withCurrentAcquisitionState(previous, acquisitionCompletion, record);
     if (completionUpdate.changed) {
       previous = completionUpdate.meeting;
       canonicalById.set(previous.meeting_id, previous);
@@ -329,7 +364,7 @@ for (const record of records) {
   }
   const correction = record.official_correction === true;
   if (previous && rank(previous.capability_rank) > rank(observed) && !correction) {
-    const completionUpdate = withCurrentAcquisitionCompletion(previous, acquisitionCompletion);
+    const completionUpdate = withCurrentAcquisitionState(previous, acquisitionCompletion, record);
     if (completionUpdate.changed) {
       previous = completionUpdate.meeting;
       canonicalById.set(previous.meeting_id, previous);
@@ -401,10 +436,15 @@ for (const [meetingId, previousPublic] of [...publicById.entries()]) {
 if (changed) {
   const generatedAt = artifact.generated_at ?? artifact.retrieved_at ?? new Date().toISOString();
   const sortRows = (rows) => [...rows].sort((a, b) => a.date.localeCompare(b.date) || a.meeting_id.localeCompare(b.meeting_id));
+  const publicDatasets = attachPublicationSnapshotV1(
+    { ...publicList, generated_at: generatedAt, meetings: sortRows(publicById.values()) },
+    { ...publicDetails, generated_at: generatedAt, details: sortRows(publicDetailsById.values()) },
+    generatedAt,
+  );
   writeJson(canonicalPath, { ...canonical, generated_at: generatedAt, meetings: sortRows(canonicalById.values()) });
   writeJson(canonicalDetailsPath, { ...canonicalDetails, generated_at: generatedAt, details: sortRows(detailsById.values()) });
-  writeJson(publicPath, { ...publicList, generated_at: generatedAt, meetings: sortRows(publicById.values()) });
-  writeJson(publicDetailsPath, { ...publicDetails, generated_at: generatedAt, details: sortRows(publicDetailsById.values()) });
+  writeJson(publicPath, publicDatasets.meetingListDataset);
+  writeJson(publicDetailsPath, publicDatasets.meetingDetailsDataset);
 }
 
 console.log(JSON.stringify({ artifact: artifactPath, observed: records.length, changed, outcomes, completion_counts: completionCounts }));

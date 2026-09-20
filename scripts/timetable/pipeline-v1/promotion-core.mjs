@@ -1,3 +1,8 @@
+import {
+  mergeEvidenceSupportV1,
+  validateCalendarAuthorityMetadataV1,
+} from '../calendar-authority-metadata.mjs';
+
 const RANK_ORDER = new Map([
   ['C', 0],
   ['B', 1],
@@ -166,7 +171,7 @@ function makeFreshness(record, review) {
   };
 }
 
-function makeMeeting(record, authoritySource, inputPath, review) {
+function makeMeeting(record, authoritySource, inputPath, review, previous) {
   return {
     meeting_id: record.meeting_id,
     country_id: record.country_id,
@@ -180,11 +185,17 @@ function makeMeeting(record, authoritySource, inputPath, review) {
     last_race_time_local: record.last_race_time_local,
     source_trace: makeSourceTrace(record, authoritySource, inputPath),
     freshness: makeFreshness(record, review),
+    ...('acquisition_attempt' in record ? { acquisition_attempt: structuredClone(record.acquisition_attempt) } : {}),
+    ...('acquisition_completion' in record ? { acquisition_completion: structuredClone(record.acquisition_completion) } : {}),
+    ...('evidence_support' in record ? {
+      evidence_support: mergeEvidenceSupportV1(previous?.evidence_support, record.evidence_support),
+    } : previous?.evidence_support ? { evidence_support: structuredClone(previous.evidence_support) } : {}),
+    ...('evidence_changes' in record ? { evidence_changes: structuredClone(record.evidence_changes) } : {}),
     notes: record.notes || null
   };
 }
 
-function makeDetail(record, authoritySource, inputPath, review) {
+function makeDetail(record, authoritySource, inputPath, review, previous) {
   if (!['A', 'A+'].includes(record.capability_rank)) return null;
   return {
     meeting_id: record.meeting_id,
@@ -196,6 +207,10 @@ function makeDetail(record, authoritySource, inputPath, review) {
     capability_rank: record.capability_rank,
     source_trace: makeSourceTrace(record, authoritySource, inputPath),
     freshness: makeFreshness(record, review),
+    ...('evidence_support' in record ? {
+      evidence_support: mergeEvidenceSupportV1(previous?.evidence_support, record.evidence_support),
+    } : previous?.evidence_support ? { evidence_support: structuredClone(previous.evidence_support) } : {}),
+    ...('evidence_changes' in record ? { evidence_changes: structuredClone(record.evidence_changes) } : {}),
     timetable_rows: record.timetable_rows.map((row) => ({
       label: row.label,
       post_time_local: row.post_time_local,
@@ -272,6 +287,13 @@ export function promoteApprovedCandidateV1({
     assert(record.racing_system_id === readiness.system_id, `${record.candidate_id} racing_system_id differs from Calendar Readiness`);
     assert(record.timezone === candidate.candidate_window.timezone, `${record.candidate_id} timezone differs from candidate window`);
     assert(record.date >= candidate.candidate_window.start_date && record.date < candidate.candidate_window.end_date_exclusive, `${record.candidate_id} date is outside candidate window`);
+    const authorityMetadata = Object.fromEntries(
+      ['acquisition_attempt', 'acquisition_completion', 'evidence_support', 'evidence_changes']
+        .filter((key) => key in record)
+        .map((key) => [key, record[key]]),
+    );
+    const metadataErrors = validateCalendarAuthorityMetadataV1(authorityMetadata, record.candidate_id);
+    assert(metadataErrors.length === 0, metadataErrors.join('; '));
     assert(!candidateMeetingIds.has(record.meeting_id), `duplicate meeting_id in approved candidate: ${record.meeting_id}`);
     candidateMeetingIds.add(record.meeting_id);
 
@@ -301,8 +323,8 @@ export function promoteApprovedCandidateV1({
       downgradedMeetingIds.push(record.meeting_id);
     }
 
-    promotedMeetings.push(makeMeeting(record, authoritySource, inputPath, review));
-    const detail = makeDetail(record, authoritySource, inputPath, review);
+    promotedMeetings.push(makeMeeting(record, authoritySource, inputPath, review, existingMeeting));
+    const detail = makeDetail(record, authoritySource, inputPath, review, existingDetails.get(record.meeting_id));
     if (detail) promotedDetails.push(detail);
     else if (existingDetails.has(record.meeting_id)) removedDetailIds.push(record.meeting_id);
   }

@@ -83,6 +83,83 @@ const baseArgs = {
   inputPath: 'data/candidates/pipeline-v1.sample.json'
 };
 
+const metadataCandidate = clone(approved);
+metadataCandidate.records[0].acquisition_attempt = {
+  attempted_at: hkjcSourceCheckedAt,
+  status: 'success',
+  source_id: 'hkjc-fixture-list',
+};
+metadataCandidate.records[0].acquisition_completion = {
+  disposition: 'complete_current_best_available',
+  observed_rank: metadataCandidate.records[0].capability_rank,
+  technical_capability_rank: metadataCandidate.records[0].capability_rank,
+  higher_rank_open: false,
+  reason: 'Fixture reached its represented technical capability.',
+};
+metadataCandidate.records[0].evidence_support = {
+  timetable: {
+    source_id: 'hkjc-fixture-list',
+    official_source_url: metadataCandidate.records[0].source.official_url,
+    observed_at: hkjcSourceCheckedAt,
+    successfully_verified_at: hkjcSourceCheckedAt,
+    acquisition_method: 'automatic',
+  },
+  distances: {
+    source_id: 'hkjc-fixture-list',
+    official_source_url: metadataCandidate.records[0].source.official_url,
+    observed_at: hkjcSourceCheckedAt,
+    successfully_verified_at: hkjcSourceCheckedAt,
+    acquisition_method: 'automatic',
+  },
+  race_overrides: {
+    'Race 2': {
+      distances: {
+        source_id: 'hkjc-fixture-list',
+        official_source_url: metadataCandidate.records[0].source.official_url,
+        observed_at: hkjcSourceCheckedAt,
+        successfully_verified_at: hkjcSourceCheckedAt,
+        acquisition_method: 'automatic',
+      },
+    },
+  },
+};
+try {
+  const metadataPromotion = promoteApprovedCandidateV1({ ...baseArgs, candidate: metadataCandidate });
+  const meeting = metadataPromotion.meetingsDataset.meetings[0];
+  const detail = metadataPromotion.detailsDataset.details[0];
+  if (stable(meeting.acquisition_attempt) !== stable(metadataCandidate.records[0].acquisition_attempt)) fail('promotion must preserve acquisition attempt metadata');
+  if (stable(meeting.acquisition_completion) !== stable(metadataCandidate.records[0].acquisition_completion)) fail('promotion must preserve acquisition disposition metadata');
+  if (stable(meeting.evidence_support) !== stable(metadataCandidate.records[0].evidence_support)) fail('promotion must preserve meeting evidence provenance');
+  if (stable(detail.evidence_support) !== stable(metadataCandidate.records[0].evidence_support)) fail('promotion must preserve detail evidence provenance');
+  const incrementalMetadataCandidate = clone(metadataCandidate);
+  incrementalMetadataCandidate.records[0].evidence_support = {
+    race_overrides: {
+      'Race 2': {
+        courses: {
+          source_id: 'hkjc-fixture-list',
+          official_source_url: metadataCandidate.records[0].source.official_url,
+          observed_at: hkjcSourceCheckedAt,
+          successfully_verified_at: hkjcSourceCheckedAt,
+          acquisition_method: 'automatic',
+        },
+      },
+    },
+  };
+  const incrementalPromotion = promoteApprovedCandidateV1({
+    ...baseArgs,
+    candidate: incrementalMetadataCandidate,
+    meetingsDataset: metadataPromotion.meetingsDataset,
+    detailsDataset: metadataPromotion.detailsDataset,
+  });
+  for (const promoted of [incrementalPromotion.meetingsDataset.meetings[0], incrementalPromotion.detailsDataset.details[0]]) {
+    if (promoted.evidence_support.distances.source_id !== 'hkjc-fixture-list') fail('incremental promotion must preserve the group default provenance');
+    if (promoted.evidence_support.race_overrides['Race 2'].distances.source_id !== 'hkjc-fixture-list') fail('incremental promotion must preserve an existing race/group override');
+    if (promoted.evidence_support.race_overrides['Race 2'].courses.source_id !== 'hkjc-fixture-list') fail('incremental promotion must add a race/group override');
+  }
+} catch (error) {
+  fail(`authority metadata promotion failed: ${error instanceof Error ? error.message : error}`);
+}
+
 let first;
 try {
   first = promoteApprovedCandidateV1(baseArgs);

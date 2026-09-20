@@ -1,3 +1,10 @@
+import type {
+  CalendarAcquisitionAttemptV1,
+  CalendarAcquisitionCompletionV1,
+  CalendarEvidenceChangeV1,
+  CalendarEvidenceSupportV1,
+} from './authorityTypes';
+
 export type PipelineCapabilityRank = 'C' | 'B' | 'B+' | 'A' | 'A+';
 export type PipelineReviewStatus = 'needs_review' | 'approved' | 'rejected';
 export type PipelineConfidence = 'low' | 'medium' | 'high';
@@ -44,6 +51,10 @@ export type TimetableCandidateRecordV1 = {
   readonly last_race_time_local: string | null;
   readonly timetable_rows: readonly TimetableCandidateRowV1[];
   readonly source: TimetableCandidateSourceV1;
+  readonly acquisition_attempt?: CalendarAcquisitionAttemptV1;
+  readonly acquisition_completion?: CalendarAcquisitionCompletionV1;
+  readonly evidence_support?: CalendarEvidenceSupportV1;
+  readonly evidence_changes?: readonly CalendarEvidenceChangeV1[];
   readonly confidence: PipelineConfidence;
   readonly review_status: PipelineReviewStatus;
   readonly notes: string;

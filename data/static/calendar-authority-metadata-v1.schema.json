@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whr.badjoke-lab.com/schemas/calendar-authority-metadata-v1.schema.json",
+  "title": "Where Horses Run Calendar authority metadata v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "acquisition_attempt": { "$ref": "#/$defs/acquisitionAttempt" },
+    "acquisition_completion": { "$ref": "#/$defs/acquisitionCompletion" },
+    "evidence_support": { "$ref": "#/$defs/evidenceSupport" },
+    "evidence_changes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/evidenceChange" }
+    }
+  },
+  "$defs": {
+    "dateTimeOrNull": {
+      "oneOf": [
+        { "type": "string", "format": "date-time" },
+        { "type": "null" }
+      ]
+    },
+    "rank": { "enum": ["C", "B", "B+", "A", "A+"] },
+    "acquisitionAttempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["attempted_at", "status"],
+      "properties": {
+        "attempted_at": { "type": "string", "format": "date-time" },
+        "status": {
+          "enum": [
+            "success",
+            "source_error",
+            "network_error",
+            "parser_failure",
+            "pending_publication",
+            "implementation_gap",
+            "not_applicable"
+          ]
+        },
+        "source_id": { "type": ["string", "null"], "minLength": 1 },
+        "route_id": { "type": ["string", "null"], "minLength": 1 },
+        "error_code": { "type": ["string", "null"], "minLength": 1 }
+      }
+    },
+    "acquisitionCompletion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["disposition", "observed_rank", "technical_capability_rank", "higher_rank_open", "reason"],
+      "properties": {
+        "disposition": {
+          "enum": [
+            "promoted",
+            "complete_current_best_available",
+            "pending_publication",
+            "retry_required",
+            "implementation_gap",
+            "not_applicable"
+          ]
+        },
+        "observed_rank": { "$ref": "#/$defs/rank" },
+        "technical_capability_rank": { "$ref": "#/$defs/rank" },
+        "evaluated_capability_rank": { "$ref": "#/$defs/rank" },
+        "higher_rank_open": { "type": "boolean" },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    },
+    "reviewProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewed_at", "reviewer"],
+      "properties": {
+        "reviewed_at": { "type": "string", "format": "date-time" },
+        "reviewer": { "type": "string", "minLength": 1 },
+        "evidence_reference": { "type": ["string", "null"], "minLength": 1 }
+      }
+    },
+    "evidenceProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "official_source_url", "observed_at", "successfully_verified_at", "acquisition_method"],
+      "properties": {
+        "source_id": { "type": "string", "minLength": 1 },
+        "official_source_url": {
+          "oneOf": [
+            { "type": "string", "format": "uri", "pattern": "^https://" },
+            { "type": "null" }
+          ]
+        },
+        "observed_at": { "$ref": "#/$defs/dateTimeOrNull" },
+        "successfully_verified_at": { "$ref": "#/$defs/dateTimeOrNull" },
+        "acquisition_method": { "enum": ["automatic", "reviewed"] },
+        "review": { "$ref": "#/$defs/reviewProvenance" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "acquisition_method": { "const": "reviewed" } },
+            "required": ["acquisition_method"]
+          },
+          "then": { "required": ["review"] },
+          "else": { "not": { "required": ["review"] } }
+        }
+      ]
+    },
+    "evidenceSupport": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "meeting_identity": { "$ref": "#/$defs/evidenceProvenance" },
+        "meeting_date": { "$ref": "#/$defs/evidenceProvenance" },
+        "race_times": { "$ref": "#/$defs/evidenceProvenance" },
+        "timetable": { "$ref": "#/$defs/evidenceProvenance" },
+        "race_names": { "$ref": "#/$defs/evidenceProvenance" },
+        "distances": { "$ref": "#/$defs/evidenceProvenance" },
+        "surfaces": { "$ref": "#/$defs/evidenceProvenance" },
+        "courses": { "$ref": "#/$defs/evidenceProvenance" },
+        "race_overrides": {
+          "type": "object",
+          "propertyNames": { "type": "string", "minLength": 1 },
+          "additionalProperties": { "$ref": "#/$defs/raceEvidenceSupport" }
+        }
+      }
+    },
+    "raceEvidenceSupport": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "race_times": { "$ref": "#/$defs/evidenceProvenance" },
+        "race_names": { "$ref": "#/$defs/evidenceProvenance" },
+        "distances": { "$ref": "#/$defs/evidenceProvenance" },
+        "surfaces": { "$ref": "#/$defs/evidenceProvenance" },
+        "courses": { "$ref": "#/$defs/evidenceProvenance" }
+      }
+    },
+    "evidenceChangeTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["meeting_id", "scope"],
+      "properties": {
+        "meeting_id": { "type": "string", "minLength": 1 },
+        "scope": { "enum": ["meeting", "detail", "field"] },
+        "field": {
+          "enum": ["meeting_identity", "meeting_date", "race_time", "race_name", "distance", "surface", "course"]
+        },
+        "race_label": { "type": ["string", "null"], "minLength": 1 }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "scope": { "const": "field" } }, "required": ["scope"] },
+          "then": { "required": ["field"] }
+        }
+      ]
+    },
+    "evidenceChange": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "action", "reason_type", "reason", "evidence"],
+      "properties": {
+        "target": { "$ref": "#/$defs/evidenceChangeTarget" },
+        "action": { "enum": ["correct", "withdraw", "invalidate"] },
+        "reason_type": {
+          "enum": ["official_correction", "official_retraction", "parser_error", "reviewed_correction", "other"]
+        },
+        "reason": { "type": "string", "minLength": 1 },
+        "evidence": { "$ref": "#/$defs/evidenceProvenance" }
+      }
+    },
+    "publicationSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "snapshot_id", "generated_at"],
+      "properties": {
+        "schema_version": { "const": "calendar-publication-snapshot-v1" },
+        "snapshot_id": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "generated_at": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}

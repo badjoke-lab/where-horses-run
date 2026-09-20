@@ -1,3 +1,10 @@
+import type {
+  CalendarAcquisitionAttemptV1,
+  CalendarAcquisitionCompletionV1,
+  CalendarEvidenceChangeV1,
+  CalendarEvidenceSupportV1,
+} from './authorityTypes';
+
 export type CapabilityRank = 'not_listed' | 'D' | 'C' | 'B' | 'B+' | 'A' | 'A+';
 
 export type SourceStatus = 'unknown' | 'partial' | 'verified' | 'stale' | 'unavailable';
@@ -35,6 +42,10 @@ export type CanonicalMeeting = {
   readonly last_race_time_local?: string | null;
   readonly source_trace: SourceTrace;
   readonly freshness: Freshness;
+  readonly acquisition_attempt?: CalendarAcquisitionAttemptV1;
+  readonly acquisition_completion?: CalendarAcquisitionCompletionV1;
+  readonly evidence_support?: CalendarEvidenceSupportV1;
+  readonly evidence_changes?: readonly CalendarEvidenceChangeV1[];
   readonly notes?: string | null;
 };
 
@@ -59,6 +70,8 @@ export type CanonicalMeetingDetail = {
   readonly capability_rank: Extract<CapabilityRank, 'A' | 'A+'>;
   readonly source_trace: SourceTrace;
   readonly freshness: Freshness;
+  readonly evidence_support?: CalendarEvidenceSupportV1;
+  readonly evidence_changes?: readonly CalendarEvidenceChangeV1[];
   readonly timetable_rows: readonly CanonicalRaceTimetableRow[];
   readonly summary_note?: string | null;
 };

@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { attachPublicationSnapshotV1 } from './calendar-authority-metadata.mjs';
 
 function arg(name, fallback = null) {
   const inline = process.argv.find((value) => value.startsWith(`--${name}=`));
@@ -64,6 +65,17 @@ for (const { file, key } of datasets) {
     purgedStateCount += removed;
     writeJson(file, { ...dataset, generated_at: new Date().toISOString(), [key]: next });
   }
+}
+
+if (purgedStateCount > 0) {
+  const snapshotGeneratedAt = new Date().toISOString();
+  const publicDatasets = attachPublicationSnapshotV1(
+    readJson(publicPath),
+    readJson(publicDetailsPath),
+    snapshotGeneratedAt,
+  );
+  writeJson(publicPath, publicDatasets.meetingListDataset);
+  writeJson(publicDetailsPath, publicDatasets.meetingDetailsDataset);
 }
 
 console.log(JSON.stringify({
