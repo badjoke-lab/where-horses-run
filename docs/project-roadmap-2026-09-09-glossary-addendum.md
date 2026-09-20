@@ -14,8 +14,8 @@ Plain-language state:
 
 ```text
 Working dictionary: 642 terms/concepts
-Meaning-level source verified: 562
-Still under review: 80
+Meaning-level source verified: 567
+Still under review: 75
 Highest-priority core terms: 203/203 verified
 Jurisdiction-specific research additions: 161/161 verified
 Public glossary publication: disabled
@@ -46,6 +46,7 @@ Horse / breeding / participant roles: wave 1 complete current pass; weak residua
 Venue / entry terminology: wave 1 complete current pass; weak residuals retained
 Broad category wave 1: complete — 18 RTYPE/SURF/DIST/WEIGHT Concepts verified
 Targeted residual wave 1: complete — 15 HORSE/BREED/ROLE/VENUE Concepts verified
+Targeted residual wave 2: complete — 5 ENTRY/BREED/VENUE Concepts verified
 Next: continue targeted residual cleanup across remaining base-seed categories
 Later: GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 ```
@@ -88,6 +89,7 @@ The remaining task is to clean the lower-priority base dictionary. This does **n
 - Venue/entry terminology wave 1: **11 verified** — 6 ENTRY and 5 VENUE Concepts with scoped BHA, JRA, Jockey Club, Equibase/Churchill Downs, HRA and HRNZ evidence.
 - Broad category wave 1: **18 verified** — 4 RTYPE, 5 SURF, 4 DIST and 5 WEIGHT Concepts.
 - Targeted residual wave 1: **15 verified** — 4 HORSE, 1 BREED, 2 ROLE and 8 VENUE Concepts; jurisdiction scope narrowed where the seed overclaimed.
+- Targeted residual wave 2: **5 verified** — 2 ENTRY, 1 BREED and 2 VENUE Concepts; BHA supplementary-entry mechanics, Thoroughbred Covering semantics and JRA stable-facility terminology remain scoped.
 
 ### Residual edge-case pass
 
@@ -109,13 +111,13 @@ EQUIP is now **27/29 source-verified (93.1%)**. `Blinders` and `Barefoot` remain
 
 Wave 1 verified `Horse`, `Foal`, `Yearling`, `Broodmare sire`, `Mating`, `Foaling`, `Inbreeding`, `Conditional jockey`, `Amateur rider`, `Owner-breeder`, `Exercise rider`, `Work rider`, `Clerk of the scales` and `Farrier` using current JRA, IFHA, BHA and Jockey Club material.
 
-HORSE is now **25/34 source-verified (73.5%)**, BREED is **12/22 (54.5%)**, and ROLE is **27/31 (87.1%)**. Local age conventions, Thoroughbred registration procedures, and British licensing thresholds remain explicitly scoped. The remaining horse/breeding/role seed rows are retained as candidates where this source bundle does not support promotion.
+HORSE is now **25/34 source-verified (73.5%)**, BREED is **13/22 (59.1%)**, and ROLE is **27/31 (87.1%)**. Local age conventions, Thoroughbred registration procedures, and British licensing thresholds remain explicitly scoped. The remaining horse/breeding/role seed rows are retained as candidates where this source bundle does not support promotion.
 
 ### Venue / entry terminology pass
 
 Wave 1 verified `Maximum field`, `Balloted out`, `Also eligible`, `Entry fee`, `Preference`, `Eliminated`, `Homestretch`, `Backstretch`, `Mobile barrier`, `Parade ring` and `Winner's enclosure`.
 
-ENTRY is now **26/31 source-verified (83.9%)** and VENUE is **36/44 (81.8%)**. BHA's maximum-field/elimination language remains GB-scoped; current North American stakes conditions support also-eligible, entry-fee and preference mechanics without universalizing one race's rules; JRA/Jockey Club and harness authorities support regional course/facility labels without flattening `Homestretch` into `Home straight`, `Parade ring` into `Paddock`, `Winner's enclosure` into `Winners' circle`, or `Mobile barrier` into every starting-gate system.
+ENTRY is now **28/31 source-verified (90.3%)** and VENUE is **38/44 (86.4%)**. BHA's maximum-field/elimination language remains GB-scoped; current North American stakes conditions support also-eligible, entry-fee and preference mechanics without universalizing one race's rules; JRA/Jockey Club and harness authorities support regional course/facility labels without flattening `Homestretch` into `Home straight`, `Parade ring` into `Paddock`, `Winner's enclosure` into `Winners' circle`, or `Mobile barrier` into every starting-gate system.
 
 ### Broad category wave 1
 
@@ -128,6 +130,12 @@ RTYPE is now **100/111 source-verified (90.1%)**, SURF **57/63 (90.5%)**, DIST *
 This pass verified `Four-year-old`, `Foreign-bred`, `Ridgling`, `Rig`, `Foaled`, `Assistant trainer`, `Stable staff`, `Chute`, `Bend`, `Running rail`, `Winning post`, `Grandstand`, `Barn`, `Clockwise` and `Anti-clockwise`.
 
 HORSE is now **25/34 source-verified (73.5%)**, BREED **12/22 (54.5%)**, ROLE **27/31 (87.1%)**, and VENUE **36/44 (81.8%)**. `Foreign-bred` is bounded to Japan/Regional for the verified JRA usage, `Rig` is International/Regional, and facility/orientation labels remain separate from related broader Concepts.
+
+### Targeted residual wave 2
+
+This pass verified `Supplementary entry`, `Supplementary fee`, `Covering`, `Stable area` and `Stable`.
+
+ENTRY is now **28/31 source-verified (90.3%)**, BREED **13/22 (59.1%)**, and VENUE **38/44 (86.4%)**. BHA supplementary-entry and fee mechanics stay GB/Regional, `Covering` is narrowed to International/Thoroughbred based on IFHA/ISBC/ITBF definitions, and stable-facility labels remain scope-aware.
 
 Authority/audit files now include:
 
@@ -147,6 +155,7 @@ data/glossary-master/sources/horse-breeding-role-sources-v1.tsv
 data/glossary-master/sources/venue-entry-sources-v1.tsv
 data/glossary-master/sources/broad-category-sources-v1.tsv
 data/glossary-master/sources/targeted-residual-sources-v1.tsv
+data/glossary-master/sources/targeted-residual-sources-v2.tsv
 data/glossary-master/coverage/p1-verification-wave1-v1.tsv
 data/glossary-master/coverage/p1-verification-wave2-v1.tsv
 data/glossary-master/coverage/race-type-condition-verification-v1.tsv
@@ -165,22 +174,23 @@ data/glossary-master/coverage/horse-breeding-role-verification-v1.tsv
 data/glossary-master/coverage/venue-entry-verification-v1.tsv
 data/glossary-master/coverage/broad-category-verification-v1.tsv
 data/glossary-master/coverage/targeted-residual-verification-v1.tsv
+data/glossary-master/coverage/targeted-residual-verification-v2.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
 Current observed state:
 
-- all Concepts: **562/642 source-verified (87.5%)**, 80 candidate;
+- all Concepts: **567/642 source-verified (88.3%)**, 75 candidate;
 - core highest-priority set: **203/203 source-verified (100.0%)**;
-- active base seed: **401/481 source-verified (83.4%)**, 80 candidate;
+- active base seed: **406/481 source-verified (84.4%)**, 75 candidate;
 - supplemental jurisdiction/relationship research: **161/161 source-verified (100.0%)**;
 - RTYPE: **100/111 source-verified (90.1%)**;
-- ENTRY: **26/31 source-verified (83.9%)**;
+- ENTRY: **28/31 source-verified (90.3%)**;
 - HORSE: **25/34 source-verified (73.5%)**;
-- BREED: **12/22 source-verified (54.5%)**;
+- BREED: **13/22 source-verified (59.1%)**;
 - ROLE: **27/31 source-verified (87.1%)**;
-- VENUE: **36/44 source-verified (81.8%)**;
+- VENUE: **38/44 source-verified (86.4%)**;
 - SURF: **57/63 source-verified (90.5%)**;
 - DIST: **17/21 source-verified (81.0%)**;
 - WEIGHT: **31/34 source-verified (91.2%)**;
@@ -196,7 +206,7 @@ Current observed state:
 
 ## What happens next
 
-The remaining **80 terms** continue through targeted residual review rather than another percentage-driven blanket promotion:
+The remaining **75 terms** continue through targeted residual review rather than another percentage-driven blanket promotion:
 
 ```text
 largest residual groups: VENUE / HORSE / BREED / RTYPE
@@ -205,7 +215,7 @@ largest residual groups: VENUE / HORSE / BREED / RTYPE
 -> rerun evidence/readiness gate
 ```
 
-`GLOSSARY-MASTER-005` remains **HOLD — not complete**. An 87.5% verified master with 80 unresolved seed Concepts is not ready to advance.
+`GLOSSARY-MASTER-005` remains **HOLD — not complete**. An 88.3% verified master with 75 unresolved seed Concepts is not ready to advance.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
@@ -235,8 +245,8 @@ The current public glossary remains disposable content. There is no old-record m
 ```text
 Current Work ID: GLOSSARY-MASTER-005
 Working dictionary: 642 terms
-Verified: 562
-Still under review: 80
+Verified: 567
+Still under review: 75
 Next subject group: continue targeted residual cleanup across remaining base-seed categories
 MASTER-006: blocked until the evidence/readiness gate passes
 Public implementation: deferred
