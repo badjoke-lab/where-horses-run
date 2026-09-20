@@ -97,13 +97,10 @@ The abbreviation/code layer remains at **38 source-verified rows**.
 - DISC: **16/17 verified (94.1%)** — Endurance racing remains under modeling review.
 - RTYPE: **106/111 verified (95.5%)** — five race-type residuals remain under review.
 - DIST: **18/21 verified (85.7%)** — Kilometre, Fraction and Final fraction remain under review.
-- WEIGHT: **31/34 verified (91.2%)** — Claiming allowance, Weight rise and Weight drop remain candidate.
 - SURF: **57/62 verified (91.9%)** — Grass was merged into Turf; five product/weather/analysis residuals remain candidate.
 - WEIGHT: **32/34 verified (94.1%)** — Weight rise and Weight drop remain under review.
-- RTYPE: **100/111 verified (90.1%)** — eleven broad or regional race-type labels remain candidate.
 - ENTRY: **29/31 verified (93.5%)** — Waitlist and Qualification remain under review.
 - PRIZE: **10/12 verified (83.3%)** — Bonus and Stake remain candidate.
-- DIST: **17/21 verified (81.0%)** — four measurement/timing rows remain candidate.
 - ROLE: **30/31 verified (96.8%)** — Commentator remains under review.
 - TRAIN: **24/26 verified (92.3%)** — Cool down and Freshened remain under review.
 - VENUE: **39/44 verified (88.6%)** — five facility/orientation residuals remain under review.
@@ -114,7 +111,7 @@ The abbreviation/code layer remains at **38 source-verified rows**.
 
 The **49 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
 
-Targeted residual wave 1 is complete for the current defensible source bundle. The next step is to continue residual cleanup across the remaining base-seed categories while leaving intentionally weak edge cases visible until stronger evidence or a cleaner modeling decision exists.
+Targeted residual wave 6 is complete for the current defensible source bundle. The next step is to continue residual cleanup across the remaining base-seed categories while leaving intentionally weak edge cases visible until stronger evidence or a cleaner modeling decision exists.
 
 After that residual cleanup, the evidence/readiness gate will be rerun. `MASTER-006` and public glossary architecture remain blocked until that review is defensible.
 
