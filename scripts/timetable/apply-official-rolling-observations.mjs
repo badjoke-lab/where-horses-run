@@ -38,7 +38,11 @@ function normalizedRows(record) {
     ...(Number.isFinite(row.distance_m) ? { distance_m: row.distance_m } : {}),
     ...(row.surface ? { surface: row.surface } : {}),
     ...(row.course_label ? { course_label: row.course_label } : {}),
-  })).filter((row) => row.post_time_local);
+  })).filter((row) => row.post_time_local
+    || row.race_name
+    || row.distance_m != null
+    || row.surface
+    || row.course_label);
 }
 function observedRank(record) {
   return deriveBestAvailableRank(record, record?.timetable_rows ?? []);
@@ -152,7 +156,7 @@ function makeCanonical(record, artifact, checkedAt, defaults, previous, acquisit
 }
 function makeCanonicalDetail(meeting, record) {
   const rows = normalizedRows(record);
-  if (!['A', 'A+'].includes(meeting.capability_rank) || !rows.length) return null;
+  if (!rows.length) return null;
   return {
     meeting_id: meeting.meeting_id,
     country_id: meeting.country_id,
@@ -334,22 +338,22 @@ for (const record of records) {
     explicitCorrection: correction,
     evidenceChanges: record.evidence_changes ?? [],
   });
+  const shouldAdvanceEvidenceFreshness = accepted.decision !== 'retained_stronger_evidence';
   const next = {
     ...accepted.meeting,
-    freshness: {
-      ...(accepted.meeting.freshness ?? {}),
-      last_checked_date: checkedAt.slice(0, 10),
-      generated_at: checkedAt,
-      stale_after_date: null,
-      freshness_note: correction
-        ? 'Updated from an explicit official correction.'
-        : accepted.decision === 'retained_stronger_evidence'
-          ? 'Retained stronger accepted evidence while recording the current official observation state.'
-          : 'Upserted from a verified official rolling-window observation.',
-    },
+    freshness: shouldAdvanceEvidenceFreshness
+      ? {
+          ...(accepted.meeting.freshness ?? {}),
+          last_checked_date: checkedAt.slice(0, 10),
+          generated_at: checkedAt,
+          stale_after_date: null,
+          freshness_note: correction
+            ? 'Updated from an explicit official correction.'
+            : 'Upserted from a verified official rolling-window observation.',
+        }
+      : accepted.meeting.freshness,
   };
-  let nextDetail = accepted.detail;
-  if (nextDetail) nextDetail = { ...nextDetail, freshness: next.freshness, source_trace: next.source_trace };
+  const nextDetail = accepted.detail;
 
   const substantiveChanged = !previous || !sameSubstance(previous, next)
     || JSON.stringify(previousDetail) !== JSON.stringify(nextDetail);

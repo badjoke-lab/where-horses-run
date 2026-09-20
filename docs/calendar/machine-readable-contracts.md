@@ -255,9 +255,9 @@ scripts/check-calendar-pipeline-v1-promotion.mjs
 scripts/timetable/pipeline-v1/promotion-core.mjs
 ```
 
-Normal promotion is monotonic by reviewed rank. A lower-rank ordinary candidate cannot overwrite higher reviewed canonical rank.
+Promotion validation remains monotonic, but canonical acceptance is no longer independently decided by the promotion core. `pipeline-v1/promotion-core.mjs` delegates accepted evidence, rank derivation, weak-observation retention, and corrective replacement to `scripts/timetable/canonical-acceptance.mjs`. A lower-rank ordinary candidate cannot erase higher still-valid canonical evidence.
 
-A corrective downgrade is a separate explicit core mode and requires one reviewed reason from the responsibility map. The ordinary promotion CLI does not expose corrective mode. Corrective downgrade remains canonical-only.
+A corrective downgrade is a separate explicit promotion mode and requires one reviewed reason from the responsibility map; that mode invokes the shared authority as an explicit authoritative replacement. The ordinary promotion CLI does not expose corrective mode. Corrective downgrade remains canonical-only.
 
 ### Coverage Audit
 

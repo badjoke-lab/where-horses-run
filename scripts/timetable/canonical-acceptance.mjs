@@ -1,21 +1,33 @@
 import { deriveBestAvailableRank, rankIndex } from './best-available-rank.mjs';
-import { mergeEvidenceSupportV1 } from './calendar-authority-metadata.mjs';
+import {
+  mergeEvidenceSupportV1,
+  validateCalendarAuthorityMetadataV1,
+} from './calendar-authority-metadata.mjs';
 
-const DETAIL_FIELDS = ['post_time_local', 'race_name', 'distance_m', 'surface', 'course_label'];
 const MEETING_IDENTITY_FIELDS = ['country_id', 'authority_id', 'racing_system_id', 'racecourse_id', 'timezone'];
+const ATTEMPT_FAILURE_STATUSES = new Set([
+  'source_error',
+  'network_error',
+  'parser_failure',
+  'pending_publication',
+  'implementation_gap',
+  'not_applicable',
+]);
 
 function clone(value) {
   return value == null ? value : structuredClone(value);
 }
 
-function defined(value) {
-  return value !== undefined && value !== null;
+function meaningful(value) {
+  if (value === undefined || value === null) return false;
+  if (typeof value === 'string') return value.trim().length > 0;
+  return true;
 }
 
-function mergeDefined(previous = {}, current = {}) {
+function mergeMeaningful(previous = {}, current = {}) {
   const next = { ...clone(previous) };
   for (const [key, value] of Object.entries(current ?? {})) {
-    if (defined(value)) next[key] = clone(value);
+    if (meaningful(value)) next[key] = clone(value);
   }
   return next;
 }
@@ -25,17 +37,53 @@ function mergeEvidenceChanges(previous = [], current = []) {
     .map((change) => [JSON.stringify(change), clone(change)])).values()];
 }
 
+function explicitAttemptFailed(attempt) {
+  return Boolean(attempt && ATTEMPT_FAILURE_STATUSES.has(attempt.status));
+}
+
+function authorityMetadataForValidation({
+  candidateMeeting,
+  acquisitionCompletion,
+  acquisitionAttempt,
+  evidenceChanges,
+}) {
+  return {
+    ...(acquisitionAttempt !== undefined ? { acquisition_attempt: acquisitionAttempt } : {}),
+    ...(acquisitionCompletion ? { acquisition_completion: acquisitionCompletion } : {}),
+    ...(candidateMeeting?.evidence_support ? { evidence_support: candidateMeeting.evidence_support } : {}),
+    ...(evidenceChanges?.length ? { evidence_changes: evidenceChanges } : {}),
+  };
+}
+
+function assertAuthorityMetadataValid(args) {
+  const metadata = authorityMetadataForValidation(args);
+  const errors = validateCalendarAuthorityMetadataV1(metadata, args.candidateMeeting?.meeting_id ?? 'canonical_acceptance');
+  if (errors.length) throw new Error(errors.join('; '));
+}
+
 export function mergeCanonicalTimetableRowsV1(previousRows = [], currentRows = [], { replace = false } = {}) {
   const incoming = Array.isArray(currentRows) ? currentRows : [];
   const previous = Array.isArray(previousRows) ? previousRows : [];
   if (replace) return incoming.map((row) => clone(row));
   if (incoming.length === 0) return previous.map((row) => clone(row));
 
-  const previousByLabel = new Map(previous.map((row) => [row.label, row]));
-  const merged = incoming.map((row) => mergeDefined(previousByLabel.get(row.label) ?? {}, row));
-  const incomingLabels = new Set(incoming.map((row) => row.label));
-  for (const row of previous) {
-    if (!incomingLabels.has(row.label)) merged.push(clone(row));
+  const incomingByLabel = new Map();
+  for (const row of incoming) {
+    if (!meaningful(row?.label)) continue;
+    incomingByLabel.set(row.label, row);
+  }
+
+  const merged = previous.map((row) => {
+    const incomingRow = incomingByLabel.get(row.label);
+    if (!incomingRow) return clone(row);
+    incomingByLabel.delete(row.label);
+    return mergeMeaningful(row, incomingRow);
+  });
+
+  for (const row of incoming) {
+    if (!meaningful(row?.label) || !incomingByLabel.has(row.label)) continue;
+    merged.push(clone(row));
+    incomingByLabel.delete(row.label);
   }
   return merged;
 }
@@ -54,7 +102,7 @@ export function normalizeStoredCanonicalV1(meeting, detail = null) {
         capability_rank: evidenceRank,
         display_status: evidenceRank === 'C' ? 'partial' : 'displayable',
       };
-  const nextDetail = ['A', 'A+'].includes(evidenceRank) && detail
+  const nextDetail = detail
     ? (detail.capability_rank === evidenceRank ? detail : { ...detail, capability_rank: evidenceRank })
     : null;
   return {
@@ -80,14 +128,26 @@ export function retainCurrentAcquisitionStateV1(meeting, {
   };
 }
 
-function mergeAuthorityMetadata(previous, current) {
+function mergeAuthorityMetadata(previous, current, {
+  acceptCurrentEvidence = true,
+  consumedEvidenceChanges = [],
+} = {}) {
   const next = {};
-  if (previous?.evidence_support || current?.evidence_support) {
-    next.evidence_support = mergeEvidenceSupportV1(previous?.evidence_support, current?.evidence_support);
+  const previousSupport = previous?.evidence_support;
+  const currentSupport = acceptCurrentEvidence ? current?.evidence_support : null;
+  if (previousSupport || currentSupport) {
+    next.evidence_support = currentSupport
+      ? mergeEvidenceSupportV1(previousSupport, currentSupport)
+      : clone(previousSupport);
   }
-  if (previous?.evidence_changes || current?.evidence_changes) {
-    next.evidence_changes = mergeEvidenceChanges(previous?.evidence_changes, current?.evidence_changes);
-  }
+  const combinedChanges = mergeEvidenceChanges(
+    previous?.evidence_changes,
+    [
+      ...(current?.evidence_changes ?? []),
+      ...(consumedEvidenceChanges ?? []),
+    ],
+  );
+  if (combinedChanges.length) next.evidence_changes = combinedChanges;
   return next;
 }
 
@@ -95,22 +155,45 @@ function candidateRowByLabel(candidateDetail, label) {
   return (candidateDetail?.timetable_rows ?? []).find((row) => row.label === label) ?? null;
 }
 
+function syncDetailIdentity(meeting, detail) {
+  if (!detail) return detail;
+  return {
+    ...detail,
+    meeting_id: meeting.meeting_id,
+    country_id: meeting.country_id,
+    authority_id: meeting.authority_id,
+    racecourse_id: meeting.racecourse_id,
+    date: meeting.date,
+    timezone: meeting.timezone,
+  };
+}
+
 function applyFieldChange({ meeting, detail, candidateMeeting, candidateDetail, change }) {
   const target = change.target ?? {};
   const remove = change.action === 'withdraw' || change.action === 'invalidate';
+
   if (target.field === 'meeting_date') {
     if (remove) throw new Error('meeting_date cannot be withdrawn from an existing canonical meeting');
-    if (!defined(candidateMeeting?.date)) throw new Error('meeting_date correction requires candidate date');
-    return { meeting: { ...meeting, date: candidateMeeting.date }, detail };
+    if (!meaningful(candidateMeeting?.date)) throw new Error('meeting_date correction requires candidate date');
+    const nextMeeting = { ...meeting, date: candidateMeeting.date };
+    return {
+      meeting: nextMeeting,
+      detail: detail ? { ...detail, date: candidateMeeting.date } : detail,
+    };
   }
+
   if (target.field === 'meeting_identity') {
     if (remove) throw new Error('meeting_identity cannot be withdrawn from an existing canonical meeting');
     const identity = {};
     for (const key of MEETING_IDENTITY_FIELDS) {
-      if (defined(candidateMeeting?.[key])) identity[key] = candidateMeeting[key];
+      if (meaningful(candidateMeeting?.[key])) identity[key] = candidateMeeting[key];
     }
     if (Object.keys(identity).length === 0) throw new Error('meeting_identity correction requires candidate identity fields');
-    return { meeting: { ...meeting, ...identity }, detail };
+    const nextMeeting = { ...meeting, ...identity };
+    return {
+      meeting: nextMeeting,
+      detail: syncDetailIdentity(nextMeeting, detail),
+    };
   }
 
   const fieldMap = {
@@ -123,14 +206,17 @@ function applyFieldChange({ meeting, detail, candidateMeeting, candidateDetail, 
   const field = fieldMap[target.field];
   if (!field) throw new Error(`unsupported field correction target: ${target.field}`);
   if (!target.race_label) throw new Error(`${target.field} correction requires race_label`);
-  const rows = (detail?.timetable_rows ?? []).map((row) => ({ ...row }));
+  if (!detail) throw new Error(`correction target detail is missing for ${target.race_label}`);
+
+  const rows = (detail.timetable_rows ?? []).map((row) => ({ ...row }));
   const index = rows.findIndex((row) => row.label === target.race_label);
   if (index < 0) throw new Error(`correction target race not found: ${target.race_label}`);
+
   if (remove) {
     delete rows[index][field];
   } else {
     const candidateRow = candidateRowByLabel(candidateDetail, target.race_label);
-    if (!candidateRow || !defined(candidateRow[field])) {
+    if (!candidateRow || !meaningful(candidateRow[field])) {
       throw new Error(`${target.field} correction requires candidate value for ${target.race_label}`);
     }
     rows[index][field] = clone(candidateRow[field]);
@@ -141,8 +227,11 @@ function applyFieldChange({ meeting, detail, candidateMeeting, candidateDetail, 
 function applyEvidenceChanges({ meeting, detail, candidateMeeting, candidateDetail, evidenceChanges }) {
   let currentMeeting = meeting;
   let currentDetail = detail;
+  let detailWithdrawn = false;
+
   for (const change of evidenceChanges ?? []) {
     if (change?.target?.meeting_id && change.target.meeting_id !== currentMeeting?.meeting_id) continue;
+
     if (change.target?.scope === 'field') {
       ({ meeting: currentMeeting, detail: currentDetail } = applyFieldChange({
         meeting: currentMeeting,
@@ -153,25 +242,46 @@ function applyEvidenceChanges({ meeting, detail, candidateMeeting, candidateDeta
       }));
       continue;
     }
+
     if (change.target?.scope === 'detail') {
       if (change.action === 'withdraw' || change.action === 'invalidate') {
         currentDetail = null;
+        detailWithdrawn = true;
       } else if (change.action === 'correct') {
         if (!candidateDetail) throw new Error('detail correction requires candidate detail');
         currentDetail = clone(candidateDetail);
       }
       continue;
     }
+
     if (change.target?.scope === 'meeting') {
       if (change.action === 'correct') {
-        currentMeeting = mergeDefined(currentMeeting, candidateMeeting);
+        currentMeeting = mergeMeaningful(currentMeeting, candidateMeeting);
         currentDetail = candidateDetail ? clone(candidateDetail) : currentDetail;
         continue;
       }
       throw new Error('meeting-level withdrawal/invalidation requires an explicit removal workflow');
     }
   }
-  return { meeting: currentMeeting, detail: currentDetail };
+
+  return { meeting: currentMeeting, detail: currentDetail, detailWithdrawn };
+}
+
+function synchronizeDerivedTimes(meeting, detail, { detailWithdrawn = false } = {}) {
+  if (detailWithdrawn) {
+    return {
+      ...meeting,
+      first_race_time_local: null,
+      last_race_time_local: null,
+    };
+  }
+  const timedRows = (detail?.timetable_rows ?? []).filter((row) => meaningful(row?.post_time_local));
+  if (!timedRows.length) return meeting;
+  return {
+    ...meeting,
+    first_race_time_local: timedRows[0].post_time_local,
+    last_race_time_local: timedRows.at(-1).post_time_local,
+  };
 }
 
 export function acceptCanonicalObservationV1({
@@ -186,28 +296,46 @@ export function acceptCanonicalObservationV1({
 } = {}) {
   if (!candidateMeeting?.meeting_id) throw new Error('candidate meeting_id is required');
 
+  assertAuthorityMetadataValid({
+    candidateMeeting,
+    acquisitionCompletion,
+    acquisitionAttempt,
+    evidenceChanges,
+  });
+
   const normalizedPrevious = normalizeStoredCanonicalV1(previousMeeting, previousDetail);
   const priorMeeting = normalizedPrevious.meeting;
   const priorDetail = normalizedPrevious.detail;
   const candidateRank = canonicalEvidenceRankV1(candidateMeeting, candidateDetail);
+  const priorRank = priorMeeting ? canonicalEvidenceRankV1(priorMeeting, priorDetail) : null;
+  const failedAttempt = explicitAttemptFailed(acquisitionAttempt);
+  const targetedOnly = !explicitCorrection && (evidenceChanges?.length ?? 0) > 0;
 
   let meeting;
   let detail;
   let decision;
 
-  if (explicitCorrection) {
+  if (explicitCorrection && !failedAttempt) {
     meeting = {
       ...(priorMeeting ?? {}),
       ...clone(candidateMeeting),
     };
-    detail = ['A', 'A+'].includes(candidateRank) && candidateDetail ? clone(candidateDetail) : null;
+    detail = candidateDetail ? clone(candidateDetail) : null;
     decision = 'authoritative_replacement';
   } else if (!priorMeeting) {
     meeting = clone(candidateMeeting);
     detail = candidateDetail ? clone(candidateDetail) : null;
-    decision = 'accepted_new';
+    decision = failedAttempt ? 'accepted_schedule_with_failed_attempt' : 'accepted_new';
+  } else if (failedAttempt) {
+    meeting = clone(priorMeeting);
+    detail = clone(priorDetail);
+    decision = 'retained_stronger_evidence';
+  } else if (targetedOnly) {
+    meeting = clone(priorMeeting);
+    detail = clone(priorDetail);
+    decision = 'targeted_evidence_change';
   } else {
-    meeting = mergeDefined(priorMeeting, candidateMeeting);
+    meeting = mergeMeaningful(priorMeeting, candidateMeeting);
     const mergedRows = mergeCanonicalTimetableRowsV1(
       priorDetail?.timetable_rows,
       candidateDetail?.timetable_rows,
@@ -218,40 +346,53 @@ export function acceptCanonicalObservationV1({
           ...(candidateDetail ?? {}),
           timetable_rows: mergedRows,
         }
-      : null;
-    const priorRank = canonicalEvidenceRankV1(priorMeeting, priorDetail);
-    decision = rankIndex(candidateRank) < rankIndex(priorRank)
-      ? 'retained_stronger_evidence'
-      : 'accepted_observation';
+      : clone(priorDetail);
+
+    if (priorRank != null && rankIndex(candidateRank) < rankIndex(priorRank)) {
+      meeting.source_trace = clone(priorMeeting.source_trace);
+      meeting.freshness = clone(priorMeeting.freshness);
+      if (detail && priorDetail) {
+        detail.source_trace = clone(priorDetail.source_trace);
+        detail.freshness = clone(priorDetail.freshness);
+      }
+      decision = 'retained_stronger_evidence';
+    } else {
+      decision = 'accepted_observation';
+    }
   }
 
-  ({ meeting, detail } = applyEvidenceChanges({
+  const applied = applyEvidenceChanges({
     meeting,
     detail,
     candidateMeeting,
     candidateDetail,
     evidenceChanges,
-  }));
+  });
+  meeting = applied.meeting;
+  detail = applied.detail;
 
-  const metadata = mergeAuthorityMetadata(priorMeeting, candidateMeeting);
+  const acceptCurrentEvidence = !failedAttempt;
+  const metadata = mergeAuthorityMetadata(priorMeeting, candidateMeeting, {
+    acceptCurrentEvidence,
+    consumedEvidenceChanges: evidenceChanges,
+  });
   meeting = {
     ...(meeting ?? {}),
     ...metadata,
     ...(acquisitionCompletion ? { acquisition_completion: clone(acquisitionCompletion) } : {}),
     ...(acquisitionAttempt !== undefined ? { acquisition_attempt: clone(acquisitionAttempt) } : {}),
   };
+
   if (detail) {
-    const detailMetadata = mergeAuthorityMetadata(priorDetail, candidateDetail ?? candidateMeeting);
+    const detailMetadata = mergeAuthorityMetadata(priorDetail, candidateDetail ?? candidateMeeting, {
+      acceptCurrentEvidence,
+      consumedEvidenceChanges: evidenceChanges,
+    });
     detail = { ...detail, ...detailMetadata };
   }
 
-  if (detail?.timetable_rows?.length) {
-    meeting = {
-      ...meeting,
-      first_race_time_local: detail.timetable_rows[0]?.post_time_local ?? null,
-      last_race_time_local: detail.timetable_rows.at(-1)?.post_time_local ?? null,
-    };
-  }
+  meeting = synchronizeDerivedTimes(meeting, detail, { detailWithdrawn: applied.detailWithdrawn });
+  detail = syncDetailIdentity(meeting, detail);
 
   const finalRank = canonicalEvidenceRankV1(meeting, detail);
   meeting = {
@@ -259,8 +400,7 @@ export function acceptCanonicalObservationV1({
     capability_rank: finalRank,
     display_status: finalRank === 'C' ? 'partial' : 'displayable',
   };
-  if (['A', 'A+'].includes(finalRank) && detail) detail = { ...detail, capability_rank: finalRank };
-  else detail = null;
+  if (detail) detail = { ...detail, capability_rank: finalRank };
 
   return {
     meeting,
@@ -268,7 +408,7 @@ export function acceptCanonicalObservationV1({
     decision,
     observed_rank: candidateRank,
     retained_rank: finalRank,
-    previous_rank: priorMeeting ? canonicalEvidenceRankV1(priorMeeting, priorDetail) : null,
+    previous_rank: priorRank,
     normalized_previous_changed: normalizedPrevious.changed,
   };
 }

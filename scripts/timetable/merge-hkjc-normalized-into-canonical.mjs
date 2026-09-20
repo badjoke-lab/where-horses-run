@@ -1,3 +1,7 @@
+if (process.env.WHR_ALLOW_LEGACY_CANONICAL_WRITE !== '1') {
+  throw new Error('Legacy canonical writer is quarantined after Calendar authority Wave 3. Set WHR_ALLOW_LEGACY_CANONICAL_WRITE=1 only for explicit historical/bootstrap recovery.');
+}
+
 import fs from 'node:fs';
 import path from 'node:path';
 

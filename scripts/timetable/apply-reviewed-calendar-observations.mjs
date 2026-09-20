@@ -225,7 +225,8 @@ for (const record of reviewedById.values()) {
   const previousDetail = canonicalDetailsById.get(record.meeting_id) ?? null;
   const reviewedRows = Array.isArray(record.timetable_rows) ? record.timetable_rows : [];
   const reviewedEvidenceRank = deriveBestAvailableRank(record, reviewedRows);
-  if (rank(record.capability_rank) > rank(reviewedEvidenceRank)) {
+  const hasReviewedEvidenceChanges = (record.evidence_changes ?? []).length > 0;
+  if (!hasReviewedEvidenceChanges && rank(record.capability_rank) > rank(reviewedEvidenceRank)) {
     throw new Error(`reviewed observation rank exceeds its evidence-derived rank for ${record.meeting_id}: declared=${record.capability_rank} evidence=${reviewedEvidenceRank}`);
   }
 
@@ -296,7 +297,10 @@ for (const record of reviewedById.values()) {
       ? 'B+'
       : meeting.first_race_time_local ? 'B' : 'C';
   }
-  const minimumReviewedPublicRank = capRank(reviewedEvidenceRank, ceiling);
+  const minimumReviewedPublicRank = capRank(
+    hasReviewedEvidenceChanges ? meeting.capability_rank : reviewedEvidenceRank,
+    ceiling,
+  );
   if (rank(desiredPublicRank) < rank(minimumReviewedPublicRank)) {
     throw new Error(`reviewed data cannot satisfy policy-projected minimum rank for ${record.meeting_id}`);
   }
@@ -383,11 +387,13 @@ const finalPublicDetailsById = new Map((finalPublicDetails.details ?? []).map((r
 for (const record of reviewedById.values()) {
   const reviewedRows = Array.isArray(record.timetable_rows) ? record.timetable_rows : [];
   const reviewedEvidenceRank = deriveBestAvailableRank(record, reviewedRows);
+  const hasReviewedEvidenceChanges = (record.evidence_changes ?? []).length > 0;
   const meeting = finalCanonicalById.get(record.meeting_id);
   const publicMeeting = finalPublicById.get(record.meeting_id);
   const policy = choosePolicy(record.authority_id, policyDataset);
-  const minimumPublicRank = capRank(reviewedEvidenceRank, policy.max_public_rank ?? 'C');
-  if (!meeting || rank(meeting.capability_rank) < rank(reviewedEvidenceRank)) {
+  const minimumCanonicalRank = hasReviewedEvidenceChanges ? meeting?.capability_rank ?? 'C' : reviewedEvidenceRank;
+  const minimumPublicRank = capRank(minimumCanonicalRank, policy.max_public_rank ?? 'C');
+  if (!meeting || (!hasReviewedEvidenceChanges && rank(meeting.capability_rank) < rank(reviewedEvidenceRank))) {
     throw new Error(`reviewed canonical evidence was not preserved for ${record.meeting_id}`);
   }
   if (!publicMeeting || rank(publicMeeting.effective_public_rank) < rank(minimumPublicRank)) {
