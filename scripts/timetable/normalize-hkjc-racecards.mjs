@@ -156,19 +156,17 @@ function normalizeMeeting({ config, snapshot, routeMeeting, observedMeeting }) {
           meeting_id: id,
           summary_note: capabilityRank === 'A+'
             ? 'Public-safe HKJC timetable fields only: race label, post time, race title, distance, and surface/course type. Starter lists, odds, results, payouts, predictions, full racecard text, and raw HTML are not stored or republished.'
-            : 'Public-safe HKJC race-by-race post times only. Starter lists, odds, results, payouts, predictions, full racecard text, and raw HTML are not stored or republished.',
-          timetable_rows: rows.map((row) => capabilityRank === 'A+'
-            ? {
-                label: row.label,
-                post_time_local: row.post_time_local,
-                race_name: row.race_name,
-                distance_m: row.distance_m,
-                surface: row.surface,
-                course_label: row.course_label,
-                metadata_status: row.metadata_status,
-                official_source_url: row.official_source_url,
-              }
-            : { label: row.label, post_time_local: row.post_time_local, official_source_url: row.official_source_url }),
+            : 'Public-safe HKJC race-by-race post times plus any individually verified timetable metadata fields. Starter lists, odds, results, payouts, predictions, full racecard text, and raw HTML are not stored or republished.',
+          timetable_rows: rows.map((row) => ({
+            label: row.label,
+            post_time_local: row.post_time_local,
+            ...(row.race_name ? { race_name: row.race_name } : {}),
+            ...(row.distance_m != null ? { distance_m: row.distance_m } : {}),
+            ...(row.surface ? { surface: row.surface } : {}),
+            ...(row.course_label ? { course_label: row.course_label } : {}),
+            metadata_status: row.metadata_status,
+            official_source_url: row.official_source_url,
+          })),
         }
       : null,
     extraction_summary: {
@@ -176,7 +174,12 @@ function normalizeMeeting({ config, snapshot, routeMeeting, observedMeeting }) {
       extracted_race_count: rows.length,
       race_numbers: rows.map((row) => row.race_number),
       continuous_from_one: continuous,
-      metadata_fields: capabilityRank === 'A+' ? ['race_name', 'distance_m', 'surface', 'course_label', 'official_source_url'] : [],
+      metadata_fields: ['race_name', 'distance_m', 'surface', 'course_label', 'official_source_url']
+        .filter((field) => rows.some((row) => field === 'official_source_url'
+          ? Boolean(row.official_source_url)
+          : field === 'distance_m'
+            ? row.distance_m != null
+            : Boolean(row[field]))),
       missing_a_plus_fields: rows.flatMap((row) => missingAPlusFields(row).map((field) => ({ race_number: row.race_number, field }))),
       chosen_rank: capabilityRank,
       route_config_meeting: true,

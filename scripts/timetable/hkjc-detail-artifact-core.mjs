@@ -133,20 +133,15 @@ function continuousFromOne(numbers) {
   return numbers.length > 0 && numbers.every((value, index) => value === index + 1);
 }
 
-function publicRow(observation, includeMetadata) {
-  return includeMetadata
-    ? {
-        label: observation.label,
-        post_time_local: observation.post_time_local,
-        race_name: observation.race_name,
-        distance_m: observation.distance_m,
-        surface: observation.surface,
-        course_label: observation.course_label,
-      }
-    : {
-        label: observation.label,
-        post_time_local: observation.post_time_local,
-      };
+function publicRow(observation) {
+  return {
+    label: observation.label,
+    post_time_local: observation.post_time_local,
+    ...(observation.race_name ? { race_name: observation.race_name } : {}),
+    ...(observation.distance_m != null ? { distance_m: observation.distance_m } : {}),
+    ...(observation.surface ? { surface: observation.surface } : {}),
+    ...(observation.course_label ? { course_label: observation.course_label } : {}),
+  };
 }
 
 export function classifyHkjcDetailObservation({ race_observations: observations, meeting_complete: meetingComplete }) {
@@ -168,7 +163,7 @@ export function classifyHkjcDetailObservation({ race_observations: observations,
       rank: 'A+',
       first_race_time_local: timedRows[0].post_time_local,
       last_race_time_local: timedRows.at(-1).post_time_local,
-      timetable_rows: timedRows.map((row) => publicRow(row, true)),
+      timetable_rows: timedRows.map((row) => publicRow(row)),
     };
   }
   if (meetingComplete === true && continuousTimes && timedRows.length >= 2) {
@@ -176,7 +171,7 @@ export function classifyHkjcDetailObservation({ race_observations: observations,
       rank: 'A',
       first_race_time_local: timedRows[0].post_time_local,
       last_race_time_local: timedRows.at(-1).post_time_local,
-      timetable_rows: timedRows.map((row) => publicRow(row, false)),
+      timetable_rows: timedRows.map((row) => publicRow(row)),
     };
   }
   if (meetingComplete === true && timedRows.length >= 2 && timedRows.some((row) => row.race_number === 1)) {
@@ -310,7 +305,7 @@ export function buildHkjcDetailArtifacts({
 
     const classification = classifyHkjcDetailObservation({
       race_observations: observations,
-      meeting_complete: input.meeting_complete === true,
+      meeting_complete: input.meeting_complete === true && meetingErrors.length === 0,
     });
     const sourceUrl = observations[0]?.source_url ?? pageResults.find((result) => officialHkjcUrl(result?.final_url ?? result?.requested_url))?.final_url ?? pageResults.find((result) => officialHkjcUrl(result?.requested_url))?.requested_url;
     if (!sourceUrl || !officialHkjcUrl(sourceUrl)) throw new Error(`meeting ${meeting.meeting_id} has no official HKJC source URL`);

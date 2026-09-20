@@ -22,11 +22,44 @@ function publicRows(detail, rank) {
   return (detail.timetable_rows ?? []).map((row) => ({
     label: row.label,
     post_time_local: row.post_time_local,
-    ...(rank === 'A+' && row.race_name ? { race_name: row.race_name } : {}),
-    ...(rank === 'A+' && row.distance_m != null ? { distance_m: row.distance_m } : {}),
-    ...(rank === 'A+' && row.surface ? { surface: row.surface } : {}),
-    ...(rank === 'A+' && row.course_label ? { course_label: row.course_label } : {}),
+    ...(row.race_name ? { race_name: row.race_name } : {}),
+    ...(row.distance_m != null ? { distance_m: row.distance_m } : {}),
+    ...(row.surface ? { surface: row.surface } : {}),
+    ...(row.course_label ? { course_label: row.course_label } : {}),
   }));
+}
+
+function mergeTimetableRows(existingRows, observedRows) {
+  if (!observedRows.length) return existingRows ?? [];
+  const byLabel = new Map((existingRows ?? []).map((row) => [row.label, { ...row }]));
+  for (const row of observedRows) {
+    const previous = byLabel.get(row.label) ?? {};
+    byLabel.set(row.label, {
+      ...previous,
+      ...Object.fromEntries(Object.entries(row).filter(([, value]) => value != null)),
+    });
+  }
+  return [...byLabel.values()];
+}
+
+function detailObservation({ sourceError, raceCount, noHigherRank = false }) {
+  if (sourceError) {
+    return {
+      status: 'source_error',
+      race_count: raceCount,
+      conflicts: [],
+      reason: 'The live HKJC racecard route produced usable evidence but also encountered a current source or parser failure for this meeting.',
+    };
+  }
+  return {
+    status: 'available',
+    evaluated_capability_rank: 'A+',
+    race_count: raceCount,
+    conflicts: [],
+    ...(noHigherRank ? {
+      reason: 'The live HKJC racecard route evaluated timetable times and A+ metadata fields but did not produce a higher evidence-supported rank for this meeting.',
+    } : {}),
+  };
 }
 
 function rankCounts(records) {
@@ -62,9 +95,9 @@ export function buildHkjcLiveBestAvailableArtifacts({ scheduleArtifacts, normali
     .filter((value) => value.startsWith('hkjc-')));
 
   const records = scheduleRecords.map((record) => {
+    const sourceError = detailErrorMeetingIds.has(record.meeting_id);
     const observed = normalizedByKey.get(exactDateKey(record));
     if (!observed || !RANK_INDEX.has(observed.capability_rank)) {
-      const sourceError = detailErrorMeetingIds.has(record.meeting_id);
       return {
         ...record,
         detail_observation: {
@@ -80,15 +113,15 @@ export function buildHkjcLiveBestAvailableArtifacts({ scheduleArtifacts, normali
 
     const observedDetail = detailById.get(record.meeting_id);
     if (RANK_INDEX.get(observed.capability_rank) <= RANK_INDEX.get(record.capability_rank)) {
+      const observedRows = publicRows(observedDetail, observed.capability_rank);
       return {
         ...record,
-        detail_observation: {
-          status: 'available',
-          evaluated_capability_rank: 'A+',
-          race_count: observedDetail?.timetable_rows?.length ?? 0,
-          conflicts: [],
-          reason: 'The live HKJC racecard route evaluated timetable times and A+ metadata fields but did not produce a higher evidence-supported rank for this meeting.',
-        },
+        ...(observedRows.length ? { timetable_rows: mergeTimetableRows(record.timetable_rows, observedRows) } : {}),
+        detail_observation: detailObservation({
+          sourceError,
+          raceCount: observedDetail?.timetable_rows?.length ?? 0,
+          noHigherRank: true,
+        }),
       };
     }
 
@@ -106,12 +139,10 @@ export function buildHkjcLiveBestAvailableArtifacts({ scheduleArtifacts, normali
       },
       confidence: 'high',
       notes: `Official HKJC fixture identity enriched from the official racecard route to current best-available rank ${observed.capability_rank}; review remains required before promotion/publication.`,
-      detail_observation: {
-        status: 'available',
-        evaluated_capability_rank: 'A+',
-        race_count: observedDetail?.timetable_rows?.length ?? 0,
-        conflicts: [],
-      },
+      detail_observation: detailObservation({
+        sourceError,
+        raceCount: observedDetail?.timetable_rows?.length ?? 0,
+      }),
     };
   });
 
