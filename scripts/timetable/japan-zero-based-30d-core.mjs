@@ -25,6 +25,19 @@ export function deriveJapanBestAvailableRank(meeting, rows = meeting?.timetable_
   return deriveBestAvailableRank(meeting, rows);
 }
 
+function safeRows(rows = []) {
+  return (Array.isArray(rows) ? rows : []).map((row) => ({
+    label: row?.label ?? null,
+    post_time_local: row?.post_time_local ?? null,
+    race_name: row?.race_name ?? null,
+    distance_m: row?.distance_m ?? null,
+    surface: row?.surface ?? null,
+    course_label: row?.course_label ?? null,
+    metadata_status: row?.metadata_status ?? 'verified',
+    source_label: row?.source_label ?? null,
+  }));
+}
+
 const JAPAN_ACQUISITION_PROFILE = Object.freeze({
   technical_capability_rank: 'A+',
   supported_observation_ranks: ['C', 'B', 'B+', 'A', 'A+'],
