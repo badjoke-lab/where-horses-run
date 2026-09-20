@@ -14,8 +14,8 @@ Plain-language state:
 
 ```text
 Working dictionary: 642 terms/concepts
-Meaning-level source verified: 504
-Still under review: 138
+Meaning-level source verified: 507
+Still under review: 135
 Highest-priority core terms: 203/203 verified
 Jurisdiction-specific research additions: 161/161 verified
 Public glossary publication: disabled
@@ -75,7 +75,7 @@ The remaining task is to clean the lower-priority base dictionary. This does **n
 - Running/trip/race comments wave 2: **5 verified**, generic `Pacesetter` consolidated into `Front-runner`.
 - Running/trip/race comments final broad bundle: **9 verified**, `Tempo` consolidated into `Pace`, `Kick/closing kick` consolidated into `Turn of foot`.
 - Equipment/training wave 1: **20 verified** — 13 EQUIP and 7 TRAIN Concepts with scoped authority evidence.
-- Equipment/training residual: **1 verified**, `Bike/Racebike` consolidated into `Sulky`.
+- Equipment/training residual: **4 verified**, `Bike/Racebike` consolidated into `Sulky`.
 
 ### Residual edge-case pass
 
@@ -89,9 +89,9 @@ Across three focused RUN bundles, **21 additional RUN Concepts were source-verif
 
 ### Equipment / training pass
 
-Wave 1 verified 13 equipment Concepts and 7 training/pre-race Concepts using JRA, Equibase, USTA, Racing Australia/Racing Victoria and Jockey Club material. The residual pass then verified `Pre-parade` from current Jockey Club material and retired `Bike/Racebike` into `Sulky` because USTA explicitly identifies the racebike as the sulky.
+Wave 1 verified 13 equipment Concepts and 7 training/pre-race Concepts using JRA, Equibase, USTA, Racing Australia/Racing Victoria and Jockey Club material. The residual pass then verified `Pre-parade`, `Barefoot`, `Gate schooling` and `Layoff` from current Jockey Club, UET, NYRA and HISA material, and retired `Bike/Racebike` into `Sulky` because USTA explicitly identifies the racebike as the sulky.
 
-EQUIP is now **27/29 source-verified (93.1%)**. `Blinders` and `Barefoot` remain candidate. TRAIN is **20/26 source-verified (76.9%)**. `Breeze`, `Gate schooling`, `Qualifying trial`, `Cool down`, `Layoff` and `Freshened` remain candidate. These weak residuals are retained rather than promoted without sufficient evidence.
+EQUIP is now **28/29 source-verified (96.6%)**. `Blinders` remains candidate. TRAIN is **22/26 source-verified (84.6%)**. `Breeze`, `Qualifying trial`, `Cool down` and `Freshened` remain candidate. These weak residuals are retained rather than promoted without sufficient evidence.
 
 Authority/audit files now include:
 
@@ -127,13 +127,13 @@ data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 
 Current observed state:
 
-- all Concepts: **504/642 source-verified (78.5%)**, 138 candidate;
+- all Concepts: **507/642 source-verified (79.0%)**, 135 candidate;
 - core highest-priority set: **203/203 source-verified (100.0%)**;
-- active base seed: **343/481 source-verified (71.3%)**, 138 candidate;
+- active base seed: **346/481 source-verified (71.9%)**, 135 candidate;
 - supplemental jurisdiction/relationship research: **161/161 source-verified (100.0%)**;
 - RUN: **42/44 source-verified (95.5%)**;
-- EQUIP: **27/29 source-verified (93.1%)**;
-- TRAIN: **20/26 source-verified (76.9%)**;
+- EQUIP: **28/29 source-verified (96.6%)**;
+- TRAIN: **22/26 source-verified (84.6%)**;
 - MEET: **37/38 source-verified (97.4%)**;
 - RESULT: **27/28 source-verified (96.4%)**;
 - BET: **38/39 source-verified (97.4%)**;
@@ -143,7 +143,7 @@ Current observed state:
 
 ## What happens next
 
-The remaining **138 terms** continue by the categories with the largest unresolved candidate sets:
+The remaining **135 terms** continue by the categories with the largest unresolved candidate sets:
 
 ```text
 horse / breeding / participant roles
@@ -153,7 +153,7 @@ horse / breeding / participant roles
 -> rerun evidence/readiness gate
 ```
 
-`GLOSSARY-MASTER-005` remains **HOLD — not complete**. A 78.5% verified master with 138 unresolved seed Concepts is not ready to advance.
+`GLOSSARY-MASTER-005` remains **HOLD — not complete**. A 79.0% verified master with 135 unresolved seed Concepts is not ready to advance.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
@@ -183,8 +183,8 @@ The current public glossary remains disposable content. There is no old-record m
 ```text
 Current Work ID: GLOSSARY-MASTER-005
 Working dictionary: 642 terms
-Verified: 504
-Still under review: 138
+Verified: 507
+Still under review: 135
 Next subject group: horse / breeding / participant roles
 MASTER-006: blocked until the evidence/readiness gate passes
 Public implementation: deferred
