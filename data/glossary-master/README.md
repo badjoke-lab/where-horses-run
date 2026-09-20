@@ -8,30 +8,30 @@ This directory is the non-public working area for the worldwide horse-racing ter
 
 ## Plain-language progress
 
-The working dictionary currently contains **635 racing terms/concepts**.
+The working dictionary currently contains **629 racing terms/concepts**.
 
 - **594 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
-- **41 terms still need verification, scope correction, splitting/merging, or removal.**
+- **35 terms still need verification, scope correction, splitting/merging, or removal.**
 - The already researched jurisdiction-specific additions are **161/161 verified**.
 - The core highest-priority terminology set is **203/203 verified**.
 - Public glossary publication is still disabled while the remaining terms are cleaned up.
 
-The latest pass is **targeted residual resolution wave 8**. It verified the current USTA track-condition labels `Freezing` and `Snow` after correcting the seed canonicals `Frozen` and `Snow-covered`, and retired generic `Daylight saving time` as non-racing civil-time context under `Time zone`.
+The latest pass is **targeted residual resolution wave 9**. It retired **6 vague, derived, generic or malformed candidate Concepts** without promoting any weak label: `Qualification` → Eligibility context, `Kilometre` → Metre context, `Weight rise`/`Weight drop` → Weight carried context, generic sportsbook `American odds` → Odds context, and malformed `Commentator` → the verified Track announcer race-calling role while leaving analytical commentary unmodeled.
 
-The master is now **594/635 source-verified (93.5%)** with **41 candidates**. Active base-seed coverage is **433/474 (91.4%)**. SURF is now **59/62 verified (95.2%)**, and MEET is now **37/37 verified (100%)**.
+The master is now **594/629 source-verified (94.4%)** with **35 candidates**. Active base-seed coverage is **433/468 (92.5%)**. WEIGHT, BET and ROLE are now **100% verified within the active Concept set**, ENTRY is **29/30 (96.7%)**, and DIST is **18/20 (90.0%)**.
 
-Wave 8 combines evidence-backed canonical correction with removal of a non-independent generic concept; no weak term was promoted unchanged.
+Wave 9 is a semantic pruning pass: derived comparisons and generic display conventions remain contextual rather than standalone racing Concepts.
 
 ## Current master
 
-- Concepts: **635**
+- Concepts: **629**
 - categories: **18**
 - P0: **203** / P1: **291** / P2: **130** / P3: **18**
 - `public_ready=yes`: **0**
 - public runtime input: **false**
 - active Concept relations: **20**
 - relationship reviews: **15 discovered / 15 resolved / 0 open**
-- retired/merged Concept rows: **27**
+- retired/merged Concept rows: **33**
 
 ## Core source verification — complete
 
@@ -56,10 +56,10 @@ The initial race-type/classification pass verified **15** terms. Broad-category 
 The initial surface-condition pass verified **10** terms. Later passes added product/surface-state terms, merged duplicate Grass into Turf, and wave 8 corrected/verified USTA `Freezing` and `Snow`. SURF is now **59/62 verified (95.2%)**; Cushion Track, Surface switch and Track bias remain candidate.
 
 ### Distance and measurement terminology — broad current pass
-Broad-category wave 1 verified `Yard`, `Short head`, `Final furlong` and `Race record`. DIST is now **17/21 verified (81.0%)**. `Kilometre`, `Half-length`, `Fraction` and `Final fraction` remain candidate pending cleaner racing-specific evidence or Concept boundaries.
+Broad-category and residual passes verified racing-specific distance and margin terms. Wave 9 retired generic derived `Kilometre` under `Metre`; DIST is now **18/20 verified (90.0%)** with only `Fraction` and `Final fraction` unresolved.
 
 ### Weight and handicapping terminology — broad current pass
-Broad-category wave 1 verified `Bottom weight`, `Maximum weight`, `Underweight`, `Weigh out` and `Weigh in`. WEIGHT is now **31/34 verified (91.2%)**. `Claiming allowance`, `Weight rise` and `Weight drop` remain candidate.
+Weight terminology is now **32/32 verified (100%)** after wave 6 verified `Claiming allowance` and wave 9 retired derived `Weight rise`/`Weight drop` comparison labels under `Weight carried`.
 
 ### Meeting and schedule terminology — complete current pass
 The initial pass verified 6 terms and retired 1 duplicate. Residual cleanup later verified Season and Bulletin and retired `Program` into `Programme`. Wave 8 retired generic `Daylight saving time` as contextual Time zone handling, so MEET is now **37/37 verified (100%)**.
@@ -68,7 +68,7 @@ The initial pass verified 6 terms and retired 1 duplicate. Residual cleanup late
 The initial pass verified 13 semantic Concepts and retired 2 duplicate code Concepts. Residual cleanup verified Relegation and False start. Wave 7 retired the unsupported `RO` abbreviation row into the verified `Ran out` event Concept, so RESULT is now **27/27 verified (100%)**.
 
 ### Prize and betting terminology — complete current pass
-The initial pass verified 28 Concepts and retired 3 duplicate regional wager Concepts. Residual cleanup verified Totalisator, Fractional odds and On the board. PRIZE remains **10/12 verified (83.3%)** and BET is **38/39 verified (97.4%)**.
+The initial pass verified 28 Concepts and retired 3 duplicate regional wager Concepts. Residual cleanup verified Totalisator, Fractional odds and On the board. PRIZE remains **10/12 verified (83.3%)**; BET is now **38/38 verified (100%)** after wave 9 retired generic sportsbook `American odds` as contextual Odds presentation.
 
 ### Welfare, veterinary and safety terminology — complete current pass
 Verified **13** additional Concepts. WELF is **18/18 source-verified (100.0%)**. Definitions keep HISA/BHA/Racing Australia/IFHA-specific operational and reporting boundaries explicit.
@@ -107,7 +107,7 @@ Sources: `sources/venue-entry-sources-v1.tsv` plus existing authority evidence.
 
 Wave 1 verified **11** Concepts: 6 ENTRY and 5 VENUE. BHA evidence closes maximum-field, elimination and balloting meanings; current North American race conditions support also-eligible, entry-fee and preference mechanics; JRA/Jockey Club and harness authorities support scoped course and facility terminology.
 
-ENTRY is **29/31 verified (93.5%)** and VENUE is **39/42 verified (92.9%)**. `Homestretch`/`Home straight`, `Parade ring`/`Paddock`, `Winner's enclosure`/`Winners' circle`, and mobile-start terminology remain jurisdiction-scoped rather than flattened into global synonyms.
+ENTRY is **29/30 verified (96.7%)** and VENUE is **39/42 verified (92.9%)**. `Homestretch`/`Home straight`, `Parade ring`/`Paddock`, `Winner's enclosure`/`Winners' circle`, and mobile-start terminology remain jurisdiction-scoped rather than flattened into global synonyms.
 
 ### Broad category wave 1 — complete current pass
 Audit: `coverage/broad-category-verification-v1.tsv`  
@@ -161,13 +161,18 @@ Audit: `coverage/targeted-residual-resolution-v8.tsv`
 
 This pass verified **2** authority-backed SURF Concepts after canonical correction (`Freezing`, `Snow`) and retired generic `Daylight saving time` as non-independent racing context.
 
-Across the lower-priority cleanup passes, **280 base-dictionary terms have been newly verified and 22 duplicate/malformed/non-independent rows have been removed**.
+### Targeted residual resolution wave 9 — complete current pass
+Audit: `coverage/targeted-residual-resolution-v9.tsv`
+
+This pass retired **6** vague, derived, generic or malformed candidate Concepts across ENTRY, DIST, WEIGHT, BET and ROLE. No candidate was percentage-promoted; WEIGHT, BET and ROLE close their active candidate queues through semantic cleanup.
+
+Across the lower-priority cleanup passes, **280 base-dictionary terms have been newly verified and 28 duplicate/malformed/non-independent rows have been removed**.
 
 ## Evidence state
 
-- all Concepts: **594 / 635 source-verified (93.5%)**; **41 candidate**
+- all Concepts: **594 / 629 source-verified (94.4%)**; **35 candidate**
 - core highest-priority set: **203 / 203 source-verified (100.0%)**
-- active base seed: **433 / 474 source-verified (91.4%)**; **41 candidate**
+- active base seed: **433 / 468 source-verified (92.5%)**; **35 candidate**
 - supplemental jurisdiction/relationship research: **161 / 161 source-verified (100.0%)**
 
 Canonical current audit state includes:
@@ -198,13 +203,14 @@ coverage/targeted-residual-verification-v5.tsv
 coverage/targeted-residual-verification-v6.tsv
 coverage/targeted-residual-resolution-v7.tsv
 coverage/targeted-residual-resolution-v8.tsv
+coverage/targeted-residual-resolution-v9.tsv
 coverage/master-005-evidence-coverage-v1.tsv
 coverage/master-005-completion-gate-v1.tsv
 ```
 
 ## Current completion decision
 
-The terminology master remains **not complete**. The remaining **41 terms** must be reviewed rather than automatically promoted.
+The terminology master remains **not complete**. The remaining **35 terms** must be reviewed rather than automatically promoted.
 
 The next work is to **continue targeted residual cleanup** across the remaining base-seed categories, prioritizing the clearest defensible HORSE/BREED/VENUE/RTYPE/ENTRY residuals before the deliberately weak edge cases. Deliberately weak RUN, EQUIP, TRAIN and cross-category edge cases remain visible until stronger evidence or a cleaner modeling decision exists.
 
