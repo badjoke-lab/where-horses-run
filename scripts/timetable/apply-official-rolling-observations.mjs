@@ -2,6 +2,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { deriveBestAvailableRank } from './best-available-rank.mjs';
 import { classifyAcquisitionCompletion } from './acquisition-completion.mjs';
+import {
+  attachPublicationSnapshotV1,
+  validateCalendarAuthorityMetadataV1,
+} from './calendar-authority-metadata.mjs';
 import { loadCalendarAcquisitionRegistryV1 } from './load-calendar-acquisition-registry.mjs';
 import { projectPublicTimetableRows } from './public-detail-projection.mjs';
 
@@ -86,6 +90,9 @@ function stripVolatile(value) {
 function sameSubstance(left, right) {
   return JSON.stringify(stripVolatile(left)) === JSON.stringify(stripVolatile(right));
 }
+function mergeEvidenceChanges(previous = [], current = []) {
+  return [...new Map([...previous, ...current].map((change) => [JSON.stringify(change), change])).values()];
+}
 function completeRankA(rows) {
   return rows.length > 0 && rows.every((row) => row.label && row.post_time_local);
 }
@@ -165,6 +172,13 @@ function makeCanonical(record, artifact, checkedAt, defaults, previous, acquisit
       stale_after_date: null,
       freshness_note: 'Upserted from a verified official rolling-window observation.',
     },
+    ...('acquisition_attempt' in record ? { acquisition_attempt: structuredClone(record.acquisition_attempt) } : {}),
+    ...(record.evidence_support ? {
+      evidence_support: { ...(previous?.evidence_support ?? {}), ...structuredClone(record.evidence_support) },
+    } : {}),
+    ...(record.evidence_changes ? {
+      evidence_changes: mergeEvidenceChanges(previous?.evidence_changes, structuredClone(record.evidence_changes)),
+    } : {}),
   };
 }
 function makeCanonicalDetail(meeting, record, previousDetail) {
@@ -182,6 +196,12 @@ function makeCanonicalDetail(meeting, record, previousDetail) {
     capability_rank: meeting.capability_rank,
     source_trace: meeting.source_trace,
     freshness: meeting.freshness,
+    ...(record.evidence_support ? {
+      evidence_support: { ...(previousDetail?.evidence_support ?? {}), ...structuredClone(record.evidence_support) },
+    } : {}),
+    ...(record.evidence_changes ? {
+      evidence_changes: mergeEvidenceChanges(previousDetail?.evidence_changes, structuredClone(record.evidence_changes)),
+    } : {}),
     timetable_rows: rows,
     summary_note: 'Current official rolling-window race programme observation.',
   };
@@ -300,6 +320,13 @@ for (const [meetingId, storedMeeting] of [...canonicalById.entries()]) {
 
 for (const record of records) {
   if (!record?.meeting_id) { outcomes.ignored += 1; continue; }
+  const authorityMetadata = Object.fromEntries(
+    ['acquisition_attempt', 'acquisition_completion', 'evidence_support', 'evidence_changes']
+      .filter((key) => key in record)
+      .map((key) => [key, record[key]]),
+  );
+  const metadataErrors = validateCalendarAuthorityMetadataV1(authorityMetadata, record.meeting_id);
+  if (metadataErrors.length) throw new Error(metadataErrors.join('; '));
   const observed = observedRank(record);
   if (!RANK_INDEX.has(observed)) { outcomes.ignored += 1; continue; }
   const acquisitionProfile = chooseAcquisitionProfile(record, defaults, acquisitionRegistry);
@@ -401,10 +428,15 @@ for (const [meetingId, previousPublic] of [...publicById.entries()]) {
 if (changed) {
   const generatedAt = artifact.generated_at ?? artifact.retrieved_at ?? new Date().toISOString();
   const sortRows = (rows) => [...rows].sort((a, b) => a.date.localeCompare(b.date) || a.meeting_id.localeCompare(b.meeting_id));
+  const publicDatasets = attachPublicationSnapshotV1(
+    { ...publicList, generated_at: generatedAt, meetings: sortRows(publicById.values()) },
+    { ...publicDetails, generated_at: generatedAt, details: sortRows(publicDetailsById.values()) },
+    generatedAt,
+  );
   writeJson(canonicalPath, { ...canonical, generated_at: generatedAt, meetings: sortRows(canonicalById.values()) });
   writeJson(canonicalDetailsPath, { ...canonicalDetails, generated_at: generatedAt, details: sortRows(detailsById.values()) });
-  writeJson(publicPath, { ...publicList, generated_at: generatedAt, meetings: sortRows(publicById.values()) });
-  writeJson(publicDetailsPath, { ...publicDetails, generated_at: generatedAt, details: sortRows(publicDetailsById.values()) });
+  writeJson(publicPath, publicDatasets.meetingListDataset);
+  writeJson(publicDetailsPath, publicDatasets.meetingDetailsDataset);
 }
 
 console.log(JSON.stringify({ artifact: artifactPath, observed: records.length, changed, outcomes, completion_counts: completionCounts }));

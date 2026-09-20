@@ -52,6 +52,7 @@ data/static/calendar-validation-responsibilities-v1.json
 data/static/authority-source-inventory.schema.json
 data/static/authority-source-inventory.json
 data/static/timetable-candidate-v1.schema.json
+data/static/calendar-authority-metadata-v1.schema.json
 data/static/jra-final-program-intake.schema.json
 data/static/calendar-acquisition-registry.schema.json
 data/static/calendar-acquisition-registry.json
@@ -109,12 +110,14 @@ scripts/timetable/rank-aware-retry-queue-validation.mjs
 scripts/timetable/runner-compatibility.mjs
 scripts/timetable/coverage-observation-validation.mjs
 scripts/timetable/pipeline-v1/promotion-core.mjs
+scripts/timetable/calendar-authority-metadata.mjs
 scripts/check-calendar-coverage-observation-schema.mjs
 scripts/check-calendar-validation-responsibilities.mjs
 scripts/check-calendar-contracts.mjs
 scripts/check-authority-source-inventory-schema.mjs
 scripts/check-calendar-pipeline-v1-candidate-contract.mjs
 scripts/check-calendar-pipeline-v1-promotion.mjs
+scripts/check-calendar-authority-wave1.mjs
 scripts/check-calendar-acquisition-registry.mjs
 scripts/check-calendar-collection-job.mjs
 scripts/check-calendar-collection-plan.mjs

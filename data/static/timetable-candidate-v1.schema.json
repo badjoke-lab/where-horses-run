@@ -118,6 +118,21 @@
           "items": { "$ref": "#/$defs/row" }
         },
         "source": { "$ref": "#/$defs/source" },
+        "acquisition_attempt": {
+          "$ref": "calendar-authority-metadata-v1.schema.json#/$defs/acquisitionAttempt"
+        },
+        "acquisition_completion": {
+          "$ref": "calendar-authority-metadata-v1.schema.json#/$defs/acquisitionCompletion"
+        },
+        "evidence_support": {
+          "$ref": "calendar-authority-metadata-v1.schema.json#/$defs/evidenceSupport"
+        },
+        "evidence_changes": {
+          "type": "array",
+          "items": {
+            "$ref": "calendar-authority-metadata-v1.schema.json#/$defs/evidenceChange"
+          }
+        },
         "confidence": { "enum": ["low", "medium", "high"] },
         "review_status": { "enum": ["needs_review", "approved", "rejected"] },
         "notes": { "type": "string" }

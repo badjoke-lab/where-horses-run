@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
+import { validateCalendarAuthorityMetadataV1 } from './timetable/calendar-authority-metadata.mjs';
 
 const root = process.cwd();
 const read = (file) => readFileSync(path.join(root, file), 'utf8');
@@ -12,7 +13,7 @@ const statuses = new Set(['needs_review', 'approved', 'rejected']);
 const confidence = new Set(['low', 'medium', 'high']);
 const methods = new Set(['manual_import', 'fixture_parser', 'adapter_candidate', 'reviewed_snapshot']);
 const topKeys = new Set(['schema_version','generated_at','adapter_id','country_id','authority_id','source_id','candidate_window','records','review']);
-const recordKeys = new Set(['candidate_id','meeting_id','country_id','authority_id','racing_system_id','racecourse_id','date','timezone','capability_rank','first_race_time_local','last_race_time_local','timetable_rows','source','confidence','review_status','notes']);
+const recordKeys = new Set(['candidate_id','meeting_id','country_id','authority_id','racing_system_id','racecourse_id','date','timezone','capability_rank','first_race_time_local','last_race_time_local','timetable_rows','source','acquisition_attempt','acquisition_completion','evidence_support','evidence_changes','confidence','review_status','notes']);
 const sourceKeys = new Set(['source_id','official_url','checked_at','extraction_method']);
 const rowKeysA = new Set(['label', 'post_time_local']);
 const rowKeysAPlus = new Set(['label','post_time_local','race_name','distance_m','surface','course_label']);
@@ -92,6 +93,13 @@ function validateCandidate(candidate) {
     requireDateTime(source.checked_at, `${label}.source.checked_at`, errors);
     if (!methods.has(source.extraction_method)) errors.push(`${label}.source.extraction_method is invalid`);
 
+    const authorityMetadata = Object.fromEntries(
+      ['acquisition_attempt', 'acquisition_completion', 'evidence_support', 'evidence_changes']
+        .filter((key) => key in record)
+        .map((key) => [key, record[key]]),
+    );
+    errors.push(...validateCalendarAuthorityMetadataV1(authorityMetadata, label));
+
     if (!Array.isArray(record.timetable_rows)) errors.push(`${label}.timetable_rows must be an array`);
     const rows = record.timetable_rows ?? [];
     if (record.capability_rank === 'C') {
@@ -157,6 +165,21 @@ if (!validateCandidate(rankFixture).some((error) => error.includes('B candidates
 const approvalFixture = structuredClone(sample);
 approvalFixture.review.status = 'approved';
 if (!validateCandidate(approvalFixture).some((error) => error.includes('approved review requires'))) errors.push('validator must reject unreviewed approval claims');
+const authorityMetadataFixture = structuredClone(sample);
+authorityMetadataFixture.records[0].acquisition_attempt = {
+  attempted_at: authorityMetadataFixture.generated_at,
+  status: 'network_error',
+  source_id: authorityMetadataFixture.source_id,
+  error_code: 'fetch_failed',
+};
+authorityMetadataFixture.records[0].acquisition_completion = {
+  disposition: 'retry_required',
+  observed_rank: authorityMetadataFixture.records[0].capability_rank,
+  technical_capability_rank: 'A+',
+  higher_rank_open: true,
+  reason: 'A represented failure remains distinct from retained evidence rank.',
+};
+if (validateCandidate(authorityMetadataFixture).length) errors.push('candidate validator must accept optional Wave 1 authority metadata');
 
 if (errors.length) {
   console.error(`CALENDAR_PIPELINE_V1_CANDIDATE_CONTRACT: failed (${errors.length})`);

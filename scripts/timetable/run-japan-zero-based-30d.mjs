@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { attachPublicationSnapshotV1 } from './calendar-authority-metadata.mjs';
 import { runJapanZeroBased30d } from './japan-zero-based-30d-core.mjs';
 import { japanOfficial30dAdapters } from './japan-official-30d-adapters.mjs';
 import { discoverJraOfficial30dWithCompleteness } from './jra-official-30d-discovery.mjs';
@@ -515,8 +516,13 @@ const write = (file, value) => {
 };
 write(canonicalPath, { ...read(canonicalPath), generated_at: result.checked_at, meetings: canonical });
 write(detailsPath, { ...read(detailsPath), generated_at: result.checked_at, details });
-write(publicPath, { ...read(publicPath), generated_at: result.checked_at, meetings: publicMeetings });
-write(publicDetailsPath, { ...read(publicDetailsPath), generated_at: result.checked_at, details: publicDetails });
+const publicDatasets = attachPublicationSnapshotV1(
+  { ...read(publicPath), generated_at: result.checked_at, meetings: publicMeetings },
+  { ...read(publicDetailsPath), generated_at: result.checked_at, details: publicDetails },
+  result.checked_at,
+);
+write(publicPath, publicDatasets.meetingListDataset);
+write(publicDetailsPath, publicDatasets.meetingDetailsDataset);
 write(output, {
   ...result,
   scope,
