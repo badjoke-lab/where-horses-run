@@ -8,30 +8,30 @@ This directory is the non-public working area for the worldwide horse-racing ter
 
 ## Plain-language progress
 
-The working dictionary currently contains **641 racing terms/concepts**.
+The working dictionary currently contains **636 racing terms/concepts**.
 
 - **592 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
-- **49 terms still need verification, scope correction, splitting/merging, or removal.**
+- **44 terms still need verification, scope correction, splitting/merging, or removal.**
 - The already researched jurisdiction-specific additions are **161/161 verified**.
 - The core highest-priority terminology set is **203/203 verified**.
 - Public glossary publication is still disabled while the remaining terms are cleaned up.
 
-The latest pass is **targeted residual wave 6**. It source-verified **5 additional base Concepts** and retired one duplicate Concept using current JRA, BHA, NYRA, HISA and Churchill Downs evidence.
+The latest pass is **targeted residual resolution wave 7**. It retired **5 duplicate or malformed candidate Concepts** without promoting any weak term: `Debutant` → `First-time starter`, `Female family` → `Family`, `Corner` → `Turn`, `Counterclockwise` → `Anti-clockwise`, and the unsupported `RO` result-code row → verified `Ran out`.
 
-ROLE is now **30/31 source-verified (96.8%)**, TRAIN **24/26 (92.3%)**, WEIGHT **32/34 (94.1%)**, and SURF is **57/62 (91.9%)** after `Grass` was merged into the already verified `Turf` Concept. Newly verified Concepts are Claiming allowance, Breeze, Gate schooling, Layoff and Track announcer; seed `Race caller` was corrected to the authority-backed `Track announcer` canonical.
+The master is now **592/636 source-verified (93.1%)** with **44 candidates**. Active base-seed coverage is **431/475 (90.7%)**. RESULT is now **27/27 verified (100%)**, VENUE **39/42 (92.9%)**, HORSE **27/33 (81.8%)**, and BREED **15/21 (71.4%)**.
 
-The pass also removes duplicate semantic inflation: JRA directly cross-references grass and turf, so `Grass` is preserved as a label rather than a second surface Concept.
+Wave 7 is a semantic cleanup pass: labels are retained only where the resolved Concept supports them, and `RO` is not promoted as a public verified abbreviation because the current authority evidence does not verify that code.
 
 ## Current master
 
-- Concepts: **641**
+- Concepts: **636**
 - categories: **18**
 - P0: **203** / P1: **291** / P2: **130** / P3: **18**
 - `public_ready=yes`: **0**
 - public runtime input: **false**
 - active Concept relations: **20**
 - relationship reviews: **15 discovered / 15 resolved / 0 open**
-- retired/merged Concept rows: **21**
+- retired/merged Concept rows: **26**
 
 ## Core source verification — complete
 
@@ -65,7 +65,7 @@ Broad-category wave 1 verified `Bottom weight`, `Maximum weight`, `Underweight`,
 The initial pass verified 6 terms and retired 1 duplicate. Residual cleanup later verified Season and Bulletin and retired `Program` into `Programme`. MEET is **37/38 verified (97.4%)**; only `Daylight saving time` remains candidate.
 
 ### Results and decisions — complete current pass
-The initial pass verified 13 semantic Concepts and retired 2 duplicate code Concepts. Residual cleanup verified Relegation and False start. RESULT is **27/28 verified (96.4%)**; its remaining item is the RO/result-code modeling question. The separate RUN event `Ran out` is source-verified from current IHRB evidence.
+The initial pass verified 13 semantic Concepts and retired 2 duplicate code Concepts. Residual cleanup verified Relegation and False start. Wave 7 retired the unsupported `RO` abbreviation row into the verified `Ran out` event Concept, so RESULT is now **27/27 verified (100%)**.
 
 ### Prize and betting terminology — complete current pass
 The initial pass verified 28 Concepts and retired 3 duplicate regional wager Concepts. Residual cleanup verified Totalisator, Fractional odds and On the board. PRIZE remains **10/12 verified (83.3%)** and BET is **38/39 verified (97.4%)**.
@@ -107,7 +107,7 @@ Sources: `sources/venue-entry-sources-v1.tsv` plus existing authority evidence.
 
 Wave 1 verified **11** Concepts: 6 ENTRY and 5 VENUE. BHA evidence closes maximum-field, elimination and balloting meanings; current North American race conditions support also-eligible, entry-fee and preference mechanics; JRA/Jockey Club and harness authorities support scoped course and facility terminology.
 
-ENTRY is **29/31 verified (93.5%)** and VENUE is **39/44 verified (88.6%)**. `Homestretch`/`Home straight`, `Parade ring`/`Paddock`, `Winner's enclosure`/`Winners' circle`, and mobile-start terminology remain jurisdiction-scoped rather than flattened into global synonyms.
+ENTRY is **29/31 verified (93.5%)** and VENUE is **39/42 verified (92.9%)**. `Homestretch`/`Home straight`, `Parade ring`/`Paddock`, `Winner's enclosure`/`Winners' circle`, and mobile-start terminology remain jurisdiction-scoped rather than flattened into global synonyms.
 
 ### Broad category wave 1 — complete current pass
 Audit: `coverage/broad-category-verification-v1.tsv`  
@@ -151,13 +151,18 @@ Sources: `sources/targeted-residual-sources-v6.tsv` plus existing authority evid
 
 This pass verified **5** Concepts across WEIGHT/TRAIN/ROLE and retired duplicate `Grass` into `Turf`. `Race caller` was corrected to `Track announcer` without adding a duplicate Concept.
 
-Across the lower-priority cleanup passes, **278 base-dictionary terms have been newly verified and 16 duplicate/malformed rows have been removed**.
+### Targeted residual resolution wave 7 — complete current pass
+Audit: `coverage/targeted-residual-resolution-v7.tsv`
+
+This pass retired **5** duplicate or malformed candidate Concepts through reviewed semantic dispositions: Debutant, Female family, Corner, Counterclockwise, and the unsupported RO result-code row. No candidate was percentage-promoted without evidence.
+
+Across the lower-priority cleanup passes, **278 base-dictionary terms have been newly verified and 21 duplicate/malformed rows have been removed**.
 
 ## Evidence state
 
-- all Concepts: **592 / 641 source-verified (92.4%)**; **49 candidate**
+- all Concepts: **592 / 636 source-verified (93.1%)**; **44 candidate**
 - core highest-priority set: **203 / 203 source-verified (100.0%)**
-- active base seed: **431 / 480 source-verified (89.8%)**; **49 candidate**
+- active base seed: **431 / 475 source-verified (90.7%)**; **44 candidate**
 - supplemental jurisdiction/relationship research: **161 / 161 source-verified (100.0%)**
 
 Canonical current audit state includes:
@@ -186,13 +191,14 @@ coverage/targeted-residual-verification-v3.tsv
 coverage/targeted-residual-verification-v4.tsv
 coverage/targeted-residual-verification-v5.tsv
 coverage/targeted-residual-verification-v6.tsv
+coverage/targeted-residual-resolution-v7.tsv
 coverage/master-005-evidence-coverage-v1.tsv
 coverage/master-005-completion-gate-v1.tsv
 ```
 
 ## Current completion decision
 
-The terminology master remains **not complete**. The remaining **49 terms** must be reviewed rather than automatically promoted.
+The terminology master remains **not complete**. The remaining **44 terms** must be reviewed rather than automatically promoted.
 
 The next work is to **continue targeted residual cleanup** across the remaining base-seed categories, prioritizing the clearest defensible HORSE/BREED/VENUE/RTYPE/ENTRY residuals before the deliberately weak edge cases. Deliberately weak RUN, EQUIP, TRAIN and cross-category edge cases remain visible until stronger evidence or a cleaner modeling decision exists.
 
