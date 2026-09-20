@@ -80,6 +80,41 @@ function validProgrammeHref(rawHref) {
   }
 }
 
+export function resolveClubHipicoSantiagoProgrammePdfCandidate(rawUrl, { racecourseId } = {}) {
+  if (racecourseId !== 'club-hipico-de-santiago-racecourse') return null;
+  try {
+    const url = new URL(String(rawUrl ?? ''));
+    if (!['clubhipico.cl', 'www.clubhipico.cl'].includes(url.hostname.toLowerCase())) return null;
+    if (url.pathname.replace(/\/+$/, '') !== '/carreras/volante') return null;
+    const fecha = url.searchParams.get('fecha');
+    const match = String(fecha ?? '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!match) return null;
+    const [, year, month, day] = match;
+    return `https://static.clubhipico.cl/archivos/volantes/${day}-${month}-${year}.pdf`;
+  } catch {
+    return null;
+  }
+}
+
+export function extractClubHipicoSantiagoOfficialPdfHref(html, { baseUrl } = {}) {
+  const base = String(baseUrl ?? 'https://www.clubhipico.cl/');
+  const attrRe = /\b(?:href|src)\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s>]+))/gi;
+  for (const match of String(html ?? '').matchAll(attrRe)) {
+    const raw = decodeEntities(match[1] ?? match[2] ?? match[3] ?? '').trim();
+    if (!raw || !/\.pdf(?:[?#]|$)/i.test(raw)) continue;
+    try {
+      const url = new URL(raw, base);
+      const host = url.hostname.toLowerCase();
+      if (!['clubhipico.cl', 'www.clubhipico.cl', 'static.clubhipico.cl'].includes(host)) continue;
+      if (!/\/archivos\/volantes\//i.test(url.pathname)) continue;
+      return url.href;
+    } catch {
+      continue;
+    }
+  }
+  return null;
+}
+
 function nearestProgrammeCardContext(html, anchorIndex) {
   const context = htmlToText(String(html).slice(Math.max(0, anchorIndex - 3200), anchorIndex));
   const normalized = normalize(context).toUpperCase();
