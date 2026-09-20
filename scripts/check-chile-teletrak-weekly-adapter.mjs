@@ -7,9 +7,11 @@ import {
   buildChileTeletrakCandidate,
   enrichChileTeletrakCandidateWithProgrammeResults,
   extractChileTeletrakProgrammeLinks,
+  extractClubHipicoSantiagoOfficialPdfHref,
   parseChileTeletrakProgrammeText,
   parseChileTeletrakWeeklyHtml,
   resolveChileTeletrakRacecourseId,
+  resolveClubHipicoSantiagoProgrammePdfCandidate,
 } from './timetable/chile-teletrak-weekly-core.mjs';
 import { deriveBestAvailableRank } from './timetable/best-available-rank.mjs';
 
@@ -74,6 +76,32 @@ const programmeLinks = extractChileTeletrakProgrammeLinks(linkedHtml, { referenc
 assert.equal(programmeLinks.programme_links.size, 4);
 assert.equal(programmeLinks.conflicts.length, 0);
 
+const clubHipicoViewer = 'https://www.clubhipico.cl/carreras/volante/?fecha=2026-09-21';
+assert.equal(
+  resolveClubHipicoSantiagoProgrammePdfCandidate(clubHipicoViewer, { racecourseId: 'club-hipico-de-santiago-racecourse' }),
+  'https://static.clubhipico.cl/archivos/volantes/21-09-2026.pdf',
+);
+assert.equal(
+  resolveClubHipicoSantiagoProgrammePdfCandidate(clubHipicoViewer, { racecourseId: 'hipodromo-chile' }),
+  null,
+  'viewer fallback must be Santiago-only',
+);
+assert.equal(
+  resolveClubHipicoSantiagoProgrammePdfCandidate('https://example.test/carreras/volante/?fecha=2026-09-21', { racecourseId: 'club-hipico-de-santiago-racecourse' }),
+  null,
+  'viewer fallback must stay on official Club Hipico hosts',
+);
+const viewerHtmlWithPdf = '<html><body><a href="https://static.clubhipico.cl/archivos/volantes/21-09-2026.pdf">Descargar volante</a></body></html>';
+assert.equal(
+  extractClubHipicoSantiagoOfficialPdfHref(viewerHtmlWithPdf, { baseUrl: clubHipicoViewer }),
+  'https://static.clubhipico.cl/archivos/volantes/21-09-2026.pdf',
+);
+assert.equal(
+  extractClubHipicoSantiagoOfficialPdfHref('<a href="https://example.test/21-09-2026.pdf">external</a>', { baseUrl: clubHipicoViewer }),
+  null,
+  'viewer resolver must reject non-official PDF hosts',
+);
+
 const hch = parseChileTeletrakProgrammeText('12:15 aprox. 1.000 Mts. PREMIO: A\n12:40 aprox. 1.000 Mts. PREMIO: B\n13:05 aprox. 1.200 Mts. PREMIO: C', { racecourseId: 'hipodromo-chile' });
 const chs = parseChileTeletrakProgrammeText('1ª 12:30\nARENA - 1.000 mts\n2ª 12:58\nPASTO - 1.200 mts\n3ª 13:24\nPASTO - 1.200 mts', { racecourseId: 'club-hipico-de-santiago-racecourse' });
 const chc = parseChileTeletrakProgrammeText('1ª 12:05 hrs. PREMIO UNO\n2ª 12:35 hrs. PREMIO DOS\n3ª 13:05 hrs. PREMIO TRES', { racecourseId: 'club-hipico-de-concepcion-racecourse' });
@@ -130,6 +158,8 @@ assert.doesNotMatch(coreSource, /buildChileRankCCandidate|rank-c-v1|capability_r
 assert.doesNotMatch(runnerSource, /public_rank_ceiling|capability_rank:\s*['"]C['"]/, 'Chile runner must not impose a source-local public/rank ceiling');
 assert.match(runnerSource, /collection_target_rank:\s*['"]best_available['"]/, 'Chile runner must target best available rank');
 assert.match(runnerSource, /parseChileTeletrakProgrammeText/, 'Chile runner must evaluate linked official programme detail');
+assert.match(runnerSource, /resolveClubHipicoSantiagoProgrammePdfCandidate/, 'Chile runner must resolve Santiago viewer pages to verified official PDF candidates');
+assert.match(runnerSource, /fetchProgrammeDocument\(candidatePdfUrl\)/, 'Chile runner must fetch the official PDF candidate before accepting it');
 
 const unknown = html.replace('Icono Valparaíso Sporting Club', 'Icono Hipódromo Nuevo Chile');
 const unknownParsed = parseChileTeletrakWeeklyHtml(unknown, { referenceDate: '2026-09-09', startDate: '2026-09-09', endDateExclusive: '2026-09-10' });
