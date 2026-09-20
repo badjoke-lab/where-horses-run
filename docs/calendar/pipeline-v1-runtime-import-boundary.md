@@ -1,8 +1,8 @@
 # Calendar pipeline v1 — production runtime import boundary
 
-Status: implemented foundation  
+Status: active runtime authority boundary  
 Work ID: `WHR-CAL-PIPELINE-V1`  
-Implemented: 2026-07-01
+Implemented: 2026-07-01; consumer-only runtime completed in Wave 5 on 2026-09-21
 
 ## Rule
 
@@ -61,8 +61,34 @@ data/generated/timetable/public/meeting-details.json
 src/lib/timetable/publicTimetableViewModel.ts
 ```
 
-The view model itself must not import candidates, canonical files, source snapshots, or legacy seeds.
+The view model itself must not import candidates, canonical files, source snapshots, legacy seeds, reviewed supplement modules, or post-publication override artifacts.
 
-## Next Pipeline v1 slice
+Wave 5 makes the view model consumer-only: it returns the committed public list/detail datasets exactly as produced by the Wave 4 publication authority. It must not raise ranks, restore removed meetings, replace source/provenance fields, add reviewed rows, or mutate timetable detail fields after publication.
 
-Migrate one reviewed source adapter to emit `timetable-candidate-v1` and prove that adapter output stops at the candidate boundary before human review and canonical promotion.
+The former runtime-only sources remain repository history until cleanup, but they are no longer allowed runtime inputs:
+
+```text
+data/generated/timetable/public/japan-a-plus-overrides.json
+src/lib/timetable/tjkPublicSupplement.ts
+src/lib/timetable/baneiReviewedSupplement.ts
+```
+
+## Operator diagnostics exception
+
+`src/pages/calendar/diagnostics.json.ts` is a prerendered operator-only aggregate endpoint loaded only by `?diag=calendar`. It may compare canonical field coverage with the final public snapshot, but it must not expose canonical timetable rows or alter publication truth.
+
+The runtime import-boundary check excludes only that prerendered diagnostics endpoint from the ordinary page graph and validates the exception separately.
+
+## Wave 5 result
+
+Production Calendar rendering is now:
+
+```text
+final correlated public snapshot
+-> consumer-only publicTimetableViewModel
+-> page/UI filtering, timezone projection, live-status decoration
+```
+
+Presentation code may filter, sort, localize, and format the final public snapshot. It may not add/remove canonical/public meetings, change evidence/public ranks, replace provenance, or enrich timetable fields from side-channel datasets.
+
+Structured-data generation and remaining legacy cleanup are Wave 6.
