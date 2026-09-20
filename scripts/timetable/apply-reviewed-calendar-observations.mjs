@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { attachPublicationSnapshotV1 } from './calendar-authority-metadata.mjs';
+import { deriveBestAvailableRank } from './best-available-rank.mjs';
+import { acceptCanonicalObservationV1 } from './canonical-acceptance.mjs';
 
 const RANKS = Object.freeze(['C', 'B', 'B+', 'A', 'A+']);
 const RANK_INDEX = new Map(RANKS.map((value, index) => [value, index]));
@@ -220,50 +222,67 @@ for (const record of reviewedById.values()) {
     throw new Error(`reviewed Calendar observation has no canonical mother-set meeting: ${record.meeting_id}`);
   }
 
-  let meeting = previous;
-  let repairedCanonical = false;
-  const rankNeedsRepair = rank(previous.capability_rank) < rank(record.capability_rank);
-  const firstNeedsRepair = rank(record.capability_rank) >= rank('B')
-    && record.first_race_time_local && !previous.first_race_time_local;
-  const lastNeedsRepair = rank(record.capability_rank) >= rank('B+')
-    && record.last_race_time_local && !previous.last_race_time_local;
-
-  if (rankNeedsRepair || firstNeedsRepair || lastNeedsRepair) {
-    meeting = {
-      ...previous,
-      capability_rank: rankNeedsRepair ? record.capability_rank : previous.capability_rank,
-      display_status: (rankNeedsRepair ? record.capability_rank : previous.capability_rank) === 'C' ? 'partial' : 'displayable',
-      first_race_time_local: previous.first_race_time_local ?? record.first_race_time_local ?? null,
-      last_race_time_local: previous.last_race_time_local ?? record.last_race_time_local ?? null,
-      source_trace: reviewedSourceTrace(previous, record),
-      freshness: reviewedFreshness(previous, record, generatedAt),
-    };
-    canonicalById.set(record.meeting_id, meeting);
-    repairedCanonical = true;
-    changed = true;
-    selected.push(record);
-    if (rankNeedsRepair) outcomes.canonical_rank_repairs += 1;
-    if (firstNeedsRepair || lastNeedsRepair) outcomes.canonical_time_repairs += 1;
+  const previousDetail = canonicalDetailsById.get(record.meeting_id) ?? null;
+  const reviewedRows = Array.isArray(record.timetable_rows) ? record.timetable_rows : [];
+  const reviewedEvidenceRank = deriveBestAvailableRank(record, reviewedRows);
+  if (rank(record.capability_rank) > rank(reviewedEvidenceRank)) {
+    throw new Error(`reviewed observation rank exceeds its evidence-derived rank for ${record.meeting_id}: declared=${record.capability_rank} evidence=${reviewedEvidenceRank}`);
   }
 
-  let detail = canonicalDetailsById.get(record.meeting_id) ?? null;
-  const reviewedRows = Array.isArray(record.timetable_rows) ? record.timetable_rows : [];
-  const detailNeedsRepair = rank(record.capability_rank) >= rank('A') && !detail && reviewedRows.length > 0;
-  if (detailNeedsRepair) {
-    detail = {
-      meeting_id: meeting.meeting_id,
-      country_id: meeting.country_id,
-      authority_id: meeting.authority_id,
-      racecourse_id: meeting.racecourse_id,
-      date: meeting.date,
-      timezone: meeting.timezone,
-      capability_rank: meeting.capability_rank,
-      source_trace: repairedCanonical ? meeting.source_trace : reviewedSourceTrace(meeting, record),
-      freshness: repairedCanonical ? meeting.freshness : reviewedFreshness(meeting, record, generatedAt),
-      timetable_rows: reviewedRows,
-      summary_note: 'Frozen human-reviewed official race programme observation.',
-    };
-    canonicalDetailsById.set(record.meeting_id, detail);
+  const candidateMeeting = {
+    meeting_id: record.meeting_id,
+    country_id: record.country_id ?? previous.country_id,
+    authority_id: record.authority_id ?? previous.authority_id,
+    racing_system_id: record.racing_system_id ?? previous.racing_system_id,
+    racecourse_id: record.racecourse_id ?? previous.racecourse_id,
+    date: record.date ?? previous.date,
+    timezone: record.timezone ?? previous.timezone,
+    capability_rank: reviewedEvidenceRank,
+    display_status: reviewedEvidenceRank === 'C' ? 'partial' : 'displayable',
+    first_race_time_local: record.first_race_time_local ?? reviewedRows[0]?.post_time_local ?? null,
+    last_race_time_local: record.last_race_time_local ?? reviewedRows.at(-1)?.post_time_local ?? null,
+    source_trace: reviewedSourceTrace(previous, record),
+    freshness: reviewedFreshness(previous, record, generatedAt),
+  };
+  const candidateDetail = ['A', 'A+'].includes(reviewedEvidenceRank) && reviewedRows.length
+    ? {
+        meeting_id: candidateMeeting.meeting_id,
+        country_id: candidateMeeting.country_id,
+        authority_id: candidateMeeting.authority_id,
+        racecourse_id: candidateMeeting.racecourse_id,
+        date: candidateMeeting.date,
+        timezone: candidateMeeting.timezone,
+        capability_rank: reviewedEvidenceRank,
+        source_trace: candidateMeeting.source_trace,
+        freshness: candidateMeeting.freshness,
+        timetable_rows: reviewedRows,
+        summary_note: 'Frozen human-reviewed official race programme observation.',
+      }
+    : null;
+
+  const accepted = acceptCanonicalObservationV1({
+    previousMeeting: previous,
+    previousDetail,
+    candidateMeeting,
+    candidateDetail,
+    evidenceChanges: record.evidence_changes ?? [],
+  });
+  const meeting = accepted.meeting;
+  const detail = accepted.detail;
+  const canonicalChanged = JSON.stringify(previous) !== JSON.stringify(meeting);
+  const detailChanged = JSON.stringify(previousDetail) !== JSON.stringify(detail);
+
+  if (canonicalChanged) {
+    canonicalById.set(record.meeting_id, meeting);
+    changed = true;
+    selected.push(record);
+    if (rank(meeting.capability_rank) > rank(previous.capability_rank)) outcomes.canonical_rank_repairs += 1;
+    if ((!previous.first_race_time_local && meeting.first_race_time_local)
+      || (!previous.last_race_time_local && meeting.last_race_time_local)) outcomes.canonical_time_repairs += 1;
+  }
+  if (detailChanged) {
+    if (detail) canonicalDetailsById.set(record.meeting_id, detail);
+    else canonicalDetailsById.delete(record.meeting_id);
     changed = true;
     if (!selected.some((item) => item.meeting_id === record.meeting_id)) selected.push(record);
     outcomes.canonical_detail_repairs += 1;
@@ -277,7 +296,7 @@ for (const record of reviewedById.values()) {
       ? 'B+'
       : meeting.first_race_time_local ? 'B' : 'C';
   }
-  const minimumReviewedPublicRank = capRank(record.capability_rank, ceiling);
+  const minimumReviewedPublicRank = capRank(reviewedEvidenceRank, ceiling);
   if (rank(desiredPublicRank) < rank(minimumReviewedPublicRank)) {
     throw new Error(`reviewed data cannot satisfy policy-projected minimum rank for ${record.meeting_id}`);
   }
@@ -286,7 +305,7 @@ for (const record of reviewedById.values()) {
   const publicNeedsRepair = !previousPublic
     || rank(previousPublic.effective_public_rank) < rank(minimumReviewedPublicRank)
     || (record.first_race_time_local && !previousPublic.first_race_time_local)
-    || (rank(record.capability_rank) >= rank('B+') && record.last_race_time_local && !previousPublic.last_race_time_local);
+    || (rank(reviewedEvidenceRank) >= rank('B+') && record.last_race_time_local && !previousPublic.last_race_time_local);
 
   let publicMeeting = previousPublic;
   if (publicNeedsRepair) {
@@ -327,7 +346,7 @@ for (const record of reviewedById.values()) {
     outcomes.public_detail_repairs += 1;
   }
 
-  if (!rankNeedsRepair && !firstNeedsRepair && !lastNeedsRepair && !detailNeedsRepair && !publicNeedsRepair && !publicDetailNeedsRepair) {
+  if (!canonicalChanged && !detailChanged && !publicNeedsRepair && !publicDetailNeedsRepair) {
     outcomes.already_preserved += 1;
   }
 }
@@ -362,23 +381,25 @@ const finalPublicById = new Map((finalPublic.meetings ?? []).map((row) => [row.m
 const finalPublicDetailsById = new Map((finalPublicDetails.details ?? []).map((row) => [row.meeting_id, row]));
 
 for (const record of reviewedById.values()) {
+  const reviewedRows = Array.isArray(record.timetable_rows) ? record.timetable_rows : [];
+  const reviewedEvidenceRank = deriveBestAvailableRank(record, reviewedRows);
   const meeting = finalCanonicalById.get(record.meeting_id);
   const publicMeeting = finalPublicById.get(record.meeting_id);
   const policy = choosePolicy(record.authority_id, policyDataset);
-  const minimumPublicRank = capRank(record.capability_rank, policy.max_public_rank ?? 'C');
-  if (!meeting || rank(meeting.capability_rank) < rank(record.capability_rank)) {
-    throw new Error(`reviewed canonical rank was not preserved for ${record.meeting_id}`);
+  const minimumPublicRank = capRank(reviewedEvidenceRank, policy.max_public_rank ?? 'C');
+  if (!meeting || rank(meeting.capability_rank) < rank(reviewedEvidenceRank)) {
+    throw new Error(`reviewed canonical evidence was not preserved for ${record.meeting_id}`);
   }
   if (!publicMeeting || rank(publicMeeting.effective_public_rank) < rank(minimumPublicRank)) {
-    throw new Error(`reviewed public rank was not preserved for ${record.meeting_id}`);
+    throw new Error(`reviewed public evidence was not preserved for ${record.meeting_id}`);
   }
-  if (rank(record.capability_rank) >= rank('B') && !meeting.first_race_time_local) {
+  if (rank(reviewedEvidenceRank) >= rank('B') && !meeting.first_race_time_local) {
     throw new Error(`reviewed first-race time was not preserved for ${record.meeting_id}`);
   }
-  if (rank(record.capability_rank) >= rank('B+') && !meeting.last_race_time_local) {
+  if (rank(reviewedEvidenceRank) >= rank('B+') && !meeting.last_race_time_local) {
     throw new Error(`reviewed last-race time was not preserved for ${record.meeting_id}`);
   }
-  if (rank(record.capability_rank) >= rank('A')) {
+  if (rank(reviewedEvidenceRank) >= rank('A')) {
     const canonicalDetail = finalCanonicalDetailsById.get(record.meeting_id);
     const publicDetail = finalPublicDetailsById.get(record.meeting_id);
     if (!canonicalDetail || !(canonicalDetail.timetable_rows ?? []).length || !publicDetail || !(publicDetail.timetable_rows ?? []).length) {

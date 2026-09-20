@@ -110,3 +110,27 @@ The snapshot generation timestamp remains distinct from acquisition-attempt, sou
 ## Wave 1 boundary
 
 Wave 1 adds and preserves representation only. It does not change HKJC, KRA, Japan, canonical merge, rank derivation, acquisition-completion classification, reviewed repair, runtime overlay, diagnostics, structured-data, public membership, public rank, or field-visibility semantics.
+
+## Wave 3 canonical authority
+
+Wave 3 activates the shared acceptance semantics represented by this contract through:
+
+```text
+scripts/timetable/canonical-acceptance.mjs
+```
+
+The shared authority applies these rules consistently to official rolling observations, Japan reconciliation, and reviewed observations:
+
+- canonical rank is derived from accepted evidence, not trusted from a producer-declared label;
+- a weaker new observation does not erase stronger still-valid accepted evidence;
+- current acquisition disposition and attempt state may change while retained evidence rank remains stronger;
+- missing fields in a newer observation are not treated as confirmed absence;
+- independently verified race fields may merge with retained fields by race label;
+- explicit official correction may replace accepted evidence and therefore may lower rank;
+- targeted correction/withdrawal/invalidation is applied only to its declared field/detail target;
+- successful-verification provenance does not advance merely because a later attempt failed;
+- reviewed observations pass through the same acceptance/rank authority and cannot promote beyond their evidence-derived rank.
+
+Meeting-level withdrawal/invalidation remains outside this acceptance helper and requires an explicit removal workflow; Wave 3 does not silently delete canonical meetings.
+
+Acquisition completion is evaluated independently of retained rank. In particular, an A+ canonical meeting can coexist with a current `retry_required` disposition when the present acquisition cycle fails.

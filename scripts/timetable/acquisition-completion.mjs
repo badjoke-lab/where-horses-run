@@ -62,16 +62,6 @@ export function classifyAcquisitionCompletion(record, profile) {
     throw new Error(`invalid technical capability rank: ${technicalRank}`);
   }
 
-  if (observedRank === 'A+') {
-    return {
-      disposition: 'complete_current_best_available',
-      observed_rank: observedRank,
-      technical_capability_rank: technicalRank,
-      higher_rank_open: false,
-      reason: 'No higher timetable rank exists.',
-    };
-  }
-
   const detailStatus = record?.detail_observation?.status ?? null;
 
   if (PENDING_DETAIL_STATUSES.has(detailStatus)) {
@@ -101,6 +91,16 @@ export function classifyAcquisitionCompletion(record, profile) {
       technical_capability_rank: technicalRank,
       higher_rank_open: false,
       reason: 'The registered higher-detail route was explicitly not applicable to this meeting.',
+    };
+  }
+
+  if (observedRank === 'A+') {
+    return {
+      disposition: 'complete_current_best_available',
+      observed_rank: observedRank,
+      technical_capability_rank: technicalRank,
+      higher_rank_open: false,
+      reason: 'The current acquisition cycle completed without a pending/retry condition and no higher timetable rank exists.',
     };
   }
 

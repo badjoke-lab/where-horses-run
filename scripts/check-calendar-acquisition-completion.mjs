@@ -34,6 +34,11 @@ assert.equal(classifyAcquisitionCompletion(record('B+', 'available', 'A+'), prof
 assert.equal(classifyAcquisitionCompletion(record('A', 'available', 'A'), profile()).disposition, 'implementation_gap');
 assert.equal(classifyAcquisitionCompletion(record('A', 'available', 'A+'), profile()).disposition, 'complete_current_best_available');
 assert.equal(classifyAcquisitionCompletion(record('A+'), profile()).disposition, 'complete_current_best_available');
+assert.equal(
+  classifyAcquisitionCompletion(record('A+', 'source_error'), profile()).disposition,
+  'retry_required',
+  'retained/observed A+ evidence must not hide a current-cycle source failure',
+);
 assert.equal(classifyAcquisitionCompletion(record('A', 'not_applicable'), profile()).disposition, 'not_applicable');
 
 const limitedImplementation = profile({ technical: 'A+', supported: ['C', 'A'] });

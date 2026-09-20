@@ -1,3 +1,11 @@
+import { classifyAcquisitionCompletion } from './acquisition-completion.mjs';
+import { deriveBestAvailableRank } from './best-available-rank.mjs';
+import {
+  acceptCanonicalObservationV1,
+  normalizeStoredCanonicalV1,
+  retainCurrentAcquisitionStateV1,
+} from './canonical-acceptance.mjs';
+
 const RANKS = ['C', 'B', 'B+', 'A', 'A+'];
 export const JAPAN_GROUPS = ['jra', 'nar-standard', 'banei'];
 export const OUTCOMES = ['add', 'update', 'no_op', 'details_pending', 'acquisition_failed', 'conflict'];
@@ -13,8 +21,8 @@ function rank(value) {
   return index < 0 ? 0 : index;
 }
 
-function validTime(value) {
-  return typeof value === 'string' && /^\d{2}:\d{2}$/.test(value);
+export function deriveJapanBestAvailableRank(meeting, rows = meeting?.timetable_rows ?? []) {
+  return deriveBestAvailableRank(meeting, rows);
 }
 
 function safeRows(rows = []) {
@@ -25,95 +33,32 @@ function safeRows(rows = []) {
     distance_m: row?.distance_m ?? null,
     surface: row?.surface ?? null,
     course_label: row?.course_label ?? null,
-    metadata_status: 'verified',
+    metadata_status: row?.metadata_status ?? 'verified',
     source_label: row?.source_label ?? null,
   }));
 }
 
-function rowHasRaceTime(row) {
-  return typeof row?.label === 'string'
-    && row.label.length > 0
-    && validTime(row.post_time_local);
-}
-
-function rowHasAPlusMetadata(row) {
-  return rowHasRaceTime(row)
-    && typeof row.race_name === 'string'
-    && row.race_name.length > 0
-    && Number.isInteger(row.distance_m)
-    && row.distance_m > 0
-    && typeof row.surface === 'string'
-    && row.surface.length > 0
-    && typeof row.course_label === 'string'
-    && row.course_label.length > 0;
-}
-
-function raceNumberFromLabel(label) {
-  if (typeof label !== 'string') return null;
-  const match = label.match(/(?:Race\s*|^)(\d{1,2})(?:\s*R)?$/i) ?? label.match(/^(\d{1,2})R$/i);
-  return match ? Number(match[1]) : null;
-}
-
-function rowsAreContinuous(rows) {
-  if (!rows.length || !rows.every(rowHasRaceTime)) return false;
-  const numbers = rows.map((row) => raceNumberFromLabel(row.label));
-  if (numbers.every(Number.isInteger)) return numbers.every((number, index) => number === index + 1);
-  return new Set(rows.map((row) => row.label)).size === rows.length;
-}
-
-/**
- * Best-available rank is derived centrally from normalized public-safe evidence.
- * Adapter-declared capability_rank is deliberately ignored as a ceiling/floor.
- */
-export function deriveJapanBestAvailableRank(meeting, rows = meeting?.timetable_rows ?? []) {
-  const normalizedRows = safeRows(rows);
-  if (rowsAreContinuous(normalizedRows)) {
-    return normalizedRows.every(rowHasAPlusMetadata) ? 'A+' : 'A';
-  }
-
-  const first = meeting?.first_race_time_local ?? normalizedRows[0]?.post_time_local ?? null;
-  const last = meeting?.last_race_time_local ?? normalizedRows.at(-1)?.post_time_local ?? null;
-  if (validTime(first) && validTime(last)) return 'B+';
-  if (validTime(first)) return 'B';
-  return 'C';
-}
+const JAPAN_ACQUISITION_PROFILE = Object.freeze({
+  technical_capability_rank: 'A+',
+  supported_observation_ranks: ['C', 'B', 'B+', 'A', 'A+'],
+});
 
 export function classifyJapanAcquisitionCompletion({ capabilityRank, outcome = null, reason = null }) {
-  if (!RANKS.includes(capabilityRank)) throw new Error(`invalid Japan capability rank: ${capabilityRank}`);
-  if (capabilityRank === 'A+') {
-    return {
-      disposition: 'complete_current_best_available',
-      observed_rank: capabilityRank,
-      technical_capability_rank: 'A+',
-      higher_rank_open: false,
-      reason: 'Observed evidence reached A+; no higher timetable rank remains.',
-    };
-  }
-  if (outcome === 'details_pending') {
-    return {
-      disposition: 'pending_publication',
-      observed_rank: capabilityRank,
-      technical_capability_rank: 'A+',
-      higher_rank_open: true,
-      reason: reason ?? 'Known official Japan detail evidence is not yet published.',
-    };
-  }
-  if (outcome === 'acquisition_failed' || outcome === 'conflict') {
-    return {
-      disposition: 'retry_required',
-      observed_rank: capabilityRank,
-      technical_capability_rank: 'A+',
-      higher_rank_open: true,
-      reason: reason ?? 'Japan higher-detail acquisition did not complete safely.',
-    };
-  }
-  return {
-    disposition: 'implementation_gap',
-    observed_rank: capabilityRank,
-    technical_capability_rank: 'A+',
-    higher_rank_open: true,
-    reason: 'Japan detail inspection returned below A+ without an explicit proof that A+ fields were fully evaluated for this meeting.',
+  const status = outcome === 'details_pending'
+    ? 'details_pending'
+    : outcome === 'acquisition_failed'
+      ? 'acquisition_failed'
+      : outcome === 'conflict'
+        ? 'conflict'
+        : 'available';
+  const record = {
+    capability_rank: capabilityRank,
+    detail_observation: {
+      status,
+      ...(reason ? { reason } : {}),
+    },
   };
+  return classifyAcquisitionCompletion(record, JAPAN_ACQUISITION_PROFILE);
 }
 
 export function assertJapanCompleteness(official, reconciliations, resultingPublic = []) {
@@ -186,7 +131,6 @@ function sourceTrace(meeting, previous = {}) {
 
 function safeMeeting(meeting, checkedAt, previous = null) {
   const rows = safeRows(meeting.timetable_rows);
-  const base = previous ?? {};
   const firstRaceTime = meeting.first_race_time_local ?? rows[0]?.post_time_local ?? null;
   const lastRaceTime = meeting.last_race_time_local ?? rows.at(-1)?.post_time_local ?? null;
   const capabilityRank = deriveJapanBestAvailableRank({
@@ -196,11 +140,10 @@ function safeMeeting(meeting, checkedAt, previous = null) {
   }, rows);
 
   return {
-    ...base,
     meeting_id: meeting.meeting_id,
     country_id: 'japan',
     authority_id: meeting.authority_id,
-    racing_system_id: meeting.racing_system_id ?? base.racing_system_id,
+    racing_system_id: meeting.racing_system_id ?? previous?.racing_system_id,
     racecourse_id: meeting.racecourse_id,
     date: meeting.date,
     timezone: 'Asia/Tokyo',
@@ -208,22 +151,21 @@ function safeMeeting(meeting, checkedAt, previous = null) {
     display_status: capabilityRank === 'C' ? 'partial' : 'displayable',
     first_race_time_local: firstRaceTime,
     last_race_time_local: lastRaceTime,
-    source_trace: sourceTrace(meeting, base.source_trace),
+    source_trace: sourceTrace(meeting, previous?.source_trace),
     freshness: {
-      ...(base.freshness ?? {}),
       last_checked_date: japanLocalDateFromInstant(checkedAt),
       generated_at: checkedAt,
       stale_after_date: null,
       freshness_note: 'Deterministically reconciled from the official Japan 30-day acquisition run.',
     },
-    notes: base.notes ?? 'Deterministic public-safe timetable fields reconciled from the official source.',
+    ...(meeting.evidence_support ? { evidence_support: structuredClone(meeting.evidence_support) } : {}),
+    ...(meeting.evidence_changes ? { evidence_changes: structuredClone(meeting.evidence_changes) } : {}),
+    notes: previous?.notes ?? 'Deterministic public-safe timetable fields reconciled from the official source.',
   };
 }
 
-function detailRecord(meeting, rows, checkedAt, previous = null) {
-  const base = previous ?? {};
+function detailRecord(meeting, rows, checkedAt) {
   return {
-    ...base,
     meeting_id: meeting.meeting_id,
     country_id: 'japan',
     authority_id: meeting.authority_id,
@@ -233,6 +175,8 @@ function detailRecord(meeting, rows, checkedAt, previous = null) {
     capability_rank: meeting.capability_rank,
     source_trace: meeting.source_trace,
     freshness: meeting.freshness,
+    ...(meeting.evidence_support ? { evidence_support: structuredClone(meeting.evidence_support) } : {}),
+    ...(meeting.evidence_changes ? { evidence_changes: structuredClone(meeting.evidence_changes) } : {}),
     timetable_rows: safeRows(rows),
     summary_note: 'Deterministic public-safe race programme fields reconciled from the official source.',
   };
@@ -416,8 +360,16 @@ export async function runJapanZeroBased30d({
   const reconciliations = [];
 
   for (const officialMeeting of official) {
-    const previousCanonical = canonicalMap.get(officialMeeting.meeting_id);
-    const previousDetail = details.get(officialMeeting.meeting_id);
+    let previousCanonical = canonicalMap.get(officialMeeting.meeting_id);
+    let previousDetail = details.get(officialMeeting.meeting_id);
+    const normalizedStored = normalizeStoredCanonicalV1(previousCanonical, previousDetail);
+    if (normalizedStored.changed) {
+      previousCanonical = normalizedStored.meeting;
+      previousDetail = normalizedStored.detail;
+      canonicalMap.set(officialMeeting.meeting_id, previousCanonical);
+      if (previousDetail) details.set(officialMeeting.meeting_id, previousDetail);
+      else details.delete(officialMeeting.meeting_id);
+    }
     const inspected = await inspectWithRetry(adapters[officialMeeting.acquisition_group], officialMeeting, attempts, retryDelayMs);
     if (inspected.outcome) {
       const publicRank = ensureOfficialScheduleRow({ officialMeeting, checkedAt, canonicalMap, publicMap });
@@ -427,10 +379,8 @@ export async function runJapanZeroBased30d({
         outcome: inspected.outcome,
         reason: inspected.reason,
       });
-      canonicalMap.set(officialMeeting.meeting_id, {
-        ...retainedCanonical,
-        acquisition_completion: acquisitionCompletion,
-      });
+      const retained = retainCurrentAcquisitionStateV1(retainedCanonical, { acquisitionCompletion });
+      canonicalMap.set(officialMeeting.meeting_id, retained.meeting);
       reconciliations.push({
         meeting_id: officialMeeting.meeting_id,
         acquisition_group: officialMeeting.acquisition_group,
@@ -443,43 +393,29 @@ export async function runJapanZeroBased30d({
       continue;
     }
 
-    const normalizedBase = safeMeeting({ ...officialMeeting, ...inspected.meeting }, checkedAt, previousCanonical);
-    const acquisitionCompletion = classifyJapanAcquisitionCompletion({ capabilityRank: normalizedBase.capability_rank });
-    const normalized = {
-      ...normalizedBase,
-      acquisition_completion: acquisitionCompletion,
-    };
-    if (previousCanonical && rank(previousCanonical.capability_rank) > rank(normalized.capability_rank)) {
-      const publicRank = ensureOfficialScheduleRow({ officialMeeting, checkedAt, canonicalMap, publicMap });
-      const retainedCanonical = canonicalMap.get(officialMeeting.meeting_id);
-      const conflictCompletion = classifyJapanAcquisitionCompletion({
-        capabilityRank: retainedCanonical.capability_rank,
-        outcome: 'conflict',
-        reason: 'official_rank_regression',
-      });
-      canonicalMap.set(officialMeeting.meeting_id, {
-        ...retainedCanonical,
-        acquisition_completion: conflictCompletion,
-      });
-      reconciliations.push({
-        meeting_id: normalized.meeting_id,
-        acquisition_group: officialMeeting.acquisition_group,
-        outcome: 'conflict',
-        reason: 'official_rank_regression',
-        official_rank: normalized.capability_rank,
-        public_rank: publicRank,
-        acquisition_completion: conflictCompletion.disposition,
-      });
-      continue;
-    }
-
-    const normalizedDetail = ['A', 'A+'].includes(normalized.capability_rank)
-      ? detailRecord(normalized, inspected.meeting.timetable_rows, checkedAt, previousDetail)
+    const candidate = safeMeeting({ ...officialMeeting, ...inspected.meeting }, checkedAt, previousCanonical);
+    const acquisitionCompletion = classifyJapanAcquisitionCompletion({ capabilityRank: candidate.capability_rank });
+    const candidateDetail = ['A', 'A+'].includes(candidate.capability_rank)
+      ? detailRecord(candidate, inspected.meeting.timetable_rows, checkedAt)
       : null;
+    const accepted = acceptCanonicalObservationV1({
+      previousMeeting: previousCanonical,
+      previousDetail,
+      candidateMeeting: candidate,
+      candidateDetail,
+      acquisitionCompletion,
+      evidenceChanges: candidate.evidence_changes ?? [],
+    });
+    const normalized = accepted.meeting;
+    const normalizedDetail = accepted.detail;
     const changed = !previousCanonical
       || comparableMeeting(previousCanonical) !== comparableMeeting(normalized)
-      || (normalizedDetail && comparableRows(previousDetail) !== comparableRows(normalizedDetail));
-    const outcome = !previousCanonical ? 'add' : changed ? 'update' : 'no_op';
+      || comparableRows(previousDetail) !== comparableRows(normalizedDetail);
+    const outcome = !previousCanonical
+      ? 'add'
+      : accepted.decision === 'retained_stronger_evidence'
+        ? 'conflict'
+        : changed ? 'update' : 'no_op';
 
     canonicalMap.set(normalized.meeting_id, normalized);
     const previousPublic = publicMap.get(normalized.meeting_id) ?? {};
@@ -490,12 +426,14 @@ export async function runJapanZeroBased30d({
       max_public_rank: normalized.capability_rank,
     });
     if (normalizedDetail) details.set(normalized.meeting_id, normalizedDetail);
+    else details.delete(normalized.meeting_id);
 
     reconciliations.push({
       meeting_id: normalized.meeting_id,
       acquisition_group: officialMeeting.acquisition_group,
       outcome,
-      official_rank: normalized.capability_rank,
+      ...(outcome === 'conflict' ? { reason: 'retained_stronger_canonical_evidence' } : {}),
+      official_rank: accepted.observed_rank,
       public_rank: normalized.capability_rank,
       acquisition_completion: acquisitionCompletion.disposition,
     });

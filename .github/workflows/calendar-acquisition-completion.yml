@@ -39,6 +39,8 @@ jobs:
           node-version: 22.12.0
       - name: Validate acquisition completion contract
         run: node scripts/check-calendar-acquisition-completion.mjs
+      - name: Validate Wave 3 canonical authority
+        run: node scripts/check-calendar-authority-wave3-canonical.mjs
       - name: Validate Japan acquisition completion normalization
         run: node scripts/check-japan-acquisition-completion.mjs
       - name: Validate TJK A+ programme parsing
