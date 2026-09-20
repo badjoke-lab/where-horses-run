@@ -306,9 +306,11 @@
       "system_id": "peru-monterrico-programme-system",
       "system_name_en": "Monterrico programme system",
       "authority_source_key": "peru/hipodromo-de-monterrico/monterrico-upcoming-programmes",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "monterrico-racecourse"
+      ],
       "coverage_scope": "single_racecourse",
-      "technical_rank": "A+",
+      "technical_rank": "A",
       "public_ceiling": "A",
       "confirmed_fields": {
         "meeting_date": true,
@@ -321,28 +323,28 @@
         "surface": true,
         "course": false
       },
-      "source_format": "api",
+      "source_format": "mixed",
       "access_mode": "api_call",
-      "automation_mode": "semi_automatic",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "weekly",
+        "daily",
         "near_meeting"
       ],
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "fallback": "downgrade_to_C",
+      "readiness": "ready",
+      "implementation_status": "scheduled_candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-17",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate if the upcoming-programmes route changes or additional official venues are confirmed.",
+      "checked_date": "2026-09-21",
+      "evidence_reviewed_at": "2026-09-21",
+      "revalidation_trigger": "Revalidate if the Monterrico date API, upcoming-programmes route, programme table structure, or reviewed venue scope changes.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/06-peru/final-summary.json",
       "limitations": [
-        "Only Monterrico was tested.",
-        "National completeness and operator identity remain unresolved.",
-        "Raw API payloads are not public outputs."
+        "Only the Hipódromo de Monterrico programme system is included; complete Peru-wide racing coverage is not claimed.",
+        "The production route publishes only public-safe timetable fields and does not retain raw API or programme bodies.",
+        "The current production adapter does not fabricate surface or course labels; complete consecutive post-time rows derive A under the central rank contract."
       ],
-      "notes": "A bounded Monterrico prototype can begin from the reviewed programme and race-detail API routes."
+      "notes": "The production route discovers reunions through the official date API and resolves public-safe timetable rows through the official programme page. Rank is derived centrally from accepted evidence; lower-rank observations remain explicit pending/retry states."
     },
     {
       "readiness_id": "mexico--mexico-candidate-route--hipodromo-site-candidate",
@@ -5248,5 +5250,5 @@
       "notes": "Use archive-page treatment and exclude Greece from all current-calendar listings."
     }
   ],
-  "last_updated": "2026-06-30"
+  "last_updated": "2026-09-21"
 }

@@ -59,6 +59,8 @@ const calendarMapRegressionIds = [
   'settat-racecourse',
   'el-jadida-racecourse',
   'khemisset-racecourse',
+  // Peru (1)
+  'monterrico-racecourse',
 ];
 
 const registry = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));

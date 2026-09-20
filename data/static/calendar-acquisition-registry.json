@@ -17,7 +17,9 @@
       "technical_capability_rank": "A+",
       "collection_target_rank": "best_available",
       "public_ceiling": "A+",
-      "supported_observation_ranks": ["A+"],
+      "supported_observation_ranks": [
+        "A+"
+      ],
       "supports_date_window": true,
       "supports_cross_month_window": false,
       "supports_selected_meetings": false,
@@ -40,7 +42,10 @@
       "technical_capability_rank": "A+",
       "collection_target_rank": "best_available",
       "public_ceiling": "A+",
-      "supported_observation_ranks": ["C", "A+"],
+      "supported_observation_ranks": [
+        "C",
+        "A+"
+      ],
       "supports_date_window": true,
       "supports_cross_month_window": true,
       "supports_selected_meetings": true,
@@ -63,7 +68,10 @@
       "technical_capability_rank": "A+",
       "collection_target_rank": "best_available",
       "public_ceiling": "A+",
-      "supported_observation_ranks": ["B", "A+"],
+      "supported_observation_ranks": [
+        "B",
+        "A+"
+      ],
       "supports_date_window": true,
       "supports_cross_month_window": false,
       "supports_selected_meetings": true,
@@ -86,13 +94,21 @@
       "technical_capability_rank": "A+",
       "collection_target_rank": "best_available",
       "public_ceiling": "A",
-      "supported_observation_ranks": ["C", "B", "B+", "A", "A+"],
+      "supported_observation_ranks": [
+        "C",
+        "B",
+        "B+",
+        "A",
+        "A+"
+      ],
       "supports_date_window": true,
       "supports_cross_month_window": false,
       "supports_selected_meetings": false,
       "supports_source_visible_horizon": false,
       "supports_rank_upgrade_retry": false,
-      "pending_fields": ["fallback_runner"],
+      "pending_fields": [
+        "fallback_runner"
+      ],
       "operator_notes": "HKJC remains provisional. GitHub Actions handles the schedule date-window route and explicit operator-reviewed import handles public-safe detail observations. Public output remains capped at A; fallback execution, generic selected-meeting retry, automatic approval, promotion, and publication remain disabled."
     },
     {
@@ -109,7 +125,10 @@
       "technical_capability_rank": "A",
       "collection_target_rank": "best_available",
       "public_ceiling": "A",
-      "supported_observation_ranks": ["C", "A"],
+      "supported_observation_ranks": [
+        "C",
+        "A"
+      ],
       "supports_date_window": false,
       "supports_cross_month_window": false,
       "supports_selected_meetings": true,
@@ -132,7 +151,13 @@
       "technical_capability_rank": "A+",
       "collection_target_rank": "best_available",
       "public_ceiling": "A",
-      "supported_observation_ranks": ["C", "B", "B+", "A", "A+"],
+      "supported_observation_ranks": [
+        "C",
+        "B",
+        "B+",
+        "A",
+        "A+"
+      ],
       "supports_date_window": false,
       "supports_cross_month_window": false,
       "supports_selected_meetings": true,
@@ -155,7 +180,11 @@
       "technical_capability_rank": "A+",
       "collection_target_rank": "best_available",
       "public_ceiling": "A",
-      "supported_observation_ranks": ["C", "A", "A+"],
+      "supported_observation_ranks": [
+        "C",
+        "A",
+        "A+"
+      ],
       "supports_date_window": true,
       "supports_cross_month_window": true,
       "supports_selected_meetings": false,
@@ -178,13 +207,18 @@
       "technical_capability_rank": "A",
       "collection_target_rank": "best_available",
       "public_ceiling": "A",
-      "supported_observation_ranks": ["C"],
+      "supported_observation_ranks": [
+        "C"
+      ],
       "supports_date_window": true,
       "supports_cross_month_window": true,
       "supports_selected_meetings": false,
       "supports_source_visible_horizon": true,
       "supports_rank_upgrade_retry": false,
-      "pending_fields": ["detail_source_id", "detail_adapter_id"],
+      "pending_fields": [
+        "detail_source_id",
+        "detail_adapter_id"
+      ],
       "operator_notes": "The SOREC Programme Réunion index is wired as a meeting-discovery route and currently emits meeting-level evidence when no race times are present. That observation level is not a fixed rank ceiling: the system targets best available, canonical rank is derived centrally from evidence, public output may rise through A, and richer detail acquisition remains pending."
     },
     {
@@ -201,7 +235,10 @@
       "technical_capability_rank": "A",
       "collection_target_rank": "best_available",
       "public_ceiling": "A",
-      "supported_observation_ranks": ["C", "A"],
+      "supported_observation_ranks": [
+        "C",
+        "A"
+      ],
       "supports_date_window": true,
       "supports_cross_month_window": true,
       "supports_selected_meetings": false,
@@ -224,7 +261,10 @@
       "technical_capability_rank": "A",
       "collection_target_rank": "best_available",
       "public_ceiling": "A",
-      "supported_observation_ranks": ["C", "A"],
+      "supported_observation_ranks": [
+        "C",
+        "A"
+      ],
       "supports_date_window": true,
       "supports_cross_month_window": true,
       "supports_selected_meetings": false,
@@ -232,6 +272,32 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "GitHub Actions combines HRI's annual official fixture list with the official Racecards monthly AJAX route. Every requested source month is re-evaluated on the regular full/near refresh cadence: published race rows can produce A, meetings without published rows remain valid C with explicit pending detail, and retrieval/parser failures remain explicit retry states. No lower rank is treated as complete merely because collection succeeded."
+    },
+    {
+      "system_id": "peru-monterrico-programme-system",
+      "country_id": "peru",
+      "authority_id": "hipodromo-de-monterrico",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "monterrico-upcoming-programmes",
+      "detail_source_id": "monterrico-upcoming-programmes",
+      "schedule_adapter_id": "peru-monterrico-programme-best-available-v1",
+      "detail_adapter_id": "peru-monterrico-programme-best-available-v1",
+      "technical_capability_rank": "A",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "A",
+      "supported_observation_ranks": [
+        "C",
+        "A"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": false,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "GitHub Actions scans the requested Peru-local date window through the official Monterrico date API, then evaluates each discovered reunion through the official programme page. Complete consecutive race-time rows derive A centrally; unpublished detail remains valid C with pending publication and fetch/parser failures remain valid C with explicit retry state. Coverage is limited to the reviewed Monterrico system and does not claim complete Peru-wide racing coverage."
     }
   ]
 }

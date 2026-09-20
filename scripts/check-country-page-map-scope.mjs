@@ -71,6 +71,8 @@ const expectedCountryMapIds = [
   'settat-racecourse',
   'el-jadida-racecourse',
   'khemisset-racecourse',
+  // Peru (1)
+  'monterrico-racecourse',
 ];
 
 const racecourseDataPaths = [
@@ -99,14 +101,19 @@ assert.deepEqual(activeIdsForCountry('south-korea'), [
   'yeongcheon-racecourse',
 ].sort(), 'South Korea must expose four active racecourses.');
 
-assert.equal(expectedCountryMapIds.length, 41, 'expected 41 regression racecourses');
+assert.deepEqual(activeIdsForCountry('peru'), [
+  'monterrico-racecourse',
+].sort(), 'Peru Calendar scope must expose the reviewed Monterrico racecourse identity.');
+
+assert.equal(expectedCountryMapIds.length, 42, 'expected 42 regression racecourses');
 for (const id of expectedCountryMapIds) {
   assert(publishableIds.has(id), `${id}: expected publishable country-map location`);
 }
 
 console.log('COUNTRY_PAGE_MAP_SCOPE: pass');
-console.log('ACTIVE_COUNTRY_MAP_41_LOCATIONS: pass');
+console.log('ACTIVE_COUNTRY_MAP_42_LOCATIONS: pass');
 console.log('CHILE_LIST_MAP_PARITY_4_OF_4: pass');
 console.log('SOUTH_KOREA_LIST_MAP_PARITY_4_OF_4: pass');
+console.log('PERU_LIST_MAP_PARITY_1_OF_1: pass');
 console.log('COUNTRY_MAP_UNCLUSTERED_PHYSICAL_POINTS: pass');
 console.log('PARTIAL_LOCATION_COVERAGE_DOES_NOT_KILL_COUNTRY_MAP: pass');
