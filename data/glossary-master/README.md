@@ -8,30 +8,30 @@ This directory is the non-public working area for the worldwide horse-racing ter
 
 ## Plain-language progress
 
-The working dictionary currently contains **636 racing terms/concepts**.
+The working dictionary currently contains **635 racing terms/concepts**.
 
-- **592 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
-- **44 terms still need verification, scope correction, splitting/merging, or removal.**
+- **594 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
+- **41 terms still need verification, scope correction, splitting/merging, or removal.**
 - The already researched jurisdiction-specific additions are **161/161 verified**.
 - The core highest-priority terminology set is **203/203 verified**.
 - Public glossary publication is still disabled while the remaining terms are cleaned up.
 
-The latest pass is **targeted residual resolution wave 7**. It retired **5 duplicate or malformed candidate Concepts** without promoting any weak term: `Debutant` → `First-time starter`, `Female family` → `Family`, `Corner` → `Turn`, `Counterclockwise` → `Anti-clockwise`, and the unsupported `RO` result-code row → verified `Ran out`.
+The latest pass is **targeted residual resolution wave 8**. It verified the current USTA track-condition labels `Freezing` and `Snow` after correcting the seed canonicals `Frozen` and `Snow-covered`, and retired generic `Daylight saving time` as non-racing civil-time context under `Time zone`.
 
-The master is now **592/636 source-verified (93.1%)** with **44 candidates**. Active base-seed coverage is **431/475 (90.7%)**. RESULT is now **27/27 verified (100%)**, VENUE **39/42 (92.9%)**, HORSE **27/33 (81.8%)**, and BREED **15/21 (71.4%)**.
+The master is now **594/635 source-verified (93.5%)** with **41 candidates**. Active base-seed coverage is **433/474 (91.4%)**. SURF is now **59/62 verified (95.2%)**, and MEET is now **37/37 verified (100%)**.
 
-Wave 7 is a semantic cleanup pass: labels are retained only where the resolved Concept supports them, and `RO` is not promoted as a public verified abbreviation because the current authority evidence does not verify that code.
+Wave 8 combines evidence-backed canonical correction with removal of a non-independent generic concept; no weak term was promoted unchanged.
 
 ## Current master
 
-- Concepts: **636**
+- Concepts: **635**
 - categories: **18**
 - P0: **203** / P1: **291** / P2: **130** / P3: **18**
 - `public_ready=yes`: **0**
 - public runtime input: **false**
 - active Concept relations: **20**
 - relationship reviews: **15 discovered / 15 resolved / 0 open**
-- retired/merged Concept rows: **26**
+- retired/merged Concept rows: **27**
 
 ## Core source verification — complete
 
@@ -53,7 +53,7 @@ Verified **29** terms across horses, breeding, racing people, in-race expression
 The initial race-type/classification pass verified **15** terms. Broad-category wave 1 added `Selling race`, `Graded stakes`, and scoped British `Open race` / `Restricted race` Concepts. RTYPE is now **100/111 verified (90.1%)**.
 
 ### Surface and going terminology — broad current pass
-The initial surface-condition pass verified **10** terms. Broad-category wave 1 added `Tapeta`, `Polytrack`, historical British `Fibresand`, `Sealed track`, and `Off turf`. SURF is now **57/63 verified (90.5%)**. Product identity, historical status and surface-switch semantics remain scope-aware.
+The initial surface-condition pass verified **10** terms. Later passes added product/surface-state terms, merged duplicate Grass into Turf, and wave 8 corrected/verified USTA `Freezing` and `Snow`. SURF is now **59/62 verified (95.2%)**; Cushion Track, Surface switch and Track bias remain candidate.
 
 ### Distance and measurement terminology — broad current pass
 Broad-category wave 1 verified `Yard`, `Short head`, `Final furlong` and `Race record`. DIST is now **17/21 verified (81.0%)**. `Kilometre`, `Half-length`, `Fraction` and `Final fraction` remain candidate pending cleaner racing-specific evidence or Concept boundaries.
@@ -62,7 +62,7 @@ Broad-category wave 1 verified `Yard`, `Short head`, `Final furlong` and `Race r
 Broad-category wave 1 verified `Bottom weight`, `Maximum weight`, `Underweight`, `Weigh out` and `Weigh in`. WEIGHT is now **31/34 verified (91.2%)**. `Claiming allowance`, `Weight rise` and `Weight drop` remain candidate.
 
 ### Meeting and schedule terminology — complete current pass
-The initial pass verified 6 terms and retired 1 duplicate. Residual cleanup later verified Season and Bulletin and retired `Program` into `Programme`. MEET is **37/38 verified (97.4%)**; only `Daylight saving time` remains candidate.
+The initial pass verified 6 terms and retired 1 duplicate. Residual cleanup later verified Season and Bulletin and retired `Program` into `Programme`. Wave 8 retired generic `Daylight saving time` as contextual Time zone handling, so MEET is now **37/37 verified (100%)**.
 
 ### Results and decisions — complete current pass
 The initial pass verified 13 semantic Concepts and retired 2 duplicate code Concepts. Residual cleanup verified Relegation and False start. Wave 7 retired the unsupported `RO` abbreviation row into the verified `Ran out` event Concept, so RESULT is now **27/27 verified (100%)**.
@@ -156,13 +156,18 @@ Audit: `coverage/targeted-residual-resolution-v7.tsv`
 
 This pass retired **5** duplicate or malformed candidate Concepts through reviewed semantic dispositions: Debutant, Female family, Corner, Counterclockwise, and the unsupported RO result-code row. No candidate was percentage-promoted without evidence.
 
-Across the lower-priority cleanup passes, **278 base-dictionary terms have been newly verified and 21 duplicate/malformed rows have been removed**.
+### Targeted residual resolution wave 8 — complete current pass
+Audit: `coverage/targeted-residual-resolution-v8.tsv`
+
+This pass verified **2** authority-backed SURF Concepts after canonical correction (`Freezing`, `Snow`) and retired generic `Daylight saving time` as non-independent racing context.
+
+Across the lower-priority cleanup passes, **280 base-dictionary terms have been newly verified and 22 duplicate/malformed/non-independent rows have been removed**.
 
 ## Evidence state
 
-- all Concepts: **592 / 636 source-verified (93.1%)**; **44 candidate**
+- all Concepts: **594 / 635 source-verified (93.5%)**; **41 candidate**
 - core highest-priority set: **203 / 203 source-verified (100.0%)**
-- active base seed: **431 / 475 source-verified (90.7%)**; **44 candidate**
+- active base seed: **433 / 474 source-verified (91.4%)**; **41 candidate**
 - supplemental jurisdiction/relationship research: **161 / 161 source-verified (100.0%)**
 
 Canonical current audit state includes:
@@ -192,13 +197,14 @@ coverage/targeted-residual-verification-v4.tsv
 coverage/targeted-residual-verification-v5.tsv
 coverage/targeted-residual-verification-v6.tsv
 coverage/targeted-residual-resolution-v7.tsv
+coverage/targeted-residual-resolution-v8.tsv
 coverage/master-005-evidence-coverage-v1.tsv
 coverage/master-005-completion-gate-v1.tsv
 ```
 
 ## Current completion decision
 
-The terminology master remains **not complete**. The remaining **44 terms** must be reviewed rather than automatically promoted.
+The terminology master remains **not complete**. The remaining **41 terms** must be reviewed rather than automatically promoted.
 
 The next work is to **continue targeted residual cleanup** across the remaining base-seed categories, prioritizing the clearest defensible HORSE/BREED/VENUE/RTYPE/ENTRY residuals before the deliberately weak edge cases. Deliberately weak RUN, EQUIP, TRAIN and cross-category edge cases remain visible until stronger evidence or a cleaner modeling decision exists.
 

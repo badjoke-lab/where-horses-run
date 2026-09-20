@@ -13,9 +13,9 @@ This addendum creates a parallel glossary knowledge lane. It does not supersede 
 Plain-language state:
 
 ```text
-Working dictionary: 636 terms/concepts
-Meaning-level source verified: 592
-Still under review: 44
+Working dictionary: 635 terms/concepts
+Meaning-level source verified: 594
+Still under review: 41
 Highest-priority core terms: 203/203 verified
 Jurisdiction-specific research additions: 161/161 verified
 Public glossary publication: disabled
@@ -52,6 +52,7 @@ Targeted residual wave 4: complete — 8 RTYPE/HORSE/BREED/ROLE Concepts verifie
 Targeted residual wave 5: complete — 6 RTYPE/ENTRY/ROLE/VENUE/TRAIN Concepts verified
 Targeted residual wave 6: complete — 5 verified + 1 duplicate merge across SURF/WEIGHT/TRAIN/ROLE
 Targeted residual resolution wave 7: complete — 5 duplicate/malformed candidate Concepts retired
+Targeted residual resolution wave 8: complete — 2 SURF canonicals verified + generic Daylight saving time retired
 Next: continue targeted residual cleanup across remaining base-seed categories
 Later: GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 ```
@@ -100,6 +101,7 @@ The remaining task is to clean the lower-priority base dictionary. This does **n
 - Targeted residual wave 5: **6 verified** — 2 RTYPE, 1 ENTRY, 1 ROLE, 1 VENUE and 1 TRAIN Concept; invitation/programme/withdrawal/race-office/paddock/qualification semantics remain scoped.
 - Targeted residual wave 6: **5 verified + 1 retired merge** — Claiming allowance, Breeze, Gate schooling, Layoff and Track announcer verified; duplicate `Grass` merged into `Turf`.
 - Targeted residual resolution wave 7: **5 retired merges** — Debutant → First-time starter, Female family → Family, Corner → Turn, Counterclockwise → Anti-clockwise, and unsupported RO result-code row → Ran out.
+- Targeted residual resolution wave 8: **2 verified + 1 retired context** — Frozen → `Freezing`, Snow-covered → `Snow`, and generic Daylight saving time retired under Time zone context.
 
 ### Residual edge-case pass
 
@@ -177,6 +179,12 @@ This pass retired `Debutant`, `Female family`, `Corner`, `Counterclockwise` and 
 
 RESULT is now **27/27 source-verified (100%)**, VENUE **39/42 (92.9%)**, HORSE **27/33 (81.8%)**, and BREED **15/21 (71.4%)**. `RO` is not retained as a verified public abbreviation because current authority evidence supports the Ran out event but not the code itself.
 
+### Targeted residual resolution wave 8
+
+This pass corrected and verified the current USTA track-condition labels `Freezing` and `Snow`, replacing the weaker seed canonicals `Frozen` and `Snow-covered`. It also retired generic `Daylight saving time` as a non-independent civil-time concept under `Time zone` context.
+
+SURF is now **59/62 source-verified (95.2%)** and MEET is **37/37 (100%)**. Whole-master coverage rises through both evidence-backed verification and semantic cleanup rather than automatic promotion.
+
 Authority/audit files now include:
 
 ```text
@@ -224,15 +232,16 @@ data/glossary-master/coverage/targeted-residual-verification-v4.tsv
 data/glossary-master/coverage/targeted-residual-verification-v5.tsv
 data/glossary-master/coverage/targeted-residual-verification-v6.tsv
 data/glossary-master/coverage/targeted-residual-resolution-v7.tsv
+data/glossary-master/coverage/targeted-residual-resolution-v8.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
 Current observed state:
 
-- all Concepts: **592/636 source-verified (93.1%)**, 44 candidate;
+- all Concepts: **594/635 source-verified (93.5%)**, 41 candidate;
 - core highest-priority set: **203/203 source-verified (100.0%)**;
-- active base seed: **431/475 source-verified (90.7%)**, 44 candidate;
+- active base seed: **433/474 source-verified (91.4%)**, 41 candidate;
 - supplemental jurisdiction/relationship research: **161/161 source-verified (100.0%)**;
 - DISC: **16/17 source-verified (94.1%)**;
 - RTYPE: **106/111 source-verified (95.5%)**;
@@ -241,22 +250,22 @@ Current observed state:
 - BREED: **15/21 source-verified (71.4%)**;
 - ROLE: **30/31 source-verified (96.8%)**;
 - VENUE: **39/42 source-verified (92.9%)**;
-- SURF: **57/62 source-verified (91.9%)**;
+- SURF: **59/62 source-verified (95.2%)**;
 - DIST: **18/21 source-verified (85.7%)**;
 - WEIGHT: **32/34 source-verified (94.1%)**;
 - RUN: **42/44 source-verified (95.5%)**;
 - EQUIP: **27/29 source-verified (93.1%)**;
 - TRAIN: **24/26 source-verified (92.3%)**;
-- MEET: **37/38 source-verified (97.4%)**;
+- MEET: **37/37 source-verified (100.0%)**;
 - RESULT: **27/27 source-verified (100.0%)**;
 - BET: **38/39 source-verified (97.4%)**;
 - WELF: **18/18 source-verified (100.0%)**;
-- retired/merged Concept rows: **26**;
+- retired/merged Concept rows: **27**;
 - abbreviations/codes: **38/38 source-verified**.
 
 ## What happens next
 
-The remaining **44 terms** continue through targeted residual review rather than another percentage-driven blanket promotion:
+The remaining **41 terms** continue through targeted residual review rather than another percentage-driven blanket promotion:
 
 ```text
 largest residual groups: VENUE / HORSE / BREED / RTYPE
@@ -265,7 +274,7 @@ largest residual groups: VENUE / HORSE / BREED / RTYPE
 -> rerun evidence/readiness gate
 ```
 
-`GLOSSARY-MASTER-005` remains **HOLD — not complete**. A 93.1% verified master with 44 unresolved seed Concepts is not ready to advance.
+`GLOSSARY-MASTER-005` remains **HOLD — not complete**. A 93.5% verified master with 41 unresolved seed Concepts is not ready to advance.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
@@ -294,9 +303,9 @@ The current public glossary remains disposable content. There is no old-record m
 
 ```text
 Current Work ID: GLOSSARY-MASTER-005
-Working dictionary: 636 terms
-Verified: 592
-Still under review: 44
+Working dictionary: 635 terms
+Verified: 594
+Still under review: 41
 Next subject group: continue targeted residual cleanup across remaining base-seed categories
 MASTER-006: blocked until the evidence/readiness gate passes
 Public implementation: deferred
