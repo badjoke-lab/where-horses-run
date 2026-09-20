@@ -10,17 +10,17 @@ This directory is the non-public working area for the worldwide horse-racing ter
 
 The working dictionary currently contains **642 racing terms/concepts**.
 
-- **581 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
-- **61 terms still need verification, scope correction, splitting/merging, or removal.**
+- **587 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
+- **55 terms still need verification, scope correction, splitting/merging, or removal.**
 - The already researched jurisdiction-specific additions are **161/161 verified**.
 - The core highest-priority terminology set is **203/203 verified**.
 - Public glossary publication is still disabled while the remaining terms are cleaned up.
 
-The latest pass is **targeted residual wave 4**. It source-verified **8 additional base Concepts** across race type, horse age, breeding and participant-role terminology using The Jockey Club Registry, JRA, Racing NSW, The Jockey Club and BHA/EPC evidence.
+The latest pass is **targeted residual wave 5**. It source-verified **6 additional base Concepts** across race type, entry procedure, participant roles, racecourse facilities and training using current JRA, BHA, Racing Queensland/Australian Harness Racing, NYRA and Keeneland evidence.
 
-RTYPE is now **104/111 source-verified (93.7%)**, HORSE **27/34 (79.4%)**, BREED **15/22 (68.2%)**, and ROLE **28/31 (90.3%)**. Newly verified Concepts are Weanling, Breeding farm, Family, Owner-trainer, Derby, Classic race, Sprint race and Middle-distance race.
+RTYPE is now **106/111 source-verified (95.5%)**, ENTRY **29/31 (93.5%)**, ROLE **29/31 (93.5%)**, VENUE **39/44 (88.6%)**, and TRAIN **21/26 (80.8%)**. Newly verified Concepts are Invitational race, Staying race, Late withdrawal, Racing secretary, Saddling paddock and Qualifying trial.
 
-The seed `Stud farm` canonical label was corrected to `Breeding farm` because that is what the current authority evidence supports. Derby/Classic, sprint and middle-distance definitions remain jurisdiction/taxonomy scoped rather than flattened into universal conditions.
+The definitions keep invitation mechanics, British staying/withdrawal procedure, North American race-office and paddock usage, and Australian harness qualification rules scoped to the authorities that support them.
 
 ## Current master
 
@@ -91,7 +91,7 @@ Sources: `sources/equipment-training-sources-v1.tsv` plus existing authority evi
 
 Wave 1 verified **20** base Concepts: 13 equipment terms and 7 training/pre-race terms. Residual cleanup then verified `Pre-parade` and retired `Bike/Racebike` into `Sulky`.
 
-EQUIP is **27/29 verified (93.1%)** and TRAIN is **20/26 verified (76.9%)**. The remaining weak labels stay candidate until stronger authority evidence or a cleaner modeling decision exists.
+EQUIP is **27/29 verified (93.1%)** and TRAIN is **21/26 verified (80.8%)**. The remaining weak labels stay candidate until stronger authority evidence or a cleaner modeling decision exists.
 
 ### Horse / breeding / participant roles — wave 1 complete current pass
 Audit: `coverage/horse-breeding-role-verification-v1.tsv`  
@@ -107,7 +107,7 @@ Sources: `sources/venue-entry-sources-v1.tsv` plus existing authority evidence.
 
 Wave 1 verified **11** Concepts: 6 ENTRY and 5 VENUE. BHA evidence closes maximum-field, elimination and balloting meanings; current North American race conditions support also-eligible, entry-fee and preference mechanics; JRA/Jockey Club and harness authorities support scoped course and facility terminology.
 
-ENTRY is **28/31 verified (90.3%)** and VENUE is **38/44 verified (86.4%)**. `Homestretch`/`Home straight`, `Parade ring`/`Paddock`, `Winner's enclosure`/`Winners' circle`, and mobile-start terminology remain jurisdiction-scoped rather than flattened into global synonyms.
+ENTRY is **29/31 verified (93.5%)** and VENUE is **39/44 verified (88.6%)**. `Homestretch`/`Home straight`, `Parade ring`/`Paddock`, `Winner's enclosure`/`Winners' circle`, and mobile-start terminology remain jurisdiction-scoped rather than flattened into global synonyms.
 
 ### Broad category wave 1 — complete current pass
 Audit: `coverage/broad-category-verification-v1.tsv`  
@@ -139,13 +139,19 @@ Sources: `sources/targeted-residual-sources-v4.tsv` plus existing authority evid
 
 This pass verified **8** Concepts: 4 RTYPE, 1 HORSE, 2 BREED and 1 ROLE. It also corrected the seed `Stud farm` canonical to the evidence-backed `Breeding farm` label.
 
-Across the lower-priority cleanup passes, **267 base-dictionary terms have been newly verified and 15 duplicate/malformed rows have been removed**.
+### Targeted residual wave 5 — complete current pass
+Audit: `coverage/targeted-residual-verification-v5.tsv`  
+Sources: `sources/targeted-residual-sources-v5.tsv` plus existing authority evidence.
+
+This pass verified **6** Concepts: 2 RTYPE, 1 ENTRY, 1 ROLE, 1 VENUE and 1 TRAIN. All six remain explicitly jurisdiction/discipline/procedure scoped.
+
+Across the lower-priority cleanup passes, **273 base-dictionary terms have been newly verified and 15 duplicate/malformed rows have been removed**.
 
 ## Evidence state
 
-- all Concepts: **581 / 642 source-verified (90.5%)**; **61 candidate**
+- all Concepts: **587 / 642 source-verified (91.4%)**; **55 candidate**
 - core highest-priority set: **203 / 203 source-verified (100.0%)**
-- active base seed: **420 / 481 source-verified (87.3%)**; **61 candidate**
+- active base seed: **426 / 481 source-verified (88.6%)**; **55 candidate**
 - supplemental jurisdiction/relationship research: **161 / 161 source-verified (100.0%)**
 
 Canonical current audit state includes:
@@ -172,13 +178,14 @@ coverage/targeted-residual-verification-v1.tsv
 coverage/targeted-residual-verification-v2.tsv
 coverage/targeted-residual-verification-v3.tsv
 coverage/targeted-residual-verification-v4.tsv
+coverage/targeted-residual-verification-v5.tsv
 coverage/master-005-evidence-coverage-v1.tsv
 coverage/master-005-completion-gate-v1.tsv
 ```
 
 ## Current completion decision
 
-The terminology master remains **not complete**. The remaining **61 terms** must be reviewed rather than automatically promoted.
+The terminology master remains **not complete**. The remaining **55 terms** must be reviewed rather than automatically promoted.
 
 The next work is to **continue targeted residual cleanup** across the remaining base-seed categories, prioritizing the clearest defensible HORSE/BREED/VENUE/RTYPE/ENTRY residuals before the deliberately weak edge cases. Deliberately weak RUN, EQUIP, TRAIN and cross-category edge cases remain visible until stronger evidence or a cleaner modeling decision exists.
 
