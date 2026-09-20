@@ -1,6 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { attachPublicationSnapshotV1 } from './calendar-authority-metadata.mjs';
+import {
+  attachPublicationSnapshotV1,
+  validateCalendarAuthorityMetadataV1,
+} from './calendar-authority-metadata.mjs';
 import { deriveBestAvailableRank } from './best-available-rank.mjs';
 import { acceptCanonicalObservationV1 } from './canonical-acceptance.mjs';
 
@@ -244,8 +247,11 @@ for (const record of reviewedById.values()) {
     last_race_time_local: record.last_race_time_local ?? reviewedRows.at(-1)?.post_time_local ?? null,
     source_trace: reviewedSourceTrace(previous, record),
     freshness: reviewedFreshness(previous, record, generatedAt),
+    ...('acquisition_attempt' in record ? { acquisition_attempt: structuredClone(record.acquisition_attempt) } : {}),
+    ...(record.evidence_support ? { evidence_support: structuredClone(record.evidence_support) } : {}),
+    ...(record.evidence_changes ? { evidence_changes: structuredClone(record.evidence_changes) } : {}),
   };
-  const candidateDetail = ['A', 'A+'].includes(reviewedEvidenceRank) && reviewedRows.length
+  const candidateDetail = reviewedRows.length
     ? {
         meeting_id: candidateMeeting.meeting_id,
         country_id: candidateMeeting.country_id,
@@ -256,16 +262,30 @@ for (const record of reviewedById.values()) {
         capability_rank: reviewedEvidenceRank,
         source_trace: candidateMeeting.source_trace,
         freshness: candidateMeeting.freshness,
+        ...(record.evidence_support ? { evidence_support: structuredClone(record.evidence_support) } : {}),
+        ...(record.evidence_changes ? { evidence_changes: structuredClone(record.evidence_changes) } : {}),
         timetable_rows: reviewedRows,
         summary_note: 'Frozen human-reviewed official race programme observation.',
       }
     : null;
+
+  const reviewedAuthorityMetadata = Object.fromEntries(
+    ['acquisition_attempt', 'evidence_support', 'evidence_changes']
+      .filter((key) => key in record)
+      .map((key) => [key, record[key]]),
+  );
+  const reviewedMetadataErrors = validateCalendarAuthorityMetadataV1(
+    reviewedAuthorityMetadata,
+    `reviewed:${record.meeting_id}`,
+  );
+  if (reviewedMetadataErrors.length) throw new Error(reviewedMetadataErrors.join('; '));
 
   const accepted = acceptCanonicalObservationV1({
     previousMeeting: previous,
     previousDetail,
     candidateMeeting,
     candidateDetail,
+    ...('acquisition_attempt' in record ? { acquisitionAttempt: record.acquisition_attempt } : {}),
     evidenceChanges: record.evidence_changes ?? [],
   });
   const meeting = accepted.meeting;

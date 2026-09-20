@@ -93,9 +93,10 @@ for (const marker of [
   "['B+', 2]",
   "['A', 3]",
   "['A+', 4]",
-  "promotionMode !== 'corrective_downgrade'",
+  'acceptCanonicalObservationV1',
+  "explicitCorrection: promotionMode === 'corrective_downgrade'",
   'corrective_downgrade requires an allowed downgrade reason',
-]) if (!promotionCore.includes(marker)) fail(`promotion core monotonic/corrective marker missing: ${marker}`);
+]) if (!promotionCore.includes(marker)) fail(`promotion core shared-authority/corrective marker missing: ${marker}`);
 
 if (errors.length) {
   console.error(`CALENDAR_FIVE_RANK_CLASSIFIER: failed (${errors.length})`);
