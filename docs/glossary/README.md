@@ -14,25 +14,25 @@ Read these first for glossary work:
 
 ## Current state in plain language
 
-The working dictionary has **641 terms/concepts**.
+The working dictionary has **636 terms/concepts**.
 
 - **592 are source-verified at the meaning level**.
-- **49 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
+- **44 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
 - the highest-priority core set is **203/203 verified**;
 - jurisdiction-specific research additions are **161/161 verified**;
 - publication is still disabled (`public_ready=0`, public runtime disconnected).
 
-The latest pass is **targeted residual wave 6**. It verified **5 additional base Concepts** and retired one duplicate surface Concept using current JRA, BHA, NYRA, HISA and Churchill Downs authority material.
+The latest pass is **targeted residual resolution wave 7**. It retired **5 duplicate or malformed candidate Concepts** without promoting weak evidence: Debutant → First-time starter, Female family → Family, Corner → Turn, Counterclockwise → Anti-clockwise, and the unsupported RO result-code row → Ran out.
 
-ROLE is now **30/31 verified (96.8%)**, TRAIN **24/26 (92.3%)**, WEIGHT **32/34 (94.1%)**, and SURF **57/62 (91.9%)**. The pass verified Claiming allowance, Breeze, Gate schooling, Layoff and Track announcer; `Grass` was merged into `Turf` and `Race caller` was corrected to `Track announcer`.
+Current whole-master coverage is **592/636 verified (93.1%)** with **44 candidates**. Active base seed is **431/475 verified (90.7%)**. RESULT is now **27/27 verified (100%)** and VENUE is **39/42 (92.9%)**.
 
-This pass reduces duplicate semantics instead of chasing a percentage: JRA explicitly links grass and turf, while the role title is normalized to the current authority-backed North American usage.
+The RO string is not promoted as a verified label because the current reviewed authority source verifies the Ran out event, not that abbreviation.
 
 ## What has been completed
 
 The dictionary was built from zero rather than copied from the existing public glossary. Major jurisdiction/local-language research and the current slang/abbreviation/historical pass are complete. The core terminology set is fully source-verified, and all current jurisdiction-specific additions are evidence-backed.
 
-Base-dictionary cleanup has now verified **278 additional terms** and removed **16 duplicate or malformed rows**. Current base-dictionary coverage is **431/480 verified (89.8%)**.
+Base-dictionary cleanup has now verified **278 additional terms** and removed **21 duplicate or malformed rows**. Current base-dictionary coverage is **431/475 verified (90.7%)**.
 
 Canonical evidence/audit files include:
 
@@ -80,6 +80,7 @@ data/glossary-master/coverage/targeted-residual-verification-v3.tsv
 data/glossary-master/coverage/targeted-residual-verification-v4.tsv
 data/glossary-master/coverage/targeted-residual-verification-v5.tsv
 data/glossary-master/coverage/targeted-residual-verification-v6.tsv
+data/glossary-master/coverage/targeted-residual-resolution-v7.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
@@ -91,7 +92,7 @@ The abbreviation/code layer remains at **38 source-verified rows**.
 - RUN: **42/44 verified (95.5%)** — Jump and Hold-up horse remain candidate.
 - EQUIP: **27/29 verified (93.1%)** — Blinders and Barefoot remain candidate.
 - MEET: **37/38 verified (97.4%)** — only Daylight saving time remains candidate.
-- RESULT: **27/28 verified (96.4%)** — the remaining item is RO/result-code modeling; the RUN event Ran out is verified.
+- RESULT: **27/27 verified (100%)** — wave 7 retired the unsupported RO code row into the verified Ran out event Concept.
 - BET: **38/39 verified (97.4%)** — American odds remains candidate.
 - WELF: **18/18 verified (100%)**.
 - DISC: **16/17 verified (94.1%)** — Endurance racing remains under modeling review.
@@ -103,15 +104,15 @@ The abbreviation/code layer remains at **38 source-verified rows**.
 - PRIZE: **10/12 verified (83.3%)** — Bonus and Stake remain candidate.
 - ROLE: **30/31 verified (96.8%)** — Commentator remains under review.
 - TRAIN: **24/26 verified (92.3%)** — Cool down and Freshened remain under review.
-- VENUE: **39/44 verified (88.6%)** — five facility/orientation residuals remain under review.
-- HORSE: **27/34 verified (79.4%)** — seven horse identity/age/origin residuals remain under review.
-- BREED: **15/22 verified (68.2%)** — seven breeding/facility/industry residuals remain under review.
+- VENUE: **39/42 verified (92.9%)** — Round course, Oval and Walking ring remain under review.
+- HORSE: **27/33 verified (81.8%)** — six horse identity/age/origin residuals remain under review.
+- BREED: **15/21 verified (71.4%)** — six breeding/facility/industry residuals remain under review.
 
 ## What remains
 
-The **49 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
+The **44 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
 
-Targeted residual wave 6 is complete for the current defensible source bundle. The next step is to continue residual cleanup across the remaining base-seed categories while leaving intentionally weak edge cases visible until stronger evidence or a cleaner modeling decision exists.
+Targeted residual resolution wave 7 is complete for the current defensible source bundle. The next step is to continue residual cleanup across the remaining base-seed categories while leaving intentionally weak edge cases visible until stronger evidence or a cleaner modeling decision exists.
 
 After that residual cleanup, the evidence/readiness gate will be rerun. `MASTER-006` and public glossary architecture remain blocked until that review is defensible.
 
