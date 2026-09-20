@@ -112,7 +112,57 @@ for (const result of [hch, chs, chc, vsc]) {
 }
 assert.deepEqual(hch.timetable_rows.map((row) => row.post_time_local), ['12:15', '12:40', '13:05']);
 assert.deepEqual(chs.timetable_rows.map((row) => row.post_time_local), ['12:30', '12:58', '13:24']);
+assert.equal(hch.format, 'hipodromo_chile_aprox_headers');
+assert.equal(chs.format, 'club_hipico_santiago_numbered_headers');
+assert.equal(chc.format, 'club_hipico_concepcion_hrs_headers');
+assert.equal(vsc.format, 'valparaiso_sporting_hora_headers');
 assert.equal(parseChileTeletrakProgrammeText('no race headers here', { racecourseId: 'hipodromo-chile' }).status, 'parse_failure');
+
+const currentConcepcionText = `(16:00) Hrs. Premio : "OCEANO MAGICO" CONDICIONAL.- 1300 metros.
+(16:30) Hrs. Premio : "OH DULZURA" HANDICAP.- 1000 metros.
+(17:00) Hrs. Premio : "OBEDIENTE" HANDICAP.- 1100 metros.
+(17:30) Hrs. Premio : "OCEAN KING" HANDICAP.- 1100 metros.
+(18:00) Hrs. Premio : "OXFORD" HANDICAP.- 1100 metros.
+(18:30) Hrs. Premio : "OAK MAN" HANDICAP.- 1000 metros.
+(19:00) Hrs. Premio : "OLIVAR ALTO" HANDICAP.- 1000 metros.`;
+const currentConcepcion = parseChileTeletrakProgrammeText(currentConcepcionText, { racecourseId: 'club-hipico-de-concepcion-racecourse' });
+assert.equal(currentConcepcion.status, 'available');
+assert.equal(currentConcepcion.format, 'club_hipico_concepcion_parenthesized_hrs_headers');
+assert.deepEqual(currentConcepcion.timetable_rows.map((row) => row.post_time_local), ['16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00']);
+
+const currentValparaisoText = `13:30 aprox. 1.100 Mts. (3.652) Premio: ROY
+14:00 aprox. 1.100 Mts. (3.653) Premio: RIGEL II
+14:30 aprox. 1.100 Mts. (3.654) Premio: RIVER MINE
+15:00 aprox. 1.100 Mts. (3.655) Premio: RECLAMA
+15:30 aprox. 1.100 Mts. (3.656) Premio: RUCO
+16:00 aprox. 1.100 Mts. (3.657) Premio: RACCONTO
+16:30 aprox. 1.100 Mts. (3.658) Premio: RINGARO
+17:00 aprox. 1.100 Mts. (3.659) Premio: RABINO
+17:30 aprox. 1.500 Mts. (3.660) Premio: GUSTAVO RIVERA B.
+18:00 aprox. 1.100 Mts. (3.661) Premio: RIO LOBO
+18:30 aprox. 1.100 Mts. (3.662) Premio: RAISE A LION
+19:00 aprox. 1.100 Mts. (3.663) Premio: ROMIANO
+19:30 aprox. 1.100 Mts. (3.664) Premio: RABALERO
+20:00 aprox. 1.100 Mts. (3.665) Premio: RIVER CAFE
+20:30 aprox. 1.100 Mts. (3.666) Premio: RONALCO`;
+const currentValparaiso = parseChileTeletrakProgrammeText(currentValparaisoText, { racecourseId: 'valparaiso-sporting-club-racecourse' });
+assert.equal(currentValparaiso.status, 'available');
+assert.equal(currentValparaiso.format, 'valparaiso_sporting_aprox_headers');
+assert.deepEqual(currentValparaiso.timetable_rows.map((row) => row.post_time_local), [
+  '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00',
+  '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30',
+]);
+
+for (const [racecourseId, malformedText] of [
+  ['club-hipico-de-concepcion-racecourse', '(16:30) Hrs. Premio : UNO\n(16:00) Hrs. Premio : DOS'],
+  ['valparaiso-sporting-club-racecourse', '14:00 aprox. 1.100 Mts. Premio: UNO\n13:30 aprox. 1.100 Mts. Premio: DOS'],
+  ['club-hipico-de-concepcion-racecourse', '(16:00) Hrs. Premio : UNO\n(16:00) Hrs. Premio : DOS'],
+  ['valparaiso-sporting-club-racecourse', '13:30 aprox. 1.100 Mts. Premio: UNO\n13:30 aprox. 1.100 Mts. Premio: DOS'],
+  ['club-hipico-de-concepcion-racecourse', '(16:00) Hrs. Premio : INCOMPLETO'],
+  ['valparaiso-sporting-club-racecourse', '13:30 aprox. 1.100 Mts. Premio: INCOMPLETO'],
+]) {
+  assert.equal(parseChileTeletrakProgrammeText(malformedText, { racecourseId }).status, 'parse_failure');
+}
 
 const linkedBuilt = buildChileTeletrakCandidate({ html: linkedHtml, checkedAt: '2026-09-10T23:00:00Z', startDate: '2026-09-10', endDateExclusive: '2026-09-17' });
 const resultsByMeeting = {

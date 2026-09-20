@@ -191,6 +191,16 @@ function validateScheduleTimes(times) {
   return normalized;
 }
 
+function validateStrictScheduleTimes(times) {
+  if (times.length < 2) return null;
+  const normalized = times.map(normalizeTime);
+  if (normalized.some((value) => value == null) || new Set(normalized).size !== normalized.length) return null;
+  for (let index = 1; index < normalized.length; index += 1) {
+    if (timeToMinutes(normalized[index]) <= timeToMinutes(normalized[index - 1])) return null;
+  }
+  return normalized;
+}
+
 function numberedSchedule(text, regex) {
   const matches = [...String(text).matchAll(regex)].map((match) => ({ race: Number(match[1]), time: match[2] }));
   if (matches.length < 2) return null;
@@ -225,13 +235,25 @@ export function parseChileTeletrakProgrammeText(text, { racecourseId } = {}) {
     times = numberedSchedule(text, /\b(\d{1,2})\s*ª\s+([0-2]?\d:[0-5]\d)\b/g);
     format = 'club_hipico_santiago_numbered_headers';
   } else if (racecourseId === 'club-hipico-de-concepcion-racecourse') {
-    times = numberedSchedule(text, /\b(\d{1,2})\s*ª\s*c?\s*([0-2]?\d:[0-5]\d)\s*hrs?\.?/gi);
-    if (!times) times = validateScheduleTimes([...text.matchAll(/\b([0-2]?\d:[0-5]\d)\s*hrs?\.?/gi)].map((match) => match[1]));
-    format = 'club_hipico_concepcion_hrs_headers';
+    const parenthesizedHeaders = [...text.matchAll(/^\s*\(([0-2]?\d:[0-5]\d)\)\s*hrs?\.\s*Premio\s*:/gim)].map((match) => match[1]);
+    if (parenthesizedHeaders.length > 0) {
+      times = validateStrictScheduleTimes(parenthesizedHeaders);
+      format = 'club_hipico_concepcion_parenthesized_hrs_headers';
+    } else {
+      times = numberedSchedule(text, /\b(\d{1,2})\s*ª\s*c?\s*([0-2]?\d:[0-5]\d)\s*hrs?\.?/gi);
+      if (!times) times = validateScheduleTimes([...text.matchAll(/\b([0-2]?\d:[0-5]\d)\s*hrs?\.?/gi)].map((match) => match[1]));
+      format = 'club_hipico_concepcion_hrs_headers';
+    }
   } else if (racecourseId === 'valparaiso-sporting-club-racecourse') {
-    times = numberedSchedule(text, /Carrera\s*:?\s*(\d{1,2})\s*ª[\s\S]{0,240}?Hora\s*:?\s*([0-2]?\d:[0-5]\d)\s*hrs?/gi);
-    if (!times) times = validateScheduleTimes([...text.matchAll(/Hora\s*:?\s*([0-2]?\d:[0-5]\d)\s*hrs?/gi)].map((match) => match[1]));
-    format = 'valparaiso_sporting_hora_headers';
+    const approximateHeaders = [...text.matchAll(/^\s*([0-2]?\d:[0-5]\d)\s+aprox\.\s+[^\n]{0,80}\bPremio\s*:/gim)].map((match) => match[1]);
+    if (approximateHeaders.length > 0) {
+      times = validateStrictScheduleTimes(approximateHeaders);
+      format = 'valparaiso_sporting_aprox_headers';
+    } else {
+      times = numberedSchedule(text, /Carrera\s*:?\s*(\d{1,2})\s*ª[\s\S]{0,240}?Hora\s*:?\s*([0-2]?\d:[0-5]\d)\s*hrs?/gi);
+      if (!times) times = validateScheduleTimes([...text.matchAll(/Hora\s*:?\s*([0-2]?\d:[0-5]\d)\s*hrs?/gi)].map((match) => match[1]));
+      format = 'valparaiso_sporting_hora_headers';
+    }
   } else {
     throw new Error(`Unsupported Chile racecourse programme format: ${racecourseId ?? 'missing racecourse id'}`);
   }
