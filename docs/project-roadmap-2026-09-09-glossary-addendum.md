@@ -13,9 +13,9 @@ This addendum creates a parallel glossary knowledge lane. It does not supersede 
 Plain-language state:
 
 ```text
-Working dictionary: 626 terms/concepts
-Meaning-level source verified: 599
-Still under review: 27
+Working dictionary: 622 terms/concepts
+Meaning-level source verified: 603
+Still under review: 19
 Highest-priority core terms: 203/203 verified
 Jurisdiction-specific research additions: 161/161 verified
 Public glossary publication: disabled
@@ -55,7 +55,8 @@ Targeted residual resolution wave 7: complete — 5 duplicate/malformed candidat
 Targeted residual resolution wave 8: complete — 2 SURF canonicals verified + generic Daylight saving time retired
 Targeted residual resolution wave 9: complete — 6 vague/derived/generic/malformed Concepts retired
 Targeted residual wave 10: complete — 5 scoped Concepts verified + 3 redundant/malformed rows retired
-Next: continue targeted residual cleanup across remaining base-seed categories
+Targeted residual wave 11: complete — 4 scoped Concepts verified + 4 unsupported/polysemous/context rows retired
+Next: continue targeted residual cleanup across the final 19 base-seed candidates
 Later: GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 ```
 
@@ -106,6 +107,7 @@ The remaining task is to clean the lower-priority base dictionary. This does **n
 - Targeted residual resolution wave 8: **2 verified + 1 retired context** — Frozen → `Freezing`, Snow-covered → `Snow`, and generic Daylight saving time retired under Time zone context.
 - Targeted residual resolution wave 9: **6 retired contexts/malformed rows** — Qualification, Kilometre, Weight rise, Weight drop, American odds and Commentator removed from the active Concept set.
 - Targeted residual wave 10: **5 verified + 3 retired** — Juvenile race, Route race, Fractional time, Banei Draft horse and Barefoot verified; Age-restricted/Sex-restricted race folded into Conditions-race context; Blinders retired into Blinkers.
+- Targeted residual wave 11: **4 verified + 4 retired** — Older horse, Veteran horse, Imported horse and Walking ring verified; Waitlist, Stud, Surface switch and Freshened retired.
 
 ### Residual edge-case pass
 
@@ -189,6 +191,12 @@ This pass corrected and verified the current USTA track-condition labels `Freezi
 
 SURF is now **59/62 source-verified (95.2%)** and MEET is **37/37 (100%)**. Whole-master coverage rises through both evidence-backed verification and semantic cleanup rather than automatic promotion.
 
+### Targeted residual wave 11
+
+This pass verified North American `Older horse`, BHA Point-to-Point `Veteran horse`, North American Thoroughbred `Imported horse`, and Keeneland `Walking ring`. It retired generic `Waitlist`, polysemous `Stud`, broad `Surface switch`, and vague `Freshened` rather than forcing those seed labels into the public model.
+
+ENTRY is now **29/29 source-verified (100%)**, HORSE **31/33 (93.9%)**, VENUE **40/42 (95.2%)**, SURF **59/61 (96.7%)**, TRAIN **24/25 (96.0%)**, and BREED **15/20 (75.0%)**. The remaining queue is now small enough for explicit term-by-term final resolution rather than category-wide waves.
+
 ### Targeted residual wave 10
 
 This pass verified `Juvenile race`, North American `Route race`, `Fractional time`, Banei-scoped `Draft horse` and Harness `Barefoot`. It retired constructed `Age-restricted race` and `Sex-restricted race` rows into the verified `Conditions race` context and retired unsupported duplicate `Blinders` into `Blinkers`.
@@ -225,6 +233,7 @@ data/glossary-master/sources/targeted-residual-sources-v4.tsv
 data/glossary-master/sources/targeted-residual-sources-v5.tsv
 data/glossary-master/sources/targeted-residual-sources-v6.tsv
 data/glossary-master/sources/targeted-residual-sources-v10.tsv
+data/glossary-master/sources/targeted-residual-sources-v11.tsv
 data/glossary-master/coverage/p1-verification-wave1-v1.tsv
 data/glossary-master/coverage/p1-verification-wave2-v1.tsv
 data/glossary-master/coverage/race-type-condition-verification-v1.tsv
@@ -252,39 +261,40 @@ data/glossary-master/coverage/targeted-residual-resolution-v7.tsv
 data/glossary-master/coverage/targeted-residual-resolution-v8.tsv
 data/glossary-master/coverage/targeted-residual-resolution-v9.tsv
 data/glossary-master/coverage/targeted-residual-resolution-v10.tsv
+data/glossary-master/coverage/targeted-residual-resolution-v11.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
 Current observed state:
 
-- all Concepts: **599/626 source-verified (95.7%)**, 27 candidate;
+- all Concepts: **603/622 source-verified (96.9%)**, 19 candidate;
 - core highest-priority set: **203/203 source-verified (100.0%)**;
-- active base seed: **438/465 source-verified (94.2%)**, 27 candidate;
+- active base seed: **442/461 source-verified (95.9%)**, 19 candidate;
 - supplemental jurisdiction/relationship research: **161/161 source-verified (100.0%)**;
 - DISC: **16/17 source-verified (94.1%)**;
 - RTYPE: **108/109 source-verified (99.1%)**;
-- ENTRY: **29/30 source-verified (96.7%)**;
-- HORSE: **28/33 source-verified (84.8%)**;
-- BREED: **15/21 source-verified (71.4%)**;
+- ENTRY: **29/29 source-verified (100.0%)**;
+- HORSE: **31/33 source-verified (93.9%)**;
+- BREED: **15/20 source-verified (75.0%)**;
 - ROLE: **30/30 source-verified (100.0%)**;
-- VENUE: **39/42 source-verified (92.9%)**;
-- SURF: **59/62 source-verified (95.2%)**;
+- VENUE: **40/42 source-verified (95.2%)**;
+- SURF: **59/61 source-verified (96.7%)**;
 - DIST: **19/20 source-verified (95.0%)**;
 - WEIGHT: **32/32 source-verified (100.0%)**;
 - RUN: **42/44 source-verified (95.5%)**;
 - EQUIP: **28/28 source-verified (100.0%)**;
-- TRAIN: **24/26 source-verified (92.3%)**;
+- TRAIN: **24/25 source-verified (96.0%)**;
 - MEET: **37/37 source-verified (100.0%)**;
 - RESULT: **27/27 source-verified (100.0%)**;
 - BET: **38/38 source-verified (100.0%)**;
 - WELF: **18/18 source-verified (100.0%)**;
-- retired/merged Concept rows: **36**;
+- retired/merged Concept rows: **40**;
 - abbreviations/codes: **38/38 source-verified**.
 
 ## What happens next
 
-The remaining **27 terms** continue through targeted residual review rather than another percentage-driven blanket promotion:
+The remaining **19 terms** continue through targeted residual review rather than another percentage-driven blanket promotion:
 
 ```text
 largest residual groups: VENUE / HORSE / BREED / RTYPE
@@ -293,7 +303,7 @@ largest residual groups: VENUE / HORSE / BREED / RTYPE
 -> rerun evidence/readiness gate
 ```
 
-`GLOSSARY-MASTER-005` remains **HOLD — not complete**. A 95.7% verified master with 27 unresolved seed Concepts is not ready to advance.
+`GLOSSARY-MASTER-005` remains **HOLD — not complete**. A 96.9% verified master with 19 unresolved seed Concepts is not ready to advance.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
@@ -322,9 +332,9 @@ The current public glossary remains disposable content. There is no old-record m
 
 ```text
 Current Work ID: GLOSSARY-MASTER-005
-Working dictionary: 626 terms
-Verified: 599
-Still under review: 27
+Working dictionary: 622 terms
+Verified: 603
+Still under review: 19
 Next subject group: continue targeted residual cleanup across remaining base-seed categories
 MASTER-006: blocked until the evidence/readiness gate passes
 Public implementation: deferred
