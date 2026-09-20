@@ -14,25 +14,25 @@ Read these first for glossary work:
 
 ## Current state in plain language
 
-The working dictionary has **642 terms/concepts**.
+The working dictionary has **641 terms/concepts**.
 
-- **587 are source-verified at the meaning level**.
-- **55 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
+- **592 are source-verified at the meaning level**.
+- **49 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
 - the highest-priority core set is **203/203 verified**;
 - jurisdiction-specific research additions are **161/161 verified**;
 - publication is still disabled (`public_ready=0`, public runtime disconnected).
 
-The latest pass is **targeted residual wave 5**. It verified **6 additional base Concepts** across RTYPE, ENTRY, ROLE, VENUE and TRAIN using current JRA, BHA, Racing Queensland/Australian Harness Racing, NYRA and Keeneland authority material.
+The latest pass is **targeted residual wave 6**. It verified **5 additional base Concepts** and retired one duplicate surface Concept using current JRA, BHA, NYRA, HISA and Churchill Downs authority material.
 
-RTYPE is now **106/111 verified (95.5%)**, ENTRY **29/31 (93.5%)**, ROLE **29/31 (93.5%)**, VENUE **39/44 (88.6%)**, and TRAIN **21/26 (80.8%)**. The pass verified Invitational race, Staying race, Late withdrawal, Racing secretary, Saddling paddock and Qualifying trial.
+ROLE is now **30/31 verified (96.8%)**, TRAIN **24/26 (92.3%)**, WEIGHT **32/34 (94.1%)**, and SURF **57/62 (91.9%)**. The pass verified Claiming allowance, Breeze, Gate schooling, Layoff and Track announcer; `Grass` was merged into `Turf` and `Race caller` was corrected to `Track announcer`.
 
-These Concepts remain bounded to the relevant invitation, programme, withdrawal, race-office, paddock and harness-qualification systems rather than generalized worldwide.
+This pass reduces duplicate semantics instead of chasing a percentage: JRA explicitly links grass and turf, while the role title is normalized to the current authority-backed North American usage.
 
 ## What has been completed
 
 The dictionary was built from zero rather than copied from the existing public glossary. Major jurisdiction/local-language research and the current slang/abbreviation/historical pass are complete. The core terminology set is fully source-verified, and all current jurisdiction-specific additions are evidence-backed.
 
-Base-dictionary cleanup has now verified **273 additional terms** and removed **15 duplicate or malformed rows**. Current base-dictionary coverage is **426/481 verified (88.6%)**.
+Base-dictionary cleanup has now verified **278 additional terms** and removed **16 duplicate or malformed rows**. Current base-dictionary coverage is **431/480 verified (89.8%)**.
 
 Canonical evidence/audit files include:
 
@@ -56,6 +56,7 @@ data/glossary-master/sources/targeted-residual-sources-v2.tsv
 data/glossary-master/sources/targeted-residual-sources-v3.tsv
 data/glossary-master/sources/targeted-residual-sources-v4.tsv
 data/glossary-master/sources/targeted-residual-sources-v5.tsv
+data/glossary-master/sources/targeted-residual-sources-v6.tsv
 data/glossary-master/coverage/p1-verification-wave1-v1.tsv
 data/glossary-master/coverage/p1-verification-wave2-v1.tsv
 data/glossary-master/coverage/race-type-condition-verification-v1.tsv
@@ -78,6 +79,7 @@ data/glossary-master/coverage/targeted-residual-verification-v2.tsv
 data/glossary-master/coverage/targeted-residual-verification-v3.tsv
 data/glossary-master/coverage/targeted-residual-verification-v4.tsv
 data/glossary-master/coverage/targeted-residual-verification-v5.tsv
+data/glossary-master/coverage/targeted-residual-verification-v6.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
@@ -95,23 +97,21 @@ The abbreviation/code layer remains at **38 source-verified rows**.
 - DISC: **16/17 verified (94.1%)** — Endurance racing remains under modeling review.
 - RTYPE: **106/111 verified (95.5%)** — five race-type residuals remain under review.
 - DIST: **18/21 verified (85.7%)** — Kilometre, Fraction and Final fraction remain under review.
-- WEIGHT: **31/34 verified (91.2%)** — Claiming allowance, Weight rise and Weight drop remain candidate.
-- SURF: **57/63 verified (90.5%)** — six product/identity/weather/analysis residuals remain candidate.
-- RTYPE: **100/111 verified (90.1%)** — eleven broad or regional race-type labels remain candidate.
+- SURF: **57/62 verified (91.9%)** — Grass was merged into Turf; five product/weather/analysis residuals remain candidate.
+- WEIGHT: **32/34 verified (94.1%)** — Weight rise and Weight drop remain under review.
 - ENTRY: **29/31 verified (93.5%)** — Waitlist and Qualification remain under review.
 - PRIZE: **10/12 verified (83.3%)** — Bonus and Stake remain candidate.
-- DIST: **17/21 verified (81.0%)** — four measurement/timing rows remain candidate.
-- ROLE: **29/31 verified (93.5%)** — Race caller and Commentator remain under review.
-- TRAIN: **21/26 verified (80.8%)** — Breeze, Gate schooling, Cool down, Layoff and Freshened remain under review.
+- ROLE: **30/31 verified (96.8%)** — Commentator remains under review.
+- TRAIN: **24/26 verified (92.3%)** — Cool down and Freshened remain under review.
 - VENUE: **39/44 verified (88.6%)** — five facility/orientation residuals remain under review.
 - HORSE: **27/34 verified (79.4%)** — seven horse identity/age/origin residuals remain under review.
 - BREED: **15/22 verified (68.2%)** — seven breeding/facility/industry residuals remain under review.
 
 ## What remains
 
-The **55 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
+The **49 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
 
-Targeted residual wave 1 is complete for the current defensible source bundle. The next step is to continue residual cleanup across the remaining base-seed categories while leaving intentionally weak edge cases visible until stronger evidence or a cleaner modeling decision exists.
+Targeted residual wave 6 is complete for the current defensible source bundle. The next step is to continue residual cleanup across the remaining base-seed categories while leaving intentionally weak edge cases visible until stronger evidence or a cleaner modeling decision exists.
 
 After that residual cleanup, the evidence/readiness gate will be rerun. `MASTER-006` and public glossary architecture remain blocked until that review is defensible.
 

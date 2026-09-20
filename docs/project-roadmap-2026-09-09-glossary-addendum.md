@@ -13,9 +13,9 @@ This addendum creates a parallel glossary knowledge lane. It does not supersede 
 Plain-language state:
 
 ```text
-Working dictionary: 642 terms/concepts
-Meaning-level source verified: 587
-Still under review: 55
+Working dictionary: 641 terms/concepts
+Meaning-level source verified: 592
+Still under review: 49
 Highest-priority core terms: 203/203 verified
 Jurisdiction-specific research additions: 161/161 verified
 Public glossary publication: disabled
@@ -50,6 +50,7 @@ Targeted residual wave 2: complete — 5 ENTRY/BREED/VENUE Concepts verified
 Targeted residual wave 3: complete — 6 DISC/DIST/HORSE Concepts verified
 Targeted residual wave 4: complete — 8 RTYPE/HORSE/BREED/ROLE Concepts verified
 Targeted residual wave 5: complete — 6 RTYPE/ENTRY/ROLE/VENUE/TRAIN Concepts verified
+Targeted residual wave 6: complete — 5 verified + 1 duplicate merge across SURF/WEIGHT/TRAIN/ROLE
 Next: continue targeted residual cleanup across remaining base-seed categories
 Later: GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 ```
@@ -96,6 +97,7 @@ The remaining task is to clean the lower-priority base dictionary. This does **n
 - Targeted residual wave 3: **6 verified** — 4 DISC, 1 DIST and 1 HORSE Concepts; jurisdiction, discipline, notation and past-performance boundaries remain scoped.
 - Targeted residual wave 4: **8 verified** — 4 RTYPE, 1 HORSE, 2 BREED and 1 ROLE Concepts; one seed canonical corrected from `Stud farm` to `Breeding farm`.
 - Targeted residual wave 5: **6 verified** — 2 RTYPE, 1 ENTRY, 1 ROLE, 1 VENUE and 1 TRAIN Concept; invitation/programme/withdrawal/race-office/paddock/qualification semantics remain scoped.
+- Targeted residual wave 6: **5 verified + 1 retired merge** — Claiming allowance, Breeze, Gate schooling, Layoff and Track announcer verified; duplicate `Grass` merged into `Turf`.
 
 ### Residual edge-case pass
 
@@ -161,6 +163,12 @@ This pass verified `Invitational race`, `Staying race`, `Late withdrawal`, `Raci
 
 RTYPE is now **106/111 source-verified (95.5%)**, ENTRY **29/31 (93.5%)**, ROLE **29/31 (93.5%)**, VENUE **39/44 (88.6%)**, and TRAIN **21/26 (80.8%)**. The terms remain tied to the authority-backed invitation, programme, withdrawal, race-office, paddock and harness-qualification contexts that support them.
 
+### Targeted residual wave 6
+
+This pass verified `Claiming allowance`, `Breeze`, `Gate schooling`, `Layoff` and `Track announcer`. It also retired `Grass` into the already source-verified `Turf` Concept because JRA directly cross-references the two labels.
+
+ROLE is now **30/31 source-verified (96.8%)**, TRAIN **24/26 (92.3%)**, WEIGHT **32/34 (94.1%)**, and SURF **57/62 (91.9%)**. The seed `Race caller` label was corrected to the current authority-backed `Track announcer` canonical rather than retained as a separate or weaker canonical term.
+
 Authority/audit files now include:
 
 ```text
@@ -183,6 +191,7 @@ data/glossary-master/sources/targeted-residual-sources-v2.tsv
 data/glossary-master/sources/targeted-residual-sources-v3.tsv
 data/glossary-master/sources/targeted-residual-sources-v4.tsv
 data/glossary-master/sources/targeted-residual-sources-v5.tsv
+data/glossary-master/sources/targeted-residual-sources-v6.tsv
 data/glossary-master/coverage/p1-verification-wave1-v1.tsv
 data/glossary-master/coverage/p1-verification-wave2-v1.tsv
 data/glossary-master/coverage/race-type-condition-verification-v1.tsv
@@ -205,39 +214,40 @@ data/glossary-master/coverage/targeted-residual-verification-v2.tsv
 data/glossary-master/coverage/targeted-residual-verification-v3.tsv
 data/glossary-master/coverage/targeted-residual-verification-v4.tsv
 data/glossary-master/coverage/targeted-residual-verification-v5.tsv
+data/glossary-master/coverage/targeted-residual-verification-v6.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
 Current observed state:
 
-- all Concepts: **587/642 source-verified (91.4%)**, 55 candidate;
+- all Concepts: **592/641 source-verified (92.4%)**, 49 candidate;
 - core highest-priority set: **203/203 source-verified (100.0%)**;
-- active base seed: **426/481 source-verified (88.6%)**, 55 candidate;
+- active base seed: **431/480 source-verified (89.8%)**, 49 candidate;
 - supplemental jurisdiction/relationship research: **161/161 source-verified (100.0%)**;
 - DISC: **16/17 source-verified (94.1%)**;
 - RTYPE: **106/111 source-verified (95.5%)**;
 - ENTRY: **29/31 source-verified (93.5%)**;
 - HORSE: **27/34 source-verified (79.4%)**;
 - BREED: **15/22 source-verified (68.2%)**;
-- ROLE: **29/31 source-verified (93.5%)**;
+- ROLE: **30/31 source-verified (96.8%)**;
 - VENUE: **39/44 source-verified (88.6%)**;
-- SURF: **57/63 source-verified (90.5%)**;
+- SURF: **57/62 source-verified (91.9%)**;
 - DIST: **18/21 source-verified (85.7%)**;
-- WEIGHT: **31/34 source-verified (91.2%)**;
+- WEIGHT: **32/34 source-verified (94.1%)**;
 - RUN: **42/44 source-verified (95.5%)**;
 - EQUIP: **27/29 source-verified (93.1%)**;
-- TRAIN: **21/26 source-verified (80.8%)**;
+- TRAIN: **24/26 source-verified (92.3%)**;
 - MEET: **37/38 source-verified (97.4%)**;
 - RESULT: **27/28 source-verified (96.4%)**;
 - BET: **38/39 source-verified (97.4%)**;
 - WELF: **18/18 source-verified (100.0%)**;
-- retired/merged Concept rows: **20**;
+- retired/merged Concept rows: **21**;
 - abbreviations/codes: **38/38 source-verified**.
 
 ## What happens next
 
-The remaining **55 terms** continue through targeted residual review rather than another percentage-driven blanket promotion:
+The remaining **49 terms** continue through targeted residual review rather than another percentage-driven blanket promotion:
 
 ```text
 largest residual groups: VENUE / HORSE / BREED / RTYPE
@@ -246,7 +256,7 @@ largest residual groups: VENUE / HORSE / BREED / RTYPE
 -> rerun evidence/readiness gate
 ```
 
-`GLOSSARY-MASTER-005` remains **HOLD — not complete**. A 91.4% verified master with 55 unresolved seed Concepts is not ready to advance.
+`GLOSSARY-MASTER-005` remains **HOLD — not complete**. A 92.4% verified master with 49 unresolved seed Concepts is not ready to advance.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
@@ -275,9 +285,9 @@ The current public glossary remains disposable content. There is no old-record m
 
 ```text
 Current Work ID: GLOSSARY-MASTER-005
-Working dictionary: 642 terms
-Verified: 587
-Still under review: 55
+Working dictionary: 641 terms
+Verified: 592
+Still under review: 49
 Next subject group: continue targeted residual cleanup across remaining base-seed categories
 MASTER-006: blocked until the evidence/readiness gate passes
 Public implementation: deferred

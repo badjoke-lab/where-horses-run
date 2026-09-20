@@ -8,30 +8,30 @@ This directory is the non-public working area for the worldwide horse-racing ter
 
 ## Plain-language progress
 
-The working dictionary currently contains **642 racing terms/concepts**.
+The working dictionary currently contains **641 racing terms/concepts**.
 
-- **587 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
-- **55 terms still need verification, scope correction, splitting/merging, or removal.**
+- **592 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
+- **49 terms still need verification, scope correction, splitting/merging, or removal.**
 - The already researched jurisdiction-specific additions are **161/161 verified**.
 - The core highest-priority terminology set is **203/203 verified**.
 - Public glossary publication is still disabled while the remaining terms are cleaned up.
 
-The latest pass is **targeted residual wave 5**. It source-verified **6 additional base Concepts** across race type, entry procedure, participant roles, racecourse facilities and training using current JRA, BHA, Racing Queensland/Australian Harness Racing, NYRA and Keeneland evidence.
+The latest pass is **targeted residual wave 6**. It source-verified **5 additional base Concepts** and retired one duplicate Concept using current JRA, BHA, NYRA, HISA and Churchill Downs evidence.
 
-RTYPE is now **106/111 source-verified (95.5%)**, ENTRY **29/31 (93.5%)**, ROLE **29/31 (93.5%)**, VENUE **39/44 (88.6%)**, and TRAIN **21/26 (80.8%)**. Newly verified Concepts are Invitational race, Staying race, Late withdrawal, Racing secretary, Saddling paddock and Qualifying trial.
+ROLE is now **30/31 source-verified (96.8%)**, TRAIN **24/26 (92.3%)**, WEIGHT **32/34 (94.1%)**, and SURF is **57/62 (91.9%)** after `Grass` was merged into the already verified `Turf` Concept. Newly verified Concepts are Claiming allowance, Breeze, Gate schooling, Layoff and Track announcer; seed `Race caller` was corrected to the authority-backed `Track announcer` canonical.
 
-The definitions keep invitation mechanics, British staying/withdrawal procedure, North American race-office and paddock usage, and Australian harness qualification rules scoped to the authorities that support them.
+The pass also removes duplicate semantic inflation: JRA directly cross-references grass and turf, so `Grass` is preserved as a label rather than a second surface Concept.
 
 ## Current master
 
-- Concepts: **642**
+- Concepts: **641**
 - categories: **18**
 - P0: **203** / P1: **291** / P2: **130** / P3: **18**
 - `public_ready=yes`: **0**
 - public runtime input: **false**
 - active Concept relations: **20**
 - relationship reviews: **15 discovered / 15 resolved / 0 open**
-- retired/merged Concept rows: **20**
+- retired/merged Concept rows: **21**
 
 ## Core source verification — complete
 
@@ -91,7 +91,7 @@ Sources: `sources/equipment-training-sources-v1.tsv` plus existing authority evi
 
 Wave 1 verified **20** base Concepts: 13 equipment terms and 7 training/pre-race terms. Residual cleanup then verified `Pre-parade` and retired `Bike/Racebike` into `Sulky`.
 
-EQUIP is **27/29 verified (93.1%)** and TRAIN is **21/26 verified (80.8%)**. The remaining weak labels stay candidate until stronger authority evidence or a cleaner modeling decision exists.
+EQUIP is **27/29 verified (93.1%)** and TRAIN is **24/26 verified (92.3%)**. The remaining weak labels stay candidate until stronger authority evidence or a cleaner modeling decision exists.
 
 ### Horse / breeding / participant roles — wave 1 complete current pass
 Audit: `coverage/horse-breeding-role-verification-v1.tsv`  
@@ -145,13 +145,19 @@ Sources: `sources/targeted-residual-sources-v5.tsv` plus existing authority evid
 
 This pass verified **6** Concepts: 2 RTYPE, 1 ENTRY, 1 ROLE, 1 VENUE and 1 TRAIN. All six remain explicitly jurisdiction/discipline/procedure scoped.
 
-Across the lower-priority cleanup passes, **273 base-dictionary terms have been newly verified and 15 duplicate/malformed rows have been removed**.
+### Targeted residual wave 6 — complete current pass
+Audit: `coverage/targeted-residual-verification-v6.tsv`  
+Sources: `sources/targeted-residual-sources-v6.tsv` plus existing authority evidence.
+
+This pass verified **5** Concepts across WEIGHT/TRAIN/ROLE and retired duplicate `Grass` into `Turf`. `Race caller` was corrected to `Track announcer` without adding a duplicate Concept.
+
+Across the lower-priority cleanup passes, **278 base-dictionary terms have been newly verified and 16 duplicate/malformed rows have been removed**.
 
 ## Evidence state
 
-- all Concepts: **587 / 642 source-verified (91.4%)**; **55 candidate**
+- all Concepts: **592 / 641 source-verified (92.4%)**; **49 candidate**
 - core highest-priority set: **203 / 203 source-verified (100.0%)**
-- active base seed: **426 / 481 source-verified (88.6%)**; **55 candidate**
+- active base seed: **431 / 480 source-verified (89.8%)**; **49 candidate**
 - supplemental jurisdiction/relationship research: **161 / 161 source-verified (100.0%)**
 
 Canonical current audit state includes:
@@ -179,13 +185,14 @@ coverage/targeted-residual-verification-v2.tsv
 coverage/targeted-residual-verification-v3.tsv
 coverage/targeted-residual-verification-v4.tsv
 coverage/targeted-residual-verification-v5.tsv
+coverage/targeted-residual-verification-v6.tsv
 coverage/master-005-evidence-coverage-v1.tsv
 coverage/master-005-completion-gate-v1.tsv
 ```
 
 ## Current completion decision
 
-The terminology master remains **not complete**. The remaining **55 terms** must be reviewed rather than automatically promoted.
+The terminology master remains **not complete**. The remaining **49 terms** must be reviewed rather than automatically promoted.
 
 The next work is to **continue targeted residual cleanup** across the remaining base-seed categories, prioritizing the clearest defensible HORSE/BREED/VENUE/RTYPE/ENTRY residuals before the deliberately weak edge cases. Deliberately weak RUN, EQUIP, TRAIN and cross-category edge cases remain visible until stronger evidence or a cleaner modeling decision exists.
 
