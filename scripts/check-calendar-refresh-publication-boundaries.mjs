@@ -12,7 +12,7 @@ const orderedSteps = [
   'Collect HKJC official window',
   'Collect UAE official window',
   'Collect KRA official window',
-  'Collect TJK, SOREC, Chile and Ireland official windows',
+  'Collect TJK, SOREC, Chile, Ireland and Peru official windows',
   'Persist remaining canonical and public rolling state',
 ];
 
@@ -73,6 +73,34 @@ assert.equal(
   'Ireland HRI apply path must bind the Ireland timezone in both execution paths',
 );
 
+
+assert.equal(
+  (workflow.match(/run-peru-monterrico-official-window\.mjs/g) ?? []).length,
+  2,
+  'Peru Monterrico must be collected in both normal and latest-main rebuild paths',
+);
+assert.equal(
+  (workflow.match(/--authority-id=hipodromo-de-monterrico/g) ?? []).length,
+  2,
+  'Peru Monterrico observations must be applied in both normal and latest-main rebuild paths',
+);
+assert.equal(
+  (workflow.match(/--artifact=\.calendar-unified\/peru\.json/g) ?? []).length,
+  4,
+  'Peru Monterrico artifact must pass exclusion and apply layers in both execution paths',
+);
+assert.equal(
+  (workflow.match(/--racing-system-id=peru-monterrico-programme-system/g) ?? []).length,
+  2,
+  'Peru Monterrico apply path must bind the canonical racing system id in both execution paths',
+);
+assert.equal(
+  (workflow.match(/--timezone=America\/Lima/g) ?? []).length,
+  2,
+  'Peru Monterrico apply path must bind the Peru timezone in both execution paths',
+);
+
 console.log('CALENDAR_REFRESH_PUBLICATION_BOUNDARIES: pass');
 console.log('SOREC_UNIFIED_REFRESH_PATHS: 2');
 console.log('IRELAND_HRI_UNIFIED_REFRESH_PATHS: 2');
+console.log('PERU_MONTERRICO_UNIFIED_REFRESH_PATHS: 2');
