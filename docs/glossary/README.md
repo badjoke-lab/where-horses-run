@@ -16,15 +16,15 @@ Read these first for glossary work:
 
 The working dictionary has **642 terms/concepts**.
 
-- **504 are source-verified at the meaning level**.
-- **138 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
+- **507 are source-verified at the meaning level**.
+- **135 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
 - the highest-priority core set is **203/203 verified**;
 - jurisdiction-specific research additions are **161/161 verified**;
 - publication is still disabled (`public_ready=0`, public runtime disconnected).
 
-The equipment/training pass is now closed for the current defensible scope. `Pre-parade` was verified from current Jockey Club material, and `Bike/Racebike` was consolidated into `Sulky` from USTA evidence. EQUIP is **27/29 verified (93.1%)** and TRAIN is **20/26 verified (76.9%)**.
+The equipment/training pass is now closed for the current defensible scope. `Pre-parade`, `Barefoot`, `Gate schooling` and `Layoff` were verified from current authority material, and `Bike/Racebike` was consolidated into `Sulky` from USTA evidence. EQUIP is **28/29 verified (96.6%)** and TRAIN is **22/26 verified (84.6%)**.
 
-The remaining equipment/training labels are not being percentage-promoted without strong evidence. `Blinders`, `Barefoot`, `Breeze`, `Gate schooling`, `Qualifying trial`, `Cool down`, `Layoff` and `Freshened` stay visible for later review.
+The remaining equipment/training labels are not being percentage-promoted without strong evidence. `Blinders`, `Breeze`, `Qualifying trial`, `Cool down` and `Freshened` stay visible for later review.
 
 RUN remains **42/44 verified (95.5%)**, with only `Jump` and `Hold-up horse` unresolved.
 
@@ -32,7 +32,7 @@ RUN remains **42/44 verified (95.5%)**, with only `Jump` and `Hold-up horse` unr
 
 The dictionary was built from zero rather than copied from the existing public glossary. Major jurisdiction/local-language research and the current slang/abbreviation/historical pass are complete. The core terminology set is fully source-verified, and all current jurisdiction-specific additions are evidence-backed.
 
-Base-dictionary cleanup has now verified **190 additional terms** and removed **15 duplicate or malformed rows**. Current base-dictionary coverage is **343/481 verified (71.3%)**.
+Base-dictionary cleanup has now verified **193 additional terms** and removed **15 duplicate or malformed rows**. Current base-dictionary coverage is **346/481 verified (71.9%)**.
 
 Canonical evidence/audit files include:
 
@@ -71,17 +71,17 @@ The abbreviation/code layer remains at **38 source-verified rows**.
 ## Near-complete categories
 
 - RUN: **42/44 verified (95.5%)** — Jump and Hold-up horse remain candidate.
-- EQUIP: **27/29 verified (93.1%)** — Blinders and Barefoot remain candidate.
+- EQUIP: **28/29 verified (96.6%)** — Blinders remains candidate.
 - MEET: **37/38 verified (97.4%)** — only Daylight saving time remains candidate.
 - RESULT: **27/28 verified (96.4%)** — the remaining item is RO/result-code modeling; the RUN event Ran out is verified.
 - BET: **38/39 verified (97.4%)** — American odds remains candidate.
 - WELF: **18/18 verified (100%)**.
 - PRIZE: **10/12 verified (83.3%)** — Bonus and Stake remain candidate.
-- TRAIN: **20/26 verified (76.9%)** — six edge terms remain under review.
+- TRAIN: **22/26 verified (84.6%)** — four edge terms remain under review.
 
 ## What remains
 
-The **138 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
+The **135 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
 
 The next broad cleanup target is **horse / breeding / participant roles**. After that come venue/entry and the remaining race type/surface/distance/weight candidates. Deliberately unresolved edge cases stay visible for later evidence-driven resolution rather than blocking work on clearer categories.
 
