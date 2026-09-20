@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-meeting-details-v0",
-  "generated_at": "2026-09-20T06:35:51.239Z",
+  "generated_at": "2026-09-20T06:42:19.932Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -35080,14 +35080,14 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-20",
-        "generated_at": "2026-09-20T03:47:11.757Z",
+        "generated_at": "2026-09-20T06:41:44.487Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "timetable_rows": [
         {
           "label": "Race 1",
-          "post_time_local": "13:10",
+          "post_time_local": "10:35",
           "race_name": "1 서울 혼4등급 속보1건 6 2 10 1 서울 혼4등급",
           "distance_m": 1200
         },
@@ -35105,32 +35105,32 @@
         },
         {
           "label": "Race 4",
-          "post_time_local": "13:35",
+          "post_time_local": "15:40",
           "race_name": "4 서울 국6등급 5 1 6 4 서울 국6등급",
           "distance_m": 1700
         },
         {
           "label": "Race 5",
-          "post_time_local": "13:10",
-          "race_name": "5 서울 국5등급 성별오픈 연령오픈 핸디캡 R1~35 5 서울 국5등급",
+          "post_time_local": "14:25",
+          "race_name": "5 서울 국5등급 1 9 10 5 서울 국5등급",
           "distance_m": 1800
         },
         {
           "label": "Race 6",
-          "post_time_local": "14:00",
-          "race_name": "6 서울 국5등급 성별오픈 연령오픈 핸디캡 R1~35 6 서울 국5등급",
+          "post_time_local": "15:15",
+          "race_name": "6 서울 국5등급 5 1 6 6 서울 국5등급",
           "distance_m": 1200
         },
         {
           "label": "Race 7",
-          "post_time_local": "14:50",
-          "race_name": "7 서울 국5등급 성별오픈 연령오픈 핸디캡 R1~35 7 서울 국5등급",
+          "post_time_local": "16:10",
+          "race_name": "7 서울 국5등급 1 2 9 7 서울 국5등급",
           "distance_m": 1300
         },
         {
           "label": "Race 8",
           "post_time_local": "15:40",
-          "race_name": "8 서울 국OPEN 암 3세이상 별정A R0~140 8 서울 국OPEN",
+          "race_name": "8 서울 진행중 국OPEN 암 3세이상 별정A R0~140 8 서울 국OPEN",
           "distance_m": 1400
         },
         {
@@ -36584,6 +36584,62 @@
       "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
     },
     {
+      "meeting_id": "chile-club-hipico-de-concepcion-racecourse-2026-09-22",
+      "country_id": "chile",
+      "authority_id": "teletrak-chile",
+      "racecourse_id": "club-hipico-de-concepcion-racecourse",
+      "date": "2026-09-22",
+      "timezone": "America/Santiago",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "chile-teletrak-weekly-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://storage.elturf.com/pdf_volantes/pdf_chc/101190.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-20",
+        "generated_at": "2026-09-20T06:42:19.932Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "16:00"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "16:30"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "17:00"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "17:30"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "18:00"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "18:30"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "19:00"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
       "meeting_id": "ireland-ireland--listowel-2026-09-22",
       "country_id": "ireland",
       "authority_id": "horse-racing-ireland",
@@ -36645,6 +36701,154 @@
         }
       ],
       "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "jra-nakayama-racecourse-2026-09-22",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racecourse_id": "nakayama-racecourse",
+      "date": "2026-09-22",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "jra-racing-calendar-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0922.html",
+        "source_label": "Japan Racing Association",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-20",
+        "generated_at": "2026-09-20T06:35:51.239Z",
+        "stale_after_date": null,
+        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "09:45",
+          "race_name": "障害3歳以上未勝利",
+          "distance_m": 2880,
+          "surface": "Dirt",
+          "course_label": "Dirt",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "10:20",
+          "race_name": "2歳未勝利",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "Turf Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "10:50",
+          "race_name": "2歳未勝利",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "11:20",
+          "race_name": "2歳未勝利",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "Turf",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "12:10",
+          "race_name": "2歳新馬",
+          "distance_m": 1600,
+          "surface": "Turf",
+          "course_label": "Turf Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "12:40",
+          "race_name": "2歳新馬",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "Turf",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "13:10",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1800,
+          "surface": "Dirt",
+          "course_label": "Dirt",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "13:40",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 2200,
+          "surface": "Turf",
+          "course_label": "Turf Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "14:10",
+          "race_name": "鋸山特別 3歳以上2勝クラス",
+          "distance_m": 1800,
+          "surface": "Dirt",
+          "course_label": "Dirt",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "14:50",
+          "race_name": "2006メモリアル ディープインパクトカップ 3歳以上2勝クラス",
+          "distance_m": 1600,
+          "surface": "Turf",
+          "course_label": "Turf Outer",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "15:30",
+          "race_name": "JRAアニバーサリーステークス 3歳以上3勝クラス",
+          "distance_m": 1800,
+          "surface": "Dirt",
+          "course_label": "Dirt",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "16:10",
+          "race_name": "3歳以上1勝クラス",
+          "distance_m": 1200,
+          "surface": "Dirt",
+          "course_label": "Dirt",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
     },
     {
       "meeting_id": "nar-kanazawa-racecourse-2026-09-22",
@@ -37609,6 +37813,94 @@
       "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
     },
     {
+      "meeting_id": "chile-valparaiso-sporting-club-racecourse-2026-09-23",
+      "country_id": "chile",
+      "authority_id": "teletrak-chile",
+      "racecourse_id": "valparaiso-sporting-club-racecourse",
+      "date": "2026-09-23",
+      "timezone": "America/Santiago",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "chile-teletrak-weekly-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.sporting.cl/hipica/upload/handout/2026-09-23/VOLANTE_23_sept_COLOR.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-20",
+        "generated_at": "2026-09-20T06:42:19.932Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "13:30"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:00"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "14:30"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "15:00"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "15:30"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "16:00"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "16:30"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "17:00"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "17:30"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "18:00"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "18:30"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "19:00"
+        },
+        {
+          "label": "Race 13",
+          "post_time_local": "19:30"
+        },
+        {
+          "label": "Race 14",
+          "post_time_local": "20:00"
+        },
+        {
+          "label": "Race 15",
+          "post_time_local": "20:30"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
       "meeting_id": "ireland-ireland--listowel-2026-09-23",
       "country_id": "ireland",
       "authority_id": "horse-racing-ireland",
@@ -37670,6 +37962,158 @@
         }
       ],
       "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "nar-kasamatsu-racecourse-2026-09-23",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racecourse_id": "kasamatsu-racecourse",
+      "date": "2026-09-23",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "nar-monthly-schedule-racelist",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F09%2F23",
+        "source_label": "地方競馬全国協会",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F09%2F23"
+          },
+          {
+            "source_id": "tokai-region-joint-official-calendar",
+            "role": "mother_set",
+            "source_label": "東海地区競馬開催日程 / 笠松けいば開催日程",
+            "official_source_url": "https://www.kasamatsu-keiba.com/schedule/2026/09"
+          }
+        ]
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-20",
+        "generated_at": "2026-09-20T06:35:51.239Z",
+        "stale_after_date": null,
+        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "10:55",
+          "race_name": "笠松デビュー馬未勝利２歳２",
+          "distance_m": 800,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "11:25",
+          "race_name": "大噛がるるデビュー４周年記念杯３歳４",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "12:00",
+          "race_name": "もういい。これからも競馬やる！３歳３",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "12:35",
+          "race_name": "追い込み馬集めてみたＣ級選抜",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "13:10",
+          "race_name": "黒鹿毛対栗毛Ｂ級選抜",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "13:45",
+          "race_name": "いつでも全力疾走波多カップＢ５",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "14:15",
+          "race_name": "りょったんゆったん生誕記念Ｂ６",
+          "distance_m": 1580,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "14:55",
+          "race_name": "３歳２組",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "15:25",
+          "race_name": "ポイントで投票！楽天競馬賞Ｂ４",
+          "distance_m": 1400,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "16:05",
+          "race_name": "岐阜リオレーナ×笠松けいば記念３歳特別",
+          "distance_m": 1580,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "16:40",
+          "race_name": "ブルームカップ３歳・オープン",
+          "distance_m": 1800,
+          "surface": "Dirt",
+          "course_label": "Dirt Right-handed",
+          "metadata_status": "verified",
+          "source_label": null
+        }
+      ],
+      "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
     },
     {
       "meeting_id": "nar-mizusawa-racecourse-2026-09-23",
@@ -42054,306 +42498,6 @@
           "distance_m": 1800,
           "surface": "Turf",
           "course_label": "Turf",
-          "metadata_status": "verified",
-          "source_label": null
-        }
-      ],
-      "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
-    },
-    {
-      "meeting_id": "jra-nakayama-racecourse-2026-09-22",
-      "country_id": "japan",
-      "authority_id": "jra",
-      "racecourse_id": "nakayama-racecourse",
-      "date": "2026-09-22",
-      "timezone": "Asia/Tokyo",
-      "capability_rank": "A+",
-      "source_trace": {
-        "source_id": "jra-racing-calendar-programme",
-        "route_id": null,
-        "source_status": "verified",
-        "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0922.html",
-        "source_label": "Japan Racing Association",
-        "extraction_method": "adapter",
-        "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs"
-      },
-      "freshness": {
-        "last_checked_date": "2026-09-20",
-        "generated_at": "2026-09-20T06:35:51.239Z",
-        "stale_after_date": null,
-        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
-      },
-      "timetable_rows": [
-        {
-          "label": "Race 1",
-          "post_time_local": "09:45",
-          "race_name": "障害3歳以上未勝利",
-          "distance_m": 2880,
-          "surface": "Dirt",
-          "course_label": "Dirt",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 2",
-          "post_time_local": "10:20",
-          "race_name": "2歳未勝利",
-          "distance_m": 1200,
-          "surface": "Turf",
-          "course_label": "Turf Outer",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 3",
-          "post_time_local": "10:50",
-          "race_name": "2歳未勝利",
-          "distance_m": 1200,
-          "surface": "Dirt",
-          "course_label": "Dirt",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 4",
-          "post_time_local": "11:20",
-          "race_name": "2歳未勝利",
-          "distance_m": 1800,
-          "surface": "Turf",
-          "course_label": "Turf",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 5",
-          "post_time_local": "12:10",
-          "race_name": "2歳新馬",
-          "distance_m": 1600,
-          "surface": "Turf",
-          "course_label": "Turf Outer",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 6",
-          "post_time_local": "12:40",
-          "race_name": "2歳新馬",
-          "distance_m": 2000,
-          "surface": "Turf",
-          "course_label": "Turf",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 7",
-          "post_time_local": "13:10",
-          "race_name": "3歳以上1勝クラス",
-          "distance_m": 1800,
-          "surface": "Dirt",
-          "course_label": "Dirt",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 8",
-          "post_time_local": "13:40",
-          "race_name": "3歳以上1勝クラス",
-          "distance_m": 2200,
-          "surface": "Turf",
-          "course_label": "Turf Outer",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 9",
-          "post_time_local": "14:10",
-          "race_name": "鋸山特別 3歳以上2勝クラス",
-          "distance_m": 1800,
-          "surface": "Dirt",
-          "course_label": "Dirt",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 10",
-          "post_time_local": "14:50",
-          "race_name": "2006メモリアル ディープインパクトカップ 3歳以上2勝クラス",
-          "distance_m": 1600,
-          "surface": "Turf",
-          "course_label": "Turf Outer",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 11",
-          "post_time_local": "15:30",
-          "race_name": "JRAアニバーサリーステークス 3歳以上3勝クラス",
-          "distance_m": 1800,
-          "surface": "Dirt",
-          "course_label": "Dirt",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 12",
-          "post_time_local": "16:10",
-          "race_name": "3歳以上1勝クラス",
-          "distance_m": 1200,
-          "surface": "Dirt",
-          "course_label": "Dirt",
-          "metadata_status": "verified",
-          "source_label": null
-        }
-      ],
-      "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
-    },
-    {
-      "meeting_id": "nar-kasamatsu-racecourse-2026-09-23",
-      "country_id": "japan",
-      "authority_id": "nar-local-government-racing",
-      "racecourse_id": "kasamatsu-racecourse",
-      "date": "2026-09-23",
-      "timezone": "Asia/Tokyo",
-      "capability_rank": "A+",
-      "source_trace": {
-        "source_id": "nar-monthly-schedule-racelist",
-        "route_id": null,
-        "source_status": "verified",
-        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F09%2F23",
-        "source_label": "地方競馬全国協会",
-        "extraction_method": "adapter",
-        "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
-        "source_observations": [
-          {
-            "source_id": "nar-monthly-schedule-racelist",
-            "role": "mother_set",
-            "source_label": "地方競馬全国協会",
-            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F09%2F23"
-          },
-          {
-            "source_id": "tokai-region-joint-official-calendar",
-            "role": "mother_set",
-            "source_label": "東海地区競馬開催日程 / 笠松けいば開催日程",
-            "official_source_url": "https://www.kasamatsu-keiba.com/schedule/2026/09"
-          }
-        ]
-      },
-      "freshness": {
-        "last_checked_date": "2026-09-20",
-        "generated_at": "2026-09-20T06:35:51.239Z",
-        "stale_after_date": null,
-        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
-      },
-      "timetable_rows": [
-        {
-          "label": "Race 1",
-          "post_time_local": "10:55",
-          "race_name": "笠松デビュー馬未勝利２歳２",
-          "distance_m": 800,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 2",
-          "post_time_local": "11:25",
-          "race_name": "大噛がるるデビュー４周年記念杯３歳４",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 3",
-          "post_time_local": "12:00",
-          "race_name": "もういい。これからも競馬やる！３歳３",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 4",
-          "post_time_local": "12:35",
-          "race_name": "追い込み馬集めてみたＣ級選抜",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 5",
-          "post_time_local": "13:10",
-          "race_name": "黒鹿毛対栗毛Ｂ級選抜",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 6",
-          "post_time_local": "13:45",
-          "race_name": "いつでも全力疾走波多カップＢ５",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 7",
-          "post_time_local": "14:15",
-          "race_name": "りょったんゆったん生誕記念Ｂ６",
-          "distance_m": 1580,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 8",
-          "post_time_local": "14:55",
-          "race_name": "３歳２組",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 9",
-          "post_time_local": "15:25",
-          "race_name": "ポイントで投票！楽天競馬賞Ｂ４",
-          "distance_m": 1400,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 10",
-          "post_time_local": "16:05",
-          "race_name": "岐阜リオレーナ×笠松けいば記念３歳特別",
-          "distance_m": 1580,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
-          "metadata_status": "verified",
-          "source_label": null
-        },
-        {
-          "label": "Race 11",
-          "post_time_local": "16:40",
-          "race_name": "ブルームカップ３歳・オープン",
-          "distance_m": 1800,
-          "surface": "Dirt",
-          "course_label": "Dirt Right-handed",
           "metadata_status": "verified",
           "source_label": null
         }

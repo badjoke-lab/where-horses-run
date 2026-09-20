@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-20T06:35:51.239Z",
+  "generated_at": "2026-09-20T06:42:19.932Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -17030,7 +17030,7 @@
       "date": "2026-09-20",
       "capability_rank": "A",
       "display_status": "displayable",
-      "first_race_time_local": "13:10",
+      "first_race_time_local": "10:35",
       "last_race_time_local": "17:55",
       "source_trace": {
         "source_id": "kra-today-race",
@@ -17044,7 +17044,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-20",
-        "generated_at": "2026-09-20T03:47:11.757Z",
+        "generated_at": "2026-09-20T06:41:44.487Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -17782,22 +17782,23 @@
       "timezone": "America/Santiago",
       "racecourse_id": "club-hipico-de-concepcion-racecourse",
       "date": "2026-09-22",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "16:00",
+      "last_race_time_local": "19:00",
       "acquisition_completion": {
-        "disposition": "retry_required",
-        "observed_rank": "C",
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A",
         "technical_capability_rank": "A",
-        "higher_rank_open": true,
-        "reason": "Higher-detail acquisition did not complete safely (source_error)."
+        "evaluated_capability_rank": "A",
+        "higher_rank_open": false,
+        "reason": "The currently applicable higher-detail acquisition path was explicitly evaluated through the registered technical capability rank."
       },
       "source_trace": {
         "source_id": "chile-teletrak-weekly-programme",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://teletrak.cl/",
+        "official_source_url": "https://storage.elturf.com/pdf_volantes/pdf_chc/101190.pdf",
         "source_label": null,
         "extraction_method": "adapter",
         "source_snapshot_path": null,
@@ -17805,7 +17806,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-20",
-        "generated_at": "2026-09-20T03:47:48.800Z",
+        "generated_at": "2026-09-20T06:42:19.932Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
@@ -17845,6 +17846,51 @@
         "evaluated_capability_rank": "A",
         "higher_rank_open": false,
         "reason": "The currently applicable higher-detail acquisition path was explicitly evaluated through the registered technical capability rank."
+      }
+    },
+    {
+      "meeting_id": "jra-nakayama-racecourse-2026-09-22",
+      "country_id": "japan",
+      "authority_id": "jra",
+      "racing_system_id": "japan-jra-system",
+      "racecourse_id": "nakayama-racecourse",
+      "date": "2026-09-22",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "A+",
+      "display_status": "displayable",
+      "first_race_time_local": "09:45",
+      "last_race_time_local": "16:10",
+      "source_trace": {
+        "source_id": "jra-racing-calendar-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0922.html",
+        "source_label": "Japan Racing Association",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "jra-racing-calendar-programme",
+            "role": "mother_set",
+            "source_label": "Japan Racing Association",
+            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0922.html"
+          }
+        ]
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-20",
+        "generated_at": "2026-09-20T06:35:51.239Z",
+        "stale_after_date": null,
+        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+      },
+      "notes": "Deterministic public-safe timetable fields reconciled from the official source.",
+      "acquisition_completion": {
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A+",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": false,
+        "reason": "Observed evidence reached A+; no higher timetable rank remains."
       }
     },
     {
@@ -18233,22 +18279,23 @@
       "timezone": "America/Santiago",
       "racecourse_id": "valparaiso-sporting-club-racecourse",
       "date": "2026-09-23",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "13:30",
+      "last_race_time_local": "20:30",
       "acquisition_completion": {
-        "disposition": "retry_required",
-        "observed_rank": "C",
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A",
         "technical_capability_rank": "A",
-        "higher_rank_open": true,
-        "reason": "Higher-detail acquisition did not complete safely (source_error)."
+        "evaluated_capability_rank": "A",
+        "higher_rank_open": false,
+        "reason": "The currently applicable higher-detail acquisition path was explicitly evaluated through the registered technical capability rank."
       },
       "source_trace": {
         "source_id": "chile-teletrak-weekly-programme",
         "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://teletrak.cl/",
+        "official_source_url": "https://www.sporting.cl/hipica/upload/handout/2026-09-23/VOLANTE_23_sept_COLOR.pdf",
         "source_label": null,
         "extraction_method": "adapter",
         "source_snapshot_path": null,
@@ -18256,7 +18303,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-20",
-        "generated_at": "2026-09-20T03:47:48.800Z",
+        "generated_at": "2026-09-20T06:42:19.932Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
@@ -28921,51 +28968,6 @@
         "generated_at": "2026-09-20T03:47:11.803Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
-      }
-    },
-    {
-      "meeting_id": "jra-nakayama-racecourse-2026-09-22",
-      "country_id": "japan",
-      "authority_id": "jra",
-      "racing_system_id": "japan-jra-system",
-      "racecourse_id": "nakayama-racecourse",
-      "date": "2026-09-22",
-      "timezone": "Asia/Tokyo",
-      "capability_rank": "A+",
-      "display_status": "displayable",
-      "first_race_time_local": "09:45",
-      "last_race_time_local": "16:10",
-      "source_trace": {
-        "source_id": "jra-racing-calendar-programme",
-        "route_id": null,
-        "source_status": "verified",
-        "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0922.html",
-        "source_label": "Japan Racing Association",
-        "extraction_method": "adapter",
-        "source_snapshot_path": null,
-        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
-        "source_observations": [
-          {
-            "source_id": "jra-racing-calendar-programme",
-            "role": "mother_set",
-            "source_label": "Japan Racing Association",
-            "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/9/0922.html"
-          }
-        ]
-      },
-      "freshness": {
-        "last_checked_date": "2026-09-20",
-        "generated_at": "2026-09-20T06:35:51.239Z",
-        "stale_after_date": null,
-        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
-      },
-      "notes": "Deterministic public-safe timetable fields reconciled from the official source.",
-      "acquisition_completion": {
-        "disposition": "complete_current_best_available",
-        "observed_rank": "A+",
-        "technical_capability_rank": "A+",
-        "higher_rank_open": false,
-        "reason": "Observed evidence reached A+; no higher timetable rank remains."
       }
     }
   ]
