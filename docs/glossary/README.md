@@ -14,17 +14,17 @@ Read these first for glossary work:
 
 ## Current state in plain language
 
-The working dictionary has **629 terms/concepts**.
+The working dictionary has **626 terms/concepts**.
 
-- **594 are source-verified at the meaning level**.
-- **35 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
+- **599 are source-verified at the meaning level**.
+- **27 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
 - the highest-priority core set is **203/203 verified**;
 - jurisdiction-specific research additions are **161/161 verified**;
 - publication is still disabled (`public_ready=0`, public runtime disconnected).
 
-The latest pass is **targeted residual resolution wave 9**. It retired **6** vague, derived, generic or malformed seed Concepts: Qualification, Kilometre, Weight rise, Weight drop, American odds and Commentator.
+The latest pass is **targeted residual wave 10**. It verified **5** scoped Concepts and retired **3** redundant/malformed rows: Juvenile race, Route race, Fractional time, Banei Draft horse and Barefoot are verified; Age-restricted race / Sex-restricted race are folded into Conditions-race context; Blinders is retired into Blinkers.
 
-Current whole-master coverage is **594/629 verified (94.4%)** with **35 candidates**. Active base seed is **433/468 verified (92.5%)**. WEIGHT, BET and ROLE are now **100% verified in the active Concept set**; ENTRY is **29/30 (96.7%)** and DIST **18/20 (90.0%)**.
+Current whole-master coverage is **599/626 verified (95.7%)** with **27 candidates**. Active base seed is **438/465 verified (94.2%)**. EQUIP is **28/28 verified (100%)**, RTYPE **108/109 (99.1%)**, DIST **19/20 (95.0%)**, and HORSE **28/33 (84.8%)**.
 
 These rows were removed because the active glossary already models the underlying racing meaning more cleanly, or because the seed represented generic analytical/presentation context rather than an independent racing term.
 
@@ -32,7 +32,7 @@ These rows were removed because the active glossary already models the underlyin
 
 The dictionary was built from zero rather than copied from the existing public glossary. Major jurisdiction/local-language research and the current slang/abbreviation/historical pass are complete. The core terminology set is fully source-verified, and all current jurisdiction-specific additions are evidence-backed.
 
-Base-dictionary cleanup has now verified **280 additional terms** and removed **28 duplicate, malformed or non-independent rows**. Current base-dictionary coverage is **433/468 verified (92.5%)**.
+Base-dictionary cleanup has now verified **285 additional terms** and removed **31 duplicate, malformed or non-independent rows**. Current base-dictionary coverage is **438/465 verified (94.2%)**.
 
 Canonical evidence/audit files include:
 
@@ -57,6 +57,7 @@ data/glossary-master/sources/targeted-residual-sources-v3.tsv
 data/glossary-master/sources/targeted-residual-sources-v4.tsv
 data/glossary-master/sources/targeted-residual-sources-v5.tsv
 data/glossary-master/sources/targeted-residual-sources-v6.tsv
+data/glossary-master/sources/targeted-residual-sources-v10.tsv
 data/glossary-master/coverage/p1-verification-wave1-v1.tsv
 data/glossary-master/coverage/p1-verification-wave2-v1.tsv
 data/glossary-master/coverage/race-type-condition-verification-v1.tsv
@@ -83,6 +84,7 @@ data/glossary-master/coverage/targeted-residual-verification-v6.tsv
 data/glossary-master/coverage/targeted-residual-resolution-v7.tsv
 data/glossary-master/coverage/targeted-residual-resolution-v8.tsv
 data/glossary-master/coverage/targeted-residual-resolution-v9.tsv
+data/glossary-master/coverage/targeted-residual-resolution-v10.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
@@ -92,14 +94,14 @@ The abbreviation/code layer remains at **38 source-verified rows**.
 ## Near-complete categories
 
 - RUN: **42/44 verified (95.5%)** — Jump and Hold-up horse remain candidate.
-- EQUIP: **27/29 verified (93.1%)** — Blinders and Barefoot remain candidate.
+- EQUIP: **28/28 verified (100%)** — wave 10 retired Blinders into Blinkers and verified Barefoot.
 - MEET: **37/37 verified (100%)** — wave 8 retired generic Daylight saving time as Time zone context.
 - RESULT: **27/27 verified (100%)** — wave 7 retired the unsupported RO code row into the verified Ran out event Concept.
 - BET: **38/38 verified (100%)** — wave 9 retired generic sportsbook American odds as contextual Odds presentation.
 - WELF: **18/18 verified (100%)**.
 - DISC: **16/17 verified (94.1%)** — Endurance racing remains under modeling review.
-- RTYPE: **106/111 verified (95.5%)** — five race-type residuals remain under review.
-- DIST: **18/20 verified (90.0%)** — Fraction and Final fraction remain under review.
+- RTYPE: **108/109 verified (99.1%)** — Cup race is the only remaining race-type candidate.
+- DIST: **19/20 verified (95.0%)** — Fraction was corrected to verified Fractional time; Final fraction remains under review.
 - SURF: **59/62 verified (95.2%)** — wave 8 corrected/verified USTA Freezing and Snow; Cushion Track, Surface switch and Track bias remain candidate.
 - WEIGHT: **32/32 verified (100%)** — wave 9 retired derived Weight rise/drop comparison labels.
 - ENTRY: **29/30 verified (96.7%)** — Waitlist remains the only active ENTRY candidate.
@@ -107,14 +109,14 @@ The abbreviation/code layer remains at **38 source-verified rows**.
 - ROLE: **30/30 verified (100%)** — wave 9 retired malformed Commentator; Track announcer remains the verified race-calling role.
 - TRAIN: **24/26 verified (92.3%)** — Cool down and Freshened remain under review.
 - VENUE: **39/42 verified (92.9%)** — Round course, Oval and Walking ring remain under review.
-- HORSE: **27/33 verified (81.8%)** — six horse identity/age/origin residuals remain under review.
+- HORSE: **28/33 verified (84.8%)** — wave 10 verified Banei-scoped Draft horse; five horse residuals remain under review.
 - BREED: **15/21 verified (71.4%)** — six breeding/facility/industry residuals remain under review.
 
 ## What remains
 
-The **35 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
+The **27 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
 
-Targeted residual resolution wave 9 is complete for the current defensible source bundle. The next step is to continue residual cleanup across the remaining base-seed categories while leaving intentionally weak edge cases visible until stronger evidence or a cleaner modeling decision exists.
+Targeted residual wave 10 is complete for the current defensible source bundle. The next step is to continue residual cleanup across the remaining base-seed categories while leaving intentionally weak edge cases visible until stronger evidence or a cleaner modeling decision exists.
 
 After that residual cleanup, the evidence/readiness gate will be rerun. `MASTER-006` and public glossary architecture remain blocked until that review is defensible.
 

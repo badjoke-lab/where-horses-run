@@ -8,30 +8,30 @@ This directory is the non-public working area for the worldwide horse-racing ter
 
 ## Plain-language progress
 
-The working dictionary currently contains **629 racing terms/concepts**.
+The working dictionary currently contains **626 racing terms/concepts**.
 
-- **594 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
-- **35 terms still need verification, scope correction, splitting/merging, or removal.**
+- **599 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
+- **27 terms still need verification, scope correction, splitting/merging, or removal.**
 - The already researched jurisdiction-specific additions are **161/161 verified**.
 - The core highest-priority terminology set is **203/203 verified**.
 - Public glossary publication is still disabled while the remaining terms are cleaned up.
 
-The latest pass is **targeted residual resolution wave 9**. It retired **6 vague, derived, generic or malformed candidate Concepts** without promoting any weak label: `Qualification` → Eligibility context, `Kilometre` → Metre context, `Weight rise`/`Weight drop` → Weight carried context, generic sportsbook `American odds` → Odds context, and malformed `Commentator` → the verified Track announcer race-calling role while leaving analytical commentary unmodeled.
+The latest pass is **targeted residual wave 10**. It source-verified **5** scoped Concepts and retired **3** redundant/malformed rows. `Juvenile race`, North American `Route race`, `Fractional time`, Banei-scoped `Draft horse`, and Harness `Barefoot` are now verified. Constructed `Age-restricted race` / `Sex-restricted race` rows were retired into `Conditions race` context, and unsupported duplicate `Blinders` was retired into verified `Blinkers`.
 
-The master is now **594/629 source-verified (94.4%)** with **35 candidates**. Active base-seed coverage is **433/468 (92.5%)**. WEIGHT, BET and ROLE are now **100% verified within the active Concept set**, ENTRY is **29/30 (96.7%)**, and DIST is **18/20 (90.0%)**.
+The master is now **599/626 source-verified (95.7%)** with **27 candidates**. Active base-seed coverage is **438/465 (94.2%)**. EQUIP is now **28/28 verified (100%)**, RTYPE **108/109 (99.1%)**, DIST **19/20 (95.0%)**, and HORSE **28/33 (84.8%)**.
 
 Wave 9 is a semantic pruning pass: derived comparisons and generic display conventions remain contextual rather than standalone racing Concepts.
 
 ## Current master
 
-- Concepts: **629**
+- Concepts: **626**
 - categories: **18**
 - P0: **203** / P1: **291** / P2: **130** / P3: **18**
 - `public_ready=yes`: **0**
 - public runtime input: **false**
 - active Concept relations: **20**
 - relationship reviews: **15 discovered / 15 resolved / 0 open**
-- retired/merged Concept rows: **33**
+- retired/merged Concept rows: **36**
 
 ## Core source verification — complete
 
@@ -50,13 +50,13 @@ Verified **27** terms across racing disciplines, entries, racecourses, distance/
 Verified **29** terms across horses, breeding, racing people, in-race expressions, horse equipment and training. Duplicate `Breeder` was consolidated into the participant-role Concept.
 
 ### Race types and classifications — broad current pass
-The initial race-type/classification pass verified **15** terms. Broad-category wave 1 added `Selling race`, `Graded stakes`, and scoped British `Open race` / `Restricted race` Concepts. RTYPE is now **100/111 verified (90.1%)**.
+The initial race-type/classification pass verified **15** terms. Broad-category wave 1 added `Selling race`, `Graded stakes`, and scoped British `Open race` / `Restricted race` Concepts. RTYPE is now **108/109 verified (99.1%)**.
 
 ### Surface and going terminology — broad current pass
 The initial surface-condition pass verified **10** terms. Later passes added product/surface-state terms, merged duplicate Grass into Turf, and wave 8 corrected/verified USTA `Freezing` and `Snow`. SURF is now **59/62 verified (95.2%)**; Cushion Track, Surface switch and Track bias remain candidate.
 
 ### Distance and measurement terminology — broad current pass
-Broad-category and residual passes verified racing-specific distance and margin terms. Wave 9 retired generic derived `Kilometre` under `Metre`; DIST is now **18/20 verified (90.0%)** with only `Fraction` and `Final fraction` unresolved.
+Broad-category and residual passes verified racing-specific distance and margin terms. Wave 9 retired generic derived `Kilometre` under `Metre`; DIST is now **19/20 verified (95.0%)** after correcting `Fraction` to verified `Fractional time`; only `Final fraction` remains unresolved.
 
 ### Weight and handicapping terminology — broad current pass
 Weight terminology is now **32/32 verified (100%)** after wave 6 verified `Claiming allowance` and wave 9 retired derived `Weight rise`/`Weight drop` comparison labels under `Weight carried`.
@@ -91,7 +91,7 @@ Sources: `sources/equipment-training-sources-v1.tsv` plus existing authority evi
 
 Wave 1 verified **20** base Concepts: 13 equipment terms and 7 training/pre-race terms. Residual cleanup then verified `Pre-parade` and retired `Bike/Racebike` into `Sulky`.
 
-EQUIP is **27/29 verified (93.1%)** and TRAIN is **24/26 verified (92.3%)**. The remaining weak labels stay candidate until stronger authority evidence or a cleaner modeling decision exists.
+EQUIP is **28/28 verified (100%)** after retiring duplicate `Blinders` into `Blinkers` and verifying Harness `Barefoot`; TRAIN remains **24/26 verified (92.3%)**.
 
 ### Horse / breeding / participant roles — wave 1 complete current pass
 Audit: `coverage/horse-breeding-role-verification-v1.tsv`  
@@ -161,18 +161,24 @@ Audit: `coverage/targeted-residual-resolution-v8.tsv`
 
 This pass verified **2** authority-backed SURF Concepts after canonical correction (`Freezing`, `Snow`) and retired generic `Daylight saving time` as non-independent racing context.
 
+### Targeted residual wave 10 — complete current pass
+Audit: `coverage/targeted-residual-resolution-v10.tsv`  
+Sources: `sources/targeted-residual-sources-v10.tsv` plus existing authority evidence.
+
+This pass verified **5** Concepts and retired **3** redundant/malformed candidate rows across RTYPE/HORSE/DIST/EQUIP. It closes EQUIP's active candidate queue and leaves only `Cup race` in RTYPE and `Final fraction` in DIST.
+
 ### Targeted residual resolution wave 9 — complete current pass
 Audit: `coverage/targeted-residual-resolution-v9.tsv`
 
 This pass retired **6** vague, derived, generic or malformed candidate Concepts across ENTRY, DIST, WEIGHT, BET and ROLE. No candidate was percentage-promoted; WEIGHT, BET and ROLE close their active candidate queues through semantic cleanup.
 
-Across the lower-priority cleanup passes, **280 base-dictionary terms have been newly verified and 28 duplicate/malformed/non-independent rows have been removed**.
+Across the lower-priority cleanup passes, **285 base-dictionary terms have been newly verified and 31 duplicate/malformed/non-independent rows have been removed**.
 
 ## Evidence state
 
-- all Concepts: **594 / 629 source-verified (94.4%)**; **35 candidate**
+- all Concepts: **599 / 626 source-verified (95.7%)**; **27 candidate**
 - core highest-priority set: **203 / 203 source-verified (100.0%)**
-- active base seed: **433 / 468 source-verified (92.5%)**; **35 candidate**
+- active base seed: **438 / 465 source-verified (94.2%)**; **27 candidate**
 - supplemental jurisdiction/relationship research: **161 / 161 source-verified (100.0%)**
 
 Canonical current audit state includes:
@@ -210,9 +216,9 @@ coverage/master-005-completion-gate-v1.tsv
 
 ## Current completion decision
 
-The terminology master remains **not complete**. The remaining **35 terms** must be reviewed rather than automatically promoted.
+The terminology master remains **not complete**. The remaining **27 terms** must be reviewed rather than automatically promoted.
 
-The next work is to **continue targeted residual cleanup** across the remaining base-seed categories, prioritizing the clearest defensible HORSE/BREED/VENUE/RTYPE/ENTRY residuals before the deliberately weak edge cases. Deliberately weak RUN, EQUIP, TRAIN and cross-category edge cases remain visible until stronger evidence or a cleaner modeling decision exists.
+The next work is to **continue targeted residual cleanup** across the remaining base-seed categories, prioritizing the clearest defensible HORSE/BREED/VENUE/RTYPE/ENTRY residuals before the deliberately weak edge cases. Deliberately weak RUN, TRAIN and cross-category edge cases remain visible until stronger evidence or a cleaner modeling decision exists.
 
 After that residual work, rerun the evidence/readiness gate before advancing to `GLOSSARY-MASTER-006`.
 
