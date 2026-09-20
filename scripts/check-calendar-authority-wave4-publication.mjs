@@ -168,6 +168,29 @@ assert.equal(
   'list/detail must share one publication snapshot',
 );
 
+const reviewedSourceMeeting = {
+  ...meeting,
+  meeting_id: 'fixture-reviewed-2026-09-21',
+  source_trace: {
+    ...meeting.source_trace,
+    source_id: 'reviewed-public:data/static/fixture-reviewed.json',
+  },
+};
+const reviewedSourceDetail = {
+  ...detail,
+  meeting_id: reviewedSourceMeeting.meeting_id,
+};
+const reviewedProjection = buildPublicProjectionV1({
+  canonicalMeetings: { ...canonicalMeetings, meetings: [reviewedSourceMeeting] },
+  canonicalDetails: { ...canonicalDetails, details: [reviewedSourceDetail] },
+  policyData,
+  readinessRegistry,
+  sourceAliases,
+});
+assert.equal(reviewedProjection.meetingListDataset.meetings.length, 1, 'reviewed wrapper source must resolve through the underlying authority Readiness record');
+assert.equal(reviewedProjection.audit.decisions[0].canonical_source_id, 'fixture-source');
+assert.equal(reviewedProjection.audit.decisions[0].source_alias_id, reviewedSourceMeeting.source_trace.source_id);
+
 const unrelatedPublic = {
   meeting_id: 'unrelated-public-meeting',
   country_id: 'other-country',

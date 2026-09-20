@@ -93,7 +93,8 @@ function buildAliasIndex(sourceAliases) {
 function resolveReadiness(record, readinessIndex, aliasIndex) {
   const sourceId = record.source_trace?.source_id;
   assert(typeof sourceId === 'string' && sourceId, `${record.meeting_id} has no canonical source ID`);
-  const directKey = `${record.country_id}/${record.authority_id}/${sourceId}`;
+  const authorityPrefix = `${record.country_id}/${record.authority_id}/`;
+  const directKey = `${authorityPrefix}${sourceId}`;
   let readinessKey = directKey;
   let readinessRecords = readinessIndex.get(directKey) ?? [];
   let canonicalSourceId = sourceId;
@@ -101,11 +102,25 @@ function resolveReadiness(record, readinessIndex, aliasIndex) {
 
   if (readinessRecords.length === 0) {
     const alias = aliasIndex.get(directKey);
-    assert(alias, `${record.meeting_id} source ${directKey} has no Calendar Readiness record or reviewed alias`);
-    canonicalSourceId = alias.canonical_source_id;
-    aliasId = alias.legacy_source_id;
-    readinessKey = `${record.country_id}/${record.authority_id}/${canonicalSourceId}`;
-    readinessRecords = readinessIndex.get(readinessKey) ?? [];
+    if (alias) {
+      canonicalSourceId = alias.canonical_source_id;
+      aliasId = alias.legacy_source_id;
+      readinessKey = `${authorityPrefix}${canonicalSourceId}`;
+      readinessRecords = readinessIndex.get(readinessKey) ?? [];
+    } else if (sourceId.startsWith('reviewed-public:')) {
+      const reviewedCandidates = [...readinessIndex.entries()]
+        .filter(([key]) => key.startsWith(authorityPrefix))
+        .flatMap(([, rows]) => rows);
+      const readiness = chooseReadiness(reviewedCandidates, record, `${authorityPrefix}<reviewed>`);
+      canonicalSourceId = readiness.authority_source_key.slice(authorityPrefix.length);
+      return {
+        readiness,
+        canonicalSourceId,
+        aliasId: sourceId,
+      };
+    } else {
+      throw new Error(`${record.meeting_id} source ${directKey} has no Calendar Readiness record or reviewed alias`);
+    }
   }
 
   const readiness = chooseReadiness(readinessRecords, record, readinessKey);
