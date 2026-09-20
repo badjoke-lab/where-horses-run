@@ -59,18 +59,31 @@ function buildReadinessIndex(readinessRegistry) {
   return index;
 }
 
+function normalizeRacecourseKey(value) {
+  return String(value ?? '').replace(/-racecourse$/, '');
+}
+
 function chooseReadiness(records, canonicalRecord, key) {
   assert(records.length > 0, `${canonicalRecord.meeting_id} has no Calendar Readiness record for ${key}`);
   if (records.length === 1) return records[0];
 
+  const racecourseKey = normalizeRacecourseKey(canonicalRecord.racecourse_id);
   const racecourseMatches = records.filter((record) =>
-    Array.isArray(record.racecourse_ids) && record.racecourse_ids.includes(canonicalRecord.racecourse_id)
+    Array.isArray(record.racecourse_ids)
+    && record.racecourse_ids.some((racecourseId) => normalizeRacecourseKey(racecourseId) === racecourseKey)
   );
   if (racecourseMatches.length === 1) return racecourseMatches[0];
 
+  const systemMatches = records.filter((record) =>
+    canonicalRecord.racing_system_id && record.system_id === canonicalRecord.racing_system_id
+  );
+  if (systemMatches.length === 1) return systemMatches[0];
+
   const broadMatches = records.filter((record) =>
     ['countrywide', 'authority_wide'].includes(record.coverage_scope) &&
-    (!Array.isArray(record.racecourse_ids) || record.racecourse_ids.length === 0 || record.racecourse_ids.includes(canonicalRecord.racecourse_id))
+    (!Array.isArray(record.racecourse_ids)
+      || record.racecourse_ids.length === 0
+      || record.racecourse_ids.some((racecourseId) => normalizeRacecourseKey(racecourseId) === racecourseKey))
   );
   if (broadMatches.length === 1) return broadMatches[0];
 
@@ -108,11 +121,22 @@ function resolveReadiness(record, readinessIndex, aliasIndex) {
       readinessKey = `${authorityPrefix}${canonicalSourceId}`;
       readinessRecords = readinessIndex.get(readinessKey) ?? [];
     } else if (sourceId.startsWith('reviewed-public:')) {
-      const reviewedCandidates = [...readinessIndex.entries()]
+      let reviewedCandidates = [...readinessIndex.entries()]
         .filter(([key]) => key.startsWith(authorityPrefix))
         .flatMap(([, rows]) => rows);
-      const readiness = chooseReadiness(reviewedCandidates, record, `${authorityPrefix}<reviewed>`);
-      canonicalSourceId = readiness.authority_source_key.slice(authorityPrefix.length);
+      let reviewedKey = `${authorityPrefix}<reviewed>`;
+
+      if (reviewedCandidates.length === 0) {
+        const countryPrefix = `${record.country_id}/`;
+        reviewedCandidates = [...readinessIndex.entries()]
+          .filter(([key]) => key.startsWith(countryPrefix))
+          .flatMap(([, rows]) => rows);
+        reviewedKey = `${countryPrefix}<reviewed>`;
+      }
+
+      const readiness = chooseReadiness(reviewedCandidates, record, reviewedKey);
+      const readinessParts = readiness.authority_source_key.split('/');
+      canonicalSourceId = readinessParts.at(-1);
       return {
         readiness,
         canonicalSourceId,
