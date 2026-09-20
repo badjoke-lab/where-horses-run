@@ -47,6 +47,14 @@ export type CalendarEvidenceProvenanceV1 = {
   readonly review?: CalendarReviewProvenanceV1;
 };
 
+export type CalendarRaceEvidenceSupportV1 = {
+  readonly race_times?: CalendarEvidenceProvenanceV1;
+  readonly race_names?: CalendarEvidenceProvenanceV1;
+  readonly distances?: CalendarEvidenceProvenanceV1;
+  readonly surfaces?: CalendarEvidenceProvenanceV1;
+  readonly courses?: CalendarEvidenceProvenanceV1;
+};
+
 export type CalendarEvidenceSupportV1 = {
   readonly meeting_identity?: CalendarEvidenceProvenanceV1;
   readonly meeting_date?: CalendarEvidenceProvenanceV1;
@@ -56,6 +64,7 @@ export type CalendarEvidenceSupportV1 = {
   readonly distances?: CalendarEvidenceProvenanceV1;
   readonly surfaces?: CalendarEvidenceProvenanceV1;
   readonly courses?: CalendarEvidenceProvenanceV1;
+  readonly race_overrides?: Readonly<Record<string, CalendarRaceEvidenceSupportV1>>;
 };
 
 export type CalendarEvidenceChangeTargetV1 = {

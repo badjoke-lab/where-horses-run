@@ -104,6 +104,24 @@ metadataCandidate.records[0].evidence_support = {
     successfully_verified_at: hkjcSourceCheckedAt,
     acquisition_method: 'automatic',
   },
+  distances: {
+    source_id: 'hkjc-fixture-list',
+    official_source_url: metadataCandidate.records[0].source.official_url,
+    observed_at: hkjcSourceCheckedAt,
+    successfully_verified_at: hkjcSourceCheckedAt,
+    acquisition_method: 'automatic',
+  },
+  race_overrides: {
+    'Race 2': {
+      distances: {
+        source_id: 'hkjc-fixture-list',
+        official_source_url: metadataCandidate.records[0].source.official_url,
+        observed_at: hkjcSourceCheckedAt,
+        successfully_verified_at: hkjcSourceCheckedAt,
+        acquisition_method: 'automatic',
+      },
+    },
+  },
 };
 try {
   const metadataPromotion = promoteApprovedCandidateV1({ ...baseArgs, candidate: metadataCandidate });
@@ -113,6 +131,31 @@ try {
   if (stable(meeting.acquisition_completion) !== stable(metadataCandidate.records[0].acquisition_completion)) fail('promotion must preserve acquisition disposition metadata');
   if (stable(meeting.evidence_support) !== stable(metadataCandidate.records[0].evidence_support)) fail('promotion must preserve meeting evidence provenance');
   if (stable(detail.evidence_support) !== stable(metadataCandidate.records[0].evidence_support)) fail('promotion must preserve detail evidence provenance');
+  const incrementalMetadataCandidate = clone(metadataCandidate);
+  incrementalMetadataCandidate.records[0].evidence_support = {
+    race_overrides: {
+      'Race 2': {
+        courses: {
+          source_id: 'hkjc-fixture-list',
+          official_source_url: metadataCandidate.records[0].source.official_url,
+          observed_at: hkjcSourceCheckedAt,
+          successfully_verified_at: hkjcSourceCheckedAt,
+          acquisition_method: 'automatic',
+        },
+      },
+    },
+  };
+  const incrementalPromotion = promoteApprovedCandidateV1({
+    ...baseArgs,
+    candidate: incrementalMetadataCandidate,
+    meetingsDataset: metadataPromotion.meetingsDataset,
+    detailsDataset: metadataPromotion.detailsDataset,
+  });
+  for (const promoted of [incrementalPromotion.meetingsDataset.meetings[0], incrementalPromotion.detailsDataset.details[0]]) {
+    if (promoted.evidence_support.distances.source_id !== 'hkjc-fixture-list') fail('incremental promotion must preserve the group default provenance');
+    if (promoted.evidence_support.race_overrides['Race 2'].distances.source_id !== 'hkjc-fixture-list') fail('incremental promotion must preserve an existing race/group override');
+    if (promoted.evidence_support.race_overrides['Race 2'].courses.source_id !== 'hkjc-fixture-list') fail('incremental promotion must add a race/group override');
+  }
 } catch (error) {
   fail(`authority metadata promotion failed: ${error instanceof Error ? error.message : error}`);
 }

@@ -179,7 +179,30 @@ authorityMetadataFixture.records[0].acquisition_completion = {
   higher_rank_open: true,
   reason: 'A represented failure remains distinct from retained evidence rank.',
 };
+authorityMetadataFixture.records[0].evidence_support = {
+  distances: {
+    source_id: authorityMetadataFixture.source_id,
+    official_source_url: authorityMetadataFixture.records[0].source.official_url,
+    observed_at: authorityMetadataFixture.generated_at,
+    successfully_verified_at: authorityMetadataFixture.generated_at,
+    acquisition_method: 'automatic',
+  },
+  race_overrides: {
+    'Race 2': {
+      distances: {
+        source_id: authorityMetadataFixture.source_id,
+        official_source_url: authorityMetadataFixture.records[0].source.official_url,
+        observed_at: authorityMetadataFixture.generated_at,
+        successfully_verified_at: authorityMetadataFixture.generated_at,
+        acquisition_method: 'automatic',
+      },
+    },
+  },
+};
 if (validateCandidate(authorityMetadataFixture).length) errors.push('candidate validator must accept optional Wave 1 authority metadata');
+const dateOnlyAuthorityMetadataFixture = structuredClone(authorityMetadataFixture);
+dateOnlyAuthorityMetadataFixture.records[0].acquisition_attempt.attempted_at = '2026-09-20';
+if (!validateCandidate(dateOnlyAuthorityMetadataFixture).some((error) => error.includes('ISO date-time'))) errors.push('candidate validator must reject date-only authority timestamps');
 
 if (errors.length) {
   console.error(`CALENDAR_PIPELINE_V1_CANDIDATE_CONTRACT: failed (${errors.length})`);

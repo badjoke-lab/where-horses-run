@@ -114,6 +114,23 @@
         "race_names": { "$ref": "#/$defs/evidenceProvenance" },
         "distances": { "$ref": "#/$defs/evidenceProvenance" },
         "surfaces": { "$ref": "#/$defs/evidenceProvenance" },
+        "courses": { "$ref": "#/$defs/evidenceProvenance" },
+        "race_overrides": {
+          "type": "object",
+          "propertyNames": { "type": "string", "minLength": 1 },
+          "additionalProperties": { "$ref": "#/$defs/raceEvidenceSupport" }
+        }
+      }
+    },
+    "raceEvidenceSupport": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "race_times": { "$ref": "#/$defs/evidenceProvenance" },
+        "race_names": { "$ref": "#/$defs/evidenceProvenance" },
+        "distances": { "$ref": "#/$defs/evidenceProvenance" },
+        "surfaces": { "$ref": "#/$defs/evidenceProvenance" },
         "courses": { "$ref": "#/$defs/evidenceProvenance" }
       }
     },

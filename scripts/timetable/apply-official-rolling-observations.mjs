@@ -4,6 +4,7 @@ import { deriveBestAvailableRank } from './best-available-rank.mjs';
 import { classifyAcquisitionCompletion } from './acquisition-completion.mjs';
 import {
   attachPublicationSnapshotV1,
+  mergeEvidenceSupportV1,
   validateCalendarAuthorityMetadataV1,
 } from './calendar-authority-metadata.mjs';
 import { loadCalendarAcquisitionRegistryV1 } from './load-calendar-acquisition-registry.mjs';
@@ -123,13 +124,20 @@ function normalizeStoredCanonical(meeting, detail) {
     changed: nextMeeting !== meeting || nextDetail !== detail,
   };
 }
-function withCurrentAcquisitionCompletion(meeting, acquisitionCompletion) {
+export function withCurrentAcquisitionState(meeting, acquisitionCompletion, record) {
   if (!meeting) return { meeting, changed: false };
-  if (JSON.stringify(meeting.acquisition_completion ?? null) === JSON.stringify(acquisitionCompletion)) {
+  const nextMeeting = {
+    ...meeting,
+    acquisition_completion: acquisitionCompletion,
+    ...('acquisition_attempt' in record ? {
+      acquisition_attempt: structuredClone(record.acquisition_attempt),
+    } : {}),
+  };
+  if (JSON.stringify(meeting) === JSON.stringify(nextMeeting)) {
     return { meeting, changed: false };
   }
   return {
-    meeting: { ...meeting, acquisition_completion: acquisitionCompletion },
+    meeting: nextMeeting,
     changed: true,
   };
 }
@@ -174,7 +182,7 @@ function makeCanonical(record, artifact, checkedAt, defaults, previous, acquisit
     },
     ...('acquisition_attempt' in record ? { acquisition_attempt: structuredClone(record.acquisition_attempt) } : {}),
     ...(record.evidence_support ? {
-      evidence_support: { ...(previous?.evidence_support ?? {}), ...structuredClone(record.evidence_support) },
+      evidence_support: mergeEvidenceSupportV1(previous?.evidence_support, record.evidence_support),
     } : {}),
     ...(record.evidence_changes ? {
       evidence_changes: mergeEvidenceChanges(previous?.evidence_changes, structuredClone(record.evidence_changes)),
@@ -197,7 +205,7 @@ function makeCanonicalDetail(meeting, record, previousDetail) {
     source_trace: meeting.source_trace,
     freshness: meeting.freshness,
     ...(record.evidence_support ? {
-      evidence_support: { ...(previousDetail?.evidence_support ?? {}), ...structuredClone(record.evidence_support) },
+      evidence_support: mergeEvidenceSupportV1(previousDetail?.evidence_support, record.evidence_support),
     } : {}),
     ...(record.evidence_changes ? {
       evidence_changes: mergeEvidenceChanges(previousDetail?.evidence_changes, structuredClone(record.evidence_changes)),
@@ -345,7 +353,7 @@ for (const record of records) {
     outcomes.normalized_stored_rank += 1;
   }
   if (record.detail_observation?.status === 'conflict') {
-    const completionUpdate = withCurrentAcquisitionCompletion(previous, acquisitionCompletion);
+    const completionUpdate = withCurrentAcquisitionState(previous, acquisitionCompletion, record);
     if (completionUpdate.changed) {
       previous = completionUpdate.meeting;
       canonicalById.set(previous.meeting_id, previous);
@@ -356,7 +364,7 @@ for (const record of records) {
   }
   const correction = record.official_correction === true;
   if (previous && rank(previous.capability_rank) > rank(observed) && !correction) {
-    const completionUpdate = withCurrentAcquisitionCompletion(previous, acquisitionCompletion);
+    const completionUpdate = withCurrentAcquisitionState(previous, acquisitionCompletion, record);
     if (completionUpdate.changed) {
       previous = completionUpdate.meeting;
       canonicalById.set(previous.meeting_id, previous);

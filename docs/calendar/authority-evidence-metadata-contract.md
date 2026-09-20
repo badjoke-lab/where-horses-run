@@ -47,6 +47,7 @@ Meeting-targeted attempts use `acquisition_attempt`. Source-wide or batch failur
 | `acquisition_attempt` | Current represented attempt time, result, route/source, and optional error | Authority-specific evidence producer or acquisition coordinator | Acquisition authority and operational diagnostics | Optional; absent remains unknown | `freshness.last_checked_date` does not distinguish an attempt from successful verification and has day-only precision |
 | `acquisition_completion` | Current cycle disposition using `promoted`, `complete_current_best_available`, `pending_publication`, `retry_required`, `implementation_gap`, or `not_applicable` | Shared acquisition authority | Retry/operations consumers | Existing objects remain valid; absent remains unknown | Rank describes evidence, not whether acquisition work completed |
 | `evidence_support` | Current supporting provenance by independent field group | Canonical acceptance authority | Rank, publication, and canonical diagnostics | Optional; no backfill from legacy `source_trace` | One record-level `source_trace` cannot preserve old provenance for retained fields when another field receives newer evidence |
+| `evidence_support.race_overrides` | Race-label-specific provenance exceptions for race-value groups | Canonical acceptance authority | Rank, publication, and canonical diagnostics | Optional; group provenance remains the default | A correction to one race must not assign its new provenance to retained values for every other race |
 | `evidence_support.*.successfully_verified_at` | Time the supporting evidence was successfully verified | Canonical acceptance authority from successful evidence | Freshness diagnostics | Nullable or absent; failures never advance it | `generated_at` and attempt time can advance without successful verification |
 | `evidence_support.*.review` | Reviewer, review time, and optional evidence reference for reviewed evidence | Reviewed evidence producer, accepted by canonical authority | Audit and canonical diagnostics | Required only when a new provenance entry declares `acquisition_method: reviewed`; legacy review metadata is not copied | Candidate envelope review state alone does not retain the provenance of a specific accepted field group |
 | `evidence_changes` | Explicit target, action, reason/type, and supporting provenance for correction, withdrawal, or invalidation | Official or reviewed evidence producer | Canonical acceptance authority in a later wave | Optional; absence is not evidence of no correction | `official_correction: true` has no durable target, reason, or evidence identity |
@@ -69,7 +70,11 @@ surfaces
 courses
 ```
 
-This is current supporting provenance, not an event history. Wave 1 does not create per-race history or an event-sourcing database.
+The group entry is the default provenance. Optional `race_overrides` entries use the existing timetable row label as the bounded race identity and replace that default only for the named race and group. An override may exist without a group default. Overrides are limited to `race_times`, `race_names`, `distances`, `surfaces`, and `courses`; meeting identity and date remain meeting-level.
+
+`timetable` supports the current race-row set, composition, order, and labels. `race_times` supports the individual `post_time_local` values. They are distinct even when the same official document supports both.
+
+This is current supporting provenance with minimal exceptions, not an event history. Wave 1 does not create per-race history, global race identifiers, or an event-sourcing database.
 
 ## Correction and invalidation representation
 
@@ -89,7 +94,7 @@ Recording a change does not apply it in Wave 1. Reviewed evidence must pass thro
 - `evidence_support.*.observed_at`: source observation time when known.
 - `evidence_support.*.successfully_verified_at`: freshness of accepted supporting evidence.
 - `evidence_support.*.review.reviewed_at`: time a human review was completed.
-- `publication_snapshot.generated_at`: time the exact public pair was correlated.
+- `publication_snapshot.generated_at`: logical generation timestamp associated with the correlated public pair, normally the `generated_at` selected by that writer. It need not be the wall-clock instant when the snapshot property was attached.
 - legacy `freshness.last_checked_date`: compatibility field with historical mixed meaning; it is not copied into any of the fields above.
 
 Unknown historical times remain unknown. In particular, a failed attempt may update `attempted_at` without changing any `successfully_verified_at` value.
@@ -99,6 +104,8 @@ Unknown historical times remain unknown. In particular, a failed attempt may upd
 The snapshot ID is a SHA-256 digest of both public datasets excluding their `publication_snapshot` properties. The same metadata object is written to both artifacts. A content change to either artifact invalidates the pair until a coordinated writer computes a new snapshot.
 
 Snapshot identity asserts only that the two stored public artifacts form one exact result. It does not assert source freshness, acquisition success, canonical correctness, or historical guarantees for unstamped artifacts.
+
+The snapshot generation timestamp remains distinct from acquisition-attempt, source-observation, successful-verification, and review times.
 
 ## Wave 1 boundary
 

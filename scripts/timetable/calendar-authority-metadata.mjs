@@ -29,6 +29,14 @@ const SUPPORT_KEYS = new Set([
   'distances',
   'surfaces',
   'courses',
+  'race_overrides',
+]);
+const RACE_SUPPORT_KEYS = new Set([
+  'race_times',
+  'race_names',
+  'distances',
+  'surfaces',
+  'courses',
 ]);
 const CHANGE_ACTIONS = new Set(['correct', 'withdraw', 'invalidate']);
 const CHANGE_REASON_TYPES = new Set([
@@ -54,7 +62,16 @@ function isObject(value) {
 }
 
 function validDateTime(value) {
-  return typeof value === 'string' && value.length > 0 && !Number.isNaN(Date.parse(value));
+  if (typeof value !== 'string') return false;
+  const match = /^(\d{4})-(\d{2})-(\d{2})[Tt](\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(?:[Zz]|([+-])(\d{2}):(\d{2}))$/.exec(value);
+  if (!match) return false;
+  const [, yearText, monthText, dayText, hourText, minuteText, secondText, , offsetHourText, offsetMinuteText] = match;
+  const [year, month, day, hour, minute, second] = [yearText, monthText, dayText, hourText, minuteText, secondText].map(Number);
+  if (year < 1 || month < 1 || month > 12 || hour > 23 || minute > 59 || second > 59) return false;
+  const daysInMonth = new Date(Date.UTC(year, month, 0)).getUTCDate();
+  if (day < 1 || day > daysInMonth) return false;
+  if (offsetHourText !== undefined && (Number(offsetHourText) > 23 || Number(offsetMinuteText) > 59)) return false;
+  return !Number.isNaN(Date.parse(value));
 }
 
 function unknownKeys(value, allowed, label, errors) {
@@ -161,7 +178,27 @@ export function validateCalendarAuthorityMetadataV1(value, label = 'calendar_aut
     } else {
       unknownKeys(support, SUPPORT_KEYS, `${label}.evidence_support`, errors);
       for (const [key, provenance] of Object.entries(support)) {
-        validateEvidenceProvenance(provenance, `${label}.evidence_support.${key}`, errors);
+        if (key !== 'race_overrides') {
+          validateEvidenceProvenance(provenance, `${label}.evidence_support.${key}`, errors);
+          continue;
+        }
+        if (!isObject(provenance)) {
+          errors.push(`${label}.evidence_support.race_overrides must be an object`);
+          continue;
+        }
+        for (const [raceLabel, override] of Object.entries(provenance)) {
+          const overrideLabel = `${label}.evidence_support.race_overrides.${raceLabel}`;
+          if (!raceLabel) errors.push(`${label}.evidence_support.race_overrides race label must be non-empty`);
+          if (!isObject(override)) {
+            errors.push(`${overrideLabel} must be an object`);
+            continue;
+          }
+          unknownKeys(override, RACE_SUPPORT_KEYS, overrideLabel, errors);
+          if (Object.keys(override).length === 0) errors.push(`${overrideLabel} must contain at least one race-value group`);
+          for (const [group, raceProvenance] of Object.entries(override)) {
+            validateEvidenceProvenance(raceProvenance, `${overrideLabel}.${group}`, errors);
+          }
+        }
       }
     }
   }
@@ -199,6 +236,23 @@ export function validateCalendarAuthorityMetadataV1(value, label = 'calendar_aut
   return errors;
 }
 
+export function mergeEvidenceSupportV1(previous = {}, current = {}) {
+  const merged = { ...structuredClone(previous), ...structuredClone(current) };
+  const previousOverrides = isObject(previous.race_overrides) ? previous.race_overrides : {};
+  const currentOverrides = isObject(current.race_overrides) ? current.race_overrides : {};
+  if (Object.keys(previousOverrides).length > 0 || Object.keys(currentOverrides).length > 0) {
+    const raceOverrides = structuredClone(previousOverrides);
+    for (const [raceLabel, groups] of Object.entries(currentOverrides)) {
+      raceOverrides[raceLabel] = {
+        ...(raceOverrides[raceLabel] ?? {}),
+        ...structuredClone(groups),
+      };
+    }
+    merged.race_overrides = raceOverrides;
+  }
+  return merged;
+}
+
 function withoutPublicationSnapshot(dataset) {
   const copy = { ...dataset };
   delete copy.publication_snapshot;
@@ -213,12 +267,12 @@ function publicationSnapshotId(meetingListDataset, meetingDetailsDataset) {
   return `sha256:${createHash('sha256').update(payload).digest('hex')}`;
 }
 
-export function attachPublicationSnapshotV1(meetingListDataset, meetingDetailsDataset, generatedAt) {
-  if (!validDateTime(generatedAt)) throw new Error('publication snapshot generated_at must be an ISO date-time');
+export function attachPublicationSnapshotV1(meetingListDataset, meetingDetailsDataset, logicalGeneratedAt) {
+  if (!validDateTime(logicalGeneratedAt)) throw new Error('publication snapshot generated_at must be an ISO date-time');
   const snapshot = {
     schema_version: 'calendar-publication-snapshot-v1',
     snapshot_id: publicationSnapshotId(meetingListDataset, meetingDetailsDataset),
-    generated_at: generatedAt,
+    generated_at: logicalGeneratedAt,
   };
   return {
     meetingListDataset: { ...meetingListDataset, publication_snapshot: snapshot },
