@@ -41,6 +41,8 @@ jobs:
         run: node scripts/check-calendar-acquisition-completion.mjs
       - name: Validate Wave 3 canonical authority
         run: node scripts/check-calendar-authority-wave3-canonical.mjs
+      - name: Validate Wave 4 shared publication authority
+        run: node scripts/check-calendar-authority-wave4-publication.mjs
       - name: Validate Japan acquisition completion normalization
         run: node scripts/check-japan-acquisition-completion.mjs
       - name: Validate TJK A+ programme parsing

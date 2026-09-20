@@ -68,8 +68,14 @@ assert.match(policyText, /"detail_fields"/, 'publication policy must use rank-in
 assert.doesNotMatch(policyText, /"a_plus_fields"/, 'deprecated a_plus_fields policy key must not remain in canonical policy data');
 
 const applyText = fs.readFileSync('scripts/timetable/apply-official-rolling-observations.mjs', 'utf8');
-assert.match(applyText, /projectPublicTimetableRows/, 'official observation application must use the tested field projection helper');
-assert.doesNotMatch(applyText, /const showPlus = listRow\.effective_public_rank === 'A\+'/, 'A+ must not gate all richer field publication');
+assert.match(applyText, /reconcilePublicProjectionV1/, 'official observation application must delegate final public output to the shared projection authority');
+assert.doesNotMatch(applyText, /function makePublicMeeting/, 'official observation application must not retain an independent public meeting producer');
+assert.doesNotMatch(applyText, /function makePublicDetail/, 'official observation application must not retain an independent public detail producer');
+
+const sharedProjectionText = fs.readFileSync('scripts/timetable/pipeline-v1/public-projection-core.mjs', 'utf8');
+assert.match(sharedProjectionText, /policy\.detail_fields/, 'shared public projection must use rank-independent detail_fields');
+assert.doesNotMatch(sharedProjectionText, /policy\.a_plus_fields/, 'deprecated a_plus_fields must not remain in shared public projection');
+assert.doesNotMatch(sharedProjectionText, /showAPlus/, 'A+ must not gate all richer field publication in the shared projection');
 
 const bootstrapText = fs.readFileSync('src/components/CalendarRuntimeBootstrap.astro', 'utf8');
 assert.match(bootstrapText, /params\.get\('diag'\) === 'calendar'/, 'diagnostics loader must be gated by ?diag=calendar');

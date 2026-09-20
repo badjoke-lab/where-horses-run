@@ -1,22 +1,31 @@
 # Calendar pipeline v1 — deterministic public projection
 
-Status: implemented foundation  
+Status: active shared publication authority  
 Work ID: `WHR-CAL-PIPELINE-V1`  
-Implemented: 2026-07-01
+Implemented: 2026-07-01; authority consolidated in Wave 4 on 2026-09-21
 
 ## Purpose
 
-This stage is the only Pipeline v1 writer from canonical timetable data into the committed public meeting-list and meeting-detail JSON files.
+This stage is the shared Calendar publication authority from canonical timetable data into the committed public meeting-list and meeting-detail JSON files.
 
 ```text
 canonical meeting/detail data
 + publication display policy
 + Calendar Readiness Public Ceiling
 + reviewed legacy source aliases
--> deterministic public projection
++ explicit publication exclusions / scoped reconciliation
+-> one correlated public list/detail projection
 ```
 
-It does not read candidates, source snapshots, manual seeds, normalized samples, or raw source bodies.
+Wave 4 routes the current official rolling writer, Japan reconciliation writer, reviewed-supplement reconciliation, reviewed exclusions, and the deterministic full rebuild through the same projection core:
+
+```text
+scripts/timetable/pipeline-v1/public-projection-core.mjs
+```
+
+Producer-specific code may decide which canonical meetings changed or which meeting IDs are explicitly excluded, but it must not independently construct final public meeting/detail rows or stamp a separate publication snapshot.
+
+The projection core does not read candidates, source snapshots, manual seeds, normalized samples, or raw source bodies.
 
 ## Command
 
@@ -80,15 +89,16 @@ Public meeting rows require a closed operating state compatible with maintained 
 
 `link_only`, `blocked`, and `not_applicable` records are excluded from public meeting rows even when old canonical seed data still exists. This prevents historical implementation artifacts from overriding the current reviewed Calendar Readiness decision.
 
-## A+ field rules
+## Field-level detail publication
 
-Race name, distance, surface, and course label are projected only when all three conditions are true:
+Race name, distance, surface, and course label are projected independently when both conditions are true:
 
-1. effective public rank is A+;
-2. publication policy enables the field;
-3. Calendar Readiness `confirmed_fields` confirms the field.
+1. publication policy `detail_fields` enables that field; and
+2. Calendar Readiness `confirmed_fields` confirms that field.
 
-A-level detail rows contain only race label and post time.
+The meeting may be effective public rank `A` or `A+`. Rank classifies timetable completeness; it does not suppress another independently verified and policy-approved field.
+
+Public detail still requires effective public rank `A` or `A+`, because a public detail page requires complete race-row timetable structure.
 
 ## Legacy source aliases
 
@@ -119,12 +129,19 @@ A public detail record is emitted only when:
 
 A public list `detail_path` exists only when the projected detail record exists.
 
-## Current release boundary
+## Wave 4 operational boundary
 
-This implementation PR does not rewrite the committed public JSON. It introduces and validates the new writer only.
+The full rebuild command remains deterministic and projects the entire canonical dataset.
 
-Applying the writer changes rendered Calendar/Today/Tomorrow/country/racecourse/meeting surfaces because current legacy public files do not yet enforce the latest Public Ceiling and link-only exclusions. That generated-data change must be reviewed in a separate rendered preview PR before production publication.
+Operational refresh writers use the same core in scoped mode. Scoped mode:
 
-## Next Pipeline v1 slice
+- recomputes only the affected meeting IDs;
+- preserves unrelated public rows byte-for-byte in meaning;
+- can remove explicitly excluded meeting IDs without deleting unrelated public state;
+- still produces one correlated list/detail snapshot.
 
-Generate the reviewed public projection, inspect the exact removed/downgraded rows and fields, run bilingual rendered QA, and merge the public-data release only after preview approval.
+This matters for Japan absence reconciliation: a meeting may remain canonical for audit/history while an explicitly reconciled current public absence is removed from the public projection. Later non-Japan refreshes must not re-add that Japan row merely because they reproject an unrelated authority.
+
+Reviewed timetable supplements are reconciled into canonical evidence first. Public visibility is then derived by the shared producer; reviewed code no longer repairs public JSON independently.
+
+Wave 4 does not move runtime/UI transformations into this module. Runtime consumer-only cleanup remains Wave 5.
