@@ -99,6 +99,8 @@ function runApplyFixture({
     const publicPath = path.join(temp, 'public.json');
     const publicDetailsPath = path.join(temp, 'public-details.json');
     const policiesPath = path.join(temp, 'policies.json');
+    const readinessPath = path.join(temp, 'readiness.json');
+    const aliasesPath = path.join(temp, 'aliases.json');
     const firstRaceTime = ['B', 'B+', 'A', 'A+'].includes(rank) ? '12:00' : null;
     const lastRaceTime = ['B+', 'A', 'A+'].includes(rank) ? '13:00' : null;
     const timetableRows = ['A', 'A+'].includes(rank)
@@ -131,17 +133,69 @@ function runApplyFixture({
       } : {}),
     };
     fs.writeFileSync(artifactPath, JSON.stringify({ generated_at: '2026-09-11T00:00:00.000Z', records: [recordValue] }));
-    fs.writeFileSync(canonicalPath, JSON.stringify({ generated_at: null, meetings: [] }));
-    fs.writeFileSync(detailsPath, JSON.stringify({ generated_at: null, details: [] }));
-    fs.writeFileSync(publicPath, JSON.stringify({ generated_at: null, meetings: [] }));
-    fs.writeFileSync(publicDetailsPath, JSON.stringify({ generated_at: null, details: [] }));
+    fs.writeFileSync(canonicalPath, JSON.stringify({
+      schema_version: 'canonical-timetable-v0',
+      generated_at: '2026-09-10T00:00:00.000Z',
+      input_sources: [],
+      meetings: [],
+    }));
+    fs.writeFileSync(detailsPath, JSON.stringify({
+      schema_version: 'canonical-meeting-details-v0',
+      generated_at: '2026-09-10T00:00:00.000Z',
+      input_sources: [],
+      details: [],
+    }));
+    fs.writeFileSync(publicPath, JSON.stringify({
+      schema_version: 'public-timetable-meeting-list-v0',
+      generated_at: '2026-09-10T00:00:00.000Z',
+      meetings: [],
+    }));
+    fs.writeFileSync(publicDetailsPath, JSON.stringify({
+      schema_version: 'public-timetable-meeting-details-v0',
+      generated_at: '2026-09-10T00:00:00.000Z',
+      details: [],
+    }));
     fs.writeFileSync(policiesPath, JSON.stringify({
+      schema_version: 'publication-display-policies-v0',
       policies: [],
       default_policy: {
         id: 'test-default',
+        priority: 0,
+        match: {},
         max_public_rank: 'A+',
+        include_in_public_list: true,
         detail_fields: { show_race_name: true, show_distance: true, show_surface: true, show_course: true },
+        show_live_label: false,
+        show_replay_label: false,
       },
+    }));
+    fs.writeFileSync(readinessPath, JSON.stringify({
+      schema_version: 'calendar-readiness-registry-v1',
+      records: [{
+        readiness_id: `fixture-${id}`,
+        authority_source_key: `${countryId}/${authorityId}/${id}-source`,
+        racecourse_ids: [`${id}-racecourse`],
+        coverage_scope: 'authority_wide',
+        public_ceiling: 'A+',
+        readiness: 'prototype_ready',
+        automation_mode: 'semi_automatic',
+        source_status: 'verified',
+        confirmed_fields: {
+          meeting_date: true,
+          racecourse: true,
+          first_race_time: true,
+          last_race_time: true,
+          per_race_post_times: true,
+          race_name: true,
+          distance: true,
+          surface: true,
+          course: true,
+        },
+      }],
+    }));
+    fs.writeFileSync(aliasesPath, JSON.stringify({
+      schema_version: 'timetable-source-aliases-v1',
+      aliases: [],
     }));
 
     const result = spawnSync(process.execPath, [
@@ -152,6 +206,8 @@ function runApplyFixture({
       `--public=${publicPath}`,
       `--public-details=${publicDetailsPath}`,
       `--policies=${policiesPath}`,
+      `--readiness=${readinessPath}`,
+      `--source-aliases=${aliasesPath}`,
       `--country-id=${countryId}`,
       `--authority-id=${authorityId}`,
       `--racing-system-id=${systemId}`,

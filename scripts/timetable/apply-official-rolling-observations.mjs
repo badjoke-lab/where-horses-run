@@ -160,6 +160,8 @@ const canonicalDetailsPath = arg('canonical-details', 'data/generated/timetable/
 const publicPath = arg('public', 'data/generated/timetable/public/meeting-list.json');
 const publicDetailsPath = arg('public-details', 'data/generated/timetable/public/meeting-details.json');
 const policiesPath = arg('policies', 'src/data/publicationDisplayPolicies.json');
+const readinessPath = arg('readiness');
+const sourceAliasesPath = arg('source-aliases', 'data/static/timetable-source-aliases-v1.json');
 const defaults = {
   country_id: arg('country-id'),
   authority_id: arg('authority-id'),
@@ -174,8 +176,8 @@ const canonicalDetails = readJson(canonicalDetailsPath);
 const publicList = readJson(publicPath);
 const publicDetails = readJson(publicDetailsPath);
 const policyDataset = readJson(policiesPath);
-const sourceAliases = readJson('data/static/timetable-source-aliases-v1.json');
-const readinessRegistry = loadCalendarReadinessV1(process.cwd());
+const sourceAliases = readJson(sourceAliasesPath);
+const readinessRegistry = readinessPath ? readJson(readinessPath) : loadCalendarReadinessV1(process.cwd());
 const acquisitionRegistry = loadCalendarAcquisitionRegistryV1(process.cwd());
 const canonicalById = new Map((canonical.meetings ?? []).map((row) => [row.meeting_id, row]));
 const detailsById = new Map((canonicalDetails.details ?? []).map((row) => [row.meeting_id, row]));
