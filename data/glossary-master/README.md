@@ -10,17 +10,17 @@ This directory is the non-public working area for the worldwide horse-racing ter
 
 The working dictionary currently contains **642 racing terms/concepts**.
 
-- **567 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
-- **75 terms still need verification, scope correction, splitting/merging, or removal.**
+- **573 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
+- **69 terms still need verification, scope correction, splitting/merging, or removal.**
 - The already researched jurisdiction-specific additions are **161/161 verified**.
 - The core highest-priority terminology set is **203/203 verified**.
 - Public glossary publication is still disabled while the remaining terms are cleaned up.
 
-The latest pass is **targeted residual wave 2**. It source-verified **5 additional base Concepts** across entry procedure, breeding and racecourse facilities using scoped BHA, JRA and IFHA/ISBC/ITBF evidence.
+The latest pass is **targeted residual wave 3**. It source-verified **6 additional base Concepts** across racing disciplines, finishing margins and horse-status terminology using current BHA, IHRB, SETF/LeTROT, The Jockey Club, Pony Racing Authority, JRA and Equibase/TrackMaster evidence.
 
-ENTRY is now **28/31 source-verified (90.3%)**, BREED **13/22 (59.1%)**, and VENUE **38/44 (86.4%)**. Newly verified Concepts are Supplementary entry, Supplementary fee, Covering, Stable area and Stable.
+DISC is now **16/17 source-verified (94.1%)**, DIST **18/21 (85.7%)**, and HORSE **26/34 (76.5%)**. Newly verified Concepts are Cross-country chase, Monté, Point-to-point, Pony racing, Half-length and First-time starter.
 
-The British supplementary-entry/fee mechanics are kept GB/Regional rather than generalized; Covering is explicitly scoped to International/Thoroughbred; Stable and Stable area remain facility labels whose exact operational boundaries vary by jurisdiction.
+Point-to-point remains separately bounded to GB/IRE governance; Monté is French mounted trotting; cross-country obstacle details remain venue-specific; Half-length is conservatively scoped to Japan/Regional for the verified JRA notation; and First-time starter remains North American.
 
 ## Current master
 
@@ -127,13 +127,19 @@ Sources: `sources/targeted-residual-sources-v2.tsv` plus existing authority evid
 
 This pass verified **5** Concepts: 2 ENTRY, 1 BREED and 2 VENUE. BHA supplementary-entry procedure, IFHA/ISBC/ITBF Covering semantics and JRA stable-facility terminology remain explicitly scope-bounded.
 
-Across the lower-priority cleanup passes, **253 base-dictionary terms have been newly verified and 15 duplicate/malformed rows have been removed**.
+### Targeted residual wave 3 — complete current pass
+Audit: `coverage/targeted-residual-verification-v3.tsv`  
+Sources: `sources/targeted-residual-sources-v3.tsv` plus existing authority evidence.
+
+This pass verified **6** Concepts: 4 DISC, 1 DIST and 1 HORSE. Discipline, jurisdiction, notation and participant-status claims remain bounded to the authorities that support them.
+
+Across the lower-priority cleanup passes, **259 base-dictionary terms have been newly verified and 15 duplicate/malformed rows have been removed**.
 
 ## Evidence state
 
-- all Concepts: **567 / 642 source-verified (88.3%)**; **75 candidate**
+- all Concepts: **573 / 642 source-verified (89.3%)**; **69 candidate**
 - core highest-priority set: **203 / 203 source-verified (100.0%)**
-- active base seed: **406 / 481 source-verified (84.4%)**; **75 candidate**
+- active base seed: **412 / 481 source-verified (85.7%)**; **69 candidate**
 - supplemental jurisdiction/relationship research: **161 / 161 source-verified (100.0%)**
 
 Canonical current audit state includes:
@@ -158,13 +164,14 @@ coverage/venue-entry-verification-v1.tsv
 coverage/broad-category-verification-v1.tsv
 coverage/targeted-residual-verification-v1.tsv
 coverage/targeted-residual-verification-v2.tsv
+coverage/targeted-residual-verification-v3.tsv
 coverage/master-005-evidence-coverage-v1.tsv
 coverage/master-005-completion-gate-v1.tsv
 ```
 
 ## Current completion decision
 
-The terminology master remains **not complete**. The remaining **75 terms** must be reviewed rather than automatically promoted.
+The terminology master remains **not complete**. The remaining **69 terms** must be reviewed rather than automatically promoted.
 
 The next work is to **continue targeted residual cleanup** across the remaining base-seed categories, prioritizing the clearest defensible HORSE/BREED/VENUE/RTYPE/ENTRY residuals before the deliberately weak edge cases. Deliberately weak RUN, EQUIP, TRAIN and cross-category edge cases remain visible until stronger evidence or a cleaner modeling decision exists.
 
