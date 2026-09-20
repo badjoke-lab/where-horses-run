@@ -10,15 +10,15 @@ This directory is the non-public working area for the worldwide horse-racing ter
 
 The working dictionary currently contains **642 racing terms/concepts**.
 
-- **504 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
-- **138 terms still need verification, scope correction, splitting/merging, or removal.**
+- **507 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
+- **135 terms still need verification, scope correction, splitting/merging, or removal.**
 - The already researched jurisdiction-specific additions are **161/161 verified**.
 - The core highest-priority terminology set is **203/203 verified**.
 - Public glossary publication is still disabled while the remaining terms are cleaned up.
 
-The latest residual pass closed two defensible EQUIP/TRAIN issues without forcing the weak ones. `Pre-parade` is now source-verified from current Jockey Club material, while `Bike/Racebike` was retired into the canonical `Sulky` Concept because USTA explicitly identifies the racebike as the sulky.
+The latest residual pass closed five defensible EQUIP/TRAIN issues without forcing the weak ones. `Pre-parade`, `Barefoot`, `Gate schooling` and `Layoff` are now source-verified from current Jockey Club, UET, NYRA and HISA material, while `Bike/Racebike` was retired into the canonical `Sulky` Concept because USTA explicitly identifies the racebike as the sulky.
 
-EQUIP is now **27/29 source-verified (93.1%)**; only `Blinders` and `Barefoot` remain candidate. TRAIN is **20/26 source-verified (76.9%)**; `Breeze`, `Gate schooling`, `Qualifying trial`, `Cool down`, `Layoff` and `Freshened` remain under review.
+EQUIP is now **28/29 source-verified (96.6%)**; only `Blinders` remains candidate. TRAIN is **22/26 source-verified (84.6%)**; `Breeze`, `Qualifying trial`, `Cool down` and `Freshened` remain under review.
 
 RUN remains **42/44 source-verified (95.5%)** with only `Jump` and `Hold-up horse` deliberately unresolved. Weak residual labels are kept visible instead of being promoted for percentage gain.
 
@@ -83,17 +83,17 @@ Across the three focused RUN bundles, **21 additional RUN Concepts were source-v
 Audits: `coverage/equipment-training-verification-v1.tsv`, `coverage/equipment-training-residual-v1.tsv`  
 Sources: `sources/equipment-training-sources-v1.tsv` plus existing authority evidence.
 
-Wave 1 verified **20** base Concepts: 13 equipment terms and 7 training/pre-race terms. Residual cleanup then verified `Pre-parade` and retired `Bike/Racebike` into `Sulky`.
+Wave 1 verified **20** base Concepts: 13 equipment terms and 7 training/pre-race terms. Residual cleanup then verified `Pre-parade`, `Barefoot`, `Gate schooling` and `Layoff`, and retired `Bike/Racebike` into `Sulky`.
 
-EQUIP is **27/29 verified (93.1%)** and TRAIN is **20/26 verified (76.9%)**. The remaining weak labels stay candidate until stronger authority evidence or a cleaner modeling decision exists.
+EQUIP is **28/29 verified (96.6%)** and TRAIN is **22/26 verified (84.6%)**. The remaining weak labels stay candidate until stronger authority evidence or a cleaner modeling decision exists.
 
-Across the lower-priority cleanup passes, **190 base-dictionary terms have been newly verified and 15 duplicate/malformed rows have been removed**.
+Across the lower-priority cleanup passes, **193 base-dictionary terms have been newly verified and 15 duplicate/malformed rows have been removed**.
 
 ## Evidence state
 
-- all Concepts: **504 / 642 source-verified (78.5%)**; **138 candidate**
+- all Concepts: **507 / 642 source-verified (79.0%)**; **135 candidate**
 - core highest-priority set: **203 / 203 source-verified (100.0%)**
-- active base seed: **343 / 481 source-verified (71.3%)**; **138 candidate**
+- active base seed: **346 / 481 source-verified (71.9%)**; **135 candidate**
 - supplemental jurisdiction/relationship research: **161 / 161 source-verified (100.0%)**
 
 Canonical current audit state includes:
@@ -119,7 +119,7 @@ coverage/master-005-completion-gate-v1.tsv
 
 ## Current completion decision
 
-The terminology master remains **not complete**. The remaining **138 terms** must be reviewed rather than automatically promoted.
+The terminology master remains **not complete**. The remaining **135 terms** must be reviewed rather than automatically promoted.
 
 The next broad cleanup target is **horse / breeding / participant roles**, followed by venue/entry and the remaining race type/surface/distance/weight candidates. Weak EQUIP/TRAIN and RUN edge cases remain visible for later evidence-driven resolution rather than blocking progress on clearer categories.
 
