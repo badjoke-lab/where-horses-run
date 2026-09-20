@@ -13,9 +13,9 @@ This addendum creates a parallel glossary knowledge lane. It does not supersede 
 Plain-language state:
 
 ```text
-Working dictionary: 635 terms/concepts
+Working dictionary: 629 terms/concepts
 Meaning-level source verified: 594
-Still under review: 41
+Still under review: 35
 Highest-priority core terms: 203/203 verified
 Jurisdiction-specific research additions: 161/161 verified
 Public glossary publication: disabled
@@ -53,6 +53,7 @@ Targeted residual wave 5: complete — 6 RTYPE/ENTRY/ROLE/VENUE/TRAIN Concepts v
 Targeted residual wave 6: complete — 5 verified + 1 duplicate merge across SURF/WEIGHT/TRAIN/ROLE
 Targeted residual resolution wave 7: complete — 5 duplicate/malformed candidate Concepts retired
 Targeted residual resolution wave 8: complete — 2 SURF canonicals verified + generic Daylight saving time retired
+Targeted residual resolution wave 9: complete — 6 vague/derived/generic/malformed Concepts retired
 Next: continue targeted residual cleanup across remaining base-seed categories
 Later: GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
 ```
@@ -102,6 +103,7 @@ The remaining task is to clean the lower-priority base dictionary. This does **n
 - Targeted residual wave 6: **5 verified + 1 retired merge** — Claiming allowance, Breeze, Gate schooling, Layoff and Track announcer verified; duplicate `Grass` merged into `Turf`.
 - Targeted residual resolution wave 7: **5 retired merges** — Debutant → First-time starter, Female family → Family, Corner → Turn, Counterclockwise → Anti-clockwise, and unsupported RO result-code row → Ran out.
 - Targeted residual resolution wave 8: **2 verified + 1 retired context** — Frozen → `Freezing`, Snow-covered → `Snow`, and generic Daylight saving time retired under Time zone context.
+- Targeted residual resolution wave 9: **6 retired contexts/malformed rows** — Qualification, Kilometre, Weight rise, Weight drop, American odds and Commentator removed from the active Concept set.
 
 ### Residual edge-case pass
 
@@ -185,6 +187,12 @@ This pass corrected and verified the current USTA track-condition labels `Freezi
 
 SURF is now **59/62 source-verified (95.2%)** and MEET is **37/37 (100%)**. Whole-master coverage rises through both evidence-backed verification and semantic cleanup rather than automatic promotion.
 
+### Targeted residual resolution wave 9
+
+This pass retired `Qualification`, `Kilometre`, `Weight rise`, `Weight drop`, `American odds` and `Commentator` from the active Concept set. The underlying racing semantics remain represented by `Eligibility`, `Metre`, `Weight carried`, `Odds` and `Track announcer` where appropriate; the retired rows were vague, derived, generic or malformed.
+
+WEIGHT, BET and ROLE are now **100% source-verified in the active Concept set**. ENTRY is **29/30 (96.7%)** and DIST **18/20 (90.0%)**. The pass again raises quality by pruning bad seed modeling rather than promoting weak evidence.
+
 Authority/audit files now include:
 
 ```text
@@ -233,39 +241,40 @@ data/glossary-master/coverage/targeted-residual-verification-v5.tsv
 data/glossary-master/coverage/targeted-residual-verification-v6.tsv
 data/glossary-master/coverage/targeted-residual-resolution-v7.tsv
 data/glossary-master/coverage/targeted-residual-resolution-v8.tsv
+data/glossary-master/coverage/targeted-residual-resolution-v9.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
 
 Current observed state:
 
-- all Concepts: **594/635 source-verified (93.5%)**, 41 candidate;
+- all Concepts: **594/629 source-verified (94.4%)**, 35 candidate;
 - core highest-priority set: **203/203 source-verified (100.0%)**;
-- active base seed: **433/474 source-verified (91.4%)**, 41 candidate;
+- active base seed: **433/468 source-verified (92.5%)**, 35 candidate;
 - supplemental jurisdiction/relationship research: **161/161 source-verified (100.0%)**;
 - DISC: **16/17 source-verified (94.1%)**;
 - RTYPE: **106/111 source-verified (95.5%)**;
-- ENTRY: **29/31 source-verified (93.5%)**;
+- ENTRY: **29/30 source-verified (96.7%)**;
 - HORSE: **27/33 source-verified (81.8%)**;
 - BREED: **15/21 source-verified (71.4%)**;
-- ROLE: **30/31 source-verified (96.8%)**;
+- ROLE: **30/30 source-verified (100.0%)**;
 - VENUE: **39/42 source-verified (92.9%)**;
 - SURF: **59/62 source-verified (95.2%)**;
-- DIST: **18/21 source-verified (85.7%)**;
-- WEIGHT: **32/34 source-verified (94.1%)**;
+- DIST: **18/20 source-verified (90.0%)**;
+- WEIGHT: **32/32 source-verified (100.0%)**;
 - RUN: **42/44 source-verified (95.5%)**;
 - EQUIP: **27/29 source-verified (93.1%)**;
 - TRAIN: **24/26 source-verified (92.3%)**;
 - MEET: **37/37 source-verified (100.0%)**;
 - RESULT: **27/27 source-verified (100.0%)**;
-- BET: **38/39 source-verified (97.4%)**;
+- BET: **38/38 source-verified (100.0%)**;
 - WELF: **18/18 source-verified (100.0%)**;
-- retired/merged Concept rows: **27**;
+- retired/merged Concept rows: **33**;
 - abbreviations/codes: **38/38 source-verified**.
 
 ## What happens next
 
-The remaining **41 terms** continue through targeted residual review rather than another percentage-driven blanket promotion:
+The remaining **35 terms** continue through targeted residual review rather than another percentage-driven blanket promotion:
 
 ```text
 largest residual groups: VENUE / HORSE / BREED / RTYPE
@@ -274,7 +283,7 @@ largest residual groups: VENUE / HORSE / BREED / RTYPE
 -> rerun evidence/readiness gate
 ```
 
-`GLOSSARY-MASTER-005` remains **HOLD — not complete**. A 93.5% verified master with 41 unresolved seed Concepts is not ready to advance.
+`GLOSSARY-MASTER-005` remains **HOLD — not complete**. A 94.4% verified master with 35 unresolved seed Concepts is not ready to advance.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
@@ -303,9 +312,9 @@ The current public glossary remains disposable content. There is no old-record m
 
 ```text
 Current Work ID: GLOSSARY-MASTER-005
-Working dictionary: 635 terms
+Working dictionary: 629 terms
 Verified: 594
-Still under review: 41
+Still under review: 35
 Next subject group: continue targeted residual cleanup across remaining base-seed categories
 MASTER-006: blocked until the evidence/readiness gate passes
 Public implementation: deferred
