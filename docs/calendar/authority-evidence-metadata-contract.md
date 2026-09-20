@@ -130,7 +130,16 @@ The shared authority applies these rules consistently to official rolling observ
 - targeted correction/withdrawal/invalidation is applied only to its declared field/detail target;
 - successful-verification provenance does not advance merely because a later attempt failed;
 - reviewed observations pass through the same acceptance/rank authority and cannot promote beyond their evidence-derived rank.
+- empty strings and omitted race fields are not evidence of absence and do not erase accepted values during ordinary observations;
+- partial race-row observations preserve established row order and unrelated accepted rows;
+- targeted field corrections/invalidation operate on the named field only; unrelated canonical detail evidence remains retained even when the resulting public rank falls below A;
+- explicit failed acquisition attempts cannot replace supporting provenance, advance successful-verification timestamps, or reattribute retained detail rows to the failed source;
+- correction evidence consumed by the authority is retained in `evidence_changes`.
+
+Canonical detail is an evidence container, not itself a promise of A/A+ publication. A targeted correction may leave partial retained detail while the meeting's evidence-derived rank falls to B/B+/C; publication remains rank/policy gated.
 
 Meeting-level withdrawal/invalidation remains outside this acceptance helper and requires an explicit removal workflow; Wave 3 does not silently delete canonical meetings.
 
-Acquisition completion is evaluated independently of retained rank. In particular, an A+ canonical meeting can coexist with a current `retry_required` disposition when the present acquisition cycle fails.
+Acquisition completion is evaluated independently of retained rank and considers an explicit current `acquisition_attempt` before terminal rank. In particular, an A+ canonical meeting can coexist with a current `retry_required` disposition when the present acquisition cycle fails.
+
+Legacy canonical rebuild writers are quarantined from ordinary production use after Wave 3. They require the explicit recovery-only environment flag `WHR_ALLOW_LEGACY_CANONICAL_WRITE=1`; pipeline-v1 promotion delegates canonical acceptance to the shared authority.

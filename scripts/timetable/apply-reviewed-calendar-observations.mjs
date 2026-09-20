@@ -1,6 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { attachPublicationSnapshotV1 } from './calendar-authority-metadata.mjs';
+import {
+  attachPublicationSnapshotV1,
+  validateCalendarAuthorityMetadataV1,
+} from './calendar-authority-metadata.mjs';
 import { deriveBestAvailableRank } from './best-available-rank.mjs';
 import { acceptCanonicalObservationV1 } from './canonical-acceptance.mjs';
 
@@ -225,7 +228,8 @@ for (const record of reviewedById.values()) {
   const previousDetail = canonicalDetailsById.get(record.meeting_id) ?? null;
   const reviewedRows = Array.isArray(record.timetable_rows) ? record.timetable_rows : [];
   const reviewedEvidenceRank = deriveBestAvailableRank(record, reviewedRows);
-  if (rank(record.capability_rank) > rank(reviewedEvidenceRank)) {
+  const hasReviewedEvidenceChanges = (record.evidence_changes ?? []).length > 0;
+  if (!hasReviewedEvidenceChanges && rank(record.capability_rank) > rank(reviewedEvidenceRank)) {
     throw new Error(`reviewed observation rank exceeds its evidence-derived rank for ${record.meeting_id}: declared=${record.capability_rank} evidence=${reviewedEvidenceRank}`);
   }
 
@@ -243,8 +247,11 @@ for (const record of reviewedById.values()) {
     last_race_time_local: record.last_race_time_local ?? reviewedRows.at(-1)?.post_time_local ?? null,
     source_trace: reviewedSourceTrace(previous, record),
     freshness: reviewedFreshness(previous, record, generatedAt),
+    ...('acquisition_attempt' in record ? { acquisition_attempt: structuredClone(record.acquisition_attempt) } : {}),
+    ...(record.evidence_support ? { evidence_support: structuredClone(record.evidence_support) } : {}),
+    ...(record.evidence_changes ? { evidence_changes: structuredClone(record.evidence_changes) } : {}),
   };
-  const candidateDetail = ['A', 'A+'].includes(reviewedEvidenceRank) && reviewedRows.length
+  const candidateDetail = reviewedRows.length
     ? {
         meeting_id: candidateMeeting.meeting_id,
         country_id: candidateMeeting.country_id,
@@ -255,16 +262,30 @@ for (const record of reviewedById.values()) {
         capability_rank: reviewedEvidenceRank,
         source_trace: candidateMeeting.source_trace,
         freshness: candidateMeeting.freshness,
+        ...(record.evidence_support ? { evidence_support: structuredClone(record.evidence_support) } : {}),
+        ...(record.evidence_changes ? { evidence_changes: structuredClone(record.evidence_changes) } : {}),
         timetable_rows: reviewedRows,
         summary_note: 'Frozen human-reviewed official race programme observation.',
       }
     : null;
+
+  const reviewedAuthorityMetadata = Object.fromEntries(
+    ['acquisition_attempt', 'evidence_support', 'evidence_changes']
+      .filter((key) => key in record)
+      .map((key) => [key, record[key]]),
+  );
+  const reviewedMetadataErrors = validateCalendarAuthorityMetadataV1(
+    reviewedAuthorityMetadata,
+    `reviewed:${record.meeting_id}`,
+  );
+  if (reviewedMetadataErrors.length) throw new Error(reviewedMetadataErrors.join('; '));
 
   const accepted = acceptCanonicalObservationV1({
     previousMeeting: previous,
     previousDetail,
     candidateMeeting,
     candidateDetail,
+    ...('acquisition_attempt' in record ? { acquisitionAttempt: record.acquisition_attempt } : {}),
     evidenceChanges: record.evidence_changes ?? [],
   });
   const meeting = accepted.meeting;
@@ -296,7 +317,10 @@ for (const record of reviewedById.values()) {
       ? 'B+'
       : meeting.first_race_time_local ? 'B' : 'C';
   }
-  const minimumReviewedPublicRank = capRank(reviewedEvidenceRank, ceiling);
+  const minimumReviewedPublicRank = capRank(
+    hasReviewedEvidenceChanges ? meeting.capability_rank : reviewedEvidenceRank,
+    ceiling,
+  );
   if (rank(desiredPublicRank) < rank(minimumReviewedPublicRank)) {
     throw new Error(`reviewed data cannot satisfy policy-projected minimum rank for ${record.meeting_id}`);
   }
@@ -383,11 +407,13 @@ const finalPublicDetailsById = new Map((finalPublicDetails.details ?? []).map((r
 for (const record of reviewedById.values()) {
   const reviewedRows = Array.isArray(record.timetable_rows) ? record.timetable_rows : [];
   const reviewedEvidenceRank = deriveBestAvailableRank(record, reviewedRows);
+  const hasReviewedEvidenceChanges = (record.evidence_changes ?? []).length > 0;
   const meeting = finalCanonicalById.get(record.meeting_id);
   const publicMeeting = finalPublicById.get(record.meeting_id);
   const policy = choosePolicy(record.authority_id, policyDataset);
-  const minimumPublicRank = capRank(reviewedEvidenceRank, policy.max_public_rank ?? 'C');
-  if (!meeting || rank(meeting.capability_rank) < rank(reviewedEvidenceRank)) {
+  const minimumCanonicalRank = hasReviewedEvidenceChanges ? meeting?.capability_rank ?? 'C' : reviewedEvidenceRank;
+  const minimumPublicRank = capRank(minimumCanonicalRank, policy.max_public_rank ?? 'C');
+  if (!meeting || (!hasReviewedEvidenceChanges && rank(meeting.capability_rank) < rank(reviewedEvidenceRank))) {
     throw new Error(`reviewed canonical evidence was not preserved for ${record.meeting_id}`);
   }
   if (!publicMeeting || rank(publicMeeting.effective_public_rank) < rank(minimumPublicRank)) {

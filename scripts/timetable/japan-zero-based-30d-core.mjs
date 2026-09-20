@@ -43,7 +43,12 @@ const JAPAN_ACQUISITION_PROFILE = Object.freeze({
   supported_observation_ranks: ['C', 'B', 'B+', 'A', 'A+'],
 });
 
-export function classifyJapanAcquisitionCompletion({ capabilityRank, outcome = null, reason = null }) {
+export function classifyJapanAcquisitionCompletion({
+  capabilityRank,
+  outcome = null,
+  reason = null,
+  acquisitionAttempt = undefined,
+}) {
   const status = outcome === 'details_pending'
     ? 'details_pending'
     : outcome === 'acquisition_failed'
@@ -57,6 +62,7 @@ export function classifyJapanAcquisitionCompletion({ capabilityRank, outcome = n
       status,
       ...(reason ? { reason } : {}),
     },
+    ...(acquisitionAttempt !== undefined ? { acquisition_attempt: acquisitionAttempt } : {}),
   };
   return classifyAcquisitionCompletion(record, JAPAN_ACQUISITION_PROFILE);
 }
@@ -292,15 +298,18 @@ async function inspectWithRetry(adapter, meeting, attempts, retryDelayMs) {
     if (!isRetryable(result) || attempt === attempts) break;
     if (retryDelayMs) await new Promise((resolve) => setTimeout(resolve, retryDelayMs));
   }
-  if (isPending(result)) return { outcome: 'details_pending', reason: result.reason ?? result.status };
-  if (isFailure(result) || !result) return { outcome: 'acquisition_failed', reason: result?.reason ?? result?.status ?? 'empty_detail_response' };
-  if (result.status === 'conflict') return { outcome: 'conflict', reason: result.reason };
-  if (result.status !== 'ok' || !result.meeting) return { outcome: 'acquisition_failed', reason: result.reason ?? `unexpected_status:${result.status}` };
-  return { outcome: null, meeting: result.meeting };
+  const acquisitionAttempt = result?.acquisition_attempt ?? result?.meeting?.acquisition_attempt;
+  const attemptMetadata = acquisitionAttempt !== undefined ? { acquisition_attempt: acquisitionAttempt } : {};
+  if (isPending(result)) return { outcome: 'details_pending', reason: result.reason ?? result.status, ...attemptMetadata };
+  if (isFailure(result) || !result) return { outcome: 'acquisition_failed', reason: result?.reason ?? result?.status ?? 'empty_detail_response', ...attemptMetadata };
+  if (result.status === 'conflict') return { outcome: 'conflict', reason: result.reason, ...attemptMetadata };
+  if (result.status !== 'ok' || !result.meeting) return { outcome: 'acquisition_failed', reason: result.reason ?? `unexpected_status:${result.status}`, ...attemptMetadata };
+  return { outcome: null, meeting: result.meeting, ...attemptMetadata };
 }
 
-function ensureOfficialScheduleRow({ officialMeeting, checkedAt, canonicalMap, publicMap }) {
-  const previousCanonical = canonicalMap.get(officialMeeting.meeting_id);
+function ensureOfficialScheduleRow({ officialMeeting, checkedAt, canonicalMap, details, publicMap }) {
+  const previousCanonical = canonicalMap.get(officialMeeting.meeting_id) ?? null;
+  const previousDetail = details.get(officialMeeting.meeting_id) ?? null;
   if (previousCanonical) {
     if (!publicMap.has(officialMeeting.meeting_id)) {
       publicMap.set(officialMeeting.meeting_id, {
@@ -313,13 +322,20 @@ function ensureOfficialScheduleRow({ officialMeeting, checkedAt, canonicalMap, p
   }
 
   const scheduleOnly = safeMeeting({ ...officialMeeting, timetable_rows: [] }, checkedAt);
-  canonicalMap.set(scheduleOnly.meeting_id, scheduleOnly);
-  publicMap.set(scheduleOnly.meeting_id, {
-    ...scheduleOnly,
-    effective_public_rank: 'C',
-    max_public_rank: 'C',
+  const accepted = acceptCanonicalObservationV1({
+    previousMeeting: previousCanonical,
+    previousDetail,
+    candidateMeeting: scheduleOnly,
+    candidateDetail: null,
   });
-  return 'C';
+  canonicalMap.set(scheduleOnly.meeting_id, accepted.meeting);
+  if (accepted.detail) details.set(scheduleOnly.meeting_id, accepted.detail);
+  publicMap.set(scheduleOnly.meeting_id, {
+    ...accepted.meeting,
+    effective_public_rank: accepted.meeting.capability_rank,
+    max_public_rank: accepted.meeting.capability_rank,
+  });
+  return accepted.meeting.capability_rank;
 }
 
 /** Official discovery completes before canonical/public state is read or consulted. */
@@ -372,14 +388,22 @@ export async function runJapanZeroBased30d({
     }
     const inspected = await inspectWithRetry(adapters[officialMeeting.acquisition_group], officialMeeting, attempts, retryDelayMs);
     if (inspected.outcome) {
-      const publicRank = ensureOfficialScheduleRow({ officialMeeting, checkedAt, canonicalMap, publicMap });
+      const publicRank = ensureOfficialScheduleRow({ officialMeeting, checkedAt, canonicalMap, details, publicMap });
       const retainedCanonical = canonicalMap.get(officialMeeting.meeting_id);
+      const observedScheduleRank = deriveJapanBestAvailableRank(
+        safeMeeting({ ...officialMeeting, timetable_rows: [] }, checkedAt, retainedCanonical),
+        [],
+      );
       const acquisitionCompletion = classifyJapanAcquisitionCompletion({
-        capabilityRank: retainedCanonical.capability_rank,
+        capabilityRank: observedScheduleRank,
         outcome: inspected.outcome,
         reason: inspected.reason,
+        acquisitionAttempt: inspected.acquisition_attempt,
       });
-      const retained = retainCurrentAcquisitionStateV1(retainedCanonical, { acquisitionCompletion });
+      const retained = retainCurrentAcquisitionStateV1(retainedCanonical, {
+        acquisitionCompletion,
+        ...(inspected.acquisition_attempt !== undefined ? { acquisitionAttempt: inspected.acquisition_attempt } : {}),
+      });
       canonicalMap.set(officialMeeting.meeting_id, retained.meeting);
       reconciliations.push({
         meeting_id: officialMeeting.meeting_id,
@@ -394,8 +418,11 @@ export async function runJapanZeroBased30d({
     }
 
     const candidate = safeMeeting({ ...officialMeeting, ...inspected.meeting }, checkedAt, previousCanonical);
-    const acquisitionCompletion = classifyJapanAcquisitionCompletion({ capabilityRank: candidate.capability_rank });
-    const candidateDetail = ['A', 'A+'].includes(candidate.capability_rank)
+    const acquisitionCompletion = classifyJapanAcquisitionCompletion({
+      capabilityRank: candidate.capability_rank,
+      acquisitionAttempt: inspected.acquisition_attempt,
+    });
+    const candidateDetail = (inspected.meeting.timetable_rows ?? []).length
       ? detailRecord(candidate, inspected.meeting.timetable_rows, checkedAt)
       : null;
     const accepted = acceptCanonicalObservationV1({
@@ -404,6 +431,7 @@ export async function runJapanZeroBased30d({
       candidateMeeting: candidate,
       candidateDetail,
       acquisitionCompletion,
+      ...(inspected.acquisition_attempt !== undefined ? { acquisitionAttempt: inspected.acquisition_attempt } : {}),
       evidenceChanges: candidate.evidence_changes ?? [],
     });
     const normalized = accepted.meeting;

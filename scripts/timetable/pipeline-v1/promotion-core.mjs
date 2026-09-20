@@ -1,7 +1,5 @@
-import {
-  mergeEvidenceSupportV1,
-  validateCalendarAuthorityMetadataV1,
-} from '../calendar-authority-metadata.mjs';
+import { validateCalendarAuthorityMetadataV1 } from '../calendar-authority-metadata.mjs';
+import { acceptCanonicalObservationV1 } from '../canonical-acceptance.mjs';
 
 const RANK_ORDER = new Map([
   ['C', 0],
@@ -171,11 +169,12 @@ function makeFreshness(record, review) {
   };
 }
 
-function makeMeeting(record, authoritySource, inputPath, review, previous) {
+function makeMeeting(record, authoritySource, inputPath, review) {
   return {
     meeting_id: record.meeting_id,
     country_id: record.country_id,
     authority_id: record.authority_id,
+    racing_system_id: record.racing_system_id,
     racecourse_id: record.racecourse_id,
     date: record.date,
     timezone: record.timezone,
@@ -185,18 +184,14 @@ function makeMeeting(record, authoritySource, inputPath, review, previous) {
     last_race_time_local: record.last_race_time_local,
     source_trace: makeSourceTrace(record, authoritySource, inputPath),
     freshness: makeFreshness(record, review),
-    ...('acquisition_attempt' in record ? { acquisition_attempt: structuredClone(record.acquisition_attempt) } : {}),
-    ...('acquisition_completion' in record ? { acquisition_completion: structuredClone(record.acquisition_completion) } : {}),
-    ...('evidence_support' in record ? {
-      evidence_support: mergeEvidenceSupportV1(previous?.evidence_support, record.evidence_support),
-    } : previous?.evidence_support ? { evidence_support: structuredClone(previous.evidence_support) } : {}),
+    ...('evidence_support' in record ? { evidence_support: structuredClone(record.evidence_support) } : {}),
     ...('evidence_changes' in record ? { evidence_changes: structuredClone(record.evidence_changes) } : {}),
-    notes: record.notes || null
+    notes: record.notes || null,
   };
 }
 
-function makeDetail(record, authoritySource, inputPath, review, previous) {
-  if (!['A', 'A+'].includes(record.capability_rank)) return null;
+function makeDetail(record, authoritySource, inputPath, review) {
+  if (!(record.timetable_rows ?? []).length) return null;
   return {
     meeting_id: record.meeting_id,
     country_id: record.country_id,
@@ -207,21 +202,19 @@ function makeDetail(record, authoritySource, inputPath, review, previous) {
     capability_rank: record.capability_rank,
     source_trace: makeSourceTrace(record, authoritySource, inputPath),
     freshness: makeFreshness(record, review),
-    ...('evidence_support' in record ? {
-      evidence_support: mergeEvidenceSupportV1(previous?.evidence_support, record.evidence_support),
-    } : previous?.evidence_support ? { evidence_support: structuredClone(previous.evidence_support) } : {}),
+    ...('evidence_support' in record ? { evidence_support: structuredClone(record.evidence_support) } : {}),
     ...('evidence_changes' in record ? { evidence_changes: structuredClone(record.evidence_changes) } : {}),
     timetable_rows: record.timetable_rows.map((row) => ({
       label: row.label,
       post_time_local: row.post_time_local,
-      race_name: row.race_name ?? null,
-      distance_m: row.distance_m ?? null,
-      surface: row.surface ?? null,
-      course_label: row.course_label ?? null,
+      ...(row.race_name ? { race_name: row.race_name } : {}),
+      ...(row.distance_m != null ? { distance_m: row.distance_m } : {}),
+      ...(row.surface ? { surface: row.surface } : {}),
+      ...(row.course_label ? { course_label: row.course_label } : {}),
       metadata_status: metadataStatus(record.confidence),
-      source_label: null
+      source_label: null,
     })),
-    summary_note: record.notes || null
+    summary_note: record.notes || null,
   };
 }
 
@@ -316,16 +309,27 @@ export function promoteApprovedCandidateV1({
     assertIdentityCollision(existingMeeting, record, 'canonical meeting');
     assertIdentityCollision(existingDetails.get(record.meeting_id), record, 'canonical meeting detail');
 
-    if (existingMeeting && rankIsLower(record.capability_rank, existingMeeting.capability_rank)) {
-      if (promotionMode !== 'corrective_downgrade') {
-        throw new Error(`${record.candidate_id} rank regression ${existingMeeting.capability_rank} -> ${record.capability_rank} is not allowed in normal promotion`);
-      }
+    const candidateMeeting = makeMeeting(record, authoritySource, inputPath, review);
+    const candidateDetail = makeDetail(record, authoritySource, inputPath, review);
+    const accepted = acceptCanonicalObservationV1({
+      previousMeeting: existingMeeting ?? null,
+      previousDetail: existingDetails.get(record.meeting_id) ?? null,
+      candidateMeeting,
+      candidateDetail,
+      ...('acquisition_completion' in record ? { acquisitionCompletion: record.acquisition_completion } : {}),
+      ...('acquisition_attempt' in record ? { acquisitionAttempt: record.acquisition_attempt } : {}),
+      explicitCorrection: promotionMode === 'corrective_downgrade',
+      evidenceChanges: record.evidence_changes ?? [],
+    });
+
+    if (promotionMode === 'corrective_downgrade'
+      && existingMeeting
+      && rankIsLower(accepted.meeting.capability_rank, existingMeeting.capability_rank)) {
       downgradedMeetingIds.push(record.meeting_id);
     }
 
-    promotedMeetings.push(makeMeeting(record, authoritySource, inputPath, review, existingMeeting));
-    const detail = makeDetail(record, authoritySource, inputPath, review, existingDetails.get(record.meeting_id));
-    if (detail) promotedDetails.push(detail);
+    promotedMeetings.push(accepted.meeting);
+    if (accepted.detail) promotedDetails.push(accepted.detail);
     else if (existingDetails.has(record.meeting_id)) removedDetailIds.push(record.meeting_id);
   }
 

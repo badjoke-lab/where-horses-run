@@ -63,6 +63,35 @@ export function classifyAcquisitionCompletion(record, profile) {
   }
 
   const detailStatus = record?.detail_observation?.status ?? null;
+  const attemptStatus = record?.acquisition_attempt?.status ?? null;
+
+  if (attemptStatus && attemptStatus !== 'success') {
+    if (attemptStatus === 'pending_publication') {
+      return {
+        disposition: 'pending_publication',
+        observed_rank: observedRank,
+        technical_capability_rank: technicalRank,
+        higher_rank_open: true,
+        reason: `The explicit current acquisition attempt is pending publication (${attemptStatus}).`,
+      };
+    }
+    if (attemptStatus === 'not_applicable') {
+      return {
+        disposition: 'not_applicable',
+        observed_rank: observedRank,
+        technical_capability_rank: technicalRank,
+        higher_rank_open: false,
+        reason: 'The explicit current acquisition attempt was not applicable.',
+      };
+    }
+    return {
+      disposition: attemptStatus === 'implementation_gap' ? 'implementation_gap' : 'retry_required',
+      observed_rank: observedRank,
+      technical_capability_rank: technicalRank,
+      higher_rank_open: true,
+      reason: `The explicit current acquisition attempt did not complete successfully (${attemptStatus}).`,
+    };
+  }
 
   if (PENDING_DETAIL_STATUSES.has(detailStatus)) {
     return {
