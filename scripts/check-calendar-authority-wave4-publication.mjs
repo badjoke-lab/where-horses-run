@@ -274,7 +274,9 @@ assert.doesNotMatch(reviewedSource, /publicDetailFromCanonical/, 'reviewed suppl
 assert.match(reviewedSource, /source_id: previous\?\.source_trace\?\.source_id \?\? record\.source_id/, 'reviewed reconciliation must retain the canonical source identity used by publication readiness');
 
 const japanSource = fs.readFileSync('scripts/timetable/run-japan-zero-based-30d.mjs', 'utf8');
-assert.match(japanSource, /excludedMeetingIds: excludedPublicIds/, 'Japan absence reconciliation must feed explicit removals into the shared producer');
+assert.match(japanSource, /excludedMeetingIds: excludedPublicIds/, 'Japan must route only explicitly authorized removals into the shared producer');
+const japanSafetySource = fs.readFileSync('scripts/timetable/japan-mother-set-safety.mjs', 'utf8');
+assert.doesNotMatch(japanSafetySource, /canReconcileMeetingAbsence\(row, sourceCompletenessRows\) \? removed/, 'mother-set completeness must not authorize public removal');
 
 const exclusionSource = fs.readFileSync('scripts/timetable/enforce-reviewed-calendar-exclusions.mjs', 'utf8');
 assert.match(exclusionSource, /excludedMeetingIds: excludedIds/, 'reviewed exclusions must feed explicit removals into the shared producer');
