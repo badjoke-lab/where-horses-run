@@ -4,6 +4,11 @@ import path from 'node:path';
 const BASE_PATH = 'data/static/calendar-readiness-registry.json';
 const SUPPLEMENTS = Object.freeze([
   {
+    key: 'live_official',
+    path: 'data/static/calendar-readiness-live-official-v1.json',
+    schemaVersion: 'calendar-readiness-live-official-v1',
+  },
+  {
     key: 'kra_calendar_plan',
     path: 'data/static/calendar-readiness-kra-calendar-plan-v1.json',
     schemaVersion: 'calendar-readiness-kra-calendar-plan-v1',
