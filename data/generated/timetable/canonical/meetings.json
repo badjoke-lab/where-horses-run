@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-21T15:24:55.644Z",
+  "generated_at": "2026-09-21T15:26:32.985Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -12550,7 +12550,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-21T15:24:55.644Z",
+        "generated_at": "2026-09-21T15:26:32.985Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12579,7 +12579,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-21T15:24:55.644Z",
+        "generated_at": "2026-09-21T15:26:32.985Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12784,7 +12784,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-21T15:24:55.644Z",
+        "generated_at": "2026-09-21T15:26:32.985Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -17368,7 +17368,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-21",
-        "generated_at": "2026-09-21T14:49:44.309Z",
+        "generated_at": "2026-09-21T15:26:12.238Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
@@ -17397,7 +17397,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-21",
-        "generated_at": "2026-09-21T14:49:50.077Z",
+        "generated_at": "2026-09-21T15:26:16.245Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -17434,7 +17434,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-21",
-        "generated_at": "2026-09-21T14:49:50.077Z",
+        "generated_at": "2026-09-21T15:26:16.245Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -17691,6 +17691,42 @@
       "racing_system_id": "japan-nar-system"
     },
     {
+      "meeting_id": "sorec-casablanca-anfa-racecourse-2026-09-21",
+      "country_id": "morocco",
+      "authority_id": "sorec",
+      "racing_system_id": "sorec-racing-information-system",
+      "timezone": "Africa/Casablanca",
+      "racecourse_id": "casablanca-anfa-racecourse",
+      "date": "2026-09-21",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "sorec-programme-reunion",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.sorec-galop.ma/pages/programmeReunion/programmeReunion.jsf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-21",
+        "generated_at": "2026-09-21T15:26:11.243Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
+      }
+    },
+    {
       "meeting_id": "tjk-bursa-racecourse-2026-09-21",
       "country_id": "turkey",
       "authority_id": "turkiye-jokey-kulubu",
@@ -17794,7 +17830,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-21",
-        "generated_at": "2026-09-21T14:49:44.309Z",
+        "generated_at": "2026-09-21T15:26:12.238Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
@@ -17823,7 +17859,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-21",
-        "generated_at": "2026-09-21T14:49:50.077Z",
+        "generated_at": "2026-09-21T15:26:16.245Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -18291,7 +18327,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-21",
-        "generated_at": "2026-09-21T14:49:44.309Z",
+        "generated_at": "2026-09-21T15:26:12.238Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
@@ -18319,18 +18355,18 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-21",
-        "generated_at": "2026-09-21T12:45:14.932Z",
+        "generated_at": "2026-09-21T15:25:12.615Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "notes": "Approved from the pinned official HKJC September 2026 fixture artifact. Meeting identity only; race times and programme rows remain unclaimed.",
       "racing_system_id": "hong-kong-hkjc-system",
       "acquisition_completion": {
-        "disposition": "retry_required",
-        "observed_rank": "B",
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A+",
         "technical_capability_rank": "A+",
-        "higher_rank_open": true,
-        "reason": "Higher-detail acquisition did not complete safely (source_error)."
+        "higher_rank_open": false,
+        "reason": "The current acquisition cycle completed without a pending/retry condition and no higher timetable rank exists."
       }
     },
     {
@@ -18357,7 +18393,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-21",
-        "generated_at": "2026-09-21T14:49:50.077Z",
+        "generated_at": "2026-09-21T15:26:16.245Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -18626,6 +18662,42 @@
       }
     },
     {
+      "meeting_id": "sorec-khemisset-racecourse-2026-09-23",
+      "country_id": "morocco",
+      "authority_id": "sorec",
+      "racing_system_id": "sorec-racing-information-system",
+      "timezone": "Africa/Casablanca",
+      "racecourse_id": "khemisset-racecourse",
+      "date": "2026-09-23",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "sorec-programme-reunion",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.sorec-galop.ma/pages/programmeReunion/programmeReunion.jsf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-21",
+        "generated_at": "2026-09-21T15:26:11.243Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "acquisition_completion": {
+        "disposition": "implementation_gap",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "A lower rank was produced without an explicit higher-detail evaluation result."
+      }
+    },
+    {
       "meeting_id": "tjk-elazig-racecourse-2026-09-23",
       "country_id": "turkey",
       "authority_id": "turkiye-jokey-kulubu",
@@ -18757,7 +18829,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-21",
-        "generated_at": "2026-09-21T14:49:50.077Z",
+        "generated_at": "2026-09-21T15:26:16.245Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -19106,7 +19178,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-21",
-        "generated_at": "2026-09-21T14:49:50.077Z",
+        "generated_at": "2026-09-21T15:26:16.245Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -19143,7 +19215,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-21",
-        "generated_at": "2026-09-21T14:49:50.077Z",
+        "generated_at": "2026-09-21T15:26:16.245Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -19486,7 +19558,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-21",
-        "generated_at": "2026-09-21T14:49:50.077Z",
+        "generated_at": "2026-09-21T15:26:16.245Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -19904,16 +19976,17 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-21",
-        "generated_at": "2026-09-21T14:47:04.720Z",
+        "generated_at": "2026-09-21T15:25:12.615Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "acquisition_completion": {
-        "disposition": "retry_required",
+        "disposition": "complete_current_best_available",
         "observed_rank": "C",
         "technical_capability_rank": "A+",
-        "higher_rank_open": true,
-        "reason": "Higher-detail acquisition did not complete safely (source_error)."
+        "evaluated_capability_rank": "A+",
+        "higher_rank_open": false,
+        "reason": "The currently applicable higher-detail acquisition path was explicitly evaluated through the registered technical capability rank."
       }
     },
     {
@@ -19940,7 +20013,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-21",
-        "generated_at": "2026-09-21T14:49:50.077Z",
+        "generated_at": "2026-09-21T15:26:16.245Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -25413,7 +25486,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-21",
-        "generated_at": "2026-09-21T14:49:50.077Z",
+        "generated_at": "2026-09-21T15:26:16.245Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
