@@ -16,17 +16,17 @@ function response(url, body, status = 200) {
 const pages = new Map([
   ['https://www.keiba.go.jp/jranet/topics/2025/index.html', `
     <html><body>
-      <a href="/jranet/topics/2025/n082601.html">金沢競馬の開催取り止めについて(8/26・9/2)</a>
-      <a href="/jranet/topics/2025/n073001.html">門別競馬の開催取り止めについて(7/30)</a>
+      <a href="/jranet/topics/2025/n000111.html">金沢競馬の開催取り止めについて(8/26・9/2)</a>
+      <a href="/jranet/topics/2025/n000108.html">門別競馬の開催取り止めについて(7/30)</a>
       <a href="/jranet/topics/2025/n072801.html">金沢競馬第4競走および第5競走の取り止めについて(7/28)</a>
       <a href="/jranet/topics/2025/n999999.html">地方競馬のお知らせ</a>
     </body></html>
   `],
-  ['https://www.keiba.go.jp/jranet/topics/2025/n082601.html', `
+  ['https://www.keiba.go.jp/jranet/topics/2025/n000111.html', `
     <html><body><h1>金沢競馬の開催取り止めについて(8/26・9/2)</h1>
     <p>金沢競馬は8月26日および9月2日の開催を取り止めます。</p></body></html>
   `],
-  ['https://www.keiba.go.jp/jranet/topics/2025/n073001.html', `
+  ['https://www.keiba.go.jp/jranet/topics/2025/n000108.html', `
     <html><body><h1>門別競馬の開催取り止めについて(7/30)</h1>
     <p>門別競馬は7月30日の開催を取り止めます。</p></body></html>
   `],
