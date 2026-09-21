@@ -20,7 +20,7 @@ The latest pass is **final targeted residual wave 13**. It source-verified histo
 
 `GLOSSARY-MASTER-005` is now complete: **614/614 active Concepts are source-verified (100%)**, with **0 candidates**. Active base-seed coverage is **453/453 (100%)**; all 18 categories have no active candidate Concepts. Public publication is still deferred because evidence completion does not replace the separate `GLOSSARY-MASTER-006` search-intent / coverage / readiness review.
 
-`GLOSSARY-MASTER-006` wave 3 is now in progress. The separate search-intent layer contains **512 reviewed non-canonical query records**: **406 EN/JA definition queries covering all 203 P0 Concepts**, **40 EN/JA comparison queries covering all 20 current reviewed Concept relations**, plus 33 abbreviation and 33 racecard-reading queries. Comparison wording preserves each reviewed relation boundary rather than flattening every pair into synonymy. Definition coverage is intentionally complete only for P0; lower-priority terms will be added by user value rather than blanket generation. The MASTER-006 gate remains **HOLD** because regional-usage, how/why and translation intents plus worldwide coverage/readiness audits are still incomplete.
+`GLOSSARY-MASTER-006` wave 4 is now in progress. The separate search-intent layer contains **540 reviewed non-canonical query records**: **406 EN/JA definition queries covering all 203 P0 Concepts**, **40 EN/JA comparison queries covering all 20 current reviewed Concept relations**, **28 EN/JA regional-usage queries covering 14 curated source-verified regional label/use cases**, plus 33 abbreviation and 33 racecard-reading queries. Comparison and regional wording preserve reviewed semantic/jurisdiction boundaries; regional coverage is deliberately curated rather than blanket-generated. Definition coverage is intentionally complete only for P0. The MASTER-006 gate remains **HOLD** because how/why and translation intents plus worldwide coverage/readiness audits are still incomplete.
 
 Wave 9 is a semantic pruning pass: derived comparisons and generic display conventions remain contextual rather than standalone racing Concepts.
 
@@ -235,6 +235,7 @@ coverage/master-005-completion-gate-v1.tsv
 search/search-intent-policy-v1.tsv
 search/search-queries-v1.tsv
 search/search-queries-comparison-v1.tsv
+search/search-queries-regional-v1.tsv
 coverage/master-006-search-intent-coverage-v1.tsv
 coverage/master-006-readiness-v1.tsv
 ```
@@ -243,7 +244,7 @@ coverage/master-006-readiness-v1.tsv
 
 `GLOSSARY-MASTER-005` is **complete** for the current active Concept master: **614/614 source-verified, 0 candidate**. The completion gate passes after explicit resolution of every residual seed Concept.
 
-`GLOSSARY-MASTER-006` is **in progress**. Waves 1-3 establish the separate query/policy layer, complete EN/JA direct-definition search coverage for all P0 Concepts, and cover all 20 current reviewed Concept relations with EN/JA comparison intents. Next work is regional/translation/how-why coverage, French abbreviation/racecard review, selective lower-priority definition coverage, and jurisdiction/system readiness auditing; evidence truth is reopened only if that review exposes a real semantic/source defect.
+`GLOSSARY-MASTER-006` is **in progress**. Waves 1-4 establish the separate query/policy layer, complete EN/JA direct-definition search coverage for all P0 Concepts, cover all 20 current reviewed Concept relations with EN/JA comparison intents, and seed 14 high-value source-verified regional label/use cases with 28 EN/JA regional-usage intents. Next work is translation/how-why coverage, French abbreviation/racecard review, selective lower-priority definition coverage, and jurisdiction/system readiness auditing; evidence truth is reopened only if that review exposes a real semantic/source defect.
 
 Public implementation remains deferred until MASTER-006 passes.
 
