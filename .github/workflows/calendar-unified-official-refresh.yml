@@ -108,6 +108,7 @@ jobs:
           node scripts/check-tjk-fetch-failure-retention.mjs
           node scripts/check-ireland-hri-fixtures-adapter.mjs
           node scripts/check-peru-monterrico-adapter.mjs
+          node scripts/check-meeting-presence-contract.mjs
           node scripts/check-peru-fetch-failure-retention.mjs
       - name: Exercise Japan mother-set safety contracts
         run: |
@@ -127,6 +128,10 @@ jobs:
           node scripts/check-saga-official-30d.mjs
       - name: Exercise reviewed Calendar preservation
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
+      - name: Exercise confirmed non-running public suppression
+        run: |
+          node scripts/timetable/apply-meeting-presence-dispositions.mjs
+          node scripts/check-confirmed-non-running-publication.mjs
       - name: Validate site build
         run: npm run build
       - name: Check diff formatting
@@ -258,6 +263,7 @@ jobs:
           node scripts/check-kra-window-bounds.mjs
           node scripts/check-ireland-hri-fixtures-adapter.mjs
           node scripts/check-peru-monterrico-adapter.mjs
+          node scripts/check-meeting-presence-contract.mjs
       - name: Refresh Japan official mother set and best available detail
         run: |
           node scripts/timetable/run-japan-zero-based-30d.mjs \
@@ -265,6 +271,10 @@ jobs:
             --scope="${{ steps.scope.outputs.scope }}"
       - name: Re-apply frozen reviewed Calendar observations after Japan
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
+      - name: Apply explicit meeting presence dispositions after Japan
+        run: |
+          node scripts/timetable/apply-meeting-presence-dispositions.mjs
+          node scripts/check-confirmed-non-running-publication.mjs
       - name: Validate Japan generated public site state
         run: npm run build
       - name: Persist Japan official state before non-Japan collection
@@ -283,6 +293,8 @@ jobs:
               --execution-date="${{ steps.scope.outputs.japan_date }}" \
               --scope="${{ steps.scope.outputs.scope }}"
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
+            node scripts/timetable/apply-meeting-presence-dispositions.mjs
+            node scripts/check-confirmed-non-running-publication.mjs
             npm run build
           }
 
@@ -436,6 +448,10 @@ jobs:
             --timezone=America/Lima
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
+      - name: Apply explicit meeting presence dispositions
+        run: |
+          node scripts/timetable/apply-meeting-presence-dispositions.mjs
+          node scripts/check-confirmed-non-running-publication.mjs
       - name: Validate generated public site state
         run: npm run build
       - name: Persist remaining canonical and public rolling state
@@ -534,6 +550,8 @@ jobs:
               --racing-system-id=peru-monterrico-programme-system \
               --timezone=America/Lima
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
+            node scripts/timetable/apply-meeting-presence-dispositions.mjs
+            node scripts/check-confirmed-non-running-publication.mjs
             npm run build
           }
 
