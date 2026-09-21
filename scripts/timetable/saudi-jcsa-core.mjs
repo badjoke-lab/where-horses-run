@@ -75,6 +75,34 @@ export function parseJcsaVenueSeason(html,{venueKey}={}) {
   };
 }
 
+export function parseJcsaVenueFixtures(html,{venueKey}={}) {
+  const text=jcsaVisibleText(html);
+  const venue=SAUDI_JCSA_VENUES.find(v=>v.season_key===venueKey);
+  if(!venue) throw new Error('Unknown JCSA venue key '+venueKey);
+  if(!new RegExp(venue.name,'i').test(text)) throw new Error('JCSA '+venueKey+' venue fingerprint missing');
+
+  const fixtures=[];
+  const meetingRx=/Meeting\s+(\d+)/gi;
+  const matches=[...text.matchAll(meetingRx)];
+  for(let i=0;i<matches.length;i+=1){
+    const start=matches[i].index ?? 0;
+    const end=i+1<matches.length ? (matches[i+1].index ?? text.length) : Math.min(text.length,start+500);
+    const segment=text.slice(start,Math.min(end,start+500));
+    const date=parseEnglishDate(segment);
+    if(!date) continue;
+    fixtures.push({
+      meeting_no:Number(matches[i][1]),
+      date,
+      racecourse_id:venue.racecourse_id,
+      venue_key:venueKey,
+      title:segment.slice(0,180).trim(),
+    });
+  }
+  const unique=new Map();
+  for(const fixture of fixtures) unique.set(fixture.date,fixture);
+  return [...unique.values()].sort((a,b)=>a.date.localeCompare(b.date));
+}
+
 function parseTime(value){
   const m=String(value).trim().match(/^(\d{1,2}):(\d{2})\s*(am|pm)$/i);
   if(!m) return null;
@@ -177,6 +205,44 @@ export function buildJcsaMeetingRecord({date,venue,raceHtml,checkedAt}) {
     technical_capability_rank:'A',
   };
   return {...record,capability_rank};
+}
+
+
+export function buildJcsaFixtureRecord({date,venue,meetingNo,checkedAt,officialUrl}) {
+  const record={
+    candidate_id:'saudi-arabia-'+venue.racecourse_id+'-'+date,
+    meeting_id:'saudi-arabia-'+venue.racecourse_id+'-'+date,
+    country_id:'saudi-arabia',
+    authority_id:SAUDI_JCSA_AUTHORITY_ID,
+    racing_system_id:SAUDI_JCSA_SYSTEM_ID,
+    racecourse_id:venue.racecourse_id,
+    date,
+    timezone:SAUDI_JCSA_TIMEZONE,
+    first_race_time_local:null,
+    last_race_time_local:null,
+    timetable_rows:[],
+    source:{source_id:SAUDI_JCSA_SOURCE_ID,official_url:officialUrl,checked_at:checkedAt,extraction_method:'official_jcsa_venue_fixture'},
+    route_id:'jcsa-venue-fixture-to-date-race-page',
+    confidence:'high',
+    review_status:'needs_review',
+    detail_observation:{
+      status:'not_published',
+      evaluated_capability_rank:'A',
+      race_count:0,
+      programme_url:SAUDI_JCSA_RACES_BASE+date.replaceAll('-',''),
+      meeting_no:meetingNo,
+    },
+    acquisition_attempt:{
+      attempted_at:checkedAt,
+      status:'pending_publication',
+      source_id:SAUDI_JCSA_SOURCE_ID,
+      route_id:'jcsa-venue-fixture-to-date-race-page',
+      error_code:null,
+    },
+  };
+  const e=evidence(officialUrl,checkedAt);
+  record.evidence_support={meeting_identity:e,meeting_date:e};
+  return {...record,capability_rank:deriveBestAvailableRank(record,[])};
 }
 
 export function resolveJcsaVenueForDate(date,seasons){
