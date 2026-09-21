@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-meeting-details-v0",
-  "generated_at": "2026-09-21T11:59:47.408Z",
+  "generated_at": "2026-09-21T12:01:37.062Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -25378,7 +25378,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-21T11:59:47.408Z",
+        "generated_at": "2026-09-21T12:01:37.062Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
@@ -25482,7 +25482,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-21T11:59:47.408Z",
+        "generated_at": "2026-09-21T12:01:37.062Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
@@ -35623,8 +35623,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-20",
-        "generated_at": "2026-09-20T16:04:45.862Z",
+        "last_checked_date": "2026-09-21",
+        "generated_at": "2026-09-21T12:01:14.190Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -35723,8 +35723,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-20",
-        "generated_at": "2026-09-20T16:04:50.297Z",
+        "last_checked_date": "2026-09-21",
+        "generated_at": "2026-09-21T12:01:18.345Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -35786,8 +35786,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-20",
-        "generated_at": "2026-09-20T16:04:50.297Z",
+        "last_checked_date": "2026-09-21",
+        "generated_at": "2026-09-21T12:01:18.345Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -36602,8 +36602,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-20",
-        "generated_at": "2026-09-20T16:04:45.862Z",
+        "last_checked_date": "2026-09-21",
+        "generated_at": "2026-09-21T12:01:14.190Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -36658,8 +36658,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-20",
-        "generated_at": "2026-09-20T16:04:50.297Z",
+        "last_checked_date": "2026-09-21",
+        "generated_at": "2026-09-21T12:01:18.345Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -37839,8 +37839,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-20",
-        "generated_at": "2026-09-20T16:04:45.862Z",
+        "last_checked_date": "2026-09-21",
+        "generated_at": "2026-09-21T12:01:14.190Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -37909,6 +37909,106 @@
       "summary_note": "Current official rolling-window race programme observation."
     },
     {
+      "meeting_id": "hkjc-happy-valley-racecourse-2026-09-23",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racecourse_id": "happy-valley-racecourse",
+      "date": "2026-09-23",
+      "timezone": "Asia/Hong_Kong",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "hkjc-racecard-public-timetable",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/09/23&Racecourse=HV&RaceNo=1",
+        "source_label": "Hong Kong Jockey Club",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-21",
+        "generated_at": "2026-09-21T12:00:02.300Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "18:40",
+          "race_name": "NAM FUNG HANDICAP",
+          "distance_m": 1650,
+          "surface": "Turf",
+          "course_label": "C Course"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "19:10",
+          "race_name": "DEEP WATER BAY HANDICAP",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "C Course"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "19:40",
+          "race_name": "WONG CHUK HANG HANDICAP",
+          "distance_m": 1650,
+          "surface": "Turf",
+          "course_label": "C Course"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "20:10",
+          "race_name": "DEEP WATER BAY HANDICAP",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "C Course"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "20:40",
+          "race_name": "THE HONG KONG COUNTRY CLUB CHALLENGE CUP (HANDICAP)",
+          "distance_m": 1650,
+          "surface": "Turf",
+          "course_label": "C Course"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "21:10",
+          "race_name": "ISLAND HANDICAP",
+          "distance_m": 1000,
+          "surface": "Turf",
+          "course_label": "C Course"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "21:45",
+          "race_name": "MOUNT BUTLER HANDICAP",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "C Course"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "22:15",
+          "race_name": "MOUNT BUTLER HANDICAP",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "C Course"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "22:50",
+          "race_name": "TAI HANG HANDICAP",
+          "distance_m": 1800,
+          "surface": "Turf",
+          "course_label": "C Course"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
       "meeting_id": "ireland-ireland--listowel-2026-09-23",
       "country_id": "ireland",
       "authority_id": "horse-racing-ireland",
@@ -37927,8 +38027,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-20",
-        "generated_at": "2026-09-20T16:04:50.297Z",
+        "last_checked_date": "2026-09-21",
+        "generated_at": "2026-09-21T12:01:18.345Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -38790,8 +38890,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-20",
-        "generated_at": "2026-09-20T16:04:50.297Z",
+        "last_checked_date": "2026-09-21",
+        "generated_at": "2026-09-21T12:01:18.345Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -39311,6 +39411,69 @@
       "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
     },
     {
+      "meeting_id": "ireland-ireland--dundalk-2026-09-25",
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "racecourse_id": "ireland--dundalk",
+      "date": "2026-09-25",
+      "timezone": "Europe/Dublin",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "hri-racecards-month",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.hri.ie/racecards",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-21",
+        "generated_at": "2026-09-21T12:01:18.345Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "17:30",
+          "race_name": "The Friday Night Lights At Dundalk Claiming Maiden"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "18:00",
+          "race_name": "The View Restaurant At Dundalk Stadium Apprentice Handicap"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "18:30",
+          "race_name": "The Irish Stallion Farms EBF Fillies Maiden"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "19:00",
+          "race_name": "The Irishinjuredjockeys.com Handicap"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "19:30",
+          "race_name": "The BAR 1 Betting Diamond Stakes (Listed)"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "20:00",
+          "race_name": "The Bookings Open For Christmas Parties At Dundalk Stadium Handicap"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "20:30",
+          "race_name": "The Celebrate Your Special Occasion At Dundalk Stadium Handicap"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
       "meeting_id": "ireland-ireland--listowel-2026-09-25",
       "country_id": "ireland",
       "authority_id": "horse-racing-ireland",
@@ -39329,16 +39492,51 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-20",
-        "generated_at": "2026-09-20T16:04:50.297Z",
+        "last_checked_date": "2026-09-21",
+        "generated_at": "2026-09-21T12:01:18.345Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
       "timetable_rows": [
         {
           "label": "Race 1",
+          "post_time_local": "13:40",
+          "race_name": "The John J. Galvin Maiden Hurdle"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:15",
+          "race_name": "The MCG Ladies Handicap Hurdle"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "14:50",
+          "race_name": "The Trant Goodwill Stakes Handicap Hurdle"
+        },
+        {
+          "label": "Race 4",
           "post_time_local": "15:25",
           "race_name": "The Ballymore Handicap Hurdle (Listed)"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "16:00",
+          "race_name": "The Guinness Listowel Mares Handicap Hurdle"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "16:30",
+          "race_name": "The Paud, Sarah & Mary Fitzmaurice Memorial Handicap Steeplechase"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "17:05",
+          "race_name": "The Shanahan Power Irish EBF Mares (Pro/Am) Flat Race"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "17:40",
+          "race_name": "The Listowel Races Supporters Club Failte Abhaile (Q.R.) Race In Memory Of Pat Scanlon"
         }
       ],
       "summary_note": "Current official rolling-window race programme observation."
@@ -39686,8 +39884,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-20",
-        "generated_at": "2026-09-20T16:04:50.297Z",
+        "last_checked_date": "2026-09-21",
+        "generated_at": "2026-09-21T12:01:18.345Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -40178,8 +40376,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-20",
-        "generated_at": "2026-09-20T16:04:50.297Z",
+        "last_checked_date": "2026-09-21",
+        "generated_at": "2026-09-21T12:01:18.345Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -41738,8 +41936,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-09-20",
-        "generated_at": "2026-09-20T16:04:50.297Z",
+        "last_checked_date": "2026-09-21",
+        "generated_at": "2026-09-21T12:01:18.345Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
