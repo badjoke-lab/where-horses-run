@@ -108,6 +108,7 @@ jobs:
           node scripts/check-tjk-fetch-failure-retention.mjs
           node scripts/check-ireland-hri-fixtures-adapter.mjs
           node scripts/check-peru-monterrico-adapter.mjs
+          node scripts/check-saudi-jcsa-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-peru-fetch-failure-retention.mjs
       - name: Exercise Japan mother-set safety contracts
@@ -263,6 +264,7 @@ jobs:
           node scripts/check-kra-window-bounds.mjs
           node scripts/check-ireland-hri-fixtures-adapter.mjs
           node scripts/check-peru-monterrico-adapter.mjs
+          node scripts/check-saudi-jcsa-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
       - name: Refresh Japan official mother set and best available detail
         run: |
@@ -368,7 +370,7 @@ jobs:
           node scripts/timetable/run-kra-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/kra.json
-      - name: Collect TJK, SOREC, Chile, Ireland and Peru official windows
+      - name: Collect TJK, SOREC, Chile, Ireland, Peru and Saudi official windows
         run: |
           node scripts/timetable/run-tjk-current-best-available.mjs \
             --days="${{ steps.scope.outputs.days }}" \
@@ -385,6 +387,9 @@ jobs:
           node scripts/timetable/run-peru-monterrico-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/peru.json
+          node scripts/timetable/run-saudi-jcsa-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/saudi-arabia.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -395,7 +400,8 @@ jobs:
             --artifact=.calendar-unified/sorec.json \
             --artifact=.calendar-unified/chile.json \
             --artifact=.calendar-unified/ireland.json \
-            --artifact=.calendar-unified/peru.json
+            --artifact=.calendar-unified/peru.json \
+            --artifact=.calendar-unified/saudi-arabia.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -446,6 +452,12 @@ jobs:
             --authority-id=hipodromo-de-monterrico \
             --racing-system-id=peru-monterrico-programme-system \
             --timezone=America/Lima
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/saudi-arabia.json \
+            --country-id=saudi-arabia \
+            --authority-id=jockey-club-of-saudi-arabia \
+            --racing-system-id=saudi-arabia-jcsa-system \
+            --timezone=Asia/Riyadh
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
@@ -492,6 +504,9 @@ jobs:
             node scripts/timetable/run-peru-monterrico-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/peru.json
+            node scripts/timetable/run-saudi-jcsa-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/saudi-arabia.json
             node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --artifact=.calendar-unified/uae.json \
@@ -500,7 +515,8 @@ jobs:
               --artifact=.calendar-unified/sorec.json \
               --artifact=.calendar-unified/chile.json \
               --artifact=.calendar-unified/ireland.json \
-              --artifact=.calendar-unified/peru.json
+              --artifact=.calendar-unified/peru.json \
+              --artifact=.calendar-unified/saudi-arabia.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --country-id=hong-kong \
@@ -549,6 +565,12 @@ jobs:
               --authority-id=hipodromo-de-monterrico \
               --racing-system-id=peru-monterrico-programme-system \
               --timezone=America/Lima
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/saudi-arabia.json \
+              --country-id=saudi-arabia \
+              --authority-id=jockey-club-of-saudi-arabia \
+              --racing-system-id=saudi-arabia-jcsa-system \
+              --timezone=Asia/Riyadh
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
             node scripts/timetable/apply-meeting-presence-dispositions.mjs
             node scripts/check-confirmed-non-running-publication.mjs
