@@ -7,21 +7,21 @@
       "country_id": "japan",
       "system_id": "japan-jra-system",
       "authority_id": "jra",
-      "mode": "reviewed",
-      "automation_status": "candidate",
+      "mode": "automated",
+      "automation_status": "active",
       "whole_meeting_non_running": "supported",
       "postponement": "supported",
       "partial_race_policy": "never_promote_to_whole_meeting",
       "source_absence_policy": "absent_unconfirmed",
       "acquisition_failure_policy": "preserve_verified_state",
       "replacement_date_policy": "independent_meeting_only",
-      "evidence_source_family": "JRA News explicit meeting cancellation/postponement notices",
+      "evidence_source_family": "JRA monthly News index plus explicit meeting-cancellation articles",
       "evidence_urls": [
-        "https://www.jra.go.jp/news/"
+        "https://www.jra.go.jp/news/YYYYMM/"
       ],
       "example_evidence_url": "https://www.jra.go.jp/news/202609/092004.html",
       "reviewed_at": "2026-09-21",
-      "notes": "Explicit whole-meeting cancellation and substitute-date wording is proven on official JRA pages. A bounded whole-meeting parser now rejects race-only cancellation wording, but production remains reviewed until a stable official notice-discovery route is activated. Disappearance from programme/mother set never authorizes non-running."
+      "notes": "Production discovers bounded candidate notices from the official monthly JRA News index, parses only explicit whole-meeting cancellation wording, binds venue/date to an existing canonical meeting, rejects race-only cancellation wording, and fails closed on notice-fetch failure. Replacement dates remain independent meetings."
     },
     {
       "record_id": "japan-nar-system",
