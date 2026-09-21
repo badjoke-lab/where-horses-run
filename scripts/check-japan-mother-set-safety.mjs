@@ -44,7 +44,7 @@ const sourceRows = [
   { source_id: 'saga-keiba-official-calendar', completeness: 'complete' },
 ];
 assert.deepEqual(requiredMotherSetSourcesForMeeting(base), ['nar-monthly-convene-info', 'nankankeiba-south-kanto-calendar']);
-assert.equal(canReconcileMeetingAbsence(base, sourceRows), true);
+assert.equal(canReconcileMeetingAbsence(base, sourceRows), false, 'complete mother-set coverage is not negative meeting evidence');
 
 const cases = [
   ['iwatekeiba-official-calendar', { ...base, meeting_id: 'nar-morioka-racecourse-2026-09-07', racecourse_id: 'morioka-racecourse' }],
@@ -58,10 +58,10 @@ const cases = [
 ];
 for (const [sourceId, meeting] of cases) {
   assert.deepEqual(requiredMotherSetSourcesForMeeting(meeting), ['nar-monthly-convene-info', sourceId]);
-  assert.equal(canReconcileMeetingAbsence(meeting, sourceRows), true);
+  assert.equal(canReconcileMeetingAbsence(meeting, sourceRows), false);
   assert.equal(canReconcileMeetingAbsence(meeting, sourceRows.map((row) => row.source_id === sourceId ? { ...row, completeness: 'partial' } : row)), false);
 }
 assert.equal(requiredMotherSetSourcesForMeeting({ ...base, meeting_id: 'nar-kitami-racecourse-2026-09-05', racecourse_id: 'kitami-racecourse' }), null);
 assert.equal(canReconcileMeetingAbsence({ meeting_id: 'jra-nakayama-racecourse-2026-09-12', authority_id: 'jra', racecourse_id: 'nakayama-racecourse' }, sourceRows), false);
-assert.equal(canReconcileMeetingAbsence({ meeting_id: 'banei-obihiro-racecourse-2026-09-06', authority_id: 'banei-tokachi', racecourse_id: 'obihiro-racecourse' }, sourceRows), true);
+assert.equal(canReconcileMeetingAbsence({ meeting_id: 'banei-obihiro-racecourse-2026-09-06', authority_id: 'banei-tokachi', racecourse_id: 'obihiro-racecourse' }, sourceRows), false);
 console.log('JAPAN_MOTHER_SET_SAFETY: pass');
