@@ -92,7 +92,10 @@ export function parseNarConfirmedNonRunningHtml(html, {
     throw new Error('NAR non-running parser requires allowedDates');
   }
 
-  const title = plain(String(html).match(/<h[123]\b[^>]*>([\s\S]*?)<\/h[123]>/i)?.[1] ?? '');
+  const headingPattern = new RegExp(`^(${VENUE_PATTERN})競馬の開催(?:取り止め|中止)`);
+  const title = [...String(html).matchAll(/<h[123]\b[^>]*>([\s\S]*?)<\/h[123]>/gi)]
+    .map((match) => plain(match[1]))
+    .find((heading) => headingPattern.test(heading)) ?? '';
   const text = plain(html);
   const wholeMeeting = title.match(new RegExp(`^(${VENUE_PATTERN})競馬の開催(取り止め|中止)(?:について)?[（(]([^）)]+)[）)]`));
   if (!wholeMeeting) return [];
