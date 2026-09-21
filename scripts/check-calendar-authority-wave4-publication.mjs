@@ -276,7 +276,8 @@ assert.match(reviewedSource, /source_id: previous\?\.source_trace\?\.source_id \
 const japanSource = fs.readFileSync('scripts/timetable/run-japan-zero-based-30d.mjs', 'utf8');
 assert.match(japanSource, /excludedMeetingIds: excludedPublicIds/, 'Japan must route only explicitly authorized removals into the shared producer');
 const japanSafetySource = fs.readFileSync('scripts/timetable/japan-mother-set-safety.mjs', 'utf8');
-assert.doesNotMatch(japanSafetySource, /canReconcileMeetingAbsence\(row, sourceCompletenessRows\) \? removed/, 'mother-set completeness must not authorize public removal');
+assert.match(japanSafetySource, /export function canReconcileMeetingAbsence\(\) \{[\s\S]*?return false;/, 'absence compatibility hook must fail closed until explicit negative evidence exists');
+assert.doesNotMatch(japanSafetySource, /assessMotherSetCompleteness\(sourceCompletenessRows, required\)\.complete/, 'mother-set completeness must not authorize public removal');
 
 const exclusionSource = fs.readFileSync('scripts/timetable/enforce-reviewed-calendar-exclusions.mjs', 'utf8');
 assert.match(exclusionSource, /excludedMeetingIds: excludedIds/, 'reviewed exclusions must feed explicit removals into the shared producer');
