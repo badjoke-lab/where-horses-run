@@ -319,13 +319,15 @@ The programme now advances to `GLOSSARY-MASTER-006`.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
-Status: **current, wave 2 in progress**.
+Status: **current, wave 3 in progress**.
 
 This stage reviews definition/comparison/regional/how-why/translation/abbreviation/racecard-reading search intents, coverage gaps and user-facing readiness. It may reopen evidence work only when a real semantic/source gap is discovered. Public implementation planning remains deferred until this stage passes.
 
 Wave 1 established the non-canonical search layer and seeded 66 EN/JA abbreviation/racecard-reading queries.
 
-Wave 2 adds **406 EN/JA direct-definition queries covering all 203 P0 Concepts**, split across base and supplemental query files and validated against the active P0 set. The search registry now contains **472 reviewed records** in total.
+Wave 2 adds **406 EN/JA direct-definition queries covering all 203 P0 Concepts**, split across base and supplemental query files and validated against the active P0 set.
+
+Wave 3 adds **40 EN/JA comparison queries covering all 20 current reviewed Concept relations**. Query wording is relation-aware: regional counterparts are not promoted to global synonyms, narrower relations preserve direction, related terms remain non-identical, and contrast relations remain contrasts. The search registry now contains **512 reviewed records** in total.
 
 - `search/search-intent-policy-v1.tsv` — seven intent classes and publication/review rules;
 - `search/search-queries-v1.tsv` — 66 abbreviation/racecard-reading records;
@@ -335,7 +337,7 @@ Wave 2 adds **406 EN/JA direct-definition queries covering all 203 P0 Concepts**
 - `coverage/master-006-search-intent-coverage-v1.tsv` — explicit per-intent coverage/gaps;
 - `coverage/master-006-readiness-v1.tsv` — readiness criteria with the current decision **HOLD**.
 
-Comparison, regional usage, how/why and translation remain open. Lower-priority definition queries are not blanket-generated. The five French abbreviation records also remain for language-appropriate review. Domain breadth, jurisdiction/system breadth and multilingual/no-direct-equivalent presentation still require explicit readiness audits.
+Regional usage, how/why and translation remain open. Comparison coverage is complete for the current 20 reviewed Concept relations but may expand only when a new relation or explicit confusion boundary is itself reviewed. Lower-priority definition queries are not blanket-generated. The five French abbreviation records also remain for language-appropriate review. Domain breadth, jurisdiction/system breadth and multilingual/no-direct-equivalent presentation still require explicit readiness audits.
 
 ## Public implementation lane
 
@@ -362,7 +364,7 @@ Working dictionary: 614 terms
 Verified: 614
 Still under review: 0 active Concept candidates
 MASTER-005: complete
-Next subject group: comparison/regional/translation/how-why intents + domain/jurisdiction/language readiness
+Next subject group: regional/translation/how-why intents + French abbreviation/racecard review + domain/jurisdiction/language readiness
 Public implementation: deferred
 ```
 

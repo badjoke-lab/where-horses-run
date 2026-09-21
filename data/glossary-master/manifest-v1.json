@@ -121,19 +121,19 @@
     "master_005_completion":"complete"
   },
   "search_intent_layer": {
-    "status":"master006_wave2_partial",
+    "status":"master006_wave3_comparison_partial",
     "policy_file":"search/search-intent-policy-v1.tsv",
-    "query_files":["search/search-queries-v1.tsv","search/search-queries-definition-p0-base-a-v1.tsv","search/search-queries-definition-p0-base-b-v1.tsv","search/search-queries-definition-p0-supplemental-v1.tsv"],
+    "query_files":["search/search-queries-v1.tsv","search/search-queries-definition-p0-base-a-v1.tsv","search/search-queries-definition-p0-base-b-v1.tsv","search/search-queries-definition-p0-supplemental-v1.tsv","search/search-queries-comparison-v1.tsv"],
     "coverage_file":"coverage/master-006-search-intent-coverage-v1.tsv",
     "readiness_gate_file":"coverage/master-006-readiness-v1.tsv",
-    "query_count":472,
-    "reviewed_query_count":472,
-    "intent_counts":{"definition":406,"abbreviation":33,"racecard_reading":33},
+    "query_count":512,
+    "reviewed_query_count":512,
+    "intent_counts":{"definition":406,"comparison":40,"abbreviation":33,"racecard_reading":33},
     "definition_p0_concepts":203,
     "definition_p0_languages":["en","ja"],
-    "unseeded_intents":["comparison","regional_usage","how_why","translation"]
+    "unseeded_intents":["regional_usage","how_why","translation"]
   },
   "next_work_id":"GLOSSARY-MASTER-006",
-  "next_work":"continue_comparison_regional_translation_howwhy_and_worldwide_coverage_readiness_review",
+  "next_work":"continue_regional_translation_howwhy_french_code_and_worldwide_coverage_readiness_review",
   "public_implementation":"deferred"
 }
