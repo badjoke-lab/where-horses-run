@@ -7,6 +7,7 @@ const workflow = fs.readFileSync('.github/workflows/calendar-unified-official-re
 const orderedSteps = [
   'Refresh Japan official mother set and best available detail',
   'Re-apply frozen reviewed Calendar observations after Japan',
+  'Apply explicit meeting presence dispositions after Japan',
   'Validate Japan generated public site state',
   'Persist Japan official state before non-Japan collection',
   'Collect HKJC official window',
@@ -14,13 +15,14 @@ const orderedSteps = [
   'Collect KRA official window',
   'Collect TJK, SOREC, Chile, Ireland and Peru official windows',
   'Apply non-Japan official observations monotonically',
+  'Re-apply frozen reviewed Calendar observations',
   'Apply explicit meeting presence dispositions',
   'Persist remaining canonical and public rolling state',
 ];
 
 let previous = -1;
 for (const step of orderedSteps) {
-  const index = workflow.indexOf(`- name: ${step}`);
+  const index = workflow.indexOf(`- name: ${step}`, previous + 1);
   assert.notEqual(index, -1, `missing workflow step: ${step}`);
   assert.ok(index > previous, `workflow step out of order: ${step}`);
   previous = index;
