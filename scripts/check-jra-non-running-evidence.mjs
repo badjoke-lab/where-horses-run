@@ -22,6 +22,18 @@ const reservationNotice = parseJraConfirmedNonRunningHtml(`
 assert.equal(reservationNotice.length, 1);
 assert.equal(reservationNotice[0].meeting_id, 'jra-nakayama-racecourse-2026-09-21');
 
+const multiVenue = parseJraConfirmedNonRunningHtml(`
+<html><body>
+<h1>本日【2月8日（日曜）】の東京競馬および京都競馬は開催を中止します</h1>
+<p>本日【2月8日（日曜）】の東京競馬および京都競馬は、雪のため、開催を中止します。</p>
+<p>なお、本日の小倉競馬は第4レースを取りやめ、発走時刻を変更のうえ、開催します。</p>
+</body></html>
+`, { sourceUrl: 'https://www.jra.go.jp/news/202602/020802.html', checkedAt: '2026-09-21T00:00:00Z' });
+assert.deepEqual(multiVenue.map((row) => row.meeting_id), [
+  'jra-kyoto-racecourse-2026-02-08',
+  'jra-tokyo-racecourse-2026-02-08',
+]);
+
 const raceOnly = parseJraConfirmedNonRunningHtml(`
 <html><body>
 <h3>第4回中山第6日（9月20日（日曜））</h3>
