@@ -23,6 +23,9 @@ on:
       - 'scripts/timetable/**'
       - 'scripts/check-calendar-refresh-publication-boundaries.mjs'
       - 'scripts/check-calendar-live-source-readiness.mjs'
+      - 'scripts/check-calendar-non-running-evidence-registry.mjs'
+      - 'data/static/calendar-non-running-evidence-registry-v1.json'
+      - 'data/static/calendar-non-running-evidence-registry.schema.json'
       - 'scripts/check-kra-window-bounds.mjs'
       - 'scripts/check-japan-mother-set-safety.mjs'
       - 'scripts/check-japan-per-family-absence-reconciliation.mjs'
@@ -109,6 +112,7 @@ jobs:
           node scripts/check-ireland-hri-fixtures-adapter.mjs
           node scripts/check-peru-monterrico-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-peru-fetch-failure-retention.mjs
       - name: Exercise Japan mother-set safety contracts
         run: |
@@ -264,6 +268,7 @@ jobs:
           node scripts/check-ireland-hri-fixtures-adapter.mjs
           node scripts/check-peru-monterrico-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs
       - name: Refresh Japan official mother set and best available detail
         run: |
           node scripts/timetable/run-japan-zero-based-30d.mjs \
