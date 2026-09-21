@@ -12,6 +12,7 @@ on:
       - 'scripts/check-hkjc-non-running-evidence.mjs'
       - 'scripts/check-uae-era-non-running-evidence.mjs'
       - 'scripts/check-jra-non-running-evidence.mjs'
+      - 'scripts/check-jra-non-running-discovery.mjs'
       - 'scripts/check-banei-non-running-evidence.mjs'
       - 'data/static/calendar-non-running-evidence-registry-v1.json'
       - 'data/static/calendar-non-running-evidence-registry.schema.json'
@@ -62,4 +63,5 @@ jobs:
           node scripts/check-hkjc-non-running-evidence.mjs
           node scripts/check-uae-era-non-running-evidence.mjs
           node scripts/check-jra-non-running-evidence.mjs
+          node scripts/check-jra-non-running-discovery.mjs
           node scripts/check-banei-non-running-evidence.mjs
