@@ -142,6 +142,19 @@ for (const row of dispositionRows) {
   if (!seenIds.has(row.canonical_concept_id)) fail(`disposition canonical Concept ${row.canonical_concept_id} is not active`);
 }
 
+const abbreviationRelativePath = manifest.usage_layers?.abbreviations?.file;
+if (abbreviationRelativePath) {
+  const abbreviationPath = path.join(masterDir, abbreviationRelativePath);
+  const { rows: abbreviationRows } = readTsv(abbreviationPath);
+  for (const row of abbreviationRows) {
+    if (!seenIds.has(row.concept_id)) fail(`abbreviation ${row.abbreviation_id} references inactive Concept ${row.concept_id}`);
+    if (row.verification_status !== 'source_verified') fail(`abbreviation ${row.abbreviation_id} is not source_verified`);
+  }
+  if (manifest.usage_layers.abbreviations.row_count !== abbreviationRows.length) {
+    fail(`manifest abbreviation row_count=${manifest.usage_layers.abbreviations.row_count}, observed=${abbreviationRows.length}`);
+  }
+}
+
 const { rows: coverageRows } = readTsv(coveragePath);
 const allCoverage = coverageRows.find((row) => row.scope_type === 'all' && row.scope_id === 'ALL');
 if (!allCoverage) {
