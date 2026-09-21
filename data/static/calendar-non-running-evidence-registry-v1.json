@@ -47,21 +47,21 @@
       "country_id": "japan",
       "system_id": "japan-banei-system",
       "authority_id": "banei-tokachi",
-      "mode": "reviewed",
-      "automation_status": "candidate",
+      "mode": "automated",
+      "automation_status": "active",
       "whole_meeting_non_running": "supported",
       "postponement": "supported",
       "partial_race_policy": "never_promote_to_whole_meeting",
       "source_absence_policy": "absent_unconfirmed",
       "acquisition_failure_policy": "preserve_verified_state",
       "replacement_date_policy": "independent_meeting_only",
-      "evidence_source_family": "Banei Tokachi official TOPICS notices",
+      "evidence_source_family": "Banei Tokachi monthly TOPICS archive plus explicit cancellation articles",
       "evidence_urls": [
-        "https://www.banei-keiba.or.jp/tp_list.php"
+        "https://www.banei-keiba.or.jp/tp_list.php?wt=mon&wv=<month>"
       ],
       "example_evidence_url": "https://www.banei-keiba.or.jp/tp_detail.php?id=9659",
       "reviewed_at": "2026-09-21",
-      "notes": "Official Banei notices explicitly identify whole-meeting cancellations and can also identify race-only stoppages. A bounded TOPICS article parser now accepts whole-day/range cancellations and rejects partial-race or external-racing notices; production remains reviewed until stable official TOPICS discovery is activated."
+      "notes": "Production scans bounded official monthly TOPICS archive pages for cancellation-related candidate articles, accepts only whole-day/multi-day Banei cancellation evidence, rejects partial-race stoppages and external-racing notices, binds evidence to existing canonical meetings, and fails closed on archive/article fetch failure."
     },
     {
       "record_id": "hong-kong-hkjc-system",
