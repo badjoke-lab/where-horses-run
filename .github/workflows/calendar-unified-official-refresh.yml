@@ -129,7 +129,9 @@ jobs:
       - name: Exercise reviewed Calendar preservation
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Exercise confirmed non-running public suppression
-        run: node scripts/timetable/apply-meeting-presence-dispositions.mjs
+        run: |
+          node scripts/timetable/apply-meeting-presence-dispositions.mjs
+          node scripts/check-confirmed-non-running-publication.mjs
       - name: Validate site build
         run: npm run build
       - name: Check diff formatting
@@ -270,7 +272,9 @@ jobs:
       - name: Re-apply frozen reviewed Calendar observations after Japan
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions after Japan
-        run: node scripts/timetable/apply-meeting-presence-dispositions.mjs
+        run: |
+          node scripts/timetable/apply-meeting-presence-dispositions.mjs
+          node scripts/check-confirmed-non-running-publication.mjs
       - name: Validate Japan generated public site state
         run: npm run build
       - name: Persist Japan official state before non-Japan collection
@@ -290,6 +294,7 @@ jobs:
               --scope="${{ steps.scope.outputs.scope }}"
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
             node scripts/timetable/apply-meeting-presence-dispositions.mjs
+            node scripts/check-confirmed-non-running-publication.mjs
             npm run build
           }
 
@@ -444,7 +449,9 @@ jobs:
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
-        run: node scripts/timetable/apply-meeting-presence-dispositions.mjs
+        run: |
+          node scripts/timetable/apply-meeting-presence-dispositions.mjs
+          node scripts/check-confirmed-non-running-publication.mjs
       - name: Validate generated public site state
         run: npm run build
       - name: Persist remaining canonical and public rolling state
@@ -544,6 +551,7 @@ jobs:
               --timezone=America/Lima
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
             node scripts/timetable/apply-meeting-presence-dispositions.mjs
+            node scripts/check-confirmed-non-running-publication.mjs
             npm run build
           }
 
