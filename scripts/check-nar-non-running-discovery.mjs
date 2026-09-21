@@ -23,7 +23,7 @@ const pages = new Map([
     </body></html>
   `],
   ['https://www.keiba.go.jp/jranet/topics/2025/n000111.html', `
-    <html><body><h1>金沢競馬の開催取り止めについて(8/26・9/2)</h1>
+    <html><body><h1>JRAネット投票×地方競馬</h1><h2>お知らせ</h2><h3>金沢競馬の開催取り止めについて(8/26・9/2)</h3>
     <p>金沢競馬は8月26日および9月2日の開催を取り止めます。</p></body></html>
   `],
   ['https://www.keiba.go.jp/jranet/topics/2025/n000108.html', `
