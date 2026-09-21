@@ -26,6 +26,8 @@ on:
       - 'scripts/check-calendar-non-running-evidence-registry.mjs'
       - 'scripts/check-hkjc-non-running-evidence.mjs'
       - 'scripts/check-uae-era-non-running-evidence.mjs'
+      - 'scripts/check-jra-non-running-evidence.mjs'
+      - 'scripts/check-banei-non-running-evidence.mjs'
       - 'data/static/calendar-non-running-evidence-registry-v1.json'
       - 'data/static/calendar-non-running-evidence-registry.schema.json'
       - 'scripts/check-kra-window-bounds.mjs'
@@ -117,6 +119,8 @@ jobs:
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
           node scripts/check-uae-era-non-running-evidence.mjs
+          node scripts/check-jra-non-running-evidence.mjs
+          node scripts/check-banei-non-running-evidence.mjs
           node scripts/check-peru-fetch-failure-retention.mjs
       - name: Exercise Japan mother-set safety contracts
         run: |
@@ -275,6 +279,8 @@ jobs:
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
           node scripts/check-uae-era-non-running-evidence.mjs
+          node scripts/check-jra-non-running-evidence.mjs
+          node scripts/check-banei-non-running-evidence.mjs
       - name: Refresh Japan official mother set and best available detail
         run: |
           node scripts/timetable/run-japan-zero-based-30d.mjs \
