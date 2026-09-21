@@ -133,6 +133,21 @@ function classLabelFromSection(section) {
   return lines.find((line) => !ignored.some((pattern) => pattern.test(line)) && /[A-Za-z]/.test(line))?.slice(0, 120) ?? null;
 }
 
+
+export function detectUaeEraConfirmedNonRunning(html, { sourceUrl }) {
+  const route = officialRacecardRoute(sourceUrl);
+  if (!route) throw new Error('sourceUrl must be an official emiratesracing.com racecard HTTPS route');
+  const text = uaeEraDetailText(html);
+  const cancelled = /(?:^|\n)THIS MEETING HAS BEEN CANCELLED(?:\n|$)/i.test(text);
+  return {
+    confirmed_non_running: cancelled,
+    date: route.date,
+    race_number: route.race_number,
+    source_url: sourceUrl,
+    evidence_phrase: cancelled ? 'THIS MEETING HAS BEEN CANCELLED' : null,
+  };
+}
+
 export function discoverUaeEraRaceNumbers(html, date) {
   if (!validDate(date)) throw new Error('date must be YYYY-MM-DD');
   const escaped = date.replace(/-/g, '\\-');
