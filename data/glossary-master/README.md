@@ -2,36 +2,36 @@
 
 Status: active zero-based world racing terminology master  
 Authority: `docs/glossary/world-racing-terminology-master-spec.md`  
-Current work: `GLOSSARY-MASTER-005` — evidence and semantic refinement
+Current work: `GLOSSARY-MASTER-006` — search-intent / coverage / readiness review
 
 This directory is the non-public working area for the worldwide horse-racing terminology master. It is **not** consumed by current public glossary routes and does not authorize automatic publication.
 
 ## Plain-language progress
 
-The working dictionary currently contains **618 racing terms/concepts**.
+The working dictionary currently contains **614 racing terms/concepts**.
 
-- **611 terms have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
-- **7 terms still need verification, scope correction, splitting/merging, or removal.**
+- **614 / 614 active Concepts have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
+- **0 active Concepts remain under evidence/semantic review.**
 - The already researched jurisdiction-specific additions are **161/161 verified**.
 - The core highest-priority terminology set is **203/203 verified**.
-- Public glossary publication is still disabled while the remaining terms are cleaned up.
+- Public glossary publication remains disabled pending `GLOSSARY-MASTER-006` search-intent / coverage / readiness review.
 
-The latest pass is **targeted residual wave 12**. It source-verified **8** scoped Concepts and retired **4** out-of-scope, generic, derived or malformed rows. `Homebred`, `Breeding right`, `Nick`, `Outcross`, `Round course`, `Oval`, `Track bias` and `Cool down` are now verified. `Endurance racing`, generic `Cup race`, generic `Locally bred` and derived `Final fraction` were retired rather than forced into the public model.
+The latest pass is **final targeted residual wave 13**. It source-verified historical California `Cushion Track`, corrected `Hold-up horse` to authority-backed operational `Held up`, and verified the GB regulatory prize-money sense of `Stake`. It retired ambiguous `Grandsire`, `Stallion service`, generic `Jump`, and generic `Bonus` because their seed boundaries duplicated or conflated already modeled Concepts.
 
-The master is now **611/618 source-verified (98.9%)** with only **7 candidates**. Active base-seed coverage is **450/457 (98.5%)**. DISC, RTYPE, HORSE, VENUE, DIST and TRAIN now have no active candidate Concepts; the final unresolved queue is `Grandsire`, `Stallion service`, `Cushion Track`, `Jump`, `Hold-up horse`, `Bonus` and `Stake`.
+`GLOSSARY-MASTER-005` is now complete: **614/614 active Concepts are source-verified (100%)**, with **0 candidates**. Active base-seed coverage is **453/453 (100%)**; all 18 categories have no active candidate Concepts. Public publication is still deferred because evidence completion does not replace the separate `GLOSSARY-MASTER-006` search-intent / coverage / readiness review.
 
 Wave 9 is a semantic pruning pass: derived comparisons and generic display conventions remain contextual rather than standalone racing Concepts.
 
 ## Current master
 
-- Concepts: **618**
+- Concepts: **614**
 - categories: **18**
-- P0: **203** / P1: **291** / P2: **130** / P3: **18**
+- P0: **203** / P1: **280** / P2: **114** / P3: **17**
 - `public_ready=yes`: **0**
 - public runtime input: **false**
 - active Concept relations: **20**
 - relationship reviews: **15 discovered / 15 resolved / 0 open**
-- retired/merged Concept rows: **44**
+- retired/merged Concept rows: **48**
 
 ## Core source verification — complete
 
@@ -53,7 +53,7 @@ Verified **29** terms across horses, breeding, racing people, in-race expression
 The initial race-type/classification pass verified **15** terms. Broad-category wave 1 added `Selling race`, `Graded stakes`, and scoped British `Open race` / `Restricted race` Concepts. RTYPE is now **108/108 verified (100%)** after wave 12 retired generic `Cup race`.
 
 ### Surface and going terminology — broad current pass
-The initial surface-condition pass verified **10** terms. Later passes added product/surface-state terms, merged duplicate Grass into Turf, and wave 8 corrected/verified USTA `Freezing` and `Snow`. SURF is now **60/61 verified (98.4%)** after wave 12 verified `Track bias`; only `Cushion Track` remains candidate.
+The initial surface-condition pass verified **10** terms. Later passes added product/surface-state terms, merged duplicate Grass into Turf, and wave 8 corrected/verified USTA `Freezing` and `Snow`. SURF is now **61/61 verified (100%)** after wave 13 verified historical California `Cushion Track`.
 
 ### Distance and measurement terminology — broad current pass
 Broad-category and residual passes verified racing-specific distance and margin terms. Wave 9 retired generic derived `Kilometre` under `Metre`; DIST is now **19/19 verified (100%)** after wave 12 retired `Final fraction` as derived timing context under verified `Fractional time`.
@@ -68,7 +68,7 @@ The initial pass verified 6 terms and retired 1 duplicate. Residual cleanup late
 The initial pass verified 13 semantic Concepts and retired 2 duplicate code Concepts. Residual cleanup verified Relegation and False start. Wave 7 retired the unsupported `RO` abbreviation row into the verified `Ran out` event Concept, so RESULT is now **27/27 verified (100%)**.
 
 ### Prize and betting terminology — complete current pass
-The initial pass verified 28 Concepts and retired 3 duplicate regional wager Concepts. Residual cleanup verified Totalisator, Fractional odds and On the board. PRIZE remains **10/12 verified (83.3%)**; BET is now **38/38 verified (100%)** after wave 9 retired generic sportsbook `American odds` as contextual Odds presentation.
+The initial pass verified 28 Concepts and retired 3 duplicate regional wager Concepts. Residual cleanup verified Totalisator, Fractional odds and On the board. PRIZE is now **11/11 verified (100%)** after wave 13 retired generic `Bonus` and verified the GB regulatory `Stake` contribution sense; BET remains **38/38 verified (100%)**.
 
 ### Welfare, veterinary and safety terminology — complete current pass
 Verified **13** additional Concepts. WELF is **18/18 source-verified (100.0%)**. Definitions keep HISA/BHA/Racing Australia/IFHA-specific operational and reporting boundaries explicit.
@@ -83,7 +83,7 @@ Verified **7** additional Concepts and retired **1 duplicate Program Concept**.
 Audits: `coverage/run-trip-verification-v1.tsv`, `coverage/run-trip-verification-v2.tsv`, `coverage/run-trip-verification-v3.tsv`  
 Sources: `sources/run-trip-sources-v1.tsv` plus existing authority evidence.
 
-Across the three focused RUN bundles, **21 additional RUN Concepts were source-verified and 4 duplicate/label Concepts were retired**. RUN is **42/44 source-verified (95.5%)**, with only `Jump` and `Hold-up horse` deliberately unresolved.
+Across the three focused RUN bundles, **21 additional RUN Concepts were source-verified and 4 duplicate/label Concepts were retired**. RUN is **43/43 source-verified (100%)** after wave 13 retired polysemous generic `Jump` and corrected/verified `Hold-up horse` as operational `Held up`.
 
 ### Equipment / training terminology — current pass complete with residuals retained
 Audits: `coverage/equipment-training-verification-v1.tsv`, `coverage/equipment-training-residual-v1.tsv`  
@@ -161,6 +161,12 @@ Audit: `coverage/targeted-residual-resolution-v8.tsv`
 
 This pass verified **2** authority-backed SURF Concepts after canonical correction (`Freezing`, `Snow`) and retired generic `Daylight saving time` as non-independent racing context.
 
+### Final targeted residual wave 13 — MASTER-005 complete
+Audit: `coverage/targeted-residual-resolution-v13.tsv`  
+Sources: `sources/targeted-residual-sources-v13.tsv` plus existing authority evidence.
+
+This pass resolved the final **7** candidates: **3 source-verified** (`Cushion Track`, `Held up`, `Stake`) and **4 retired** (`Grandsire`, `Stallion service`, generic `Jump`, generic `Bonus`). The active Concept master is now **614/614 source-verified with 0 candidates**.
+
 ### Targeted residual wave 12 — complete current pass
 Audit: `coverage/targeted-residual-resolution-v12.tsv`  
 Sources: `sources/targeted-residual-sources-v12.tsv` plus existing authority evidence.
@@ -184,13 +190,13 @@ Audit: `coverage/targeted-residual-resolution-v9.tsv`
 
 This pass retired **6** vague, derived, generic or malformed candidate Concepts across ENTRY, DIST, WEIGHT, BET and ROLE. No candidate was percentage-promoted; WEIGHT, BET and ROLE close their active candidate queues through semantic cleanup.
 
-Across the lower-priority cleanup passes, **297 base-dictionary terms have been newly verified and 39 duplicate/malformed/non-independent rows have been removed**.
+Across the lower-priority cleanup passes, **300 base-dictionary terms have been newly verified and 43 duplicate/malformed/non-independent rows have been removed**.
 
 ## Evidence state
 
-- all Concepts: **611 / 618 source-verified (98.9%)**; **7 candidate**
+- all Concepts: **614 / 614 source-verified (100.0%)**; **0 candidate**
 - core highest-priority set: **203 / 203 source-verified (100.0%)**
-- active base seed: **450 / 457 source-verified (98.5%)**; **7 candidate**
+- active base seed: **453 / 453 source-verified (100.0%)**; **0 candidate**
 - supplemental jurisdiction/relationship research: **161 / 161 source-verified (100.0%)**
 
 Canonical current audit state includes:
@@ -228,13 +234,11 @@ coverage/master-005-completion-gate-v1.tsv
 
 ## Current completion decision
 
-The terminology master remains **not complete**. The remaining **7 terms** must be reviewed rather than automatically promoted.
+`GLOSSARY-MASTER-005` is **complete** for the current active Concept master: **614/614 source-verified, 0 candidate**. The completion gate passes after explicit resolution of every residual seed Concept.
 
-The next work is a **final explicit seven-Concept review**: `Grandsire`, `Stallion service`, `Cushion Track`, `Jump`, `Hold-up horse`, `Bonus` and `Stake`. Each must be verified, narrowed, split, merged or retired individually before the MASTER-005 completion decision is rerun.
+The next work is `GLOSSARY-MASTER-006` — **search-intent / coverage / readiness review**. That stage determines user-facing intent coverage and whether public implementation planning is justified; it does not reopen evidence truth unless it discovers a real semantic or source gap.
 
-After that residual work, rerun the evidence/readiness gate before advancing to `GLOSSARY-MASTER-006`.
-
-Public implementation remains deferred until the evidence/readiness review passes.
+Public implementation remains deferred until MASTER-006 passes.
 
 ## Register / abbreviation / historical state
 
