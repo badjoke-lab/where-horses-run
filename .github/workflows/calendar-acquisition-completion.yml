@@ -8,6 +8,9 @@ on:
       - 'scripts/timetable/acquisition-completion.mjs'
       - 'scripts/timetable/**'
       - 'scripts/check-calendar-acquisition-completion.mjs'
+      - 'scripts/check-calendar-non-running-evidence-registry.mjs'
+      - 'data/static/calendar-non-running-evidence-registry-v1.json'
+      - 'data/static/calendar-non-running-evidence-registry.schema.json'
       - 'scripts/check-japan-acquisition-completion.mjs'
       - 'scripts/check-tjk-a-plus-programme-parser.mjs'
       - '.github/workflows/calendar-acquisition-completion.yml'
@@ -49,3 +52,5 @@ jobs:
         run: node scripts/check-japan-acquisition-completion.mjs
       - name: Validate TJK A+ programme parsing
         run: node scripts/check-tjk-a-plus-programme-parser.mjs
+      - name: Validate non-running evidence coverage
+        run: node scripts/check-calendar-non-running-evidence-registry.mjs
