@@ -16,20 +16,8 @@ const plain = (value) => String(value ?? '')
   .replace(/[\s\u3000]+/g, ' ')
   .trim();
 
-function monthKey(date) {
-  return String(date).slice(0, 7).replace('-', '');
-}
-function shiftDays(date, days) {
-  const value = new Date(`${date}T00:00:00Z`);
-  value.setUTCDate(value.getUTCDate() + days);
-  return value.toISOString().slice(0, 10);
-}
-function candidateMonths(dates) {
-  const expanded = [shiftDays(dates[0], -7), ...dates];
-  return [...new Set(expanded.map(monthKey))].sort();
-}
-function indexUrl(month) {
-  return `https://www.jra.go.jp/news/${month}/`;
+function indexUrl() {
+  return 'https://www.jra.go.jp/news/index4.html';
 }
 function candidateArticleLinks(html, baseUrl) {
   const out = [];
@@ -64,45 +52,43 @@ export async function discoverJraConfirmedNonRunning({
   const allowed = new Set(dates);
   const records = [];
   const diagnostics = [];
-  for (const month of candidateMonths(dates)) {
-    const source = indexUrl(month);
-    try {
-      const page = await fetchHtml(source, fetchImpl);
-      const links = candidateArticleLinks(page.body, page.url);
-      let fetched = 0;
-      let parsed = 0;
-      for (const link of links) {
-        try {
-          const article = await fetchHtml(link.url, fetchImpl);
-          fetched += 1;
-          const found = parseJraConfirmedNonRunningHtml(article.body, {
-            sourceUrl: article.url,
-            checkedAt,
-          }).filter((row) => allowed.has(row.date));
-          parsed += found.length;
-          records.push(...found);
-        } catch (error) {
-          diagnostics.push({
-            source_url: link.url,
-            status: 'article_fetch_or_parse_failed',
-            error: String(error?.message ?? error),
-          });
-        }
+  const source = indexUrl();
+  try {
+    const page = await fetchHtml(source, fetchImpl);
+    const links = candidateArticleLinks(page.body, page.url);
+    let fetched = 0;
+    let parsed = 0;
+    for (const link of links) {
+      try {
+        const article = await fetchHtml(link.url, fetchImpl);
+        fetched += 1;
+        const found = parseJraConfirmedNonRunningHtml(article.body, {
+          sourceUrl: article.url,
+          checkedAt,
+        }).filter((row) => allowed.has(row.date));
+        parsed += found.length;
+        records.push(...found);
+      } catch (error) {
+        diagnostics.push({
+          source_url: link.url,
+          status: 'article_fetch_or_parse_failed',
+          error: String(error?.message ?? error),
+        });
       }
-      diagnostics.push({
-        source_url: page.url,
-        status: 'success',
-        candidate_link_count: links.length,
-        fetched_article_count: fetched,
-        confirmed_non_running_count: parsed,
-      });
-    } catch (error) {
-      diagnostics.push({
-        source_url: source,
-        status: 'index_fetch_failed',
-        error: String(error?.message ?? error),
-      });
     }
+    diagnostics.push({
+      source_url: page.url,
+      status: 'success',
+      candidate_link_count: links.length,
+      fetched_article_count: fetched,
+      confirmed_non_running_count: parsed,
+    });
+  } catch (error) {
+    diagnostics.push({
+      source_url: source,
+      status: 'index_fetch_failed',
+      error: String(error?.message ?? error),
+    });
   }
   return {
     records: [...new Map(records.map((row) => [row.meeting_id, row])).values()]
