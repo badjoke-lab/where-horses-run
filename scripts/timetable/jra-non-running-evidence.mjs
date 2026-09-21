@@ -72,16 +72,19 @@ export function parseJraConfirmedNonRunningHtml(html, { sourceUrl, checkedAt = n
     if (row) found.push(row);
   }
 
-  const plainMeeting = /(\d{1,2})月(\d{1,2})日[^。]{0,80}?(札幌|函館|福島|新潟|東京|中山|中京|京都|阪神|小倉)競馬[^。]{0,120}?(開催を中止(?:いたします|します)?|開催が中止(?:となりました)?|開催中止)/g;
-  for (const match of text.matchAll(plainMeeting)) {
+  const sentenceMeeting = /(\d{1,2})月(\d{1,2})日[^。]{0,220}?(開催を中止(?:いたします|します)?|開催が中止(?:となりました)?|開催中止)/g;
+  for (const match of text.matchAll(sentenceMeeting)) {
     const segment = match[0];
     if (/第\d+(?:競走|レース|R)\s*(?:以降)?[^。]{0,40}(?:中止|取り止め)/.test(segment)) continue;
     const month = Number(match[1]);
     const day = Number(match[2]);
     const date = isoDate(eventYear(year, publicationMonth, month), month, day);
     if (!date) continue;
-    const row = record(match[3], date, sourceUrl, checkedAt, match[4]);
-    if (row) found.push(row);
+    const venues = [...new Set([...segment.matchAll(/(札幌|函館|福島|新潟|東京|中山|中京|京都|阪神|小倉)競馬/g)].map((row) => row[1]))];
+    for (const venueJa of venues) {
+      const row = record(venueJa, date, sourceUrl, checkedAt, match[3]);
+      if (row) found.push(row);
+    }
   }
 
   return [...new Map(found.map((row) => [row.meeting_id, row])).values()]
