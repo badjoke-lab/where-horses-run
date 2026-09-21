@@ -13,6 +13,8 @@ const orderedSteps = [
   'Collect UAE official window',
   'Collect KRA official window',
   'Collect TJK, SOREC, Chile, Ireland and Peru official windows',
+  'Apply non-Japan official observations monotonically',
+  'Apply explicit meeting presence dispositions',
   'Persist remaining canonical and public rolling state',
 ];
 
@@ -41,8 +43,8 @@ assert.equal(
 );
 assert.equal(
   (workflow.match(/--artifact=\.calendar-unified\/sorec\.json/g) ?? []).length,
-  4,
-  'SOREC artifact must pass exclusion and apply layers in both execution paths',
+  6,
+  'SOREC artifact must pass exclusion, canonical apply, and meeting-presence layers in both execution paths',
 );
 assert.match(workflow, /--racing-system-id=sorec-racing-information-system/, 'SOREC apply path must bind the canonical racing system id');
 assert.match(workflow, /--timezone=Africa\/Casablanca/, 'SOREC apply path must bind the Morocco timezone');
@@ -59,8 +61,8 @@ assert.equal(
 );
 assert.equal(
   (workflow.match(/--artifact=\.calendar-unified\/ireland\.json/g) ?? []).length,
-  4,
-  'Ireland HRI artifact must pass exclusion and apply layers in both execution paths',
+  6,
+  'Ireland HRI artifact must pass exclusion, canonical apply, and meeting-presence layers in both execution paths',
 );
 assert.equal(
   (workflow.match(/--racing-system-id=ireland-hri-racing-system/g) ?? []).length,
@@ -86,8 +88,8 @@ assert.equal(
 );
 assert.equal(
   (workflow.match(/--artifact=\.calendar-unified\/peru\.json/g) ?? []).length,
-  4,
-  'Peru Monterrico artifact must pass exclusion and apply layers in both execution paths',
+  6,
+  'Peru Monterrico artifact must pass exclusion, canonical apply, and meeting-presence layers in both execution paths',
 );
 assert.equal(
   (workflow.match(/--racing-system-id=peru-monterrico-programme-system/g) ?? []).length,
