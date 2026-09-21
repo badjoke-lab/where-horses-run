@@ -104,6 +104,7 @@ jobs:
           node scripts/check-calendar-live-source-readiness.mjs
           node scripts/check-calendar-refresh-publication-boundaries.mjs
           node scripts/check-kra-window-bounds.mjs
+          node scripts/check-kra-fetch-failure-retention.mjs
           node scripts/check-tjk-fetch-failure-retention.mjs
           node scripts/check-ireland-hri-fixtures-adapter.mjs
           node scripts/check-peru-monterrico-adapter.mjs
