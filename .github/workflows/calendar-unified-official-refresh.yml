@@ -108,6 +108,7 @@ jobs:
           node scripts/check-tjk-fetch-failure-retention.mjs
           node scripts/check-ireland-hri-fixtures-adapter.mjs
           node scripts/check-peru-monterrico-adapter.mjs
+          node scripts/check-meeting-presence-contract.mjs
           node scripts/check-peru-fetch-failure-retention.mjs
       - name: Exercise Japan mother-set safety contracts
         run: |
@@ -265,6 +266,8 @@ jobs:
             --scope="${{ steps.scope.outputs.scope }}"
       - name: Re-apply frozen reviewed Calendar observations after Japan
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
+      - name: Apply explicit meeting presence dispositions after Japan
+        run: node scripts/timetable/apply-meeting-presence-dispositions.mjs
       - name: Validate Japan generated public site state
         run: npm run build
       - name: Persist Japan official state before non-Japan collection
@@ -283,6 +286,7 @@ jobs:
               --execution-date="${{ steps.scope.outputs.japan_date }}" \
               --scope="${{ steps.scope.outputs.scope }}"
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
+            node scripts/timetable/apply-meeting-presence-dispositions.mjs
             npm run build
           }
 
@@ -436,6 +440,8 @@ jobs:
             --timezone=America/Lima
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
+      - name: Apply explicit meeting presence dispositions
+        run: node scripts/timetable/apply-meeting-presence-dispositions.mjs
       - name: Validate generated public site state
         run: npm run build
       - name: Persist remaining canonical and public rolling state
