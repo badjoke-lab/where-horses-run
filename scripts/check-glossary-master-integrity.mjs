@@ -142,6 +142,22 @@ for (const row of dispositionRows) {
   if (!seenIds.has(row.canonical_concept_id)) fail(`disposition canonical Concept ${row.canonical_concept_id} is not active`);
 }
 
+const relationRelativePath = manifest.relationship_layer?.relations?.file;
+if (relationRelativePath) {
+  const relationPath = path.join(masterDir, relationRelativePath);
+  const { rows: relationRows } = readTsv(relationPath);
+  for (const row of relationRows) {
+    if (!seenIds.has(row.subject_id)) fail(`relation ${row.relation_id} references inactive subject Concept ${row.subject_id}`);
+    if (!seenIds.has(row.object_id)) fail(`relation ${row.relation_id} references inactive object Concept ${row.object_id}`);
+    if (!['source_verified', 'reviewed_semantic'].includes(row.verification_status)) {
+      fail(`relation ${row.relation_id} has invalid verification_status ${row.verification_status}`);
+    }
+  }
+  if (manifest.relationship_layer.relations.row_count !== relationRows.length) {
+    fail(`manifest relation row_count=${manifest.relationship_layer.relations.row_count}, observed=${relationRows.length}`);
+  }
+}
+
 const abbreviationRelativePath = manifest.usage_layers?.abbreviations?.file;
 if (abbreviationRelativePath) {
   const abbreviationPath = path.join(masterDir, abbreviationRelativePath);
