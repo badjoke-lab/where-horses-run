@@ -94,7 +94,19 @@ for(let i=0;i<days;i+=1) {
     errors.push({date,stage:'programme_detail',source_url:PERU_MONTERRICO_PROGRAMME_URL+'?id_reunion='+reunionId,error:message});
   }
 }
-if(successfulDateRequests===0) throw new Error('Monterrico date API did not complete any requested date successfully');
+const acquisitionAttempt=successfulDateRequests===0 ? {
+  attempted_at:generatedAt,
+  status:'network_error',
+  source_id:PERU_MONTERRICO_SOURCE_ID,
+  route_id:null,
+  error_code:errors.some(row=>/timeout|timed out|aborted/i.test(row.error))?'timeout':'fetch_error'
+} : {
+  attempted_at:generatedAt,
+  status:'success',
+  source_id:PERU_MONTERRICO_SOURCE_ID,
+  route_id:null,
+  error_code:null
+};
 
 const rankCounts=Object.fromEntries(['C','B','B+','A','A+'].map(rank=>[rank,records.filter(r=>r.capability_rank===rank).length]));
 const detailCounts=Object.fromEntries(['available','not_published','source_error'].map(status=>[status,records.filter(r=>r.detail_observation?.status===status).length]));
@@ -109,6 +121,7 @@ const artifact={
   detail_source_id:PERU_MONTERRICO_SOURCE_ID,
   collection_target_rank:'best_available',
   raw_body_retained:false,
+  acquisition_attempt:acquisitionAttempt,
   discovery:{
     method:'official_monterrico_date_api_plus_programme_html',
     schedule_source_id:PERU_MONTERRICO_SOURCE_ID,
@@ -124,7 +137,7 @@ const artifact={
     start_date:start,
     end_date_exclusive:plusDays(start,days),
     days,
-    coverage_claim:errors.length?'partial':'source_window_complete',
+    coverage_claim:successfulDateRequests===0?'fetch_failed':errors.length?'partial':'source_window_complete',
     coverage_note:'Every requested date is checked through the official Monterrico date API. Discovered reunions are resolved through the official programme page; complete rows support A, unpublished detail remains valid C, and source/parser failures remain explicit retry state.'
   },
   records,
