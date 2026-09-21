@@ -169,6 +169,67 @@ if (!p0Coverage) {
   if (Number(p0Coverage.candidate) !== p0Candidate) fail(`P0 coverage candidate=${p0Coverage.candidate}, observed=${p0Candidate}`);
 }
 
+const searchLayer = manifest.search_intent_layer;
+let searchQueryCount = 0;
+if (searchLayer) {
+  const requiredSearchFiles = [
+    searchLayer.policy_file,
+    ...(searchLayer.query_files ?? []),
+    searchLayer.coverage_file,
+    searchLayer.readiness_gate_file,
+  ].filter(Boolean);
+  for (const relativeFile of requiredSearchFiles) {
+    const filePath = path.join(masterDir, relativeFile);
+    if (!fs.existsSync(filePath)) fail(`manifest search_intent_layer references missing file ${relativeFile}`);
+  }
+
+  const expectedSearchHeader = [
+    'query_id',
+    'concept_id',
+    'related_concept_id',
+    'query',
+    'language',
+    'country_or_locale',
+    'search_intent',
+    'query_type',
+    'priority',
+    'future_target',
+    'review_state',
+    'source_basis',
+  ];
+  const searchIds = new Set();
+  const observedIntentCounts = new Map();
+  for (const relativeFile of searchLayer.query_files ?? []) {
+    const filePath = path.join(masterDir, relativeFile);
+    if (!fs.existsSync(filePath)) continue;
+    const { header, rows } = readTsv(filePath);
+    if (!sameHeader(header, expectedSearchHeader)) {
+      fail(`${relativeFile} has invalid search-query TSV header: ${header.join('|')}`);
+      continue;
+    }
+    for (const row of rows) {
+      searchQueryCount += 1;
+      if (!/^SQ-\d{4}$/.test(row.query_id)) fail(`${relativeFile} has invalid query_id ${row.query_id}`);
+      if (searchIds.has(row.query_id)) fail(`duplicate search query ID ${row.query_id}`);
+      searchIds.add(row.query_id);
+      if (!seenIds.has(row.concept_id)) fail(`${row.query_id} references inactive Concept ${row.concept_id}`);
+      if (row.related_concept_id && !seenIds.has(row.related_concept_id)) fail(`${row.query_id} references inactive related Concept ${row.related_concept_id}`);
+      if (!row.query.trim()) fail(`${row.query_id} has empty query`);
+      if (!['en','ja','fr'].includes(row.language)) fail(`${row.query_id} has unsupported language ${row.language}`);
+      if (!['P0','P1','P2','P3'].includes(row.priority)) fail(`${row.query_id} has invalid priority ${row.priority}`);
+      if (!row.review_state) fail(`${row.query_id} has empty review_state`);
+      observedIntentCounts.set(row.search_intent, (observedIntentCounts.get(row.search_intent) ?? 0) + 1);
+    }
+  }
+  if (searchQueryCount !== searchLayer.query_count) fail(`manifest search query_count=${searchLayer.query_count}, observed=${searchQueryCount}`);
+  if (searchQueryCount !== searchLayer.reviewed_query_count) fail(`manifest reviewed_query_count=${searchLayer.reviewed_query_count}, observed reviewed wave-1 records=${searchQueryCount}`);
+  for (const [intent, expected] of Object.entries(searchLayer.intent_counts ?? {})) {
+    const observed = observedIntentCounts.get(intent) ?? 0;
+    if (observed !== expected) fail(`manifest search intent ${intent} count=${expected}, observed=${observed}`);
+  }
+}
+
 if (!process.exitCode) {
-  console.log(`Glossary master integrity OK: ${activeConcepts.length} Concepts, ${sourceVerified} verified, ${candidate} candidate, ${dispositionRows.length} dispositions.`);
+  const searchSuffix = manifest.search_intent_layer ? `, ${searchQueryCount} search-intent queries` : '';
+  console.log(`Glossary master integrity OK: ${activeConcepts.length} Concepts, ${sourceVerified} verified, ${candidate} candidate, ${dispositionRows.length} dispositions${searchSuffix}.`);
 }
