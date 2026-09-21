@@ -153,9 +153,11 @@ try {
   annual = await discoverAnnualFixtures({ startDate, endDateExclusive });
 } catch (error) {
   acquisitionFailure = {
-    status: 'fetch_failed',
-    error_name: error?.name ?? 'Error',
-    error_message: String(error?.message ?? error),
+    attempted_at: retrievedAt,
+    status: 'network_error',
+    source_id: 'tjk-annual-programme',
+    route_id: null,
+    error_code: error?.name === 'TimeoutError' ? 'timeout' : 'fetch_error',
   };
   annual = {
     fixtures: [],
@@ -197,7 +199,13 @@ const artifact = {
     canonical_write: false,
     public_write: false,
   },
-  acquisition_attempt: acquisitionFailure ?? { status: 'success' },
+  acquisition_attempt: acquisitionFailure ?? {
+    attempted_at: retrievedAt,
+    status: 'success',
+    source_id: annual.schedule_source_id,
+    route_id: null,
+    error_code: null,
+  },
   discovery: {
     method: 'official_annual_programme_fixture_union_daily_detail',
     schedule_source_id: annual.schedule_source_id,
@@ -223,5 +231,11 @@ console.log(JSON.stringify({
   candidates: candidates.length,
   rank_counts: rankCounts,
   detail_status_counts: detailStatusCounts,
-  acquisition_attempt: acquisitionFailure ?? { status: 'success' },
+  acquisition_attempt: acquisitionFailure ?? {
+    attempted_at: retrievedAt,
+    status: 'success',
+    source_id: annual.schedule_source_id,
+    route_id: null,
+    error_code: null,
+  },
 }, null, 2));
