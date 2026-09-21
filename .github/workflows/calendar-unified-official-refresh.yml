@@ -108,6 +108,7 @@ jobs:
           node scripts/check-tjk-fetch-failure-retention.mjs
           node scripts/check-ireland-hri-fixtures-adapter.mjs
           node scripts/check-peru-monterrico-adapter.mjs
+          node scripts/check-peru-fetch-failure-retention.mjs
       - name: Exercise Japan mother-set safety contracts
         run: |
           node scripts/check-japan-mother-set-safety.mjs
