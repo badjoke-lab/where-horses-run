@@ -5,7 +5,8 @@ const checkedAt = '2026-09-22T00:00:00Z';
 
 const kanazawa = parseNarConfirmedNonRunningHtml(`
 <html><body>
-<h1>金沢競馬の開催取り止めについて(8/26・9/2)</h1>
+<h1>JRAネット投票×地方競馬</h1><h2>お知らせ</h2>
+<h3>金沢競馬の開催取り止めについて(8/26・9/2)</h3>
 <p>金沢競馬は大雨の影響により、8月26日および9月2日の開催を取り止めることとなりました。</p>
 </body></html>
 `, {
