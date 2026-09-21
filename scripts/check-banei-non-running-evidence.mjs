@@ -30,6 +30,20 @@ const single = parseBaneiConfirmedNonRunningHtml(`
 assert.equal(single.length, 1);
 assert.equal(single[0].meeting_id, 'banei-obihiro-racecourse-2022-12-23');
 
+const genericWholeDay = parseBaneiConfirmedNonRunningHtml(`
+<html><body>
+<div>2025-12-15</div>
+<h1>12月15日（月）開催取り止めについて</h1>
+<p>本日12月15日（月）、積雪の影響のため開催取り止めとなりました。</p>
+<p>帯広競馬場では他場発売のみ行います。</p>
+</body></html>
+`, {
+  sourceUrl: 'https://banei-keiba.or.jp/tp_detail.php?id=10155',
+  checkedAt: '2026-09-21T00:00:00Z',
+});
+assert.equal(genericWholeDay.length, 1);
+assert.equal(genericWholeDay[0].meeting_id, 'banei-obihiro-racecourse-2025-12-15');
+
 const partial = parseBaneiConfirmedNonRunningHtml(`
 <html><body>
 <div>2025-12-14</div>
@@ -53,6 +67,18 @@ const external = parseBaneiConfirmedNonRunningHtml(`
   checkedAt: '2026-09-21T00:00:00Z',
 });
 assert.equal(external.length, 0, 'external-racing notices on Banei site must not become Banei meeting evidence');
+
+const externalWholeMeeting = parseBaneiConfirmedNonRunningHtml(`
+<html><body>
+<div>2024-08-29</div>
+<h1>8/29 佐賀競馬開催取り止めに伴う場外発売の中止</h1>
+<p>8月29日の佐賀競馬は台風の影響により開催を取り止めます。帯広競馬場での場外発売も中止します。</p>
+</body></html>
+`, {
+  sourceUrl: 'https://www.banei-keiba.or.jp/tp_detail.php?id=9199',
+  checkedAt: '2026-09-21T00:00:00Z',
+});
+assert.equal(externalWholeMeeting.length, 0, 'external whole-meeting cancellation must not become Banei evidence');
 
 assert.throws(() => parseBaneiConfirmedNonRunningHtml('<div>2025-05-04</div><p>ばんえい競馬開催中止</p>', {
   sourceUrl: 'https://example.com/tp_detail.php?id=9659',
