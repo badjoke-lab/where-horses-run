@@ -17,8 +17,12 @@ export function validateMeetingPresenceRegistry(registry) {
       assert(row.scope === 'whole_meeting', `${row.meeting_id} confirmed_non_running must apply to whole_meeting`);
       assert(row.evidence_type === 'official_explicit_non_running' || row.evidence_type === 'reviewed_official_non_running',
         `${row.meeting_id} confirmed_non_running requires accepted explicit official evidence`);
+      assert(typeof row.source_id === 'string' && row.source_id, `${row.meeting_id} confirmed_non_running requires source_id`);
       assert(/^https:\/\//.test(row.official_source_url ?? ''), `${row.meeting_id} confirmed_non_running requires official_source_url`);
-      assert(/^\d{4}-\d{2}-\d{2}$/.test(row.reviewed_at ?? ''), `${row.meeting_id} confirmed_non_running requires reviewed_at`);
+      assert(typeof row.checked_at === 'string' && !Number.isNaN(Date.parse(row.checked_at)), `${row.meeting_id} confirmed_non_running requires checked_at`);
+      if (row.evidence_type === 'reviewed_official_non_running') {
+        assert(/^\d{4}-\d{2}-\d{2}$/.test(row.reviewed_at ?? ''), `${row.meeting_id} reviewed evidence requires reviewed_at`);
+      }
     }
   }
   return registry;
