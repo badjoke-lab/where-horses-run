@@ -26,6 +26,8 @@ The latest pass is **final targeted residual wave 13**. It verified historical C
 
 `GLOSSARY-MASTER-005` is complete: **614/614 active Concepts are source-verified (100%)** and **0 candidates remain**. Active base seed is **453/453 verified (100%)**. Evidence completion does not publish the glossary; `MASTER-006` remains the next readiness stage.
 
+`MASTER-006` wave 1 is now active. The search layer is kept separate from canonical knowledge and currently contains **66 reviewed source-derived queries**: 33 abbreviation lookups and 33 racecard-reading lookups for the English/Japanese subset of the 38 verified abbreviation records. Five intent classes remain intentionally unseeded while their applicability and wording are reviewed: definition, comparison, regional usage, how/why, and translation.
+
 These rows were removed because the active glossary already models the underlying racing meaning more cleanly, or because the seed represented generic analytical/presentation context rather than an independent racing term.
 
 ## What has been completed
@@ -122,7 +124,7 @@ The abbreviation/code layer remains at **38 source-verified rows**.
 
 There are **0 active candidate Concepts** after final residual wave 13. `GLOSSARY-MASTER-005` therefore passes its evidence/semantic completion gate for the current master.
 
-The next stage is `GLOSSARY-MASTER-006`: search-intent, coverage and readiness review. Public glossary architecture remains deferred until that separate review decides the master has sufficient user-facing coverage and presentation readiness.
+`GLOSSARY-MASTER-006` is now **in progress**. Wave 1 adds the search-intent policy, query registry, coverage matrix and readiness gate. The current MASTER-006 decision is **HOLD** until the remaining intent classes and worldwide domain/jurisdiction/readiness audits are completed. Public glossary architecture remains deferred.
 
 ## Dictionary modeling rule
 

@@ -360,10 +360,10 @@ There is **no legacy-record migration requirement** in this readiness gate.
 ```text
 GLOSSARY-MASTER-001  specification and authority                         COMPLETE
 GLOSSARY-MASTER-002  zero-based world Concept seed (501 / 18 categories) COMPLETE
-GLOSSARY-MASTER-003  jurisdiction + local-language research              CURRENT
-GLOSSARY-MASTER-004  slang / colloquial / industry / historical evidence QUEUED
-GLOSSARY-MASTER-005  relations / equivalence / evidence refinement       QUEUED
-GLOSSARY-MASTER-006  search-intent / coverage / readiness review         QUEUED
+GLOSSARY-MASTER-003  jurisdiction + local-language research              COMPLETE CURRENT PASS
+GLOSSARY-MASTER-004  slang / colloquial / industry / historical evidence COMPLETE CURRENT PASS
+GLOSSARY-MASTER-005  relations / equivalence / evidence refinement       COMPLETE
+GLOSSARY-MASTER-006  search-intent / coverage / readiness review         CURRENT
 
 GLOSSARY-PUBLIC-*    public implementation                               DEFERRED
 ```

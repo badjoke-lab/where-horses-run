@@ -319,9 +319,18 @@ The programme now advances to `GLOSSARY-MASTER-006`.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
-Status: **current, not started**.
+Status: **current, wave 1 in progress**.
 
 This stage reviews definition/comparison/regional/how-why/translation/abbreviation/racecard-reading search intents, coverage gaps and user-facing readiness. It may reopen evidence work only when a real semantic/source gap is discovered. Public implementation planning remains deferred until this stage passes.
+
+Wave 1 establishes the non-canonical search layer:
+
+- `search/search-intent-policy-v1.tsv` — seven intent classes and publication/review rules;
+- `search/search-queries-v1.tsv` — **66 reviewed source-derived records**: 33 abbreviation + 33 racecard-reading queries for EN/JA verified abbreviation records;
+- `coverage/master-006-search-intent-coverage-v1.tsv` — explicit per-intent coverage/gaps;
+- `coverage/master-006-readiness-v1.tsv` — readiness criteria with the current decision **HOLD**.
+
+Definition, comparison, regional usage, how/why and translation remain open. The five French abbreviation records also remain for language-appropriate query review. Domain breadth, jurisdiction/system breadth and multilingual/no-direct-equivalent presentation still require explicit readiness audits.
 
 ## Public implementation lane
 
@@ -348,7 +357,7 @@ Working dictionary: 614 terms
 Verified: 614
 Still under review: 0 active Concept candidates
 MASTER-005: complete
-Next subject group: search-intent / coverage / readiness review
+Next subject group: extend search-intent coverage + audit domain/jurisdiction/language readiness
 Public implementation: deferred
 ```
 
