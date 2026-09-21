@@ -132,3 +132,12 @@ Where Horses Run must not embed video, publish direct stream URLs, link to unoff
 When a public page cannot safely display a field within this boundary, it should show less detail and link to the official source.
 
 The public site should help users find official calendars, meetings, racecourses, and source pages. It should not replace the official programme, racecard, betting, result, or media experience.
+
+
+## Meeting presence and non-running boundary
+
+Calendar and Calendar Map must consume the same publication disposition defined by `docs/calendar/meeting-presence-and-non-running-contract.md`.
+
+A previously verified meeting that is absent from a later source observation without explicit accepted non-running evidence remains published conservatively; absence alone is not cancellation. If that uncertainty survives to the meeting date, the UI may expose a compact confirmation-pending state rather than claim confirmed current operation.
+
+A meeting with accepted `confirmed_non_running` evidence is not shown as an active/upcoming meeting for that date and is not shown as an active dated meeting marker on Calendar Map. This does not delete the racecourse entity or its general map identity, and it does not require a causal link to any later replacement date.
