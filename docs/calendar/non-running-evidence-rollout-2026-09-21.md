@@ -50,4 +50,6 @@ These examples prove that official explicit negative evidence exists. HKJC and E
 
 Wave 1B completed the two lowest-risk same-source candidates: HKJC and ERA.
 
-Next, keep JRA and Banei on reviewed evidence while their notice parsers are bounded and tested. In parallel, research NAR/KRA/TJK/SOREC/Chile/HRI/Peru for a reliable authority-specific whole-meeting route. Until one is demonstrated, they remain safe `unsupported`; no source disappearance may be used as a substitute.
+Wave 2A now bounds and tests JRA and Banei whole-meeting notice parsing. JRA parsing requires an official `www.jra.go.jp/news/YYYYMM/NNNNNN.html` article, binds a specific JRA venue/date, and rejects race-only cancellation text. Banei parsing requires an official `tp_detail.php` article, accepts explicit whole-day or multi-day Banei cancellation wording, and rejects partial-race stoppages and notices about external racing. Both systems remain `reviewed` until a stable official notice-discovery route is activated; parser existence alone is not sufficient to make them `automated`.
+
+In parallel, research NAR/KRA/TJK/SOREC/Chile/HRI/Peru for a reliable authority-specific whole-meeting route. Until one is demonstrated, they remain safe `unsupported`; no source disappearance may be used as a substitute.
