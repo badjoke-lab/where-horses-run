@@ -23,6 +23,11 @@ on:
       - 'scripts/timetable/**'
       - 'scripts/check-calendar-refresh-publication-boundaries.mjs'
       - 'scripts/check-calendar-live-source-readiness.mjs'
+      - 'scripts/check-calendar-non-running-evidence-registry.mjs'
+      - 'scripts/check-hkjc-non-running-evidence.mjs'
+      - 'scripts/check-uae-era-non-running-evidence.mjs'
+      - 'data/static/calendar-non-running-evidence-registry-v1.json'
+      - 'data/static/calendar-non-running-evidence-registry.schema.json'
       - 'scripts/check-kra-window-bounds.mjs'
       - 'scripts/check-japan-mother-set-safety.mjs'
       - 'scripts/check-japan-per-family-absence-reconciliation.mjs'
@@ -109,6 +114,9 @@ jobs:
           node scripts/check-ireland-hri-fixtures-adapter.mjs
           node scripts/check-peru-monterrico-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs
+          node scripts/check-hkjc-non-running-evidence.mjs
+          node scripts/check-uae-era-non-running-evidence.mjs
           node scripts/check-peru-fetch-failure-retention.mjs
       - name: Exercise Japan mother-set safety contracts
         run: |
@@ -264,6 +272,9 @@ jobs:
           node scripts/check-ireland-hri-fixtures-adapter.mjs
           node scripts/check-peru-monterrico-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs
+          node scripts/check-hkjc-non-running-evidence.mjs
+          node scripts/check-uae-era-non-running-evidence.mjs
       - name: Refresh Japan official mother set and best available detail
         run: |
           node scripts/timetable/run-japan-zero-based-30d.mjs \
@@ -306,6 +317,7 @@ jobs:
               data/generated/timetable/public/meeting-details.json
             git add data/generated/timetable/japan-zero-based-30d-reconciliation.json 2>/dev/null || true
             git add data/generated/timetable/japan-zero-based-3d-reconciliation.json 2>/dev/null || true
+            git add data/generated/timetable/meeting-presence.json 2>/dev/null || true
           }
 
           git fetch origin main
@@ -450,7 +462,15 @@ jobs:
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
         run: |
-          node scripts/timetable/apply-meeting-presence-dispositions.mjs
+          node scripts/timetable/apply-meeting-presence-dispositions.mjs \
+            --artifact=.calendar-unified/hkjc.json \
+            --artifact=.calendar-unified/uae.json \
+            --artifact=.calendar-unified/kra.json \
+            --artifact=.calendar-unified/tjk.json \
+            --artifact=.calendar-unified/sorec.json \
+            --artifact=.calendar-unified/chile.json \
+            --artifact=.calendar-unified/ireland.json \
+            --artifact=.calendar-unified/peru.json
           node scripts/check-confirmed-non-running-publication.mjs
       - name: Validate generated public site state
         run: npm run build
@@ -550,7 +570,15 @@ jobs:
               --racing-system-id=peru-monterrico-programme-system \
               --timezone=America/Lima
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
-            node scripts/timetable/apply-meeting-presence-dispositions.mjs
+            node scripts/timetable/apply-meeting-presence-dispositions.mjs \
+            --artifact=.calendar-unified/hkjc.json \
+            --artifact=.calendar-unified/uae.json \
+            --artifact=.calendar-unified/kra.json \
+            --artifact=.calendar-unified/tjk.json \
+            --artifact=.calendar-unified/sorec.json \
+            --artifact=.calendar-unified/chile.json \
+            --artifact=.calendar-unified/ireland.json \
+            --artifact=.calendar-unified/peru.json
             node scripts/check-confirmed-non-running-publication.mjs
             npm run build
           }
@@ -563,6 +591,7 @@ jobs:
               data/generated/timetable/public/meeting-details.json
             git add data/generated/timetable/japan-zero-based-30d-reconciliation.json 2>/dev/null || true
             git add data/generated/timetable/japan-zero-based-3d-reconciliation.json 2>/dev/null || true
+            git add data/generated/timetable/meeting-presence.json 2>/dev/null || true
           }
 
           git fetch origin main
@@ -619,3 +648,4 @@ jobs:
             .calendar-unified/
             data/generated/timetable/japan-zero-based-30d-reconciliation.json
             data/generated/timetable/japan-zero-based-3d-reconciliation.json
+            data/generated/timetable/meeting-presence.json

@@ -7,18 +7,22 @@ const workflow = fs.readFileSync('.github/workflows/calendar-unified-official-re
 const orderedSteps = [
   'Refresh Japan official mother set and best available detail',
   'Re-apply frozen reviewed Calendar observations after Japan',
+  'Apply explicit meeting presence dispositions after Japan',
   'Validate Japan generated public site state',
   'Persist Japan official state before non-Japan collection',
   'Collect HKJC official window',
   'Collect UAE official window',
   'Collect KRA official window',
   'Collect TJK, SOREC, Chile, Ireland and Peru official windows',
+  'Apply non-Japan official observations monotonically',
+  'Re-apply frozen reviewed Calendar observations',
+  'Apply explicit meeting presence dispositions',
   'Persist remaining canonical and public rolling state',
 ];
 
 let previous = -1;
 for (const step of orderedSteps) {
-  const index = workflow.indexOf(`- name: ${step}`);
+  const index = workflow.indexOf(`- name: ${step}`, previous + 1);
   assert.notEqual(index, -1, `missing workflow step: ${step}`);
   assert.ok(index > previous, `workflow step out of order: ${step}`);
   previous = index;
@@ -41,8 +45,8 @@ assert.equal(
 );
 assert.equal(
   (workflow.match(/--artifact=\.calendar-unified\/sorec\.json/g) ?? []).length,
-  4,
-  'SOREC artifact must pass exclusion and apply layers in both execution paths',
+  6,
+  'SOREC artifact must pass exclusion, canonical apply, and meeting-presence layers in both execution paths',
 );
 assert.match(workflow, /--racing-system-id=sorec-racing-information-system/, 'SOREC apply path must bind the canonical racing system id');
 assert.match(workflow, /--timezone=Africa\/Casablanca/, 'SOREC apply path must bind the Morocco timezone');
@@ -59,8 +63,8 @@ assert.equal(
 );
 assert.equal(
   (workflow.match(/--artifact=\.calendar-unified\/ireland\.json/g) ?? []).length,
-  4,
-  'Ireland HRI artifact must pass exclusion and apply layers in both execution paths',
+  6,
+  'Ireland HRI artifact must pass exclusion, canonical apply, and meeting-presence layers in both execution paths',
 );
 assert.equal(
   (workflow.match(/--racing-system-id=ireland-hri-racing-system/g) ?? []).length,
@@ -86,8 +90,8 @@ assert.equal(
 );
 assert.equal(
   (workflow.match(/--artifact=\.calendar-unified\/peru\.json/g) ?? []).length,
-  4,
-  'Peru Monterrico artifact must pass exclusion and apply layers in both execution paths',
+  6,
+  'Peru Monterrico artifact must pass exclusion, canonical apply, and meeting-presence layers in both execution paths',
 );
 assert.equal(
   (workflow.match(/--racing-system-id=peru-monterrico-programme-system/g) ?? []).length,

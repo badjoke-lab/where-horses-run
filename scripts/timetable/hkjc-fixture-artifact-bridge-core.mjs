@@ -65,6 +65,43 @@ function racecourseFromCode(code) {
   throw new Error(`Unsupported HKJC racecourse code: ${code}`);
 }
 
+
+const HKJC_MONTH_NUMBER = new Map([
+  ['january', 1], ['february', 2], ['march', 3], ['april', 4], ['may', 5], ['june', 6],
+  ['july', 7], ['august', 8], ['september', 9], ['october', 10], ['november', 11], ['december', 12],
+]);
+
+export function parseHkjcConfirmedNonRunningHtml(html, { year, month, sourceUrl }) {
+  if (!Number.isInteger(year) || !Number.isInteger(month) || month < 1 || month > 12) {
+    throw new Error('parseHkjcConfirmedNonRunningHtml requires valid year/month');
+  }
+  if (typeof sourceUrl !== 'string' || !sourceUrl.startsWith('https://racing.hkjc.com/')) {
+    throw new Error('parseHkjcConfirmedNonRunningHtml requires an official HKJC HTTPS sourceUrl');
+  }
+  const text = stripHtml(html);
+  const pattern = /The race meeting originally scheduled for (?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)?\s*,?\s*(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})\s+at\s+(Sha Tin|Happy Valley)\s+Racecourse\s+(?:will be|has been|is)\s+cancelled\b/gi;
+  const records = [];
+  for (const match of text.matchAll(pattern)) {
+    const day = Number(match[1]);
+    const parsedMonth = HKJC_MONTH_NUMBER.get(match[2].toLowerCase());
+    const parsedYear = Number(match[3]);
+    if (parsedYear !== year || parsedMonth !== month) continue;
+    const racecourse = match[4].toLowerCase() === 'sha tin'
+      ? { racecourse_id: 'sha-tin-racecourse', racecourse_name: 'Sha Tin' }
+      : { racecourse_id: 'happy-valley-racecourse', racecourse_name: 'Happy Valley' };
+    const date = `${parsedYear}-${String(parsedMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    if (Number.isNaN(Date.parse(`${date}T00:00:00Z`))) continue;
+    records.push({
+      date,
+      ...racecourse,
+      official_fixture_url: sourceUrl,
+      evidence_phrase: match[0].replace(/\s+/g, ' ').trim(),
+    });
+  }
+  const unique = new Map(records.map((row) => [`${row.date}:${row.racecourse_id}`, row]));
+  return [...unique.values()].sort((a, b) => `${a.date}:${a.racecourse_id}`.localeCompare(`${b.date}:${b.racecourse_id}`));
+}
+
 export function hkjcFixtureUrl(year, month) {
   return `https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=${String(month).padStart(2, '0')}&CalYear=${year}`;
 }
@@ -247,6 +284,7 @@ export function buildHkjcFixtureArtifacts({
   const resultByKey = new Map((monthResults ?? []).map((result) => [monthKey(result.year, result.month), result]));
   const sourceErrors = [];
   const parsedMeetings = [];
+  const parsedNonRunning = [];
   const validEmptyMonths = [];
   let successfulMonths = 0;
 
@@ -267,7 +305,9 @@ export function buildHkjcFixtureArtifacts({
       continue;
     }
 
-    const parsed = parseHkjcFixtureHtml(result.body, { year: month.year, month: month.month, sourceUrl: result.final_url ?? month.url });
+    const officialUrl = result.final_url ?? month.url;
+    parsedNonRunning.push(...parseHkjcConfirmedNonRunningHtml(result.body, { year: month.year, month: month.month, sourceUrl: officialUrl }));
+    const parsed = parseHkjcFixtureHtml(result.body, { year: month.year, month: month.month, sourceUrl: officialUrl });
     if (parsed.length === 0) {
       const emptyWindow = classifyHkjcEmptyFixtureWindow(result.body, { year: month.year, month: month.month });
       if (emptyWindow.classification === 'valid_empty_window') {
@@ -382,6 +422,20 @@ export function buildHkjcFixtureArtifacts({
     automatic_approval_enabled: false,
     automatic_promotion_enabled: false,
     automatic_publication_enabled: false,
+    meeting_presence_records: parsedNonRunning.map((meeting) => ({
+      meeting_id: `hkjc-${meeting.racecourse_id}-${meeting.date}`,
+      country_id: COUNTRY_ID,
+      authority_id: AUTHORITY_ID,
+      racecourse_id: meeting.racecourse_id,
+      date: meeting.date,
+      state: 'confirmed_non_running',
+      scope: 'whole_meeting',
+      evidence_type: 'official_explicit_non_running',
+      source_id: SOURCE_ID,
+      official_source_url: meeting.official_fixture_url,
+      checked_at: generatedAt,
+      note: `HKJC fixture page explicitly states that the ${meeting.date} ${meeting.racecourse_name} race meeting is cancelled.`,
+    })),
   };
 
   return { candidate, coverage, manifest, report };

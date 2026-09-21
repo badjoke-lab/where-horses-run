@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "calendar-non-running-evidence-registry-v1",
+  "title": "Where Horses Run Calendar non-running evidence registry",
+  "type": "object",
+  "required": ["schema_version", "reviewed_at", "records"],
+  "properties": {
+    "schema_version": { "const": "calendar-non-running-evidence-registry-v1" },
+    "reviewed_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "record_id",
+          "country_id",
+          "system_id",
+          "authority_id",
+          "mode",
+          "automation_status",
+          "whole_meeting_non_running",
+          "postponement",
+          "partial_race_policy",
+          "source_absence_policy",
+          "acquisition_failure_policy",
+          "replacement_date_policy",
+          "evidence_source_family",
+          "evidence_urls",
+          "reviewed_at",
+          "notes"
+        ],
+        "properties": {
+          "record_id": { "type": "string", "minLength": 1 },
+          "country_id": { "type": "string", "minLength": 1 },
+          "system_id": { "type": "string", "minLength": 1 },
+          "authority_id": { "type": "string", "minLength": 1 },
+          "mode": { "enum": ["automated", "reviewed", "unsupported"] },
+          "automation_status": { "enum": ["active", "candidate", "not_implemented"] },
+          "whole_meeting_non_running": { "enum": ["supported", "not_proven"] },
+          "postponement": { "enum": ["supported", "not_proven"] },
+          "partial_race_policy": { "const": "never_promote_to_whole_meeting" },
+          "source_absence_policy": { "const": "absent_unconfirmed" },
+          "acquisition_failure_policy": { "const": "preserve_verified_state" },
+          "replacement_date_policy": { "const": "independent_meeting_only" },
+          "evidence_source_family": { "type": "string", "minLength": 1 },
+          "evidence_urls": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^https://" }
+          },
+          "example_evidence_url": { "type": ["string", "null"], "pattern": "^https://" },
+          "reviewed_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+          "notes": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

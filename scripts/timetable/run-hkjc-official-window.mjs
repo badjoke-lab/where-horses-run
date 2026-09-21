@@ -55,6 +55,7 @@ const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'whr-hkjc-window-'));
 const generatedAt = new Date().toISOString();
 const runToken = generatedAt.replace(/[-:.TZ]/g, '').slice(0, 14);
 const collected = [];
+const meetingPresenceRecords = [];
 try {
   const windows = splitByMonth(startDate, endDateExclusive);
   for (let index = 0; index < windows.length; index += 1) {
@@ -85,6 +86,11 @@ try {
     const candidatePath = path.join('data/generated/timetable/actions-multi-job', batchId, 'candidates.json');
     const candidate = JSON.parse(fs.readFileSync(candidatePath, 'utf8'));
     collected.push(...(candidate.records ?? []));
+    const reportPath = path.join('data/generated/timetable/actions-multi-job', batchId, 'collection-report.json');
+    if (fs.existsSync(reportPath)) {
+      const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+      meetingPresenceRecords.push(...(report.meeting_presence_records ?? []));
+    }
   }
 } finally {
   fs.rmSync(temp, { recursive: true, force: true });
@@ -115,8 +121,9 @@ const artifact = {
   },
   window: { start_date: startDate, end_date_exclusive: endDateExclusive, days },
   records,
+  meeting_presence_records: meetingPresenceRecords,
 };
 const absolute = path.resolve(output);
 fs.mkdirSync(path.dirname(absolute), { recursive: true });
 fs.writeFileSync(absolute, `${JSON.stringify(artifact, null, 2)}\n`);
-console.log(JSON.stringify({ output, official_fixture_count: records.length, start_date: startDate, end_date_exclusive: endDateExclusive }));
+console.log(JSON.stringify({ output, official_fixture_count: records.length, confirmed_non_running_count: meetingPresenceRecords.length, start_date: startDate, end_date_exclusive: endDateExclusive }));
