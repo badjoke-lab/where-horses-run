@@ -212,6 +212,7 @@ if (searchLayer) {
   ];
   const searchIds = new Set();
   const observedIntentCounts = new Map();
+  const definitionP0ByLanguage = new Map();
   for (const relativeFile of searchLayer.query_files ?? []) {
     const filePath = path.join(masterDir, relativeFile);
     if (!fs.existsSync(filePath)) continue;
@@ -232,6 +233,12 @@ if (searchLayer) {
       if (!['P0','P1','P2','P3'].includes(row.priority)) fail(`${row.query_id} has invalid priority ${row.priority}`);
       if (!row.review_state) fail(`${row.query_id} has empty review_state`);
       observedIntentCounts.set(row.search_intent, (observedIntentCounts.get(row.search_intent) ?? 0) + 1);
+      if (row.search_intent === 'definition' && row.priority === 'P0') {
+        if (!definitionP0ByLanguage.has(row.language)) definitionP0ByLanguage.set(row.language, new Set());
+        const set = definitionP0ByLanguage.get(row.language);
+        if (set.has(row.concept_id)) fail(`duplicate P0 definition intent for ${row.concept_id} language ${row.language}`);
+        set.add(row.concept_id);
+      }
     }
   }
   if (searchQueryCount !== searchLayer.query_count) fail(`manifest search query_count=${searchLayer.query_count}, observed=${searchQueryCount}`);
@@ -239,6 +246,19 @@ if (searchLayer) {
   for (const [intent, expected] of Object.entries(searchLayer.intent_counts ?? {})) {
     const observed = observedIntentCounts.get(intent) ?? 0;
     if (observed !== expected) fail(`manifest search intent ${intent} count=${expected}, observed=${observed}`);
+  }
+  if (searchLayer.definition_p0_concepts !== undefined) {
+    if (searchLayer.definition_p0_concepts !== p0Rows.length) {
+      fail(`manifest definition_p0_concepts=${searchLayer.definition_p0_concepts}, active P0 Concepts=${p0Rows.length}`);
+    }
+    const p0Ids = new Set(p0Rows.map((row) => row.concept_id));
+    for (const language of searchLayer.definition_p0_languages ?? []) {
+      const covered = definitionP0ByLanguage.get(language) ?? new Set();
+      if (covered.size !== p0Ids.size) fail(`P0 definition coverage for ${language}=${covered.size}, expected=${p0Ids.size}`);
+      for (const conceptId of p0Ids) {
+        if (!covered.has(conceptId)) fail(`P0 Concept ${conceptId} missing ${language} definition intent`);
+      }
+    }
   }
 }
 
