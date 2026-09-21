@@ -8,8 +8,10 @@ import {
   SAUDI_JCSA_TIMEZONE,
   SAUDI_JCSA_TAIF_VENUE_URL,
   SAUDI_JCSA_RIYADH_VENUE_URL,
+  buildJcsaFixtureRecord,
   buildJcsaMeetingRecord,
   parseJcsaRacePage,
+  parseJcsaVenueFixtures,
   parseJcsaVenueSeason,
   resolveJcsaVenueForDate,
 } from './saudi-jcsa-core.mjs';
@@ -42,6 +44,7 @@ if(!Number.isInteger(days)||days<1||days>62) throw new Error('--days must be 1..
 const generatedAt=new Date().toISOString();
 const records=[],dates=[],errors=[];
 let seasons=[];
+const fixtureByDate=new Map();
 let venueFetches=0;
 for(const def of [
   {key:'taif',url:SAUDI_JCSA_TAIF_VENUE_URL},
@@ -50,7 +53,11 @@ for(const def of [
   try{
     const res=await get(def.url);
     if(res.status!==200) throw new Error('HTTP '+res.status);
-    seasons.push(parseJcsaVenueSeason(res.body,{venueKey:def.key}));
+    const season=parseJcsaVenueSeason(res.body,{venueKey:def.key});
+    seasons.push(season);
+    for(const fixture of parseJcsaVenueFixtures(res.body,{venueKey:def.key})){
+      fixtureByDate.set(fixture.date,{...fixture,venue:season,official_url:res.url});
+    }
     venueFetches+=1;
   }catch(error){
     errors.push({stage:'venue_season',venue:def.key,source_url:def.url,error:String(error?.message??error)});
@@ -70,12 +77,24 @@ for(let i=0;i<days;i+=1){
     const res=await get(url);
     successfulDateRequests+=1;
     if(res.status===404){
-      dates.push({date,status:'absent_unconfirmed',racecourse_id:venue.racecourse_id,source_url:url});
+      const fixture=fixtureByDate.get(date);
+      if(fixture){
+        records.push(buildJcsaFixtureRecord({date,venue,meetingNo:fixture.meeting_no,checkedAt:generatedAt,officialUrl:fixture.official_url}));
+        dates.push({date,status:'present_pending_detail',racecourse_id:venue.racecourse_id,source_url:fixture.official_url,meeting_no:fixture.meeting_no,capability_rank:'C'});
+      } else {
+        dates.push({date,status:'absent_unconfirmed',racecourse_id:venue.racecourse_id,source_url:url});
+      }
       continue;
     }
     const parsed=parseJcsaRacePage(res.body,{expectedDate:date,venue});
     if(parsed.status!=='present'){
-      dates.push({date,status:'absent_unconfirmed',racecourse_id:venue.racecourse_id,source_url:res.url,reason:parsed.reason});
+      const fixture=fixtureByDate.get(date);
+      if(fixture){
+        records.push(buildJcsaFixtureRecord({date,venue,meetingNo:fixture.meeting_no,checkedAt:generatedAt,officialUrl:fixture.official_url}));
+        dates.push({date,status:'present_pending_detail',racecourse_id:venue.racecourse_id,source_url:fixture.official_url,meeting_no:fixture.meeting_no,capability_rank:'C',detail_reason:parsed.reason});
+      } else {
+        dates.push({date,status:'absent_unconfirmed',racecourse_id:venue.racecourse_id,source_url:res.url,reason:parsed.reason});
+      }
       continue;
     }
     const record=buildJcsaMeetingRecord({date,venue,raceHtml:res.body,checkedAt:generatedAt});
@@ -114,6 +133,7 @@ const artifact={
     detail_source_id:SAUDI_JCSA_SOURCE_ID,
     detail_source_url:SAUDI_JCSA_RACES_BASE,
     verified_venue_seasons:seasons,
+    visible_fixture_dates:[...fixtureByDate.keys()].sort(),
     rank_counts:rankCounts,
   },
   window:{
@@ -121,7 +141,7 @@ const artifact={
     end_date_exclusive:plusDays(start,days),
     days,
     coverage_claim:venueFetches===0?'fetch_failed':errors.length?'partial':'source_window_complete',
-    coverage_note:'JCSA venue pages establish current Taif/Riyadh season bounds. Each in-season date is checked directly against the official JCSA race route. Missing meeting fingerprints are absent_unconfirmed only; fetch/parse failures are acquisition failures and never confirmed_non_running.'
+    coverage_note:'JCSA venue pages establish current Taif/Riyadh season bounds and explicitly visible upcoming fixtures. Each in-season date is checked directly against the official JCSA race route. A visible official venue fixture remains valid C when race detail is not yet published. Otherwise a missing meeting fingerprint is absent_unconfirmed only; fetch/parse failures are acquisition failures and never confirmed_non_running.'
   },
   records,
   diagnostics:{dates,source_errors:errors},
