@@ -26,7 +26,7 @@ The latest pass is **final targeted residual wave 13**. It verified historical C
 
 `GLOSSARY-MASTER-005` is complete: **614/614 active Concepts are source-verified (100%)** and **0 candidates remain**. Active base seed is **453/453 verified (100%)**. Evidence completion does not publish the glossary; `MASTER-006` remains the next readiness stage.
 
-`MASTER-006` wave 2 is now active. The search layer is kept separate from canonical knowledge and currently contains **472 reviewed non-canonical queries**: 406 EN/JA direct-definition queries covering all **203 P0 Concepts**, plus 33 abbreviation lookups and 33 racecard-reading lookups. Comparison, regional usage, how/why and translation remain unseeded; lower-priority definition queries are intentionally not blanket-generated.
+`MASTER-006` wave 3 is now active. The search layer is kept separate from canonical knowledge and currently contains **512 reviewed non-canonical queries**: 406 EN/JA direct-definition queries covering all **203 P0 Concepts**, 40 EN/JA comparison queries covering all **20 current reviewed Concept relations**, plus 33 abbreviation lookups and 33 racecard-reading lookups. Regional usage, how/why and translation remain unseeded; lower-priority definition queries are intentionally not blanket-generated.
 
 These rows were removed because the active glossary already models the underlying racing meaning more cleanly, or because the seed represented generic analytical/presentation context rather than an independent racing term.
 
@@ -124,7 +124,7 @@ The abbreviation/code layer remains at **38 source-verified rows**.
 
 There are **0 active candidate Concepts** after final residual wave 13. `GLOSSARY-MASTER-005` therefore passes its evidence/semantic completion gate for the current master.
 
-`GLOSSARY-MASTER-006` is now **in progress**. Waves 1-2 add the search-intent policy, audited query registry, complete P0 EN/JA definition coverage, coverage matrix and readiness gate. The current decision remains **HOLD** until comparison/regional/how-why/translation coverage and worldwide domain/jurisdiction/language readiness audits are completed. Public glossary architecture remains deferred.
+`GLOSSARY-MASTER-006` is now **in progress**. Waves 1-3 add the search-intent policy, audited query registry, complete P0 EN/JA definition coverage, and EN/JA comparison coverage for all current reviewed Concept relations, with the coverage matrix and readiness gate kept explicit. The current decision remains **HOLD** until regional/how-why/translation coverage and worldwide domain/jurisdiction/language readiness audits are completed. Public glossary architecture remains deferred.
 
 ## Dictionary modeling rule
 
