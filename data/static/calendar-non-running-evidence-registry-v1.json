@@ -68,8 +68,8 @@
       "country_id": "hong-kong",
       "system_id": "hong-kong-hkjc-system",
       "authority_id": "hkjc",
-      "mode": "reviewed",
-      "automation_status": "candidate",
+      "mode": "automated",
+      "automation_status": "active",
       "whole_meeting_non_running": "supported",
       "postponement": "not_proven",
       "partial_race_policy": "never_promote_to_whole_meeting",
@@ -82,15 +82,15 @@
       ],
       "example_evidence_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=09&CalYear=2026",
       "reviewed_at": "2026-09-21",
-      "notes": "The official fixture page explicitly states that the 20 September 2026 Sha Tin meeting will be cancelled. Same-source automation is a candidate, but is not marked automated until parser fixtures and production integration exist."
+      "notes": "The already-collected official monthly fixture page is parsed only for an explicit whole-meeting sentence ('The race meeting originally scheduled ... will be/has been/is cancelled'). Race-only cancellation wording is rejected. Confirmed records are emitted into the rolling artifact and durably persisted before public suppression."
     },
     {
       "record_id": "uae-national-racing-system",
       "country_id": "united-arab-emirates",
       "system_id": "uae-national-racing-system",
       "authority_id": "emirates-racing-authority",
-      "mode": "reviewed",
-      "automation_status": "candidate",
+      "mode": "automated",
+      "automation_status": "active",
       "whole_meeting_non_running": "supported",
       "postponement": "not_proven",
       "partial_race_policy": "never_promote_to_whole_meeting",
@@ -103,7 +103,7 @@
       ],
       "example_evidence_url": "https://emiratesracing.com/racecard/2026-03-04/1/declarations",
       "reviewed_at": "2026-09-21",
-      "notes": "ERA racecard pages can explicitly render THIS MEETING HAS BEEN CANCELLED. Existing detail collection already visits the same source family; safe parser integration is a candidate."
+      "notes": "The already-collected official racecard/declarations route is parsed only for the exact whole-meeting status 'THIS MEETING HAS BEEN CANCELLED'. Race-only wording is rejected. Confirmed records are emitted into the rolling artifact and durably persisted before public suppression."
     },
     {
       "record_id": "kra-national-racing-system",
