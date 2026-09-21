@@ -10,7 +10,7 @@ function response(url, body, status = 200) {
   };
 }
 const pages = new Map([
-  ['https://www.jra.go.jp/news/202602/', `
+  ['https://www.jra.go.jp/news/index4.html', `
     <html><body>
       <a href="/news/202602/020802.html">本日【2月8日（日曜）】の東京競馬および京都競馬は開催を中止します</a>
       <a href="/news/202602/020803.html">開催競馬場・今日の出来事、明日・明後日の取消・変更等（2月8日（日曜））</a>
@@ -26,7 +26,6 @@ const pages = new Map([
       <p>本日の第1回東京競馬第4日は、積雪の影響により、開催を中止いたします。</p>
     </body></html>
   `],
-  ['https://www.jra.go.jp/news/202601/', '<html><body></body></html>'],
 ]);
 const fetchImpl = async (url) => {
   if (!pages.has(url)) return response(url, '', 404);
