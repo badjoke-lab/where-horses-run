@@ -30,11 +30,13 @@ const authorityCompactLabelById: Record<string, string> = {
   kra: 'KRA',
   'turkiye-jokey-kulubu': 'TJK',
   tjk: 'TJK',
+  'hipodromo-de-monterrico': 'Monterrico',
 };
 
 const authorityCompactLabelJaById: Record<string, string> = {
   ...authorityCompactLabelById,
   'banei-tokachi': 'ばんえい十勝',
+  'hipodromo-de-monterrico': 'モンテリーコ',
 };
 
 const normalizeNonEmpty = (value: unknown): string | null =>
