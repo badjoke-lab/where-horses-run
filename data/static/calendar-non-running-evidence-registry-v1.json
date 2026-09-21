@@ -15,13 +15,13 @@
       "source_absence_policy": "absent_unconfirmed",
       "acquisition_failure_policy": "preserve_verified_state",
       "replacement_date_policy": "independent_meeting_only",
-      "evidence_source_family": "JRA monthly News index plus explicit meeting-cancellation articles",
+      "evidence_source_family": "JRA current all-news index plus explicit meeting-cancellation articles",
       "evidence_urls": [
-        "https://www.jra.go.jp/news/YYYYMM/"
+        "https://www.jra.go.jp/news/index4.html"
       ],
       "example_evidence_url": "https://www.jra.go.jp/news/202609/092004.html",
       "reviewed_at": "2026-09-21",
-      "notes": "Production discovers bounded candidate notices from the official monthly JRA News index, parses only explicit whole-meeting cancellation wording, binds venue/date to an existing canonical meeting, rejects race-only cancellation wording, and fails closed on notice-fetch failure. Replacement dates remain independent meetings."
+      "notes": "Production scans the official current all-news index, fetches bounded cancellation/change candidate articles, accepts only explicit whole-meeting cancellation wording, binds venue/date to an existing canonical meeting, rejects race-only cancellation wording, and fails closed on news-index/article fetch failure. The deprecated /news/YYYYMM/ assumption is not used."
     },
     {
       "record_id": "japan-nar-system",
