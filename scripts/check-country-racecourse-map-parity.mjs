@@ -22,6 +22,9 @@ const koreaCanonicalIds = [
   'jeju-racecourse',
   'yeongcheon-racecourse',
 ];
+const peruCanonicalIds = [
+  'monterrico-racecourse',
+];
 
 assert.match(
   publicSupport,
@@ -31,8 +34,9 @@ assert.match(
 assert(!chileCanonicalIds.includes('hipodromo-chile-racecourse'));
 assert.equal(chileCanonicalIds.length, 4, 'Chile must expose four canonical active physical racecourses');
 assert.equal(koreaCanonicalIds.length, 4, 'South Korea must expose four canonical active physical racecourses');
+assert.equal(peruCanonicalIds.length, 1, 'Peru reviewed Calendar scope must expose Monterrico as the canonical active physical racecourse');
 
-for (const id of [...chileCanonicalIds, ...koreaCanonicalIds]) {
+for (const id of [...chileCanonicalIds, ...koreaCanonicalIds, ...peruCanonicalIds]) {
   assert(publishableIds.has(id), `${id}: expected publishable map location`);
 }
 
@@ -40,4 +44,6 @@ console.log('CHILE_PUBLIC_RACECOURSE_COUNT: 4');
 console.log('CHILE_MAP_LOCATION_COUNT: 4');
 console.log('SOUTH_KOREA_PUBLIC_RACECOURSE_COUNT: 4');
 console.log('SOUTH_KOREA_MAP_LOCATION_COUNT: 4');
+console.log('PERU_PUBLIC_RACECOURSE_COUNT: 1');
+console.log('PERU_MAP_LOCATION_COUNT: 1');
 console.log('COUNTRY_RACECOURSE_MAP_PARITY: pass');
