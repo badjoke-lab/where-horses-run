@@ -9,7 +9,7 @@ const kanazawa = parseNarConfirmedNonRunningHtml(`
 <p>金沢競馬は大雨の影響により、8月26日および9月2日の開催を取り止めることとなりました。</p>
 </body></html>
 `, {
-  sourceUrl: 'https://www.keiba.go.jp/jranet/topics/2025/n082601.html',
+  sourceUrl: 'https://www.keiba.go.jp/jranet/topics/2025/n000111.html',
   allowedDates: ['2025-08-26','2025-09-02','2025-09-03'],
   checkedAt,
 });
@@ -24,7 +24,7 @@ const monbetsu = parseNarConfirmedNonRunningHtml(`
 <p>7月30日の門別競馬は、悪天候のため開催を取り止めます。</p>
 </body></html>
 `, {
-  sourceUrl: 'https://www.keiba.go.jp/jranet/topics/2025/n073001.html',
+  sourceUrl: 'https://www.keiba.go.jp/jranet/topics/2025/n000108.html',
   allowedDates: ['2025-07-30','2025-07-31'],
   checkedAt,
 });
@@ -38,7 +38,7 @@ const saga = parseNarConfirmedNonRunningHtml(`
 <p>一部の競走は9月1日に順延します。その他の競走は代替開催を行いません。</p>
 </body></html>
 `, {
-  sourceUrl: 'https://www.keiba.go.jp/jranet/topics/2024/n082901.html',
+  sourceUrl: 'https://www.keiba.go.jp/jranet/topics/2024/n000097.html',
   allowedDates: ['2024-08-29','2024-09-01'],
   checkedAt,
 });
@@ -88,7 +88,7 @@ const banei = parseNarConfirmedNonRunningHtml(`
 assert.equal(banei.length, 0, 'Banei is outside the NAR-flat automation scope');
 
 assert.throws(() => parseNarConfirmedNonRunningHtml('<h1>金沢競馬の開催取り止めについて(8/26)</h1>', {
-  sourceUrl: 'https://example.com/jranet/topics/2025/n082601.html',
+  sourceUrl: 'https://example.com/jranet/topics/2025/n000111.html',
   allowedDates: ['2025-08-26'],
 }), /official www\.keiba\.go\.jp/);
 
