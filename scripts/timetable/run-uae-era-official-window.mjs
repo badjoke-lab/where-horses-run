@@ -34,9 +34,11 @@ if (!Number.isInteger(days) || days < 1 || days > 90) throw new Error('--days mu
 const discovery = await discoverUaeEraCurrentSeasonFixtures({ startDate: asOf, days });
 const generatedAt = new Date().toISOString();
 const records = [];
+const meetingPresenceRecords = [];
 for (const fixture of discovery.fixtures) {
   const detail = collectDetail(fixture);
   const classification = detail?.classification ?? null;
+  if (detail?.presence_observation?.state === 'confirmed_non_running') meetingPresenceRecords.push(detail.presence_observation);
   const usableDetail = detail && (detail.source_errors ?? []).length === 0 && ['B', 'B+', 'A', 'A+'].includes(classification?.rank);
   const capabilityRank = usableDetail ? classification.rank : 'C';
   const scheduleUrl = fixture.source?.official_url ?? discovery.official_url;
@@ -79,6 +81,7 @@ const artifact = {
   },
   window: { start_date: asOf, end_date_exclusive: discovery.end_date_exclusive, days },
   records,
+  meeting_presence_records: meetingPresenceRecords,
 };
 const absolute = path.resolve(output);
 fs.mkdirSync(path.dirname(absolute), { recursive: true });
@@ -88,5 +91,6 @@ console.log(JSON.stringify({
   start_date: asOf,
   end_date_exclusive: discovery.end_date_exclusive,
   official_fixture_count: records.length,
+  confirmed_non_running_count: meetingPresenceRecords.length,
   rank_counts: Object.fromEntries(['C', 'B', 'B+', 'A', 'A+'].map((rank) => [rank, records.filter((row) => row.capability_rank === rank).length])),
 }));
