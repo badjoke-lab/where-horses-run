@@ -143,3 +143,14 @@ Meeting-level withdrawal/invalidation remains outside this acceptance helper and
 Acquisition completion is evaluated independently of retained rank and considers an explicit current `acquisition_attempt` before terminal rank. In particular, an A+ canonical meeting can coexist with a current `retry_required` disposition when the present acquisition cycle fails.
 
 Legacy canonical rebuild writers are quarantined from ordinary production use after Wave 3. They require the explicit recovery-only environment flag `WHR_ALLOW_LEGACY_CANONICAL_WRITE=1`; pipeline-v1 promotion delegates canonical acceptance to the shared authority.
+
+
+## Meeting presence and non-running evidence
+
+Meeting presence is governed by [meeting-presence-and-non-running-contract.md](meeting-presence-and-non-running-contract.md).
+
+A successful mother-set acquisition that omits a previously accepted meeting is an `absent_unconfirmed` observation, not an implicit withdrawal or invalidation. Source completeness is acquisition evidence and must not be promoted into semantic proof that an omitted meeting will not run.
+
+Meeting-level non-running publication requires explicit accepted official or reviewed-official evidence. Acquisition failures and parser failures preserve existing accepted evidence. Authority-specific producers may normalize explicit cancellation, abandonment, postponement, or equivalent official statements to `confirmed_non_running`, but the shared authority must not infer that state from absence alone.
+
+The earlier statement that meeting-level withdrawal/invalidation requires an explicit removal workflow remains in force; the non-running contract supplies the publication semantics for that workflow without physically deleting canonical evidence.
