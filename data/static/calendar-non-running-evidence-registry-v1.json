@@ -1,0 +1,236 @@
+{
+  "schema_version": "calendar-non-running-evidence-registry-v1",
+  "reviewed_at": "2026-09-21",
+  "records": [
+    {
+      "record_id": "japan-jra-system",
+      "country_id": "japan",
+      "system_id": "japan-jra-system",
+      "authority_id": "jra",
+      "mode": "reviewed",
+      "automation_status": "candidate",
+      "whole_meeting_non_running": "supported",
+      "postponement": "supported",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "JRA News explicit meeting cancellation/postponement notices",
+      "evidence_urls": [
+        "https://www.jra.go.jp/news/"
+      ],
+      "example_evidence_url": "https://www.jra.go.jp/news/202609/092004.html",
+      "reviewed_at": "2026-09-21",
+      "notes": "Explicit whole-meeting cancellation and substitute-date wording is proven on official JRA pages. Current production acceptance is reviewed evidence; disappearance from programme/mother set never authorizes non-running."
+    },
+    {
+      "record_id": "japan-nar-system",
+      "country_id": "japan",
+      "system_id": "japan-nar-system",
+      "authority_id": "nar-local-government-racing",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "No single normalized nationwide NAR whole-meeting negative-evidence route proven",
+      "evidence_urls": [],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-09-21",
+      "notes": "Individual local organizers can publish cancellation notices, but a safe nationwide authority-normalized route has not yet been proven. Retain on absence."
+    },
+    {
+      "record_id": "japan-banei-system",
+      "country_id": "japan",
+      "system_id": "japan-banei-system",
+      "authority_id": "banei-tokachi",
+      "mode": "reviewed",
+      "automation_status": "candidate",
+      "whole_meeting_non_running": "supported",
+      "postponement": "supported",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Banei Tokachi official TOPICS notices",
+      "evidence_urls": [
+        "https://www.banei-keiba.or.jp/tp_list.php"
+      ],
+      "example_evidence_url": "https://www.banei-keiba.or.jp/tp_detail.php?id=9659",
+      "reviewed_at": "2026-09-21",
+      "notes": "Official Banei notices explicitly identify whole meeting cancellations and can also identify race-only stoppages. Current production path remains reviewed until a bounded parser is added."
+    },
+    {
+      "record_id": "hong-kong-hkjc-system",
+      "country_id": "hong-kong",
+      "system_id": "hong-kong-hkjc-system",
+      "authority_id": "hkjc",
+      "mode": "reviewed",
+      "automation_status": "candidate",
+      "whole_meeting_non_running": "supported",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "HKJC official fixture page final-announcement cancellation text",
+      "evidence_urls": [
+        "https://racing.hkjc.com/en-us/local/information/fixture"
+      ],
+      "example_evidence_url": "https://racing.hkjc.com/en-us/local/information/fixture?CalMonth=09&CalYear=2026",
+      "reviewed_at": "2026-09-21",
+      "notes": "The official fixture page explicitly states that the 20 September 2026 Sha Tin meeting will be cancelled. Same-source automation is a candidate, but is not marked automated until parser fixtures and production integration exist."
+    },
+    {
+      "record_id": "uae-national-racing-system",
+      "country_id": "united-arab-emirates",
+      "system_id": "uae-national-racing-system",
+      "authority_id": "emirates-racing-authority",
+      "mode": "reviewed",
+      "automation_status": "candidate",
+      "whole_meeting_non_running": "supported",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "ERA official racecard/declarations meeting status",
+      "evidence_urls": [
+        "https://emiratesracing.com/racecard/"
+      ],
+      "example_evidence_url": "https://emiratesracing.com/racecard/2026-03-04/1/declarations",
+      "reviewed_at": "2026-09-21",
+      "notes": "ERA racecard pages can explicitly render THIS MEETING HAS BEEN CANCELLED. Existing detail collection already visits the same source family; safe parser integration is a candidate."
+    },
+    {
+      "record_id": "kra-national-racing-system",
+      "country_id": "south-korea",
+      "system_id": "kra-national-racing-system",
+      "authority_id": "korea-racing-authority",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "KRA official operation-plan and race-fast-report sources; no stable whole-meeting cancellation route proven",
+      "evidence_urls": [
+        "https://race.kra.co.kr/"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-09-21",
+      "notes": "KRA exposes race-level changes and official operating plans, but this audit did not prove a stable machine-readable whole-meeting cancellation/postponement route. Retain verified meetings on absence."
+    },
+    {
+      "record_id": "tjk-national-racing-system",
+      "country_id": "turkey",
+      "system_id": "tjk-national-racing-system",
+      "authority_id": "turkiye-jokey-kulubu",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "TJK annual/daily official programmes; no explicit whole-meeting negative-evidence route proven",
+      "evidence_urls": [
+        "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami",
+        "https://www.tjk.org/TR/YarisSever/Query/Page/YillikYarisProgrami"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-09-21",
+      "notes": "Current official programme sources prove positive schedule data. Their omission must not be interpreted as cancellation."
+    },
+    {
+      "record_id": "sorec-racing-information-system",
+      "country_id": "morocco",
+      "system_id": "sorec-racing-information-system",
+      "authority_id": "sorec",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "SOREC official programme family; no reliable explicit whole-meeting negative-evidence route proven",
+      "evidence_urls": [
+        "https://www.sorec.ma/"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-09-21",
+      "notes": "No reliable official cancellation/postponement route was proven in this wave. Existing positive source disappearance remains absent_unconfirmed."
+    },
+    {
+      "record_id": "chile-teletrak-racing-system",
+      "country_id": "chile",
+      "system_id": "chile-teletrak-racing-system",
+      "authority_id": "teletrak-chile",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Teletrak/venue official programme network; no normalized whole-meeting negative-evidence route proven",
+      "evidence_urls": [
+        "https://www.teletrak.cl/"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-09-21",
+      "notes": "Chile production discovery spans multiple venue programmes. A safe cross-venue cancellation/postponement route has not yet been proven."
+    },
+    {
+      "record_id": "ireland-hri-racing-system",
+      "country_id": "ireland",
+      "system_id": "ireland-hri-racing-system",
+      "authority_id": "horse-racing-ireland",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "HRI annual fixture PDF and racecard Meeting Updates; stable whole-meeting status route not yet proven",
+      "evidence_urls": [
+        "https://www.hri.ie/racecards/"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-09-21",
+      "notes": "HRI clearly handles abandoned/rescheduled fixtures operationally, but the current WHR source routes do not yet prove a bounded whole-meeting non-running parser. Retain on absence until that route is demonstrated."
+    },
+    {
+      "record_id": "peru-monterrico-programme-system",
+      "country_id": "peru",
+      "system_id": "peru-monterrico-programme-system",
+      "authority_id": "hipodromo-de-monterrico",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Monterrico official programme/date API family; no explicit whole-meeting negative-evidence route proven",
+      "evidence_urls": [
+        "https://hipodromodemonterrico.com.pe/"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-09-21",
+      "notes": "The date/programme API is a positive schedule source. Failed or empty date discovery cannot be promoted to cancellation."
+    }
+  ]
+}
