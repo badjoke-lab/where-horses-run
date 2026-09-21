@@ -1,0 +1,99 @@
+{
+  "schema_version": "calendar-readiness-live-official-v1",
+  "records": [
+    {
+      "readiness_id": "morocco--sorec-racing-information-system--sorec-programme-reunion",
+      "country_id": "morocco",
+      "country_tracker_delivery_no": "04",
+      "system_id": "sorec-racing-information-system",
+      "system_name_en": "SOREC racing information system",
+      "authority_source_key": "morocco/sorec/sorec-programme-reunion",
+      "racecourse_ids": [],
+      "coverage_scope": "authority_wide",
+      "technical_rank": "A",
+      "public_ceiling": "A",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "mixed",
+      "access_mode": "direct",
+      "automation_mode": "semi_automatic",
+      "refresh_classes": [
+        "event_driven",
+        "manual"
+      ],
+      "readiness": "prototype_ready",
+      "implementation_status": "prototype",
+      "fallback": "downgrade_to_C",
+      "source_status": "verified",
+      "checked_date": "2026-09-09",
+      "evidence_reviewed_at": "2026-09-21",
+      "revalidation_trigger": "Revalidate if the registered live source family or its bounded programme parser changes.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/calendar/acquisition-completion-audit-2026-09-11.md",
+      "limitations": [
+        "Readiness is not evidence of acquisition success. Canonical rank and current acquisition disposition remain independent.",
+        "No richer-field publication is authorized by this readiness entry.",
+        "The current production adapter proves schedule identity only; detail acquisition remains an implementation gap. Technical A registration must not fabricate time evidence."
+      ],
+      "notes": "Readiness integration for the existing registered live source and publication policy; the historical source record is not changed."
+    },
+    {
+      "readiness_id": "chile--chile-teletrak-racing-system--chile-teletrak-weekly-programme",
+      "country_id": "chile",
+      "country_tracker_delivery_no": "05",
+      "system_id": "chile-teletrak-racing-system",
+      "system_name_en": "Chile venue programme network",
+      "authority_source_key": "chile/teletrak-chile/chile-teletrak-weekly-programme",
+      "racecourse_ids": [
+        "club-hipico-de-santiago-racecourse",
+        "hipodromo-chile",
+        "valparaiso-sporting-club-racecourse",
+        "club-hipico-de-concepcion-racecourse"
+      ],
+      "coverage_scope": "subset_of_authority_racecourses",
+      "technical_rank": "A",
+      "public_ceiling": "A",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": true,
+        "last_race_time": true,
+        "per_race_post_times": true,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "mixed",
+      "access_mode": "direct",
+      "automation_mode": "semi_automatic",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "readiness": "prototype_ready",
+      "implementation_status": "prototype",
+      "fallback": "downgrade_to_C",
+      "source_status": "verified",
+      "checked_date": "2026-09-11",
+      "evidence_reviewed_at": "2026-09-21",
+      "revalidation_trigger": "Revalidate if the registered live source family or its bounded programme parser changes.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/calendar/chile-teletrak-programme-enrichment.md",
+      "limitations": [
+        "Readiness is not evidence of acquisition success. Canonical rank and current acquisition disposition remain independent.",
+        "No richer-field publication is authorized by this readiness entry."
+      ],
+      "notes": "Readiness integration for the existing registered live source and publication policy; the historical source record is not changed."
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "schema_version": "timetable-source-aliases-v1",
-  "purpose": "Explicit migration aliases from legacy canonical timetable source IDs to reviewed authority/source and Calendar Readiness source IDs.",
+  "purpose": "Explicit reviewed readiness bindings for legacy and current producer source IDs; bindings do not rewrite canonical source provenance or confer evidence rank.",
   "aliases": [
     {
       "country_id": "united-arab-emirates",
@@ -50,6 +50,181 @@
       "legacy_source_id": "hkjc-racecard-route",
       "canonical_source_id": "hkjc-fixture-list",
       "reason": "The canonical HKJC readiness record covers the reviewed fixture and programme route family."
+    },
+    {
+      "country_id": "japan",
+      "authority_id": "jra",
+      "legacy_source_id": "jra-racing-calendar-programme",
+      "canonical_source_id": "jra-programme",
+      "reason": "The active JRA 30-day discovery and programme parser use the reviewed JRA calendar/programme family. This readiness alias does not rewrite canonical source provenance."
+    },
+    {
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "legacy_source_id": "nar-monthly-schedule-racelist",
+      "canonical_source_id": "nar-race-list-deba-table",
+      "reason": "The active combined NAR monthly discovery/RaceList producer uses the reviewed fourteen-venue RaceList/DebaTable family; accepted evidence still determines meeting rank."
+    },
+    {
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "legacy_source_id": "banei-official-monthly-schedule-nar-detail",
+      "canonical_source_id": "nar-banei-race-list-deba-table",
+      "reason": "The active Banei producer combines official schedule discovery with the separately reviewed Banei NAR detail family, never the flat-racing NAR profile."
+    },
+    {
+      "country_id": "japan",
+      "authority_id": "banei-tokachi",
+      "legacy_source_id": "banei-official-schedule-nar-detail",
+      "canonical_source_id": "nar-banei-race-list-deba-table",
+      "reason": "The active Banei producer combines official schedule discovery with the separately reviewed Banei NAR detail family, never the flat-racing NAR profile."
+    },
+    {
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "legacy_source_id": "hkjc-racecard-public-timetable",
+      "canonical_source_id": "hkjc-fixture-list",
+      "reason": "The live HKJC racecard producer belongs to the reviewed fixture/programme family. Its existing public ceiling and confirmed field permissions remain unchanged; this is not the manual-import route."
+    },
+    {
+      "country_id": "south-korea",
+      "authority_id": "korea-racing-authority",
+      "legacy_source_id": "kra-annual-race-operation-plan",
+      "canonical_source_id": "kra-2026-racing-operation-overview",
+      "reason": "The live annual-plan producer consumes the registered 2026 KRA racing operation overview; the schedule-only readiness remains unchanged."
+    },
+    {
+      "country_id": "turkey",
+      "authority_id": "turkiye-jokey-kulubu",
+      "legacy_source_id": "tjk-annual-programme",
+      "canonical_source_id": "tjk-daily-programme",
+      "reason": "The reviewed TJK readiness record explicitly covers annual fixture discovery and current daily programme acquisition, with the existing public ceiling retained."
+    },
+    {
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "legacy_source_id": "hri-racecards-month",
+      "canonical_source_id": "hri-fixtures",
+      "reason": "The registered HRI monthly Racecards route enriches the reviewed HRI fixture/meeting family through A; richer-field publication remains disabled by policy."
+    },
+    {
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "legacy_source_id": "nankankeiba-south-kanto-calendar",
+      "canonical_source_id": "nar-race-list-deba-table",
+      "reason": "Explicit official regional discovery/fallback identity in the current fourteen-venue NAR reconciliation family. The readiness profile governs publication of accepted combined evidence, not a claim that this regional URL is a NAR RaceList URL. Canonical provenance and evidence-derived rank are unchanged; see docs/calendar/live-source-readiness-integration.md."
+    },
+    {
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "legacy_source_id": "iwatekeiba-official-calendar",
+      "canonical_source_id": "nar-race-list-deba-table",
+      "reason": "Explicit official regional discovery/fallback identity in the current fourteen-venue NAR reconciliation family. The readiness profile governs publication of accepted combined evidence, not a claim that this regional URL is a NAR RaceList URL. Canonical provenance and evidence-derived rank are unchanged; see docs/calendar/live-source-readiness-integration.md."
+    },
+    {
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "legacy_source_id": "hyogo-urban-keiba-official-calendar",
+      "canonical_source_id": "nar-race-list-deba-table",
+      "reason": "Explicit official regional discovery/fallback identity in the current fourteen-venue NAR reconciliation family. The readiness profile governs publication of accepted combined evidence, not a claim that this regional URL is a NAR RaceList URL. Canonical provenance and evidence-derived rank are unchanged; see docs/calendar/live-source-readiness-integration.md."
+    },
+    {
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "legacy_source_id": "tokai-region-joint-official-calendar",
+      "canonical_source_id": "nar-race-list-deba-table",
+      "reason": "Explicit official regional discovery/fallback identity in the current fourteen-venue NAR reconciliation family. The readiness profile governs publication of accepted combined evidence, not a claim that this regional URL is a NAR RaceList URL. Canonical provenance and evidence-derived rank are unchanged; see docs/calendar/live-source-readiness-integration.md."
+    },
+    {
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "legacy_source_id": "hokkaido-keiba-official-calendar",
+      "canonical_source_id": "nar-race-list-deba-table",
+      "reason": "Explicit official regional discovery/fallback identity in the current fourteen-venue NAR reconciliation family. The readiness profile governs publication of accepted combined evidence, not a claim that this regional URL is a NAR RaceList URL. Canonical provenance and evidence-derived rank are unchanged; see docs/calendar/live-source-readiness-integration.md."
+    },
+    {
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "legacy_source_id": "kanazawa-keiba-official-calendar",
+      "canonical_source_id": "nar-race-list-deba-table",
+      "reason": "Explicit official regional discovery/fallback identity in the current fourteen-venue NAR reconciliation family. The readiness profile governs publication of accepted combined evidence, not a claim that this regional URL is a NAR RaceList URL. Canonical provenance and evidence-derived rank are unchanged; see docs/calendar/live-source-readiness-integration.md."
+    },
+    {
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "legacy_source_id": "kochi-keiba-official-calendar",
+      "canonical_source_id": "nar-race-list-deba-table",
+      "reason": "Explicit official regional discovery/fallback identity in the current fourteen-venue NAR reconciliation family. The readiness profile governs publication of accepted combined evidence, not a claim that this regional URL is a NAR RaceList URL. Canonical provenance and evidence-derived rank are unchanged; see docs/calendar/live-source-readiness-integration.md."
+    },
+    {
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "legacy_source_id": "saga-keiba-official-calendar",
+      "canonical_source_id": "nar-race-list-deba-table",
+      "reason": "Explicit official regional discovery/fallback identity in the current fourteen-venue NAR reconciliation family. The readiness profile governs publication of accepted combined evidence, not a claim that this regional URL is a NAR RaceList URL. Canonical provenance and evidence-derived rank are unchanged; see docs/calendar/live-source-readiness-integration.md."
+    },
+    {
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "legacy_source_id": "nankankeiba-south-kanto-programme",
+      "canonical_source_id": "nar-race-list-deba-table",
+      "reason": "Explicit official regional discovery/fallback identity in the current fourteen-venue NAR reconciliation family. The readiness profile governs publication of accepted combined evidence, not a claim that this regional URL is a NAR RaceList URL. Canonical provenance and evidence-derived rank are unchanged; see docs/calendar/live-source-readiness-integration.md."
+    },
+    {
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "legacy_source_id": "iwatekeiba-official-programme-pdf-fallback",
+      "canonical_source_id": "nar-race-list-deba-table",
+      "reason": "Explicit official regional discovery/fallback identity in the current fourteen-venue NAR reconciliation family. The readiness profile governs publication of accepted combined evidence, not a claim that this regional URL is a NAR RaceList URL. Canonical provenance and evidence-derived rank are unchanged; see docs/calendar/live-source-readiness-integration.md."
+    },
+    {
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "legacy_source_id": "iwatekeiba-official-time-fallback",
+      "canonical_source_id": "nar-race-list-deba-table",
+      "reason": "Explicit official regional discovery/fallback identity in the current fourteen-venue NAR reconciliation family. The readiness profile governs publication of accepted combined evidence, not a claim that this regional URL is a NAR RaceList URL. Canonical provenance and evidence-derived rank are unchanged; see docs/calendar/live-source-readiness-integration.md."
+    },
+    {
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "legacy_source_id": "kasamatsu-official-first-race-fallback",
+      "canonical_source_id": "nar-race-list-deba-table",
+      "reason": "Explicit official regional discovery/fallback identity in the current fourteen-venue NAR reconciliation family. The readiness profile governs publication of accepted combined evidence, not a claim that this regional URL is a NAR RaceList URL. Canonical provenance and evidence-derived rank are unchanged; see docs/calendar/live-source-readiness-integration.md."
+    },
+    {
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "legacy_source_id": "saga-official-start-times-fallback",
+      "canonical_source_id": "nar-race-list-deba-table",
+      "reason": "Explicit official regional discovery/fallback identity in the current fourteen-venue NAR reconciliation family. The readiness profile governs publication of accepted combined evidence, not a claim that this regional URL is a NAR RaceList URL. Canonical provenance and evidence-derived rank are unchanged; see docs/calendar/live-source-readiness-integration.md."
+    },
+    {
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "legacy_source_id": "monbetsu-official-raceinfo-fallback",
+      "canonical_source_id": "nar-race-list-deba-table",
+      "reason": "Explicit official regional discovery/fallback identity in the current fourteen-venue NAR reconciliation family. The readiness profile governs publication of accepted combined evidence, not a claim that this regional URL is a NAR RaceList URL. Canonical provenance and evidence-derived rank are unchanged; see docs/calendar/live-source-readiness-integration.md."
+    },
+    {
+      "country_id": "chile",
+      "authority_id": "teletrak-chile",
+      "legacy_source_id": "reviewed-public:data/static/calendar-reviewed-2026-09-10-morocco-chile-ireland-v1.json",
+      "canonical_source_id": "chile-teletrak-weekly-programme",
+      "reason": "Bind the existing reviewed supplement to its explicit current source family rather than an ambiguous or obsolete country-level readiness record. Reviewed exclusions and publication policy remain authoritative."
+    },
+    {
+      "country_id": "morocco",
+      "authority_id": "sorec",
+      "legacy_source_id": "reviewed-public:data/static/calendar-reviewed-2026-09-10-morocco-chile-ireland-v1.json",
+      "canonical_source_id": "sorec-programme-reunion",
+      "reason": "Bind the existing reviewed supplement to its explicit current source family rather than an ambiguous or obsolete country-level readiness record. Reviewed exclusions and publication policy remain authoritative."
+    },
+    {
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "legacy_source_id": "reviewed-public:data/static/calendar-reviewed-2026-09-10-morocco-chile-ireland-v1.json",
+      "canonical_source_id": "hri-fixtures",
+      "reason": "Bind the existing reviewed supplement to its explicit current source family rather than an ambiguous or obsolete country-level readiness record. Reviewed exclusions and publication policy remain authoritative."
     }
   ]
 }
