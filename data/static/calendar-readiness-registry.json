@@ -2125,7 +2125,10 @@
       "system_id": "saudi-arabia-jcsa-system",
       "system_name_en": "Jockey Club of Saudi Arabia",
       "authority_source_key": "saudi-arabia/jockey-club-of-saudi-arabia/jcsa-races",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "king-khalid-racecourse",
+        "king-abdulaziz-racecourse"
+      ],
       "coverage_scope": "authority_wide",
       "technical_rank": "A",
       "public_ceiling": "A",
@@ -2141,26 +2144,27 @@
         "course": false
       },
       "source_format": "html",
-      "access_mode": "query_parameter",
-      "automation_mode": "semi_automatic",
+      "access_mode": "date_route",
+      "automation_mode": "automatic",
       "refresh_classes": [
         "seasonal",
         "weekly",
         "near_meeting"
       ],
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "fallback": "downgrade_to_C",
+      "readiness": "ready",
+      "implementation_status": "public_active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
+      "checked_date": "2026-09-21",
+      "evidence_reviewed_at": "2026-09-21",
       "revalidation_trigger": "Revalidate at JCSA season rollover or when meeting and race routes change.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/35-saudi-arabia/final-summary.json",
       "limitations": [
-        "Race conditions, purse, participants, betting, results, and complete programme fields remain excluded."
+        "Race conditions, purse, participants, betting, results, and complete programme fields remain excluded.",
+        "A date route without a meeting fingerprint is absent_unconfirmed and is not evidence of cancellation or postponement."
       ],
-      "notes": "A centralized JCSA prototype can target schedule fields only."
+      "notes": "Production JCSA runner checks current official venue-season bounds and each in-season date route. Complete race rows support evidence-derived A; meeting pages without published race rows remain valid C pending publication; fetch/parse failures preserve existing verified state."
     },
     {
       "readiness_id": "india--india-bangalore-turf-club--bangalore-fixtures",
