@@ -28,19 +28,21 @@
       "country_id": "japan",
       "system_id": "japan-nar-system",
       "authority_id": "nar-local-government-racing",
-      "mode": "unsupported",
-      "automation_status": "not_implemented",
-      "whole_meeting_non_running": "not_proven",
-      "postponement": "not_proven",
+      "mode": "automated",
+      "automation_status": "active",
+      "whole_meeting_non_running": "supported",
+      "postponement": "supported",
       "partial_race_policy": "never_promote_to_whole_meeting",
       "source_absence_policy": "absent_unconfirmed",
       "acquisition_failure_policy": "preserve_verified_state",
       "replacement_date_policy": "independent_meeting_only",
-      "evidence_source_family": "No single normalized nationwide NAR whole-meeting negative-evidence route proven",
-      "evidence_urls": [],
-      "example_evidence_url": null,
+      "evidence_source_family": "NAR official JRA-net topic notices — explicit positive-evidence subset, non-exhaustive",
+      "evidence_urls": [
+        "https://www.keiba.go.jp/jranet/topics/YYYY/index.html"
+      ],
+      "example_evidence_url": "https://www.keiba.go.jp/jranet/topics/2025/n000111.html",
       "reviewed_at": "2026-09-21",
-      "notes": "Individual local organizers can publish cancellation notices, but a safe nationwide authority-normalized route has not yet been proven. Retain on absence."
+      "notes": "Production scans bounded official NAR JRA-net topic year indexes for explicit whole-meeting cancellation notices covering the 14 flat NAR racecourses. Only venue-bound whole-meeting title/body evidence is accepted; race-only notices and Banei are rejected. This route is an auxiliary positive-evidence subset and is not treated as an exhaustive nationwide cancellation feed: no matching notice or any source failure remains absent_unconfirmed and preserves verified state. Replacement/rescheduled dates are independent meetings."
     },
     {
       "record_id": "japan-banei-system",
