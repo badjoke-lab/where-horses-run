@@ -1,7 +1,7 @@
 # Live Calendar source readiness integration
 
-Work ID: `WHR-CAL-LIVE-SOURCE-READINESS`  
-Lane: Calendar refresh regression repair  
+Work ID: `WHR-CAL-LIVE-SOURCE-READINESS`
+Lane: Calendar refresh regression repair
 Reviewed: 2026-09-21
 
 ## Incident and boundary
