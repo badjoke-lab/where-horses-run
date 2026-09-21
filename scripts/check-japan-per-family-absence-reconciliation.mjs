@@ -70,6 +70,29 @@ assert.deepEqual(selection.removed_meeting_ids, [
 ]);
 assert.deepEqual(selection.preserved_meeting_ids, ['jra-nakayama-racecourse-2026-09-12', 'nar-kitami-racecourse-2026-09-07']);
 
+const canonicalOnlyPartial = selectPublicAbsenceReconciliation({
+  publicMeetings: [],
+  canonicalMeetings: [rows.jra],
+  officialMeetingIds: new Set(),
+  rangeDates: new Set(['2026-09-12']),
+  sourceCompletenessRows: completeness,
+});
+assert.deepEqual(canonicalOnlyPartial.removed_meeting_ids, []);
+assert.deepEqual(canonicalOnlyPartial.preserved_meeting_ids, ['jra-nakayama-racecourse-2026-09-12']);
+
+const jraComplete = completeness.map((row) => row.source_id === 'jra-racing-calendar-programme'
+  ? { ...row, completeness: 'complete' }
+  : row);
+const canonicalOnlyComplete = selectPublicAbsenceReconciliation({
+  publicMeetings: [],
+  canonicalMeetings: [rows.jra],
+  officialMeetingIds: new Set(),
+  rangeDates: new Set(['2026-09-12']),
+  sourceCompletenessRows: jraComplete,
+});
+assert.deepEqual(canonicalOnlyComplete.removed_meeting_ids, ['jra-nakayama-racecourse-2026-09-12']);
+assert.deepEqual(canonicalOnlyComplete.preserved_meeting_ids, []);
+
 for (const [sourceId, targetRow] of [
   ['hyogo-urban-keiba-official-calendar', rows.hyogo],
   ['tokai-region-joint-official-calendar', rows.tokaiNagoya],

@@ -136,13 +136,22 @@ export function canReconcileMeetingAbsence(row, sourceCompletenessRows) {
 
 export function selectPublicAbsenceReconciliation({
   publicMeetings,
+  canonicalMeetings = [],
   officialMeetingIds,
   rangeDates,
   sourceCompletenessRows,
 }) {
   const officialIds = officialMeetingIds instanceof Set ? officialMeetingIds : new Set(officialMeetingIds ?? []);
   const dates = rangeDates instanceof Set ? rangeDates : new Set(rangeDates ?? []);
-  const stale = (publicMeetings ?? []).filter((row) => row?.country_id === 'japan'
+  // Canonical rows are public-projection candidates even when they are already
+  // absent from the current public snapshot. Include both surfaces so complete
+  // mother-set negative evidence cannot be undone by scoped reprojection.
+  const candidates = [...new Map(
+    [...(canonicalMeetings ?? []), ...(publicMeetings ?? [])]
+      .filter((row) => row?.meeting_id)
+      .map((row) => [row.meeting_id, row]),
+  ).values()];
+  const stale = candidates.filter((row) => row?.country_id === 'japan'
     && dates.has(row.date)
     && !officialIds.has(row.meeting_id));
   const removed = [];

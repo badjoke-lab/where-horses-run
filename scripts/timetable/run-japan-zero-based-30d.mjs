@@ -436,6 +436,7 @@ const isAbsentPublicMeeting = (row) => row?.country_id === 'japan'
   && !officialIds.has(row.meeting_id);
 const absenceSelection = selectPublicAbsenceReconciliation({
   publicMeetings: result.public,
+  canonicalMeetings: result.canonical,
   officialMeetingIds: officialIds,
   rangeDates,
   sourceCompletenessRows: completenessRows,
