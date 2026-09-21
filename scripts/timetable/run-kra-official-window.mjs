@@ -156,7 +156,48 @@ if (!output) throw new Error('--output=<path> is required');
 if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate)) throw new Error('--as-of must be YYYY-MM-DD');
 if (!Number.isInteger(days) || days < 1 || days > 62) throw new Error('--days must be 1..62');
 
-const planHtml = await fetchKraHtml(OFFICIAL_PLAN_URL);
+let planHtml;
+try {
+  planHtml = await fetchKraHtml(OFFICIAL_PLAN_URL);
+} catch (error) {
+  const generatedAt = new Date().toISOString();
+  const artifact = {
+    schema_version: 'kra-official-window-candidates-v1',
+    generated_at: generatedAt,
+    source: 'kra',
+    country_id: 'south-korea',
+    authority_id: 'korea-racing-authority',
+    racing_system_id: 'kra-national-racing-system',
+    timezone: 'Asia/Seoul',
+    completeness: 'fetch_failed',
+    acquisition_attempt: {
+      attempted_at: generatedAt,
+      status: 'network_error',
+      source_id: 'kra-annual-race-operation-plan',
+      route_id: null,
+      error_code: error?.cause?.code === 'UND_ERR_CONNECT_TIMEOUT' || error?.name === 'TimeoutError' ? 'timeout' : 'fetch_error',
+    },
+    discovery: {
+      method: 'official_operation_plan_dynamic_week_pattern_plus_published_racecard_gated_todayrace',
+      schedule_source_id: 'kra-annual-race-operation-plan',
+      schedule_source_url: OFFICIAL_PLAN_URL,
+      error: String(error?.message ?? error).slice(0, 300),
+    },
+    window: { start_date: startDate, end_date_exclusive: null, days },
+    records: [],
+  };
+  const absolute = path.resolve(output);
+  fs.mkdirSync(path.dirname(absolute), { recursive: true });
+  fs.writeFileSync(absolute, `${JSON.stringify(artifact, null, 2)}\n`);
+  console.log(JSON.stringify({
+    output,
+    start_date: startDate,
+    completeness: 'fetch_failed',
+    official_fixture_count: 0,
+    acquisition_attempt: artifact.acquisition_attempt,
+  }));
+  process.exit(0);
+}
 const plan = parseKraOperationPlan(planHtml);
 const windowCoverage = assessKraWindowCoverage(plan.year, startDate, days);
 if (!windowCoverage.start_year_available) {
