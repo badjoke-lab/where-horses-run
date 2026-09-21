@@ -128,10 +128,10 @@ export function requiredMotherSetSourcesForMeeting(row) {
   return null;
 }
 
-export function canReconcileMeetingAbsence(row, sourceCompletenessRows) {
-  const required = requiredMotherSetSourcesForMeeting(row);
-  if (!required?.length) return false;
-  return assessMotherSetCompleteness(sourceCompletenessRows, required).complete;
+export function canReconcileMeetingAbsence() {
+  // Compatibility hook for callers while explicit negative-evidence reconciliation
+  // is introduced. Mother-set completeness alone never authorizes suppression.
+  return false;
 }
 
 export function selectPublicAbsenceReconciliation({
@@ -144,8 +144,8 @@ export function selectPublicAbsenceReconciliation({
   const officialIds = officialMeetingIds instanceof Set ? officialMeetingIds : new Set(officialMeetingIds ?? []);
   const dates = rangeDates instanceof Set ? rangeDates : new Set(rangeDates ?? []);
   // Canonical rows are public-projection candidates even when they are already
-  // absent from the current public snapshot. Include both surfaces so complete
-  // mother-set negative evidence cannot be undone by scoped reprojection.
+  // absent from the current public snapshot. Include both surfaces so an
+  // unconfirmed absence cannot be turned into an implicit deletion by scoped reprojection.
   const candidates = [...new Map(
     [...(canonicalMeetings ?? []), ...(publicMeetings ?? [])]
       .filter((row) => row?.meeting_id)
