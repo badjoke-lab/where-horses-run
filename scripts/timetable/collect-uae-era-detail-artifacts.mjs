@@ -1,5 +1,6 @@
 import {
   classifyUaeEraDetailMeeting,
+  detectUaeEraConfirmedNonRunning,
   discoverUaeEraRaceNumbers,
   parseUaeEraPublicSafeRacecardHtml,
   uaeEraDetailContractV1,
@@ -35,6 +36,65 @@ async function fetchOfficial(url) {
 
 const firstUrl = `https://emiratesracing.com/racecard/${date}/1/declarations`;
 const first = await fetchOfficial(firstUrl);
+const checkedAt = new Date().toISOString();
+const nonRunning = detectUaeEraConfirmedNonRunning(first.body, { sourceUrl: first.final_url });
+if (nonRunning.confirmed_non_running) {
+  const output = {
+    schema_version: 'calendar-uae-era-detail-live-evidence-v1',
+    work_id: 'WHR-CAL-UAE-ERA-DETAIL-RECOVERY',
+    implementation_unit: 'UAE-DETAIL-RECOVERY-01',
+    generated_at: checkedAt,
+    source: {
+      source_id: uaeEraDetailContractV1.source_id,
+      authority_id: uaeEraDetailContractV1.authority_id,
+      official_hostname: uaeEraDetailContractV1.official_hostname,
+      route_template: 'https://emiratesracing.com/racecard/{date}/{race_number}/declarations',
+      response_body_retained: false,
+    },
+    meeting: {
+      date,
+      timezone: uaeEraDetailContractV1.timezone,
+      racecourse_id: racecourseId,
+      race_count: 0,
+      meeting_complete: false,
+    },
+    classification: {
+      rank: 'C',
+      first_race_time_local: null,
+      last_race_time_local: null,
+      timetable_rows: [],
+    },
+    presence_observation: {
+      meeting_id: `era-${racecourseId}-${date}`,
+      country_id: uaeEraDetailContractV1.country_id,
+      authority_id: uaeEraDetailContractV1.authority_id,
+      racecourse_id: racecourseId,
+      date,
+      state: 'confirmed_non_running',
+      scope: 'whole_meeting',
+      evidence_type: 'official_explicit_non_running',
+      source_id: uaeEraDetailContractV1.source_id,
+      official_source_url: first.final_url,
+      checked_at: checkedAt,
+      note: 'ERA racecard/declarations page explicitly states THIS MEETING HAS BEEN CANCELLED.',
+    },
+    observations: [],
+    source_errors: [],
+    safety: {
+      participant_fields_retained: false,
+      betting_fields_retained: false,
+      result_fields_retained: false,
+      payout_fields_retained: false,
+      raw_html_retained: false,
+      canonical_write: false,
+      public_write: false,
+      publication_effect: 'confirmed_non_running_candidate',
+      human_review_required: false,
+    },
+  };
+  process.stdout.write(`${JSON.stringify(output, null, 2)}\n`);
+  process.exit(0);
+}
 let raceNumbers = discoverUaeEraRaceNumbers(first.body, date);
 if (raceNumbers.length === 0 && expectedRaces !== null) raceNumbers = Array.from({ length: expectedRaces }, (_, index) => index + 1);
 if (raceNumbers.length === 0) throw new Error('ERA racecard page exposed no bounded race navigation');
@@ -65,7 +125,7 @@ const output = {
   schema_version: 'calendar-uae-era-detail-live-evidence-v1',
   work_id: 'WHR-CAL-UAE-ERA-DETAIL-RECOVERY',
   implementation_unit: 'UAE-DETAIL-RECOVERY-01',
-  generated_at: new Date().toISOString(),
+  generated_at: checkedAt,
   source: {
     source_id: uaeEraDetailContractV1.source_id,
     authority_id: uaeEraDetailContractV1.authority_id,
