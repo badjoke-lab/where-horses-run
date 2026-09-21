@@ -128,6 +128,8 @@ jobs:
           node scripts/check-saga-official-30d.mjs
       - name: Exercise reviewed Calendar preservation
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
+      - name: Exercise confirmed non-running public suppression
+        run: node scripts/timetable/apply-meeting-presence-dispositions.mjs
       - name: Validate site build
         run: npm run build
       - name: Check diff formatting
@@ -259,6 +261,7 @@ jobs:
           node scripts/check-kra-window-bounds.mjs
           node scripts/check-ireland-hri-fixtures-adapter.mjs
           node scripts/check-peru-monterrico-adapter.mjs
+          node scripts/check-meeting-presence-contract.mjs
       - name: Refresh Japan official mother set and best available detail
         run: |
           node scripts/timetable/run-japan-zero-based-30d.mjs \
@@ -540,6 +543,7 @@ jobs:
               --racing-system-id=peru-monterrico-programme-system \
               --timezone=America/Lima
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
+            node scripts/timetable/apply-meeting-presence-dispositions.mjs
             npm run build
           }
 
