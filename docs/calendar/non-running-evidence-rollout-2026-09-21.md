@@ -32,6 +32,7 @@ This leaves zero production countries unclassified.
 
 - JRA: official 2026-09-21 Nakayama cancellation / substitute-date notice.
 - Banei Tokachi: official notice cancelling the 2025-05-10 through 2025-05-12 Banei meetings.
+- NAR: official JRA-net notices explicitly cancel Kanazawa on 2025-08-26 and 2025-09-02, Monbetsu on 2025-07-30, and Saga on 2024-08-29; the Saga notice separately states which races were moved and that the rest had no substitute meeting.
 - HKJC: September 2026 official fixture page states that the Sha Tin meeting originally scheduled for 20 September 2026 will be cancelled.
 - ERA: official 2026-03-04 Meydan racecard/declarations page renders `THIS MEETING HAS BEEN CANCELLED`.
 
