@@ -157,7 +157,9 @@ export function selectPublicAbsenceReconciliation({
   const removed = [];
   const preserved = [];
   for (const row of stale) {
-    (canReconcileMeetingAbsence(row, sourceCompletenessRows) ? removed : preserved).push(row.meeting_id);
+    // Absence from a complete mother set is retained conservatively. Do not turn
+    // source completeness into negative meeting evidence.
+    preserved.push(row.meeting_id);
   }
   return {
     removed_meeting_ids: [...new Set(removed)].sort(),
