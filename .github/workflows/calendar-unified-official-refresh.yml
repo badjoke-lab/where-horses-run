@@ -27,6 +27,7 @@ on:
       - 'scripts/check-hkjc-non-running-evidence.mjs'
       - 'scripts/check-uae-era-non-running-evidence.mjs'
       - 'scripts/check-jra-non-running-evidence.mjs'
+      - 'scripts/check-jra-non-running-discovery.mjs'
       - 'scripts/check-banei-non-running-evidence.mjs'
       - 'data/static/calendar-non-running-evidence-registry-v1.json'
       - 'data/static/calendar-non-running-evidence-registry.schema.json'
@@ -120,6 +121,7 @@ jobs:
           node scripts/check-hkjc-non-running-evidence.mjs
           node scripts/check-uae-era-non-running-evidence.mjs
           node scripts/check-jra-non-running-evidence.mjs
+          node scripts/check-jra-non-running-discovery.mjs
           node scripts/check-banei-non-running-evidence.mjs
           node scripts/check-peru-fetch-failure-retention.mjs
       - name: Exercise Japan mother-set safety contracts
@@ -280,6 +282,7 @@ jobs:
           node scripts/check-hkjc-non-running-evidence.mjs
           node scripts/check-uae-era-non-running-evidence.mjs
           node scripts/check-jra-non-running-evidence.mjs
+          node scripts/check-jra-non-running-discovery.mjs
           node scripts/check-banei-non-running-evidence.mjs
       - name: Refresh Japan official mother set and best available detail
         run: |
@@ -290,7 +293,12 @@ jobs:
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions after Japan
         run: |
-          node scripts/timetable/apply-meeting-presence-dispositions.mjs
+          node scripts/timetable/run-japan-non-running-evidence.mjs \
+            --as-of="${{ steps.scope.outputs.japan_date }}" \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/japan-non-running.json
+          node scripts/timetable/apply-meeting-presence-dispositions.mjs \
+            --artifact=.calendar-unified/japan-non-running.json
           node scripts/check-confirmed-non-running-publication.mjs
       - name: Validate Japan generated public site state
         run: npm run build
@@ -310,7 +318,12 @@ jobs:
               --execution-date="${{ steps.scope.outputs.japan_date }}" \
               --scope="${{ steps.scope.outputs.scope }}"
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
-            node scripts/timetable/apply-meeting-presence-dispositions.mjs
+            node scripts/timetable/run-japan-non-running-evidence.mjs \
+              --as-of="${{ steps.scope.outputs.japan_date }}" \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/japan-non-running.json
+            node scripts/timetable/apply-meeting-presence-dispositions.mjs \
+              --artifact=.calendar-unified/japan-non-running.json
             node scripts/check-confirmed-non-running-publication.mjs
             npm run build
           }
