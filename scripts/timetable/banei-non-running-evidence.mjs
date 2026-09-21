@@ -63,6 +63,7 @@ function record(date, sourceUrl, checkedAt, evidencePhrase) {
 export function parseBaneiConfirmedNonRunningHtml(html, { sourceUrl, checkedAt = new Date().toISOString() }) {
   assertOfficialSource(sourceUrl);
   const text = plain(html);
+  const title = plain(String(html).match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] ?? '');
   const publicationDate = text.match(/(20\d{2}-\d{2}-\d{2})/)?.[1];
   if (!publicationDate) throw new Error('Banei TOPICS article publication date not found');
 
@@ -78,6 +79,15 @@ export function parseBaneiConfirmedNonRunningHtml(html, { sourceUrl, checkedAt =
     if (start && end) {
       for (const date of datesInclusive(start, end)) found.push(record(date, sourceUrl, checkedAt, range[6]));
     }
+  }
+
+  const externalRacing = /(JRA|中央競馬|札幌競馬|函館競馬|福島競馬|新潟競馬|東京競馬|中山競馬|中京競馬|京都競馬|阪神競馬|小倉競馬|浦和競馬|船橋競馬|大井競馬|川崎競馬|門別競馬|盛岡競馬|水沢競馬|金沢競馬|笠松競馬|名古屋競馬|園田競馬|姫路競馬|高知競馬|佐賀競馬)/;
+  const genericTitle = title.match(/^(?:【[^】]+】\s*)?(?:(\d{1,2})月(\d{1,2})日|(?:\d{1,2})\/(\d{1,2}))[^競走レースR]{0,24}?(開催取り止め|開催を取り止め|開催中止|開催を中止)(?:について)?$/);
+  if (genericTitle && !externalRacing.test(title)) {
+    const month = Number(genericTitle[1] ?? publicationDate.slice(5, 7));
+    const day = Number(genericTitle[2] ?? genericTitle[3]);
+    const date = isoDate(eventYear(publicationDate, month), month, day);
+    if (date) found.push(record(date, sourceUrl, checkedAt, genericTitle[4]));
   }
 
   const wholeDay = /(\d{1,2})月(\d{1,2})日[^。]{0,120}?(?:ばんえい競馬|ばんえい十勝)[^。]{0,160}?(開催取り止め|開催を取り止め|開催を中止|開催が中止)|(?:ばんえい競馬|ばんえい十勝)[^。]{0,160}?(\d{1,2})月(\d{1,2})日[^。]{0,120}?(開催取り止め|開催を取り止め|開催を中止|開催が中止)/g;

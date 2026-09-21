@@ -16,7 +16,7 @@ The expansion lane remains independent. A country may be added while negative-ev
 | --- | --- | --- | --- | --- |
 | Japan / JRA | automated | active | supported | Official monthly JRA News indexes are scanned for bounded cancellation-related articles; only explicit whole-meeting wording is accepted and race-only cancellations are rejected. |
 | Japan / NAR | unsupported | not implemented | not proven | Local organizers publish their own notices; no nationwide normalized route is proven. |
-| Japan / Banei | reviewed | candidate | supported | Official Banei TOPICS contains explicit whole-meeting cancellation notices and race-only stoppages. |
+| Japan / Banei | automated | active | supported | Official monthly Banei TOPICS archives are scanned for cancellation-related articles; whole-day/multi-day Banei cancellations are accepted while partial-race and external-racing notices are rejected. |
 | Hong Kong / HKJC | automated | active | supported | Existing monthly fixture acquisition now extracts only explicit whole-meeting cancellation sentences and emits durable presence evidence. |
 | UAE / ERA | automated | active | supported | Existing racecard/declarations acquisition now accepts only the explicit whole-meeting status `THIS MEETING HAS BEEN CANCELLED` and emits durable presence evidence. |
 | South Korea / KRA | unsupported | not implemented | not proven | Current official operation plan / fast-report routes do not yet prove bounded whole-meeting negative evidence. |
@@ -35,7 +35,7 @@ This leaves zero production countries unclassified.
 - HKJC: September 2026 official fixture page states that the Sha Tin meeting originally scheduled for 20 September 2026 will be cancelled.
 - ERA: official 2026-03-04 Meydan racecard/declarations page renders `THIS MEETING HAS BEEN CANCELLED`.
 
-These examples prove that official explicit negative evidence exists. HKJC and ERA now additionally have bounded parser tests, identity binding, rolling-artifact emission, durable generated presence persistence, and publication integration, so their registry rows are `automated`. JRA and Banei remain reviewed.
+These examples prove that official explicit negative evidence exists. HKJC, ERA, JRA and Banei now have bounded parser/discovery paths, identity binding, rolling-artifact emission, durable generated presence persistence, and publication integration, so their registry rows are `automated`.
 
 ## Safety invariant for every system
 
@@ -50,6 +50,6 @@ These examples prove that official explicit negative evidence exists. HKJC and E
 
 Wave 1B completed the two lowest-risk same-source candidates: HKJC and ERA.
 
-Wave 2A now activates JRA automation and bounds Banei parsing. JRA uses the official monthly `/news/YYYYMM/` index as its discovery route, fetches only cancellation-related candidate articles, accepts explicit whole-meeting cancellation wording, binds venue/date to an existing canonical meeting, rejects race-only cancellations, and fails closed if the negative-evidence route cannot be fetched. Banei parsing requires an official `tp_detail.php` article, accepts explicit whole-day or multi-day Banei cancellation wording, and rejects partial-race stoppages and notices about external racing. Banei remains `reviewed` until stable TOPICS discovery is activated.
+Wave 2A activated JRA automation. Wave 2B activates Banei automation using bounded monthly TOPICS archive discovery. JRA uses the official monthly `/news/YYYYMM/` index, fetches only cancellation-related candidate articles, accepts explicit whole-meeting cancellation wording, binds venue/date to an existing canonical meeting, rejects race-only cancellations, and fails closed on negative-evidence fetch failure. Banei scans official monthly TOPICS archive pages, fetches only cancellation-related candidate articles, accepts explicit whole-day or multi-day Banei cancellation wording, rejects partial-race stoppages and external-racing notices, binds evidence to existing canonical meetings, and fails closed when archive/article acquisition fails.
 
 In parallel, research NAR/KRA/TJK/SOREC/Chile/HRI/Peru for a reliable authority-specific whole-meeting route. Until one is demonstrated, they remain safe `unsupported`; no source disappearance may be used as a substitute.
