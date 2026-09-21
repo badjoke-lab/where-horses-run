@@ -14,7 +14,7 @@ The expansion lane remains independent. A country may be added while negative-ev
 
 | Country / system | Mode | Automation | Whole-meeting evidence | Notes |
 | --- | --- | --- | --- | --- |
-| Japan / JRA | reviewed | candidate | supported | Explicit JRA News cancellation/substitute-date notices are proven. Current production acceptance is reviewed. |
+| Japan / JRA | automated | active | supported | Official monthly JRA News indexes are scanned for bounded cancellation-related articles; only explicit whole-meeting wording is accepted and race-only cancellations are rejected. |
 | Japan / NAR | unsupported | not implemented | not proven | Local organizers publish their own notices; no nationwide normalized route is proven. |
 | Japan / Banei | reviewed | candidate | supported | Official Banei TOPICS contains explicit whole-meeting cancellation notices and race-only stoppages. |
 | Hong Kong / HKJC | automated | active | supported | Existing monthly fixture acquisition now extracts only explicit whole-meeting cancellation sentences and emits durable presence evidence. |
@@ -50,6 +50,6 @@ These examples prove that official explicit negative evidence exists. HKJC and E
 
 Wave 1B completed the two lowest-risk same-source candidates: HKJC and ERA.
 
-Wave 2A now bounds and tests JRA and Banei whole-meeting notice parsing. JRA parsing requires an official `www.jra.go.jp/news/YYYYMM/NNNNNN.html` article, binds a specific JRA venue/date, and rejects race-only cancellation text. Banei parsing requires an official `tp_detail.php` article, accepts explicit whole-day or multi-day Banei cancellation wording, and rejects partial-race stoppages and notices about external racing. Both systems remain `reviewed` until a stable official notice-discovery route is activated; parser existence alone is not sufficient to make them `automated`.
+Wave 2A now activates JRA automation and bounds Banei parsing. JRA uses the official monthly `/news/YYYYMM/` index as its discovery route, fetches only cancellation-related candidate articles, accepts explicit whole-meeting cancellation wording, binds venue/date to an existing canonical meeting, rejects race-only cancellations, and fails closed if the negative-evidence route cannot be fetched. Banei parsing requires an official `tp_detail.php` article, accepts explicit whole-day or multi-day Banei cancellation wording, and rejects partial-race stoppages and notices about external racing. Banei remains `reviewed` until stable TOPICS discovery is activated.
 
 In parallel, research NAR/KRA/TJK/SOREC/Chile/HRI/Peru for a reliable authority-specific whole-meeting route. Until one is demonstrated, they remain safe `unsupported`; no source disappearance may be used as a substitute.
