@@ -17,8 +17,8 @@ The expansion lane remains independent. A country may be added while negative-ev
 | Japan / JRA | reviewed | candidate | supported | Explicit JRA News cancellation/substitute-date notices are proven. Current production acceptance is reviewed. |
 | Japan / NAR | unsupported | not implemented | not proven | Local organizers publish their own notices; no nationwide normalized route is proven. |
 | Japan / Banei | reviewed | candidate | supported | Official Banei TOPICS contains explicit whole-meeting cancellation notices and race-only stoppages. |
-| Hong Kong / HKJC | reviewed | candidate | supported | Official fixture page can explicitly state that a dated meeting will be cancelled. |
-| UAE / ERA | reviewed | candidate | supported | Official racecard/declarations page can explicitly render `THIS MEETING HAS BEEN CANCELLED`. |
+| Hong Kong / HKJC | automated | active | supported | Existing monthly fixture acquisition now extracts only explicit whole-meeting cancellation sentences and emits durable presence evidence. |
+| UAE / ERA | automated | active | supported | Existing racecard/declarations acquisition now accepts only the explicit whole-meeting status `THIS MEETING HAS BEEN CANCELLED` and emits durable presence evidence. |
 | South Korea / KRA | unsupported | not implemented | not proven | Current official operation plan / fast-report routes do not yet prove bounded whole-meeting negative evidence. |
 | Turkey / TJK | unsupported | not implemented | not proven | Annual/daily programmes are positive schedule evidence only. |
 | Morocco / SOREC | unsupported | not implemented | not proven | No reliable official explicit route proven in this wave. |
@@ -35,7 +35,7 @@ This leaves zero production countries unclassified.
 - HKJC: September 2026 official fixture page states that the Sha Tin meeting originally scheduled for 20 September 2026 will be cancelled.
 - ERA: official 2026-03-04 Meydan racecard/declarations page renders `THIS MEETING HAS BEEN CANCELLED`.
 
-These examples prove that official explicit negative evidence exists. They do not by themselves authorize automation. Parser fixtures, identity binding, and production integration are required before a registry row can become `automated`.
+These examples prove that official explicit negative evidence exists. HKJC and ERA now additionally have bounded parser tests, identity binding, rolling-artifact emission, durable generated presence persistence, and publication integration, so their registry rows are `automated`. JRA and Banei remain reviewed.
 
 ## Safety invariant for every system
 
@@ -48,9 +48,6 @@ These examples prove that official explicit negative evidence exists. They do no
 
 ## Next implementation order
 
-Wave 1B should automate the two lowest-risk same-source candidates first:
+Wave 1B completed the two lowest-risk same-source candidates: HKJC and ERA.
 
-1. HKJC fixture cancellation sentence on the already-collected monthly fixture page;
-2. ERA `THIS MEETING HAS BEEN CANCELLED` on the already-collected racecard/declarations family.
-
-JRA and Banei remain reviewed until bounded notice parsers are implemented. NAR/KRA/TJK/SOREC/Chile/HRI/Peru remain safe `unsupported` until a reliable official route is demonstrated; no source disappearance may be used as a substitute.
+Next, keep JRA and Banei on reviewed evidence while their notice parsers are bounded and tested. In parallel, research NAR/KRA/TJK/SOREC/Chile/HRI/Peru for a reliable authority-specific whole-meeting route. Until one is demonstrated, they remain safe `unsupported`; no source disappearance may be used as a substitute.
