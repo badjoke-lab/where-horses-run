@@ -14,17 +14,17 @@ Read these first for glossary work:
 
 ## Current state in plain language
 
-The working dictionary has **618 terms/concepts**.
+The working dictionary has **614 terms/concepts**.
 
-- **611 are source-verified at the meaning level**.
-- **7 still require review**: verify, narrow regional scope, rewrite, split, merge, or remove.
+- **614 / 614 are source-verified at the meaning level**.
+- **0 active Concepts remain under evidence/semantic review**.
 - the highest-priority core set is **203/203 verified**;
 - jurisdiction-specific research additions are **161/161 verified**;
 - publication is still disabled (`public_ready=0`, public runtime disconnected).
 
-The latest pass is **targeted residual wave 12**. It verified **8** scoped Concepts and retired **4** out-of-scope/generic/derived/malformed rows: Homebred, Breeding right, Nick, Outcross, Round course, Oval, Track bias and Cool down are verified; Endurance racing, generic Cup race, generic Locally bred and derived Final fraction are removed from the active Concept set.
+The latest pass is **final targeted residual wave 13**. It verified historical California `Cushion Track`, corrected `Hold-up horse` to operational `Held up`, and verified the GB prize-money `Stake` sense. Ambiguous `Grandsire`, `Stallion service`, generic `Jump`, and generic `Bonus` were retired rather than forced into the public model.
 
-Current whole-master coverage is **611/618 verified (98.9%)** with **7 candidates**. Active base seed is **450/457 verified (98.5%)**. DISC, RTYPE, HORSE, VENUE, DIST and TRAIN are now **100% complete in the active Concept set**.
+`GLOSSARY-MASTER-005` is complete: **614/614 active Concepts are source-verified (100%)** and **0 candidates remain**. Active base seed is **453/453 verified (100%)**. Evidence completion does not publish the glossary; `MASTER-006` remains the next readiness stage.
 
 These rows were removed because the active glossary already models the underlying racing meaning more cleanly, or because the seed represented generic analytical/presentation context rather than an independent racing term.
 
@@ -32,7 +32,7 @@ These rows were removed because the active glossary already models the underlyin
 
 The dictionary was built from zero rather than copied from the existing public glossary. Major jurisdiction/local-language research and the current slang/abbreviation/historical pass are complete. The core terminology set is fully source-verified, and all current jurisdiction-specific additions are evidence-backed.
 
-Base-dictionary cleanup has now verified **297 additional terms** and removed **39 duplicate, malformed or non-independent rows**. Current base-dictionary coverage is **450/457 verified (98.5%)**.
+Base-dictionary cleanup has now verified **300 additional terms** and removed **43 duplicate, malformed or non-independent rows**. Current base-dictionary coverage is **453/453 verified (100%)**.
 
 Canonical evidence/audit files include:
 
@@ -60,6 +60,7 @@ data/glossary-master/sources/targeted-residual-sources-v6.tsv
 data/glossary-master/sources/targeted-residual-sources-v10.tsv
 data/glossary-master/sources/targeted-residual-sources-v11.tsv
 data/glossary-master/sources/targeted-residual-sources-v12.tsv
+data/glossary-master/sources/targeted-residual-sources-v13.tsv
 data/glossary-master/coverage/p1-verification-wave1-v1.tsv
 data/glossary-master/coverage/p1-verification-wave2-v1.tsv
 data/glossary-master/coverage/race-type-condition-verification-v1.tsv
@@ -89,6 +90,7 @@ data/glossary-master/coverage/targeted-residual-resolution-v9.tsv
 data/glossary-master/coverage/targeted-residual-resolution-v10.tsv
 data/glossary-master/coverage/targeted-residual-resolution-v11.tsv
 data/glossary-master/coverage/targeted-residual-resolution-v12.tsv
+data/glossary-master/coverage/targeted-residual-resolution-v13.tsv
 data/glossary-master/coverage/master-005-evidence-coverage-v1.tsv
 data/glossary-master/coverage/master-005-completion-gate-v1.tsv
 ```
@@ -97,7 +99,7 @@ The abbreviation/code layer remains at **38 source-verified rows**.
 
 ## Near-complete categories
 
-- RUN: **42/44 verified (95.5%)** — `Jump` and `Hold-up horse` remain candidate.
+- RUN: **43/43 verified (100%)** — wave 13 retired generic `Jump` and corrected/verified `Hold-up horse` as `Held up`.
 - EQUIP: **28/28 verified (100%)** — wave 10 retired Blinders into Blinkers and verified Barefoot.
 - MEET: **37/37 verified (100%)** — wave 8 retired generic Daylight saving time as Time zone context.
 - RESULT: **27/27 verified (100%)** — wave 7 retired the unsupported RO code row into the verified Ran out event Concept.
@@ -106,23 +108,21 @@ The abbreviation/code layer remains at **38 source-verified rows**.
 - DISC: **16/16 verified (100%)** — wave 12 retired out-of-scope Endurance racing.
 - RTYPE: **108/108 verified (100%)** — wave 12 retired generic Cup race.
 - DIST: **19/19 verified (100%)** — wave 12 retired Final fraction as derived Fractional-time context.
-- SURF: **60/61 verified (98.4%)** — Track bias is verified as North American handicapping-analysis terminology; Cushion Track remains candidate.
+- SURF: **61/61 verified (100%)** — wave 13 verified historical California `Cushion Track`.
 - WEIGHT: **32/32 verified (100%)** — wave 9 retired derived Weight rise/drop comparison labels.
 - ENTRY: **29/29 verified (100%)** — wave 11 retired unsupported generic Waitlist.
-- PRIZE: **10/12 verified (83.3%)** — Bonus and Stake remain candidate.
+- PRIZE: **11/11 verified (100%)** — wave 13 retired generic `Bonus` and verified the GB regulatory `Stake` sense.
 - ROLE: **30/30 verified (100%)** — wave 9 retired malformed Commentator; Track announcer remains the verified race-calling role.
 - TRAIN: **25/25 verified (100%)** — wave 12 verified Cool down with BHA veterinary guidance.
 - VENUE: **42/42 verified (100%)** — wave 12 verified Round course and Oval with BHA/Churchill Downs evidence.
 - HORSE: **32/32 verified (100%)** — wave 12 verified Homebred and retired generic Locally bred.
-- BREED: **18/20 verified (90.0%)** — wave 12 verified Breeding right, Nick and Outcross; Grandsire and Stallion service remain.
+- BREED: **18/18 verified (100%)** — wave 13 retired ambiguous `Grandsire` and `Stallion service` seeds into already modeled pedigree/breeding senses.
 
 ## What remains
 
-The **7 remaining terms** are not all expected to become verified unchanged. Some seed terms are broad, duplicated, polysemous, regional, or badly named. Review means choosing the correct action rather than chasing a percentage.
+There are **0 active candidate Concepts** after final residual wave 13. `GLOSSARY-MASTER-005` therefore passes its evidence/semantic completion gate for the current master.
 
-Targeted residual wave 12 is complete for the current defensible source bundle. The final queue is exactly seven Concepts: `Grandsire`, `Stallion service`, `Cushion Track`, `Jump`, `Hold-up horse`, `Bonus` and `Stake`. These now require explicit term-by-term final resolution before MASTER-005 can leave HOLD.
-
-After that residual cleanup, the evidence/readiness gate will be rerun. `MASTER-006` and public glossary architecture remain blocked until that review is defensible.
+The next stage is `GLOSSARY-MASTER-006`: search-intent, coverage and readiness review. Public glossary architecture remains deferred until that separate review decides the master has sufficient user-facing coverage and presentation readiness.
 
 ## Dictionary modeling rule
 
