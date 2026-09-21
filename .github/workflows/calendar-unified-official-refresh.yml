@@ -587,6 +587,7 @@ jobs:
               data/generated/timetable/public/meeting-details.json
             git add data/generated/timetable/japan-zero-based-30d-reconciliation.json 2>/dev/null || true
             git add data/generated/timetable/japan-zero-based-3d-reconciliation.json 2>/dev/null || true
+            git add data/generated/timetable/meeting-presence.json 2>/dev/null || true
           }
 
           git fetch origin main
