@@ -434,8 +434,13 @@ const rangeDates = scope === 'near' ? selectedDates : new Set(result.range.dates
 const isAbsentPublicMeeting = (row) => row?.country_id === 'japan'
   && rangeDates.has(row.date)
   && !officialIds.has(row.meeting_id);
+// Absence reconciliation must compare the newly discovered official mother set
+// with the currently published snapshot. runJapanZeroBased30d().public is already
+// derived from the new official set, so using it here hides meetings that have
+// just disappeared from the official source (for example a cancelled meeting).
+const existingPublicForAbsence = read(publicPath).meetings ?? [];
 const absenceSelection = selectPublicAbsenceReconciliation({
-  publicMeetings: result.public,
+  publicMeetings: existingPublicForAbsence,
   officialMeetingIds: officialIds,
   rangeDates,
   sourceCompletenessRows: completenessRows,
