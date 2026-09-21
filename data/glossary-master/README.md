@@ -20,6 +20,8 @@ The latest pass is **final targeted residual wave 13**. It source-verified histo
 
 `GLOSSARY-MASTER-005` is now complete: **614/614 active Concepts are source-verified (100%)**, with **0 candidates**. Active base-seed coverage is **453/453 (100%)**; all 18 categories have no active candidate Concepts. Public publication is still deferred because evidence completion does not replace the separate `GLOSSARY-MASTER-006` search-intent / coverage / readiness review.
 
+`GLOSSARY-MASTER-006` wave 1 is now in progress. A separate search-intent policy and registry were added without changing canonical definitions. Wave 1 contains **66 reviewed source-derived query records**: **33 abbreviation lookups** and **33 racecard-reading lookups**, covering the current English/Japanese abbreviation subset. The MASTER-006 coverage matrix and readiness gate remain **HOLD** because definition, comparison, regional-usage, how/why and translation intents plus worldwide coverage/readiness audits are still incomplete.
+
 Wave 9 is a semantic pruning pass: derived comparisons and generic display conventions remain contextual rather than standalone racing Concepts.
 
 ## Current master
@@ -230,13 +232,17 @@ coverage/targeted-residual-resolution-v8.tsv
 coverage/targeted-residual-resolution-v9.tsv
 coverage/master-005-evidence-coverage-v1.tsv
 coverage/master-005-completion-gate-v1.tsv
+search/search-intent-policy-v1.tsv
+search/search-queries-v1.tsv
+coverage/master-006-search-intent-coverage-v1.tsv
+coverage/master-006-readiness-v1.tsv
 ```
 
 ## Current completion decision
 
 `GLOSSARY-MASTER-005` is **complete** for the current active Concept master: **614/614 source-verified, 0 candidate**. The completion gate passes after explicit resolution of every residual seed Concept.
 
-The next work is `GLOSSARY-MASTER-006` — **search-intent / coverage / readiness review**. That stage determines user-facing intent coverage and whether public implementation planning is justified; it does not reopen evidence truth unless it discovers a real semantic or source gap.
+`GLOSSARY-MASTER-006` is **in progress**. Wave 1 establishes the separate query/policy layer and makes the remaining intent/readiness gaps explicit. Next work is definition/comparison/regional/translation/how-why coverage plus jurisdiction/system readiness auditing; evidence truth is reopened only if that review exposes a real semantic/source defect.
 
 Public implementation remains deferred until MASTER-006 passes.
 
