@@ -19,6 +19,16 @@ const plain = (value) => String(value ?? '')
 function indexUrl() {
   return 'https://www.jra.go.jp/news/index4.html';
 }
+function decodeHtml(bytes) {
+  return ['shift_jis', 'utf-8']
+    .map((encoding) => {
+      const body = new TextDecoder(encoding).decode(bytes);
+      const score = body.match(/[競馬開催中止取消変更代替]/g)?.length ?? 0;
+      return { body, score };
+    })
+    .sort((a, b) => b.score - a.score)[0].body;
+}
+
 function candidateArticleLinks(html, baseUrl) {
   const out = [];
   for (const match of String(html).matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)) {
@@ -40,7 +50,8 @@ async function fetchHtml(url, fetchImpl) {
   if (finalUrl.protocol !== 'https:' || finalUrl.hostname !== 'www.jra.go.jp') {
     throw new Error(`unexpected JRA News redirect: ${finalUrl.toString()}`);
   }
-  return { body: await response.text(), url: finalUrl.toString() };
+  const bytes = await response.arrayBuffer();
+  return { body: decodeHtml(bytes), url: finalUrl.toString() };
 }
 
 export async function discoverJraConfirmedNonRunning({

@@ -2,11 +2,14 @@ import assert from 'node:assert/strict';
 import { discoverJraConfirmedNonRunning } from './timetable/jra-non-running-discovery.mjs';
 
 function response(url, body, status = 200) {
+  const bytes = Buffer.from(body, 'utf8');
   return {
     ok: status >= 200 && status < 300,
     status,
     url,
-    async text() { return body; },
+    async arrayBuffer() {
+      return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+    },
   };
 }
 const pages = new Map([
