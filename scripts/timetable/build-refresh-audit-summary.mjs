@@ -14,6 +14,8 @@ const SYSTEMS = [
   { key: 'sorec', file: 'sorec.json', country_id: 'morocco', authority_id: 'sorec', racing_system_id: 'sorec-racing-information-system' },
   { key: 'chile', file: 'chile.json', country_id: 'chile', authority_id: 'teletrak-chile', racing_system_id: 'chile-teletrak-racing-system' },
   { key: 'ireland', file: 'ireland.json', country_id: 'ireland', authority_id: 'horse-racing-ireland', racing_system_id: 'ireland-hri-racing-system' },
+  { key: 'peru', file: 'peru.json', country_id: 'peru', authority_id: 'hipodromo-de-monterrico', racing_system_id: 'peru-monterrico-programme-system' },
+  { key: 'saudi-arabia', file: 'saudi-arabia.json', country_id: 'saudi-arabia', authority_id: 'jockey-club-of-saudi-arabia', racing_system_id: 'saudi-arabia-jcsa-system' },
 ];
 
 const STATE_FILES = {
@@ -104,6 +106,7 @@ function selectJapanReconciliation(artifactRoot) {
 function countNonJapanFetchFailures(artifact, records) {
   if (Array.isArray(artifact.diagnostics?.fetch_failures)) return artifact.diagnostics.fetch_failures.length;
   if (Array.isArray(artifact.diagnostics?.source_failures)) return artifact.diagnostics.source_failures.length;
+  if (Array.isArray(artifact.diagnostics?.source_errors)) return artifact.diagnostics.source_errors.length;
   const statusCount = artifact.discovery?.detail_status_counts?.source_error;
   if (Number.isInteger(statusCount)) return statusCount;
   return records.filter((row) => row?.detail_observation?.status === 'source_error').length;
