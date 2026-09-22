@@ -470,7 +470,7 @@ jobs:
             --artifact=.calendar-unified/chile.json \
             --artifact=.calendar-unified/ireland.json \
             --artifact=.calendar-unified/peru.json \
-            --artifact=.calendar-unified/saudi-arabia.json
+            --artifact=.calendar-unified/saudi-arabia.json \
             --artifact=.calendar-unified/france-galop.json \
             --artifact=.calendar-unified/france-letrot.json
       - name: Apply non-Japan official observations monotonically
@@ -611,7 +611,7 @@ jobs:
               --artifact=.calendar-unified/chile.json \
               --artifact=.calendar-unified/ireland.json \
               --artifact=.calendar-unified/peru.json \
-              --artifact=.calendar-unified/saudi-arabia.json
+              --artifact=.calendar-unified/saudi-arabia.json \
               --artifact=.calendar-unified/france-galop.json \
               --artifact=.calendar-unified/france-letrot.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
