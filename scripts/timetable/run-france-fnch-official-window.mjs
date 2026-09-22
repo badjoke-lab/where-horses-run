@@ -61,11 +61,18 @@ function dedupeRows(rows){
   }
   return [...map.values()].sort((a,b)=>a.date.localeCompare(b.date)||a.racecourse_id.localeCompare(b.racecourse_id)||a.system_key.localeCompare(b.system_key));
 }
+function scopeDiagnostics(items,systemKey){
+  return items
+    .filter(item=>!item.system_key||item.system_key===systemKey)
+    .map(({system_key,...item})=>item);
+}
 function artifactFor({systemKey,records,generatedAt,start,end,days,sourceErrors,parseFailures,unknownDisciplines,sourcePages}){
   const isGalop=systemKey==='galop';
   const authority_id=isGalop?FRANCE_GALOP_AUTHORITY_ID:FRANCE_LETROT_AUTHORITY_ID;
   const racing_system_id=isGalop?FRANCE_GALOP_SYSTEM_ID:FRANCE_LETROT_SYSTEM_ID;
   const selected=records.filter(r=>r.authority_id===authority_id);
+  const scopedSourceErrors=scopeDiagnostics(sourceErrors,systemKey);
+  const scopedParseFailures=scopeDiagnostics(parseFailures,systemKey);
   const rankCounts=Object.fromEntries(['C','B','B+','A','A+'].map(rank=>[rank,selected.filter(r=>r.capability_rank===rank).length]));
   const detailStatusCounts=Object.fromEntries(['available','not_published','source_error','parser_failure'].map(status=>[status,selected.filter(r=>r.detail_observation?.status===status).length]));
   return {
@@ -73,9 +80,9 @@ function artifactFor({systemKey,records,generatedAt,start,end,days,sourceErrors,
     source_id:FRANCE_FNCH_SOURCE_ID,detail_source_id:FRANCE_FNCH_SOURCE_ID,collection_target_rank:'best_available',raw_body_retained:false,
     acquisition_attempt:{attempted_at:generatedAt,status:sourcePages.length?'success':'network_error',source_id:FRANCE_FNCH_SOURCE_ID,route_id:'fnch-regional-programme-index',error_code:sourcePages.length?null:'fetch_error'},
     discovery:{method:'official_fnch_regional_programme_indexes_plus_published_programme_pdfs',schedule_source_id:FRANCE_FNCH_SOURCE_ID,schedule_source_url:FRANCE_FNCH_CALENDAR_URL,detail_source_id:FRANCE_FNCH_SOURCE_ID,regional_pages:sourcePages,rank_counts:rankCounts,detail_status_counts:detailStatusCounts},
-    window:{start_date:start,end_date_exclusive:end,days,coverage_claim:sourceErrors.length?'partial_source_visible_horizon':'source_visible_horizon',coverage_note:'FNCH regional programme indexes are treated as a source-visible meeting horizon, not proof that every date in the requested window has been exhaustively published. Visible meetings are attributed by discipline to France Galop or LETROT. Published official programme PDFs may supply complete per-race post times through rank A. Missing programme detail stays pending; retrieval/parser failures remain retry states; absence from FNCH pages never confirms non-running.'},
+    window:{start_date:start,end_date_exclusive:end,days,coverage_claim:scopedSourceErrors.length?'partial_source_visible_horizon':'source_visible_horizon',coverage_note:'FNCH regional programme indexes are treated as a source-visible meeting horizon, not proof that every date in the requested window has been exhaustively published. Visible meetings are attributed by discipline to France Galop or LETROT. Published official programme PDFs may supply complete per-race post times through rank A. Missing programme detail stays pending; retrieval/parser failures remain retry states; absence from FNCH pages never confirms non-running.'},
     records:selected,
-    diagnostics:{source_errors:sourceErrors,parse_failures:parseFailures,unknown_disciplines:unknownDisciplines,source_pages_checked:sourcePages.length},
+    diagnostics:{source_errors:scopedSourceErrors,parse_failures:scopedParseFailures,unknown_disciplines:unknownDisciplines,source_pages_checked:sourcePages.length},
   };
 }
 function write(file,value){const target=path.resolve(file);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,`${JSON.stringify(value,null,2)}\n`);}
@@ -101,10 +108,10 @@ for(const row of rows){
   try{
     const programmeText=await getPdfText(row.programme_url);
     const record=buildFnchProgrammeRecord(row,{checkedAt:generatedAt,programmeText});records.push(record);
-    if(record.detail_observation?.status==='parser_failure') parseFailures.push({stage:'programme_pdf',date:row.date,racecourse_id:row.racecourse_id,source_url:row.programme_url,error:'race_times_not_parsed'});
+    if(record.detail_observation?.status==='parser_failure') parseFailures.push({system_key:row.system_key,stage:'programme_pdf',date:row.date,racecourse_id:row.racecourse_id,source_url:row.programme_url,error:'race_times_not_parsed'});
   }catch(error){
     records.push(buildFnchFixtureRecord(row,{checkedAt:generatedAt,detailStatus:'source_error',attemptStatus:'source_error',errorCode:'programme_fetch_failed'}));
-    sourceErrors.push({stage:'programme_pdf',date:row.date,racecourse_id:row.racecourse_id,source_url:row.programme_url,error:String(error?.message??error)});
+    sourceErrors.push({system_key:row.system_key,stage:'programme_pdf',date:row.date,racecourse_id:row.racecourse_id,source_url:row.programme_url,error:String(error?.message??error)});
   }
 }
 const galop=artifactFor({systemKey:'galop',records,generatedAt,start,end,days,sourceErrors,parseFailures,unknownDisciplines,sourcePages});
