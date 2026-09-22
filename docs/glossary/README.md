@@ -26,7 +26,7 @@ The latest pass is **final targeted residual wave 13**. It verified historical C
 
 `GLOSSARY-MASTER-005` closed at **614/614 source-verified (100%)** with **0 candidates**. A later targeted MASTER-006 KRA identity repair added two source-verified jurisdiction-specific Concepts, bringing the current active master to **616/616**. Evidence completion still does not publish the glossary.
 
-`MASTER-006` wave 11 is now active. Chile provides the first reviewed Latin American Spanish scope using the CSHN/Reglamento de Carreras de Chile. Eight official Spanish labels/definitions map to existing Concepts and receive 16 curated EN/JA translation intents. The local-label layer is now **267 records across 7 languages and 5 scripts**, while the search layer is **614 reviewed non-canonical queries**. Chile is not treated as Latin America-wide completeness.
+`MASTER-006` wave 12 is now active. Brazil provides the first reviewed Portuguese scope using MAPA's current turf/regulatory route and the Jockey Club Brasileiro's national racing rules. Twelve official Portuguese labels/definitions map to existing Concepts and receive 24 curated EN/JA translation intents. The local-label layer is now **279 records across 8 languages and 5 scripts**, while the search layer is **638 reviewed non-canonical queries**. Chile and Brazil are not treated as Latin America-wide completeness.
 
 These rows were removed because the active glossary already models the underlying racing meaning more cleanly, or because the seed represented generic analytical/presentation context rather than an independent racing term.
 
@@ -124,7 +124,7 @@ The abbreviation/code layer remains at **38 source-verified rows**.
 
 There are **0 active candidate Concepts** after final residual wave 13. `GLOSSARY-MASTER-005` therefore passes its evidence/semantic completion gate for the current master.
 
-`GLOSSARY-MASTER-006` is now **in progress**. Waves 1-7 establish the reviewed search-intent layer; wave 8 adds explicit readiness matrices; wave 9 repairs the KRA horse-origin identity gap discovered by those audits. The audits now track **267 source-verified local labels**, **56 no-direct-equivalent Concepts**, **614 reviewed search records**, and explicit worldwide jurisdiction gaps instead of treating current Concept count as automatic worldwide completeness. Arabic and Chilean Spanish are represented through authority-published terminology, but Portuguese and broader worldwide language/system readiness remain incomplete. The current decision remains **HOLD** while jurisdiction/system, language/script and search-intent sufficiency gaps remain open. Public glossary architecture remains deferred.
+`GLOSSARY-MASTER-006` is now **in progress**. Waves 1-7 establish the reviewed search-intent layer; wave 8 adds explicit readiness matrices; wave 9 repairs the KRA horse-origin identity gap discovered by those audits; waves 10-12 add bounded UAE Arabic, Chile Spanish and Brazil Portuguese authority layers. The audits now track **279 source-verified local labels**, **56 no-direct-equivalent Concepts**, **638 reviewed search records**, and explicit worldwide jurisdiction gaps instead of treating current Concept count as automatic worldwide completeness. The current decision remains **HOLD** while jurisdiction/system, language/script and search-intent sufficiency gaps remain open. Public glossary architecture remains deferred.
 
 ## Dictionary modeling rule
 
