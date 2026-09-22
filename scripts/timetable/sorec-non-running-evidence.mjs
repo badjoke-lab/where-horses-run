@@ -1,5 +1,5 @@
 export const SOREC_NON_RUNNING_CALENDAR_URL =
-  'https://www.sorec-galop.ma/pages/course_a_venir/calendrier_course.jsf?fctID=2nQEdyraO%2Bg%3D';
+  'https://www.sorec-galop.ma/pages/course_a_venir/calendrier_course.jsf?code=CALEN&description=Calendrier+courses&fctID=1406';
 
 export const SOREC_NON_RUNNING_SOURCE_ID = 'sorec-calendar-explicit-postponement';
 
@@ -8,7 +8,7 @@ function assertOfficialSource(sourceUrl) {
   if (url.protocol !== 'https:' || url.hostname !== 'www.sorec-galop.ma') {
     throw new Error('SOREC non-running evidence requires official www.sorec-galop.ma source');
   }
-  if (url.pathname !== '/pages/course_a_venir/calendrier_course.jsf' || !url.searchParams.has('fctID')) {
+  if (url.pathname !== '/pages/course_a_venir/calendrier_course.jsf'\n    || url.searchParams.get('code') !== 'CALEN'\n    || url.searchParams.get('description') !== 'Calendrier courses'\n    || url.searchParams.get('fctID') !== '1406') {
     throw new Error('SOREC non-running evidence requires the official status-bearing calendar route');
   }
 }
