@@ -68,6 +68,7 @@ try {
             const rect = node.getBoundingClientRect();
             return !node.hidden && style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
           };
+          const spread = (values) => values.length > 1 ? Math.max(...values) - Math.min(...values) : 0;
           const rows = [...document.querySelectorAll('[data-calendar-meeting-row]')].filter(visible).slice(0, 12);
           const failures = [];
           const checks = {
