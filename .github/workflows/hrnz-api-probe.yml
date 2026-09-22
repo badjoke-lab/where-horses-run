@@ -28,7 +28,11 @@ jobs:
 
           probe infohorse_dates 'https://infohorse.hrnz.co.nz/datahrs/calendar/raceday/dates_index.htm' /tmp/dates
           probe infohorse_programmes 'https://infohorse.hrnz.co.nz/datahrs/programmes/programm.htm' /tmp/programmes
+          probe hrnz_calendar_ics 'https://infohorse.hrnz.co.nz/datahrs/calendar/HRNZOfficialMeetings.ics' /tmp/hrnz.ics
           probe harness_openapi 'https://harness.hrnz.co.nz/APIdoc/Version-1.1/HRNZAPI-V1.1.json' /tmp/openapi.json
+
+          echo "hrnz_calendar_ics_fingerprint:"
+          sed -n '1,40p' /tmp/hrnz.ics | sed 's/[^[:print:]\t]//g' || true
 
           chrome_bin="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
           echo "chrome_bin=$chrome_bin"
