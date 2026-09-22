@@ -298,6 +298,32 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "GitHub Actions scans the requested Peru-local date window through the official Monterrico date API, then evaluates each discovered reunion through the official programme page. Complete race rows support evidence-derived A; unpublished detail remains valid C with pending publication and fetch/parser failures remain valid C with explicit retry state. Coverage is limited to the reviewed Monterrico system and does not claim complete Peru-wide racing coverage."
+    },
+    {
+      "system_id": "saudi-arabia-jcsa-system",
+      "country_id": "saudi-arabia",
+      "authority_id": "jockey-club-of-saudi-arabia",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "jcsa-races",
+      "detail_source_id": "jcsa-races",
+      "schedule_adapter_id": "saudi-jcsa-date-route-best-available-v1",
+      "detail_adapter_id": "saudi-jcsa-date-route-best-available-v1",
+      "technical_capability_rank": "A",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "A",
+      "supported_observation_ranks": [
+        "C",
+        "A"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": false,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "GitHub Actions resolves current JCSA Taif/Riyadh season bounds from official venue pages and checks each in-season date route. Complete race rows support evidence-derived A; meeting pages without published race rows remain valid C with pending publication. Missing meeting fingerprints are absent_unconfirmed only. Fetch/parse failures preserve existing verified state and remain explicit acquisition failures."
     }
   ]
 }
