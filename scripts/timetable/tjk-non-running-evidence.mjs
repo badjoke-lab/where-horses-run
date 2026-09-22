@@ -104,10 +104,8 @@ function explicitWholeMeetingBody(text, venueLabel) {
   const start = Math.max(0, venueIndex - 280);
   const segment = text.slice(start, venueIndex + 900);
   const normalized = normalizeTurkish(segment);
-  if (!/(tüm koşular|yarışları|yarışlar)/i.test(normalized)) return null;
+  if (!/tüm koşular/i.test(normalized)) return null;
   if (!/(tehir edilmesine|ertelenmesine|ertelendi|iptal edilmesine|iptal edilmiştir|iptal edildi)/i.test(normalized)) return null;
-  if (/(\b\d+\s*(?:ve|,)?\s*\d*\.?\s*koşu(?:lar)?\b|\b\d+\.\s*koşu\b)/i.test(normalized)
-      && !/tüm koşular/i.test(normalized)) return null;
   return segment;
 }
 
