@@ -1,0 +1,22 @@
+name: Probe SOREC stable status route
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/diagnostics/probe-sorec-stable-route.mjs'
+      - '.github/workflows/probe-sorec-stable-route.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Probe SOREC status-route candidates
+        run: node scripts/diagnostics/probe-sorec-stable-route.mjs
