@@ -125,6 +125,7 @@ jobs:
           node scripts/check-peru-monterrico-adapter.mjs
           node scripts/check-saudi-jcsa-adapter.mjs
           node scripts/check-france-fnch-adapter.mjs
+          node scripts/check-new-zealand-official-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
@@ -293,6 +294,7 @@ jobs:
           node scripts/check-peru-monterrico-adapter.mjs
           node scripts/check-saudi-jcsa-adapter.mjs
           node scripts/check-france-fnch-adapter.mjs
+          node scripts/check-new-zealand-official-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
@@ -438,7 +440,7 @@ jobs:
           node scripts/timetable/run-kra-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/kra.json
-      - name: Collect TJK, SOREC, Chile, Ireland, Peru, Saudi and France official windows
+      - name: Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France and New Zealand official windows
         run: |
           node scripts/timetable/run-tjk-current-best-available.mjs \
             --days="${{ steps.scope.outputs.days }}" \
@@ -462,6 +464,10 @@ jobs:
             --days="${{ steps.scope.outputs.days }}" \
             --galop-output=.calendar-unified/france-galop.json \
             --letrot-output=.calendar-unified/france-letrot.json
+          node scripts/timetable/run-new-zealand-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --thoroughbred-output=.calendar-unified/new-zealand-thoroughbred.json \
+            --harness-output=.calendar-unified/new-zealand-harness.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -475,7 +481,9 @@ jobs:
             --artifact=.calendar-unified/peru.json \
             --artifact=.calendar-unified/saudi-arabia.json \
             --artifact=.calendar-unified/france-galop.json \
-            --artifact=.calendar-unified/france-letrot.json
+            --artifact=.calendar-unified/france-letrot.json \
+            --artifact=.calendar-unified/new-zealand-thoroughbred.json \
+            --artifact=.calendar-unified/new-zealand-harness.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -544,6 +552,18 @@ jobs:
             --authority-id=letrot \
             --racing-system-id=france-letrot-system \
             --timezone=Europe/Paris
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/new-zealand-thoroughbred.json \
+            --country-id=new-zealand \
+            --authority-id=new-zealand-thoroughbred-racing \
+            --racing-system-id=new-zealand-thoroughbred-system \
+            --timezone=Pacific/Auckland
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/new-zealand-harness.json \
+            --country-id=new-zealand \
+            --authority-id=harness-racing-new-zealand \
+            --racing-system-id=new-zealand-harness-system \
+            --timezone=Pacific/Auckland
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
@@ -605,6 +625,10 @@ jobs:
               --days="${{ steps.scope.outputs.days }}" \
               --galop-output=.calendar-unified/france-galop.json \
               --letrot-output=.calendar-unified/france-letrot.json
+            node scripts/timetable/run-new-zealand-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --thoroughbred-output=.calendar-unified/new-zealand-thoroughbred.json \
+              --harness-output=.calendar-unified/new-zealand-harness.json
             node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --artifact=.calendar-unified/uae.json \
@@ -616,7 +640,9 @@ jobs:
               --artifact=.calendar-unified/peru.json \
               --artifact=.calendar-unified/saudi-arabia.json \
               --artifact=.calendar-unified/france-galop.json \
-              --artifact=.calendar-unified/france-letrot.json
+              --artifact=.calendar-unified/france-letrot.json \
+              --artifact=.calendar-unified/new-zealand-thoroughbred.json \
+              --artifact=.calendar-unified/new-zealand-harness.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --country-id=hong-kong \
@@ -683,6 +709,18 @@ jobs:
               --authority-id=letrot \
               --racing-system-id=france-letrot-system \
               --timezone=Europe/Paris
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/new-zealand-thoroughbred.json \
+              --country-id=new-zealand \
+              --authority-id=new-zealand-thoroughbred-racing \
+              --racing-system-id=new-zealand-thoroughbred-system \
+              --timezone=Pacific/Auckland
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/new-zealand-harness.json \
+              --country-id=new-zealand \
+              --authority-id=harness-racing-new-zealand \
+              --racing-system-id=new-zealand-harness-system \
+              --timezone=Pacific/Auckland
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
             node scripts/timetable/apply-meeting-presence-dispositions.mjs \
             --artifact=.calendar-unified/hkjc.json \
