@@ -145,8 +145,22 @@ for (const id of ['whole_2024_06_14', 'partial_2024_06_21', 'postponed_2025_08_1
   const row = articleResults.find((item) => item.id === id);
   if (!row?.ok) throw new Error('Required Club Hipico evidence page failed: ' + id);
 }
-if (!artifact.category.fingerprints.whole_2024_06_14) throw new Error('Corporate archive no longer exposes the 2024-06-14 whole-meeting suspension');
-if (!artifact.category.fingerprints.postponed_2025_08_17) throw new Error('Corporate archive no longer exposes the 2025-08-17 postponement');
+const candidateUrls = new Set(candidates.map((item) => item.url));
+if (!candidateUrls.has(KNOWN.find((item) => item.id === 'postponed_2025_08_17').url)) {
+  throw new Error('Corporate archive no longer discovers the 2025-08-17 postponement article');
+}
+if (!candidateUrls.has(KNOWN.find((item) => item.id === 'recalendar_2024_06_14').url)) {
+  throw new Error('Corporate archive no longer discovers the 2024-06-14 recalendarization article');
+}
+if (!articleResults.find((x) => x.id === 'whole_2024_06_14')?.fingerprints.whole_2024_06_14) {
+  throw new Error('Whole-meeting suspension article fingerprint missing');
+}
+if (!articleResults.find((x) => x.id === 'postponed_2025_08_17')?.fingerprints.postponed_2025_08_17) {
+  throw new Error('Whole-meeting postponement article fingerprint missing');
+}
 if (!articleResults.find((x) => x.id === 'partial_2024_06_21')?.fingerprints.partial_after_11th) {
   throw new Error('Partial-race negative fixture fingerprint missing');
+}
+if (!articleResults.find((x) => x.id === 'partial_2024_08_02')?.fingerprints.partial_last_three) {
+  throw new Error('Last-three-races negative fixture fingerprint missing');
 }
