@@ -319,7 +319,7 @@ The programme now advances to `GLOSSARY-MASTER-006`.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
-Status: **current, wave 14 in progress**.
+Status: **current, wave 15 in progress**.
 
 This stage reviews definition/comparison/regional/how-why/translation/abbreviation/racecard-reading search intents, coverage gaps and user-facing readiness. It may reopen evidence work only when a real semantic/source gap is discovered. Public implementation planning remains deferred until this stage passes.
 
@@ -350,6 +350,8 @@ Wave 12 extends the bounded Latin America readiness review to Brazil/Portuguese.
 Wave 13 starts an additional Continental Europe scope with Germany/German. Deutscher Galopp's current Rennordnung supports twelve official terms that map cleanly to existing Concepts: Trainer, Besitzertrainer, Berufsrennreiter, Amateurrennreiter, Besitzer, Starter, Zielrichter, Ausgleicher, Rennbahn, Tierarzt, Hufschmied and Startmaschine. No new Concept is created. Twelve German labels/definitions and 24 curated EN/JA translation intents are added. The local-label layer rises to **291**, German becomes the ninth represented language, Latin-script reviewed labels rise to **216**, and search records rise to **662**. Germany narrows but does not close the wider Continental Europe readiness gap.
 
 Wave 14 starts a bounded Saudi Arabia/JCSA Arabic scope. Current JCSA authority pages directly publish four material Arabic terms that map cleanly to existing Concepts: `الملّاك` (owner category), `المدربين` (trainer category), `الخيالة` (jockey/rider category), and `الفحص البيطري` (veterinary inspection). The observed plural/category forms are preserved rather than normalized into invented singular labels. No new Concept is created. Four Arabic labels/definitions and 8 curated EN/JA translation intents are added. The local-label layer rises to **295**, Arabic and Arab-script reviewed labels rise from **6 to 10**, and search records rise to **670**. Saudi Arabia narrows but does not close the wider Gulf/Middle East readiness gap.
+
+Wave 15 adds a bounded Qatar/QREC Arabic scope. QREC's current Arabic statistics navigation directly publishes three racing-role labels that map cleanly to existing Concepts: `الملاك` (owners), `المدربون` (trainers), and `الخيالة` (jockeys). The Qatar-published forms are preserved rather than collapsed into the Saudi forms. Current-season QREC General Instructions separately confirm Owners, Trainers and Jockeys as licensed racing roles. No new Concept is created. Three Arabic labels/definitions and 6 curated EN/JA translation intents are added. The local-label layer rises to **298**, Arabic and Arab-script reviewed labels rise from **10 to 13**, and search records rise to **676**. Qatar narrows but does not close the wider Gulf/Middle East readiness gap.
 
 - `search/search-intent-policy-v1.tsv` — seven intent classes and publication/review rules;
 - `search/search-queries-v1.tsv` — 66 abbreviation/racecard-reading records;
