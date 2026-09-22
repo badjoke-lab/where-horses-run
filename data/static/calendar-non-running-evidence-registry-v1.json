@@ -301,6 +301,48 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-09-22",
       "notes": "France Calendar production uses FNCH positive programme evidence for LETROT. Source invisibility, missing programme detail, or acquisition failure remains absent_unconfirmed and preserves verified state. Whole-meeting cancellation/postponement automation is intentionally not implemented by this expansion lane."
+    },
+    {
+      "record_id": "new-zealand-thoroughbred-system",
+      "country_id": "new-zealand",
+      "system_id": "new-zealand-thoroughbred-system",
+      "authority_id": "new-zealand-thoroughbred-racing",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "New Zealand Thoroughbred positive schedule/programme sources; no bounded whole-meeting negative-evidence route proven in this country-addition pass",
+      "evidence_urls": [
+        "https://nztr.co.nz/racing-programme-guide"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-09-23",
+      "notes": "New Zealand Calendar production uses positive official schedule evidence only. Source invisibility, unpublished detail, or acquisition failure remains absent_unconfirmed and preserves verified state. Cancellation/postponement automation is outside this expansion pass."
+    },
+    {
+      "record_id": "new-zealand-harness-system",
+      "country_id": "new-zealand",
+      "system_id": "new-zealand-harness-system",
+      "authority_id": "harness-racing-new-zealand",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Harness Racing New Zealand positive schedule/programme sources; no bounded whole-meeting negative-evidence route proven in this country-addition pass",
+      "evidence_urls": [
+        "https://infohorse.hrnz.co.nz/datahrs/calendar/raceday/dates_index.htm"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-09-23",
+      "notes": "New Zealand Calendar production uses positive official schedule evidence only. Source invisibility, unpublished detail, or acquisition failure remains absent_unconfirmed and preserves verified state. Cancellation/postponement automation is outside this expansion pass."
     }
   ]
 }
