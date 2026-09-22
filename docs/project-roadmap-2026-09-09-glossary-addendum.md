@@ -319,7 +319,7 @@ The programme now advances to `GLOSSARY-MASTER-006`.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
-Status: **current, wave 5 in progress**.
+Status: **current, wave 6 in progress**.
 
 This stage reviews definition/comparison/regional/how-why/translation/abbreviation/racecard-reading search intents, coverage gaps and user-facing readiness. It may reopen evidence work only when a real semantic/source gap is discovered. Public implementation planning remains deferred until this stage passes.
 
@@ -331,7 +331,9 @@ Wave 3 adds **40 EN/JA comparison queries covering all 20 current reviewed Conce
 
 Wave 4 adds **28 EN/JA regional-usage queries covering 14 curated source-verified regional label/use cases**. This wave is intentionally selective: it targets labels whose jurisdictional meaning materially helps users (for example Bumper, France Meeting/Réunion, Australian Track Rating, mudlark, under/on/off the bit, betting slang and Australian Barrier/Benchmark usage) rather than expanding every regional label mechanically.
 
-Wave 5 adds **28 EN/JA translation queries covering 14 source-verified local/original-script label cases** across Hong Kong Traditional Chinese, Korean, Japanese and French racing terminology. The queries link users to reviewed Concept/label evidence and explicitly avoid claiming exact one-to-one equivalence where the master records `no_direct_equivalent` or another scoped translation status. The search registry now contains **568 reviewed records** in total. `HKKR-LBL-043` (`국산마`) was deliberately excluded from query linkage because it still references retired `HORSE-027`; MASTER-006 records this as an evidence-lane mapping gap rather than silently retargeting it.
+Wave 5 adds **28 EN/JA translation queries covering 14 source-verified local/original-script label cases** across Hong Kong Traditional Chinese, Korean, Japanese and French racing terminology. The queries link users to reviewed Concept/label evidence and explicitly avoid claiming exact one-to-one equivalence where the master records `no_direct_equivalent` or another scoped translation status. `HKKR-LBL-043` (`국산마`) was deliberately excluded from query linkage because it still references retired `HORSE-027`; MASTER-006 records this as an evidence-lane mapping gap rather than silently retargeting it.
+
+Wave 6 adds **16 EN/JA how/why queries covering 8 authority-backed explanatory cases**. These are limited to mechanics where existing evidence supports an explanation beyond a dictionary definition: claiming, maximum-field/safety-factor logic, Benchmark weighting, French autostart and Premium distribution, Banei track moisture, French Musique ordering and the historical/current use of 斤量. The search registry now contains **584 reviewed records** in total.
 
 - `search/search-intent-policy-v1.tsv` — seven intent classes and publication/review rules;
 - `search/search-queries-v1.tsv` — 66 abbreviation/racecard-reading records;
@@ -341,7 +343,7 @@ Wave 5 adds **28 EN/JA translation queries covering 14 source-verified local/ori
 - `coverage/master-006-search-intent-coverage-v1.tsv` — explicit per-intent coverage/gaps;
 - `coverage/master-006-readiness-v1.tsv` — readiness criteria with the current decision **HOLD**.
 
-Regional usage and translation now have curated first waves but remain partial; how/why remains open. Comparison coverage is complete for the current 20 reviewed Concept relations but may expand only when a new relation or explicit confusion boundary is itself reviewed. Regional and translation additions must likewise be tied to reviewed labels/equivalence metadata with material user value. Lower-priority definition queries are not blanket-generated. The five French abbreviation records also remain for language-appropriate review. Domain breadth, jurisdiction/system breadth and multilingual/no-direct-equivalent presentation still require explicit readiness audits.
+Regional usage, translation and how/why now have curated first waves but remain partial. Comparison coverage is complete for the current 20 reviewed Concept relations but may expand only when a new relation or explicit confusion boundary is itself reviewed. Regional, translation and how/why additions must likewise be tied to reviewed evidence with material user value. Lower-priority definition queries are not blanket-generated. The five French abbreviation records also remain for language-appropriate review. Domain breadth, jurisdiction/system breadth and multilingual/no-direct-equivalent presentation still require explicit readiness audits.
 
 ## Public implementation lane
 
@@ -368,7 +370,7 @@ Working dictionary: 614 terms
 Verified: 614
 Still under review: 0 active Concept candidates
 MASTER-005: complete
-Next subject group: how-why intents + French abbreviation/racecard review + domain/jurisdiction/language readiness
+Next subject group: French abbreviation/racecard review + domain/jurisdiction/language readiness
 Public implementation: deferred
 ```
 
