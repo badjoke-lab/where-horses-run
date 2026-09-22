@@ -13,6 +13,13 @@ import {
   parseChileTeletrakProgrammeText,
   resolveClubHipicoSantiagoProgrammePdfCandidate,
 } from './chile-teletrak-weekly-core.mjs';
+import {
+  CHILE_CLUB_HIPICO_CORPORATE_NEWS_URL,
+  CHILE_CLUB_HIPICO_NON_RUNNING_SOURCE_ID,
+  bindChileClubHipicoNonRunningEvidence,
+  discoverChileClubHipicoNonRunningArticles,
+  parseChileClubHipicoNonRunningArticle,
+} from './chile-clubhipico-non-running-evidence.mjs';
 
 function arg(name, fallback = null) {
   const inline = process.argv.find((value) => value.startsWith(`--${name}=`));
@@ -66,6 +73,26 @@ async function fetchOfficialHtml() {
     if (!response.ok) throw new Error(`Teletrak Chile weekly homepage returned HTTP ${response.status}`);
     return await response.text();
   } finally { clearTimeout(timer); }
+}
+
+async function fetchNonRunningHtml(url, label) {
+  const response = await fetch(url, {
+    redirect: 'follow',
+    headers: {
+      'user-agent': 'WhereHorsesRun/1.0 (+https://whr.badjoke-lab.com/)',
+      accept: 'text/html,application/xhtml+xml',
+      'accept-language': 'es-CL,es;q=0.9,en;q=0.7',
+    },
+    signal: AbortSignal.timeout(20_000),
+  });
+  if (!response.ok) throw new Error(`${label} returned HTTP ${response.status}`);
+  return await response.text();
+}
+
+function canonicalMeetings(file) {
+  if (!fs.existsSync(file)) return [];
+  const dataset = JSON.parse(fs.readFileSync(file, 'utf8'));
+  return Array.isArray(dataset?.meetings) ? dataset.meetings : [];
 }
 
 async function extractPdfText(bytes) {
@@ -144,6 +171,7 @@ const output = arg('output');
 const days = Number(arg('days', '30'));
 const startDate = arg('as-of', localDate());
 const fixture = arg('fixture');
+const canonicalPath = arg('canonical', 'data/generated/timetable/canonical/meetings.json');
 if (!output) throw new Error('--output=<path> is required');
 if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate)) throw new Error('--as-of must be YYYY-MM-DD');
 if (!Number.isInteger(days) || days < 1 || days > 62) throw new Error('--days must be 1..62');
@@ -180,18 +208,97 @@ for (const record of scheduleCandidate.records) {
 }
 
 const candidate = enrichChileTeletrakCandidateWithProgrammeResults(scheduleCandidate, { resultsByMeeting: programmeResults, checkedAt: generatedAt });
+
+let meetingPresenceRecords = [];
+let nonRunningDiagnostics = {
+  status: 'not_checked',
+  source_id: CHILE_CLUB_HIPICO_NON_RUNNING_SOURCE_ID,
+  source_url: CHILE_CLUB_HIPICO_CORPORATE_NEWS_URL,
+  confirmed_non_running_count: 0,
+};
+try {
+  const archiveHtml = await fetchNonRunningHtml(
+    CHILE_CLUB_HIPICO_CORPORATE_NEWS_URL,
+    'Club Hipico Corporativo archive',
+  );
+  const discovery = discoverChileClubHipicoNonRunningArticles(archiveHtml, {
+    sourceUrl: CHILE_CLUB_HIPICO_CORPORATE_NEWS_URL,
+  });
+  const evidence = [];
+  const articleResults = [];
+  for (const sourceUrl of discovery.article_urls) {
+    try {
+      const articleHtml = await fetchNonRunningHtml(sourceUrl, 'Club Hipico non-running article');
+      const parsed = parseChileClubHipicoNonRunningArticle(articleHtml, {
+        sourceUrl,
+        startDate,
+        endDateExclusive,
+      });
+      evidence.push(...parsed.evidence);
+      articleResults.push({
+        source_url: sourceUrl,
+        status: 'success',
+        ...parsed.diagnostics,
+      });
+    } catch (error) {
+      articleResults.push({
+        source_url: sourceUrl,
+        status: 'source_error',
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+  }
+
+  const bound = bindChileClubHipicoNonRunningEvidence({
+    evidence,
+    canonicalMeetings: canonicalMeetings(canonicalPath),
+    checkedAt: generatedAt,
+  });
+  meetingPresenceRecords = bound.meeting_presence_records;
+  nonRunningDiagnostics = {
+    status: articleResults.some((row) => row.status === 'source_error') ? 'partial_success' : 'success',
+    source_id: CHILE_CLUB_HIPICO_NON_RUNNING_SOURCE_ID,
+    source_url: CHILE_CLUB_HIPICO_CORPORATE_NEWS_URL,
+    candidate_article_count: discovery.article_urls.length,
+    accepted_evidence_count: evidence.length,
+    confirmed_non_running_count: meetingPresenceRecords.length,
+    article_results: articleResults,
+    binding_skipped: bound.diagnostics.skipped,
+  };
+} catch (error) {
+  nonRunningDiagnostics = {
+    status: 'source_error',
+    source_id: CHILE_CLUB_HIPICO_NON_RUNNING_SOURCE_ID,
+    source_url: CHILE_CLUB_HIPICO_CORPORATE_NEWS_URL,
+    confirmed_non_running_count: 0,
+    error: error instanceof Error ? error.message : String(error),
+  };
+}
+
 const rankCounts = Object.fromEntries(['C', 'B', 'B+', 'A', 'A+'].map((rank) => [rank, candidate.records.filter((record) => record.capability_rank === rank).length]));
 const detailStatusCounts = Object.fromEntries(['available', 'not_published', 'source_error'].map((status) => [status, candidate.records.filter((record) => record.detail_observation?.status === status).length]));
 const artifact = {
   schema_version: 'chile-teletrak-official-window-candidates-v2', generated_at: generatedAt, country_id: 'chile', authority_id: CHILE_TELETRAK_AUTHORITY_ID,
   racing_system_id: CHILE_TELETRAK_SYSTEM_ID, timezone: CHILE_TIMEZONE, source_id: CHILE_TELETRAK_SOURCE_ID,
   collection_target_rank: 'best_available', raw_body_retained: false,
-  discovery: { method: 'official_teletrak_weekly_homepage_plus_linked_programmes', schedule_source_id: CHILE_TELETRAK_SOURCE_ID, schedule_source_url: CHILE_TELETRAK_URL, detail_source_id: CHILE_TELETRAK_SOURCE_ID, source_card_count: diagnostics.source_card_count, rank_counts: rankCounts, detail_status_counts: detailStatusCounts },
-  window: { start_date: startDate, end_date_exclusive: endDateExclusive, days, coverage_claim: 'source_visible_partial', coverage_note: 'Teletrak exposes a rolling weekly domestic meeting view and links official programme material when published. Source-linked programmes are evaluated through A. Meetings whose programme link is not yet published remain valid lower-rank observations with pending detail; retrieval/parser failures remain explicit retry states.' },
+  discovery: {
+    method: 'official_teletrak_weekly_homepage_plus_linked_programmes',
+    schedule_source_id: CHILE_TELETRAK_SOURCE_ID,
+    schedule_source_url: CHILE_TELETRAK_URL,
+    detail_source_id: CHILE_TELETRAK_SOURCE_ID,
+    source_card_count: diagnostics.source_card_count,
+    rank_counts: rankCounts,
+    detail_status_counts: detailStatusCounts,
+    non_running_source_id: CHILE_CLUB_HIPICO_NON_RUNNING_SOURCE_ID,
+    non_running_source_url: CHILE_CLUB_HIPICO_CORPORATE_NEWS_URL,
+    non_running_source_status: nonRunningDiagnostics.status,
+  },
+  window: { start_date: startDate, end_date_exclusive: endDateExclusive, days, coverage_claim: 'source_visible_partial', coverage_note: 'Teletrak remains positive schedule evidence. Club Hipico de Santiago Corporativo news contributes only bounded explicit whole-meeting suspension/postponement evidence for the Santiago venue. Archive omission, article fetch failure, other Chile venues, and partial-race stoppages never become whole-meeting cancellation evidence.' },
   records: candidate.records,
-  diagnostics: { ...diagnostics, programme_detail: detailDiagnostics },
+  meeting_presence_records: meetingPresenceRecords,
+  diagnostics: { ...diagnostics, programme_detail: detailDiagnostics, non_running: nonRunningDiagnostics },
 };
 const absolute = path.resolve(output);
 fs.mkdirSync(path.dirname(absolute), { recursive: true });
 fs.writeFileSync(absolute, `${JSON.stringify(artifact, null, 2)}\n`);
-console.log(JSON.stringify({ output, source_url: CHILE_TELETRAK_URL, source_card_count: diagnostics.source_card_count, start_date: startDate, end_date_exclusive: endDateExclusive, meetings_emitted: artifact.records.length, rank_counts: rankCounts, detail_status_counts: detailStatusCounts, programme_detail: detailDiagnostics, unknown_venues: diagnostics.unknown_venues.length, parse_failures: diagnostics.parse_failures.length, collection_target_rank: artifact.collection_target_rank, coverage_claim: artifact.window.coverage_claim }));
+console.log(JSON.stringify({ output, source_url: CHILE_TELETRAK_URL, source_card_count: diagnostics.source_card_count, start_date: startDate, end_date_exclusive: endDateExclusive, meetings_emitted: artifact.records.length, confirmed_non_running_count: meetingPresenceRecords.length, non_running_source_status: nonRunningDiagnostics.status, rank_counts: rankCounts, detail_status_counts: detailStatusCounts, programme_detail: detailDiagnostics, unknown_venues: diagnostics.unknown_venues.length, parse_failures: diagnostics.parse_failures.length, collection_target_rank: artifact.collection_target_rank, coverage_claim: artifact.window.coverage_claim }));
