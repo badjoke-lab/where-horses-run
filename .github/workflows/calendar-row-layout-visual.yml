@@ -38,23 +38,27 @@ jobs:
       - name: Build site
         run: npm run build
 
-      - name: Start preview
-        run: |
-          npm run preview -- --host 127.0.0.1 --port 4321 > /tmp/whr-preview.log 2>&1 &
-          for attempt in {1..30}; do
-            if curl --fail --silent http://127.0.0.1:4321/ >/dev/null; then
-              exit 0
-            fi
-            sleep 1
-          done
-          cat /tmp/whr-preview.log
-          exit 1
-
-      - name: Check desktop and mobile meeting rows
+      - name: Preview and check desktop/mobile meeting rows
         env:
           BASE_URL: http://127.0.0.1:4321
           VISUAL_AUDIT_OUTPUT: artifacts/calendar-row-layout-visual
-        run: node scripts/check-calendar-row-layout-visual.mjs
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4321 > /tmp/whr-preview.log 2>&1 &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
+          ready=false
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:4321/ >/dev/null; then
+              ready=true
+              break
+            fi
+            sleep 1
+          done
+          if [ "$ready" != "true" ]; then
+            cat /tmp/whr-preview.log
+            exit 1
+          fi
+          node scripts/check-calendar-row-layout-visual.mjs
 
       - name: Upload visual evidence
         if: always()
