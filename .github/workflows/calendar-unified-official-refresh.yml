@@ -33,6 +33,7 @@ on:
       - 'scripts/check-nar-non-running-evidence.mjs'
       - 'scripts/check-nar-non-running-discovery.mjs'
       - 'scripts/check-sorec-non-running-evidence.mjs'
+      - 'scripts/check-chile-clubhipico-non-running-evidence.mjs'
       - 'data/static/calendar-non-running-evidence-registry-v1.json'
       - 'data/static/calendar-non-running-evidence-registry.schema.json'
       - 'scripts/check-kra-window-bounds.mjs'
@@ -65,6 +66,7 @@ on:
       - 'scripts/timetable/**'
       - 'scripts/check-calendar-refresh-publication-boundaries.mjs'
       - 'scripts/check-calendar-live-source-readiness.mjs'
+      - 'scripts/check-chile-clubhipico-non-running-evidence.mjs'
       - 'scripts/check-kra-window-bounds.mjs'
       - 'scripts/check-japan-mother-set-safety.mjs'
       - 'scripts/check-japan-per-family-absence-reconciliation.mjs'
@@ -133,6 +135,7 @@ jobs:
           node scripts/check-nar-non-running-evidence.mjs
           node scripts/check-nar-non-running-discovery.mjs
           node scripts/check-sorec-non-running-evidence.mjs
+          node scripts/check-chile-clubhipico-non-running-evidence.mjs
           node scripts/check-peru-fetch-failure-retention.mjs
       - name: Exercise Japan mother-set safety contracts
         run: |
