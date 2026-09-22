@@ -10,6 +10,7 @@ import {
 } from './tjk-current-future-candidates.mjs';
 import { discoverAnnualFixtures } from './tjk-annual-fixture-discovery.mjs';
 import { deriveBestAvailableRank } from './best-available-rank.mjs';
+import { discoverTjkConfirmedNonRunning } from './tjk-non-running-discovery.mjs';
 
 const TJK_RACECOURSE_IDENTITIES = new Map([
   ['1', { racecourse_id: 'adana-racecourse', name_en: 'Adana Racecourse', name_ja: 'アダナ競馬場' }],
@@ -27,6 +28,21 @@ function addDays(iso, days) {
   const date = new Date(`${iso}T00:00:00Z`);
   date.setUTCDate(date.getUTCDate() + days);
   return date.toISOString().slice(0, 10);
+}
+
+function dateRange(startDate, endDateExclusive) {
+  const dates = [];
+  for (let date = startDate; date < endDateExclusive; date = addDays(date, 1)) dates.push(date);
+  return dates;
+}
+
+function canonicalTjkMeetingIds(startDate, endDateExclusive) {
+  const file = path.resolve('data/generated/timetable/canonical/meetings.json');
+  const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+  return new Set((data.meetings ?? [])
+    .filter((row) => String(row.meeting_id ?? '').startsWith('tjk-'))
+    .filter((row) => row.date >= startDate && row.date < endDateExclusive)
+    .map((row) => row.meeting_id));
 }
 
 function bindRacecourseIdentity(candidate) {
@@ -171,6 +187,30 @@ for (const fixture of annual.fixtures) {
   candidates.push(await enrichBestAvailableFromAnnualFixture(fixture, startDate));
 }
 
+const canonicalIds = canonicalTjkMeetingIds(startDate, endDateExclusive);
+let nonRunningDiscovery;
+try {
+  nonRunningDiscovery = await discoverTjkConfirmedNonRunning({
+    meetingDates: dateRange(startDate, endDateExclusive),
+    checkedAt: retrievedAt,
+  });
+} catch (error) {
+  nonRunningDiscovery = {
+    records: [],
+    diagnostics: [{
+      source_url: 'https://www.tjk.org/TR/YarisSever/Query/Page/Haberler',
+      status: 'discovery_failed',
+      error: String(error?.message ?? error),
+    }],
+    query_window: { start_date: addDays(startDate, -62), end_date_inclusive: startDate },
+  };
+}
+const meetingPresenceRecords = nonRunningDiscovery.records.filter((row) => canonicalIds.has(row.meeting_id));
+const unmatchedPresenceRecords = nonRunningDiscovery.records.filter((row) => !canonicalIds.has(row.meeting_id));
+const nonRunningFailures = nonRunningDiscovery.diagnostics.filter((row) =>
+  ['query_fetch_failed', 'discovery_failed'].includes(row.status),
+);
+
 const rankCounts = Object.fromEntries(
   ['C', 'B', 'B+', 'A', 'A+'].map((rank) => [
     rank,
@@ -206,6 +246,16 @@ const artifact = {
     route_id: null,
     error_code: null,
   },
+  meeting_presence_records: meetingPresenceRecords,
+  non_running_evidence: {
+    source_id: 'tjk-news-explicit-non-running',
+    acquisition_status: nonRunningFailures.length ? 'partial_or_network_error' : 'success',
+    query_window: nonRunningDiscovery.query_window,
+    confirmed_non_running_count: meetingPresenceRecords.length,
+    unmatched_count: unmatchedPresenceRecords.length,
+    unmatched_records: unmatchedPresenceRecords,
+    diagnostics: nonRunningDiscovery.diagnostics,
+  },
   discovery: {
     method: 'official_annual_programme_fixture_union_daily_detail',
     schedule_source_id: annual.schedule_source_id,
@@ -238,4 +288,6 @@ console.log(JSON.stringify({
     route_id: null,
     error_code: null,
   },
+  confirmed_non_running_count: meetingPresenceRecords.length,
+  non_running_query_failures: nonRunningFailures.length,
 }, null, 2));
