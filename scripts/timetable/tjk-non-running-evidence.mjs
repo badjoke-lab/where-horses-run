@@ -56,7 +56,8 @@ function isoDate(year, month, day) {
 }
 
 function escapeRegExp(value) {
-  return String(value).replace(/[\^$.*+?()[\]{}|\\]/g, '\\$&');
+  const special = new Set(['\\', '^', '$', '.', '*', '+', '?', '(', ')', '[', ']', '{', '}', '|']);
+  return [...String(value)].map((char) => special.has(char) ? '\\' + char : char).join('');
 }
 
 function venueFromText(text) {
@@ -84,8 +85,8 @@ function yearForMonth(publication, month) {
 function explicitDottedDate(text, venueLabel) {
   const venue = escapeRegExp(venueLabel);
   const patterns = [
-    new RegExp('(\\d{1,2})[.\\/-](\\d{1,2})[.\\/-](20\\d{2})[^.]{0,180}' + venue + '[^.]{0,260}(?:tüm koşular|yarışlar)[^.]{0,260}(?:tehir edilmesine|ertelenmesine|iptal edilmesine|iptal edilmiştir)', 'i'),
-    new RegExp(venue + '[^.]{0,180}(\\d{1,2})[.\\/-](\\d{1,2})[.\\/-](20\\d{2})[^.]{0,260}(?:tüm koşular|yarışlar)[^.]{0,260}(?:tehir edilmesine|ertelenmesine|iptal edilmesine|iptal edilmiştir)', 'i'),
+    new RegExp('(\d{1,2})[.\/-](\d{1,2})[.\/-](20\d{2})[^.]{0,180}' + venue + '[^.]{0,260}(?:tüm koşular|yarışlar)[^.]{0,260}(?:tehir edilmesine|ertelenmesine|iptal edilmesine|iptal edilmiştir)', 'i'),
+    new RegExp(venue + '[^.]{0,180}(\d{1,2})[.\/-](\d{1,2})[.\/-](20\d{2})[^.]{0,260}(?:tüm koşular|yarışlar)[^.]{0,260}(?:tehir edilmesine|ertelenmesine|iptal edilmesine|iptal edilmiştir)', 'i'),
   ];
   for (const pattern of patterns) {
     const match = text.match(pattern);
@@ -99,7 +100,7 @@ function explicitDottedDate(text, venueLabel) {
 function explicitNaturalDate(text, venueLabel, publication) {
   if (!publication) return null;
   const venue = escapeRegExp(venueLabel);
-  const pattern = new RegExp('(\\d{1,2})\\s+(Ocak|Şubat|Subat|Mart|Nisan|Mayıs|Mayis|Haziran|Temmuz|Ağustos|Agustos|Eylül|Eylul|Ekim|Kasım|Kasim|Aralık|Aralik)[^.]{0,120}' + venue + '[^.]{0,260}(?:tüm koşular|yarışlar)[^.]{0,260}(?:tehir edilmesine|ertelenmesine|iptal edilmesine|iptal edilmiştir)', 'i');
+  const pattern = new RegExp('(\d{1,2})\s+(Ocak|Şubat|Subat|Mart|Nisan|Mayıs|Mayis|Haziran|Temmuz|Ağustos|Agustos|Eylül|Eylul|Ekim|Kasım|Kasim|Aralık|Aralik)[^.]{0,120}' + venue + '[^.]{0,260}(?:tüm koşular|yarışlar)[^.]{0,260}(?:tehir edilmesine|ertelenmesine|iptal edilmesine|iptal edilmiştir)', 'i');
   const match = text.match(pattern);
   if (!match) return null;
   const month = MONTHS[normalizeTurkish(match[2])];
