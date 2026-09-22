@@ -133,22 +133,22 @@
       "country_id": "turkey",
       "system_id": "tjk-national-racing-system",
       "authority_id": "turkiye-jokey-kulubu",
-      "mode": "unsupported",
-      "automation_status": "not_implemented",
-      "whole_meeting_non_running": "not_proven",
-      "postponement": "not_proven",
+      "mode": "reviewed",
+      "automation_status": "candidate",
+      "whole_meeting_non_running": "supported",
+      "postponement": "supported",
       "partial_race_policy": "never_promote_to_whole_meeting",
       "source_absence_policy": "absent_unconfirmed",
       "acquisition_failure_policy": "preserve_verified_state",
       "replacement_date_policy": "independent_meeting_only",
-      "evidence_source_family": "TJK annual/daily official programmes; no explicit whole-meeting negative-evidence route proven",
+      "evidence_source_family": "TJK official news articles with explicit domestic whole-meeting postponement/cancellation wording",
       "evidence_urls": [
-        "https://www.tjk.org/TR/YarisSever/Info/Page/GunlukYarisProgrami",
-        "https://www.tjk.org/TR/YarisSever/Query/Page/YillikYarisProgrami"
+        "https://www.tjk.org/TR/YarisSever/Query/Page/Haberler",
+        "https://www.tjk.org/TR/YarisSever/News/Page/52094"
       ],
-      "example_evidence_url": null,
-      "reviewed_at": "2026-09-21",
-      "notes": "Current official programme sources prove positive schedule data. Their omission must not be interpreted as cancellation."
+      "example_evidence_url": "https://www.tjk.org/TR/YarisSever/News/Page/52094",
+      "reviewed_at": "2026-09-22",
+      "notes": "Official TJK news proves domestic whole-meeting postponement/cancellation and a bounded parser now requires a known domestic venue plus explicit all-races (`tüm koşular`) body evidence. Race-only and foreign-racing notices are rejected, and replacement dates remain independent meetings. Automated discovery is deliberately not active: both filtered and unfiltered Haberler requests timed out from GitHub Actions during PR #1110 live-route probes, so production keeps the safe reviewed path and never treats programme/news absence as cancellation."
     },
     {
       "record_id": "sorec-racing-information-system",
