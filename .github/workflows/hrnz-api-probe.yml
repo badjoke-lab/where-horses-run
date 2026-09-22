@@ -32,6 +32,10 @@ jobs:
           probe hrnz_www_calendar_page 'https://www.hrnz.co.nz/racing/race-programmes/' /tmp/hrnz-www.html
           probe hrnz_final_calendar_pdf 'https://www.hrnz.co.nz/assets/2026.27-Final-Racing-Calendar-TAB-NZ-v1.1.pdf' /tmp/hrnz-calendar.pdf
           echo "hrnz_final_calendar_pdf_magic=$(head -c 5 /tmp/hrnz-calendar.pdf | tr -cd '[:print:]')"
+          if command -v pdftotext >/dev/null 2>&1; then
+            echo "hrnz_final_calendar_page3_layout:"
+            pdftotext -f 3 -l 3 -layout /tmp/hrnz-calendar.pdf - | sed -n '1,120p'
+          fi
           probe harness_openapi 'https://harness.hrnz.co.nz/APIdoc/Version-1.1/HRNZAPI-V1.1.json' /tmp/openapi.json
 
           echo "hrnz_calendar_ics_fingerprint:"
