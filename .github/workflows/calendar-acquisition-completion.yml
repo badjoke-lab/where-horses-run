@@ -22,6 +22,7 @@ on:
       - 'scripts/check-japan-acquisition-completion.mjs'
       - 'scripts/check-tjk-a-plus-programme-parser.mjs'
       - 'scripts/check-tjk-non-running-evidence.mjs'
+      - 'scripts/probe-sorec-non-running-calendar.mjs'
       - '.github/workflows/calendar-acquisition-completion.yml'
   push:
     branches:
@@ -74,3 +75,4 @@ jobs:
           node scripts/check-nar-non-running-evidence.mjs
           node scripts/check-nar-non-running-discovery.mjs
           node scripts/check-tjk-non-running-evidence.mjs
+          node scripts/probe-sorec-non-running-calendar.mjs
