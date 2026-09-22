@@ -161,12 +161,15 @@ function extractJoursEvenementDiagnostics(html) {
 
   const rawArray = assignment[1];
   const reportRecords = [];
-  for (const match of rawArray.matchAll(/\[\s*["']([^"']+)["']\s*,\s*["']REPOR["']\s*,\s*["']([^"']+)["']\s*\]/gi)) {
+  for (const match of rawArray.matchAll(/\[\s*"([^"]+)"\s*,\s*"REPOR"\s*,\s*"([^"]+)"\s*\]/gi)) {
+    const message = decodeHtml(match[2]);
     reportRecords.push({
       calendar_key: match[1],
-      message: decodeHtml(match[2]),
-      message_date: (match[2].match(/\b(\d{1,2}\/\d{1,2}\/\d{2,4})\b/) || [])[1] ?? null,
-      venue: (match[2].match(/hippodrome\s+([^"']+)$/i) || [])[1]?.trim() ?? null,
+      message,
+      message_dates: [...message.matchAll(/\b(\d{1,2}\/\d{1,2}\/\d{2,4})\b/g)].map((m) => m[1]),
+      venue: (message.match(/hippodrome\s+(.+)$/i) || [])[1]?.trim() ?? null,
+      contains_du_date: /\bdu\s+\d{1,2}\/\d{1,2}\/\d{2,4}\b/i.test(message),
+      contains_au_date: /\bau\s+\d{1,2}\/\d{1,2}\/\d{2,4}\b/i.test(message),
     });
   }
 
@@ -448,7 +451,7 @@ if (primary && primaryCalendarHtml && programme.dates.length > 0) {
 
 const artifact = {
   schema_version: 'sorec-non-running-route-probe-v1',
-  probe_revision: 'jsf-date-select-v7-report-key-semantics',
+  probe_revision: 'jsf-date-select-v8-report-records',
   generated_at: new Date().toISOString(),
   purpose: 'Diagnose the official SOREC calendar route for explicit meeting-level Réunion reportée evidence. No source absence is treated as cancellation.',
   results,
