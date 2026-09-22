@@ -296,6 +296,46 @@
       "show_live_label": false,
       "show_replay_label": false,
       "notes": "LETROT public output may rise automatically with verified FNCH evidence through A. Rich timetable fields remain disabled pending explicit publication review."
+    },
+    {
+      "id": "new-zealand-thoroughbred-reviewed-a",
+      "priority": 350,
+      "match": {
+        "authority_ids": [
+          "new-zealand-thoroughbred-racing"
+        ]
+      },
+      "max_public_rank": "A",
+      "include_in_public_list": true,
+      "detail_fields": {
+        "show_race_name": false,
+        "show_distance": false,
+        "show_surface": false,
+        "show_course": false
+      },
+      "show_live_label": false,
+      "show_replay_label": false,
+      "notes": "New Zealand Thoroughbred public output may rise with verified LOVERACING evidence through A. Rich fields remain disabled pending explicit publication review."
+    },
+    {
+      "id": "new-zealand-harness-reviewed-b",
+      "priority": 350,
+      "match": {
+        "authority_ids": [
+          "harness-racing-new-zealand"
+        ]
+      },
+      "max_public_rank": "B",
+      "include_in_public_list": true,
+      "detail_fields": {
+        "show_race_name": false,
+        "show_distance": false,
+        "show_surface": false,
+        "show_course": false
+      },
+      "show_live_label": false,
+      "show_replay_label": false,
+      "notes": "New Zealand harness public output may expose verified HRNZ meeting date, venue and first-race time through B."
     }
   ]
 }
