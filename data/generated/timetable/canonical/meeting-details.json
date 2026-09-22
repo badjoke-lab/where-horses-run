@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-meeting-details-v0",
-  "generated_at": "2026-09-22T15:21:29.531Z",
+  "generated_at": "2026-09-22T15:23:37.876Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -25378,7 +25378,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-22T15:21:29.531Z",
+        "generated_at": "2026-09-22T15:23:37.876Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
@@ -25482,7 +25482,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-22T15:21:29.531Z",
+        "generated_at": "2026-09-22T15:23:37.876Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
@@ -36603,7 +36603,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:46.555Z",
+        "generated_at": "2026-09-22T15:22:49.917Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -36640,6 +36640,96 @@
       "summary_note": "Current official rolling-window race programme observation."
     },
     {
+      "meeting_id": "france-letrot-marseille-borely-racecourse-2026-09-22",
+      "country_id": "france",
+      "authority_id": "letrot",
+      "racecourse_id": "marseille-borely-racecourse",
+      "date": "2026-09-22",
+      "timezone": "Europe/Paris",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20260922_Hippodrome%20Marseille-Borely.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-22",
+        "generated_at": "2026-09-22T15:23:25.738Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-sud-est/programmes-des-courses",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-sud-est/programmes-des-courses",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20260922_Hippodrome%20Marseille-Borely.pdf",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20260922_Hippodrome%20Marseille-Borely.pdf",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "11:12"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "11:42"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "12:17"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "12:52"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "13:27"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "14:12"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "14:47"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "15:23"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
       "meeting_id": "ireland-ireland--listowel-2026-09-22",
       "country_id": "ireland",
       "authority_id": "horse-racing-ireland",
@@ -36659,7 +36749,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:52.449Z",
+        "generated_at": "2026-09-22T15:22:57.148Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -37840,7 +37930,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:46.555Z",
+        "generated_at": "2026-09-22T15:22:49.917Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -37909,6 +37999,96 @@
       "summary_note": "Current official rolling-window race programme observation."
     },
     {
+      "meeting_id": "france-letrot-argentan-racecourse-2026-09-23",
+      "country_id": "france",
+      "authority_id": "letrot",
+      "racecourse_id": "argentan-racecourse",
+      "date": "2026-09-23",
+      "timezone": "Europe/Paris",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20260923_Hippodrome%20Argentan_0.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-22",
+        "generated_at": "2026-09-22T15:23:25.738Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-basse-normandie/programme-des-courses",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-basse-normandie/programme-des-courses",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20260923_Hippodrome%20Argentan_0.pdf",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20260923_Hippodrome%20Argentan_0.pdf",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "13:55"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:30"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "15:05"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "15:40"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "16:15"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "16:50"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "17:25"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "18:00"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
       "meeting_id": "hkjc-happy-valley-racecourse-2026-09-23",
       "country_id": "hong-kong",
       "authority_id": "hkjc",
@@ -37928,7 +38108,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:10:40.584Z",
+        "generated_at": "2026-09-22T15:21:56.727Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -38028,7 +38208,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:52.449Z",
+        "generated_at": "2026-09-22T15:22:57.148Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -38872,6 +39052,96 @@
       "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
     },
     {
+      "meeting_id": "france-letrot-laval-racecourse-2026-09-24",
+      "country_id": "france",
+      "authority_id": "letrot",
+      "racecourse_id": "laval-racecourse",
+      "date": "2026-09-24",
+      "timezone": "Europe/Paris",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20260924_Hippodrome%20Laval_0.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-22",
+        "generated_at": "2026-09-22T15:23:25.738Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-anjou-maine/programme-des-courses",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-anjou-maine/programme-des-courses",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20260924_Hippodrome%20Laval_0.pdf",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20260924_Hippodrome%20Laval_0.pdf",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "16:32"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "17:07"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "17:42"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "18:20"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "18:55"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "19:27"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "19:59"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "20:31"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
       "meeting_id": "ireland-ireland--listowel-2026-09-24",
       "country_id": "ireland",
       "authority_id": "horse-racing-ireland",
@@ -38891,7 +39161,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:52.449Z",
+        "generated_at": "2026-09-22T15:22:57.148Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -39592,7 +39862,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:52.449Z",
+        "generated_at": "2026-09-22T15:22:57.148Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -39655,7 +39925,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:52.449Z",
+        "generated_at": "2026-09-22T15:22:57.148Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -40355,7 +40625,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:52.449Z",
+        "generated_at": "2026-09-22T15:22:57.148Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -40423,7 +40693,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:52.449Z",
+        "generated_at": "2026-09-22T15:22:57.148Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -41096,7 +41366,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:52.449Z",
+        "generated_at": "2026-09-22T15:22:57.148Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -43652,7 +43922,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:52.449Z",
+        "generated_at": "2026-09-22T15:22:57.148Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },

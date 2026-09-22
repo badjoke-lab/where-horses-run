@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-22T15:21:29.531Z",
+  "generated_at": "2026-09-22T15:23:37.876Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -12550,7 +12550,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-22T15:21:29.531Z",
+        "generated_at": "2026-09-22T15:23:37.876Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12579,7 +12579,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-22T15:21:29.531Z",
+        "generated_at": "2026-09-22T15:23:37.876Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12784,7 +12784,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-22T15:21:29.531Z",
+        "generated_at": "2026-09-22T15:23:37.876Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -17830,9 +17830,142 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:46.555Z",
+        "generated_at": "2026-09-22T15:22:49.917Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
+      "meeting_id": "france-galop-vichy-racecourse-2026-09-22",
+      "country_id": "france",
+      "authority_id": "france-galop",
+      "racing_system_id": "france-france-galop-system",
+      "timezone": "Europe/Paris",
+      "racecourse_id": "vichy-racecourse",
+      "date": "2026-09-22",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-index",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/federation-centre-est/programme-des-courses",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-22",
+        "generated_at": "2026-09-22T15:23:25.738Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-centre-est/programme-des-courses",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-centre-est/programme-des-courses",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "The explicit current acquisition attempt is pending publication (pending_publication)."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-09-22T15:23:25.738Z",
+        "status": "pending_publication",
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "error_code": null
+      }
+    },
+    {
+      "meeting_id": "france-letrot-marseille-borely-racecourse-2026-09-22",
+      "country_id": "france",
+      "authority_id": "letrot",
+      "racing_system_id": "france-letrot-system",
+      "timezone": "Europe/Paris",
+      "racecourse_id": "marseille-borely-racecourse",
+      "date": "2026-09-22",
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "11:12",
+      "last_race_time_local": "15:23",
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20260922_Hippodrome%20Marseille-Borely.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-22",
+        "generated_at": "2026-09-22T15:23:25.738Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-sud-est/programmes-des-courses",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-sud-est/programmes-des-courses",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20260922_Hippodrome%20Marseille-Borely.pdf",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20260922_Hippodrome%20Marseille-Borely.pdf",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A",
+        "technical_capability_rank": "A",
+        "evaluated_capability_rank": "A",
+        "higher_rank_open": false,
+        "reason": "The currently applicable higher-detail acquisition path was explicitly evaluated through the registered technical capability rank."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-09-22T15:23:25.738Z",
+        "status": "success",
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "error_code": null
       }
     },
     {
@@ -17859,7 +17992,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:52.449Z",
+        "generated_at": "2026-09-22T15:22:57.148Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -18363,9 +18496,142 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:46.555Z",
+        "generated_at": "2026-09-22T15:22:49.917Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
+      "meeting_id": "france-galop-toulouse-racecourse-2026-09-23",
+      "country_id": "france",
+      "authority_id": "france-galop",
+      "racing_system_id": "france-france-galop-system",
+      "timezone": "Europe/Paris",
+      "racecourse_id": "toulouse-racecourse",
+      "date": "2026-09-23",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-index",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/federation-sud-ouest/programme-des-courses",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-22",
+        "generated_at": "2026-09-22T15:23:25.738Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-sud-ouest/programme-des-courses",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-sud-ouest/programme-des-courses",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "retry_required",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "The explicit current acquisition attempt did not complete successfully (parser_failure)."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-09-22T15:23:25.738Z",
+        "status": "parser_failure",
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "error_code": "race_times_not_parsed"
+      }
+    },
+    {
+      "meeting_id": "france-letrot-argentan-racecourse-2026-09-23",
+      "country_id": "france",
+      "authority_id": "letrot",
+      "racing_system_id": "france-letrot-system",
+      "timezone": "Europe/Paris",
+      "racecourse_id": "argentan-racecourse",
+      "date": "2026-09-23",
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "13:55",
+      "last_race_time_local": "18:00",
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20260923_Hippodrome%20Argentan_0.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-22",
+        "generated_at": "2026-09-22T15:23:25.738Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-basse-normandie/programme-des-courses",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-basse-normandie/programme-des-courses",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20260923_Hippodrome%20Argentan_0.pdf",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20260923_Hippodrome%20Argentan_0.pdf",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A",
+        "technical_capability_rank": "A",
+        "evaluated_capability_rank": "A",
+        "higher_rank_open": false,
+        "reason": "The currently applicable higher-detail acquisition path was explicitly evaluated through the registered technical capability rank."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-09-22T15:23:25.738Z",
+        "status": "success",
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "error_code": null
       }
     },
     {
@@ -18391,7 +18657,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:10:40.584Z",
+        "generated_at": "2026-09-22T15:21:56.727Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -18429,7 +18695,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:52.449Z",
+        "generated_at": "2026-09-22T15:22:57.148Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -18842,6 +19108,198 @@
       }
     },
     {
+      "meeting_id": "france-galop-compiegne-racecourse-2026-09-24",
+      "country_id": "france",
+      "authority_id": "france-galop",
+      "racing_system_id": "france-france-galop-system",
+      "timezone": "Europe/Paris",
+      "racecourse_id": "compiegne-racecourse",
+      "date": "2026-09-24",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-index",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/federation-nord/programme-des-courses",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-22",
+        "generated_at": "2026-09-22T15:23:25.738Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-nord/programme-des-courses",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-nord/programme-des-courses",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "The explicit current acquisition attempt is pending publication (pending_publication)."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-09-22T15:23:25.738Z",
+        "status": "pending_publication",
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "error_code": null
+      }
+    },
+    {
+      "meeting_id": "france-galop-la-teste-racecourse-2026-09-24",
+      "country_id": "france",
+      "authority_id": "france-galop",
+      "racing_system_id": "france-france-galop-system",
+      "timezone": "Europe/Paris",
+      "racecourse_id": "la-teste-racecourse",
+      "date": "2026-09-24",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-index",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/federation-sud-ouest/programme-des-courses",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-22",
+        "generated_at": "2026-09-22T15:23:25.738Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-sud-ouest/programme-des-courses",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-sud-ouest/programme-des-courses",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "retry_required",
+        "observed_rank": "C",
+        "technical_capability_rank": "A",
+        "higher_rank_open": true,
+        "reason": "The explicit current acquisition attempt did not complete successfully (parser_failure)."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-09-22T15:23:25.738Z",
+        "status": "parser_failure",
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "error_code": "race_times_not_parsed"
+      }
+    },
+    {
+      "meeting_id": "france-letrot-laval-racecourse-2026-09-24",
+      "country_id": "france",
+      "authority_id": "letrot",
+      "racing_system_id": "france-letrot-system",
+      "timezone": "Europe/Paris",
+      "racecourse_id": "laval-racecourse",
+      "date": "2026-09-24",
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "16:32",
+      "last_race_time_local": "20:31",
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20260924_Hippodrome%20Laval_0.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-22",
+        "generated_at": "2026-09-22T15:23:25.738Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-anjou-maine/programme-des-courses",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-anjou-maine/programme-des-courses",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20260924_Hippodrome%20Laval_0.pdf",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20260924_Hippodrome%20Laval_0.pdf",
+          "observed_at": "2026-09-22T15:23:25.738Z",
+          "successfully_verified_at": "2026-09-22T15:23:25.738Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "complete_current_best_available",
+        "observed_rank": "A",
+        "technical_capability_rank": "A",
+        "evaluated_capability_rank": "A",
+        "higher_rank_open": false,
+        "reason": "The currently applicable higher-detail acquisition path was explicitly evaluated through the registered technical capability rank."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-09-22T15:23:25.738Z",
+        "status": "success",
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "ireland-ireland--listowel-2026-09-24",
       "country_id": "ireland",
       "authority_id": "horse-racing-ireland",
@@ -18865,7 +19323,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:52.449Z",
+        "generated_at": "2026-09-22T15:22:57.148Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -19214,7 +19672,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:52.449Z",
+        "generated_at": "2026-09-22T15:22:57.148Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -19251,7 +19709,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:52.449Z",
+        "generated_at": "2026-09-22T15:22:57.148Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -19441,7 +19899,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:12:08.328Z",
+        "generated_at": "2026-09-22T15:23:17.758Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -19449,15 +19907,15 @@
         "meeting_identity": {
           "source_id": "jcsa-races",
           "official_source_url": "https://www.jcsa.sa/en/races/20260925",
-          "observed_at": "2026-09-22T15:12:08.328Z",
-          "successfully_verified_at": "2026-09-22T15:12:08.328Z",
+          "observed_at": "2026-09-22T15:23:17.758Z",
+          "successfully_verified_at": "2026-09-22T15:23:17.758Z",
           "acquisition_method": "automatic"
         },
         "meeting_date": {
           "source_id": "jcsa-races",
           "official_source_url": "https://www.jcsa.sa/en/races/20260925",
-          "observed_at": "2026-09-22T15:12:08.328Z",
-          "successfully_verified_at": "2026-09-22T15:12:08.328Z",
+          "observed_at": "2026-09-22T15:23:17.758Z",
+          "successfully_verified_at": "2026-09-22T15:23:17.758Z",
           "acquisition_method": "automatic"
         }
       },
@@ -19469,7 +19927,7 @@
         "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       },
       "acquisition_attempt": {
-        "attempted_at": "2026-09-22T15:12:08.328Z",
+        "attempted_at": "2026-09-22T15:23:17.758Z",
         "status": "success",
         "source_id": "jcsa-races",
         "route_id": "jcsa-date-race-page",
@@ -19653,7 +20111,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:52.449Z",
+        "generated_at": "2026-09-22T15:22:57.148Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -19690,7 +20148,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:52.449Z",
+        "generated_at": "2026-09-22T15:22:57.148Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -19919,7 +20377,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:12:08.328Z",
+        "generated_at": "2026-09-22T15:23:17.758Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -19927,15 +20385,15 @@
         "meeting_identity": {
           "source_id": "jcsa-races",
           "official_source_url": "https://www.jcsa.sa/en/races/20260926",
-          "observed_at": "2026-09-22T15:12:08.328Z",
-          "successfully_verified_at": "2026-09-22T15:12:08.328Z",
+          "observed_at": "2026-09-22T15:23:17.758Z",
+          "successfully_verified_at": "2026-09-22T15:23:17.758Z",
           "acquisition_method": "automatic"
         },
         "meeting_date": {
           "source_id": "jcsa-races",
           "official_source_url": "https://www.jcsa.sa/en/races/20260926",
-          "observed_at": "2026-09-22T15:12:08.328Z",
-          "successfully_verified_at": "2026-09-22T15:12:08.328Z",
+          "observed_at": "2026-09-22T15:23:17.758Z",
+          "successfully_verified_at": "2026-09-22T15:23:17.758Z",
           "acquisition_method": "automatic"
         }
       },
@@ -19947,7 +20405,7 @@
         "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
       },
       "acquisition_attempt": {
-        "attempted_at": "2026-09-22T15:12:08.328Z",
+        "attempted_at": "2026-09-22T15:23:17.758Z",
         "status": "success",
         "source_id": "jcsa-races",
         "route_id": "jcsa-date-race-page",
@@ -20168,7 +20626,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:52.449Z",
+        "generated_at": "2026-09-22T15:22:57.148Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -25677,7 +26135,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-22",
-        "generated_at": "2026-09-22T15:11:52.449Z",
+        "generated_at": "2026-09-22T15:22:57.148Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       }
