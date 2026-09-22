@@ -59,3 +59,14 @@ Wave 2C activates NAR using official JRA-net topic year indexes as a bounded pos
 Wave 3 establishes TJK as `reviewed/candidate`: official TJK articles prove whole-meeting postponement, the parser requires a known domestic venue plus explicit `tüm koşular` body wording, and race-only/foreign notices are rejected. Two live discovery approaches were tested from GitHub Actions in PR #1110 — date/subject-filtered Haberler and the unfiltered current Haberler page — and both timed out at the source boundary. Therefore no production poller is activated; reviewed evidence remains the safe route and source absence stays `absent_unconfirmed`.
 
 Next, research KRA/SOREC/Chile/HRI/Peru for reliable authority-specific whole-meeting routes. Until one is demonstrated, they remain safe `unsupported`; no source disappearance may be used as a substitute.
+
+
+## Wave 4 research — SOREC / Chile / Peru
+
+Wave 4 narrows SOREC, Chile and Peru without activating unsafe automation.
+
+- SOREC: the official SOREC Galop calendar explicitly includes a `Réunion reportée` meeting-status legend. This is now the primary candidate negative-evidence route, but production remains `unsupported` until a concrete postponed meeting row/status field and stable Actions fetch path are pinned.
+- Chile: Valparaíso Sporting's official 2024 report explicitly records a 4 February meeting moved to 17 March and a 7 February meeting suspended. That proves venue-level official whole-meeting evidence exists, but the production Chile system spans multiple venue sources, so no Chile-wide/current automated route is claimed.
+- Peru: the official Jockey Club del Perú racing rules distinguish individual-race annulment from force-majeure suspension of an entire meeting already underway. No live final-status publication route is yet proven, so Monterrico programme/API absence remains `absent_unconfirmed`.
+
+The next implementation work is therefore evidence-route capture rather than inference: concrete SOREC postponed-row capture, current venue-level Chile status discovery, and a Monterrico/JCP final-status notice route if one exists.
