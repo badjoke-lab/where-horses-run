@@ -22,7 +22,7 @@ The expansion lane remains independent. A country may be added while negative-ev
 | South Korea / KRA | unsupported | not implemented | not proven | Current official operation plan / fast-report routes do not yet prove bounded whole-meeting negative evidence. |
 | Turkey / TJK | reviewed | candidate | supported | Official TJK news contains explicit domestic whole-meeting postponement/cancellation notices. A bounded all-races parser is validated, but automated discovery remains disabled because live Haberler requests timed out from GitHub Actions. |
 | Morocco / SOREC | automated | active | supported positive-evidence subset | Official status-bearing calendar GET embeds `joursEvenement`; only unambiguous `REPOR`-only dates with a strictly later replacement date and one canonical meeting binding are accepted. |
-| Chile / Teletrak network | unsupported | not implemented | not proven | Multi-venue programme network has no normalized cancellation route proven. |
+| Chile / Teletrak network | automated | active | supported positive-evidence subset | Club Hípico de Santiago official Corporativo news is scanned as a bounded Santiago-only route; partial-race notices and all other Chile venues remain non-negative-evidence unless separately proven. |
 | Ireland / HRI | unsupported | not implemented | not proven | HRI handles abandoned/rescheduled meetings, but current WHR routes do not yet prove a bounded status parser. |
 | Peru / Monterrico | unsupported | not implemented | not proven | Date/programme API is positive evidence; failed/empty discovery is never cancellation evidence. |
 
@@ -37,8 +37,9 @@ This leaves zero production countries unclassified.
 - ERA: official 2026-03-04 Meydan racecard/declarations page renders `THIS MEETING HAS BEEN CANCELLED`.
 - TJK: official 2026-03-21 Adana postponement notice states that the original Adana meeting's full programme was postponed to 2026-03-23; older TJK notices likewise explicitly postpone all races at a named domestic venue.
 - SOREC: the official calendar GET embeds explicit `REPOR` status rows and the source JavaScript's calendar-key formula. PR #1124 live probes also proved that conflicting `RESDE` + `REPOR` dates exist, which is why production accepts only `REPOR`-only dates with a later replacement date and unique canonical binding. Production refresh `35694598167` then exposed the earlier opaque `fctID` URL as unstable (HTTP 404); PR #1126 / run `35695280068` proved the stable full menu route `code=CALEN&description=Calendrier+courses&fctID=1406`, which is the route production must use.
+- Chile / Club Hípico de Santiago: diagnostic PR #1128 run `35716877495` proved the official Corporativo archive and five bounded evidence/negative-fixture articles are fetchable from GitHub Actions. Whole-meeting suspension on 2024-06-14, its later recalendarization, and whole-meeting postponement on 2025-08-17 are accepted fixtures; the 2024-06-21 race-11-onward stoppage and 2024-08-02 last-three-races annulment are explicit partial-race rejection fixtures.
 
-These examples prove that official explicit negative evidence exists. HKJC, ERA, JRA, Banei, NAR and SOREC now have bounded parser/discovery paths, identity binding, rolling-artifact emission, durable generated presence persistence, and publication integration, so their registry rows are `automated`. NAR and SOREC are explicitly auxiliary positive-evidence subsets rather than complete nationwide cancellation feeds.
+These examples prove that official explicit negative evidence exists. HKJC, ERA, JRA, Banei, NAR, SOREC and the bounded Chile/Club Hípico de Santiago subset now have parser/discovery paths, identity binding, rolling-artifact emission, durable generated presence persistence, and publication integration, so their registry rows are `automated`. NAR, SOREC and Chile are explicitly auxiliary positive-evidence subsets rather than exhaustive nationwide/system-wide cancellation feeds.
 
 ## Safety invariant for every system
 
@@ -59,7 +60,7 @@ Wave 2C activates NAR using official JRA-net topic year indexes as a bounded pos
 
 Wave 3 establishes TJK as `reviewed/candidate`: official TJK articles prove whole-meeting postponement, the parser requires a known domestic venue plus explicit `tüm koşular` body wording, and race-only/foreign notices are rejected. Two live discovery approaches were tested from GitHub Actions in PR #1110 — date/subject-filtered Haberler and the unfiltered current Haberler page — and both timed out at the source boundary. Therefore no production poller is activated; reviewed evidence remains the safe route and source absence stays `absent_unconfirmed`.
 
-Next, continue research on KRA/Chile/HRI/Peru for reliable authority-specific whole-meeting routes. Until one is demonstrated, they remain safe `unsupported`; no source disappearance may be used as a substitute.
+Next, continue research on KRA/HRI/Peru and on Chile venues other than Club Hípico de Santiago for reliable authority-specific whole-meeting routes. Unproven venues/systems remain safe on `absent_unconfirmed`; no source disappearance may be used as a substitute.
 
 
 ## Wave 4 — SOREC activation / Chile / Peru research
@@ -71,3 +72,20 @@ Wave 4 follow-up activated only the safely bounded SOREC subset.
 - Peru: the official Jockey Club del Perú racing rules distinguish individual-race annulment from force-majeure suspension of an entire meeting already underway. No live final-status publication route is yet proven, so Monterrico programme/API absence remains `absent_unconfirmed`.
 
 The next implementation research targets are current venue-level Chile final-status discovery, a Monterrico/JCP final-status notice route if one exists, and continued KRA/HRI route discovery.
+
+
+## Wave 5 — bounded Chile / Club Hípico de Santiago activation
+
+PR #1128 was a temporary unmerged diagnostic. GitHub Actions run `35716877495` proved that the official Club Hípico de Santiago Corporativo archive is reachable, discovers cancellation/postponement candidates, and that the bounded historical evidence fixtures remain directly fetchable.
+
+Production activates only the Santiago subset:
+
+- archive discovery is restricted to official `clubhipico.cl` Corporativo/news URLs;
+- article text must explicitly describe whole-meeting suspension, postponement, cancellation/annulment, or recalendarization;
+- the original meeting date must be resolved from the article, fall inside the requested rolling window, and bind to exactly one existing canonical Club Hípico de Santiago meeting;
+- notices that start from a stated race ordinal or cancel only the first/last races are rejected before whole-meeting classification;
+- replacement dates are evidence only and never create a replacement meeting;
+- archive/article failure or omission emits no negative evidence;
+- Hipódromo Chile, Valparaíso Sporting and Club Hípico de Concepción are not claimed as covered by this route.
+
+This is a bounded positive-evidence subset, not a Chile-wide cancellation feed.
