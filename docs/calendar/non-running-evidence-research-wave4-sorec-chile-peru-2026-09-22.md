@@ -51,6 +51,28 @@ This wave proved that the separate official calendar has a semantic meeting-post
 
 Therefore Morocco remains `unsupported/not_implemented` for production negative evidence, but the next implementation target is no longer unknown: it is the SOREC Galop calendar's explicit `Réunion reportée` state.
 
+### Live GitHub Actions follow-up
+
+A dedicated unmerged diagnostic PR (#1116) tested the calendar route from GitHub Actions after this research note was first written.
+
+Observed results:
+
+- run `35686803050` fetched the exact calendar route with HTTP 200, returned about 209 KB of HTML, exposed the `Réunion reportée` legend, a JSF `ViewState`, and the inline PrimeFaces calendar;
+- the calendar binds `dateSelect` to a PrimeFaces AJAX update of `form:panelRacine form:panelInfosUser form:idData`;
+- artifact `10676444197` preserves bounded diagnostics for that successful static route probe;
+- run `35687257484` showed that additional same-run calendar/session GETs were unstable from GitHub Actions even with bounded retry; artifact `10677276873`;
+- run `35687318016` reused the initial successful calendar session and attempted one `dateSelect` POST for an officially observed positive meeting date, but the POST still failed at the fetch/socket layer; artifact `10677203370`.
+
+The probe therefore did **not** capture a concrete postponed meeting response or stable status-bearing AJAX payload. PR #1116 was closed without merge.
+
+This strengthens, rather than relaxes, the safety boundary:
+
+- the legend proves that SOREC has a meeting-level postponed state in its own system;
+- the legend by itself is not meeting-specific negative evidence;
+- a failed JSF request is acquisition failure, not `confirmed_non_running`;
+- a missing Programme Réunion row remains `absent_unconfirmed`;
+- production SOREC negative-evidence automation remains disabled.
+
 A future SOREC adapter may activate only after a concrete row is captured and the parser proves that:
 
 - only `Réunion reportée` (or another explicit whole-meeting final status) becomes `confirmed_non_running`;
