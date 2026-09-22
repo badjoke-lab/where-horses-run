@@ -163,14 +163,14 @@
       "source_absence_policy": "absent_unconfirmed",
       "acquisition_failure_policy": "preserve_verified_state",
       "replacement_date_policy": "independent_meeting_only",
-      "evidence_source_family": "SOREC official Programme Réunion plus Galop calendar; calendar legend exposes explicit `Réunion reportée`, but no concrete stable status-bearing meeting row is pinned yet",
+      "evidence_source_family": "SOREC official Programme Réunion plus Galop calendar; calendar legend exposes explicit `Réunion reportée`, but the status-bearing PrimeFaces dateSelect path is not stable from GitHub Actions and no concrete postponed meeting response is pinned",
       "evidence_urls": [
         "https://www.sorec-galop.ma/pages/programmeReunion/programmeReunion.jsf",
-        "https://www.sorec-galop.ma/pages/course_a_venir/calendrier_course.jsf"
+        "https://www.sorec-galop.ma/pages/course_a_venir/calendrier_course.jsf?fctID=2nQEdyraO%2Bg%3D"
       ],
       "example_evidence_url": null,
       "reviewed_at": "2026-09-22",
-      "notes": "Official SOREC Galop calendar semantics explicitly include a meeting-level `Réunion reportée` state, so a safe authority-specific route candidate now exists. Production remains unsupported until a concrete postponed meeting row/status field and stable Actions fetch path are pinned. Programme omission remains absent_unconfirmed."
+      "notes": "Official SOREC Galop calendar semantics explicitly include a meeting-level `Réunion reportée` state, but PR #1116 live probes did not establish a safe automated path. Run 35686803050 fetched the calendar with HTTP 200 and exposed the PrimeFaces dateSelect binding; run 35687257484 showed repeated same-run session GET instability; run 35687318016 reused the initial successful session but the dateSelect POST still failed. No concrete postponed meeting response was captured, so the legend alone is not accepted as meeting-level negative evidence. Keep unsupported/not_implemented; Programme omission remains absent_unconfirmed."
     },
     {
       "record_id": "chile-teletrak-racing-system",
