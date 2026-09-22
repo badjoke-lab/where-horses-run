@@ -52,6 +52,16 @@ const text = lang === 'ja'
       officialSite: '公式サイト ↗',
       staleLegend: '古い確認を含みます。公式ソースで確認してください。',
       displayTimeZone: '表示タイムゾーン',
+      columns: {
+        racecourse: '競馬場',
+        system: '国・主催',
+        time: '時刻',
+        rank: 'ランク',
+        status: '状態',
+        stream: '配信',
+        detail: '詳細',
+        source: '公式',
+      },
     }
   : {
       detail: 'Details',
@@ -64,6 +74,16 @@ const text = lang === 'ja'
       officialSite: 'Official site ↗',
       staleLegend: 'Some checks are stale. Confirm with official sources.',
       displayTimeZone: 'Display timezone',
+      columns: {
+        racecourse: 'Racecourse',
+        system: 'Country / authority',
+        time: 'Time',
+        rank: 'Rank',
+        status: 'Status',
+        stream: 'Stream',
+        detail: 'Details',
+        source: 'Source',
+      },
     };
 
 const timeZoneOptions = [
@@ -135,6 +155,18 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
       <section class="timetable-date-group" aria-labelledby={`date-${group.date}`} data-calendar-date-group={group.date}>
         {group.date && <h2 id={`date-${group.date}`} tabindex="-1">{group.date}<small> · {group.records.length} {text.meetings}</small></h2>}
         <ul class="meeting-list" aria-label={group.date ? `${group.date} ${text.meetings}` : text.meetings}>
+          <li class="meeting-list__columns" aria-hidden="true">
+            <span>{text.columns.racecourse}</span>
+            <span>{text.columns.system}</span>
+            <span>{text.columns.time}</span>
+            <span>{text.columns.rank}</span>
+            <span>{text.columns.status}</span>
+            <span class="meeting-list__columns-actions">
+              <span>{text.columns.stream}</span>
+              <span>{text.columns.detail}</span>
+              <span>{text.columns.source}</span>
+            </span>
+          </li>
           {group.records.map((record) => {
             const racecourse = displayRacecourse(record);
             const racecourseSearch = getCalendarRacecourseSearchAliases(record.racecourse_id, record.racecourse_name).join(' | ');
@@ -174,11 +206,13 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
                   {record.first_race_time_local ? <><time data-race-time="first">{record.first_race_time_local}</time>{record.last_race_time_local && <>–<time data-race-time="last">{record.last_race_time_local}</time></>}</> : '—'}
                 </p>
                 <span class={`meeting-row__rank meeting-row__rank--${record.capability_rank.replace('+', 'plus')}`} title={`${lang === 'ja' ? '公開ランク' : 'Public rank'} ${record.capability_rank}`}>{record.capability_rank}</span>
-                <div class="meeting-row__links">
+                <div class="meeting-row__status">
                   <span class="meeting-row__meeting-badge meeting-row__meeting-badge--today" data-meeting-today-badge hidden>{text.meetingToday}</span>
                   <span class="meeting-row__meeting-badge meeting-row__meeting-badge--upcoming" data-meeting-upcoming-badge hidden>{text.meetingUpcoming}</span>
                   <span class="meeting-row__meeting-badge meeting-row__meeting-badge--running" data-meeting-running-badge hidden>{text.meetingRunning}</span>
                   <span class="meeting-row__meeting-badge meeting-row__meeting-badge--ended" data-meeting-ended-badge hidden>{text.meetingEnded}</span>
+                </div>
+                <div class="meeting-row__links">
                   {record.live_media && (
                     <a href={record.live_media.landing_url} target="_blank" rel="noopener noreferrer" title={mediaTitle(record)} data-live-link data-live-default-href={record.live_media.landing_url}>{text.officialStream}</a>
                   )}
@@ -308,6 +342,16 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
     if (venue !== 0) return venue;
     return (left.dataset.meetingId || '').localeCompare(right.dataset.meetingId || '');
   };
+  const createColumnHeader = (uiLang) => {
+    const labels = uiLang === 'ja'
+      ? { racecourse: '競馬場', system: '国・主催', time: '時刻', rank: 'ランク', status: '状態', stream: '配信', detail: '詳細', source: '公式' }
+      : { racecourse: 'Racecourse', system: 'Country / authority', time: 'Time', rank: 'Rank', status: 'Status', stream: 'Stream', detail: 'Details', source: 'Source' };
+    const header = document.createElement('li');
+    header.className = 'meeting-list__columns';
+    header.setAttribute('aria-hidden', 'true');
+    header.innerHTML = `<span>${labels.racecourse}</span><span>${labels.system}</span><span>${labels.time}</span><span>${labels.rank}</span><span>${labels.status}</span><span class="meeting-list__columns-actions"><span>${labels.stream}</span><span>${labels.detail}</span><span>${labels.source}</span></span>`;
+    return header;
+  };
   const projectRoot = (root, timeZone) => {
     const rows = Array.from(root.querySelectorAll('[data-calendar-meeting-row]'));
     const uiLang = root.dataset.lang === 'ja' ? 'ja' : 'en';
@@ -364,6 +408,7 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
         const list = document.createElement('ul');
         list.className = 'meeting-list';
         list.setAttribute('aria-label', uiLang === 'ja' ? `${date} 開催` : `${date} meetings`);
+        list.append(createColumnHeader(uiLang));
         dayRows.forEach((row) => list.append(row));
         section.append(heading, list);
         groupsContainer.append(section);

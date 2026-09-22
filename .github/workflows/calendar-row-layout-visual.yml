@@ -1,0 +1,69 @@
+name: Calendar row layout visual regression
+
+on:
+  pull_request:
+    paths:
+      - 'src/components/TimetableMeetingList.astro'
+      - 'src/components/MeetingStatePolicy.astro'
+      - 'src/styles/meeting-list-compact-v1.css'
+      - 'scripts/check-calendar-row-layout-visual.mjs'
+      - '.github/workflows/calendar-row-layout-visual.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  visual:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install project and Playwright
+        run: npm install --no-save playwright
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Build site
+        run: npm run build
+
+      - name: Preview and check desktop/mobile meeting rows
+        env:
+          BASE_URL: http://127.0.0.1:4321
+          VISUAL_AUDIT_OUTPUT: artifacts/calendar-row-layout-visual
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4321 > /tmp/whr-preview.log 2>&1 &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
+          ready=false
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:4321/ >/dev/null; then
+              ready=true
+              break
+            fi
+            sleep 1
+          done
+          if [ "$ready" != "true" ]; then
+            cat /tmp/whr-preview.log
+            exit 1
+          fi
+          node scripts/check-calendar-row-layout-visual.mjs
+
+      - name: Upload visual evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-row-layout-visual-${{ github.run_id }}
+          path: artifacts/calendar-row-layout-visual
+          if-no-files-found: warn
