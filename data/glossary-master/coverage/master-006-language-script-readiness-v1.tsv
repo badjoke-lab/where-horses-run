@@ -2,11 +2,11 @@ audit_id	dimension	language_or_script	verified_label_rows	coverage_scope	audit_s
 M6-LANG-001	language	en	110	Reviewed labels across English-language and international authority layers	covered_current_scope		Maintain jurisdiction scoping
 M6-LANG-002	language	fr	71	France Galop/SETF and related French racing labels	covered_current_scope		Preserve French headwords and no-direct-equivalent status
 M6-LANG-003	language	ja	45	JRA/NAR/Banei local labels	covered_current_scope		Maintain official Japanese terminology
-M6-LANG-004	language	ko	17	KRA local labels	partial	국산마 label HKKR-LBL-043 lacks a valid active Concept mapping	Resolve only through evidence-lane review
+M6-LANG-004	language	ko	17	KRA local labels	covered_current_scope		KRA domestic-bred and foreign-bred labels now map to separate KRA-specific active Concepts
 M6-LANG-005	language	zh	10	HKJC Traditional Chinese local labels	covered_current_scope		Maintain Hant official labels alongside English
 M6-LANG-006	script	Latn	184	Latin-script verified labels	covered_current_scope		No action
 M6-LANG-007	script	Jpan	42	Japanese-script verified labels	covered_current_scope		No action
-M6-LANG-008	script	Hang	17	Hangul verified labels	partial	One verified Hangul label is orphaned from active Concept identity	Resolve HKKR-LBL-043 mapping
+M6-LANG-008	script	Hang	17	Hangul verified labels	covered_current_scope		KRA horse-origin labels now retain jurisdiction-specific active Concept identity
 M6-LANG-009	script	Hant	10	Traditional Chinese verified labels	covered_current_scope		No action
 M6-LANG-010	script	Arab	0	No reviewed Arabic-script label layer in current master	gap	UAE and wider Gulf readiness cannot claim original-script coverage	Audit authority-backed Arabic terminology before M6-GATE-004 can pass
 M6-LANG-011	worldwide_language	Spanish/Portuguese	0	No dedicated Latin American language layer	gap	Latin American jurisdiction research is absent	Audit major authority systems before adding local-language labels
