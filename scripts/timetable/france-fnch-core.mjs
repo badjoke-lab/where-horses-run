@@ -232,20 +232,25 @@ export function parseFnchProgrammeText(text) {
     .replace(/\u00a0/g, ' ')
     .replace(/[\u2010\u2011\u2013\u2014]/g, '-');
 
-  const regex = /(\d{1,2})(?:\s*(?:e|er|re|ere|eme))?\s*course\s*[-:]*\s*depart\s*:\s*(\d{1,2})\s*h\.?\s*(\d{2})/gi;
+  const patterns = [
+    /(\d{1,2})(?:\s*(?:e|er|re|ere|eme))?\s*course\s*[-:]*\s*depart\s*:\s*(\d{1,2})\s*h\.?\s*(\d{2})/gi,
+    /(?:^|\n|\s)(\d{1,2})\s+(\d{1,2})\s*h\s*(\d{2})\b/gi,
+  ];
   const byNumber = new Map();
 
-  for (const match of ascii.matchAll(regex)) {
-    const number = Number(match[1]);
-    const hour = Number(match[2]);
-    const minute = Number(match[3]);
-    if (hour > 23 || minute > 59) continue;
-    if (!byNumber.has(number)) {
-      byNumber.set(number, {
-        number,
-        label: `Race ${number}`,
-        post_time_local: `${pad(hour)}:${pad(minute)}`,
-      });
+  for (const regex of patterns) {
+    for (const match of ascii.matchAll(regex)) {
+      const number = Number(match[1]);
+      const hour = Number(match[2]);
+      const minute = Number(match[3]);
+      if (hour > 23 || minute > 59) continue;
+      if (!byNumber.has(number)) {
+        byNumber.set(number, {
+          number,
+          label: `Race ${number}`,
+          post_time_local: `${pad(hour)}:${pad(minute)}`,
+        });
+      }
     }
   }
 

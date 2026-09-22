@@ -36,6 +36,33 @@ assert.deepEqual(rows,[
   {label:'Race 2',post_time_local:'11:42'},
   {label:'Race 3',post_time_local:'12:17'},
 ]);
+
+const galopProgramme=`TOULOUSE
+mercredi 23 septembre 2026 : 16h02
+1
+16H32 Ø Prix Georges Sicard
+2
+17H07 Ø Prix Young Tiger
+3
+17H42 Ø Prix de l'Ariège`;
+assert.deepEqual(parseFnchProgrammeText(galopProgramme),[
+  {label:'Race 1',post_time_local:'16:32'},
+  {label:'Race 2',post_time_local:'17:07'},
+  {label:'Race 3',post_time_local:'17:42'},
+]);
+
+const laTesteProgramme=`PROGRAMME DU JEUDI 24 SEPTEMBRE 2026
+1
+11H51 Ø Prix STOA
+2
+12H23 Ø Prix Haras des Granges
+3
+12H55 Ø Prix du Haras du Mazet`;
+assert.deepEqual(parseFnchProgrammeText(laTesteProgramme),[
+  {label:'Race 1',post_time_local:'11:51'},
+  {label:'Race 2',post_time_local:'12:23'},
+  {label:'Race 3',post_time_local:'12:55'},
+]);
 const checkedAt='2026-09-22T10:00:00Z';
 const pending=buildFnchFixtureRecord(galop,{checkedAt});
 assert.equal(pending.capability_rank,'C');
