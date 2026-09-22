@@ -55,23 +55,9 @@ function isoDate(year, month, day) {
   return parsed.toISOString().slice(0, 10) === value ? value : null;
 }
 
-function escapeRegExp(value) {
-  const special = new Set(['\\', '^', '$', '.', '*', '+', '?', '(', ')', '[', ']', '{', '}', '|']);
-  return [...String(value)].map((char) => special.has(char) ? '\\' + char : char).join('');
-}
-
-function venueFromText(text) {
-  for (const [label, racecourseId] of Object.entries(VENUES)) {
-    if (text.includes(label)) return { label, racecourseId };
-  }
-  return null;
-}
-
 function publicationDate(text) {
-  const match = text.match(/Tarih\s*:?\s*(\d{1,2})[.\/-](\d{1,2})[.\/-](20\d{2})/i)
-    ?? text.match(/\b(\d{1,2})[.\/-](\d{1,2})[.\/-](20\d{2})\b/);
-  if (!match) return null;
-  return isoDate(Number(match[3]), Number(match[2]), Number(match[1]));
+  const match = text.match(/Tarih\s*:?\s*(\d{1,2})[.\/-](\d{1,2})[.\/-](20\d{2})/i);
+  return match ? isoDate(Number(match[3]), Number(match[2]), Number(match[1])) : null;
 }
 
 function yearForMonth(publication, month) {
@@ -82,30 +68,47 @@ function yearForMonth(publication, month) {
   return year;
 }
 
-function explicitDottedDate(text, venueLabel) {
-  const venue = escapeRegExp(venueLabel);
-  const patterns = [
-    new RegExp('(\d{1,2})[.\/-](\d{1,2})[.\/-](20\d{2})[^.]{0,180}' + venue + '[^.]{0,260}(?:tüm koşular|yarışlar)[^.]{0,260}(?:tehir edilmesine|ertelenmesine|iptal edilmesine|iptal edilmiştir)', 'i'),
-    new RegExp(venue + '[^.]{0,180}(\d{1,2})[.\/-](\d{1,2})[.\/-](20\d{2})[^.]{0,260}(?:tüm koşular|yarışlar)[^.]{0,260}(?:tehir edilmesine|ertelenmesine|iptal edilmesine|iptal edilmiştir)', 'i'),
-  ];
-  for (const pattern of patterns) {
-    const match = text.match(pattern);
-    if (!match) continue;
-    const date = isoDate(Number(match[3]), Number(match[2]), Number(match[1]));
-    if (date) return date;
+function firstExplicitDate(text, publication) {
+  const dotted = text.match(/\b(\d{1,2})[.\/-](\d{1,2})[.\/-](20\d{2})\b/);
+  if (dotted) return isoDate(Number(dotted[3]), Number(dotted[2]), Number(dotted[1]));
+
+  if (!publication) return null;
+  const natural = text.match(/\b(\d{1,2})\s+(Ocak|Şubat|Subat|Mart|Nisan|Mayıs|Mayis|Haziran|Temmuz|Ağustos|Agustos|Eylül|Eylul|Ekim|Kasım|Kasim|Aralık|Aralik)\b/i);
+  if (!natural) return null;
+  const month = MONTHS[normalizeTurkish(natural[2])];
+  return month ? isoDate(yearForMonth(publication, month), month, Number(natural[1])) : null;
+}
+
+function headingTexts(html) {
+  return [...String(html).matchAll(/<h[1-4]\b[^>]*>([\s\S]*?)<\/h[1-4]>/gi)].map((match) => plain(match[1]));
+}
+
+function venueFromText(text) {
+  for (const [label, racecourseId] of Object.entries(VENUES)) {
+    if (text.includes(label)) return { label, racecourseId };
   }
   return null;
 }
 
-function explicitNaturalDate(text, venueLabel, publication) {
-  if (!publication) return null;
-  const venue = escapeRegExp(venueLabel);
-  const pattern = new RegExp('(\d{1,2})\s+(Ocak|Şubat|Subat|Mart|Nisan|Mayıs|Mayis|Haziran|Temmuz|Ağustos|Agustos|Eylül|Eylul|Ekim|Kasım|Kasim|Aralık|Aralik)[^.]{0,120}' + venue + '[^.]{0,260}(?:tüm koşular|yarışlar)[^.]{0,260}(?:tehir edilmesine|ertelenmesine|iptal edilmesine|iptal edilmiştir)', 'i');
-  const match = text.match(pattern);
-  if (!match) return null;
-  const month = MONTHS[normalizeTurkish(match[2])];
-  if (!month) return null;
-  return isoDate(yearForMonth(publication, month), month, Number(match[1]));
+function titleCandidate(headings) {
+  return headings.find((heading) =>
+    venueFromText(heading)
+    && /yarışları/i.test(heading)
+    && /(ertelendi|iptal edildi|iptal edilmiştir)/i.test(normalizeTurkish(heading)),
+  ) ?? null;
+}
+
+function explicitWholeMeetingBody(text, venueLabel) {
+  const venueIndex = text.indexOf(venueLabel);
+  if (venueIndex < 0) return null;
+  const start = Math.max(0, venueIndex - 280);
+  const segment = text.slice(start, venueIndex + 900);
+  const normalized = normalizeTurkish(segment);
+  if (!/(tüm koşular|yarışları|yarışlar)/i.test(normalized)) return null;
+  if (!/(tehir edilmesine|ertelenmesine|ertelendi|iptal edilmesine|iptal edilmiştir|iptal edildi)/i.test(normalized)) return null;
+  if (/(\b\d+\s*(?:ve|,)?\s*\d*\.?\s*koşu(?:lar)?\b|\b\d+\.\s*koşu\b)/i.test(normalized)
+      && !/tüm koşular/i.test(normalized)) return null;
+  return segment;
 }
 
 export function parseTjkConfirmedNonRunningHtml(html, {
@@ -114,32 +117,31 @@ export function parseTjkConfirmedNonRunningHtml(html, {
 } = {}) {
   assertOfficialSource(sourceUrl);
   const text = plain(html);
-  const normalized = normalizeTurkish(text);
-  if (!/(ertelendi|tehir edilmesine|iptal edildi|iptal edilmiştir|iptal edilmesine)/i.test(normalized)) return [];
-  if (!/(tüm koşular|yarışları|yarışlar)/i.test(normalized)) return [];
-  if (/(\b\d+\s*(?:ve|,)?\s*\d*\.?\s*koşu(?:lar)?\b|\b\d+\.\s*koşu\b)/i.test(normalized)
-      && !/tüm koşular/i.test(normalized)) return [];
-
-  const venue = venueFromText(text);
+  const headings = headingTexts(html);
+  const title = titleCandidate(headings);
+  const venue = venueFromText(title ?? text);
   if (!venue) return [];
 
-  const pubDate = publicationDate(text);
-  const date = explicitDottedDate(text, venue.label) ?? explicitNaturalDate(text, venue.label, pubDate);
-  if (!date) return [];
+  const wholeBody = explicitWholeMeetingBody(text, venue.label);
+  if (!wholeBody && !title) return [];
+
+  const published = publicationDate(text);
+  const originalDate = firstExplicitDate(title ?? '', published)
+    ?? firstExplicitDate(wholeBody ?? '', published);
+  if (!originalDate) return [];
 
   return [{
-    meeting_id: 'tjk-' + venue.racecourseId + '-' + date,
+    meeting_id: 'tjk-' + venue.racecourseId + '-' + originalDate,
     country_id: 'turkey',
     authority_id: 'turkiye-jokey-kulubu',
     racecourse_id: venue.racecourseId,
-    date,
+    date: originalDate,
     state: 'confirmed_non_running',
     scope: 'whole_meeting',
     evidence_type: 'official_explicit_non_running',
     source_id: 'tjk-news-explicit-non-running',
     official_source_url: sourceUrl,
     checked_at: checkedAt,
-    evidence_phrase: text.match(/(?:tüm koşular[^.]{0,220}(?:tehir edilmesine|ertelenmesine|iptal edilmesine)|yarışları[^.]{0,120}(?:ertelendi|iptal edildi))/i)?.[0]
-      ?? 'explicit TJK whole-meeting non-running notice',
+    evidence_phrase: title ?? plain(wholeBody).slice(0, 280),
   }];
 }
