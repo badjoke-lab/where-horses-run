@@ -163,13 +163,14 @@
       "source_absence_policy": "absent_unconfirmed",
       "acquisition_failure_policy": "preserve_verified_state",
       "replacement_date_policy": "independent_meeting_only",
-      "evidence_source_family": "SOREC official programme family; no reliable explicit whole-meeting negative-evidence route proven",
+      "evidence_source_family": "SOREC official Programme Réunion plus Galop calendar; calendar legend exposes explicit `Réunion reportée`, but no concrete stable status-bearing meeting row is pinned yet",
       "evidence_urls": [
-        "https://www.sorec.ma/"
+        "https://www.sorec-galop.ma/pages/programmeReunion/programmeReunion.jsf",
+        "https://www.sorec-galop.ma/pages/course_a_venir/calendrier_course.jsf"
       ],
       "example_evidence_url": null,
-      "reviewed_at": "2026-09-21",
-      "notes": "No reliable official cancellation/postponement route was proven in this wave. Existing positive source disappearance remains absent_unconfirmed."
+      "reviewed_at": "2026-09-22",
+      "notes": "Official SOREC Galop calendar semantics explicitly include a meeting-level `Réunion reportée` state, so a safe authority-specific route candidate now exists. Production remains unsupported until a concrete postponed meeting row/status field and stable Actions fetch path are pinned. Programme omission remains absent_unconfirmed."
     },
     {
       "record_id": "chile-teletrak-racing-system",
@@ -184,13 +185,15 @@
       "source_absence_policy": "absent_unconfirmed",
       "acquisition_failure_policy": "preserve_verified_state",
       "replacement_date_policy": "independent_meeting_only",
-      "evidence_source_family": "Teletrak/venue official programme network; no normalized whole-meeting negative-evidence route proven",
+      "evidence_source_family": "Chile venue programme network; Valparaíso Sporting official annual reporting proves whole-meeting moved/suspended semantics, but no normalized current cross-venue status route is proven",
       "evidence_urls": [
-        "https://www.teletrak.cl/"
+        "https://www.sporting.cl/",
+        "https://hipodromo.cl/",
+        "https://www.clubhipico.cl/"
       ],
       "example_evidence_url": null,
-      "reviewed_at": "2026-09-21",
-      "notes": "Chile production discovery spans multiple venue programmes. A safe cross-venue cancellation/postponement route has not yet been proven."
+      "reviewed_at": "2026-09-22",
+      "notes": "Valparaíso Sporting's official 2024 report records one meeting moved to a new date and another meeting suspended, proving explicit official whole-meeting evidence exists for that venue. The production Chile system spans multiple venue sources, and this wave did not prove a stable rolling final-status route across them; keep source absence as absent_unconfirmed."
     },
     {
       "record_id": "ireland-hri-racing-system",
@@ -226,13 +229,14 @@
       "source_absence_policy": "absent_unconfirmed",
       "acquisition_failure_policy": "preserve_verified_state",
       "replacement_date_policy": "independent_meeting_only",
-      "evidence_source_family": "Monterrico official programme/date API family; no explicit whole-meeting negative-evidence route proven",
+      "evidence_source_family": "Monterrico official programme/date API plus Jockey Club del Perú racing regulations; regulations distinguish race annulment from force-majeure whole-meeting suspension, but no live final-status publication route is proven",
       "evidence_urls": [
-        "https://hipodromodemonterrico.com.pe/"
+        "https://hipodromodemonterrico.com.pe/",
+        "https://hipodromodemonterrico.com.pe/generales_pdf/monterrico/2023/06/reglamento_de_carreras_2020_20_06.pdf"
       ],
       "example_evidence_url": null,
-      "reviewed_at": "2026-09-21",
-      "notes": "The date/programme API is a positive schedule source. Failed or empty date discovery cannot be promoted to cancellation."
+      "reviewed_at": "2026-09-22",
+      "notes": "Official regulations expressly allow a race to be annulled and, separately, allow a meeting already underway to be suspended for force majeure. This proves the semantic distinction but not a machine-readable live cancellation route. Programme/date API absence or failure remains absent_unconfirmed and preserves verified state."
     },
     {
       "record_id": "saudi-arabia-jcsa-system",
