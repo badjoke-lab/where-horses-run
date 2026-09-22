@@ -19,6 +19,7 @@ on:
       - 'scripts/check-nar-non-running-discovery.mjs'
       - 'scripts/check-tjk-non-running-evidence.mjs'
       - 'scripts/check-tjk-non-running-discovery.mjs'
+      - 'scripts/check-tjk-non-running-runner-integration.mjs'
       - 'data/static/calendar-non-running-evidence-registry-v1.json'
       - 'data/static/calendar-non-running-evidence-registry.schema.json'
       - 'scripts/check-japan-acquisition-completion.mjs'
@@ -75,3 +76,4 @@ jobs:
           node scripts/check-nar-non-running-discovery.mjs
           node scripts/check-tjk-non-running-evidence.mjs
           node scripts/check-tjk-non-running-discovery.mjs
+          node scripts/check-tjk-non-running-runner-integration.mjs
