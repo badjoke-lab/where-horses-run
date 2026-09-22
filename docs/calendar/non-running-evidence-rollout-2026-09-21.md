@@ -20,7 +20,7 @@ The expansion lane remains independent. A country may be added while negative-ev
 | Hong Kong / HKJC | automated | active | supported | Existing monthly fixture acquisition now extracts only explicit whole-meeting cancellation sentences and emits durable presence evidence. |
 | UAE / ERA | automated | active | supported | Existing racecard/declarations acquisition now accepts only the explicit whole-meeting status `THIS MEETING HAS BEEN CANCELLED` and emits durable presence evidence. |
 | South Korea / KRA | unsupported | not implemented | not proven | Current official operation plan / fast-report routes do not yet prove bounded whole-meeting negative evidence. |
-| Turkey / TJK | unsupported | not implemented | not proven | Annual/daily programmes are positive schedule evidence only. |
+| Turkey / TJK | reviewed | candidate | supported | Official TJK news contains explicit domestic whole-meeting postponement/cancellation notices. A bounded all-races parser is validated, but automated discovery remains disabled because live Haberler requests timed out from GitHub Actions. |
 | Morocco / SOREC | unsupported | not implemented | not proven | No reliable official explicit route proven in this wave. |
 | Chile / Teletrak network | unsupported | not implemented | not proven | Multi-venue programme network has no normalized cancellation route proven. |
 | Ireland / HRI | unsupported | not implemented | not proven | HRI handles abandoned/rescheduled meetings, but current WHR routes do not yet prove a bounded status parser. |
@@ -35,6 +35,7 @@ This leaves zero production countries unclassified.
 - NAR: official JRA-net notices explicitly cancel Kanazawa on 2025-08-26 and 2025-09-02, Monbetsu on 2025-07-30, and Saga on 2024-08-29; the Saga notice separately states which races were moved and that the rest had no substitute meeting.
 - HKJC: September 2026 official fixture page states that the Sha Tin meeting originally scheduled for 20 September 2026 will be cancelled.
 - ERA: official 2026-03-04 Meydan racecard/declarations page renders `THIS MEETING HAS BEEN CANCELLED`.
+- TJK: official 2026-03-21 Adana postponement notice states that the original Adana meeting's full programme was postponed to 2026-03-23; older TJK notices likewise explicitly postpone all races at a named domestic venue.
 
 These examples prove that official explicit negative evidence exists. HKJC, ERA, JRA, Banei and NAR now have bounded parser/discovery paths, identity binding, rolling-artifact emission, durable generated presence persistence, and publication integration, so their registry rows are `automated`. NAR is explicitly an auxiliary positive-evidence subset rather than a complete nationwide cancellation feed.
 
@@ -55,4 +56,6 @@ Wave 2A activated JRA automation. Wave 2B activates Banei automation using bound
 
 Wave 2C activates NAR using official JRA-net topic year indexes as a bounded positive-evidence route. The parser accepts only one of the 14 flat NAR venue names plus explicit whole-meeting `開催取り止め` / `開催中止` title and body evidence. Race-only notices, Banei notices, source omission, and acquisition failure cannot suppress a meeting. The route is deliberately non-exhaustive, so lack of a matching JRA-net topic always remains `absent_unconfirmed`.
 
-Next, research KRA/TJK/SOREC/Chile/HRI/Peru for reliable authority-specific whole-meeting routes. Until one is demonstrated, they remain safe `unsupported`; no source disappearance may be used as a substitute.
+Wave 3 establishes TJK as `reviewed/candidate`: official TJK articles prove whole-meeting postponement, the parser requires a known domestic venue plus explicit `tüm koşular` body wording, and race-only/foreign notices are rejected. Two live discovery approaches were tested from GitHub Actions in PR #1110 — date/subject-filtered Haberler and the unfiltered current Haberler page — and both timed out at the source boundary. Therefore no production poller is activated; reviewed evidence remains the safe route and source absence stays `absent_unconfirmed`.
+
+Next, research KRA/SOREC/Chile/HRI/Peru for reliable authority-specific whole-meeting routes. Until one is demonstrated, they remain safe `unsupported`; no source disappearance may be used as a substitute.
