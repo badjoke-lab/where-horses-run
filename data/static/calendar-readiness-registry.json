@@ -6,7 +6,7 @@
   "programme_state": {
     "country_target": 98,
     "countries_with_closed_decision": 98,
-    "readiness_records": 119,
+    "readiness_records": 120,
     "next_backfill_work_ids": []
   },
   "records": [
@@ -937,12 +937,12 @@
       "authority_source_key": "new-zealand/harness-racing-new-zealand/hrnz-raceday-calendar",
       "racecourse_ids": [],
       "coverage_scope": "authority_wide",
-      "technical_rank": "C",
-      "public_ceiling": "C",
+      "technical_rank": "B",
+      "public_ceiling": "B",
       "confirmed_fields": {
         "meeting_date": true,
         "racecourse": true,
-        "first_race_time": false,
+        "first_race_time": true,
         "last_race_time": false,
         "per_race_post_times": false,
         "race_name": false,
@@ -952,25 +952,25 @@
       },
       "source_format": "html",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
         "monthly",
         "near_meeting"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
-      "source_status": "partial",
-      "checked_date": "2026-06-17",
-      "evidence_reviewed_at": "2026-06-29",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-09-23",
+      "evidence_reviewed_at": "2026-09-23",
       "revalidation_trigger": "Revalidate when HRNZ calendar routes change or complete per-race timetable coverage is confirmed.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/15-new-zealand/final-summary.json",
       "limitations": [
-        "Only harness racing dates were confirmed in the reviewed batch.",
-        "Per-race post-time completeness was not established."
+        "Linked HRNZ programme pages establish physical venue and first-race start time, but complete per-race post-time rows are not claimed.",
+        "Source absence or programme fetch failure is not non-running evidence."
       ],
-      "notes": "Manual confirmation can maintain C-level harness meeting dates and venue context from the official HRNZ calendar."
+      "notes": "Automated HRNZ month calendars plus linked programme pages support current harness meetings through rank B."
     },
     {
       "readiness_id": "new-zealand--new-zealand-thoroughbred-system--loveracing-race-info",
@@ -981,7 +981,7 @@
       "authority_source_key": "new-zealand/new-zealand-thoroughbred-racing/loveracing-race-info",
       "racecourse_ids": [],
       "coverage_scope": "authority_wide",
-      "technical_rank": "A+",
+      "technical_rank": "A",
       "public_ceiling": "A",
       "confirmed_fields": {
         "meeting_date": true,
@@ -994,28 +994,27 @@
         "surface": false,
         "course": false
       },
-      "source_format": "mixed",
-      "access_mode": "date_route",
-      "automation_mode": "semi_automatic",
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
       "refresh_classes": [
         "weekly",
         "near_meeting"
       ],
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
       "fallback": "downgrade_to_C",
       "source_status": "verified",
-      "checked_date": "2026-06-17",
-      "evidence_reviewed_at": "2026-06-29",
+      "checked_date": "2026-09-23",
+      "evidence_reviewed_at": "2026-09-23",
       "revalidation_trigger": "Revalidate when NZTR or LOVERACING race-information routes change.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/15-new-zealand/final-summary.json",
       "limitations": [
-        "The reviewed A+ result applies to Thoroughbred samples only.",
-        "Harness capability must remain separate.",
-        "National venue completeness remains partial."
+        "LOVERACING meeting-overview enrichment is available only when the upcoming meeting detail is published.",
+        "The NZTR Racing Programme Guide remains the separate rolling mother set."
       ],
-      "notes": "A bounded Thoroughbred prototype can begin from the reviewed meeting-page path."
+      "notes": "Automated current LOVERACING meeting-overview pages promote matching NZTR mother-set meetings to rank A with continuous per-race post times."
     },
     {
       "readiness_id": "south-africa--south-africa-4racing-system--four-racing-programme",
@@ -5338,7 +5337,51 @@
       "system_name_en": "LETROT",
       "authority_source_key": "france/letrot/fnch-national-calendar-directory",
       "notes": "Current official FNCH programme indexes and linked programme PDFs provide an automated Best Available route for LETROT; direct LETROT page access is not used as negative evidence."
+    },
+    {
+      "readiness_id": "new-zealand--new-zealand-thoroughbred-system--nztr-racing-programme-guide",
+      "country_id": "new-zealand",
+      "country_tracker_delivery_no": "15",
+      "system_id": "new-zealand-thoroughbred-system",
+      "system_name_en": "New Zealand Thoroughbred system",
+      "authority_source_key": "new-zealand/new-zealand-thoroughbred-racing/nztr-racing-programme-guide",
+      "racecourse_ids": [],
+      "coverage_scope": "authority_wide",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "pdf",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "monthly",
+        "near_meeting"
+      ],
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-09-23",
+      "evidence_reviewed_at": "2026-09-23",
+      "revalidation_trigger": "Revalidate when the NZTR Racing Programme Guide landing page or current-programme PDF layout changes.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/15-new-zealand/final-summary.json",
+      "limitations": [
+        "The RPG route supplies the rolling Thoroughbred meeting mother set at rank C; current LOVERACING meeting pages are the separate A-detail route.",
+        "Acquisition failure or source absence is not non-running evidence."
+      ],
+      "notes": "Latest NZTR Racing Programme Guide supplies current date/racecourse mother-set observations for the Thoroughbred system."
     }
   ],
-  "last_updated": "2026-09-22"
+  "last_updated": "2026-09-23"
 }

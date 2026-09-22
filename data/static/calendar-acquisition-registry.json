@@ -376,6 +376,58 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "GitHub Actions reads the official FNCH regional programme indexes, attributes trot meetings to LETROT, and follows published official programme PDFs. Complete continuous per-race post times can produce A; unpublished detail remains valid C with pending publication, and retrieval/parser failures remain explicit retry states. The FNCH route avoids treating a direct LETROT access failure as absence and never infers non-running from source invisibility."
+    },
+    {
+      "system_id": "new-zealand-thoroughbred-system",
+      "country_id": "new-zealand",
+      "authority_id": "new-zealand-thoroughbred-racing",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "nztr-racing-programme-guide",
+      "detail_source_id": "loveracing-race-info",
+      "schedule_adapter_id": "new-zealand-nztr-rpg-window-v1",
+      "detail_adapter_id": "new-zealand-loveracing-meeting-overview-v1",
+      "technical_capability_rank": "A",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "A",
+      "supported_observation_ranks": [
+        "C",
+        "A"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "GitHub Actions reads the latest official NZTR Racing Programme Guide as the Thoroughbred mother set and enriches currently published LOVERACING meeting-overview pages to complete per-race post times through rank A. Unpublished detail remains C/pending; acquisition failure preserves stronger verified state."
+    },
+    {
+      "system_id": "new-zealand-harness-system",
+      "country_id": "new-zealand",
+      "authority_id": "harness-racing-new-zealand",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "hrnz-raceday-calendar",
+      "detail_source_id": "hrnz-raceday-calendar",
+      "schedule_adapter_id": "new-zealand-hrnz-racing-dates-v1",
+      "detail_adapter_id": "new-zealand-hrnz-programme-v1",
+      "technical_capability_rank": "B",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "B",
+      "supported_observation_ranks": [
+        "C",
+        "B"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "GitHub Actions reads official HRNZ season/month Racing Dates and follows linked official programme pages to resolve physical venue and first-race start time through rank B. Programme fetch failures are retry states and never evidence of non-running."
     }
   ]
 }
