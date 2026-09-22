@@ -319,7 +319,7 @@ The programme now advances to `GLOSSARY-MASTER-006`.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
-Status: **current, wave 10 in progress**.
+Status: **current, wave 11 in progress**.
 
 This stage reviews definition/comparison/regional/how-why/translation/abbreviation/racecard-reading search intents, coverage gaps and user-facing readiness. It may reopen evidence work only when a real semantic/source gap is discovered. Public implementation planning remains deferred until this stage passes.
 
@@ -342,6 +342,8 @@ Wave 8 begins the worldwide readiness audit. Four machine-readable matrices cove
 Wave 9 repairs that defect from already-reviewed KRA authority evidence. Separate `HORSE-035` KRA domestic-bred and `HORSE-036` KRA foreign-bred Concepts are added, the two Korean labels/definitions/research mappings are retargeted, and four curated translation queries are added. The current master is **616/616 source-verified**, the search registry is **598**, and the no-direct-equivalent audit contains **56 Concepts**. MASTER-005 is not reopened; its closure snapshot remains 614/614.
 
 Wave 10 closes the current UAE Arabic/original-script representation gap from the ERA's own Arabic Rules, not machine translation. Six material existing Concepts receive source-verified Arabic labels: Steward, Amateur rider, Apprentice jockey, Blinkers, Trial and Claiming race. The local-label audit rises from **253 to 259**, with **Arabic added as the sixth represented language and Arab as the fifth represented script**. M6-GATE-004 remains blocked because worldwide language/script readiness is broader than UAE.
+
+Wave 11 starts Latin America with a bounded Chile/Spanish pass. The CSHN's current regulations index and the Reglamento de Carreras de Chile Article 1 support eight official terms that map cleanly to existing Concepts: Aprendiz, Apuesta Mutua, Handicaper, Hipódromo Reconocido, Jinete Profesional, Preparador, Propietario and Reunión. No new Concept is created. Eight Spanish labels/definitions and 16 curated EN/JA translation intents are added. The local-label layer rises to **267**, with **Spanish as the seventh represented language**; search records rise to **614**. Chile is a first Latin American scope, not a claim of regional completeness.
 
 - `search/search-intent-policy-v1.tsv` — seven intent classes and publication/review rules;
 - `search/search-queries-v1.tsv` — 66 abbreviation/racecard-reading records;
@@ -382,7 +384,7 @@ Working dictionary: 616 current active terms
 Verified: 616
 Still under review: 0 active Concept candidates
 MASTER-005: complete
-Next subject group: remaining worldwide jurisdiction/language gaps + non-code racecard/document reading
+Next subject group: Portuguese/Brazil + remaining Latin America/Continental Europe/Gulf/Asia gaps + non-code racecard/document reading
 Public implementation: deferred
 ```
 
