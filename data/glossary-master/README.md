@@ -20,7 +20,7 @@ The latest pass is **final targeted residual wave 13**. It source-verified histo
 
 `GLOSSARY-MASTER-005` closed at **614/614 active Concepts source-verified (100%)**, with **0 candidates**. During MASTER-006, a targeted KRA identity repair added two already authority-backed jurisdiction-specific horse-origin Concepts, so the **current active master is 616/616 source-verified**. Active base-seed coverage remains **453/453 (100%)**. Public publication is still deferred.
 
-`GLOSSARY-MASTER-006` wave 11 is now in progress. Chile adds the first reviewed Latin American Spanish layer from the CSHN/Reglamento de Carreras de Chile: **8 source-verified official labels/definitions** mapped to existing Concepts and **16 curated EN/JA translation intents**. The local-label layer is now **267 records across 7 languages / 5 represented scripts**, and the search layer is **614 reviewed non-canonical records**. Chile is covered for this first scope; Latin America beyond Chile, Portuguese-language racing, other worldwide jurisdiction/language gaps and search-intent sufficiency keep MASTER-006 at **HOLD**.
+`GLOSSARY-MASTER-006` wave 12 is now in progress. Brazil adds the first reviewed Portuguese layer from MAPA's current turf/regulatory route and the Jockey Club Brasileiro's current national racing rules: **12 source-verified official labels/definitions** mapped to existing Concepts and **24 curated EN/JA translation intents**. The local-label layer is now **279 records across 8 languages / 5 represented scripts**, and the search layer is **638 reviewed non-canonical records**. Chile and Brazil are bounded first Latin American scopes; the rest of Latin America and other worldwide jurisdiction/language gaps plus selective search-intent sufficiency keep MASTER-006 at **HOLD**.
 
 Wave 9 is a semantic pruning pass: derived comparisons and generic display conventions remain contextual rather than standalone racing Concepts.
 
@@ -239,6 +239,8 @@ search/search-queries-regional-v1.tsv
 search/search-queries-translation-v1.tsv
 search/search-queries-howwhy-v1.tsv
 search/search-queries-french-codes-v1.tsv
+search/search-queries-latin-america-v1.tsv
+search/search-queries-latin-america-brazil-v1.tsv
 coverage/master-006-search-intent-coverage-v1.tsv
 coverage/master-006-readiness-v1.tsv
 coverage/master-006-domain-readiness-v1.tsv
@@ -251,7 +253,7 @@ coverage/master-006-no-direct-equivalent-readiness-v1.tsv
 
 `GLOSSARY-MASTER-005` remains **complete** at its closure snapshot of **614/614 source-verified, 0 candidate**. The current master is **616/616** after two source-verified KRA-specific Concepts were added by a targeted MASTER-006 gap repair; this does not reopen the completed MASTER-005 residual programme.
 
-`GLOSSARY-MASTER-006` is **in progress**. Waves 1-7 establish the separate query/policy layer; wave 8 adds machine-readable readiness audits; wave 9 repairs the audited KRA horse-origin identity defect without reviving the retired generic Concept or collapsing Korea into Japan. The current audit has **267 source-verified local labels**, **56 no-direct-equivalent Concepts**, and **614 reviewed search records**. ERA Arabic and Chilean Spanish now have source-verified layers, while Portuguese and several worldwide jurisdiction/language families remain unreviewed. Next work is targeted worldwide jurisdiction/language gap review plus selective non-code racecard/document reading; evidence truth is reopened only for a proven semantic/source gap.
+`GLOSSARY-MASTER-006` is **in progress**. Waves 1-7 establish the separate query/policy layer; wave 8 adds machine-readable readiness audits; wave 9 repairs the audited KRA horse-origin identity defect without reviving the retired generic Concept or collapsing Korea into Japan. Waves 10-12 add bounded UAE Arabic, Chile Spanish and Brazil Portuguese authority layers. The current audit has **279 source-verified local labels**, **56 no-direct-equivalent Concepts**, and **638 reviewed search records**. The remaining work is targeted worldwide jurisdiction/language gap review plus selective non-code racecard/document reading; evidence truth is reopened only for a proven semantic/source gap.
 
 Public implementation remains deferred until MASTER-006 passes.
 
