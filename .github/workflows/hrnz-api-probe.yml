@@ -1,0 +1,48 @@
+name: HRNZ API probe
+
+on:
+  push:
+    branches:
+      - probe/hrnz-api-20260923
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Probe HRNZ official endpoints
+        shell: bash
+        run: |
+          set -uo pipefail
+          probe() {
+            local label="$1"
+            local url="$2"
+            local out="$3"
+            code="$(curl -L -sS --max-time 30 -o "$out" -w '%{http_code}'               -A 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36'               -H 'Accept-Language: en-NZ,en;q=0.9'               -H 'Referer: https://www.hrnz.co.nz/'               "$url" || true)"
+            bytes="$(wc -c < "$out" 2>/dev/null || echo 0)"
+            echo "$label status=$code bytes=$bytes"
+          }
+
+          probe infohorse_dates 'https://infohorse.hrnz.co.nz/datahrs/calendar/raceday/dates_index.htm' /tmp/dates
+          probe infohorse_programmes 'https://infohorse.hrnz.co.nz/datahrs/programmes/programm.htm' /tmp/programmes
+          probe harness_openapi 'https://harness.hrnz.co.nz/APIdoc/Version-1.1/HRNZAPI-V1.1.json' /tmp/openapi.json
+
+          if node -e "JSON.parse(require('fs').readFileSync('/tmp/openapi.json','utf8'))" >/dev/null 2>&1; then
+            node <<'NODE'
+          const fs=require('fs');
+          const api=JSON.parse(fs.readFileSync('/tmp/openapi.json','utf8'));
+          const pick=(p)=>api.paths?.[p]??null;
+          console.log(JSON.stringify({
+            openapi:api.openapi,
+            servers:api.servers,
+            security:api.security,
+            securitySchemes:api.components?.securitySchemes,
+            securityHrkey:pick('/security/hrkey'),
+            programmedMeetings:pick('/programming/programmedMeetings'),
+            tracks:pick('/venue/tracks')
+          },null,2));
+          NODE
+          fi
