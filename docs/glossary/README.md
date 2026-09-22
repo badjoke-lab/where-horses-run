@@ -26,7 +26,7 @@ The latest pass is **final targeted residual wave 13**. It verified historical C
 
 `GLOSSARY-MASTER-005` closed at **614/614 source-verified (100%)** with **0 candidates**. A later targeted MASTER-006 KRA identity repair added two source-verified jurisdiction-specific Concepts, bringing the current active master to **616/616**. Evidence completion still does not publish the glossary.
 
-`MASTER-006` wave 10 is now active. Six material existing Concepts now have source-verified ERA Arabic-script labels taken directly from the official Arabic Rules, raising the local-label layer to **259 records across 6 languages and 5 scripts**. The search layer remains **598 reviewed non-canonical queries** and the no-direct-equivalent audit remains **56 active Concepts**. UAE Arabic representation is no longer the blocker; broader worldwide jurisdiction/language and search-intent sufficiency gaps remain.
+`MASTER-006` wave 11 is now active. Chile provides the first reviewed Latin American Spanish scope using the CSHN/Reglamento de Carreras de Chile. Eight official Spanish labels/definitions map to existing Concepts and receive 16 curated EN/JA translation intents. The local-label layer is now **267 records across 7 languages and 5 scripts**, while the search layer is **614 reviewed non-canonical queries**. Chile is not treated as Latin America-wide completeness.
 
 These rows were removed because the active glossary already models the underlying racing meaning more cleanly, or because the seed represented generic analytical/presentation context rather than an independent racing term.
 
@@ -124,7 +124,7 @@ The abbreviation/code layer remains at **38 source-verified rows**.
 
 There are **0 active candidate Concepts** after final residual wave 13. `GLOSSARY-MASTER-005` therefore passes its evidence/semantic completion gate for the current master.
 
-`GLOSSARY-MASTER-006` is now **in progress**. Waves 1-7 establish the reviewed search-intent layer; wave 8 adds explicit readiness matrices; wave 9 repairs the KRA horse-origin identity gap discovered by those audits. The audits now track **259 source-verified local labels**, **56 no-direct-equivalent Concepts**, **598 reviewed search records**, and explicit worldwide jurisdiction gaps instead of treating current Concept count as automatic worldwide completeness. Arabic script is now represented through authority-published ERA terminology, but worldwide language/script readiness remains incomplete. The current decision remains **HOLD** while jurisdiction/system, language/script and search-intent sufficiency gaps remain open. Public glossary architecture remains deferred.
+`GLOSSARY-MASTER-006` is now **in progress**. Waves 1-7 establish the reviewed search-intent layer; wave 8 adds explicit readiness matrices; wave 9 repairs the KRA horse-origin identity gap discovered by those audits. The audits now track **267 source-verified local labels**, **56 no-direct-equivalent Concepts**, **614 reviewed search records**, and explicit worldwide jurisdiction gaps instead of treating current Concept count as automatic worldwide completeness. Arabic and Chilean Spanish are represented through authority-published terminology, but Portuguese and broader worldwide language/system readiness remain incomplete. The current decision remains **HOLD** while jurisdiction/system, language/script and search-intent sufficiency gaps remain open. Public glossary architecture remains deferred.
 
 ## Dictionary modeling rule
 
