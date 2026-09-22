@@ -17,6 +17,8 @@ on:
       - 'scripts/check-banei-non-running-discovery.mjs'
       - 'scripts/check-nar-non-running-evidence.mjs'
       - 'scripts/check-nar-non-running-discovery.mjs'
+      - 'scripts/check-tjk-non-running-evidence.mjs'
+      - 'scripts/check-tjk-non-running-discovery.mjs'
       - 'data/static/calendar-non-running-evidence-registry-v1.json'
       - 'data/static/calendar-non-running-evidence-registry.schema.json'
       - 'scripts/check-japan-acquisition-completion.mjs'
@@ -71,3 +73,5 @@ jobs:
           node scripts/check-banei-non-running-discovery.mjs
           node scripts/check-nar-non-running-evidence.mjs
           node scripts/check-nar-non-running-discovery.mjs
+          node scripts/check-tjk-non-running-evidence.mjs
+          node scripts/check-tjk-non-running-discovery.mjs
