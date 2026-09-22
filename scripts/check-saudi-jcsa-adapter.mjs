@@ -41,12 +41,28 @@ const record=buildJcsaMeetingRecord({date:'2026-09-04',venue:taif,raceHtml,check
 assert.equal(record.country_id,'saudi-arabia');
 assert.equal(record.capability_rank,'A');
 assert.equal(record.acquisition_completion.disposition,'complete_current_best_available');
-assert.deepEqual(validateCalendarAuthorityMetadataV1({acquisition_attempt:record.acquisition_attempt,evidence_support:record.evidence_support},record.meeting_id),[]);
+assert.equal(record.acquisition_completion.observed_rank,'A');
+assert.equal(record.acquisition_completion.technical_capability_rank,'A');
+assert.equal(record.acquisition_completion.evaluated_capability_rank,'A');
+assert.equal(record.acquisition_completion.higher_rank_open,false);
+assert.deepEqual(validateCalendarAuthorityMetadataV1({
+  acquisition_attempt:record.acquisition_attempt,
+  acquisition_completion:record.acquisition_completion,
+  evidence_support:record.evidence_support,
+},record.meeting_id),[]);
 
 const pendingHtml='<html><body><p>Season 1447 · Meeting 19</p><h1>King Faisal Cup Race Meeting 19</h1><p>Friday, 25th September 2026</p></body></html>';
 const pending=buildJcsaMeetingRecord({date:'2026-09-25',venue:taif,raceHtml:pendingHtml,checkedAt:'2026-09-21T12:00:00Z'});
 assert.equal(pending.capability_rank,'C');
 assert.equal(pending.acquisition_completion.disposition,'pending_publication');
+assert.equal(pending.acquisition_completion.observed_rank,'C');
+assert.equal(pending.acquisition_completion.technical_capability_rank,'A');
+assert.equal(pending.acquisition_completion.higher_rank_open,true);
+assert.deepEqual(validateCalendarAuthorityMetadataV1({
+  acquisition_attempt:pending.acquisition_attempt,
+  acquisition_completion:pending.acquisition_completion,
+  evidence_support:pending.evidence_support,
+},pending.meeting_id),[]);
 
 assert.equal(parseJcsaRacePage('<html><body>No meeting available</body></html>',{expectedDate:'2026-09-25',venue:taif}).status,'absent_unconfirmed');
 console.log('SAUDI_JCSA_ADAPTER: pass');
