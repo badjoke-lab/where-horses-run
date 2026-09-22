@@ -12,51 +12,55 @@ The acceptance rule is unchanged:
 - race-only cancellation never suppresses the whole meeting;
 - rescheduled/replacement dates remain independent meetings.
 
-No production negative-evidence automation is activated by this research note.
+The initial research note did not activate production negative-evidence automation. A same-day follow-up probe subsequently proved a bounded SOREC route and is recorded below; Chile and Peru remain research-only.
 
 ## Morocco / SOREC
 
-### Official route found
+### Official status route proven
 
-The SOREC Galop official racing calendar exposes an explicit status legend containing:
+The SOREC Galop official racing calendar exposes a meeting-level **`Réunion reportée`** status and, critically, embeds the underlying status rows directly in the GET response as a JavaScript `joursEvenement` array.
 
-- `Engagement ouvert`
-- `Forfait`
-- `Engagement supplémentaire`
-- `Partant définitif`
-- `Résultat définitif`
-- **`Réunion reportée`**
-- `Prochaine réunion`
-
-Official route reviewed:
+Official route:
 
 `https://www.sorec-galop.ma/pages/course_a_venir/calendrier_course.jsf?fctID=2nQEdyraO%2Bg%3D`
 
-This is important because `Réunion reportée` is a meeting-level postponement status from the same official SOREC racing system, rather than an inference from a missing programme.
+GitHub Actions probes in PR #1124 established all of the following:
 
-### Why production remains unsupported
+- the status-bearing route is fetchable by GET with HTTP 200;
+- the page exposes the `legende-report` / `Réunion reportée` legend;
+- `joursEvenement` contains explicit `REPOR` rows, including concrete historical examples;
+- the page's own `highlightCalendar` logic defines the calendar key as `day + (month + 10) + year`, so the original calendar date can be decoded without guessing;
+- some dates contain both `REPOR` and another status such as `RESDE`, so `REPOR` cannot safely be consumed without sibling-status filtering;
+- the AJAX `dateSelect` route can be blocked by the site's validation/captcha layer, therefore production does not depend on that POST path.
 
-The current WHR SOREC runner uses:
+Representative probe runs: `35693694595`, `35693789333`, `35693849455`, and `35693948003`.
 
-`https://www.sorec-galop.ma/pages/programmeReunion/programmeReunion.jsf`
+### Production acceptance boundary
 
-for positive meeting discovery.
+SOREC automation is deliberately a bounded positive-evidence subset, not an exhaustive cancellation feed.
 
-This wave proved that the separate official calendar has a semantic meeting-postponed state, but it did **not** yet pin:
+A calendar date may become `confirmed_non_running` only when all of these are true:
 
-1. the HTML/component field or class carrying that state on a concrete meeting row;
-2. a concrete official meeting/date example that can be preserved as a regression fixture;
-3. a stable fetch path from GitHub Actions for the status-bearing calendar;
-4. the exact mapping from a reported original meeting to any later replacement meeting.
+1. the official status-bearing calendar GET is fetched and its structural fingerprints parse successfully;
+2. the decoded calendar date has exactly one status row and that row is `REPOR`;
+3. the `REPOR` message contains a replacement date strictly later than the original calendar date;
+4. the original date falls inside the requested rolling window;
+5. exactly one existing SOREC canonical meeting exists on that original date;
+6. the canonical `meeting_id` matches its existing `racecourse_id` and original date.
 
-Therefore Morocco remains `unsupported/not_implemented` for production negative evidence, but the next implementation target is no longer unknown: it is the SOREC Galop calendar's explicit `Réunion reportée` state.
+The replacement date and replacement venue text are evidence only. They are never used to generate or bind a replacement meeting. Replacement meetings remain independently acquired through official positive schedule evidence.
 
-A future SOREC adapter may activate only after a concrete row is captured and the parser proves that:
+The following fail closed and emit no negative-evidence record:
 
-- only `Réunion reportée` (or another explicit whole-meeting final status) becomes `confirmed_non_running`;
-- ordinary programme omission remains `absent_unconfirmed`;
-- replacement meetings are acquired independently;
-- source failure preserves verified state.
+- `REPOR` plus `RESDE` or any other sibling status on the same date;
+- duplicate `REPOR` rows;
+- missing replacement date;
+- same-date or backwards replacement date;
+- zero or multiple canonical meetings on the original date;
+- source fetch failure;
+- source fingerprint or parse failure.
+
+Programme Réunion remains positive evidence only. Its omission remains `absent_unconfirmed`.
 
 ## Chile / Teletrak network
 
@@ -130,11 +134,11 @@ A future Peru adapter must first pin an official final-status notice or meeting 
 
 ## Wave 4 result
 
-No unsafe automation was added.
+SOREC now has a bounded automated positive-evidence route; Chile and Peru remain non-automated.
 
-The research materially narrows the next targets:
+The resulting state is:
 
-- **SOREC:** explicit official `Réunion reportée` calendar state exists; capture a concrete meeting row and stable status field.
+- **SOREC:** automated/active only for safely filtered embedded `REPOR` rows with unique canonical binding; source absence and ambiguous/conflicting status remain non-running-unconfirmed.
 - **Chile:** Valparaíso Sporting official evidence proves moved/suspended meetings; find rolling venue-specific final-status routes before any automation.
 - **Peru:** regulations distinguish race annulment from whole-meeting suspension, but no reliable live final-status route is yet proven.
 
