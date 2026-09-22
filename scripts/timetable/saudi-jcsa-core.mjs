@@ -1,4 +1,5 @@
 import { deriveBestAvailableRank } from './best-available-rank.mjs';
+import { classifyAcquisitionCompletion } from './acquisition-completion.mjs';
 
 export const SAUDI_JCSA_SOURCE_ID = 'jcsa-races';
 export const SAUDI_JCSA_AUTHORITY_ID = 'jockey-club-of-saudi-arabia';
@@ -199,11 +200,10 @@ export function buildJcsaMeetingRecord({date,venue,raceHtml,checkedAt}) {
     record.evidence_support.timetable=e;
   }
   const capability_rank=deriveBestAvailableRank(record,rows);
-  record.acquisition_completion={
-    disposition:capability_rank==='A'?'complete_current_best_available':'pending_publication',
-    evaluated_rank:capability_rank,
-    technical_capability_rank:'A',
-  };
+  record.acquisition_completion=classifyAcquisitionCompletion(
+    {...record,capability_rank},
+    {technical_capability_rank:'A'},
+  );
   return {...record,capability_rank};
 }
 
