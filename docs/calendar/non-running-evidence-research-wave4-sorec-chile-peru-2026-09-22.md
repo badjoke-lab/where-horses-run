@@ -12,7 +12,7 @@ The acceptance rule is unchanged:
 - race-only cancellation never suppresses the whole meeting;
 - rescheduled/replacement dates remain independent meetings.
 
-The initial research note did not activate production negative-evidence automation. A same-day follow-up probe subsequently proved a bounded SOREC route and is recorded below; Chile and Peru remain research-only.
+The initial research note did not activate production negative-evidence automation. A same-day follow-up probe subsequently proved a bounded SOREC route. A later same-day follow-up also proved and activated a bounded Club Hípico de Santiago positive-evidence subset; Peru remains research-only.
 
 ## Morocco / SOREC
 
@@ -81,7 +81,7 @@ This proves that Valparaíso Sporting publishes authoritative whole-meeting move
 
 The same official site also exposes date-specific meeting/programme pages, but this wave did not prove that the current programme endpoint carries a machine-readable final cancellation/postponement status when a meeting is moved or suspended.
 
-### Why Chile remains unsupported
+### Why Chile-wide coverage remained unsupported in Wave 4
 
 The current registry row covers the broader Chile/Teletrak production system, not only Valparaíso Sporting. This wave did not prove equivalent stable current status routes for:
 
@@ -92,9 +92,9 @@ The current registry row covers the broader Chile/Teletrak production system, no
 
 A historical Valparaíso annual report is therefore enough to prove that explicit official evidence exists for that venue, but not enough to claim a complete or reliable Chile-wide negative-evidence route.
 
-Chile remains `unsupported/not_implemented`.
+At the end of the original Wave 4 research Chile remained `unsupported/not_implemented`. That state was subsequently narrowed by the Club Hípico de Santiago follow-up below. Other Chile venues remain without a proven negative-evidence route.
 
-The next safe step is venue-by-venue discovery. If only some venues expose reliable explicit final status, they should be treated as bounded positive-evidence subsets rather than as an exhaustive Chile cancellation feed.
+The safe model is venue-by-venue discovery: reliable venues may be activated only as bounded positive-evidence subsets rather than as an exhaustive Chile cancellation feed.
 
 ## Peru / Hipódromo de Monterrico
 
@@ -134,14 +134,28 @@ A future Peru adapter must first pin an official final-status notice or meeting 
 
 ## Wave 4 result
 
-SOREC now has a bounded automated positive-evidence route; Chile and Peru remain non-automated.
+SOREC gained a bounded automated positive-evidence route in Wave 4. Chile was still non-automated at that exact checkpoint and was subsequently narrowed by the Santiago-only follow-up; Peru remains non-automated.
 
 The resulting state is:
 
 - **SOREC:** automated/active only for safely filtered embedded `REPOR` rows with unique canonical binding; source absence and ambiguous/conflicting status remain non-running-unconfirmed.
-- **Chile:** Valparaíso Sporting official evidence proves moved/suspended meetings; find rolling venue-specific final-status routes before any automation.
+- **Chile:** Wave 4 proved Valparaíso Sporting historical semantics but no rolling route. The later Club Hípico de Santiago follow-up activates only that venue's official-news positive-evidence subset; other venues remain uncovered.
 - **Peru:** regulations distinguish race annulment from whole-meeting suspension, but no reliable live final-status route is yet proven.
 
 All three systems remain safe on source absence:
 
 `not found` != `confirmed_non_running`.
+
+
+## Follow-up — Club Hípico de Santiago bounded route
+
+Temporary diagnostic PR #1128 tested the official Corporativo archive from GitHub Actions and was closed without merge. Run `35716877495` completed successfully and proved:
+
+- the Corporativo archive returns HTTP 200 and exposes bounded suspension/postponement/recalendarization candidates;
+- the 2024-06-14 whole-meeting suspension article remains directly fetchable;
+- the later recalendarization article explicitly refers back to the suspended 2024-06-14 meeting;
+- the 2025-08-17 whole-meeting postponement article remains directly fetchable;
+- the 2024-06-21 notice that stops only from race 11 onward is a partial-race negative fixture;
+- the 2024-08-02 notice annulling only the last three races is a second partial-race negative fixture.
+
+The production acceptance boundary is deliberately venue-specific. Only an official Club Hípico de Santiago article with explicit whole-meeting semantics, a resolvable original meeting date, and a unique existing Santiago canonical binding may emit `confirmed_non_running`. The replacement date, if stated, is retained only as evidence. Source failure, archive omission, partial-race notices, and all other Chile venues remain non-cancellation evidence.
