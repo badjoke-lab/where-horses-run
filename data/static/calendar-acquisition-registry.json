@@ -324,6 +324,58 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "GitHub Actions resolves current JCSA Taif/Riyadh season bounds from official venue pages and checks each in-season date route. Complete race rows support evidence-derived A; meeting pages without published race rows remain valid C with pending publication. Missing meeting fingerprints are absent_unconfirmed only. Fetch/parse failures preserve existing verified state and remain explicit acquisition failures."
+    },
+    {
+      "system_id": "france-france-galop-system",
+      "country_id": "france",
+      "authority_id": "france-galop",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "fnch-national-calendar-directory",
+      "detail_source_id": "fnch-national-calendar-directory",
+      "schedule_adapter_id": "france-fnch-regional-programme-best-available-v1",
+      "detail_adapter_id": "france-fnch-programme-pdf-best-available-v1",
+      "technical_capability_rank": "A",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "A",
+      "supported_observation_ranks": [
+        "C",
+        "A"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "GitHub Actions reads the official FNCH regional programme indexes, attributes flat/obstacle/galop meetings to France Galop, and follows published official programme PDFs. Complete continuous per-race post times can produce A; unpublished detail remains valid C with pending publication, and retrieval/parser failures remain explicit retry states. FNCH visibility is treated as a source-visible horizon only, never proof of non-running."
+    },
+    {
+      "system_id": "france-letrot-system",
+      "country_id": "france",
+      "authority_id": "letrot",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "fnch-national-calendar-directory",
+      "detail_source_id": "fnch-national-calendar-directory",
+      "schedule_adapter_id": "france-fnch-regional-programme-best-available-v1",
+      "detail_adapter_id": "france-fnch-programme-pdf-best-available-v1",
+      "technical_capability_rank": "A",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "A",
+      "supported_observation_ranks": [
+        "C",
+        "A"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "GitHub Actions reads the official FNCH regional programme indexes, attributes trot meetings to LETROT, and follows published official programme PDFs. Complete continuous per-race post times can produce A; unpublished detail remains valid C with pending publication, and retrieval/parser failures remain explicit retry states. The FNCH route avoids treating a direct LETROT access failure as absence and never infers non-running from source invisibility."
     }
   ]
 }
