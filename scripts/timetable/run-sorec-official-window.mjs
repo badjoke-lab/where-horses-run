@@ -7,6 +7,10 @@ import {
   SOREC_TIMEZONE,
   buildSorecProgrammeCandidate,
 } from './sorec-programme-reunion-core.mjs';
+import {
+  SOREC_NON_RUNNING_CALENDAR_URL,
+  buildSorecConfirmedNonRunningRecords,
+} from './sorec-non-running-evidence.mjs';
 
 function arg(name, fallback = null) {
   const inline = process.argv.find((value) => value.startsWith(`--${name}=`));
@@ -30,35 +34,45 @@ function plusDays(date, count) {
   return value.toISOString().slice(0, 10);
 }
 
-async function fetchOfficialHtml() {
+async function fetchHtml(url, label) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 20_000);
   try {
-    const response = await fetch(SOREC_PROGRAMME_REUNION_URL, {
+    const response = await fetch(url, {
       headers: {
         'user-agent': 'WhereHorsesRun/1.0 (+https://whr.badjoke-lab.com/)',
         accept: 'text/html,application/xhtml+xml',
       },
       signal: controller.signal,
     });
-    if (!response.ok) throw new Error(`SOREC Programme Réunion returned HTTP ${response.status}`);
+    if (!response.ok) throw new Error(`${label} returned HTTP ${response.status}`);
     return await response.text();
   } finally {
     clearTimeout(timer);
   }
 }
 
+function canonicalMeetings(file) {
+  if (!fs.existsSync(file)) return [];
+  const dataset = JSON.parse(fs.readFileSync(file, 'utf8'));
+  return Array.isArray(dataset?.meetings) ? dataset.meetings : [];
+}
+
 const output = arg('output');
 const days = Number(arg('days', '30'));
 const startDate = arg('as-of', localDate());
 const fixture = arg('fixture');
+const nonRunningFixture = arg('non-running-fixture');
+const canonicalPath = arg('canonical', 'data/generated/timetable/canonical/meetings.json');
 if (!output) throw new Error('--output=<path> is required');
 if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate)) throw new Error('--as-of must be YYYY-MM-DD');
 if (!Number.isInteger(days) || days < 1 || days > 62) throw new Error('--days must be 1..62');
 
 const endDateExclusive = plusDays(startDate, days);
 const generatedAt = new Date().toISOString();
-const html = fixture ? fs.readFileSync(path.resolve(fixture), 'utf8') : await fetchOfficialHtml();
+const html = fixture
+  ? fs.readFileSync(path.resolve(fixture), 'utf8')
+  : await fetchHtml(SOREC_PROGRAMME_REUNION_URL, 'SOREC Programme Réunion');
 const { candidate, diagnostics } = buildSorecProgrammeCandidate({
   html,
   checkedAt: generatedAt,
@@ -71,6 +85,40 @@ if (diagnostics.unknown_venues.length > 0) {
 }
 if (diagnostics.parse_failures.length > 0) {
   throw new Error(`SOREC parse failure(s) in requested window: ${JSON.stringify(diagnostics.parse_failures)}`);
+}
+
+let meetingPresenceRecords = [];
+let nonRunningDiagnostics = {
+  status: 'not_checked',
+  source_url: SOREC_NON_RUNNING_CALENDAR_URL,
+  confirmed_non_running_count: 0,
+};
+try {
+  const nonRunningHtml = nonRunningFixture
+    ? fs.readFileSync(path.resolve(nonRunningFixture), 'utf8')
+    : await fetchHtml(SOREC_NON_RUNNING_CALENDAR_URL, 'SOREC status-bearing calendar');
+  const nonRunning = buildSorecConfirmedNonRunningRecords({
+    html: nonRunningHtml,
+    canonicalMeetings: canonicalMeetings(canonicalPath),
+    sourceUrl: SOREC_NON_RUNNING_CALENDAR_URL,
+    checkedAt: generatedAt,
+    startDate,
+    endDateExclusive,
+  });
+  meetingPresenceRecords = nonRunning.meeting_presence_records;
+  nonRunningDiagnostics = {
+    status: 'success',
+    source_url: SOREC_NON_RUNNING_CALENDAR_URL,
+    confirmed_non_running_count: meetingPresenceRecords.length,
+    ...nonRunning.diagnostics,
+  };
+} catch (error) {
+  nonRunningDiagnostics = {
+    status: 'source_error',
+    source_url: SOREC_NON_RUNNING_CALENDAR_URL,
+    confirmed_non_running_count: 0,
+    error: error instanceof Error ? error.message : String(error),
+  };
 }
 
 const rankCounts = Object.fromEntries(
@@ -93,16 +141,23 @@ const artifact = {
     schedule_source_url: SOREC_PROGRAMME_REUNION_URL,
     source_row_count: diagnostics.source_row_count,
     rank_counts: rankCounts,
+    non_running_source_id: 'sorec-calendar-explicit-postponement',
+    non_running_source_url: SOREC_NON_RUNNING_CALENDAR_URL,
+    non_running_source_status: nonRunningDiagnostics.status,
   },
   window: {
     start_date: startDate,
     end_date_exclusive: endDateExclusive,
     days,
     coverage_claim: 'source_visible_partial',
-    coverage_note: 'The Programme Réunion index supplies currently exposed meeting identities. Absence is not treated as proof of no meeting across the full requested window.',
+    coverage_note: 'Programme Réunion is positive evidence only. Absence is never cancellation. The separate official calendar contributes only bounded explicit REPOR postponement evidence when safely bound to one canonical meeting.',
   },
   records: candidate.records,
-  diagnostics,
+  meeting_presence_records: meetingPresenceRecords,
+  diagnostics: {
+    ...diagnostics,
+    non_running: nonRunningDiagnostics,
+  },
 };
 
 const absolute = path.resolve(output);
@@ -115,6 +170,8 @@ console.log(JSON.stringify({
   start_date: startDate,
   end_date_exclusive: endDateExclusive,
   meetings_emitted: artifact.records.length,
+  confirmed_non_running_count: meetingPresenceRecords.length,
+  non_running_source_status: nonRunningDiagnostics.status,
   rank_counts: rankCounts,
   unknown_venues: diagnostics.unknown_venues.length,
   parse_failures: diagnostics.parse_failures.length,
