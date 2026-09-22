@@ -21,7 +21,7 @@ The expansion lane remains independent. A country may be added while negative-ev
 | UAE / ERA | automated | active | supported | Existing racecard/declarations acquisition now accepts only the explicit whole-meeting status `THIS MEETING HAS BEEN CANCELLED` and emits durable presence evidence. |
 | South Korea / KRA | unsupported | not implemented | not proven | Current official operation plan / fast-report routes do not yet prove bounded whole-meeting negative evidence. |
 | Turkey / TJK | reviewed | candidate | supported | Official TJK news contains explicit domestic whole-meeting postponement/cancellation notices. A bounded all-races parser is validated, but automated discovery remains disabled because live Haberler requests timed out from GitHub Actions. |
-| Morocco / SOREC | unsupported | not implemented | not proven | No reliable official explicit route proven in this wave. |
+| Morocco / SOREC | automated | active | supported positive-evidence subset | Official status-bearing calendar GET embeds `joursEvenement`; only unambiguous `REPOR`-only dates with a strictly later replacement date and one canonical meeting binding are accepted. |
 | Chile / Teletrak network | unsupported | not implemented | not proven | Multi-venue programme network has no normalized cancellation route proven. |
 | Ireland / HRI | unsupported | not implemented | not proven | HRI handles abandoned/rescheduled meetings, but current WHR routes do not yet prove a bounded status parser. |
 | Peru / Monterrico | unsupported | not implemented | not proven | Date/programme API is positive evidence; failed/empty discovery is never cancellation evidence. |
@@ -36,8 +36,9 @@ This leaves zero production countries unclassified.
 - HKJC: September 2026 official fixture page states that the Sha Tin meeting originally scheduled for 20 September 2026 will be cancelled.
 - ERA: official 2026-03-04 Meydan racecard/declarations page renders `THIS MEETING HAS BEEN CANCELLED`.
 - TJK: official 2026-03-21 Adana postponement notice states that the original Adana meeting's full programme was postponed to 2026-03-23; older TJK notices likewise explicitly postpone all races at a named domestic venue.
+- SOREC: the official calendar GET embeds explicit `REPOR` status rows and the source JavaScript's calendar-key formula. PR #1124 live probes also proved that conflicting `RESDE` + `REPOR` dates exist, which is why production accepts only `REPOR`-only dates with a later replacement date and unique canonical binding.
 
-These examples prove that official explicit negative evidence exists. HKJC, ERA, JRA, Banei and NAR now have bounded parser/discovery paths, identity binding, rolling-artifact emission, durable generated presence persistence, and publication integration, so their registry rows are `automated`. NAR is explicitly an auxiliary positive-evidence subset rather than a complete nationwide cancellation feed.
+These examples prove that official explicit negative evidence exists. HKJC, ERA, JRA, Banei, NAR and SOREC now have bounded parser/discovery paths, identity binding, rolling-artifact emission, durable generated presence persistence, and publication integration, so their registry rows are `automated`. NAR and SOREC are explicitly auxiliary positive-evidence subsets rather than complete nationwide cancellation feeds.
 
 ## Safety invariant for every system
 
@@ -58,15 +59,15 @@ Wave 2C activates NAR using official JRA-net topic year indexes as a bounded pos
 
 Wave 3 establishes TJK as `reviewed/candidate`: official TJK articles prove whole-meeting postponement, the parser requires a known domestic venue plus explicit `tüm koşular` body wording, and race-only/foreign notices are rejected. Two live discovery approaches were tested from GitHub Actions in PR #1110 — date/subject-filtered Haberler and the unfiltered current Haberler page — and both timed out at the source boundary. Therefore no production poller is activated; reviewed evidence remains the safe route and source absence stays `absent_unconfirmed`.
 
-Next, research KRA/SOREC/Chile/HRI/Peru for reliable authority-specific whole-meeting routes. Until one is demonstrated, they remain safe `unsupported`; no source disappearance may be used as a substitute.
+Next, continue research on KRA/Chile/HRI/Peru for reliable authority-specific whole-meeting routes. Until one is demonstrated, they remain safe `unsupported`; no source disappearance may be used as a substitute.
 
 
-## Wave 4 research — SOREC / Chile / Peru
+## Wave 4 — SOREC activation / Chile / Peru research
 
-Wave 4 narrows SOREC, Chile and Peru without activating unsafe automation.
+Wave 4 follow-up activated only the safely bounded SOREC subset.
 
-- SOREC: the official SOREC Galop calendar explicitly includes a `Réunion reportée` meeting-status legend. This is now the primary candidate negative-evidence route, but production remains `unsupported` until a concrete postponed meeting row/status field and stable Actions fetch path are pinned.
+- SOREC: PR #1124 proved that the official status-bearing calendar GET embeds concrete `REPOR` rows and the JavaScript key semantics required to decode their original calendar dates. Production accepts only dates whose entire status group is a single `REPOR`, whose message carries a strictly later replacement date, and whose original date binds to exactly one existing SOREC canonical meeting. Conflicting status, duplicate status, missing/same/backward replacement date, ambiguous binding, fetch failure and parse failure all emit no negative evidence.
 - Chile: Valparaíso Sporting's official 2024 report explicitly records a 4 February meeting moved to 17 March and a 7 February meeting suspended. That proves venue-level official whole-meeting evidence exists, but the production Chile system spans multiple venue sources, so no Chile-wide/current automated route is claimed.
 - Peru: the official Jockey Club del Perú racing rules distinguish individual-race annulment from force-majeure suspension of an entire meeting already underway. No live final-status publication route is yet proven, so Monterrico programme/API absence remains `absent_unconfirmed`.
 
-The next implementation work is therefore evidence-route capture rather than inference: concrete SOREC postponed-row capture, current venue-level Chile status discovery, and a Monterrico/JCP final-status notice route if one exists.
+The next implementation research targets are current venue-level Chile final-status discovery, a Monterrico/JCP final-status notice route if one exists, and continued KRA/HRI route discovery.
