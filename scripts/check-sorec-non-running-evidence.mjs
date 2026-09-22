@@ -7,7 +7,7 @@ import {
   parseSorecPostponementEvidenceHtml,
 } from './timetable/sorec-non-running-evidence.mjs';
 
-function fixture(rows) {
+assert.equal(SOREC_NON_RUNNING_CALENDAR_URL,\n  'https://www.sorec-galop.ma/pages/course_a_venir/calendrier_course.jsf?code=CALEN&description=Calendrier+courses&fctID=1406',\n  'SOREC status automation must stay on the Actions-proven stable menu route');\n\nfunction fixture(rows) {
   return `<!doctype html>
 <html><body>
 <ul><li id="legende-report">Réunion reportée</li></ul>
@@ -115,7 +115,7 @@ assert.deepEqual(missing.meeting_presence_records, [], 'missing canonical bindin
 assert.equal(missing.diagnostics.skipped[0].reason, 'canonical_binding_missing');
 
 assert.throws(() => parseSorecPostponementEvidenceHtml(acceptedHtml, {
-  sourceUrl: 'https://example.com/pages/course_a_venir/calendrier_course.jsf?fctID=x',
+  sourceUrl: 'https://example.com/pages/course_a_venir/calendrier_course.jsf?code=CALEN&description=Calendrier+courses&fctID=1406',
 }), /official www\.sorec-galop\.ma/);
 
 const runner = fs.readFileSync('scripts/timetable/run-sorec-official-window.mjs', 'utf8');
