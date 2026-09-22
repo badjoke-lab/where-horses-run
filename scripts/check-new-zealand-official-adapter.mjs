@@ -44,7 +44,7 @@ assert.deepEqual(detail.timetable_rows,[
   {label:'Race 3',post_time_local:'12:50'},
 ]);
 
-const hrnzIndex=`<html><body><h1>2027 Racing Dates</h1><a href="/datahrs/calendar/raceday/2027/dates_september2027.htm">September 2026</a><a href="/datahrs/calendar/raceday/2027/dates_october2027.htm">October 2026</a></body></html>`;
+const hrnzIndex=`<html><body><h1>2027 Racing Dates</h1><a href="2027/dates_september2027.htm">September 2026</a><a href="/datahrs/calendar/raceday/2027/dates_october2027.htm">October 2026</a></body></html>`;
 assert.deepEqual(parseHrnzIndex(hrnzIndex,{sourceUrl:'https://infohorse.hrnz.co.nz/datahrs/calendar/raceday/dates_index.htm'}),[
   'https://infohorse.hrnz.co.nz/datahrs/calendar/raceday/2027/dates_september2027.htm',
   'https://infohorse.hrnz.co.nz/datahrs/calendar/raceday/2027/dates_october2027.htm',
