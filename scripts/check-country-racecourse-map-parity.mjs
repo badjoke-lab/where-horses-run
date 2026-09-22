@@ -16,6 +16,13 @@ const chileCanonicalIds = [
   'hipodromo-chile',
   'valparaiso-sporting-club-racecourse',
 ];
+const franceCanonicalIds = [
+  'marseille-borely-racecourse',
+  'argentan-racecourse',
+  'laval-racecourse',
+  'toulouse-racecourse',
+  'la-teste-racecourse',
+];
 const koreaCanonicalIds = [
   'seoul-racecourse',
   'busan-gyeongnam-racecourse',
@@ -37,16 +44,19 @@ assert.match(
 );
 assert(!chileCanonicalIds.includes('hipodromo-chile-racecourse'));
 assert.equal(chileCanonicalIds.length, 4, 'Chile must expose four canonical active physical racecourses');
+assert.equal(franceCanonicalIds.length, 5, 'France current Calendar scope must expose five current physical racecourses');
 assert.equal(koreaCanonicalIds.length, 4, 'South Korea must expose four canonical active physical racecourses');
 assert.equal(peruCanonicalIds.length, 1, 'Peru reviewed Calendar scope must expose Monterrico as the canonical active physical racecourse');
 assert.equal(saudiCanonicalIds.length, 2, 'Saudi Arabia JCSA scope must expose Taif and Riyadh canonical active physical racecourses');
 
-for (const id of [...chileCanonicalIds, ...koreaCanonicalIds, ...peruCanonicalIds, ...saudiCanonicalIds]) {
+for (const id of [...chileCanonicalIds, ...franceCanonicalIds, ...koreaCanonicalIds, ...peruCanonicalIds, ...saudiCanonicalIds]) {
   assert(publishableIds.has(id), `${id}: expected publishable map location`);
 }
 
 console.log('CHILE_PUBLIC_RACECOURSE_COUNT: 4');
 console.log('CHILE_MAP_LOCATION_COUNT: 4');
+console.log('FRANCE_PUBLIC_RACECOURSE_COUNT: 5');
+console.log('FRANCE_MAP_LOCATION_COUNT: 5');
 console.log('SOUTH_KOREA_PUBLIC_RACECOURSE_COUNT: 4');
 console.log('SOUTH_KOREA_MAP_LOCATION_COUNT: 4');
 console.log('PERU_PUBLIC_RACECOURSE_COUNT: 1');

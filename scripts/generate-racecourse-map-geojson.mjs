@@ -46,6 +46,12 @@ const calendarMapRegressionIds = [
   'ireland--tipperary',
   'ireland--tramore',
   'ireland--wexford',
+  // France Calendar current venues (5)
+  'marseille-borely-racecourse',
+  'argentan-racecourse',
+  'laval-racecourse',
+  'toulouse-racecourse',
+  'la-teste-racecourse',
   // South Korea (4)
   'seoul-racecourse',
   'busan-gyeongnam-racecourse',
