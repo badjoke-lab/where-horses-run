@@ -166,11 +166,11 @@
       "evidence_source_family": "SOREC Galop official status-bearing calendar GET; bounded embedded joursEvenement REPOR positive-evidence subset",
       "evidence_urls": [
         "https://www.sorec-galop.ma/pages/programmeReunion/programmeReunion.jsf",
-        "https://www.sorec-galop.ma/pages/course_a_venir/calendrier_course.jsf?fctID=2nQEdyraO%2Bg%3D"
+        "https://www.sorec-galop.ma/pages/course_a_venir/calendrier_course.jsf?code=CALEN&description=Calendrier+courses&fctID=1406"
       ],
-      "example_evidence_url": "https://www.sorec-galop.ma/pages/course_a_venir/calendrier_course.jsf?fctID=2nQEdyraO%2Bg%3D",
+      "example_evidence_url": "https://www.sorec-galop.ma/pages/course_a_venir/calendrier_course.jsf?code=CALEN&description=Calendrier+courses&fctID=1406",
       "reviewed_at": "2026-09-22",
-      "notes": "Production reads only the official calendar GET's embedded joursEvenement status data. A date is eligible only when it has exactly one status row and that row is REPOR, the REPOR message supplies a strictly later replacement date, the original calendar-key date is inside the requested window, and exactly one existing SOREC canonical meeting can be bound on that original date. Dates with RESDE or any other sibling status, duplicate REPOR rows, missing/same/backward replacement dates, or zero/multiple canonical bindings are skipped. The replacement date is never generated or bound from this negative-evidence route. Calendar fetch/parse failure emits no negative evidence and preserves verified state; Programme Réunion absence remains absent_unconfirmed."
+      "notes": "Production reads only the official menu-derived calendar GET's embedded joursEvenement status data. The previously tested opaque fctID route returned HTTP 404 in production refresh run 35694598167; PR #1126 / Actions run 35695280068 proved the stable full menu route code=CALEN, description=Calendrier courses, fctID=1406 with HTTP 200 and all required structural fingerprints. A date is eligible only when it has exactly one status row and that row is REPOR, the REPOR message supplies a strictly later replacement date, the original calendar-key date is inside the requested window, and exactly one existing SOREC canonical meeting can be bound on that original date. Dates with RESDE or any other sibling status, duplicate REPOR rows, missing/same/backward replacement dates, or zero/multiple canonical bindings are skipped. The replacement date is never generated or bound from this negative-evidence route. Calendar fetch/parse failure emits no negative evidence and preserves verified state; Programme Réunion absence remains absent_unconfirmed."
     },
     {
       "record_id": "chile-teletrak-racing-system",
