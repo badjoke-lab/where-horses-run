@@ -28,11 +28,13 @@ function writeArtifact(rel, value) {
 function state(rank, freshness) {
   const hk = { meeting_id: 'hk-test-2026-09-11', country_id: 'hong-kong', authority_id: 'hkjc', capability_rank: rank, freshness: { generated_at: freshness, last_checked_date: '2026-09-11' } };
   const jra = { meeting_id: 'jra-test-2026-09-11', country_id: 'japan', authority_id: 'japan-racing-association', capability_rank: 'A+', freshness: { generated_at: freshness, last_checked_date: '2026-09-11' } };
-  write('data/generated/timetable/canonical/meetings.json', { meetings: [hk, jra] });
+  const saudi = { meeting_id: 'saudi-test-2026-09-11', country_id: 'saudi-arabia', authority_id: 'jockey-club-of-saudi-arabia', capability_rank: 'C', freshness: { generated_at: freshness, last_checked_date: '2026-09-11' } };
+  write('data/generated/timetable/canonical/meetings.json', { meetings: [hk, jra, saudi] });
   write('data/generated/timetable/canonical/meeting-details.json', { details: [] });
   write('data/generated/timetable/public/meeting-list.json', { meetings: [
     { ...hk, effective_public_rank: rank },
     { ...jra, effective_public_rank: 'A+' },
+    { ...saudi, effective_public_rank: 'C' },
   ] });
   write('data/generated/timetable/public/meeting-details.json', { details: [] });
 }
@@ -55,6 +57,11 @@ try {
     generated_at: '2026-09-11T00:04:00Z',
     discovery: { detail_status_counts: { not_published: 0, source_error: 0 } },
     records: [{ meeting_id: 'hk-test-2026-09-11' }],
+  });
+  writeArtifact('.calendar-unified/saudi-arabia.json', {
+    generated_at: '2026-09-11T00:04:00Z',
+    diagnostics: { source_errors: [] },
+    records: [{ meeting_id: 'saudi-test-2026-09-11', detail_observation: { status: 'not_published' } }],
   });
   writeArtifact('data/generated/timetable/japan-zero-based-30d-reconciliation.json', {
     checked_at: '2026-09-11T00:03:00Z', scope: 'full', complete: true, mother_set_complete: true,
@@ -85,6 +92,12 @@ try {
   assert.equal(hk.checked, 1);
   assert.equal(hk.changed, 1);
   assert.equal(hk.promoted, 1);
+  const saudi = summary.systems.find((row) => row.racing_system_id === 'saudi-arabia-jcsa-system');
+  assert.equal(saudi.status, 'audited');
+  assert.equal(saudi.checked, 1);
+  assert.equal(saudi.changed, 0);
+  assert.equal(saudi.pending, 1);
+  assert.equal(saudi.fetch_failed, 0);
   const jra = summary.systems.find((row) => row.acquisition_group === 'jra');
   assert.equal(jra.checked, 1);
   assert.equal(jra.changed, 0, 'freshness-only change must not count as substantive');
