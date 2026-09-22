@@ -154,6 +154,43 @@ function extractScripts(html) {
   return scripts;
 }
 
+function extractJoursEvenementDiagnostics(html) {
+  const text = String(html ?? '');
+  const assignment = text.match(/joursEvenement\s*=\s*(\[\[[\s\S]*?\]\])\s*;/i);
+  if (!assignment) return { found: false, report_records: [], logic_context: null };
+
+  const rawArray = assignment[1];
+  const reportRecords = [];
+  for (const match of rawArray.matchAll(/\[\s*["']([^"']+)["']\s*,\s*["']REPOR["']\s*,\s*["']([^"']+)["']\s*\]/gi)) {
+    reportRecords.push({
+      calendar_key: match[1],
+      message: decodeHtml(match[2]),
+      message_date: (match[2].match(/\b(\d{1,2}\/\d{1,2}\/\d{2,4})\b/) || [])[1] ?? null,
+      venue: (match[2].match(/hippodrome\s+([^"']+)$/i) || [])[1]?.trim() ?? null,
+    });
+  }
+
+  const end = assignment.index + assignment[0].length;
+  const suffix = text.slice(end, end + 12000);
+  const logicMatches = [];
+  for (const pattern of [
+    /specialDays\s*=\s*function[\s\S]{0,3500}?\}/i,
+    /function\s+specialDays[\s\S]{0,3500}?\}/i,
+    /joursEvenement[\s\S]{0,4500}?getFullYear\(\)[\s\S]{0,1200}/i,
+    /getDate\(\)[\s\S]{0,1200}?getMonth\(\)[\s\S]{0,1200}?getFullYear\(\)/i,
+  ]) {
+    const match = suffix.match(pattern);
+    if (match) logicMatches.push(bounded(match[0], 6000));
+  }
+
+  return {
+    found: true,
+    report_record_count: reportRecords.length,
+    report_records: reportRecords.slice(0, 80),
+    logic_context: logicMatches.length ? logicMatches : [bounded(suffix, 8000)],
+  };
+}
+
 function parseAttributes(value) {
   const attrs = {};
   for (const match of String(value ?? '').matchAll(/([A-Za-z_:][\w:.-]*)\s*=\s*(['"])([\s\S]*?)\2/g)) {
@@ -376,6 +413,7 @@ async function fetchHtml(target) {
       link_samples: extractLinks(html),
       marker_contexts: extractMarkerContexts(html),
       script_samples: extractScripts(html),
+      jours_evenement: extractJoursEvenementDiagnostics(html),
     };
     return result;
   } catch (error) {
@@ -410,7 +448,7 @@ if (primary && primaryCalendarHtml && programme.dates.length > 0) {
 
 const artifact = {
   schema_version: 'sorec-non-running-route-probe-v1',
-  probe_revision: 'jsf-date-select-v6-single-session-post',
+  probe_revision: 'jsf-date-select-v7-report-key-semantics',
   generated_at: new Date().toISOString(),
   purpose: 'Diagnose the official SOREC calendar route for explicit meeting-level Réunion reportée evidence. No source absence is treated as cancellation.',
   results,
