@@ -14,9 +14,9 @@ Read these first for glossary work:
 
 ## Current state in plain language
 
-The working dictionary has **614 terms/concepts**.
+The working dictionary has **616 current active terms/concepts**.
 
-- **614 / 614 are source-verified at the meaning level**.
+- **616 / 616 current active Concepts are source-verified at the meaning level**.
 - **0 active Concepts remain under evidence/semantic review**.
 - the highest-priority core set is **203/203 verified**;
 - jurisdiction-specific research additions are **161/161 verified**;
@@ -24,9 +24,9 @@ The working dictionary has **614 terms/concepts**.
 
 The latest pass is **final targeted residual wave 13**. It verified historical California `Cushion Track`, corrected `Hold-up horse` to operational `Held up`, and verified the GB prize-money `Stake` sense. Ambiguous `Grandsire`, `Stallion service`, generic `Jump`, and generic `Bonus` were retired rather than forced into the public model.
 
-`GLOSSARY-MASTER-005` is complete: **614/614 active Concepts are source-verified (100%)** and **0 candidates remain**. Active base seed is **453/453 verified (100%)**. Evidence completion does not publish the glossary; `MASTER-006` remains the next readiness stage.
+`GLOSSARY-MASTER-005` closed at **614/614 source-verified (100%)** with **0 candidates**. A later targeted MASTER-006 KRA identity repair added two source-verified jurisdiction-specific Concepts, bringing the current active master to **616/616**. Evidence completion still does not publish the glossary.
 
-`MASTER-006` wave 8 is now active. The search layer remains at **594 reviewed non-canonical queries**. Machine-readable readiness audits now cover all 18 terminology categories, researched jurisdiction/system scopes, language/script representation, and all **54 active no-direct-equivalent Concepts**. The current audit passes domain breadth and no-direct-equivalent handling, while jurisdiction/system breadth, language/script readiness and search-intent sufficiency remain blocked.
+`MASTER-006` wave 9 is now active. The KRA `국산마` / `외산마` identity defect found by the readiness audit is repaired with separate Korea/KRA Concepts. The search layer now contains **598 reviewed non-canonical queries**, and the no-direct-equivalent audit contains **56 active Concepts**. Domain breadth and no-direct-equivalent handling pass; jurisdiction/system breadth, language/script readiness and search-intent sufficiency remain blocked by other explicit gaps.
 
 These rows were removed because the active glossary already models the underlying racing meaning more cleanly, or because the seed represented generic analytical/presentation context rather than an independent racing term.
 
@@ -124,7 +124,7 @@ The abbreviation/code layer remains at **38 source-verified rows**.
 
 There are **0 active candidate Concepts** after final residual wave 13. `GLOSSARY-MASTER-005` therefore passes its evidence/semantic completion gate for the current master.
 
-`GLOSSARY-MASTER-006` is now **in progress**. Waves 1-7 establish the reviewed search-intent layer; wave 8 adds explicit readiness matrices. The audits record **253 source-verified local labels** across five languages and four represented scripts, **54 no-direct-equivalent Concepts**, and explicit worldwide jurisdiction gaps instead of treating 614 verified Concepts as automatic worldwide completeness. `HKKR-LBL-043` remains unresolved and Arabic-script coverage is absent. The current decision remains **HOLD** while jurisdiction/system, language/script and search-intent sufficiency gaps remain open. Public glossary architecture remains deferred.
+`GLOSSARY-MASTER-006` is now **in progress**. Waves 1-7 establish the reviewed search-intent layer; wave 8 adds explicit readiness matrices; wave 9 repairs the KRA horse-origin identity gap discovered by those audits. The audits now track **253 source-verified local labels**, **56 no-direct-equivalent Concepts**, **598 reviewed search records**, and explicit worldwide jurisdiction gaps instead of treating current Concept count as automatic worldwide completeness. Arabic-script coverage remains absent. The current decision remains **HOLD** while jurisdiction/system, language/script and search-intent sufficiency gaps remain open. Public glossary architecture remains deferred.
 
 ## Dictionary modeling rule
 
