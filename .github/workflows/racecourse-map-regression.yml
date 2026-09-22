@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - 'data/static/racecourse-locations-v1.json'
+      - 'data/static/racecourse-location-evidence-v1.json'
+      - 'data/static/racecourses-public-timetable-identities-v1.json'
       - 'data/static/racecourse-location-supplement-evidence-v1.json'
       - 'data/static/country-page-racecourses-12-zimbabwe.json'
       - 'scripts/generate-racecourse-map-geojson.mjs'
