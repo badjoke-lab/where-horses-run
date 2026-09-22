@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-public-country-support-v1",
-  "reviewed_at": "2026-09-22",
+  "reviewed_at": "2026-09-23",
   "basis": "Countries currently wired into the production Calendar unified official refresh on main. Japan uses the official mother-set path; non-Japan countries use official rolling-window collectors and monotonic public observation application.",
   "source_ref": ".github/workflows/calendar-unified-official-refresh.yml",
   "countries": [
@@ -58,6 +58,11 @@
       "country_id": "france",
       "calendar_supported": true,
       "acquisition_key": "france-fnch-official-window"
+    },
+    {
+      "country_id": "new-zealand",
+      "calendar_supported": true,
+      "acquisition_key": "new-zealand-official-window"
     }
   ]
 }
