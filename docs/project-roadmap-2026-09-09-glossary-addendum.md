@@ -319,7 +319,7 @@ The programme now advances to `GLOSSARY-MASTER-006`.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
-Status: **current, wave 9 in progress**.
+Status: **current, wave 10 in progress**.
 
 This stage reviews definition/comparison/regional/how-why/translation/abbreviation/racecard-reading search intents, coverage gaps and user-facing readiness. It may reopen evidence work only when a real semantic/source gap is discovered. Public implementation planning remains deferred until this stage passes.
 
@@ -340,6 +340,8 @@ Wave 7 adds **10 French-language queries** for the five previously uncovered sou
 Wave 8 begins the worldwide readiness audit. Four machine-readable matrices cover domain breadth, jurisdiction/system breadth, language/script representation, and the then-current **54 no-direct-equivalent Concepts**. The audit exposed a concrete KRA identity defect: `국산마` still referenced retired generic `HORSE-027`, while `외산마` was attached to Japan-scoped `HORSE-028`.
 
 Wave 9 repairs that defect from already-reviewed KRA authority evidence. Separate `HORSE-035` KRA domestic-bred and `HORSE-036` KRA foreign-bred Concepts are added, the two Korean labels/definitions/research mappings are retargeted, and four curated translation queries are added. The current master is **616/616 source-verified**, the search registry is **598**, and the no-direct-equivalent audit contains **56 Concepts**. MASTER-005 is not reopened; its closure snapshot remains 614/614.
+
+Wave 10 closes the current UAE Arabic/original-script representation gap from the ERA's own Arabic Rules, not machine translation. Six material existing Concepts receive source-verified Arabic labels: Steward, Amateur rider, Apprentice jockey, Blinkers, Trial and Claiming race. The local-label audit rises from **253 to 259**, with **Arabic added as the sixth represented language and Arab as the fifth represented script**. M6-GATE-004 remains blocked because worldwide language/script readiness is broader than UAE.
 
 - `search/search-intent-policy-v1.tsv` — seven intent classes and publication/review rules;
 - `search/search-queries-v1.tsv` — 66 abbreviation/racecard-reading records;
@@ -380,7 +382,7 @@ Working dictionary: 616 current active terms
 Verified: 616
 Still under review: 0 active Concept candidates
 MASTER-005: complete
-Next subject group: Arabic/original-script + remaining worldwide jurisdiction gaps + non-code racecard/document reading
+Next subject group: remaining worldwide jurisdiction/language gaps + non-code racecard/document reading
 Public implementation: deferred
 ```
 
