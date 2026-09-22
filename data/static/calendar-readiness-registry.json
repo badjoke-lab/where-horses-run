@@ -6,7 +6,7 @@
   "programme_state": {
     "country_target": 98,
     "countries_with_closed_decision": 98,
-    "readiness_records": 117,
+    "readiness_records": 119,
     "next_backfill_work_ids": []
   },
   "records": [
@@ -5250,7 +5250,95 @@
         "No current meeting fields are approved."
       ],
       "notes": "Use archive-page treatment and exclude Greece from all current-calendar listings."
+    },
+    {
+      "country_id": "france",
+      "country_tracker_delivery_no": "33",
+      "racecourse_ids": [],
+      "coverage_scope": "authority_wide",
+      "technical_rank": "A",
+      "public_ceiling": "A",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": true,
+        "last_race_time": true,
+        "per_race_post_times": true,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "mixed",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-09-22",
+      "evidence_reviewed_at": "2026-09-22",
+      "revalidation_trigger": "Revalidate if FNCH regional programme markup, discipline labels, or linked programme PDF layout changes.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/33-france/final-summary.json",
+      "limitations": [
+        "FNCH regional programme indexes are a source-visible horizon rather than proof of exhaustive 30-day publication.",
+        "Participant, betting, result, payout, and complete programme content remain excluded."
+      ],
+      "readiness_id": "france--france-france-galop-system--fnch-national-calendar-directory",
+      "system_id": "france-france-galop-system",
+      "system_name_en": "France Galop",
+      "authority_source_key": "france/france-galop/fnch-national-calendar-directory",
+      "notes": "Current official FNCH programme indexes and linked programme PDFs provide an automated Best Available route for France Galop while preserving separate flat/obstacle system attribution."
+    },
+    {
+      "country_id": "france",
+      "country_tracker_delivery_no": "33",
+      "racecourse_ids": [],
+      "coverage_scope": "authority_wide",
+      "technical_rank": "A",
+      "public_ceiling": "A",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": true,
+        "last_race_time": true,
+        "per_race_post_times": true,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "mixed",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-09-22",
+      "evidence_reviewed_at": "2026-09-22",
+      "revalidation_trigger": "Revalidate if FNCH regional programme markup, discipline labels, or linked programme PDF layout changes.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/33-france/final-summary.json",
+      "limitations": [
+        "FNCH regional programme indexes are a source-visible horizon rather than proof of exhaustive 30-day publication.",
+        "Participant, betting, result, payout, and complete programme content remain excluded."
+      ],
+      "readiness_id": "france--france-letrot-system--fnch-national-calendar-directory",
+      "system_id": "france-letrot-system",
+      "system_name_en": "LETROT",
+      "authority_source_key": "france/letrot/fnch-national-calendar-directory",
+      "notes": "Current official FNCH programme indexes and linked programme PDFs provide an automated Best Available route for LETROT; direct LETROT page access is not used as negative evidence."
     }
   ],
-  "last_updated": "2026-06-30"
+  "last_updated": "2026-09-22"
 }

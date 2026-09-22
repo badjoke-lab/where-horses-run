@@ -259,6 +259,48 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-09-22",
       "notes": "Saudi Calendar production uses JCSA positive schedule sources. A missing date-route meeting fingerprint remains absent_unconfirmed. Whole-meeting cancellation/postponement automation is intentionally not implemented by this expansion lane."
+    },
+    {
+      "record_id": "france-france-galop-system",
+      "country_id": "france",
+      "system_id": "france-france-galop-system",
+      "authority_id": "france-galop",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "FNCH official programme indexes and France Galop positive schedule evidence; no bounded whole-meeting negative-evidence route proven in this country-addition pass",
+      "evidence_urls": [
+        "https://www.fnch.fr/calendrier"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-09-22",
+      "notes": "France Calendar production uses FNCH positive programme evidence for France Galop. Source invisibility, missing programme detail, or acquisition failure remains absent_unconfirmed and preserves verified state. Whole-meeting cancellation/postponement automation is intentionally not implemented by this expansion lane."
+    },
+    {
+      "record_id": "france-letrot-system",
+      "country_id": "france",
+      "system_id": "france-letrot-system",
+      "authority_id": "letrot",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "FNCH official programme indexes and LETROT positive schedule evidence; no bounded whole-meeting negative-evidence route proven in this country-addition pass",
+      "evidence_urls": [
+        "https://www.fnch.fr/calendrier"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-09-22",
+      "notes": "France Calendar production uses FNCH positive programme evidence for LETROT. Source invisibility, missing programme detail, or acquisition failure remains absent_unconfirmed and preserves verified state. Whole-meeting cancellation/postponement automation is intentionally not implemented by this expansion lane."
     }
   ]
 }

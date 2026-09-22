@@ -124,6 +124,7 @@ jobs:
           node scripts/check-ireland-hri-fixtures-adapter.mjs
           node scripts/check-peru-monterrico-adapter.mjs
           node scripts/check-saudi-jcsa-adapter.mjs
+          node scripts/check-france-fnch-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
@@ -291,6 +292,7 @@ jobs:
           node scripts/check-ireland-hri-fixtures-adapter.mjs
           node scripts/check-peru-monterrico-adapter.mjs
           node scripts/check-saudi-jcsa-adapter.mjs
+          node scripts/check-france-fnch-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
@@ -436,7 +438,7 @@ jobs:
           node scripts/timetable/run-kra-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/kra.json
-      - name: Collect TJK, SOREC, Chile, Ireland, Peru and Saudi official windows
+      - name: Collect TJK, SOREC, Chile, Ireland, Peru, Saudi and France official windows
         run: |
           node scripts/timetable/run-tjk-current-best-available.mjs \
             --days="${{ steps.scope.outputs.days }}" \
@@ -456,6 +458,10 @@ jobs:
           node scripts/timetable/run-saudi-jcsa-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/saudi-arabia.json
+          node scripts/timetable/run-france-fnch-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --galop-output=.calendar-unified/france-galop.json \
+            --letrot-output=.calendar-unified/france-letrot.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -467,7 +473,9 @@ jobs:
             --artifact=.calendar-unified/chile.json \
             --artifact=.calendar-unified/ireland.json \
             --artifact=.calendar-unified/peru.json \
-            --artifact=.calendar-unified/saudi-arabia.json
+            --artifact=.calendar-unified/saudi-arabia.json \
+            --artifact=.calendar-unified/france-galop.json \
+            --artifact=.calendar-unified/france-letrot.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -524,6 +532,18 @@ jobs:
             --authority-id=jockey-club-of-saudi-arabia \
             --racing-system-id=saudi-arabia-jcsa-system \
             --timezone=Asia/Riyadh
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/france-galop.json \
+            --country-id=france \
+            --authority-id=france-galop \
+            --racing-system-id=france-france-galop-system \
+            --timezone=Europe/Paris
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/france-letrot.json \
+            --country-id=france \
+            --authority-id=letrot \
+            --racing-system-id=france-letrot-system \
+            --timezone=Europe/Paris
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
@@ -581,6 +601,10 @@ jobs:
             node scripts/timetable/run-saudi-jcsa-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/saudi-arabia.json
+            node scripts/timetable/run-france-fnch-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --galop-output=.calendar-unified/france-galop.json \
+              --letrot-output=.calendar-unified/france-letrot.json
             node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --artifact=.calendar-unified/uae.json \
@@ -590,7 +614,9 @@ jobs:
               --artifact=.calendar-unified/chile.json \
               --artifact=.calendar-unified/ireland.json \
               --artifact=.calendar-unified/peru.json \
-              --artifact=.calendar-unified/saudi-arabia.json
+              --artifact=.calendar-unified/saudi-arabia.json \
+              --artifact=.calendar-unified/france-galop.json \
+              --artifact=.calendar-unified/france-letrot.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --country-id=hong-kong \
@@ -645,6 +671,18 @@ jobs:
               --authority-id=jockey-club-of-saudi-arabia \
               --racing-system-id=saudi-arabia-jcsa-system \
               --timezone=Asia/Riyadh
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/france-galop.json \
+              --country-id=france \
+              --authority-id=france-galop \
+              --racing-system-id=france-france-galop-system \
+              --timezone=Europe/Paris
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/france-letrot.json \
+              --country-id=france \
+              --authority-id=letrot \
+              --racing-system-id=france-letrot-system \
+              --timezone=Europe/Paris
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
             node scripts/timetable/apply-meeting-presence-dispositions.mjs \
             --artifact=.calendar-unified/hkjc.json \

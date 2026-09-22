@@ -16,6 +16,8 @@ const SYSTEMS = [
   { key: 'ireland', file: 'ireland.json', country_id: 'ireland', authority_id: 'horse-racing-ireland', racing_system_id: 'ireland-hri-racing-system' },
   { key: 'peru', file: 'peru.json', country_id: 'peru', authority_id: 'hipodromo-de-monterrico', racing_system_id: 'peru-monterrico-programme-system' },
   { key: 'saudi-arabia', file: 'saudi-arabia.json', country_id: 'saudi-arabia', authority_id: 'jockey-club-of-saudi-arabia', racing_system_id: 'saudi-arabia-jcsa-system' },
+  { key: 'france-galop', file: 'france-galop.json', country_id: 'france', authority_id: 'france-galop', racing_system_id: 'france-france-galop-system' },
+  { key: 'france-letrot', file: 'france-letrot.json', country_id: 'france', authority_id: 'letrot', racing_system_id: 'france-letrot-system' },
 ];
 
 const STATE_FILES = {
