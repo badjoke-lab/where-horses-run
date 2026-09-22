@@ -9,6 +9,8 @@ const result = await discoverTjkConfirmedNonRunning({
   checkedAt: new Date().toISOString(),
 });
 
+console.log(JSON.stringify(result, null, 2));
+
 assert.equal(result.diagnostics.some((row) => row.status === 'success'), true,
   'official TJK Haberler query route must be fetchable');
 assert.equal(result.records.some((row) => row.meeting_id === 'tjk-adana-racecourse-2026-03-21'), true,
