@@ -366,6 +366,7 @@ if (primary && programme.dates.length > 0) {
 
 const artifact = {
   schema_version: 'sorec-non-running-route-probe-v1',
+  probe_revision: 'jsf-date-select-v1',
   generated_at: new Date().toISOString(),
   purpose: 'Diagnose the official SOREC calendar route for explicit meeting-level Réunion reportée evidence. No source absence is treated as cancellation.',
   results,
