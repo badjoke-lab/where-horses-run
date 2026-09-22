@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 
+const PROGRAMME_URL = 'https://www.sorec-galop.ma/pages/programmeReunion/programmeReunion.jsf';
+
 const TARGETS = [
   {
     name: 'calendar_with_fctid',
@@ -143,6 +145,154 @@ function extractScripts(html) {
   return scripts;
 }
 
+function parseAttributes(value) {
+  const attrs = {};
+  for (const match of String(value ?? '').matchAll(/([A-Za-z_:][\w:.-]*)\s*=\s*(['"])([\s\S]*?)\2/g)) {
+    attrs[match[1]] = match[3];
+  }
+  return attrs;
+}
+
+function formState(html) {
+  const match = String(html).match(/<form\b([^>]*)\bid=(['"])form\2([^>]*)>([\s\S]*?)<\/form>/i);
+  if (!match) throw new Error('SOREC calendar form#form not found');
+  const attrs = parseAttributes(match[1] + match[3]);
+  const values = new URLSearchParams();
+  for (const input of match[4].matchAll(/<input\b([^>]*)>/gi)) {
+    const inputAttrs = parseAttributes(input[1]);
+    if (!inputAttrs.name) continue;
+    values.set(inputAttrs.name, inputAttrs.value ?? '');
+  }
+  values.set('form', 'form');
+  return { action: attrs.action ?? null, values };
+}
+
+function twoDigitDate(value) {
+  const match = String(value).match(/^(\d{2})\/(\d{2})\/(?:20)?(\d{2})$/);
+  return match ? match[1] + '/' + match[2] + '/' + match[3] : null;
+}
+
+function programmeDateSamples(html) {
+  const plain = decodeHtml(html);
+  const venues = 'Casablanca(?:-Anfa)?|Mekn(?:e|è)s|Marrakech|Rabat|Settat|El jadida|Khemisset';
+  const pattern = new RegExp('(\\d{2}\\/\\d{2}\\/(?:\\d{2}|\\d{4}))\\s+(' + venues + ')\\b', 'gi');
+  const seen = new Set();
+  const values = [];
+  for (const match of plain.matchAll(pattern)) {
+    const date = twoDigitDate(match[1]);
+    if (!date || seen.has(date)) continue;
+    seen.add(date);
+    values.push({ date, venue_label: match[2] });
+    if (values.length >= 5) break;
+  }
+  return values;
+}
+
+function parsePartialResponse(xml) {
+  const updates = [];
+  for (const match of String(xml).matchAll(/<update\b[^>]*\bid=(['"])([^'"]+)\1[^>]*>([\s\S]*?)<\/update>/gi)) {
+    const raw = match[3].replace(/^<!\[CDATA\[|\]\]>$/g, '');
+    const text = decodeHtml(raw);
+    updates.push({
+      id: match[2],
+      text: bounded(text, 1600),
+      raw_context: bounded(raw, 2400),
+      fingerprints: {
+        reunion_reportee: /Réunion\s+reportée/i.test(text),
+        report_class_or_id: /(?:id|class)\s*=\s*['"][^'"]*report/i.test(raw),
+        venue: /Casablanca|Mekn(?:e|è)s|Marrakech|Rabat|Settat|El\s+Jadida|Khemisset/i.test(text),
+      },
+    });
+  }
+  return updates;
+}
+
+async function fetchProgrammeSamples() {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 20_000);
+  try {
+    const response = await fetch(PROGRAMME_URL, {
+      headers: {
+        'user-agent': 'WhereHorsesRun/1.0 (+https://whr.badjoke-lab.com/)',
+        accept: 'text/html,application/xhtml+xml',
+      },
+      signal: controller.signal,
+    });
+    const html = await response.text();
+    return {
+      status: response.status,
+      ok: response.ok,
+      bytes: Buffer.byteLength(html),
+      dates: response.ok ? programmeDateSamples(html) : [],
+    };
+  } catch (error) {
+    return { ok: false, error: error instanceof Error ? error.message : String(error), dates: [] };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function exerciseDateSelect({ sourceUrl, html, date, expectedVenue }) {
+  const state = formState(html);
+  if (!state.action) throw new Error('SOREC calendar form action missing');
+  const action = new URL(state.action.replace(/&amp;/g, '&'), sourceUrl).toString();
+  const params = new URLSearchParams(state.values);
+  params.set('form:idCalendrier_input', date);
+  params.set('javax.faces.partial.ajax', 'true');
+  params.set('javax.faces.source', 'form:idCalendrier');
+  params.set('javax.faces.partial.execute', 'form:idCalendrier');
+  params.set('javax.faces.partial.render', 'form:panelRacine form:panelInfosUser form:idData');
+  params.set('javax.faces.behavior.event', 'dateSelect');
+  params.set('javax.faces.partial.event', 'dateSelect');
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 20_000);
+  try {
+    const response = await fetch(action, {
+      method: 'POST',
+      headers: {
+        'user-agent': 'WhereHorsesRun/1.0 (+https://whr.badjoke-lab.com/)',
+        accept: 'application/xml, text/xml, */*; q=0.01',
+        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'faces-request': 'partial/ajax',
+        'x-requested-with': 'XMLHttpRequest',
+        referer: sourceUrl,
+      },
+      body: params.toString(),
+      redirect: 'follow',
+      signal: controller.signal,
+    });
+    const body = await response.text();
+    const updates = parsePartialResponse(body);
+    const plain = decodeHtml(body);
+    return {
+      date,
+      expected_venue: expectedVenue,
+      action_url: action,
+      status: response.status,
+      ok: response.ok,
+      content_type: response.headers.get('content-type'),
+      bytes: Buffer.byteLength(body),
+      partial_response: /<partial-response\b/i.test(body),
+      update_ids: updates.map((item) => item.id),
+      expected_venue_visible: expectedVenue ? plain.toLowerCase().includes(String(expectedVenue).toLowerCase()) : null,
+      reunion_reportee_visible: /Réunion\s+reportée/i.test(plain),
+      report_marker_visible: /(?:id|class)\s*=\s*['"][^'"]*report/i.test(body),
+      updates,
+      body_head: bounded(body, 1800),
+    };
+  } catch (error) {
+    return {
+      date,
+      expected_venue: expectedVenue,
+      ok: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function fetchHtml(target) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 20_000);
@@ -198,11 +348,29 @@ async function fetchHtml(target) {
 const results = [];
 for (const target of TARGETS) results.push(await fetchHtml(target));
 
+const programme = await fetchProgrammeSamples();
+const primary = results.find((result) => result.name === 'calendar_with_fctid' && result.ok);
+const date_select_probes = [];
+if (primary && programme.dates.length > 0) {
+  const raw = await fetch(primary.final_url, {
+    headers: {
+      'user-agent': 'WhereHorsesRun/1.0 (+https://whr.badjoke-lab.com/)',
+      accept: 'text/html,application/xhtml+xml',
+    },
+  });
+  const html = await raw.text();
+  for (const sample of programme.dates.slice(0, 4)) {
+    date_select_probes.push(await exerciseDateSelect({ sourceUrl: primary.final_url, html, date: sample.date, expectedVenue: sample.venue_label }));
+  }
+}
+
 const artifact = {
   schema_version: 'sorec-non-running-route-probe-v1',
   generated_at: new Date().toISOString(),
   purpose: 'Diagnose the official SOREC calendar route for explicit meeting-level Réunion reportée evidence. No source absence is treated as cancellation.',
   results,
+  programme,
+  date_select_probes,
 };
 
 fs.writeFileSync('probe-sorec-non-running.json', JSON.stringify(artifact, null, 2) + '\n');
