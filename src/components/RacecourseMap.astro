@@ -49,6 +49,11 @@ const {
       <span class="racecourse-map__legend-label racecourse-map__legend-label--en">Racing now</span>
       <span class="racecourse-map__legend-label racecourse-map__legend-label--ja">開催中</span>
     </span>
+    <span class="racecourse-map__legend-item" data-map-legend-stream hidden>
+      <span class="racecourse-map__legend-stream-icon" aria-hidden="true">▶</span>
+      <span class="racecourse-map__legend-label racecourse-map__legend-label--en">Live stream available</span>
+      <span class="racecourse-map__legend-label racecourse-map__legend-label--ja">ライブ配信あり</span>
+    </span>
     <span class="racecourse-map__legend-item" data-map-legend-state="upcoming">
       <span class="racecourse-map__legend-dot racecourse-map__legend-dot--upcoming" aria-hidden="true"></span>
       <span class="racecourse-map__legend-label racecourse-map__legend-label--en">Upcoming</span>
@@ -117,6 +122,19 @@ const {
     background: #c40000;
   }
 
+  .racecourse-map__legend-stream-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: 999px;
+    background: #17212b;
+    color: #fff;
+    font-size: 0.5rem;
+    line-height: 1;
+    flex: 0 0 auto;
+  }
+
   .racecourse-map__legend-dot--upcoming {
     background: #d18a00;
   }
@@ -172,10 +190,14 @@ const {
   const MAP_CLUSTER_COUNT_LAYER = 'racecourse-cluster-count';
   const MAP_CLUSTER_RUNNING_BADGE_LAYER = 'racecourse-cluster-running-badge';
   const MAP_CLUSTER_UPCOMING_BADGE_LAYER = 'racecourse-cluster-upcoming-badge';
+  const MAP_CLUSTER_STREAM_BADGE_LAYER = 'racecourse-cluster-stream-badge';
   const MAP_CLUSTER_LIVE_BADGE_IMAGE = 'racecourse-cluster-live-pill';
   const MAP_CLUSTER_UPCOMING_BADGE_IMAGE = 'racecourse-cluster-upcoming-pill';
+  const MAP_CLUSTER_STREAM_BADGE_IMAGE = 'racecourse-cluster-stream-pill';
   const MAP_SELECTED_RING_LAYER = 'racecourse-selected-ring';
   const MAP_POINT_LAYER = 'racecourse-points';
+  const MAP_POINT_STREAM_DOT_LAYER = 'racecourse-point-stream-dot';
+  const MAP_POINT_STREAM_ICON_LAYER = 'racecourse-point-stream-icon';
   const MAP_HIT_LAYER = 'racecourse-hit-targets';
   const MAP_LOAD_TIMEOUT_MS = 15000;
   const MOBILE_BREAKPOINT = '(max-width: 700px)';
@@ -608,17 +630,39 @@ const {
         return result;
       };
 
-      const syncLegend = (inferred) => {
+      const inferLiveStreams = () => {
+        const result = {};
+        if (!useStatusPresentation || !(statusContext instanceof HTMLElement)) return result;
+
+        const mapping = statusContext.matches('[data-home-racing-map]')
+          ? parseJsonNode(statusContext.querySelector('[data-home-map-records]'))
+          : parseJsonNode(statusContext.querySelector('[data-today-map-meeting-map], [data-calendar-map-meeting-map]'));
+        const racecourseByMeetingId = new Map(mapping.map((entry) => [entry?.meetingId, entry?.racecourseId]));
+
+        document.querySelectorAll('[data-calendar-meeting-row]').forEach((row) => {
+          if (!(row instanceof HTMLElement) || row.hidden || row.dataset.timezoneScopeHidden === 'true') return;
+          if (row.dataset.streamState !== 'live') return;
+          const racecourseId = racecourseByMeetingId.get(row.dataset.meetingId || '');
+          if (typeof racecourseId !== 'string' || !visibleRacecourseIds.has(racecourseId)) return;
+          result[racecourseId] = true;
+        });
+        return result;
+      };
+
+      const syncLegend = (inferred, liveStreams) => {
         if (!(legend instanceof HTMLElement) || !useStatusPresentation) return;
         const active = new Set(Object.values(inferred).filter((state) => PUBLIC_STATUS_KEYS.has(state)));
+        const hasLiveStream = Object.values(liveStreams).some(Boolean);
         legend.querySelectorAll('[data-map-legend-state]').forEach((item) => {
           if (!(item instanceof HTMLElement)) return;
           item.hidden = !active.has(item.dataset.mapLegendState || '');
         });
-        legend.hidden = active.size === 0;
+        const streamItem = legend.querySelector('[data-map-legend-stream]');
+        if (streamItem instanceof HTMLElement) streamItem.hidden = !hasLiveStream;
+        legend.hidden = active.size === 0 && !hasLiveStream;
       };
 
-      const presentedFeatures = (inferred) => [...visibleRacecourseIds]
+      const presentedFeatures = (inferred, liveStreams) => [...visibleRacecourseIds]
         .map((id) => featureByRacecourseId.get(id))
         .filter(Boolean)
         .map((feature) => ({
@@ -627,7 +671,8 @@ const {
             ...feature.properties,
             meeting_status: useStatusPresentation
               ? inferred[feature?.properties?.racecourse_id] || 'neutral'
-              : 'neutral'
+              : 'neutral',
+            stream_live: liveStreams[feature?.properties?.racecourse_id] === true ? 1 : 0
           }
         }));
 
@@ -635,10 +680,11 @@ const {
         const source = map.getSource(MAP_SOURCE);
         if (!source || typeof source.setData !== 'function') return;
         const inferred = inferStatuses();
-        syncLegend(inferred);
+        const liveStreams = inferLiveStreams();
+        syncLegend(inferred, liveStreams);
         source.setData({
           ...projection,
-          features: presentedFeatures(inferred)
+          features: presentedFeatures(inferred, liveStreams)
         });
         if (selectedFeatureId !== null) {
           try {
@@ -698,7 +744,8 @@ const {
               ...feature,
               properties: {
                 ...feature.properties,
-                meeting_status: 'neutral'
+                meeting_status: 'neutral',
+                stream_live: 0
               }
             }))
           },
@@ -707,6 +754,7 @@ const {
           clusterRadius: 44,
           clusterProperties: {
             running_count: ['+', ['case', ['==', ['get', 'meeting_status'], 'running'], 1, 0]],
+            live_stream_count: ['+', ['get', 'stream_live']],
             upcoming_count: ['+', ['case', ['==', ['get', 'meeting_status'], 'upcoming'], 1, 0]],
             today_count: ['+', ['case', ['==', ['get', 'meeting_status'], 'today'], 1, 0]],
             future_count: ['+', ['case', ['==', ['get', 'meeting_status'], 'future'], 1, 0]],
@@ -724,10 +772,12 @@ const {
         ];
         const clusterHasRunning = ['>', ['get', 'running_count'], 0];
         const clusterHasUpcoming = ['>', ['get', 'upcoming_count'], 0];
+        const clusterHasLiveStream = ['>', ['get', 'live_stream_count'], 0];
         const clusterHasPriorityState = ['any', clusterHasRunning, clusterHasUpcoming];
 
         registerClusterPillImage(map, MAP_CLUSTER_LIVE_BADGE_IMAGE, '#e53935', 'rgba(255, 255, 255, 0.68)');
         registerClusterPillImage(map, MAP_CLUSTER_UPCOMING_BADGE_IMAGE, '#fb8c00', 'rgba(255, 255, 255, 0.68)');
+        registerClusterPillImage(map, MAP_CLUSTER_STREAM_BADGE_IMAGE, '#17212b', 'rgba(255, 255, 255, 0.82)');
 
         map.addLayer({
           id: MAP_CLUSTER_SHADOW_LAYER,
@@ -852,7 +902,7 @@ const {
             'icon-text-fit-padding': [1, 4, 1, 4],
             'icon-allow-overlap': true,
             'icon-ignore-placement': true,
-            'text-field': ['concat', 'LIVE ', ['to-string', ['get', 'running_count']]],
+            'text-field': ['concat', 'RACING ', ['to-string', ['get', 'running_count']]],
             'text-size': 8,
             'text-allow-overlap': true,
             'text-ignore-placement': true
@@ -861,6 +911,31 @@ const {
             'icon-translate': [0, -28],
             'icon-translate-anchor': 'viewport',
             'text-translate': [0, -28],
+            'text-translate-anchor': 'viewport',
+            'text-color': '#ffffff'
+          }
+        });
+
+        map.addLayer({
+          id: MAP_CLUSTER_STREAM_BADGE_LAYER,
+          type: 'symbol',
+          source: MAP_SOURCE,
+          filter: ['all', ['has', 'point_count'], clusterHasLiveStream],
+          layout: {
+            'icon-image': MAP_CLUSTER_STREAM_BADGE_IMAGE,
+            'icon-text-fit': 'width',
+            'icon-text-fit-padding': [1, 4, 1, 4],
+            'icon-allow-overlap': true,
+            'icon-ignore-placement': true,
+            'text-field': ['concat', '▶ ', ['to-string', ['get', 'live_stream_count']]],
+            'text-size': 8,
+            'text-allow-overlap': true,
+            'text-ignore-placement': true
+          },
+          paint: {
+            'icon-translate': [30, -13],
+            'icon-translate-anchor': 'viewport',
+            'text-translate': [30, -13],
             'text-translate-anchor': 'viewport',
             'text-color': '#ffffff'
           }
@@ -982,6 +1057,39 @@ const {
           }
         });
 
+        map.addLayer({
+          id: MAP_POINT_STREAM_DOT_LAYER,
+          type: 'circle',
+          source: MAP_SOURCE,
+          filter: ['all', ['!', ['has', 'point_count']], ['==', ['get', 'stream_live'], 1]],
+          paint: {
+            'circle-radius': 7,
+            'circle-color': '#17212b',
+            'circle-stroke-color': '#ffffff',
+            'circle-stroke-width': 2,
+            'circle-translate': [11, -10],
+            'circle-translate-anchor': 'viewport'
+          }
+        });
+
+        map.addLayer({
+          id: MAP_POINT_STREAM_ICON_LAYER,
+          type: 'symbol',
+          source: MAP_SOURCE,
+          filter: ['all', ['!', ['has', 'point_count']], ['==', ['get', 'stream_live'], 1]],
+          layout: {
+            'text-field': '▶',
+            'text-size': 7,
+            'text-allow-overlap': true,
+            'text-ignore-placement': true
+          },
+          paint: {
+            'text-color': '#ffffff',
+            'text-translate': [11, -10],
+            'text-translate-anchor': 'viewport'
+          }
+        });
+
         const setPointerCursor = (enabled) => {
           map.getCanvas().style.cursor = enabled ? 'pointer' : '';
         };
@@ -1066,6 +1174,7 @@ const {
         applyStatuses();
         statusRefresh = window.setInterval(applyStatuses, STATUS_REFRESH_MS);
         window.addEventListener('whr:meetingstatechange', applyStatuses);
+        window.addEventListener('whr:streamstatechange', applyStatuses);
         window.addEventListener('whr:timezonechange', applyStatuses);
         window.addEventListener('whr:todayfilterchange', applyStatuses);
 

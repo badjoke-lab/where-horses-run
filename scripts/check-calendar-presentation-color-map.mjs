@@ -97,7 +97,7 @@ assert.match(
 assert.match(
   racecourseMap,
   /clusterHasPriorityState, '#59636f'[\s\S]*?'circle-stroke-color': \[[\s\S]*?clusterHasRunning, '#ff8b87'[\s\S]*?clusterHasUpcoming, '#ffd08a'/,
-  'Live and Upcoming clusters must keep the neutral core while using the reference status-tinted inner border',
+  'Running and Upcoming clusters must keep the neutral core while using the reference status-tinted inner border',
 );
 assert.match(
   racecourseMap,
@@ -106,8 +106,8 @@ assert.match(
 );
 assert.match(
   racecourseMap,
-  /'icon-image': MAP_CLUSTER_LIVE_BADGE_IMAGE[\s\S]*?'icon-text-fit-padding': \[1, 4, 1, 4\][\s\S]*?'text-field': \['concat', 'LIVE '[\s\S]*?'text-size': 8[\s\S]*?'icon-translate': \[0, -28\][\s\S]*?'text-translate': \[0, -28\]/,
-  'Live badge icon and text must use the reference compact pill proportions and move together above the ring',
+  /'icon-image': MAP_CLUSTER_LIVE_BADGE_IMAGE[\s\S]*?'icon-text-fit-padding': \[1, 4, 1, 4\][\s\S]*?'text-field': \['concat', 'RACING '[\s\S]*?'text-size': 8[\s\S]*?'icon-translate': \[0, -28\][\s\S]*?'text-translate': \[0, -28\]/,
+  'Running badge icon and text must use the reference compact pill proportions and move together above the ring',
 );
 assert.match(
   racecourseMap,
@@ -122,17 +122,44 @@ assert.doesNotMatch(
 assert.match(
   racecourseMap,
   /MAP_CLUSTER_LIVE_GLOW_LAYER[\s\S]*?clusterPulseTimer = window\.setInterval/,
-  'Live clusters must retain a dedicated glow layer with motion-aware pulse treatment',
+  'Running clusters must retain a dedicated glow layer with motion-aware pulse treatment',
 );
 assert.match(
   racecourseMap,
-  /'text-field': \['concat', 'LIVE ', \['to-string', \['get', 'running_count'\]\]\]/,
-  'Map clusters containing running markers must expose a LIVE count badge',
+  /'text-field': \['concat', 'RACING ', \['to-string', \['get', 'running_count'\]\]\]/,
+  'Map clusters containing running markers must expose a RACING count badge',
 );
 assert.match(
   racecourseMap,
   /'text-field': \['concat', 'UP ', \['to-string', \['get', 'upcoming_count'\]\]\]/,
   'Map clusters containing upcoming markers must expose a compact UP count badge matching the reference treatment',
+);
+assert.match(racecourseMap, />Live stream available</, 'English Map legend must distinguish stream availability from racing state');
+assert.match(racecourseMap, />ライブ配信あり</, 'Japanese Map legend must distinguish stream availability from racing state');
+assert.match(
+  racecourseMap,
+  /live_stream_count: \['\+', \['get', 'stream_live'\]\]/,
+  'Map clusters must aggregate live-stream availability independently from running meeting counts',
+);
+assert.match(
+  racecourseMap,
+  /row\.dataset\.streamState !== 'live'[\s\S]*?result\[racecourseId\] = true/,
+  'Map live-stream markers must use the runtime-confirmed live stream state rather than the racing lifecycle state',
+);
+assert.match(
+  racecourseMap,
+  /id: MAP_CLUSTER_STREAM_BADGE_LAYER[\s\S]*?clusterHasLiveStream[\s\S]*?'text-field': \['concat', '▶ ', \['to-string', \['get', 'live_stream_count'\]\]\]/,
+  'Clusters with a confirmed stream must expose a separate compact play/count badge',
+);
+assert.match(
+  racecourseMap,
+  /id: MAP_POINT_STREAM_DOT_LAYER[\s\S]*?'stream_live'\], 1[\s\S]*?id: MAP_POINT_STREAM_ICON_LAYER/,
+  'Individual live-stream racecourse markers must expose a separate play badge without replacing meeting-state color',
+);
+assert.match(
+  racecourseMap,
+  /window\.addEventListener\('whr:streamstatechange', applyStatuses\)/,
+  'Map stream indicators must refresh when live-stream runtime state changes',
 );
 assert.match(
   racecourseMap,

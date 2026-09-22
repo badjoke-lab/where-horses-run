@@ -177,23 +177,24 @@
       "country_id": "chile",
       "system_id": "chile-teletrak-racing-system",
       "authority_id": "teletrak-chile",
-      "mode": "unsupported",
-      "automation_status": "not_implemented",
-      "whole_meeting_non_running": "not_proven",
-      "postponement": "not_proven",
+      "mode": "automated",
+      "automation_status": "active",
+      "whole_meeting_non_running": "supported",
+      "postponement": "supported",
       "partial_race_policy": "never_promote_to_whole_meeting",
       "source_absence_policy": "absent_unconfirmed",
       "acquisition_failure_policy": "preserve_verified_state",
       "replacement_date_policy": "independent_meeting_only",
-      "evidence_source_family": "Chile venue programme network; Valparaíso Sporting official annual reporting proves whole-meeting moved/suspended semantics, but no normalized current cross-venue status route is proven",
+      "evidence_source_family": "Club Hípico de Santiago official Corporativo news archive — bounded Santiago-only explicit whole-meeting positive-evidence subset",
       "evidence_urls": [
-        "https://www.sporting.cl/",
-        "https://hipodromo.cl/",
-        "https://www.clubhipico.cl/"
+        "https://www.clubhipico.cl/sala-prensa/categoria/corporativo/",
+        "https://www.clubhipico.cl/sala-prensa/noticias/club-hipico-de-santiago-informa-suspension-14-junio/",
+        "https://www.clubhipico.cl/sala-prensa/noticias/club-hipico-de-santiago-anuncia-la-recalendarizacion/",
+        "https://www.clubhipico.cl/sala-prensa/noticias/club-hipico-de-santiago-anuncia-la-postergacion-de-la-jornada-excepcional-de-carreras-agendada-para-el-17-de-agosto-2025/"
       ],
-      "example_evidence_url": null,
+      "example_evidence_url": "https://www.clubhipico.cl/sala-prensa/noticias/club-hipico-de-santiago-informa-suspension-14-junio/",
       "reviewed_at": "2026-09-22",
-      "notes": "Valparaíso Sporting's official 2024 report records one meeting moved to a new date and another meeting suspended, proving explicit official whole-meeting evidence exists for that venue. The production Chile system spans multiple venue sources, and this wave did not prove a stable rolling final-status route across them; keep source absence as absent_unconfirmed."
+      "notes": "Production uses the official Club Hípico de Santiago Corporativo archive only as a bounded positive-evidence subset inside the broader Chile/Teletrak system. Candidate articles are fetched from official clubhipico.cl news URLs. Only explicit whole-meeting suspension/postponement/recalendarization wording with an original meeting date may bind, and only to exactly one existing canonical Club Hípico de Santiago meeting on that date. Notices limited to races from a stated ordinal onward or to the first/last races are rejected and never suppress the whole meeting. Other Chile venues remain uncovered by this negative-evidence route. Archive/article absence or fetch/parse failure emits no negative evidence and preserves verified state. Replacement dates, when stated, are evidence only and are never generated as meetings."
     },
     {
       "record_id": "ireland-hri-racing-system",
