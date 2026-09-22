@@ -13,8 +13,8 @@ This addendum creates a parallel glossary knowledge lane. It does not supersede 
 Plain-language state:
 
 ```text
-Working dictionary: 614 terms/concepts
-Meaning-level source verified: 614
+Working dictionary: 616 current active terms/concepts
+Meaning-level source verified: 616
 Still under review: 0
 Highest-priority core terms: 203/203 verified
 Jurisdiction-specific research additions: 161/161 verified
@@ -319,7 +319,7 @@ The programme now advances to `GLOSSARY-MASTER-006`.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
-Status: **current, wave 8 in progress**.
+Status: **current, wave 9 in progress**.
 
 This stage reviews definition/comparison/regional/how-why/translation/abbreviation/racecard-reading search intents, coverage gaps and user-facing readiness. It may reopen evidence work only when a real semantic/source gap is discovered. Public implementation planning remains deferred until this stage passes.
 
@@ -337,7 +337,9 @@ Wave 6 adds **16 EN/JA how/why queries covering 8 authority-backed explanatory c
 
 Wave 7 adds **10 French-language queries** for the five previously uncovered source-verified abbreviations/codes: D4, DA, DP, PSF and AQPS. Each gets one abbreviation lookup and one racecard-reading lookup. This closes abbreviation/code search coverage at **38/38 source-verified records**, while non-code official-document reading remains selective work. The search registry now contains **594 reviewed records** in total.
 
-Wave 8 begins the worldwide readiness audit. Four machine-readable matrices cover domain breadth, jurisdiction/system breadth, language/script representation, and all **54 no-direct-equivalent Concepts**. The first audit passes M6-GATE-002 domain breadth and M6-GATE-005 no-direct-equivalent handling. It keeps M6-GATE-003, M6-GATE-004 and M6-GATE-009 blocked: several worldwide jurisdiction families are still unreviewed, Arabic-script coverage is absent, the KRA `국산마` label remains orphaned from an active Concept, and selective non-code racecard/document-reading plus demand-led intent review remain open.
+Wave 8 begins the worldwide readiness audit. Four machine-readable matrices cover domain breadth, jurisdiction/system breadth, language/script representation, and the then-current **54 no-direct-equivalent Concepts**. The audit exposed a concrete KRA identity defect: `국산마` still referenced retired generic `HORSE-027`, while `외산마` was attached to Japan-scoped `HORSE-028`.
+
+Wave 9 repairs that defect from already-reviewed KRA authority evidence. Separate `HORSE-035` KRA domestic-bred and `HORSE-036` KRA foreign-bred Concepts are added, the two Korean labels/definitions/research mappings are retargeted, and four curated translation queries are added. The current master is **616/616 source-verified**, the search registry is **598**, and the no-direct-equivalent audit contains **56 Concepts**. MASTER-005 is not reopened; its closure snapshot remains 614/614.
 
 - `search/search-intent-policy-v1.tsv` — seven intent classes and publication/review rules;
 - `search/search-queries-v1.tsv` — 66 abbreviation/racecard-reading records;
@@ -349,7 +351,7 @@ Wave 8 begins the worldwide readiness audit. Four machine-readable matrices cove
 - `coverage/master-006-domain-readiness-v1.tsv` — 18-category breadth and demand-readiness audit;
 - `coverage/master-006-jurisdiction-system-readiness-v1.tsv` — researched systems plus explicit worldwide gaps;
 - `coverage/master-006-language-script-readiness-v1.tsv` — source-verified language/script representation audit;
-- `coverage/master-006-no-direct-equivalent-readiness-v1.tsv` — all 54 active no-direct-equivalent Concepts and translation-intent state.
+- `coverage/master-006-no-direct-equivalent-readiness-v1.tsv` — all 56 current active no-direct-equivalent Concepts and translation-intent state.
 
 Regional usage, translation and how/why have curated first waves and remain deliberately selective. Comparison coverage is complete for the current 20 reviewed Concept relations. All 38 source-verified abbreviation records have abbreviation/racecard-reading queries. Domain breadth and no-direct-equivalent handling now pass explicit audits; jurisdiction/system breadth, language/script readiness and search-intent sufficiency remain open. Worldwide gaps are recorded rather than filled mechanically.
 
@@ -374,11 +376,11 @@ The current public glossary remains disposable content. There is no old-record m
 
 ```text
 Current Work ID: GLOSSARY-MASTER-006
-Working dictionary: 614 terms
-Verified: 614
+Working dictionary: 616 current active terms
+Verified: 616
 Still under review: 0 active Concept candidates
 MASTER-005: complete
-Next subject group: targeted jurisdiction/language gap review + non-code racecard/document reading
+Next subject group: Arabic/original-script + remaining worldwide jurisdiction gaps + non-code racecard/document reading
 Public implementation: deferred
 ```
 

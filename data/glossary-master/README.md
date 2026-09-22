@@ -8,9 +8,9 @@ This directory is the non-public working area for the worldwide horse-racing ter
 
 ## Plain-language progress
 
-The working dictionary currently contains **614 racing terms/concepts**.
+The working dictionary currently contains **616 racing terms/concepts**.
 
-- **614 / 614 active Concepts have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
+- **616 / 616 current active Concepts have meaning-level source verification** from racing authorities, official rule/glossary material, or appropriate official-industry sources.
 - **0 active Concepts remain under evidence/semantic review.**
 - The already researched jurisdiction-specific additions are **161/161 verified**.
 - The core highest-priority terminology set is **203/203 verified**.
@@ -18,15 +18,15 @@ The working dictionary currently contains **614 racing terms/concepts**.
 
 The latest pass is **final targeted residual wave 13**. It source-verified historical California `Cushion Track`, corrected `Hold-up horse` to authority-backed operational `Held up`, and verified the GB regulatory prize-money sense of `Stake`. It retired ambiguous `Grandsire`, `Stallion service`, generic `Jump`, and generic `Bonus` because their seed boundaries duplicated or conflated already modeled Concepts.
 
-`GLOSSARY-MASTER-005` is now complete: **614/614 active Concepts are source-verified (100%)**, with **0 candidates**. Active base-seed coverage is **453/453 (100%)**; all 18 categories have no active candidate Concepts. Public publication is still deferred because evidence completion does not replace the separate `GLOSSARY-MASTER-006` search-intent / coverage / readiness review.
+`GLOSSARY-MASTER-005` closed at **614/614 active Concepts source-verified (100%)**, with **0 candidates**. During MASTER-006, a targeted KRA identity repair added two already authority-backed jurisdiction-specific horse-origin Concepts, so the **current active master is 616/616 source-verified**. Active base-seed coverage remains **453/453 (100%)**. Public publication is still deferred.
 
-`GLOSSARY-MASTER-006` wave 8 is now in progress. The search-intent layer remains at **594 reviewed non-canonical query records**. A first machine-readable worldwide readiness audit now covers domain breadth, jurisdiction/system breadth, language/script representation and all **54 no-direct-equivalent Concepts**. Domain breadth and no-direct-equivalent handling now pass their current gates; jurisdiction/system breadth, language/script readiness and search-intent sufficiency remain blocked. The MASTER-006 decision therefore remains **HOLD**.
+`GLOSSARY-MASTER-006` wave 9 is now in progress. The KRA horse-origin identity gap discovered by wave 8 is repaired with separate active Concepts for `국산마` and `외산마`; the search layer is now **598 reviewed non-canonical query records** and the active no-direct-equivalent audit contains **56 Concepts**. Domain breadth and no-direct-equivalent handling pass; jurisdiction/system breadth, language/script readiness and search-intent sufficiency remain blocked by other explicit worldwide gaps. The MASTER-006 decision remains **HOLD**.
 
 Wave 9 is a semantic pruning pass: derived comparisons and generic display conventions remain contextual rather than standalone racing Concepts.
 
 ## Current master
 
-- Concepts: **614**
+- Concepts: **616**
 - categories: **18**
 - P0: **203** / P1: **280** / P2: **114** / P3: **17**
 - `public_ready=yes`: **0**
@@ -196,7 +196,7 @@ Across the lower-priority cleanup passes, **300 base-dictionary terms have been 
 
 ## Evidence state
 
-- all Concepts: **614 / 614 source-verified (100.0%)**; **0 candidate**
+- current active Concepts: **616 / 616 source-verified (100.0%)**; **0 candidate** — MASTER-005 closure snapshot was 614/614 before the two MASTER-006 KRA repair Concepts
 - core highest-priority set: **203 / 203 source-verified (100.0%)**
 - active base seed: **453 / 453 source-verified (100.0%)**; **0 candidate**
 - supplemental jurisdiction/relationship research: **161 / 161 source-verified (100.0%)**
@@ -249,9 +249,9 @@ coverage/master-006-no-direct-equivalent-readiness-v1.tsv
 
 ## Current completion decision
 
-`GLOSSARY-MASTER-005` is **complete** for the current active Concept master: **614/614 source-verified, 0 candidate**. The completion gate passes after explicit resolution of every residual seed Concept.
+`GLOSSARY-MASTER-005` remains **complete** at its closure snapshot of **614/614 source-verified, 0 candidate**. The current master is **616/616** after two source-verified KRA-specific Concepts were added by a targeted MASTER-006 gap repair; this does not reopen the completed MASTER-005 residual programme.
 
-`GLOSSARY-MASTER-006` is **in progress**. Waves 1-7 establish the separate query/policy layer through complete P0 EN/JA definition coverage, all 20 current reviewed relations, curated regional/translation/how-why seeds and 38/38 verified abbreviation/code coverage. Wave 8 adds machine-readable readiness audits. The current audit identifies **16 researched jurisdiction/system scopes**, **253 source-verified local labels** across en/fr/ja/ko/zh and Latn/Jpan/Hang/Hant, and **54 no-direct-equivalent Concepts**. The KRA domestic-bred label `HKKR-LBL-043` remains an explicit evidence-lane gap; Arabic-script coverage and several worldwide jurisdiction families remain unreviewed. Next work is targeted jurisdiction/language gap review plus selective non-code racecard/document reading; evidence truth is reopened only for a proven semantic/source gap.
+`GLOSSARY-MASTER-006` is **in progress**. Waves 1-7 establish the separate query/policy layer; wave 8 adds machine-readable readiness audits; wave 9 repairs the audited KRA horse-origin identity defect without reviving the retired generic Concept or collapsing Korea into Japan. The current audit has **253 source-verified local labels**, **56 no-direct-equivalent Concepts**, and **598 reviewed search records**. Arabic-script coverage and several worldwide jurisdiction families remain unreviewed. Next work is targeted worldwide jurisdiction/language gap review plus selective non-code racecard/document reading; evidence truth is reopened only for a proven semantic/source gap.
 
 Public implementation remains deferred until MASTER-006 passes.
 
