@@ -40,7 +40,7 @@ function replacementDateFromMessage(message) {
 
 function extractAssignedArray(html) {
   const source = String(html ?? '');
-  const assignment = source.match(/\bjoursEvenement\s*=\s*/i);
+  const assignment = source.match(/\bjoursEvenement\s*=\s*(?=\[)/i);
   if (!assignment || assignment.index == null) throw new Error('SOREC calendar fingerprint missing joursEvenement assignment');
 
   const start = assignment.index + assignment[0].length;
