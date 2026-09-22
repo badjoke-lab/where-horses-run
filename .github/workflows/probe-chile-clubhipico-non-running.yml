@@ -1,0 +1,29 @@
+name: Probe Chile Club Hipico non-running route
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/diagnostics/probe-chile-clubhipico-non-running.mjs'
+      - '.github/workflows/probe-chile-clubhipico-non-running.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Probe official Club Hipico news route
+        run: node scripts/diagnostics/probe-chile-clubhipico-non-running.mjs
+      - name: Upload bounded diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: chile-clubhipico-non-running-probe
+          path: probe-chile-clubhipico-non-running.json
+          if-no-files-found: warn
