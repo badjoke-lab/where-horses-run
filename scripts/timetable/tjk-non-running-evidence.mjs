@@ -123,11 +123,11 @@ export function parseTjkConfirmedNonRunningHtml(html, {
   if (!venue) return [];
 
   const wholeBody = explicitWholeMeetingBody(text, venue.label);
-  if (!wholeBody && !title) return [];
+  if (!wholeBody) return [];
 
   const published = publicationDate(text);
-  const originalDate = firstExplicitDate(title ?? '', published)
-    ?? firstExplicitDate(wholeBody ?? '', published);
+  const originalDate = firstExplicitDate(wholeBody, published)
+    ?? firstExplicitDate(title ?? '', published);
   if (!originalDate) return [];
 
   return [{
