@@ -198,7 +198,7 @@ export function parseHrnzIndex(html,{sourceUrl=HRNZ_INDEX_URL}={}) {
   const urls=new Set();
   for(const match of html.matchAll(/href\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s>]+))/gi)){
     const href=match[1]??match[2]??match[3]??'';
-    if(!/\/calendar\/raceday\/\d+\/dates_[a-z]+\d+\.htm/i.test(href)) continue;
+    if(!/dates_[a-z]+\d+\.htm/i.test(href)) continue;
     const absolute=absoluteUrl(href,sourceUrl);
     if(absolute) urls.add(absolute);
   }
