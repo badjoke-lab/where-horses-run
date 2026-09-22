@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
+import { parseSorecProgrammeReunionHtml } from '../timetable/sorec-programme-reunion-core.mjs';
 
 const PROGRAMME_URL = 'https://www.sorec-galop.ma/pages/programmeReunion/programmeReunion.jsf';
 
@@ -167,25 +168,23 @@ function formState(html) {
   return { action: attrs.action ?? null, values };
 }
 
-function twoDigitDate(value) {
-  const match = String(value).match(/^(\d{2})\/(\d{2})\/(?:20)?(\d{2})$/);
-  return match ? match[1] + '/' + match[2] + '/' + match[3] : null;
+function isoToCalendarDate(value) {
+  const match = String(value).match(/^(20\d{2})-(\d{2})-(\d{2})$/);
+  return match ? match[3] + '/' + match[2] + '/' + match[1].slice(2) : null;
 }
 
 function programmeDateSamples(html) {
-  const plain = decodeHtml(html);
-  const venues = 'Casablanca(?:-Anfa)?|Mekn(?:e|è)s|Marrakech|Rabat|Settat|El jadida|Khemisset';
-  const pattern = new RegExp('(\\d{2}\\/\\d{2}\\/(?:\\d{2}|\\d{4}))\\s+(' + venues + ')\\b', 'gi');
-  const seen = new Set();
-  const values = [];
-  for (const match of plain.matchAll(pattern)) {
-    const date = twoDigitDate(match[1]);
-    if (!date || seen.has(date)) continue;
-    seen.add(date);
-    values.push({ date, venue_label: match[2] });
-    if (values.length >= 5) break;
-  }
-  return values;
+  const parsed = parseSorecProgrammeReunionHtml(html);
+  return parsed.records
+    .slice(-5)
+    .reverse()
+    .map((record) => ({
+      date: isoToCalendarDate(record.date),
+      iso_date: record.date,
+      venue_label: record.venue_label,
+      racecourse_id: record.racecourse_id,
+    }))
+    .filter((record) => record.date);
 }
 
 function parsePartialResponse(xml) {
@@ -352,21 +351,26 @@ const programme = await fetchProgrammeSamples();
 const primary = results.find((result) => result.name === 'calendar_with_fctid' && result.ok);
 const date_select_probes = [];
 if (primary && programme.dates.length > 0) {
-  const raw = await fetch(primary.final_url, {
-    headers: {
-      'user-agent': 'WhereHorsesRun/1.0 (+https://whr.badjoke-lab.com/)',
-      accept: 'text/html,application/xhtml+xml',
-    },
-  });
-  const html = await raw.text();
   for (const sample of programme.dates.slice(0, 4)) {
-    date_select_probes.push(await exerciseDateSelect({ sourceUrl: primary.final_url, html, date: sample.date, expectedVenue: sample.venue_label }));
+    const raw = await fetch(primary.final_url, {
+      headers: {
+        'user-agent': 'WhereHorsesRun/1.0 (+https://whr.badjoke-lab.com/)',
+        accept: 'text/html,application/xhtml+xml',
+      },
+    });
+    const html = await raw.text();
+    date_select_probes.push(await exerciseDateSelect({
+      sourceUrl: primary.final_url,
+      html,
+      date: sample.date,
+      expectedVenue: sample.venue_label,
+    }));
   }
 }
 
 const artifact = {
   schema_version: 'sorec-non-running-route-probe-v1',
-  probe_revision: 'jsf-date-select-v1',
+  probe_revision: 'jsf-date-select-v2-production-parser',
   generated_at: new Date().toISOString(),
   purpose: 'Diagnose the official SOREC calendar route for explicit meeting-level Réunion reportée evidence. No source absence is treated as cancellation.',
   results,
