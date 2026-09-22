@@ -319,7 +319,7 @@ The programme now advances to `GLOSSARY-MASTER-006`.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
-Status: **current, wave 6 in progress**.
+Status: **current, wave 7 in progress**.
 
 This stage reviews definition/comparison/regional/how-why/translation/abbreviation/racecard-reading search intents, coverage gaps and user-facing readiness. It may reopen evidence work only when a real semantic/source gap is discovered. Public implementation planning remains deferred until this stage passes.
 
@@ -333,7 +333,9 @@ Wave 4 adds **28 EN/JA regional-usage queries covering 14 curated source-verifie
 
 Wave 5 adds **28 EN/JA translation queries covering 14 source-verified local/original-script label cases** across Hong Kong Traditional Chinese, Korean, Japanese and French racing terminology. The queries link users to reviewed Concept/label evidence and explicitly avoid claiming exact one-to-one equivalence where the master records `no_direct_equivalent` or another scoped translation status. `HKKR-LBL-043` (`국산마`) was deliberately excluded from query linkage because it still references retired `HORSE-027`; MASTER-006 records this as an evidence-lane mapping gap rather than silently retargeting it.
 
-Wave 6 adds **16 EN/JA how/why queries covering 8 authority-backed explanatory cases**. These are limited to mechanics where existing evidence supports an explanation beyond a dictionary definition: claiming, maximum-field/safety-factor logic, Benchmark weighting, French autostart and Premium distribution, Banei track moisture, French Musique ordering and the historical/current use of 斤量. The search registry now contains **584 reviewed records** in total.
+Wave 6 adds **16 EN/JA how/why queries covering 8 authority-backed explanatory cases**. These are limited to mechanics where existing evidence supports an explanation beyond a dictionary definition: claiming, maximum-field/safety-factor logic, Benchmark weighting, French autostart and Premium distribution, Banei track moisture, French Musique ordering and the historical/current use of 斤量.
+
+Wave 7 adds **10 French-language queries** for the five previously uncovered source-verified abbreviations/codes: D4, DA, DP, PSF and AQPS. Each gets one abbreviation lookup and one racecard-reading lookup. This closes abbreviation/code search coverage at **38/38 source-verified records**, while non-code official-document reading remains selective work. The search registry now contains **594 reviewed records** in total.
 
 - `search/search-intent-policy-v1.tsv` — seven intent classes and publication/review rules;
 - `search/search-queries-v1.tsv` — 66 abbreviation/racecard-reading records;
@@ -343,7 +345,7 @@ Wave 6 adds **16 EN/JA how/why queries covering 8 authority-backed explanatory c
 - `coverage/master-006-search-intent-coverage-v1.tsv` — explicit per-intent coverage/gaps;
 - `coverage/master-006-readiness-v1.tsv` — readiness criteria with the current decision **HOLD**.
 
-Regional usage, translation and how/why now have curated first waves but remain partial. Comparison coverage is complete for the current 20 reviewed Concept relations but may expand only when a new relation or explicit confusion boundary is itself reviewed. Regional, translation and how/why additions must likewise be tied to reviewed evidence with material user value. Lower-priority definition queries are not blanket-generated. The five French abbreviation records also remain for language-appropriate review. Domain breadth, jurisdiction/system breadth and multilingual/no-direct-equivalent presentation still require explicit readiness audits.
+Regional usage, translation and how/why now have curated first waves but remain partial. Comparison coverage is complete for the current 20 reviewed Concept relations but may expand only when a new relation or explicit confusion boundary is itself reviewed. Regional, translation and how/why additions must likewise be tied to reviewed evidence with material user value. Lower-priority definition queries are not blanket-generated. All 38 source-verified abbreviation records now have reviewed abbreviation/racecard-reading queries; non-code official-document reading remains selective work. Domain breadth, jurisdiction/system breadth and multilingual/no-direct-equivalent presentation still require explicit readiness audits.
 
 ## Public implementation lane
 
@@ -370,7 +372,7 @@ Working dictionary: 614 terms
 Verified: 614
 Still under review: 0 active Concept candidates
 MASTER-005: complete
-Next subject group: French abbreviation/racecard review + domain/jurisdiction/language readiness
+Next subject group: non-code racecard/document reading + domain/jurisdiction/language readiness
 Public implementation: deferred
 ```
 
