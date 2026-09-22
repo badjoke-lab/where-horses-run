@@ -156,7 +156,8 @@ export function parseFnchRegionalProgrammePage(html, { sourceUrl } = {}) {
     throw new Error('FNCH programme fingerprint missing');
   }
 
-  const starts = [...html.matchAll(/<h[1-4]\b[^>]*>[\s\S]*?Hippodrome[\s\S]*?<\/h[1-4]>/gi)];
+  const starts = [...html.matchAll(/<h[1-4]\b[^>]*>[\s\S]*?<\/h[1-4]>/gi)]
+    .filter((match) => /\bHippodrome\b/i.test(fnchVisibleText(match[0])));
   const records = [];
   const unknown_disciplines = [];
   const parse_failures = [];
