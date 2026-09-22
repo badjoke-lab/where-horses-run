@@ -15,14 +15,14 @@
   const ensureFutureBadge = (row) => {
     const existing = row.querySelector('[data-meeting-future-badge]');
     if (existing instanceof HTMLElement) return existing;
-    const links = row.querySelector('.meeting-row__links');
-    if (!(links instanceof HTMLElement)) return null;
+    const status = row.querySelector('.meeting-row__status');
+    if (!(status instanceof HTMLElement)) return null;
     const badge = document.createElement('span');
     badge.className = 'meeting-row__meeting-badge meeting-row__meeting-badge--future';
     badge.dataset.meetingFutureBadge = 'true';
     badge.textContent = document.documentElement.lang === 'ja' ? '開催予定' : 'Scheduled';
     badge.hidden = true;
-    links.prepend(badge);
+    status.append(badge);
     return badge;
   };
 
