@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
 const FRANCE_GALOP_ARCHIVE = 'https://www.france-galop.com/fr/hippodromes';
 const FRANCE_GALOP_KNOWN = [
@@ -52,6 +53,27 @@ function fold(value) {
   return decode(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 }
 
+async function extractPdfText(bytes) {
+  const pdf = await getDocument({ data: bytes, disableWorker: true }).promise;
+  const lines = [];
+  for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+    const page = await pdf.getPage(pageNumber);
+    const content = await page.getTextContent();
+    let line = '';
+    for (const item of content.items) {
+      if (!('str' in item)) continue;
+      const value = item.str.replace(/\s+/g, ' ').trim();
+      if (value) line += (line ? ' ' : '') + value;
+      if (item.hasEOL && line) {
+        lines.push(line);
+        line = '';
+      }
+    }
+    if (line) lines.push(line);
+  }
+  return lines.join('\n');
+}
+
 async function fetchText(url) {
   try {
     const response = await fetch(url, {
@@ -63,14 +85,30 @@ async function fetchText(url) {
       },
       signal: AbortSignal.timeout(20_000),
     });
+    const contentType = response.headers.get('content-type') ?? '';
+    if (/pdf/i.test(contentType)) {
+      const bytes = new Uint8Array(await response.arrayBuffer());
+      const body = await extractPdfText(bytes);
+      return {
+        requested_url: url,
+        final_url: response.url,
+        status: response.status,
+        ok: response.ok,
+        content_type: contentType,
+        bytes: bytes.byteLength,
+        document_kind: 'pdf',
+        body,
+      };
+    }
     const body = await response.text();
     return {
       requested_url: url,
       final_url: response.url,
       status: response.status,
       ok: response.ok,
-      content_type: response.headers.get('content-type'),
+      content_type: contentType,
       bytes: Buffer.byteLength(body),
+      document_kind: 'html',
       body,
     };
   } catch (error) {
@@ -161,8 +199,15 @@ for (const item of LETROT_BULLETINS) {
     status: result.status ?? null,
     ok: result.ok,
     bytes: result.bytes ?? 0,
+    document_kind: result.document_kind ?? null,
     error: result.error ?? null,
     fingerprints: letrotFingerprints(result.body),
+    cancellation_context: (() => {
+      const plain = decode(result.body);
+      const normalized = fold(plain);
+      const index = normalized.indexOf('la reunion annulee');
+      return index >= 0 ? plain.slice(Math.max(0, index - 900), Math.min(plain.length, index + 1400)) : null;
+    })(),
     text_sample: decode(result.body).slice(0, 2600),
   });
 }
