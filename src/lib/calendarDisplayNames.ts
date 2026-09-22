@@ -31,12 +31,14 @@ const authorityCompactLabelById: Record<string, string> = {
   'turkiye-jokey-kulubu': 'TJK',
   tjk: 'TJK',
   'hipodromo-de-monterrico': 'Monterrico',
+  'jockey-club-of-saudi-arabia': 'JCSA',
 };
 
 const authorityCompactLabelJaById: Record<string, string> = {
   ...authorityCompactLabelById,
   'banei-tokachi': 'ばんえい十勝',
   'hipodromo-de-monterrico': 'モンテリーコ',
+  'jockey-club-of-saudi-arabia': 'JCSA',
 };
 
 const normalizeNonEmpty = (value: unknown): string | null =>
