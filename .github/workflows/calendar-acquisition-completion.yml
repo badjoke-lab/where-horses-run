@@ -17,13 +17,11 @@ on:
       - 'scripts/check-banei-non-running-discovery.mjs'
       - 'scripts/check-nar-non-running-evidence.mjs'
       - 'scripts/check-nar-non-running-discovery.mjs'
-      - 'scripts/check-tjk-non-running-evidence.mjs'
-      - 'scripts/check-tjk-non-running-discovery.mjs'
-      - 'scripts/check-tjk-non-running-runner-integration.mjs'
       - 'data/static/calendar-non-running-evidence-registry-v1.json'
       - 'data/static/calendar-non-running-evidence-registry.schema.json'
       - 'scripts/check-japan-acquisition-completion.mjs'
       - 'scripts/check-tjk-a-plus-programme-parser.mjs'
+      - 'scripts/check-tjk-non-running-evidence.mjs'
       - '.github/workflows/calendar-acquisition-completion.yml'
   push:
     branches:
@@ -36,6 +34,7 @@ on:
       - 'scripts/check-calendar-acquisition-completion.mjs'
       - 'scripts/check-japan-acquisition-completion.mjs'
       - 'scripts/check-tjk-a-plus-programme-parser.mjs'
+      - 'scripts/check-tjk-non-running-evidence.mjs'
       - '.github/workflows/calendar-acquisition-completion.yml'
   workflow_dispatch:
 
@@ -75,5 +74,3 @@ jobs:
           node scripts/check-nar-non-running-evidence.mjs
           node scripts/check-nar-non-running-discovery.mjs
           node scripts/check-tjk-non-running-evidence.mjs
-          node scripts/check-tjk-non-running-discovery.mjs
-          node scripts/check-tjk-non-running-runner-integration.mjs
