@@ -117,10 +117,6 @@ export function discoverChileClubHipicoNonRunningArticles(html, {
   const urls = new Map();
   const hrefPattern = /href\s*=\s*(["'])([^"']*\/sala-prensa\/noticias\/[^"']+)\1/gi;
   for (const match of source.matchAll(hrefPattern)) {
-    const context = articleContext(source, match.index ?? 0);
-    const normalized = fold(context);
-    if (!/(suspens|posterg|recalendar|anul|cancel)/i.test(normalized)) continue;
-
     let url;
     try {
       url = new URL(decodeEntities(match[2]), sourceUrl);
@@ -128,6 +124,10 @@ export function discoverChileClubHipicoNonRunningArticles(html, {
     } catch {
       continue;
     }
+
+    const slug = fold(url.pathname);
+    if (!/(suspens|posterg|recalendar|anul|cancel)/i.test(slug)) continue;
+    const context = articleContext(source, match.index ?? 0);
     if (!urls.has(url.toString())) {
       urls.set(url.toString(), context.slice(0, 1200));
     }
