@@ -319,7 +319,7 @@ The programme now advances to `GLOSSARY-MASTER-006`.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
-Status: **current, wave 11 in progress**.
+Status: **current, wave 12 in progress**.
 
 This stage reviews definition/comparison/regional/how-why/translation/abbreviation/racecard-reading search intents, coverage gaps and user-facing readiness. It may reopen evidence work only when a real semantic/source gap is discovered. Public implementation planning remains deferred until this stage passes.
 
@@ -344,6 +344,8 @@ Wave 9 repairs that defect from already-reviewed KRA authority evidence. Separat
 Wave 10 closes the current UAE Arabic/original-script representation gap from the ERA's own Arabic Rules, not machine translation. Six material existing Concepts receive source-verified Arabic labels: Steward, Amateur rider, Apprentice jockey, Blinkers, Trial and Claiming race. The local-label audit rises from **253 to 259**, with **Arabic added as the sixth represented language and Arab as the fifth represented script**. M6-GATE-004 remains blocked because worldwide language/script readiness is broader than UAE.
 
 Wave 11 starts Latin America with a bounded Chile/Spanish pass. The CSHN's current regulations index and the Reglamento de Carreras de Chile Article 1 support eight official terms that map cleanly to existing Concepts: Aprendiz, Apuesta Mutua, Handicaper, Hipódromo Reconocido, Jinete Profesional, Preparador, Propietario and Reunión. No new Concept is created. Eight Spanish labels/definitions and 16 curated EN/JA translation intents are added. The local-label layer rises to **267**, with **Spanish as the seventh represented language**; search records rise to **614**. Chile is a first Latin American scope, not a claim of regional completeness.
+
+Wave 12 extends the bounded Latin America readiness review to Brazil/Portuguese. MAPA's current turf and legislation routes establish the federal regulatory context, while the Jockey Club Brasileiro's current Regramento Nacional de Corridas Article 2 supplies direct Portuguese definitions. Twelve material official terms map cleanly to existing Concepts — including Árbitro de Partida, Cavalariço, Criador, Hipódromo, Inscrição, Jóquei, Jóquei Aprendiz, Médico Veterinário, Partidor, Páreos a reclamar ou de claiming, Proprietário and Treinador. No new Concept is created. Twelve Portuguese labels/definitions and 24 curated EN/JA translation intents are added. The local-label layer rises to **279**, Portuguese becomes the eighth represented language, and search records rise to **638**. Brazil is a first Portuguese scope, not a claim of Latin America- or Portuguese-world completeness.
 
 - `search/search-intent-policy-v1.tsv` — seven intent classes and publication/review rules;
 - `search/search-queries-v1.tsv` — 66 abbreviation/racecard-reading records;
@@ -384,7 +386,7 @@ Working dictionary: 616 current active terms
 Verified: 616
 Still under review: 0 active Concept candidates
 MASTER-005: complete
-Next subject group: Portuguese/Brazil + remaining Latin America/Continental Europe/Gulf/Asia gaps + non-code racecard/document reading
+Next subject group: remaining Latin America/Continental Europe/Gulf/Asia gaps + non-code racecard/document reading
 Public implementation: deferred
 ```
 
