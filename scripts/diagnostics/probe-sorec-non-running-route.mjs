@@ -10,6 +10,8 @@ const OBSERVED_POSITIVE_DATES = Object.freeze([
   { date: '17/09/26', iso_date: '2026-09-17', venue_label: 'Meknes', source_basis: 'official_programme_reunion_crawl_2026-09-22' },
 ]);
 
+let primaryCalendarHtml = null;
+
 const TARGETS = [
   {
     name: 'calendar_with_fctid',
@@ -349,6 +351,7 @@ async function fetchHtml(target) {
       signal: controller.signal,
     });
     const html = await response.text();
+    if (target.name === 'calendar_with_fctid' && response.ok) primaryCalendarHtml = html;
     const plain = decodeHtml(html);
     const result = {
       name: target.name,
@@ -394,32 +397,20 @@ for (const target of TARGETS) results.push(await fetchHtml(target));
 const programme = await fetchProgrammeSamples();
 const primary = results.find((result) => result.name === 'calendar_with_fctid' && result.ok);
 const date_select_probes = [];
-if (primary && programme.dates.length > 0) {
-  for (const sample of programme.dates.slice(0, 2)) {
-    const session = await fetchCalendarSession(primary.final_url);
-    if (!session.ok) {
-      date_select_probes.push({
-        date: sample.date,
-        expected_venue: sample.venue_label,
-        ok: false,
-        stage: 'session_get',
-        error: session.error,
-      });
-      continue;
-    }
-    const result = await exerciseDateSelect({
-      sourceUrl: primary.final_url,
-      html: session.html,
-      date: sample.date,
-      expectedVenue: sample.venue_label,
-    });
-    date_select_probes.push({ ...result, session_get_attempt: session.attempt });
-  }
+if (primary && primaryCalendarHtml && programme.dates.length > 0) {
+  const sample = programme.dates[0];
+  const result = await exerciseDateSelect({
+    sourceUrl: primary.final_url,
+    html: primaryCalendarHtml,
+    date: sample.date,
+    expectedVenue: sample.venue_label,
+  });
+  date_select_probes.push({ ...result, session_basis: 'initial_successful_calendar_get' });
 }
 
 const artifact = {
   schema_version: 'sorec-non-running-route-probe-v1',
-  probe_revision: 'jsf-date-select-v5-bounded-session-retry',
+  probe_revision: 'jsf-date-select-v6-single-session-post',
   generated_at: new Date().toISOString(),
   purpose: 'Diagnose the official SOREC calendar route for explicit meeting-level Réunion reportée evidence. No source absence is treated as cancellation.',
   results,
