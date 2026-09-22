@@ -58,6 +58,8 @@ assert.equal(hrnzRows[0].programme_url,'https://infohorse.hrnz.co.nz/datahrs/pro
 
 const hrnzProgramme=`<html><body><h1>NZ Metropolitan Trotting Club Inc</h1><div>Wednesday, 23 September</div><h5>Meeting: TWILIGHT TROTS AT ADDINGTON at Addington Raceway</h5><div>Last updated 16/09/2026 at 15:30 pm</div><h5>First Race Starts 4:30 pm</h5></body></html>`;
 const harnessDetail=parseHrnzProgrammePage(hrnzProgramme,{date:'2026-09-23',clubLabel:'NZ Metropolitan Trotting Club Inc',sourceUrl:hrnzRows[0].programme_url});
+assert.equal(harnessDetail.meeting_label,'TWILIGHT TROTS AT ADDINGTON');
+assert.equal(harnessDetail.venue_label,'Addington Raceway');
 assert.equal(harnessDetail.racecourse_id,'addington-raceway');
 assert.equal(harnessDetail.first_race_time_local,'16:30');
 
