@@ -32,6 +32,9 @@ on:
       - 'scripts/check-banei-non-running-discovery.mjs'
       - 'scripts/check-nar-non-running-evidence.mjs'
       - 'scripts/check-nar-non-running-discovery.mjs'
+      - 'scripts/check-tjk-non-running-evidence.mjs'
+      - 'scripts/check-tjk-non-running-discovery.mjs'
+      - 'scripts/check-tjk-non-running-live-route.mjs'
       - 'data/static/calendar-non-running-evidence-registry-v1.json'
       - 'data/static/calendar-non-running-evidence-registry.schema.json'
       - 'scripts/check-kra-window-bounds.mjs'
@@ -117,6 +120,9 @@ jobs:
           node scripts/check-kra-window-bounds.mjs
           node scripts/check-kra-fetch-failure-retention.mjs
           node scripts/check-tjk-fetch-failure-retention.mjs
+          node scripts/check-tjk-non-running-evidence.mjs
+          node scripts/check-tjk-non-running-discovery.mjs
+          node scripts/check-tjk-non-running-live-route.mjs
           node scripts/check-ireland-hri-fixtures-adapter.mjs
           node scripts/check-peru-monterrico-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
