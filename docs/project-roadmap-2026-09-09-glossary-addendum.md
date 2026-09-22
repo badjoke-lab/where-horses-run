@@ -319,7 +319,7 @@ The programme now advances to `GLOSSARY-MASTER-006`.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
-Status: **current, wave 12 in progress**.
+Status: **current, wave 13 in progress**.
 
 This stage reviews definition/comparison/regional/how-why/translation/abbreviation/racecard-reading search intents, coverage gaps and user-facing readiness. It may reopen evidence work only when a real semantic/source gap is discovered. Public implementation planning remains deferred until this stage passes.
 
@@ -346,6 +346,8 @@ Wave 10 closes the current UAE Arabic/original-script representation gap from th
 Wave 11 starts Latin America with a bounded Chile/Spanish pass. The CSHN's current regulations index and the Reglamento de Carreras de Chile Article 1 support eight official terms that map cleanly to existing Concepts: Aprendiz, Apuesta Mutua, Handicaper, Hipódromo Reconocido, Jinete Profesional, Preparador, Propietario and Reunión. No new Concept is created. Eight Spanish labels/definitions and 16 curated EN/JA translation intents are added. The local-label layer rises to **267**, with **Spanish as the seventh represented language**; search records rise to **614**. Chile is a first Latin American scope, not a claim of regional completeness.
 
 Wave 12 extends the bounded Latin America readiness review to Brazil/Portuguese. MAPA's current turf and legislation routes establish the federal regulatory context, while the Jockey Club Brasileiro's current Regramento Nacional de Corridas Article 2 supplies direct Portuguese definitions. Twelve material official terms map cleanly to existing Concepts — including Árbitro de Partida, Cavalariço, Criador, Hipódromo, Inscrição, Jóquei, Jóquei Aprendiz, Médico Veterinário, Partidor, Páreos a reclamar ou de claiming, Proprietário and Treinador. No new Concept is created. Twelve Portuguese labels/definitions and 24 curated EN/JA translation intents are added. The local-label layer rises to **279**, Portuguese becomes the eighth represented language, and search records rise to **638**. Brazil is a first Portuguese scope, not a claim of Latin America- or Portuguese-world completeness.
+
+Wave 13 starts an additional Continental Europe scope with Germany/German. Deutscher Galopp's current Rennordnung supports twelve official terms that map cleanly to existing Concepts: Trainer, Besitzertrainer, Berufsrennreiter, Amateurrennreiter, Besitzer, Starter, Zielrichter, Ausgleicher, Rennbahn, Tierarzt, Hufschmied and Startmaschine. No new Concept is created. Twelve German labels/definitions and 24 curated EN/JA translation intents are added. The local-label layer rises to **291**, German becomes the ninth represented language, Latin-script reviewed labels rise to **216**, and search records rise to **662**. Germany narrows but does not close the wider Continental Europe readiness gap.
 
 - `search/search-intent-policy-v1.tsv` — seven intent classes and publication/review rules;
 - `search/search-queries-v1.tsv` — 66 abbreviation/racecard-reading records;
