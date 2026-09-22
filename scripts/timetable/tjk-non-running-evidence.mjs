@@ -27,11 +27,11 @@ function plain(value) {
     .replace(/&amp;/gi, '&')
     .replace(/&quot;/gi, '"')
     .replace(/&#39;|&apos;/gi, "'")
-    .replace(/<script[\\s\\S]*?<\\/script>/gi, ' ')
-    .replace(/<style[\\s\\S]*?<\\/style>/gi, ' ')
-    .replace(/<br\\s*\\/?>/gi, ' ')
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<br\s*\/?>/gi, ' ')
     .replace(/<[^>]+>/g, ' ')
-    .replace(/[\\s\\u3000]+/g, ' ')
+    .replace(/[\s\u3000]+/g, ' ')
     .trim();
 }
 
@@ -44,7 +44,7 @@ function assertOfficialSource(sourceUrl) {
   if (url.protocol !== 'https:' || url.hostname !== 'www.tjk.org') {
     throw new Error('TJK non-running evidence requires official www.tjk.org source');
   }
-  if (!/^\\/TR\\/(?:YarisSever|Yar|Kurumsal|map)\\/News\\/(?:Data|Page)\\/\\d+$/i.test(url.pathname)) {
+  if (!/^\/TR\/(?:YarisSever|Yar|Kurumsal|map)\/News\/(?:Data|Page)\/\d+$/i.test(url.pathname)) {
     throw new Error('TJK non-running evidence requires an official TJK News article URL');
   }
 }
@@ -56,7 +56,7 @@ function isoDate(year, month, day) {
 }
 
 function escapeRegExp(value) {
-  return String(value).replace(/[.*+?^$()|[\\]\\\\]/g, '\\$&');
+  return String(value).replace(/[\^$.*+?()[\]{}|\\]/g, '\\$&');
 }
 
 function venueFromText(text) {
@@ -67,8 +67,8 @@ function venueFromText(text) {
 }
 
 function publicationDate(text) {
-  const match = text.match(/Tarih\\s*:?\\s*(\\d{1,2})[.\\/-](\\d{1,2})[.\\/-](20\\d{2})/i)
-    ?? text.match(/\\b(\\d{1,2})[.\\/-](\\d{1,2})[.\\/-](20\\d{2})\\b/);
+  const match = text.match(/Tarih\s*:?\s*(\d{1,2})[.\/-](\d{1,2})[.\/-](20\d{2})/i)
+    ?? text.match(/\b(\d{1,2})[.\/-](\d{1,2})[.\/-](20\d{2})\b/);
   if (!match) return null;
   return isoDate(Number(match[3]), Number(match[2]), Number(match[1]));
 }
@@ -84,8 +84,8 @@ function yearForMonth(publication, month) {
 function explicitDottedDate(text, venueLabel) {
   const venue = escapeRegExp(venueLabel);
   const patterns = [
-    new RegExp('(\\\\d{1,2})[.\\\\/-](\\\\d{1,2})[.\\\\/-](20\\\\d{2})[^.]{0,180}' + venue + '[^.]{0,260}(?:tüm koşular|yarışlar)[^.]{0,260}(?:tehir edilmesine|ertelenmesine|iptal edilmesine|iptal edilmiştir)', 'i'),
-    new RegExp(venue + '[^.]{0,180}(\\\\d{1,2})[.\\\\/-](\\\\d{1,2})[.\\\\/-](20\\\\d{2})[^.]{0,260}(?:tüm koşular|yarışlar)[^.]{0,260}(?:tehir edilmesine|ertelenmesine|iptal edilmesine|iptal edilmiştir)', 'i'),
+    new RegExp('(\\d{1,2})[.\\/-](\\d{1,2})[.\\/-](20\\d{2})[^.]{0,180}' + venue + '[^.]{0,260}(?:tüm koşular|yarışlar)[^.]{0,260}(?:tehir edilmesine|ertelenmesine|iptal edilmesine|iptal edilmiştir)', 'i'),
+    new RegExp(venue + '[^.]{0,180}(\\d{1,2})[.\\/-](\\d{1,2})[.\\/-](20\\d{2})[^.]{0,260}(?:tüm koşular|yarışlar)[^.]{0,260}(?:tehir edilmesine|ertelenmesine|iptal edilmesine|iptal edilmiştir)', 'i'),
   ];
   for (const pattern of patterns) {
     const match = text.match(pattern);
@@ -99,7 +99,7 @@ function explicitDottedDate(text, venueLabel) {
 function explicitNaturalDate(text, venueLabel, publication) {
   if (!publication) return null;
   const venue = escapeRegExp(venueLabel);
-  const pattern = new RegExp('(\\\\d{1,2})\\\\s+(Ocak|Şubat|Subat|Mart|Nisan|Mayıs|Mayis|Haziran|Temmuz|Ağustos|Agustos|Eylül|Eylul|Ekim|Kasım|Kasim|Aralık|Aralik)[^.]{0,120}' + venue + '[^.]{0,260}(?:tüm koşular|yarışlar)[^.]{0,260}(?:tehir edilmesine|ertelenmesine|iptal edilmesine|iptal edilmiştir)', 'i');
+  const pattern = new RegExp('(\\d{1,2})\\s+(Ocak|Şubat|Subat|Mart|Nisan|Mayıs|Mayis|Haziran|Temmuz|Ağustos|Agustos|Eylül|Eylul|Ekim|Kasım|Kasim|Aralık|Aralik)[^.]{0,120}' + venue + '[^.]{0,260}(?:tüm koşular|yarışlar)[^.]{0,260}(?:tehir edilmesine|ertelenmesine|iptal edilmesine|iptal edilmiştir)', 'i');
   const match = text.match(pattern);
   if (!match) return null;
   const month = MONTHS[normalizeTurkish(match[2])];
@@ -116,11 +116,12 @@ export function parseTjkConfirmedNonRunningHtml(html, {
   const normalized = normalizeTurkish(text);
   if (!/(ertelendi|tehir edilmesine|iptal edildi|iptal edilmiştir|iptal edilmesine)/i.test(normalized)) return [];
   if (!/(tüm koşular|yarışları|yarışlar)/i.test(normalized)) return [];
-  if (/(\\b\\d+\\s*(?:ve|,)?\\s*\\d*\\.?\\s*koşu(?:lar)?\\b|\\b\\d+\\.\\s*koşu\\b)/i.test(normalized)
+  if (/(\b\d+\s*(?:ve|,)?\s*\d*\.?\s*koşu(?:lar)?\b|\b\d+\.\s*koşu\b)/i.test(normalized)
       && !/tüm koşular/i.test(normalized)) return [];
 
   const venue = venueFromText(text);
   if (!venue) return [];
+
   const pubDate = publicationDate(text);
   const date = explicitDottedDate(text, venue.label) ?? explicitNaturalDate(text, venue.label, pubDate);
   if (!date) return [];
