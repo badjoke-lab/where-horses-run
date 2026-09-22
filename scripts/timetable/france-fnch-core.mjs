@@ -92,7 +92,7 @@ function slugify(value) {
 export function resolveFranceRacecourseId(label) {
   const stripped = String(label ?? '').replace(/^Hippodrome\s+/i, '').trim();
   const slug = slugify(stripped);
-  return VENUE_ID_ALIASES[slug] ?? \`\${slug}-racecourse\`;
+  return VENUE_ID_ALIASES[slug] ?? `${slug}-racecourse`;
 }
 
 function pad(value) {
@@ -105,7 +105,7 @@ function parseMonth(token) {
 }
 
 function isoDate(year, month, day) {
-  return \`\${year}-\${pad(month)}-\${pad(day)}\`;
+  return `${year}-${pad(month)}-${pad(day)}`;
 }
 
 function absoluteUrl(href, baseUrl) {
@@ -200,7 +200,7 @@ export function parseFnchRegionalProgrammePage(html, { sourceUrl } = {}) {
       continue;
     }
 
-    const scheduled_start_local = \`\${pad(dateMatch[4])}:\${dateMatch[5]}\`;
+    const scheduled_start_local = `${pad(dateMatch[4])}:${dateMatch[5]}`;
     const programme_url = programmeHref(block, sourceUrl);
 
     for (const def of systemDefs) {
@@ -242,8 +242,8 @@ export function parseFnchProgrammeText(text) {
     if (!byNumber.has(number)) {
       byNumber.set(number, {
         number,
-        label: \`Race \${number}\`,
-        post_time_local: \`\${pad(hour)}:\${pad(minute)}\`,
+        label: `Race ${number}`,
+        post_time_local: `${pad(hour)}:${pad(minute)}`,
       });
     }
   }
@@ -271,7 +271,7 @@ function evidence(url, checkedAt) {
 
 function baseRecord(row, checkedAt) {
   const prefix = row.system_key === 'galop' ? 'france-galop' : 'france-letrot';
-  const meetingId = \`\${prefix}-\${row.racecourse_id}-\${row.date}\`;
+  const meetingId = `${prefix}-${row.racecourse_id}-${row.date}`;
 
   return {
     candidate_id: meetingId,
@@ -294,7 +294,7 @@ function baseRecord(row, checkedAt) {
     route_id: 'fnch-regional-programme-index',
     confidence: 'high',
     review_status: 'needs_review',
-    notes: \`Official FNCH regional programme observation; source venue label: \${row.venue_label}; discipline: \${row.discipline_text}.\`,
+    notes: `Official FNCH regional programme observation; source venue label: ${row.venue_label}; discipline: ${row.discipline_text}.`,
   };
 }
 
