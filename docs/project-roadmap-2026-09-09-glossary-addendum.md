@@ -58,7 +58,7 @@ Targeted residual wave 10: complete — 5 scoped Concepts verified + 3 redundant
 Targeted residual wave 11: complete — 4 scoped Concepts verified + 4 unsupported/polysemous/context rows retired
 Targeted residual wave 12: complete — 8 scoped Concepts verified + 4 out-of-scope/generic/derived/malformed rows retired
 Final targeted residual wave 13: complete — 3 verified + 4 retired; 0 active candidate Concepts
-Current: GLOSSARY-MASTER-006 — search-intent / coverage / readiness review
+Paused checkpoint: GLOSSARY-MASTER-006 — search-intent / coverage / readiness review (wave 15 preserved; Calendar coverage prioritized)
 ```
 
 ## Programme objective
@@ -315,11 +315,11 @@ Current observed state:
 
 `GLOSSARY-MASTER-005` is **complete**: all **614 active Concepts are source-verified** and the completion gate passes with 0 active candidates.
 
-The programme now advances to `GLOSSARY-MASTER-006`.
+`GLOSSARY-MASTER-006` remains the current glossary work ID, but execution is deliberately paused at the wave 15 checkpoint while Calendar coverage is prioritized.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
-Status: **current, wave 15 in progress**.
+Status: **HOLD/checkpoint after wave 15; Calendar coverage currently takes priority**.
 
 This stage reviews definition/comparison/regional/how-why/translation/abbreviation/racecard-reading search intents, coverage gaps and user-facing readiness. It may reopen evidence work only when a real semantic/source gap is discovered. Public implementation planning remains deferred until this stage passes.
 
@@ -392,7 +392,7 @@ Working dictionary: 616 current active terms
 Verified: 616
 Still under review: 0 active Concept candidates
 MASTER-005: complete
-Next subject group: remaining Latin America/Continental Europe/Gulf/Asia gaps + non-code racecard/document reading
+Next subject group: none scheduled; resume demand-led from the recorded Latin America/Continental Europe/Gulf/Asia gaps or concrete site terminology needs after Calendar priority
 Public implementation: deferred
 ```
 
