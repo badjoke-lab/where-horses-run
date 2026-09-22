@@ -40,7 +40,8 @@
     "arabian_harness":{"status":"wave_1_complete_for_current_pass","research_file":"jurisdictions/arabian-harness-research-v1.tsv","concept_additions_file":"concepts/arabian-harness-wave1-additions.tsv","labels_file":"labels/arabian-harness-labels-v1.tsv","definitions_file":"definitions/arabian-harness-definitions-v1.tsv","sources_file":"sources/arabian-harness-sources-v1.tsv"},
     "latin_america_chile":{"status":"wave_1_chile_spanish_current_pass","research_file":"jurisdictions/latin-america-wave1-research-v1.tsv","labels_file":"labels/latin-america-wave1-labels-v1.tsv","definitions_file":"definitions/latin-america-wave1-definitions-v1.tsv","sources_file":"sources/latin-america-wave1-sources-v1.tsv"},
     "latin_america_brazil":{"status":"wave_1_brazil_portuguese_current_pass","research_file":"jurisdictions/latin-america-brazil-wave1-research-v1.tsv","labels_file":"labels/latin-america-brazil-wave1-labels-v1.tsv","definitions_file":"definitions/latin-america-brazil-wave1-definitions-v1.tsv","sources_file":"sources/latin-america-brazil-wave1-sources-v1.tsv"},
-    "continental_europe_germany":{"status":"wave_1_germany_german_current_pass","research_file":"jurisdictions/continental-europe-germany-wave1-research-v1.tsv","labels_file":"labels/continental-europe-germany-wave1-labels-v1.tsv","definitions_file":"definitions/continental-europe-germany-wave1-definitions-v1.tsv","sources_file":"sources/continental-europe-germany-wave1-sources-v1.tsv"}
+    "continental_europe_germany":{"status":"wave_1_germany_german_current_pass","research_file":"jurisdictions/continental-europe-germany-wave1-research-v1.tsv","labels_file":"labels/continental-europe-germany-wave1-labels-v1.tsv","definitions_file":"definitions/continental-europe-germany-wave1-definitions-v1.tsv","sources_file":"sources/continental-europe-germany-wave1-sources-v1.tsv"},
+    "gulf_saudi":{"status":"wave_1_saudi_arabic_current_pass","research_file":"jurisdictions/gulf-saudi-wave1-research-v1.tsv","labels_file":"labels/gulf-saudi-wave1-labels-v1.tsv","definitions_file":"definitions/gulf-saudi-wave1-definitions-v1.tsv","sources_file":"sources/gulf-saudi-wave1-sources-v1.tsv"}
   },
   "usage_layers": {
     "status":"wave_4_complete_for_current_pass_followups_allowed",
@@ -124,14 +125,14 @@
     "master_005_completion":"complete"
   },
   "search_intent_layer": {
-    "status":"master006_wave13_germany_german_wave1",
+    "status":"master006_wave14_saudi_arabic_wave1",
     "policy_file":"search/search-intent-policy-v1.tsv",
-    "query_files":["search/search-queries-v1.tsv","search/search-queries-definition-p0-base-a-v1.tsv","search/search-queries-definition-p0-base-b-v1.tsv","search/search-queries-definition-p0-supplemental-v1.tsv","search/search-queries-comparison-v1.tsv","search/search-queries-regional-v1.tsv","search/search-queries-translation-v1.tsv","search/search-queries-howwhy-v1.tsv","search/search-queries-french-codes-v1.tsv","search/search-queries-latin-america-v1.tsv","search/search-queries-latin-america-brazil-v1.tsv","search/search-queries-continental-europe-germany-v1.tsv"],
+    "query_files":["search/search-queries-v1.tsv","search/search-queries-definition-p0-base-a-v1.tsv","search/search-queries-definition-p0-base-b-v1.tsv","search/search-queries-definition-p0-supplemental-v1.tsv","search/search-queries-comparison-v1.tsv","search/search-queries-regional-v1.tsv","search/search-queries-translation-v1.tsv","search/search-queries-howwhy-v1.tsv","search/search-queries-french-codes-v1.tsv","search/search-queries-latin-america-v1.tsv","search/search-queries-latin-america-brazil-v1.tsv","search/search-queries-continental-europe-germany-v1.tsv","search/search-queries-gulf-saudi-v1.tsv"],
     "coverage_file":"coverage/master-006-search-intent-coverage-v1.tsv",
     "readiness_gate_file":"coverage/master-006-readiness-v1.tsv","readiness_audit_files":["coverage/master-006-domain-readiness-v1.tsv","coverage/master-006-jurisdiction-system-readiness-v1.tsv","coverage/master-006-language-script-readiness-v1.tsv","coverage/master-006-no-direct-equivalent-readiness-v1.tsv"],
-    "query_count":662,
-    "reviewed_query_count":662,
-    "intent_counts":{"definition":406,"comparison":40,"regional_usage":28,"how_why":16,"translation":96,"abbreviation":38,"racecard_reading":38},
+    "query_count":670,
+    "reviewed_query_count":670,
+    "intent_counts":{"definition":406,"comparison":40,"regional_usage":28,"how_why":16,"translation":104,"abbreviation":38,"racecard_reading":38},
     "definition_p0_concepts":203,
     "definition_p0_languages":["en","ja"],
     "unseeded_intents":[]
