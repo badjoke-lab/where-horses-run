@@ -106,8 +106,8 @@ assert.match(
 );
 assert.match(
   racecourseMap,
-  /'icon-image': MAP_CLUSTER_LIVE_BADGE_IMAGE[\s\S]*?'icon-text-fit-padding': \[1, 4, 1, 4\][\s\S]*?'text-field': \['concat', 'LIVE '[\s\S]*?'text-size': 8[\s\S]*?'icon-translate': \[0, -28\][\s\S]*?'text-translate': \[0, -28\]/,
-  'Live badge icon and text must use the reference compact pill proportions and move together above the ring',
+  /'icon-image': MAP_CLUSTER_LIVE_BADGE_IMAGE[\s\S]*?'icon-text-fit-padding': \[1, 4, 1, 4\][\s\S]*?'text-field': \['concat', 'RACING '[\s\S]*?'text-size': 8[\s\S]*?'icon-translate': \[0, -28\][\s\S]*?'text-translate': \[0, -28\]/,
+  'Running badge icon and text must use the reference compact pill proportions and move together above the ring',
 );
 assert.match(
   racecourseMap,
@@ -126,8 +126,8 @@ assert.match(
 );
 assert.match(
   racecourseMap,
-  /'text-field': \['concat', 'LIVE ', \['to-string', \['get', 'running_count'\]\]\]/,
-  'Map clusters containing running markers must expose a LIVE count badge',
+  /'text-field': \['concat', 'RACING ', \['to-string', \['get', 'running_count'\]\]\]/,
+  'Map clusters containing running markers must expose a RACING count badge',
 );
 assert.match(
   racecourseMap,
