@@ -1,0 +1,21 @@
+audit_id	dimension	scope	system_or_authority	local_language_layer	evidence_state	audit_state	material_gap	next_action
+M6-JUR-001	jurisdiction_system	GB	BHA	English	researched_current_pass	covered_current_scope		Maintain scoped terms; do not generalize GB rules globally
+M6-JUR-002	jurisdiction_system	Ireland	IHRB/HRI	English	researched_current_pass	covered_current_scope		Maintain Ireland-specific National Hunt and meeting terminology
+M6-JUR-003	jurisdiction_system	US	Equibase/USTA/HISA	English	researched_current_pass	covered_current_scope		Keep flat/harness/regulatory scopes distinct
+M6-JUR-004	jurisdiction_system	Canada	Canadian current authority evidence	English	researched_current_pass	covered_current_scope		Keep Canada-specific terms bounded
+M6-JUR-005	jurisdiction_system	Australia	Racing Australia/PRA evidence	English	researched_current_pass	covered_current_scope		Keep state/PRA differences visible
+M6-JUR-006	jurisdiction_system	New Zealand	NZTR	English	researched_current_pass	covered_current_scope		Maintain NZ-specific usage
+M6-JUR-007	jurisdiction_system	Japan/JRA	JRA	Japanese/Jpan	researched_current_pass	covered_current_scope		Maintain official/local labels
+M6-JUR-008	jurisdiction_system	Japan/NAR	NAR	Japanese/Jpan	researched_current_pass	covered_current_scope		Maintain NAR class-system distinctions
+M6-JUR-009	jurisdiction_system	Japan/Banei	ばんえい十勝	Japanese/Jpan	researched_current_pass	covered_current_scope		Keep Banei as a distinct racing system
+M6-JUR-010	jurisdiction_system	France/Flat-Jump	France Galop	French/Latn	researched_current_pass	covered_current_scope		Preserve French no-direct-equivalent terms
+M6-JUR-011	jurisdiction_system	France/Harness	SETF/UET	French/Latn	researched_current_pass	covered_current_scope		Preserve harness-specific codes and mechanics
+M6-JUR-012	jurisdiction_system	Hong Kong	HKJC	Traditional Chinese/Hant + English	researched_current_pass	covered_current_scope		Maintain bilingual official distinctions
+M6-JUR-013	jurisdiction_system	Korea	KRA	Korean/Hang	researched_current_pass	partial	HKKR-LBL-043 국산마 points to retired HORSE-027 and lacks a valid active-Concept mapping	Return only this mapping gap to evidence lane; do not silently map to HORSE-028
+M6-JUR-014	jurisdiction_system	UAE	ERA	English authority layer	researched_current_pass	partial	No reviewed Arabic/original-script label layer	Audit whether material ERA terminology requires Arabic labels
+M6-JUR-015	jurisdiction_system	South Africa	NHA/operator evidence	English authority layer	researched_current_pass	covered_current_scope		Maintain Merit Rating and local race-type distinctions
+M6-JUR-016	jurisdiction_system	International Arabian	IFAHR	English/international codes	researched_current_pass	covered_current_scope		Maintain PA group-code scope
+M6-JUR-017	worldwide_gap	Continental Europe beyond France/GB/IRE	multiple	unreviewed	no dedicated jurisdiction research	gap	Major racing systems outside current European research set are not audited	Target a bounded evidence review before claiming worldwide readiness
+M6-JUR-018	worldwide_gap	Latin America	multiple	unreviewed	no dedicated jurisdiction research	gap	No dedicated Spanish/Portuguese-language racing-system research in current master	Target major authority systems; add Concepts only for real semantic gaps
+M6-JUR-019	worldwide_gap	Gulf/Middle East beyond UAE	multiple	unreviewed	no dedicated jurisdiction research	gap	Saudi/Qatar/Bahrain-style local systems and Arabic terminology are not audited	Target authority terminology and original-script needs without blanket expansion
+M6-JUR-020	worldwide_gap	South/Southeast Asia beyond current HK/Japan/Korea	multiple	unreviewed	no dedicated jurisdiction research	gap	Other material Asian racing systems are not audited	Target only active major systems with authoritative terminology sources

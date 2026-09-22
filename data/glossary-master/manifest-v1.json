@@ -121,11 +121,11 @@
     "master_005_completion":"complete"
   },
   "search_intent_layer": {
-    "status":"master006_wave7_french_codes_complete",
+    "status":"master006_wave8_worldwide_readiness_audit1",
     "policy_file":"search/search-intent-policy-v1.tsv",
     "query_files":["search/search-queries-v1.tsv","search/search-queries-definition-p0-base-a-v1.tsv","search/search-queries-definition-p0-base-b-v1.tsv","search/search-queries-definition-p0-supplemental-v1.tsv","search/search-queries-comparison-v1.tsv","search/search-queries-regional-v1.tsv","search/search-queries-translation-v1.tsv","search/search-queries-howwhy-v1.tsv","search/search-queries-french-codes-v1.tsv"],
     "coverage_file":"coverage/master-006-search-intent-coverage-v1.tsv",
-    "readiness_gate_file":"coverage/master-006-readiness-v1.tsv",
+    "readiness_gate_file":"coverage/master-006-readiness-v1.tsv","readiness_audit_files":["coverage/master-006-domain-readiness-v1.tsv","coverage/master-006-jurisdiction-system-readiness-v1.tsv","coverage/master-006-language-script-readiness-v1.tsv","coverage/master-006-no-direct-equivalent-readiness-v1.tsv"],
     "query_count":594,
     "reviewed_query_count":594,
     "intent_counts":{"definition":406,"comparison":40,"regional_usage":28,"how_why":16,"translation":28,"abbreviation":38,"racecard_reading":38},
@@ -134,6 +134,6 @@
     "unseeded_intents":[]
   },
   "next_work_id":"GLOSSARY-MASTER-006",
-  "next_work":"continue_non_code_racecard_and_worldwide_domain_jurisdiction_language_readiness_review",
+  "next_work":"target_worldwide_jurisdiction_language_gaps_and_selective_non_code_racecard_review",
   "public_implementation":"deferred"
 }

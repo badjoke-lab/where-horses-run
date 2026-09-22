@@ -20,7 +20,7 @@ The latest pass is **final targeted residual wave 13**. It source-verified histo
 
 `GLOSSARY-MASTER-005` is now complete: **614/614 active Concepts are source-verified (100%)**, with **0 candidates**. Active base-seed coverage is **453/453 (100%)**; all 18 categories have no active candidate Concepts. Public publication is still deferred because evidence completion does not replace the separate `GLOSSARY-MASTER-006` search-intent / coverage / readiness review.
 
-`GLOSSARY-MASTER-006` wave 7 is now in progress. The separate search-intent layer contains **594 reviewed non-canonical query records**: **406 EN/JA definition queries covering all 203 P0 Concepts**, **40 EN/JA comparison queries covering all 20 current reviewed Concept relations**, **28 EN/JA regional-usage queries covering 14 curated source-verified regional label/use cases**, **16 EN/JA how/why queries covering 8 authority-backed explanatory cases**, **28 EN/JA translation queries covering 14 source-verified local/original-script label cases**, plus **38 abbreviation and 38 racecard-reading queries**. All **38/38 source-verified abbreviation/code records** now have reviewed abbreviation and racecard-reading intents, including the five French records D4, DA, DP, PSF and AQPS. The MASTER-006 gate remains **HOLD** because non-code racecard/document reading and worldwide domain/jurisdiction/language readiness audits are still incomplete.
+`GLOSSARY-MASTER-006` wave 8 is now in progress. The search-intent layer remains at **594 reviewed non-canonical query records**. A first machine-readable worldwide readiness audit now covers domain breadth, jurisdiction/system breadth, language/script representation and all **54 no-direct-equivalent Concepts**. Domain breadth and no-direct-equivalent handling now pass their current gates; jurisdiction/system breadth, language/script readiness and search-intent sufficiency remain blocked. The MASTER-006 decision therefore remains **HOLD**.
 
 Wave 9 is a semantic pruning pass: derived comparisons and generic display conventions remain contextual rather than standalone racing Concepts.
 
@@ -241,13 +241,17 @@ search/search-queries-howwhy-v1.tsv
 search/search-queries-french-codes-v1.tsv
 coverage/master-006-search-intent-coverage-v1.tsv
 coverage/master-006-readiness-v1.tsv
+coverage/master-006-domain-readiness-v1.tsv
+coverage/master-006-jurisdiction-system-readiness-v1.tsv
+coverage/master-006-language-script-readiness-v1.tsv
+coverage/master-006-no-direct-equivalent-readiness-v1.tsv
 ```
 
 ## Current completion decision
 
 `GLOSSARY-MASTER-005` is **complete** for the current active Concept master: **614/614 source-verified, 0 candidate**. The completion gate passes after explicit resolution of every residual seed Concept.
 
-`GLOSSARY-MASTER-006` is **in progress**. Waves 1-6 establish the separate query/policy layer, complete EN/JA direct-definition search coverage for all P0 Concepts, cover all 20 current reviewed Concept relations with EN/JA comparison intents, seed 14 high-value regional label/use cases, add 14 source-verified local/original-script translation cases without inventing equivalence, and add 8 authority-backed how/why explanatory cases. All seven intent classes now have reviewed seed coverage. The KRA domestic-bred label `HKKR-LBL-043` remains an explicit readiness gap because it still references retired `HORSE-027` and cannot be reassigned without evidence-lane review. Next work is selective non-code racecard/document-reading review, selective lower-priority definition coverage where justified, and jurisdiction/system/language readiness auditing; evidence truth is reopened only if that review exposes a real semantic/source defect.
+`GLOSSARY-MASTER-006` is **in progress**. Waves 1-7 establish the separate query/policy layer through complete P0 EN/JA definition coverage, all 20 current reviewed relations, curated regional/translation/how-why seeds and 38/38 verified abbreviation/code coverage. Wave 8 adds machine-readable readiness audits. The current audit identifies **16 researched jurisdiction/system scopes**, **253 source-verified local labels** across en/fr/ja/ko/zh and Latn/Jpan/Hang/Hant, and **54 no-direct-equivalent Concepts**. The KRA domestic-bred label `HKKR-LBL-043` remains an explicit evidence-lane gap; Arabic-script coverage and several worldwide jurisdiction families remain unreviewed. Next work is targeted jurisdiction/language gap review plus selective non-code racecard/document reading; evidence truth is reopened only for a proven semantic/source gap.
 
 Public implementation remains deferred until MASTER-006 passes.
 

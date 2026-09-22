@@ -26,7 +26,7 @@ The latest pass is **final targeted residual wave 13**. It verified historical C
 
 `GLOSSARY-MASTER-005` is complete: **614/614 active Concepts are source-verified (100%)** and **0 candidates remain**. Active base seed is **453/453 verified (100%)**. Evidence completion does not publish the glossary; `MASTER-006` remains the next readiness stage.
 
-`MASTER-006` wave 7 is now active. The search layer is kept separate from canonical knowledge and currently contains **594 reviewed non-canonical queries**: 406 EN/JA direct-definition queries covering all **203 P0 Concepts**, 40 EN/JA comparison queries covering all **20 current reviewed Concept relations**, 28 EN/JA regional-usage queries covering **14 curated source-verified regional label/use cases**, 16 EN/JA how/why queries covering **8 authority-backed explanatory cases**, 28 EN/JA translation queries covering **14 source-verified local/original-script label cases**, plus **38 abbreviation lookups and 38 racecard-reading lookups**. All **38/38 source-verified abbreviation/code records** now have reviewed abbreviation and racecard-reading intents; selective non-code racecard/document reading remains separate.
+`MASTER-006` wave 8 is now active. The search layer remains at **594 reviewed non-canonical queries**. Machine-readable readiness audits now cover all 18 terminology categories, researched jurisdiction/system scopes, language/script representation, and all **54 active no-direct-equivalent Concepts**. The current audit passes domain breadth and no-direct-equivalent handling, while jurisdiction/system breadth, language/script readiness and search-intent sufficiency remain blocked.
 
 These rows were removed because the active glossary already models the underlying racing meaning more cleanly, or because the seed represented generic analytical/presentation context rather than an independent racing term.
 
@@ -124,7 +124,7 @@ The abbreviation/code layer remains at **38 source-verified rows**.
 
 There are **0 active candidate Concepts** after final residual wave 13. `GLOSSARY-MASTER-005` therefore passes its evidence/semantic completion gate for the current master.
 
-`GLOSSARY-MASTER-006` is now **in progress**. Waves 1-6 add the search-intent policy, audited query registry, complete P0 EN/JA definition coverage, EN/JA comparison coverage for all current reviewed Concept relations, curated regional-usage and translation/local-label seeds, and a curated authority-backed how/why seed. `HKKR-LBL-043` (KRA domestic-bred `국산마`) remains unresolved because its former Concept `HORSE-027` was retired and the disposition explicitly forbids treating the surviving anchor as a synonym. The current decision remains **HOLD** until selective non-code racecard/document-reading review and worldwide domain/jurisdiction/language readiness audits are completed. Public glossary architecture remains deferred.
+`GLOSSARY-MASTER-006` is now **in progress**. Waves 1-7 establish the reviewed search-intent layer; wave 8 adds explicit readiness matrices. The audits record **253 source-verified local labels** across five languages and four represented scripts, **54 no-direct-equivalent Concepts**, and explicit worldwide jurisdiction gaps instead of treating 614 verified Concepts as automatic worldwide completeness. `HKKR-LBL-043` remains unresolved and Arabic-script coverage is absent. The current decision remains **HOLD** while jurisdiction/system, language/script and search-intent sufficiency gaps remain open. Public glossary architecture remains deferred.
 
 ## Dictionary modeling rule
 
