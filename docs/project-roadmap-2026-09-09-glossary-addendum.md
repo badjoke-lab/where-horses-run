@@ -319,7 +319,7 @@ The programme now advances to `GLOSSARY-MASTER-006`.
 
 ## MASTER-006 — search-intent, coverage, readiness
 
-Status: **current, wave 7 in progress**.
+Status: **current, wave 8 in progress**.
 
 This stage reviews definition/comparison/regional/how-why/translation/abbreviation/racecard-reading search intents, coverage gaps and user-facing readiness. It may reopen evidence work only when a real semantic/source gap is discovered. Public implementation planning remains deferred until this stage passes.
 
@@ -337,15 +337,21 @@ Wave 6 adds **16 EN/JA how/why queries covering 8 authority-backed explanatory c
 
 Wave 7 adds **10 French-language queries** for the five previously uncovered source-verified abbreviations/codes: D4, DA, DP, PSF and AQPS. Each gets one abbreviation lookup and one racecard-reading lookup. This closes abbreviation/code search coverage at **38/38 source-verified records**, while non-code official-document reading remains selective work. The search registry now contains **594 reviewed records** in total.
 
+Wave 8 begins the worldwide readiness audit. Four machine-readable matrices cover domain breadth, jurisdiction/system breadth, language/script representation, and all **54 no-direct-equivalent Concepts**. The first audit passes M6-GATE-002 domain breadth and M6-GATE-005 no-direct-equivalent handling. It keeps M6-GATE-003, M6-GATE-004 and M6-GATE-009 blocked: several worldwide jurisdiction families are still unreviewed, Arabic-script coverage is absent, the KRA `국산마` label remains orphaned from an active Concept, and selective non-code racecard/document-reading plus demand-led intent review remain open.
+
 - `search/search-intent-policy-v1.tsv` — seven intent classes and publication/review rules;
 - `search/search-queries-v1.tsv` — 66 abbreviation/racecard-reading records;
 - `search/search-queries-definition-p0-base-a-v1.tsv` — P0 definition queries for base categories 01–09;
 - `search/search-queries-definition-p0-base-b-v1.tsv` — P0 definition queries for base categories 10–18;
 - `search/search-queries-definition-p0-supplemental-v1.tsv` — P0 definition queries from supplemental research Concepts;
 - `coverage/master-006-search-intent-coverage-v1.tsv` — explicit per-intent coverage/gaps;
-- `coverage/master-006-readiness-v1.tsv` — readiness criteria with the current decision **HOLD**.
+- `coverage/master-006-readiness-v1.tsv` — readiness criteria with the current decision **HOLD**;
+- `coverage/master-006-domain-readiness-v1.tsv` — 18-category breadth and demand-readiness audit;
+- `coverage/master-006-jurisdiction-system-readiness-v1.tsv` — researched systems plus explicit worldwide gaps;
+- `coverage/master-006-language-script-readiness-v1.tsv` — source-verified language/script representation audit;
+- `coverage/master-006-no-direct-equivalent-readiness-v1.tsv` — all 54 active no-direct-equivalent Concepts and translation-intent state.
 
-Regional usage, translation and how/why now have curated first waves but remain partial. Comparison coverage is complete for the current 20 reviewed Concept relations but may expand only when a new relation or explicit confusion boundary is itself reviewed. Regional, translation and how/why additions must likewise be tied to reviewed evidence with material user value. Lower-priority definition queries are not blanket-generated. All 38 source-verified abbreviation records now have reviewed abbreviation/racecard-reading queries; non-code official-document reading remains selective work. Domain breadth, jurisdiction/system breadth and multilingual/no-direct-equivalent presentation still require explicit readiness audits.
+Regional usage, translation and how/why have curated first waves and remain deliberately selective. Comparison coverage is complete for the current 20 reviewed Concept relations. All 38 source-verified abbreviation records have abbreviation/racecard-reading queries. Domain breadth and no-direct-equivalent handling now pass explicit audits; jurisdiction/system breadth, language/script readiness and search-intent sufficiency remain open. Worldwide gaps are recorded rather than filled mechanically.
 
 ## Public implementation lane
 
@@ -372,7 +378,7 @@ Working dictionary: 614 terms
 Verified: 614
 Still under review: 0 active Concept candidates
 MASTER-005: complete
-Next subject group: non-code racecard/document reading + domain/jurisdiction/language readiness
+Next subject group: targeted jurisdiction/language gap review + non-code racecard/document reading
 Public implementation: deferred
 ```
 
