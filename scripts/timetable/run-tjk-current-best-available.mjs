@@ -202,7 +202,7 @@ try {
       status: 'discovery_failed',
       error: String(error?.message ?? error),
     }],
-    query_window: { start_date: addDays(startDate, -62), end_date_inclusive: startDate },
+    discovery_scope: 'current_latest_news_positive_evidence_subset',
   };
 }
 const meetingPresenceRecords = nonRunningDiscovery.records.filter((row) => canonicalIds.has(row.meeting_id));
@@ -250,7 +250,7 @@ const artifact = {
   non_running_evidence: {
     source_id: 'tjk-news-explicit-non-running',
     acquisition_status: nonRunningFailures.length ? 'partial_or_network_error' : 'success',
-    query_window: nonRunningDiscovery.query_window,
+    discovery_scope: nonRunningDiscovery.discovery_scope,
     confirmed_non_running_count: meetingPresenceRecords.length,
     unmatched_count: unmatchedPresenceRecords.length,
     unmatched_records: unmatchedPresenceRecords,
