@@ -236,7 +236,8 @@ export function parseHrnzMonthPage(html,{sourceUrl=null}={}) {
 export function parseHrnzProgrammePage(html,{date,clubLabel,sourceUrl=null}={}) {
   if(typeof html!=='string'||!html.trim()) throw new Error('HRNZ programme HTML must be non-empty');
   const text=nzVisibleText(html);
-  const meeting=text.match(/Meeting:\s*(.+?)\s+at\s+(.+?)\s+Last\s+updated/i);
+  const meetingBlock=text.match(/Meeting:\s*(.+?)\s+Last\s+updated/i)?.[1]?.trim();
+  const meeting=meetingBlock?.match(/^(.+)\s+at\s+(.+)$/i);
   if(!meeting) throw new Error('HRNZ programme meeting fingerprint missing');
   const first=text.match(/First\s+Race\s+Starts\s+(\d{1,2}):(\d{2})\s*(am|pm)\b/i);
   const first_race_time_local=first?to24Hour(first[1],first[2],first[3]):null;
