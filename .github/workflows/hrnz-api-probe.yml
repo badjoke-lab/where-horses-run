@@ -29,6 +29,9 @@ jobs:
           probe infohorse_dates 'https://infohorse.hrnz.co.nz/datahrs/calendar/raceday/dates_index.htm' /tmp/dates
           probe infohorse_programmes 'https://infohorse.hrnz.co.nz/datahrs/programmes/programm.htm' /tmp/programmes
           probe hrnz_calendar_ics 'https://infohorse.hrnz.co.nz/datahrs/calendar/HRNZOfficialMeetings.ics' /tmp/hrnz.ics
+          probe hrnz_www_calendar_page 'https://www.hrnz.co.nz/racing/race-programmes/' /tmp/hrnz-www.html
+          probe hrnz_final_calendar_pdf 'https://www.hrnz.co.nz/assets/2026.27-Final-Racing-Calendar-TAB-NZ-v1.1.pdf' /tmp/hrnz-calendar.pdf
+          echo "hrnz_final_calendar_pdf_magic=$(head -c 5 /tmp/hrnz-calendar.pdf | tr -cd '[:print:]')"
           probe harness_openapi 'https://harness.hrnz.co.nz/APIdoc/Version-1.1/HRNZAPI-V1.1.json' /tmp/openapi.json
 
           echo "hrnz_calendar_ics_fingerprint:"
