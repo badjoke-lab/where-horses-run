@@ -248,6 +248,33 @@ async function fetchProgrammeSamples() {
   }
 }
 
+async function fetchCalendarSession(sourceUrl) {
+  let lastError = null;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 20_000);
+    try {
+      const response = await fetch(sourceUrl, {
+        headers: {
+          'user-agent': 'WhereHorsesRun/1.0 (+https://whr.badjoke-lab.com/)',
+          accept: 'text/html,application/xhtml+xml',
+        },
+        signal: controller.signal,
+      });
+      const html = await response.text();
+      if (response.ok && /form:idCalendrier/i.test(html) && /javax\.faces\.ViewState/i.test(html)) {
+        return { ok: true, attempt, status: response.status, html };
+      }
+      lastError = 'unexpected calendar session response HTTP ' + response.status;
+    } catch (error) {
+      lastError = error instanceof Error ? error.message : String(error);
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+  return { ok: false, error: lastError ?? 'calendar session fetch failed' };
+}
+
 async function exerciseDateSelect({ sourceUrl, html, date, expectedVenue }) {
   const state = formState(html);
   if (!state.action) throw new Error('SOREC calendar form action missing');
@@ -368,26 +395,31 @@ const programme = await fetchProgrammeSamples();
 const primary = results.find((result) => result.name === 'calendar_with_fctid' && result.ok);
 const date_select_probes = [];
 if (primary && programme.dates.length > 0) {
-  for (const sample of programme.dates.slice(0, 4)) {
-    const raw = await fetch(primary.final_url, {
-      headers: {
-        'user-agent': 'WhereHorsesRun/1.0 (+https://whr.badjoke-lab.com/)',
-        accept: 'text/html,application/xhtml+xml',
-      },
-    });
-    const html = await raw.text();
-    date_select_probes.push(await exerciseDateSelect({
+  for (const sample of programme.dates.slice(0, 2)) {
+    const session = await fetchCalendarSession(primary.final_url);
+    if (!session.ok) {
+      date_select_probes.push({
+        date: sample.date,
+        expected_venue: sample.venue_label,
+        ok: false,
+        stage: 'session_get',
+        error: session.error,
+      });
+      continue;
+    }
+    const result = await exerciseDateSelect({
       sourceUrl: primary.final_url,
-      html,
+      html: session.html,
       date: sample.date,
       expectedVenue: sample.venue_label,
-    }));
+    });
+    date_select_probes.push({ ...result, session_get_attempt: session.attempt });
   }
 }
 
 const artifact = {
   schema_version: 'sorec-non-running-route-probe-v1',
-  probe_revision: 'jsf-date-select-v4-independent-positive-fixtures',
+  probe_revision: 'jsf-date-select-v5-bounded-session-retry',
   generated_at: new Date().toISOString(),
   purpose: 'Diagnose the official SOREC calendar route for explicit meeting-level Réunion reportée evidence. No source absence is treated as cancellation.',
   results,
