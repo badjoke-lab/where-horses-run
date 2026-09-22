@@ -30,6 +30,22 @@ jobs:
           probe infohorse_programmes 'https://infohorse.hrnz.co.nz/datahrs/programmes/programm.htm' /tmp/programmes
           probe harness_openapi 'https://harness.hrnz.co.nz/APIdoc/Version-1.1/HRNZAPI-V1.1.json' /tmp/openapi.json
 
+          chrome_bin="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          echo "chrome_bin=$chrome_bin"
+          if [ -n "$chrome_bin" ]; then
+            for spec in \
+              "chrome_dates|https://infohorse.hrnz.co.nz/datahrs/calendar/raceday/dates_index.htm|/tmp/chrome-dates.html" \
+              "chrome_programmes|https://infohorse.hrnz.co.nz/datahrs/programmes/programm.htm|/tmp/chrome-programmes.html" \
+              "chrome_openapi|https://harness.hrnz.co.nz/APIdoc/Version-1.1/HRNZAPI-V1.1.json|/tmp/chrome-openapi.html"
+            do
+              IFS='|' read -r label url out <<< "$spec"
+              timeout 40 "$chrome_bin" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --dump-dom "$url" > "$out" 2>/tmp/chrome.err || true
+              bytes="$(wc -c < "$out" 2>/dev/null || echo 0)"
+              echo "$label bytes=$bytes title=$(grep -o '<title>[^<]*' "$out" | head -1 | sed 's/<title>//' || true)"
+              grep -Eo '2027 Racing Dates|Race Programmes|Access Denied|403 Forbidden|HRNZ API services' "$out" | head -5 || true
+            done
+          fi
+
           if node -e "JSON.parse(require('fs').readFileSync('/tmp/openapi.json','utf8'))" >/dev/null 2>&1; then
             node <<'NODE'
           const fs=require('fs');
