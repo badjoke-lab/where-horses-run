@@ -22,7 +22,7 @@ The SOREC Galop official racing calendar exposes a meeting-level **`Réunion rep
 
 Official route:
 
-`https://www.sorec-galop.ma/pages/course_a_venir/calendrier_course.jsf?fctID=2nQEdyraO%2Bg%3D`
+`https://www.sorec-galop.ma/pages/course_a_venir/calendrier_course.jsf?code=CALEN&description=Calendrier+courses&fctID=1406`
 
 GitHub Actions probes in PR #1124 established all of the following:
 
@@ -33,7 +33,7 @@ GitHub Actions probes in PR #1124 established all of the following:
 - some dates contain both `REPOR` and another status such as `RESDE`, so `REPOR` cannot safely be consumed without sibling-status filtering;
 - the AJAX `dateSelect` route can be blocked by the site's validation/captcha layer, therefore production does not depend on that POST path.
 
-Representative probe runs: `35693694595`, `35693789333`, `35693849455`, and `35693948003`.
+Representative discovery probe runs: `35693694595`, `35693789333`, `35693849455`, and `35693948003`. After #1125 merged, production refresh `35694598167` exposed that the earlier opaque `fctID` URL was not stable and returned HTTP 404. Follow-up PR #1126 / Actions run `35695280068` tested the site-menu URL and proved the full `code=CALEN&description=Calendrier+courses&fctID=1406` route returns HTTP 200 with `Réunion reportée`, `joursEvenement`, and calendar-key fingerprints. Production is pinned to that full route.
 
 ### Production acceptance boundary
 
