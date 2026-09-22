@@ -183,23 +183,21 @@ function originalMeetingDate(normalized) {
 }
 
 function replacementMeetingDate(normalized, originalDate) {
-  const patterns = [
-    new RegExp(
-      '\\bnueva\\s+fecha\\b[\\s\\S]{0,500}?(\\d{1,2})\\s+de\\s+('
-        + MONTH_PATTERN + ')\\s+(?:de\\s+)?(20\\d{2})',
-      'i',
-    ),
-    new RegExp(
-      '\\brecalendariz[\\w]*\\b[\\s\\S]{0,700}?\\b(?:se\\s+realizara|se\\s+disputara|para)\\b[\\s\\S]{0,120}?(\\d{1,2})\\s+de\\s+('
-        + MONTH_PATTERN + ')\\s+(?:de\\s+)?(20\\d{2})',
-      'i',
-    ),
-  ];
-  for (const pattern of patterns) {
-    const date = dateFromMatch(normalized.match(pattern));
-    if (date && (!originalDate || date > originalDate)) return date;
+  const marker = normalized.indexOf('nueva fecha');
+  if (marker < 0) return null;
+
+  const tail = normalized.slice(marker, marker + 900);
+  const datePattern = new RegExp(
+    '(\\d{1,2})\\s+de\\s+(' + MONTH_PATTERN + ')\\s+(?:de\\s+)?(20\\d{2})',
+    'gi',
+  );
+  const candidates = [];
+  for (const match of tail.matchAll(datePattern)) {
+    const date = dateFromMatch(match);
+    if (date && (!originalDate || date > originalDate)) candidates.push(date);
   }
-  return null;
+  candidates.sort();
+  return candidates[0] ?? null;
 }
 
 function evidencePhrase(text, normalized) {
