@@ -13,6 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - uses: actions/checkout@v4
+      - name: Install repository dependencies
+        run: npm ci --ignore-scripts
       - name: Probe HRNZ official endpoints
         shell: bash
         run: |
@@ -36,6 +39,24 @@ jobs:
             echo "hrnz_final_calendar_page3_layout:"
             pdftotext -f 3 -l 3 -layout /tmp/hrnz-calendar.pdf - | sed -n '1,120p'
           fi
+          echo "hrnz_final_calendar_page3_items:"
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
+          const bytes=new Uint8Array(fs.readFileSync('/tmp/hrnz-calendar.pdf'));
+          const pdf=await getDocument({data:bytes,disableWorker:true}).promise;
+          const page=await pdf.getPage(3);
+          const tc=await page.getTextContent();
+          console.log('page_view',JSON.stringify(page.view));
+          for(const item of tc.items){
+            if(!('str' in item)) continue;
+            const s=item.str.replace(/\s+/g,' ').trim();
+            if(!s) continue;
+            if(/Sept|Oct|Harness| TC| HRC|NZ Metro|Invercargill|Wyndham|Akaroa|Oamaru|Methven|Gore/i.test(s)){
+              console.log(JSON.stringify({s,x:item.transform?.[4],y:item.transform?.[5],w:item.width,h:item.height}));
+            }
+          }
+          NODE
           probe harness_openapi 'https://harness.hrnz.co.nz/APIdoc/Version-1.1/HRNZAPI-V1.1.json' /tmp/openapi.json
 
           echo "hrnz_calendar_ics_fingerprint:"
