@@ -349,11 +349,11 @@
       "official_source_id": "hrnz-raceday-calendar",
       "official_source_url": "https://infohorse.hrnz.co.nz/datahrs/calendar/raceday/dates_index.htm",
       "source_kind": "calendar",
-      "source_status": "partial",
-      "last_checked_date": "2026-06-17",
-      "capability_rank": "C",
+      "source_status": "verified",
+      "last_checked_date": "2026-09-23",
+      "capability_rank": "B",
       "adapter_candidate_status": "candidate",
-      "notes": "Official HRNZ calendar confirms harness race dates. Complete per-race timetable capability was not established in the reviewed batch."
+      "notes": "Official HRNZ Racing Dates month pages expose current meeting dates. Linked official programme pages resolve physical venue and first-race start time through rank B."
     },
     {
       "country_id": "new-zealand",
@@ -366,10 +366,10 @@
       "official_source_url": "https://img.nzracing.co.nz/RaceInfo/",
       "source_kind": "programme",
       "source_status": "verified",
-      "last_checked_date": "2026-06-17",
-      "capability_rank": "A+",
+      "last_checked_date": "2026-09-23",
+      "capability_rank": "A",
       "adapter_candidate_status": "candidate",
-      "notes": "Reviewed Thoroughbred samples exposed meeting and per-race post-time fields at A+ technical capability. Harness coverage is separate."
+      "notes": "Current LOVERACING meeting-overview pages expose meeting identity and complete continuous per-race post-time rows through public rank A when fields are published."
     },
     {
       "country_id": "south-africa",
@@ -1906,6 +1906,22 @@
       "capability_rank": "A",
       "adapter_candidate_status": "candidate",
       "notes": "Official FNCH national/regional programme indexes expose current trot meeting identity and discipline; linked official programme PDFs can expose continuous race post times through A. This official route remains usable independently of direct LETROT page access."
+    },
+    {
+      "country_id": "new-zealand",
+      "authority_id": "new-zealand-thoroughbred-racing",
+      "authority_name_en": "New Zealand Thoroughbred Racing",
+      "authority_name_local": null,
+      "authority_type": "national",
+      "racecourse_scope": "all_authority_racecourses",
+      "official_source_id": "nztr-racing-programme-guide",
+      "official_source_url": "https://nztr.co.nz/racing-programme-guide",
+      "source_kind": "programme",
+      "source_status": "verified",
+      "last_checked_date": "2026-09-23",
+      "capability_rank": "C",
+      "adapter_candidate_status": "candidate",
+      "notes": "Official NZTR Racing Programme Guide publishes the current full Thoroughbred programmes for at least the next two months and supplies the rolling meeting-date/racecourse mother set."
     }
   ]
 }
