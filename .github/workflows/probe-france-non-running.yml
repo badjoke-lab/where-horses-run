@@ -1,0 +1,29 @@
+name: Probe France non-running routes
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/diagnostics/probe-france-non-running.mjs'
+      - '.github/workflows/probe-france-non-running.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Probe France Galop and LeTROT official non-running routes
+        run: node scripts/diagnostics/probe-france-non-running.mjs
+      - name: Upload bounded diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: france-non-running-route-probe
+          path: probe-france-non-running.json
+          if-no-files-found: warn
