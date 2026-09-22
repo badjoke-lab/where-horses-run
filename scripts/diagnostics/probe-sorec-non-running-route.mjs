@@ -160,11 +160,39 @@ function extractJoursEvenementDiagnostics(html) {
   if (!assignment) return { found: false, report_records: [], logic_context: null };
 
   const rawArray = assignment[1];
+  const allEvents = [];
+  for (const match of rawArray.matchAll(/\[\s*"([^"]+)"\s*,\s*"([^"]+)"\s*,\s*"([^"]*)"\s*\]/g)) {
+    allEvents.push({ calendar_key: match[1], status: match[2], message: decodeHtml(match[3]) });
+  }
+
+  function decodeCalendarKey(key) {
+    const value = String(key);
+    if (!/^\d{7,8}$/.test(value)) return null;
+    const year = Number(value.slice(-4));
+    const monthCode = Number(value.slice(-6, -4));
+    const day = Number(value.slice(0, -6));
+    const month = monthCode - 10;
+    const iso = String(year) + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+    const parsed = new Date(iso + 'T00:00:00Z');
+    return Number.isInteger(day) && day >= 1 && day <= 31 && month >= 1 && month <= 12
+      && !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === iso ? iso : null;
+  }
+
+  const statusesByKey = new Map();
+  for (const event of allEvents) {
+    if (!statusesByKey.has(event.calendar_key)) statusesByKey.set(event.calendar_key, []);
+    statusesByKey.get(event.calendar_key).push(event.status);
+  }
+
   const reportRecords = [];
-  for (const match of rawArray.matchAll(/\[\s*"([^"]+)"\s*,\s*"REPOR"\s*,\s*"([^"]+)"\s*\]/gi)) {
-    const message = decodeHtml(match[2]);
+  for (const event of allEvents.filter((row) => row.status === 'REPOR')) {
+    const message = event.message;
+    const siblingStatuses = statusesByKey.get(event.calendar_key) ?? [];
     reportRecords.push({
-      calendar_key: match[1],
+      calendar_key: event.calendar_key,
+      calendar_date: decodeCalendarKey(event.calendar_key),
+      sibling_statuses: siblingStatuses,
+      report_only_on_date: siblingStatuses.length > 0 && siblingStatuses.every((status) => status === 'REPOR'),
       message,
       message_dates: [...message.matchAll(/\b(\d{1,2}\/\d{1,2}\/\d{2,4})\b/g)].map((m) => m[1]),
       venue: (message.match(/hippodrome\s+(.+)$/i) || [])[1]?.trim() ?? null,
@@ -451,7 +479,7 @@ if (primary && primaryCalendarHtml && programme.dates.length > 0) {
 
 const artifact = {
   schema_version: 'sorec-non-running-route-probe-v1',
-  probe_revision: 'jsf-date-select-v8-report-records',
+  probe_revision: 'jsf-date-select-v9-report-only-date-safety',
   generated_at: new Date().toISOString(),
   purpose: 'Diagnose the official SOREC calendar route for explicit meeting-level Réunion reportée evidence. No source absence is treated as cancellation.',
   results,
