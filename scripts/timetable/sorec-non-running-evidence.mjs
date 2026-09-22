@@ -8,7 +8,10 @@ function assertOfficialSource(sourceUrl) {
   if (url.protocol !== 'https:' || url.hostname !== 'www.sorec-galop.ma') {
     throw new Error('SOREC non-running evidence requires official www.sorec-galop.ma source');
   }
-  if (url.pathname !== '/pages/course_a_venir/calendrier_course.jsf'\n    || url.searchParams.get('code') !== 'CALEN'\n    || url.searchParams.get('description') !== 'Calendrier courses'\n    || url.searchParams.get('fctID') !== '1406') {
+  if (url.pathname !== '/pages/course_a_venir/calendrier_course.jsf'
+    || url.searchParams.get('code') !== 'CALEN'
+    || url.searchParams.get('description') !== 'Calendrier courses'
+    || url.searchParams.get('fctID') !== '1406') {
     throw new Error('SOREC non-running evidence requires the official status-bearing calendar route');
   }
 }
