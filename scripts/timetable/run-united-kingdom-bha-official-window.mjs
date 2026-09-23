@@ -13,6 +13,7 @@ import {
   parseBhaFixturePdfItems,
   parseBhaFullYearPage,
 } from './united-kingdom-bha-core.mjs';
+import { BHA_NON_RUNNING_SOURCE_ID,BHA_PRESS_RELEASES_URL,bindBhaNonRunningEvidence,discoverBhaNonRunningArticles,parseBhaNonRunningArticle } from './united-kingdom-bha-non-running-evidence.mjs';
 
 function arg(name,fallback=null){
   const value=process.argv.find(item=>item.startsWith(`--${name}=`));
@@ -79,6 +80,7 @@ async function getPdfItems(url){
   }
   return items;
 }
+function readCanonicalMeetings(file){if(!fs.existsSync(file))return [];const data=JSON.parse(fs.readFileSync(file,'utf8'));return Array.isArray(data?.meetings)?data.meetings:[];}
 function loadSupplement(){
   const file=path.resolve('data/static/bha-public-timetable-supplement-v1.json');
   if(!fs.existsSync(file)) return null;
@@ -88,6 +90,7 @@ function loadSupplement(){
 const output=arg('output');
 const days=Number(arg('days','30'));
 const start=arg('as-of',localDate());
+const canonicalPath=arg('canonical','data/generated/timetable/canonical/meetings.json');
 if(!output) throw new Error('--output=<path> is required');
 if(!/^\d{4}-\d{2}-\d{2}$/.test(start)) throw new Error('--as-of must be YYYY-MM-DD');
 if(!Number.isInteger(days)||days<1||days>62) throw new Error('--days must be 1..62');
@@ -118,6 +121,32 @@ rows=rows.filter(row=>inWindow(row.date,start,end));
 if(!rows.length) throw new Error('BHA fixture PDF produced zero meetings in requested window');
 
 const records=rows.map(row=>buildBhaFixtureRecord(row,{checkedAt:generatedAt}));
+const canonicalRows=readCanonicalMeetings(canonicalPath);
+const nonRunningArticles=[];const nonRunningEvidence=[];let nonRunningStatus='source_error';let nonRunningSourceUrl=BHA_PRESS_RELEASES_URL;
+try{
+  const index=await getHtml(BHA_PRESS_RELEASES_URL);nonRunningSourceUrl=index.url;
+  const discovery=discoverBhaNonRunningArticles(index.html,{sourceUrl:index.url});
+  for(const sourceUrl of discovery.article_urls){
+    try{
+      const article=await getHtml(sourceUrl);
+      const parsed=parseBhaNonRunningArticle(article.html,{sourceUrl:article.url,startDate:start,endDateExclusive:end});
+      nonRunningEvidence.push(...parsed.evidence);
+      nonRunningArticles.push({source_url:article.url,status:'success',...parsed.diagnostics});
+    }catch(error){
+      nonRunningArticles.push({source_url:sourceUrl,status:'source_error',error:String(error?.message??error)});
+    }
+  }
+  nonRunningStatus=nonRunningArticles.some(row=>row.status==='source_error')?'partial_success':'success';
+}catch(error){
+  nonRunningArticles.push({source_url:BHA_PRESS_RELEASES_URL,status:'source_error',error:String(error?.message??error)});
+}
+const boundNonRunning=bindBhaNonRunningEvidence({evidence:nonRunningEvidence,canonicalMeetings:canonicalRows,checkedAt:generatedAt});
+const nonRunningDiagnostics={
+  status:nonRunningStatus,source_id:BHA_NON_RUNNING_SOURCE_ID,source_url:nonRunningSourceUrl,
+  candidate_article_count:nonRunningArticles.length,accepted_evidence_count:nonRunningEvidence.length,
+  confirmed_non_running_count:boundNonRunning.meeting_presence_records.length,
+  article_results:nonRunningArticles,binding_skipped:boundNonRunning.diagnostics.skipped,
+};
 const artifact={
   schema_version:'united-kingdom-bha-official-window-candidates-v1',
   generated_at:generatedAt,
@@ -141,6 +170,8 @@ const artifact={
     fixture_pdf_url:fixturePdfUrl,
     annual_rows:items.length,
     reviewed_supplement_applied:Boolean(supplement),
+    non_running_source_id:BHA_NON_RUNNING_SOURCE_ID,
+    non_running_source_status:nonRunningStatus,
     rank_counts:{C:records.length,B:0,'B+':0,A:0,'A+':0},
   },
   window:{
@@ -151,10 +182,12 @@ const artifact={
     coverage_note:'BHA annual fixture-list evidence supplies meeting date and racecourse only. Reviewed BHA transfer corrections are applied where present. Race times are not inferred, and source absence or acquisition failure is never treated as non-running evidence.',
   },
   records,
+  meeting_presence_records:boundNonRunning.meeting_presence_records,
   diagnostics:{
     source_warnings:sourceWarnings,
     unknown_venues:[],
     detail_conflict:[],
+    non_running:nonRunningDiagnostics,
   },
 };
 write(output,artifact);
@@ -167,5 +200,7 @@ console.log(JSON.stringify({
   fixture_pdf_url:fixturePdfUrl,
   reviewed_supplement_applied:Boolean(supplement),
   source_warnings:sourceWarnings.length,
+  confirmed_non_running_count:artifact.meeting_presence_records.length,
+  non_running_source_status:nonRunningStatus,
   raw_body_retained:false,
 }));
