@@ -1,0 +1,29 @@
+name: Probe UK BHA non-running routes
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/diagnostics/probe-uk-bha-non-running.mjs'
+      - '.github/workflows/probe-uk-bha-non-running.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Probe BHA official non-running routes
+        run: node scripts/diagnostics/probe-uk-bha-non-running.mjs
+      - name: Upload bounded diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: uk-bha-non-running-route-probe
+          path: probe-uk-bha-non-running.json
+          if-no-files-found: warn
