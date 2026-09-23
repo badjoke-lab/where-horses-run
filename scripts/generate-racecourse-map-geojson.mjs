@@ -54,6 +54,11 @@ const calendarMapRegressionIds = [
   'la-teste-racecourse',
   // Slovakia (1)
   'bratislava-racecourse',
+  // France Calendar rolling venues (4)
+  'abbeville-racecourse',
+  'le-pertre-racecourse',
+  'lyon-parilly-racecourse',
+  'nimes-racecourse',
   // South Korea (4)
   'seoul-racecourse',
   'busan-gyeongnam-racecourse',
