@@ -33,6 +33,8 @@ jobs:
           probe infohorse_programmes 'https://infohorse.hrnz.co.nz/datahrs/programmes/programm.htm' /tmp/programmes
           probe hrnz_calendar_ics 'https://infohorse.hrnz.co.nz/datahrs/calendar/HRNZOfficialMeetings.ics' /tmp/hrnz.ics
           probe hrnz_www_calendar_page 'https://www.hrnz.co.nz/racing/race-programmes/' /tmp/hrnz-www.html
+          echo "hrnz_www_programme_fingerprint:"
+          grep -Eo 'MIDWEEK TROTS AT ADDINGTON|NZ Metropolitan Trotting Club Inc|Race Programmes / Dates|infohorse[^" ]+' /tmp/hrnz-www.html | head -20 || true
           probe hrnz_final_calendar_pdf 'https://www.hrnz.co.nz/assets/2026.27-Final-Racing-Calendar-TAB-NZ-v1.1.pdf' /tmp/hrnz-calendar.pdf
           echo "hrnz_final_calendar_pdf_magic=$(head -c 5 /tmp/hrnz-calendar.pdf | tr -cd '[:print:]')"
           if command -v pdftotext >/dev/null 2>&1; then
