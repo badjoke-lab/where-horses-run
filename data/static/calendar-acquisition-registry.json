@@ -428,6 +428,34 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "GitHub Actions prefers official HRNZ season/month Racing Dates and linked programme pages. When that live Infohorse route is blocked before any Harness rows are recovered, the same authority's official Final Racing Calendar PDF on www.hrnz.co.nz is the bounded fallback for meeting date, source-verified physical venue, and scheduled first-race time through rank B. Primary-route failure is retained as a recovered route diagnostic; unresolved venue or source absence is never evidence of non-running."
+    },
+    {
+      "system_id": "united-kingdom-bha-system",
+      "country_id": "united-kingdom",
+      "authority_id": "british-horseracing-authority",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "bha-fixtures",
+      "detail_source_id": null,
+      "schedule_adapter_id": "united-kingdom-bha-annual-fixture-v1",
+      "detail_adapter_id": null,
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [
+        "detail_source_id",
+        "detail_adapter_id"
+      ],
+      "operator_notes": "GitHub Actions selects the official BHA annual Fixture List PDF for the active year, extracts national flat/jump meeting date and racecourse observations at rank C, and overlays reviewed BHA transfer corrections where available. Race times are not inferred. Acquisition failure or source absence preserves stronger verified state and is never treated as non-running evidence."
     }
   ]
 }
