@@ -18,9 +18,11 @@ function fold(v){return String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/
 function iso(y,m,d){const s=String(y)+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');const x=new Date(s+'T00:00:00Z');return !Number.isNaN(x.getTime())&&x.toISOString().slice(0,10)===s?s:null;}
 function inWindow(date,start,end){return (!start||date>=start)&&(!end||date<end);}
 function dateFrom(day,month,year){return iso(Number(year),MONTHS[fold(month)],Number(day));}
-function publicationDate(text){
+function publicationDate(text,marker=null){
+  const normalized=fold(text);
+  const scope=marker&&normalized.lastIndexOf(marker)>=0?normalized.slice(normalized.lastIndexOf(marker)):normalized;
   const rx=new RegExp('\\b(\\d{1,2})\\s+('+MONTH_PATTERN+')\\s+(20\\d{2})\\s+(?:bha|racing\\/fixtures)\\b','i');
-  const m=fold(text).match(rx);return m?dateFrom(m[1],m[2],m[3]):null;
+  const m=scope.match(rx);return m?dateFrom(m[1],m[2],m[3]):null;
 }
 function nextWeekday(base,weekday){
   if(!base)return null;const target=WEEKDAYS.indexOf(fold(weekday));if(target<0)return null;
@@ -66,7 +68,8 @@ export function parseBhaNonRunningArticle(html,{sourceUrl,startDate=null,endDate
   const text=textOf(html),n=fold(text);
   if(!n.includes('british horseracing authority')&&!n.includes('bha'))throw new Error('BHA article authority fingerprint missing');
   if(partialRaceOnly(n))return {evidence:[],diagnostics:{disposition:'rejected_partial_race_scope'}};
-  const published=publicationDate(text);
+  const marker=/\babandonment of four fixtures\b/.test(n)?'abandonment of four fixtures':(/\bchelmsford city fixtures\b/.test(n)?'chelmsford city fixtures':null);
+  const published=publicationDate(text,marker);
 
   if(/\babandonment of four fixtures\b/.test(n)&&/\bhave been abandoned\b/.test(n)){
     const venues=['Kempton Park','Salisbury','Worcester','Ffos Las'].filter(v=>n.includes(fold(v)));
