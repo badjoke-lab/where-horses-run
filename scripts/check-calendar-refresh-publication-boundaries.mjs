@@ -13,7 +13,7 @@ const orderedSteps = [
   'Collect HKJC official window',
   'Collect UAE official window',
   'Collect KRA official window',
-  'Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France, New Zealand, United Kingdom and Slovakia official windows',
+  'Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France, New Zealand, United Kingdom, Slovakia and Bahrain official windows',
   'Apply non-Japan official observations monotonically',
   'Re-apply frozen reviewed Calendar observations',
   'Apply explicit meeting presence dispositions',
@@ -145,6 +145,12 @@ assert.equal((workflow.match(/--artifact=\.calendar-unified\/slovakia\.json/g) ?
 assert.equal((workflow.match(/--racing-system-id=slovakia-zavodisko-system/g) ?? []).length, 2, 'Slovakia apply path must bind the canonical racing system id in both execution paths');
 assert.equal((workflow.match(/--timezone=Europe\/Bratislava/g) ?? []).length, 2, 'Slovakia apply path must bind Europe/Bratislava in both execution paths');
 
+assert.equal((workflow.match(/run-bahrain-btc-official-window\.mjs/g) ?? []).length, 2, 'Bahrain BTC must be collected in both normal and latest-main rebuild paths');
+assert.equal((workflow.match(/--authority-id=bahrain-turf-club/g) ?? []).length, 2, 'Bahrain BTC observations must be applied in both execution paths');
+assert.equal((workflow.match(/--artifact=\.calendar-unified\/bahrain\.json/g) ?? []).length, 4, 'Bahrain BTC artifact must pass exclusion and apply layers in both execution paths');
+assert.equal((workflow.match(/--racing-system-id=bahrain-turf-club-system/g) ?? []).length, 2, 'Bahrain BTC apply path must bind the canonical racing system id in both execution paths');
+assert.equal((workflow.match(/--timezone=Asia\/Bahrain/g) ?? []).length, 2, 'Bahrain BTC apply path must bind Asia/Bahrain in both execution paths');
+
 console.log('CALENDAR_REFRESH_PUBLICATION_BOUNDARIES: pass');
 console.log('SOREC_UNIFIED_REFRESH_PATHS: 2');
 console.log('IRELAND_HRI_UNIFIED_REFRESH_PATHS: 2');
@@ -154,3 +160,4 @@ console.log('FRANCE_FNCH_UNIFIED_REFRESH_PATHS: 2');
 console.log('NEW_ZEALAND_UNIFIED_REFRESH_PATHS: 2');
 console.log('UNITED_KINGDOM_BHA_UNIFIED_REFRESH_PATHS: 2');
 console.log('SLOVAKIA_ZAVODISKO_UNIFIED_REFRESH_PATHS: 2');
+console.log('BAHRAIN_BTC_UNIFIED_REFRESH_PATHS: 2');

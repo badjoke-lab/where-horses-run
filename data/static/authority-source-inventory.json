@@ -196,22 +196,6 @@
       "notes": "Reviewed Cristal programme evidence confirmed race labels and post times at A technical capability."
     },
     {
-      "country_id": "bahrain",
-      "authority_id": "bahrain-turf-club",
-      "authority_name_en": "Bahrain Turf Club",
-      "authority_name_local": null,
-      "authority_type": "racecourse_operator",
-      "racecourse_scope": "unknown",
-      "official_source_id": "btc-racecard-route",
-      "official_source_url": "https://bahrainturfclub.com/racecard/",
-      "source_kind": "racecard",
-      "source_status": "verified",
-      "last_checked_date": "2026-06-17",
-      "capability_rank": "A+",
-      "adapter_candidate_status": "candidate",
-      "notes": "Reviewed official racecard routes exposed complete race labels, post times, and distances. Reliable venue identity remains unresolved and prohibited racecard fields must be ignored."
-    },
-    {
       "country_id": "qatar",
       "authority_id": "qatar-racing-and-equestrian-club",
       "authority_name_en": "Qatar Racing and Equestrian Club",
@@ -1922,6 +1906,38 @@
       "capability_rank": "C",
       "adapter_candidate_status": "candidate",
       "notes": "Official NZTR Racing Programme Guide publishes the current full Thoroughbred programmes for at least the next two months and supplies the rolling meeting-date/racecourse mother set."
+    },
+    {
+      "country_id": "bahrain",
+      "authority_id": "bahrain-turf-club",
+      "authority_name_en": "Bahrain Turf Club",
+      "authority_name_local": null,
+      "authority_type": "racecourse_operator",
+      "racecourse_scope": "single_racecourse",
+      "official_source_id": "btc-race-programme",
+      "official_source_url": "https://bahrainturfclub.com/racing/rehc-racing-season-imported",
+      "source_kind": "programme",
+      "source_status": "verified",
+      "last_checked_date": "2026-09-24",
+      "capability_rank": "C",
+      "adapter_candidate_status": "candidate",
+      "notes": "Official 2026/27 imported-horse race programme identifies the season meeting dates and states the programme is staged at Rashid Equestrian & Horseracing Club. This route is the Calendar mother set."
+    },
+    {
+      "country_id": "bahrain",
+      "authority_id": "bahrain-turf-club",
+      "authority_name_en": "Bahrain Turf Club",
+      "authority_name_local": null,
+      "authority_type": "racecourse_operator",
+      "racecourse_scope": "single_racecourse",
+      "official_source_id": "btc-racecard-route",
+      "official_source_url": "https://bahrainturfclub.com/racecard/",
+      "source_kind": "racecard",
+      "source_status": "verified",
+      "last_checked_date": "2026-09-24",
+      "capability_rank": "A+",
+      "adapter_candidate_status": "candidate",
+      "notes": "Official date/race-specific racecard pages expose complete meeting race-number and post-time navigation. Calendar publication is capped at A; participant, betting, result, and other racecard fields remain excluded."
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-non-running-evidence-registry-v1",
-  "reviewed_at": "2026-09-22",
+  "reviewed_at": "2026-09-24",
   "records": [
     {
       "record_id": "japan-jra-system",
@@ -396,6 +396,28 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-09-24",
       "notes": "Slovakia Calendar production uses positive Závodisko calendar evidence only. Source invisibility or acquisition failure remains absent_unconfirmed and preserves verified state. Existing official cancellation notices are not generalized into automated whole-meeting suppression by this Expansion lane."
+    },
+    {
+      "record_id": "bahrain-turf-club-system",
+      "country_id": "bahrain",
+      "system_id": "bahrain-turf-club-system",
+      "authority_id": "bahrain-turf-club",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Bahrain Turf Club positive season-programme and racecard evidence; no bounded whole-meeting negative-evidence route proven in this country-addition pass",
+      "evidence_urls": [
+        "https://bahrainturfclub.com/racing/rehc-racing-season-imported",
+        "https://bahrainturfclub.com/racecard/"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-09-24",
+      "notes": "Bahrain Calendar production uses positive official programme and racecard evidence only. Source absence, an empty source-visible window, unpublished racecards, or acquisition failure never confirms non-running and never erases verified state."
     }
   ]
 }
