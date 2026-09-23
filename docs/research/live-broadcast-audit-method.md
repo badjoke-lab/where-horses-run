@@ -142,3 +142,28 @@ User-facing displays should remain link-first and neutral:
 - Do not imply that Where Horses Run provides, owns, hosts, or guarantees the stream.
 - Do not display `unsafe_unofficial` as a usable source.
 - If availability is uncertain, show `not_verified` or omit the row until research is complete.
+
+---
+
+## Calendar country/system onboarding gate
+
+This audit is mandatory whenever a new country or racing system is added to the public Calendar.
+
+A Calendar expansion is not complete until the new country/system has an explicit live-broadcast disposition. The disposition may be a reviewed usable route, `not_verified`, or `none_found`; silence or omission is not a valid conclusion.
+
+For each new Calendar country/system, review and record at minimum:
+
+1. official authority, racecourse, broadcaster, or official-partner live destination;
+2. provider identity and official landing URL;
+3. coverage scope: all meetings, selected meetings, feature/event only, seasonal, or track-specific;
+4. access condition: free/open, account required, betting account required, paid/subscription, geo restricted, or unknown;
+5. racecourse/authority scope so one system's route is not borrowed for another;
+6. evidence URL and review date;
+7. whether runtime LIVE detection is eligible as a **separate** question.
+
+Runtime LIVE detection is not required for paid, account-gated, betting-account-gated, or geo-gated services. Those services should be represented primarily by a reviewed link plus access disclosure. Runtime LIVE detection should be considered only for free/open services that expose a stable public signal without login, bypass, private credentials, direct media-manifest scraping, or fragile reverse engineering.
+
+For Calendar runtime use, update the reviewed media registry used by the Calendar when a displayable route exists. Keep broader research coverage records synchronized when they are in scope. If no usable route is found, record that reviewed disposition explicitly rather than leaving the country unaudited.
+
+This gate applies to every future Calendar country/system addition, regardless of whether the racing calendar source itself is already production-ready.
+

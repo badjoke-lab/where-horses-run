@@ -2,6 +2,7 @@
 
 Status: active canonical Calendar presentation specification  
 Adopted: 2026-09-08  
+Last amended: 2026-09-23  
 Applies to: Calendar meeting lifecycle state, display timezone projection, official-stream state, List/Month/Map presentation, responsive acceptance  
 Parent UI specification: `docs/specs/map-first-site-ui-2026-09-06.md`  
 Active execution schedule: `docs/project-roadmap-2026-09-08-addendum.md`
@@ -90,6 +91,39 @@ The public stream semantics have three states:
 Localized UI labels may differ, but they must preserve these semantics. Do not present state 2 or state 3 as `live`.
 
 This specification grants no new permission to publish or embed media. Link/embed/replay behavior remains governed by the applicable public-display and media-delivery contracts.
+
+### 4.1 Stream destination, access conditions, and LIVE detection are separate
+
+A reviewed official stream destination is useful even when Where Horses Run cannot or should not determine whether that service is live at the current instant.
+
+For every reviewed live route, keep these facts separate:
+
+```text
+official destination / provider
+coverage scope
+access condition
+runtime LIVE-detection eligibility
+runtime LIVE state, when eligible
+```
+
+Access condition must be recorded independently from LIVE state. The reviewed access vocabulary may distinguish at minimum:
+
+```text
+free/open
+account required
+betting account required
+paid/subscription
+geo restricted
+unknown
+```
+
+A paid, account-gated, betting-account-gated, or geographically restricted route does **not** require runtime LIVE monitoring merely because a stream destination exists. For those routes, the primary public duty is to link to the reviewed official destination and disclose the access condition clearly.
+
+Runtime LIVE detection is an optional enhancement and should be attempted only when the source exposes a stable, public, non-bypass signal that can be checked safely without authentication, circumvention, private credentials, direct media-manifest scraping, or fragile player reverse engineering. Official YouTube live routes are eligible when detector/date/event binding is reliable. A non-YouTube free/open route may be eligible only when an equivalent stable public signal exists.
+
+If no safe detector exists, keep the reviewed stream link available and leave runtime LIVE state neutral. Never infer LIVE merely because the race meeting itself is running.
+
+The Calendar and Today surfaces must not make gated-service monitoring a prerequisite for showing a valid official stream destination.
 
 ## 5. Detector matching and fail-closed behavior
 

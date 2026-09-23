@@ -2,7 +2,7 @@
 
 Status: active canonical Calendar presentation refinement  
 Adopted: 2026-09-08  
-Last amended: 2026-09-08  
+Last amended: 2026-09-23  
 Applies to: Calendar/Today List row state semantics, current-day rank boundary, Today vs Calendar grouping, official-stream presentation, EN/JA labels, country/authority/racecourse display names, List/Month/Map naming and state parity  
 Parent Calendar specification: `docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md`  
 Active execution schedule: `docs/calendar/calendar-presentation-state-001-display-correction-schedule.md`
@@ -253,6 +253,36 @@ JA: 公式配信 ↗
 ```
 
 The verified-live link may use a restrained red live accent, but it must not create another large status pill competing with the meeting-state badge.
+
+### 7.1 Access-condition presentation
+
+Access conditions belong to the official-stream action, not to meeting lifecycle state.
+
+When a reviewed stream requires payment, an account, a betting account, or has a geographic restriction, Calendar/Today should expose that fact directly beside the official-stream link. Do not hide material access restrictions only in a tooltip.
+
+Preferred compact examples:
+
+```text
+Official stream ↗  FREE
+Official stream ↗  PAID
+Official stream ↗  ACCOUNT
+Official stream ↗  BETTING ACCOUNT
+Official stream ↗  GEO
+
+公式配信 ↗  無料
+公式配信 ↗  有料
+公式配信 ↗  会員
+公式配信 ↗  投票口座
+公式配信 ↗  地域制限
+```
+
+Multiple access restrictions may be joined into one compact phrase. Access-condition text must remain visually subordinate to the stream link.
+
+Do not create a second vertical stack of tiny pills under the stream link. Desktop should prefer a single-line stream action where space allows; mobile may wrap the whole action naturally, but the access phrase should remain one coherent unit. The stream presentation must not cause unpredictable row-height growth or break column alignment.
+
+Coverage qualifiers such as selected-meetings, feature-only, or seasonal remain data facts. In the compact Calendar row, material access restrictions have display priority over coverage qualifiers; coverage may remain in title/detail/context when showing both would make the primary action unreadable.
+
+LIVE state remains separate: a paid/account/geo label never means live now, and absence of a LIVE detector never suppresses a valid reviewed stream link.
 
 Detector binding/fail-closed rules from the parent Calendar specification remain unchanged. Wrong-date, stale, unavailable, ended, offline, upcoming, unknown, or otherwise mismatched detector data must not render as live.
 
