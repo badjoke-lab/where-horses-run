@@ -52,6 +52,8 @@ const calendarMapRegressionIds = [
   'laval-racecourse',
   'toulouse-racecourse',
   'la-teste-racecourse',
+  // Slovakia (1)
+  'bratislava-racecourse',
   // South Korea (4)
   'seoul-racecourse',
   'busan-gyeongnam-racecourse',
