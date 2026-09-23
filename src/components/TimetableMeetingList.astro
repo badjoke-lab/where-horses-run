@@ -158,13 +158,9 @@ const mediaBadgeLabels = lang === 'ja'
     };
 const mediaBadges = (record: TimetableMeetingRow) => {
   if (!record.live_media) return [];
-  const accessBadges = record.live_media.access_tags
+  return record.live_media.access_tags
     .map((tag) => mediaBadgeLabels[tag])
     .filter(Boolean);
-  const coverageBadge = record.live_media.coverage === 'all_meetings'
-    ? null
-    : mediaBadgeLabels[record.live_media.coverage];
-  return coverageBadge ? [...accessBadges, coverageBadge] : accessBadges;
 };
 const isMeetingStateEligible = (record: TimetableMeetingRow) =>
   Boolean(record.first_race_time_local && record.last_race_time_local);
