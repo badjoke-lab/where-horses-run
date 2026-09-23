@@ -69,7 +69,7 @@ function fingerprints(key, html) {
   const common={authority_nztr:s.includes('new zealand thoroughbred racing')||s.includes('nztr'),authority_hrnz:s.includes('harness racing new zealand')};
   if(key==='nztrRemoved') return {...common,match:s.includes('awapuni synthetic meeting')&&s.includes('sunday 7 june')&&s.includes('removed from the racing calendar')};
   if(key==='nztrTransfer') return {...common,match:s.includes('race meeting scheduled to be held at ellerslie on may 25')&&s.includes('moving to pukekohe park')};
-  if(key==='nztrPartial') return {...common,match:s.includes('meeting')&&s.includes('abandon')&&s.includes('after race 1')};
+  if(key==='nztrPartial') return {...common,match:s.includes('awapuni abandonment')&&s.includes('following a slip in the first race')&&s.includes("today's abandonment at awapuni")};
   if(key==='hrnzCalledOff') return {...common,match:s.includes("cambridge's thursday meeting called off")&&s.includes('cancel the meeting')};
   if(key==='hrnzPostponed') return {...common,match:s.includes("alexandra park meeting postponed")&&s.includes('move to saturday')};
   if(key==='hrnzTransfer') return {...common,match:s.includes('methven meeting transferred to ashburton')&&s.includes("sunday's scheduled meeting at methven")&&s.includes('held on the all-weather track at ashburton')};
