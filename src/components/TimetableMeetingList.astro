@@ -253,9 +253,9 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
                   {record.live_media && (
                     <span class="meeting-row__stream">
                       <a href={record.live_media.landing_url} target="_blank" rel="noopener noreferrer" title={mediaTitle(record)} data-live-link data-live-default-href={record.live_media.landing_url}>{text.officialStream}</a>
-                      <span class="meeting-row__stream-badges" aria-label={lang === 'ja' ? '配信条件' : 'Stream access'}>
-                        {mediaBadges(record).map((badge) => <span class="meeting-row__stream-badge">{badge}</span>)}
-                      </span>
+                      <small class="meeting-row__stream-access" aria-label={lang === 'ja' ? '配信条件' : 'Stream access'}>
+                        {mediaBadges(record).join(lang === 'ja' ? '・' : ' · ')}
+                      </small>
                     </span>
                   )}
                   {record.detail_path && <a href={localizedDetailPath(record.detail_path)}>{text.detail}</a>}
