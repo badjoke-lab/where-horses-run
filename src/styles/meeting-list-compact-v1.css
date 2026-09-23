@@ -108,32 +108,17 @@
 }
 
 .timetable-timezone-projection .meeting-row__stream {
-  display: grid;
-  align-items: center;
-  gap: 0.14rem;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.28rem;
   min-width: 0;
+  white-space: nowrap;
 }
 
-.timetable-timezone-projection .meeting-row__stream-badges {
-  display: inline-flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.16rem;
-  min-width: 0;
-}
-
-.timetable-timezone-projection .meeting-row__stream-badge {
-  display: inline-flex;
-  align-items: center;
-  min-height: 16px;
-  padding: 0.02rem 0.24rem;
-  border: 1px solid rgba(7, 35, 69, 0.2);
-  border-radius: 999px;
-  background: #f7f8fa;
-  color: color-mix(in srgb, var(--whr-color-navy) 72%, #fff);
-  font-size: 0.54rem;
-  font-weight: 800;
-  letter-spacing: 0.025em;
+.timetable-timezone-projection .meeting-row__stream-access {
+  color: var(--whr-color-muted);
+  font-size: 0.56rem;
+  font-weight: 750;
   line-height: 1.2;
   white-space: nowrap;
 }
@@ -330,16 +315,15 @@
   }
 
   .timetable-timezone-projection .meeting-row__stream {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.16rem 0.28rem;
+    display: inline-flex;
+    align-items: baseline;
+    flex-wrap: nowrap;
+    gap: 0.24rem;
+    max-width: 100%;
   }
 
-  .timetable-timezone-projection .meeting-row__stream-badge {
-    min-height: 15px;
-    padding-inline: 0.2rem;
-    font-size: 0.5rem;
+  .timetable-timezone-projection .meeting-row__stream-access {
+    font-size: 0.54rem;
   }
 
   .timetable-timezone-projection .meeting-row[data-stream-state='live'] .meeting-row__links a[data-live-link] {
@@ -439,9 +423,9 @@
   .timetable-timezone-projection .meeting-row__links {
     display: grid !important;
     grid-template-columns:
-      minmax(6.2rem, 1.15fr)
-      minmax(4rem, 0.75fr)
-      minmax(5.4rem, 1fr) !important;
+      minmax(9rem, 1.5fr)
+      minmax(3.5rem, 0.6fr)
+      minmax(4.5rem, 0.8fr) !important;
     align-items: center;
     gap: 0.4rem !important;
     min-width: 0;
