@@ -462,9 +462,9 @@
       "primary_runner": "github_actions",
       "fallback_runner": null,
       "schedule_source_id": "zavodisko-2026-calendar",
-      "detail_source_id": "zavodisko-2026-calendar",
+      "detail_source_id": null,
       "schedule_adapter_id": "slovakia-zavodisko-calendar-b-v1",
-      "detail_adapter_id": "slovakia-zavodisko-calendar-b-v1",
+      "detail_adapter_id": null,
       "technical_capability_rank": "B+",
       "collection_target_rank": "best_available",
       "public_ceiling": "C",
@@ -477,8 +477,11 @@
       "supports_selected_meetings": false,
       "supports_source_visible_horizon": true,
       "supports_rank_upgrade_retry": false,
-      "pending_fields": [],
-      "operator_notes": "GitHub Actions reads the official Závodisko 2026 national calendar and emits meeting date, verified timetable identity and official first-race time through B. Reviewed B+ meeting-page capability is known but is not yet connected as a reusable full-calendar route, so current B observations remain explicit implementation_gap rather than terminal success. Public output remains capped at C. Acquisition failure or source absence preserves stronger verified state and never confirms non-running."
+      "pending_fields": [
+        "detail_source_id",
+        "detail_adapter_id"
+      ],
+      "operator_notes": "GitHub Actions reads the official Závodisko 2026 national calendar and emits meeting date, verified timetable identity and official first-race time through B. Reviewed B+ meeting-page capability is known, but no reusable full-calendar detail source/adapter is connected; detail_source_id and detail_adapter_id therefore remain explicit pending fields, and current B observations remain implementation_gap rather than terminal success. Public output remains capped at C. Acquisition failure or source absence preserves stronger verified state and never confirms non-running."
     }
   ]
 }
