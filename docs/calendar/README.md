@@ -5,6 +5,7 @@ Last reviewed: 2026-09-20
 
 Current operating pointer:
 
+- **Calendar country/system expansion rule:** every newly supported public Calendar country/system must receive a live-broadcast audit before the addition is considered complete. Record provider, official destination, coverage scope, access conditions, authority/racecourse scope, evidence, and a separate LIVE-detection eligibility decision. Paid/account/betting-account/geo-gated services do not require runtime LIVE monitoring; link + access disclosure is sufficient. See `../research/live-broadcast-audit-method.md`, `../specs/calendar-meeting-state-stream-and-view-2026-09-08.md`, and `../specs/calendar-row-rank-live-localization-2026-09-08.md`.
 - `scripts/timetable/canonical-acceptance.mjs` — Wave 3 shared canonical evidence acceptance authority for official rolling, Japan, and reviewed observations; weak observations retain stronger evidence while explicit corrections may replace it.
 - [`authority-evidence-metadata-contract.md`](authority-evidence-metadata-contract.md) — distinct acquisition-attempt, successful-verification, field-group provenance, correction/invalidation, reviewed-evidence, and coherent public-snapshot representation; unknown legacy facts remain unknown.
 - [`acquisition-completion-contract.md`](acquisition-completion-contract.md) — valid `C/B/B+/A` evidence is not acquisition completion by itself; lower-rank cycles require explicit higher-detail disposition.
