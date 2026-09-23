@@ -437,9 +437,9 @@
       "primary_runner": "github_actions",
       "fallback_runner": null,
       "schedule_source_id": "bha-fixtures",
-      "detail_source_id": null,
+      "detail_source_id": "bha-fixtures",
       "schedule_adapter_id": "united-kingdom-bha-annual-fixture-v1",
-      "detail_adapter_id": null,
+      "detail_adapter_id": "united-kingdom-bha-annual-fixture-v1",
       "technical_capability_rank": "C",
       "collection_target_rank": "best_available",
       "public_ceiling": "C",
@@ -451,11 +451,8 @@
       "supports_selected_meetings": false,
       "supports_source_visible_horizon": true,
       "supports_rank_upgrade_retry": false,
-      "pending_fields": [
-        "detail_source_id",
-        "detail_adapter_id"
-      ],
-      "operator_notes": "GitHub Actions selects the official BHA annual Fixture List PDF for the active year, extracts national flat/jump meeting date and racecourse observations at rank C, and overlays reviewed BHA transfer corrections where available. Race times are not inferred. Acquisition failure or source absence preserves stronger verified state and is never treated as non-running evidence."
+      "pending_fields": [],
+      "operator_notes": "GitHub Actions selects the official BHA annual Fixture List PDF for the active year, extracts national flat/jump meeting date and racecourse observations at the system's current technical ceiling C, and overlays reviewed BHA transfer corrections where available. The registry detail slot intentionally points to the same C-only BHA fixture route because no richer reusable national race-time route is established. Race times are not inferred. Acquisition failure or source absence preserves stronger verified state and is never treated as non-running evidence."
     }
   ]
 }
