@@ -10,7 +10,7 @@ const SOURCES = {
 function decode(v){
   return String(v??'').replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ')
     .replace(/<[^>]+>/g,' ').replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&')
-    .replace(/&#39;|&apos;|&rsquo;/gi,"'").replace(/\s+/g,' ').trim();
+    .replace(/&#39;|&apos;|&rsquo;/gi,"'").replace(/&#x([0-9a-f]+);/gi,(_,x)=>String.fromCodePoint(Number.parseInt(x,16))).replace(/&#(\d+);/g,(_,x)=>String.fromCodePoint(Number(x))).replace(/\s+/g,' ').trim();
 }
 function fold(v){return decode(v).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();}
 async function fetchPage(url){
