@@ -14,6 +14,16 @@ import {
   buildFnchProgrammeRecord,
   parseFnchRegionalProgrammePage,
 } from './france-fnch-core.mjs';
+import {
+  FRANCE_GALOP_NON_RUNNING_ARCHIVE_URL,
+  FRANCE_GALOP_NON_RUNNING_SOURCE_ID,
+  FRANCE_LETROT_NON_RUNNING_SOURCE_ID,
+  bindFranceNonRunningEvidence,
+  discoverFranceGalopNonRunningArticles,
+  letrotBulletinUrlsForWindow,
+  parseFranceGalopNonRunningArticle,
+  parseLetrotNonRunningBulletin,
+} from './france-non-running-evidence.mjs';
 
 function arg(name,fallback=null){const v=process.argv.find(x=>x.startsWith(`--${name}=`));return v?v.slice(name.length+3):fallback;}
 function plusDays(date,count){const d=new Date(`${date}T00:00:00Z`);d.setUTCDate(d.getUTCDate()+count);return d.toISOString().slice(0,10);}
@@ -52,6 +62,11 @@ async function getPdfText(url){
   }
   return lines.join('\n');
 }
+function canonicalMeetings(file){
+  if(!fs.existsSync(file)) return [];
+  const dataset=JSON.parse(fs.readFileSync(file,'utf8'));
+  return Array.isArray(dataset?.meetings)?dataset.meetings:[];
+}
 function dedupeRows(rows){
   const map=new Map();
   for(const row of rows){
@@ -66,7 +81,7 @@ function scopeDiagnostics(items,systemKey){
     .filter(item=>!item.system_key||item.system_key===systemKey)
     .map(({system_key,...item})=>item);
 }
-function artifactFor({systemKey,records,generatedAt,start,end,days,sourceErrors,parseFailures,unknownDisciplines,sourcePages}){
+function artifactFor({systemKey,records,generatedAt,start,end,days,sourceErrors,parseFailures,unknownDisciplines,sourcePages,meetingPresenceRecords,nonRunningDiagnostics}){
   const isGalop=systemKey==='galop';
   const authority_id=isGalop?FRANCE_GALOP_AUTHORITY_ID:FRANCE_LETROT_AUTHORITY_ID;
   const racing_system_id=isGalop?FRANCE_GALOP_SYSTEM_ID:FRANCE_LETROT_SYSTEM_ID;
@@ -79,16 +94,17 @@ function artifactFor({systemKey,records,generatedAt,start,end,days,sourceErrors,
     schema_version:'france-fnch-official-window-candidates-v1',generated_at:generatedAt,country_id:'france',authority_id,racing_system_id,timezone:FRANCE_TIMEZONE,
     source_id:FRANCE_FNCH_SOURCE_ID,detail_source_id:FRANCE_FNCH_SOURCE_ID,collection_target_rank:'best_available',raw_body_retained:false,
     acquisition_attempt:{attempted_at:generatedAt,status:sourcePages.length?'success':'network_error',source_id:FRANCE_FNCH_SOURCE_ID,route_id:'fnch-regional-programme-index',error_code:sourcePages.length?null:'fetch_error'},
-    discovery:{method:'official_fnch_regional_programme_indexes_plus_published_programme_pdfs',schedule_source_id:FRANCE_FNCH_SOURCE_ID,schedule_source_url:FRANCE_FNCH_CALENDAR_URL,detail_source_id:FRANCE_FNCH_SOURCE_ID,regional_pages:sourcePages,rank_counts:rankCounts,detail_status_counts:detailStatusCounts},
+    discovery:{method:'official_fnch_regional_programme_indexes_plus_published_programme_pdfs',schedule_source_id:FRANCE_FNCH_SOURCE_ID,schedule_source_url:FRANCE_FNCH_CALENDAR_URL,detail_source_id:FRANCE_FNCH_SOURCE_ID,regional_pages:sourcePages,rank_counts:rankCounts,detail_status_counts:detailStatusCounts,non_running_source_id:nonRunningDiagnostics.source_id,non_running_source_status:nonRunningDiagnostics.status},
     window:{start_date:start,end_date_exclusive:end,days,coverage_claim:scopedSourceErrors.length?'partial_source_visible_horizon':'source_visible_horizon',coverage_note:'FNCH regional programme indexes are treated as a source-visible meeting horizon, not proof that every date in the requested window has been exhaustively published. Visible meetings are attributed by discipline to France Galop or LETROT. Published official programme PDFs may supply complete per-race post times through rank A. Missing programme detail stays pending; retrieval/parser failures remain retry states; absence from FNCH pages never confirms non-running.'},
     records:selected,
-    diagnostics:{source_errors:scopedSourceErrors,parse_failures:scopedParseFailures,unknown_disciplines:unknownDisciplines,source_pages_checked:sourcePages.length},
+    meeting_presence_records:meetingPresenceRecords,
+    diagnostics:{source_errors:scopedSourceErrors,parse_failures:scopedParseFailures,unknown_disciplines:unknownDisciplines,source_pages_checked:sourcePages.length,non_running:nonRunningDiagnostics},
   };
 }
 function write(file,value){const target=path.resolve(file);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,`${JSON.stringify(value,null,2)}\n`);}
 
 const galopOutput=arg('galop-output');const letrotOutput=arg('letrot-output');
-const days=Number(arg('days','30'));const start=arg('as-of',localDate());
+const days=Number(arg('days','30'));const start=arg('as-of',localDate());const canonicalPath=arg('canonical','data/generated/timetable/canonical/meetings.json');
 if(!galopOutput||!letrotOutput) throw new Error('--galop-output=<path> and --letrot-output=<path> are required');
 if(!/^\d{4}-\d{2}-\d{2}$/.test(start)) throw new Error('--as-of must be YYYY-MM-DD');
 if(!Number.isInteger(days)||days<1||days>62) throw new Error('--days must be 1..62');
@@ -114,7 +130,69 @@ for(const row of rows){
     sourceErrors.push({system_key:row.system_key,stage:'programme_pdf',date:row.date,racecourse_id:row.racecourse_id,source_url:row.programme_url,error:String(error?.message??error)});
   }
 }
-const galop=artifactFor({systemKey:'galop',records,generatedAt,start,end,days,sourceErrors,parseFailures,unknownDisciplines,sourcePages});
-const letrot=artifactFor({systemKey:'letrot',records,generatedAt,start,end,days,sourceErrors,parseFailures,unknownDisciplines,sourcePages});
+const canonicalRows=canonicalMeetings(canonicalPath);
+
+let galopEvidence=[];
+let galopArticleResults=[];
+let galopStatus='not_checked';
+try{
+  const archive=await getHtml(FRANCE_GALOP_NON_RUNNING_ARCHIVE_URL);
+  const discovery=discoverFranceGalopNonRunningArticles(archive.html,{sourceUrl:archive.url});
+  for(const sourceUrl of discovery.article_urls){
+    try{
+      const article=await getHtml(sourceUrl);
+      const parsed=parseFranceGalopNonRunningArticle(article.html,{sourceUrl:article.url,startDate:start,endDateExclusive:end});
+      galopEvidence.push(...parsed.evidence);
+      galopArticleResults.push({source_url:article.url,status:'success',...parsed.diagnostics});
+    }catch(error){
+      galopArticleResults.push({source_url:sourceUrl,status:'source_error',error:String(error?.message??error)});
+    }
+  }
+  galopStatus=galopArticleResults.some(row=>row.status==='source_error')?'partial_success':'success';
+}catch(error){
+  galopStatus='source_error';
+  galopArticleResults=[{source_url:FRANCE_GALOP_NON_RUNNING_ARCHIVE_URL,status:'source_error',error:String(error?.message??error)}];
+}
+const galopBound=bindFranceNonRunningEvidence({evidence:galopEvidence,canonicalMeetings:canonicalRows,checkedAt:generatedAt});
+const galopNonRunning={
+  status:galopStatus,
+  source_id:FRANCE_GALOP_NON_RUNNING_SOURCE_ID,
+  source_url:FRANCE_GALOP_NON_RUNNING_ARCHIVE_URL,
+  candidate_article_count:galopArticleResults.length,
+  accepted_evidence_count:galopEvidence.length,
+  confirmed_non_running_count:galopBound.meeting_presence_records.length,
+  article_results:galopArticleResults,
+  binding_skipped:galopBound.diagnostics.skipped,
+};
+
+const letrotEvidence=[];
+const letrotBulletinResults=[];
+for(const sourceUrl of letrotBulletinUrlsForWindow(start,end)){
+  try{
+    const bulletinText=await getPdfText(sourceUrl);
+    const parsed=parseLetrotNonRunningBulletin(bulletinText,{sourceUrl,startDate:start,endDateExclusive:end});
+    letrotEvidence.push(...parsed.evidence);
+    letrotBulletinResults.push({source_url:sourceUrl,status:'success',...parsed.diagnostics});
+  }catch(error){
+    letrotBulletinResults.push({source_url:sourceUrl,status:'source_error',error:String(error?.message??error)});
+  }
+}
+const letrotStatus=letrotBulletinResults.length===0
+  ?'source_error'
+  :(letrotBulletinResults.some(row=>row.status==='source_error')?'partial_success':'success');
+const letrotBound=bindFranceNonRunningEvidence({evidence:letrotEvidence,canonicalMeetings:canonicalRows,checkedAt:generatedAt});
+const letrotNonRunning={
+  status:letrotStatus,
+  source_id:FRANCE_LETROT_NON_RUNNING_SOURCE_ID,
+  source_url:'https://pro.letrot.com/',
+  bulletin_count:letrotBulletinResults.length,
+  accepted_evidence_count:letrotEvidence.length,
+  confirmed_non_running_count:letrotBound.meeting_presence_records.length,
+  bulletin_results:letrotBulletinResults,
+  binding_skipped:letrotBound.diagnostics.skipped,
+};
+
+const galop=artifactFor({systemKey:'galop',records,generatedAt,start,end,days,sourceErrors,parseFailures,unknownDisciplines,sourcePages,meetingPresenceRecords:galopBound.meeting_presence_records,nonRunningDiagnostics:galopNonRunning});
+const letrot=artifactFor({systemKey:'letrot',records,generatedAt,start,end,days,sourceErrors,parseFailures,unknownDisciplines,sourcePages,meetingPresenceRecords:letrotBound.meeting_presence_records,nonRunningDiagnostics:letrotNonRunning});
 write(galopOutput,galop);write(letrotOutput,letrot);
-console.log(JSON.stringify({start_date:start,end_date_exclusive:end,source_pages:sourcePages.length,source_errors:sourceErrors.length,parse_failures:parseFailures.length,unknown_disciplines:unknownDisciplines.length,galop:{output:galopOutput,meetings:galop.records.length,rank_counts:galop.discovery.rank_counts,detail_status_counts:galop.discovery.detail_status_counts},letrot:{output:letrotOutput,meetings:letrot.records.length,rank_counts:letrot.discovery.rank_counts,detail_status_counts:letrot.discovery.detail_status_counts},raw_body_retained:false}));
+console.log(JSON.stringify({start_date:start,end_date_exclusive:end,source_pages:sourcePages.length,source_errors:sourceErrors.length,parse_failures:parseFailures.length,unknown_disciplines:unknownDisciplines.length,galop:{output:galopOutput,meetings:galop.records.length,confirmed_non_running_count:galop.meeting_presence_records.length,non_running_source_status:galopNonRunning.status,rank_counts:galop.discovery.rank_counts,detail_status_counts:galop.discovery.detail_status_counts},letrot:{output:letrotOutput,meetings:letrot.records.length,confirmed_non_running_count:letrot.meeting_presence_records.length,non_running_source_status:letrotNonRunning.status,rank_counts:letrot.discovery.rank_counts,detail_status_counts:letrot.discovery.detail_status_counts},raw_body_retained:false}));
