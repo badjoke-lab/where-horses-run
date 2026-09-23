@@ -266,8 +266,7 @@ export function parseHrnzFinalCalendarItems(items,{seasonStartYear=2026,sourceUr
 
   const dateHeaders=normalized
     .map(item=>({...item,date:hrnzCalendarIsoDate(item.str,seasonStartYear)}))
-    .filter(item=>item.date)
-    .map(item=>({...item,column:Math.max(0,Math.min(6,Math.floor(item.x/(item.page_width/7))))}));
+    .filter(item=>item.date);
 
   const records=[];
   const unknown_venues=[];
@@ -277,12 +276,11 @@ export function parseHrnzFinalCalendarItems(items,{seasonStartYear=2026,sourceUr
     const rawClub=match[1].trim();
     if(!(/\bHarness\b/i.test(rawClub)||/\bHRC\b/i.test(rawClub)||/\bTC(?:\(P\))?(?:@|$)/i.test(rawClub))) continue;
 
-    const column=Math.max(0,Math.min(6,Math.floor(item.x/(item.page_width/7))));
     const header=dateHeaders
-      .filter(row=>row.page===item.page&&row.column===column&&row.y>item.y)
-      .map(row=>({...row,delta:row.y-item.y}))
-      .filter(row=>row.delta<105)
-      .sort((a,b)=>a.delta-b.delta)[0];
+      .filter(row=>row.page===item.page&&row.y>item.y&&row.x>item.x)
+      .map(row=>({...row,deltaY:row.y-item.y,deltaX:row.x-item.x}))
+      .filter(row=>row.deltaY<105&&row.deltaX<170)
+      .sort((a,b)=>a.deltaY-b.deltaY||a.deltaX-b.deltaX)[0];
     if(!header) continue;
 
     let club_label=rawClub.replace(/\(P\)$/i,'').trim();
