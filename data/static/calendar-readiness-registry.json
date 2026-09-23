@@ -3118,19 +3118,21 @@
         "near_meeting"
       ],
       "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "fallback": "downgrade_to_C",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
+      "checked_date": "2026-09-24",
+      "evidence_reviewed_at": "2026-09-24",
       "revalidation_trigger": "Revalidate when Závodisko changes the calendar or meeting-page time structure.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/52-slovakia/final-summary.json",
       "limitations": [
+        "The automated annual-calendar route supplies meeting date, racecourse and official first-race time through B.",
+        "Previously reviewed B+ meeting-page capability is not yet connected as a reusable full-calendar route and remains an explicit implementation gap.",
         "Per-race post times are not confirmed across the full calendar.",
         "Public output remains capped at C."
       ],
-      "notes": "Bounded B+ prototype decision for official Slovak meeting pages."
+      "notes": "Automated production candidate reads the current Závodisko annual calendar through rank B. The registered B+ capability remains intentionally open as an implementation_gap until a reusable full-calendar last-race route is connected; public output remains capped at C."
     },
     {
       "readiness_id": "cyprus--nicosia-national-racing-system--nrc-meetings-schedule",

@@ -23,6 +23,9 @@ on:
       - 'scripts/timetable/**'
       - 'scripts/check-calendar-refresh-publication-boundaries.mjs'
       - 'scripts/check-bahrain-btc-adapter.mjs'
+      - 'scripts/check-calendar-public-map-parity.mjs'
+      - 'data/static/racecourse-locations-v1.json'
+      - 'src/lib/racecourseMapLocationPolicy.mjs'
       - 'scripts/check-calendar-live-source-readiness.mjs'
       - 'scripts/check-calendar-non-running-evidence-registry.mjs'
       - 'scripts/check-hkjc-non-running-evidence.mjs'
@@ -69,6 +72,9 @@ on:
       - 'scripts/timetable/**'
       - 'scripts/check-calendar-refresh-publication-boundaries.mjs'
       - 'scripts/check-bahrain-btc-adapter.mjs'
+      - 'scripts/check-calendar-public-map-parity.mjs'
+      - 'data/static/racecourse-locations-v1.json'
+      - 'src/lib/racecourseMapLocationPolicy.mjs'
       - 'scripts/check-calendar-live-source-readiness.mjs'
       - 'scripts/check-chile-clubhipico-non-running-evidence.mjs'
       - 'scripts/check-kra-window-bounds.mjs'
@@ -131,6 +137,7 @@ jobs:
           node scripts/check-france-fnch-adapter.mjs
           node scripts/check-new-zealand-official-adapter.mjs
           node scripts/check-united-kingdom-bha-adapter.mjs
+          node scripts/check-slovakia-zavodisko-adapter.mjs
           node scripts/check-bahrain-btc-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
@@ -305,6 +312,7 @@ jobs:
           node scripts/check-france-fnch-adapter.mjs
           node scripts/check-new-zealand-official-adapter.mjs
           node scripts/check-united-kingdom-bha-adapter.mjs
+          node scripts/check-slovakia-zavodisko-adapter.mjs
           node scripts/check-bahrain-btc-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
@@ -454,7 +462,7 @@ jobs:
           node scripts/timetable/run-kra-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/kra.json
-      - name: Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France, New Zealand, United Kingdom and Bahrain official windows
+      - name: Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France, New Zealand, United Kingdom, Slovakia and Bahrain official windows
         run: |
           node scripts/timetable/run-tjk-current-best-available.mjs \
             --days="${{ steps.scope.outputs.days }}" \
@@ -485,6 +493,9 @@ jobs:
           node scripts/timetable/run-united-kingdom-bha-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/united-kingdom.json
+          node scripts/timetable/run-slovakia-zavodisko-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/slovakia.json
           node scripts/timetable/run-bahrain-btc-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/bahrain.json
@@ -505,6 +516,7 @@ jobs:
             --artifact=.calendar-unified/new-zealand-thoroughbred.json \
             --artifact=.calendar-unified/new-zealand-harness.json \
             --artifact=.calendar-unified/united-kingdom.json \
+            --artifact=.calendar-unified/slovakia.json \
             --artifact=.calendar-unified/bahrain.json
       - name: Apply non-Japan official observations monotonically
         run: |
@@ -593,6 +605,12 @@ jobs:
             --racing-system-id=united-kingdom-bha-system \
             --timezone=Europe/London
           node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/slovakia.json \
+            --country-id=slovakia \
+            --authority-id=zavodisko \
+            --racing-system-id=slovakia-zavodisko-system \
+            --timezone=Europe/Bratislava
+          node scripts/timetable/apply-official-rolling-observations.mjs \
             --artifact=.calendar-unified/bahrain.json \
             --country-id=bahrain \
             --authority-id=bahrain-turf-club \
@@ -673,6 +691,9 @@ jobs:
             node scripts/timetable/run-united-kingdom-bha-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/united-kingdom.json
+            node scripts/timetable/run-slovakia-zavodisko-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/slovakia.json
             node scripts/timetable/run-bahrain-btc-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/bahrain.json
@@ -691,6 +712,7 @@ jobs:
               --artifact=.calendar-unified/new-zealand-thoroughbred.json \
               --artifact=.calendar-unified/new-zealand-harness.json \
               --artifact=.calendar-unified/united-kingdom.json \
+              --artifact=.calendar-unified/slovakia.json \
               --artifact=.calendar-unified/bahrain.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/hkjc.json \
@@ -776,6 +798,12 @@ jobs:
               --authority-id=british-horseracing-authority \
               --racing-system-id=united-kingdom-bha-system \
               --timezone=Europe/London
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/slovakia.json \
+              --country-id=slovakia \
+              --authority-id=zavodisko \
+              --racing-system-id=slovakia-zavodisko-system \
+              --timezone=Europe/Bratislava
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/bahrain.json \
               --country-id=bahrain \

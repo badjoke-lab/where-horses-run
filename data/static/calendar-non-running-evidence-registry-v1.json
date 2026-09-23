@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-non-running-evidence-registry-v1",
-  "reviewed_at": "2026-09-22",
+  "reviewed_at": "2026-09-24",
   "records": [
     {
       "record_id": "japan-jra-system",
@@ -375,6 +375,27 @@
       "example_evidence_url": "https://www.britishhorseracing.com/press_releases/bha-confirms-abandonment-of-four-fixtures-following-met-office-extreme-heat-warning/",
       "reviewed_at": "2026-09-23",
       "notes": "Production scans the current official BHA Press Releases index as a bounded positive-evidence subset. Explicit whole-fixture abandonment, cancellation, or venue transfer may suppress the original canonical meeting only after exact date/racecourse binding to one existing BHA meeting. Steeple Chase/race-only abandonment, all-Hurdle conversions, surface-only transfers, start-time changes, and other partial programme changes are rejected. Replacement venue/date is evidence only and never creates a meeting. Index/article absence or acquisition/parser failure emits no negative evidence and preserves verified state."
+    },
+    {
+      "record_id": "slovakia-zavodisko-system",
+      "country_id": "slovakia",
+      "system_id": "slovakia-zavodisko-system",
+      "authority_id": "zavodisko",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Závodisko official calendar positive schedule evidence; whole-meeting cancellation/postponement automation is not bounded in this country-addition pass",
+      "evidence_urls": [
+        "https://zavodisko.sk/terminy-dostihov-2026/"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-09-24",
+      "notes": "Slovakia Calendar production uses positive Závodisko calendar evidence only. Source invisibility or acquisition failure remains absent_unconfirmed and preserves verified state. Existing official cancellation notices are not generalized into automated whole-meeting suppression by this Expansion lane."
     },
     {
       "record_id": "bahrain-turf-club-system",
