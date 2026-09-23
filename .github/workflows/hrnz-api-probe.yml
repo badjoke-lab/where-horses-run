@@ -58,6 +58,7 @@ jobs:
           }
           NODE
           probe harness_openapi 'https://harness.hrnz.co.nz/APIdoc/Version-1.1/HRNZAPI-V1.1.json' /tmp/openapi.json
+          probe hrnz_calendar_pdf 'https://www.hrnz.co.nz/assets/2026.27-Final-Racing-Calendar-TAB-NZ-v1.1.pdf' /tmp/hrnz-calendar.pdf
 
           echo "hrnz_calendar_ics_fingerprint:"
           sed -n '1,40p' /tmp/hrnz.ics | sed 's/[^[:print:]\t]//g' || true
