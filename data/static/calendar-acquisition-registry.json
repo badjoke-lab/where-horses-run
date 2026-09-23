@@ -453,6 +453,35 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "GitHub Actions selects the official BHA annual Fixture List PDF for the active year, extracts national flat/jump meeting date and racecourse observations at the system's current technical ceiling C, and overlays reviewed BHA transfer corrections where available. The registry detail slot intentionally points to the same C-only BHA fixture route because no richer reusable national race-time route is established. Race times are not inferred. Acquisition failure or source absence preserves stronger verified state and is never treated as non-running evidence."
+    },
+    {
+      "system_id": "slovakia-zavodisko-system",
+      "country_id": "slovakia",
+      "authority_id": "zavodisko",
+      "profile_status": "provisional",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "zavodisko-2026-calendar",
+      "detail_source_id": null,
+      "schedule_adapter_id": "slovakia-zavodisko-calendar-b-v1",
+      "detail_adapter_id": null,
+      "technical_capability_rank": "B+",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C",
+        "B"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [
+        "detail_source_id",
+        "detail_adapter_id"
+      ],
+      "operator_notes": "GitHub Actions reads the official Závodisko 2026 national calendar and emits meeting date, verified timetable identity and official first-race time through B. The profile remains provisional because reviewed B+ meeting-page capability is known but no reusable full-calendar detail source/adapter is connected; detail_source_id and detail_adapter_id are explicit pending fields, and current B observations remain implementation_gap rather than terminal success. Public output remains capped at C. Acquisition failure or source absence preserves stronger verified state and never confirms non-running."
     }
   ]
 }

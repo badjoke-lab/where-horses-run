@@ -13,7 +13,7 @@ const orderedSteps = [
   'Collect HKJC official window',
   'Collect UAE official window',
   'Collect KRA official window',
-  'Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France, New Zealand and United Kingdom official windows',
+  'Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France, New Zealand, United Kingdom and Slovakia official windows',
   'Apply non-Japan official observations monotonically',
   'Re-apply frozen reviewed Calendar observations',
   'Apply explicit meeting presence dispositions',
@@ -138,6 +138,13 @@ assert.equal((workflow.match(/--artifact=\.calendar-unified\/united-kingdom\.jso
 assert.equal((workflow.match(/--racing-system-id=united-kingdom-bha-system/g) ?? []).length, 2, 'United Kingdom BHA apply path must bind the canonical racing system id in both execution paths');
 assert.equal((workflow.match(/--timezone=Europe\/London/g) ?? []).length, 2, 'United Kingdom BHA apply path must bind Europe/London in both execution paths');
 
+
+assert.equal((workflow.match(/run-slovakia-zavodisko-official-window\.mjs/g) ?? []).length, 2, 'Slovakia Závodisko must be collected in both normal and latest-main rebuild paths');
+assert.equal((workflow.match(/--authority-id=zavodisko/g) ?? []).length, 2, 'Slovakia Závodisko observations must be applied in both execution paths');
+assert.equal((workflow.match(/--artifact=\.calendar-unified\/slovakia\.json/g) ?? []).length, 4, 'Slovakia artifact must pass exclusion and apply layers in both execution paths without meeting-presence inference');
+assert.equal((workflow.match(/--racing-system-id=slovakia-zavodisko-system/g) ?? []).length, 2, 'Slovakia apply path must bind the canonical racing system id in both execution paths');
+assert.equal((workflow.match(/--timezone=Europe\/Bratislava/g) ?? []).length, 2, 'Slovakia apply path must bind Europe/Bratislava in both execution paths');
+
 console.log('CALENDAR_REFRESH_PUBLICATION_BOUNDARIES: pass');
 console.log('SOREC_UNIFIED_REFRESH_PATHS: 2');
 console.log('IRELAND_HRI_UNIFIED_REFRESH_PATHS: 2');
@@ -146,3 +153,4 @@ console.log('SAUDI_JCSA_UNIFIED_REFRESH_PATHS: 2');
 console.log('FRANCE_FNCH_UNIFIED_REFRESH_PATHS: 2');
 console.log('NEW_ZEALAND_UNIFIED_REFRESH_PATHS: 2');
 console.log('UNITED_KINGDOM_BHA_UNIFIED_REFRESH_PATHS: 2');
+console.log('SLOVAKIA_ZAVODISKO_UNIFIED_REFRESH_PATHS: 2');
