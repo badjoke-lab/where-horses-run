@@ -427,16 +427,19 @@ export function buildLoveracingDetailedRecord(scheduleRow,detail,{checkedAt,prog
 
 export function buildHrnzRecord(row,{checkedAt,calendarUrl,detailStatus='available',attemptStatus='success',errorCode=null}={}) {
   const meetingId=`new-zealand-harness-${row.racecourse_id}-${row.date}`;
+  const fallbackPdf=row.source_kind==='final_calendar_pdf';
+  const routeId=fallbackPdf?'hrnz-final-racing-calendar-pdf':(row.source_url?'hrnz-programme':'hrnz-racing-dates');
+  const extractionMethod=fallbackPdf?'official_hrnz_final_racing_calendar_pdf':(row.source_url?'official_hrnz_programme':'official_hrnz_racing_dates');
   const record={
     candidate_id:meetingId,meeting_id:meetingId,country_id:'new-zealand',
     authority_id:HRNZ_AUTHORITY_ID,racing_system_id:HRNZ_SYSTEM_ID,racecourse_id:row.racecourse_id,
     date:row.date,timezone:NEW_ZEALAND_TIMEZONE,first_race_time_local:row.first_race_time_local??null,last_race_time_local:null,timetable_rows:[],
-    source:{source_id:HRNZ_SOURCE_ID,official_url:row.source_url??calendarUrl,checked_at:checkedAt,extraction_method:row.source_url?'official_hrnz_programme':'official_hrnz_racing_dates'},
-    route_id:row.source_url?'hrnz-programme':'hrnz-racing-dates',confidence:'high',review_status:'needs_review',
-    notes:`Official HRNZ observation; club: ${row.club_label??'unknown'}; venue: ${row.venue_label??'pending programme'}.`,
+    source:{source_id:HRNZ_SOURCE_ID,official_url:row.source_url??calendarUrl,checked_at:checkedAt,extraction_method:extractionMethod},
+    route_id:routeId,confidence:'high',review_status:'needs_review',
+    notes:`Official HRNZ observation; club: ${row.club_label??'unknown'}; venue: ${row.venue_label??'pending programme'}${fallbackPdf?'; recovered from official final racing calendar PDF after live Infohorse route failure':''}.`,
   };
   record.detail_observation={status:detailStatus,evaluated_capability_rank:'B',race_count:0,detail_url:row.source_url??null};
-  record.acquisition_attempt={attempted_at:checkedAt,status:attemptStatus,source_id:HRNZ_SOURCE_ID,route_id:'hrnz-programme',error_code:errorCode};
+  record.acquisition_attempt={attempted_at:checkedAt,status:attemptStatus,source_id:HRNZ_SOURCE_ID,route_id:routeId,error_code:errorCode};
   const calendarEvidence=evidence(HRNZ_SOURCE_ID,calendarUrl,checkedAt);
   record.evidence_support={meeting_date:calendarEvidence,meeting_identity:calendarEvidence};
   if(row.source_url&&row.first_race_time_local) record.evidence_support.race_times=evidence(HRNZ_SOURCE_ID,row.source_url,checkedAt);
