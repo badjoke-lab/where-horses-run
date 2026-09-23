@@ -351,6 +351,27 @@
       "example_evidence_url": "https://www.hrnz.co.nz/news/thursdays-alexandra-park-meeting-postponed-until-saturday/",
       "reviewed_at": "2026-09-23",
       "notes": "Production scans only the current official HRNZ News index as a bounded positive-evidence subset. Explicit whole-meeting called-off, postponement, or venue-transfer wording may produce evidence. Relative weekday wording is not sufficient by itself: the derived candidate date and original venue must bind to exactly one existing canonical HRNZ meeting with the expected canonical meeting ID. Replacement venue/date remains evidence only and never creates a meeting. News/index/article acquisition failure emits no negative evidence and preserves verified state."
+    },
+    {
+      "record_id": "united-kingdom-bha-system",
+      "country_id": "united-kingdom",
+      "system_id": "united-kingdom-bha-system",
+      "authority_id": "british-horseracing-authority",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "BHA annual Fixture List and positive reviewed fixture-transfer evidence; no bounded automated whole-meeting negative-evidence route is enabled by this country-addition pass",
+      "evidence_urls": [
+        "https://www.britishhorseracing.com/racing/fixtures/full-year/"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-09-23",
+      "notes": "UK Calendar production uses BHA positive fixture evidence only in this expansion lane. Missing annual rows, source acquisition failure, or a changed fixture route remains absent_unconfirmed and preserves verified state; cancellation/postponement automation belongs to the separate negative-evidence lane."
     }
   ]
 }

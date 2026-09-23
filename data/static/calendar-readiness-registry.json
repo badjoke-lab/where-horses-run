@@ -1785,27 +1785,28 @@
         "surface": false,
         "course": false
       },
-      "source_format": "mixed",
+      "source_format": "pdf",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
         "seasonal",
-        "weekly",
-        "manual"
+        "weekly"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate at annual fixture rollover or if BHA changes the fixture route.",
+      "checked_date": "2026-09-23",
+      "evidence_reviewed_at": "2026-09-23",
+      "revalidation_trigger": "Revalidate at annual fixture rollover, if BHA changes the full-year fixture route, or when reviewed transfer corrections change.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/29-united-kingdom/final-summary.json",
       "limitations": [
-        "A stable reusable national race-time route was not established."
+        "The automated route confirms meeting date and racecourse only; first-race and per-race post times are not claimed.",
+        "The annual BHA Fixture List may require later official transfer corrections; reviewed BHA transfer overrides are layered where available.",
+        "Source absence or acquisition failure is not non-running evidence."
       ],
-      "notes": "The national Calendar decision is complete at meeting-date and racecourse level."
+      "notes": "Automated BHA annual Fixture List PDF supplies the national flat/jump mother set at rank C, with reviewed BHA venue-transfer corrections applied where available."
     },
     {
       "readiness_id": "united-states--united-states-equibase-thoroughbred--equibase-entries",
