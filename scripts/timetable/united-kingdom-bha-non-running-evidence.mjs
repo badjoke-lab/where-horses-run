@@ -81,6 +81,14 @@ export function parseBhaNonRunningArticle(html,{sourceUrl,startDate=null,endDate
 
   if(/\bfixtures scheduled to take place at chelmsford city racecourse\b/.test(n)&&/\bhave been transferred\b/.test(n)){
     const year=published?Number(published.slice(0,4)):null;const rows=[];
+    const currentRx=new RegExp("\\bhave been transferred to\\s+([a-z][a-z -]{2,50})[.]?\\s+the fixtures are scheduled for (?:the )?evenings? of\\s+(\\d{1,2})\\s+("+MONTH_PATTERN+")\\s+and\\s+(\\d{1,2})\\s+("+MONTH_PATTERN+")\\s+and will remain on the same date\\b",'i');
+    const singleReplacement=n.match(currentRx);
+    if(year&&singleReplacement){
+      for(const [day,month] of [[singleReplacement[2],singleReplacement[3]],[singleReplacement[4],singleReplacement[5]]]){
+        const date=dateFrom(day,month,year);
+        if(date&&inWindow(date,startDate,endDateExclusive))rows.push(makeEvidence({date,venue:'Chelmsford City',replacementVenue:singleReplacement[1].trim(),sourceUrl,text,kind:'transfer'}));
+      }
+    }
     if(year){
       const rx=new RegExp('\\b(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)\\s+(\\d{1,2})\\s+('+MONTH_PATTERN+')\\s+[–—-]\\s+([a-z][a-z -]{2,50}?)(?=\\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)\\s+\\d|\\s+the race programmes|$)','gi');
       for(const m of n.matchAll(rx)){
