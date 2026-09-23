@@ -10,6 +10,11 @@ import {
   parseHrnzIndex,parseHrnzMonthPage,parseHrnzProgrammePage,parseHrnzFinalCalendarItems,
   buildNztrFixtureRecord,buildLoveracingDetailedRecord,buildHrnzRecord,
 } from './new-zealand-official-core.mjs';
+import {
+  NZTR_NEWS_URL,HRNZ_NEWS_URL,NZTR_NON_RUNNING_SOURCE_ID,HRNZ_NON_RUNNING_SOURCE_ID,
+  bindNewZealandNonRunningEvidence,discoverNztrNonRunningArticles,discoverHrnzNonRunningArticles,
+  parseNztrNonRunningArticle,parseHrnzNonRunningArticle,
+} from './new-zealand-non-running-evidence.mjs';
 
 function arg(name,fallback=null){const v=process.argv.find(x=>x.startsWith(`--${name}=`));return v?v.slice(name.length+3):fallback;}
 function plusDays(date,count){const d=new Date(`${date}T00:00:00Z`);d.setUTCDate(d.getUTCDate()+count);return d.toISOString().slice(0,10);}
@@ -81,6 +86,11 @@ async function getPdfLayout(url){
   }
   return {items,url:response.url||url};
 }
+function readCanonicalMeetings(file){
+  if(!fs.existsSync(file)) return [];
+  const data=JSON.parse(fs.readFileSync(file,'utf8'));
+  return Array.isArray(data?.meetings)?data.meetings:[];
+}
 function write(file,value){const target=path.resolve(file);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,`${JSON.stringify(value,null,2)}\n`);}
 function rankCounts(records){return Object.fromEntries(['C','B','B+','A','A+'].map(rank=>[rank,records.filter(r=>r.capability_rank===rank).length]));}
 function detailCounts(records){return Object.fromEntries(['available','not_published','source_error','parser_failure'].map(status=>[status,records.filter(r=>r.detail_observation?.status===status).length]));}
@@ -89,6 +99,7 @@ const thoroughbredOutput=arg('thoroughbred-output');
 const harnessOutput=arg('harness-output');
 const days=Number(arg('days','30'));
 const start=arg('as-of',localDate());
+const canonicalPath=arg('canonical','data/generated/timetable/canonical/meetings.json');
 if(!thoroughbredOutput||!harnessOutput) throw new Error('--thoroughbred-output=<path> and --harness-output=<path> are required');
 if(!/^\d{4}-\d{2}-\d{2}$/.test(start)) throw new Error('--as-of must be YYYY-MM-DD');
 if(!Number.isInteger(days)||days<1||days>62) throw new Error('--days must be 1..62');
@@ -216,14 +227,59 @@ if(harnessRecords.length===0&&hrnzPrimaryError){
 thoroughbredRecords.sort((a,b)=>a.date.localeCompare(b.date)||a.racecourse_id.localeCompare(b.racecourse_id));
 harnessRecords.sort((a,b)=>a.date.localeCompare(b.date)||a.racecourse_id.localeCompare(b.racecourse_id));
 
+const canonicalRows=readCanonicalMeetings(canonicalPath);
+
+async function collectNewsEvidence({indexUrl,discover,parse,sourceId}){
+  const articleResults=[];const evidence=[];let status='source_error';
+  try{
+    const index=await getHtml(indexUrl);
+    const discovery=discover(index.html,{sourceUrl:index.url});
+    for(const sourceUrl of discovery.article_urls){
+      try{
+        const article=await getHtml(sourceUrl);
+        const parsed=parse(article.html,{sourceUrl:article.url,startDate:start,endDateExclusive:end});
+        evidence.push(...parsed.evidence);
+        articleResults.push({source_url:article.url,status:'success',...parsed.diagnostics});
+      }catch(error){
+        articleResults.push({source_url:sourceUrl,status:'source_error',error:String(error?.message??error)});
+      }
+    }
+    status=articleResults.some(row=>row.status==='source_error')?'partial_success':'success';
+    return {status,source_id:sourceId,source_url:index.url,candidate_article_count:discovery.article_urls.length,accepted_evidence_count:evidence.length,article_results:articleResults,evidence};
+  }catch(error){
+    return {status:'source_error',source_id:sourceId,source_url:indexUrl,candidate_article_count:0,accepted_evidence_count:0,article_results:[{source_url:indexUrl,status:'source_error',error:String(error?.message??error)}],evidence:[]};
+  }
+}
+
+const nztrNonRunningRaw=await collectNewsEvidence({
+  indexUrl:NZTR_NEWS_URL,discover:discoverNztrNonRunningArticles,parse:parseNztrNonRunningArticle,sourceId:NZTR_NON_RUNNING_SOURCE_ID
+});
+const hrnzNonRunningRaw=await collectNewsEvidence({
+  indexUrl:HRNZ_NEWS_URL,discover:discoverHrnzNonRunningArticles,parse:parseHrnzNonRunningArticle,sourceId:HRNZ_NON_RUNNING_SOURCE_ID
+});
+const nztrBound=bindNewZealandNonRunningEvidence({evidence:nztrNonRunningRaw.evidence,canonicalMeetings:canonicalRows,checkedAt:generatedAt});
+const hrnzBound=bindNewZealandNonRunningEvidence({evidence:hrnzNonRunningRaw.evidence,canonicalMeetings:canonicalRows,checkedAt:generatedAt});
+const nztrNonRunning={
+  ...nztrNonRunningRaw,
+  confirmed_non_running_count:nztrBound.meeting_presence_records.length,
+  binding_skipped:nztrBound.diagnostics.skipped,
+};
+delete nztrNonRunning.evidence;
+const hrnzNonRunning={
+  ...hrnzNonRunningRaw,
+  confirmed_non_running_count:hrnzBound.meeting_presence_records.length,
+  binding_skipped:hrnzBound.diagnostics.skipped,
+};
+delete hrnzNonRunning.evidence;
+
 const thoroughbred={
   schema_version:'new-zealand-thoroughbred-official-window-candidates-v1',
   generated_at:generatedAt,country_id:'new-zealand',authority_id:NZTR_AUTHORITY_ID,racing_system_id:NZTR_SYSTEM_ID,timezone:NEW_ZEALAND_TIMEZONE,
   source_id:NZTR_RPG_SOURCE_ID,detail_source_id:LOVERACING_SOURCE_ID,collection_target_rank:'best_available',raw_body_retained:false,
   acquisition_attempt:{attempted_at:generatedAt,status:rpgProgrammeUrl?'success':'network_error',source_id:NZTR_RPG_SOURCE_ID,route_id:'nztr-rpg-current-programmes',error_code:rpgProgrammeUrl?null:'fetch_error'},
-  discovery:{method:'nztr_rpg_plus_current_loveracing_meeting_details',schedule_source_url:rpgProgrammeUrl??NZTR_RPG_LANDING_URL,detail_source_url:LOVERACING_INDEX_URL,rank_counts:rankCounts(thoroughbredRecords),detail_status_counts:detailCounts(thoroughbredRecords)},
+  discovery:{method:'nztr_rpg_plus_current_loveracing_meeting_details',schedule_source_url:rpgProgrammeUrl??NZTR_RPG_LANDING_URL,detail_source_url:LOVERACING_INDEX_URL,non_running_source_id:NZTR_NON_RUNNING_SOURCE_ID,non_running_source_status:nztrNonRunning.status,rank_counts:rankCounts(thoroughbredRecords),detail_status_counts:detailCounts(thoroughbredRecords)},
   window:{start_date:start,end_date_exclusive:end,days,coverage_claim:tbDiagnostics.source_errors.some(x=>x.stage==='nztr_rpg')?'partial_source_visible_horizon':'official_programme_guide_horizon',coverage_note:'The latest NZTR Racing Programme Guide is the Thoroughbred mother set for the requested window. Current LOVERACING meeting pages promote published complete race-time rows through rank A. Detail not yet published remains C/pending. Source absence or acquisition failure never confirms non-running.'},
-  records:thoroughbredRecords,diagnostics:tbDiagnostics,
+  records:thoroughbredRecords,meeting_presence_records:nztrBound.meeting_presence_records,diagnostics:{...tbDiagnostics,non_running:nztrNonRunning},
 };
 const harness={
   schema_version:'new-zealand-hrnz-official-window-candidates-v1',
@@ -244,6 +300,8 @@ const harness={
     fallback_used:hrnzFallbackUsed,
     rank_counts:rankCounts(harnessRecords),
     detail_status_counts:detailCounts(harnessRecords),
+    non_running_source_id:HRNZ_NON_RUNNING_SOURCE_ID,
+    non_running_source_status:hrnzNonRunning.status,
   },
   window:{
     start_date:start,end_date_exclusive:end,days,
@@ -252,13 +310,13 @@ const harness={
       ? 'The official HRNZ final racing-calendar PDF recovered the Harness mother set after the live Infohorse route was blocked. The PDF supplies meeting date, club, scheduled first-race time, and source-verified physical venue mappings through rank B. An unresolved venue is diagnostic-only; source absence or route failure never confirms non-running.'
       : 'Official HRNZ Racing Dates month pages provide the harness meeting mother set. Linked official programme pages resolve the physical venue and may provide the first-race start time through rank B. Missing or failed programme retrieval is a retry state and never negative evidence.',
   },
-  records:harnessRecords,diagnostics:harnessDiagnostics,
+  records:harnessRecords,meeting_presence_records:hrnzBound.meeting_presence_records,diagnostics:{...harnessDiagnostics,non_running:hrnzNonRunning},
 };
 write(thoroughbredOutput,thoroughbred);
 write(harnessOutput,harness);
 console.log(JSON.stringify({
   start_date:start,end_date_exclusive:end,
-  thoroughbred:{output:thoroughbredOutput,meetings:thoroughbredRecords.length,rank_counts:thoroughbred.discovery.rank_counts,detail_status_counts:thoroughbred.discovery.detail_status_counts,source_errors:tbDiagnostics.source_errors.length},
-  harness:{output:harnessOutput,meetings:harnessRecords.length,rank_counts:harness.discovery.rank_counts,detail_status_counts:harness.discovery.detail_status_counts,source_errors:harnessDiagnostics.source_errors.length,route_failures:harnessDiagnostics.route_failures.length,unknown_venues:harnessDiagnostics.unknown_venues.length,fallback_used:hrnzFallbackUsed},
+  thoroughbred:{output:thoroughbredOutput,meetings:thoroughbredRecords.length,confirmed_non_running_count:thoroughbred.meeting_presence_records.length,non_running_source_status:nztrNonRunning.status,rank_counts:thoroughbred.discovery.rank_counts,detail_status_counts:thoroughbred.discovery.detail_status_counts,source_errors:tbDiagnostics.source_errors.length},
+  harness:{output:harnessOutput,meetings:harnessRecords.length,confirmed_non_running_count:harness.meeting_presence_records.length,non_running_source_status:hrnzNonRunning.status,rank_counts:harness.discovery.rank_counts,detail_status_counts:harness.discovery.detail_status_counts,source_errors:harnessDiagnostics.source_errors.length,route_failures:harnessDiagnostics.route_failures.length,unknown_venues:harnessDiagnostics.unknown_venues.length,fallback_used:hrnzFallbackUsed},
   raw_body_retained:false,
 }));
