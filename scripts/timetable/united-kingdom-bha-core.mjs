@@ -235,6 +235,12 @@ export function buildBhaFixtureRecord(row,{checkedAt}={}) {
     confidence:'high',
     review_status:'needs_review',
     notes:'Official BHA national fixture observation at meeting-date/racecourse level only; no race times claimed.',
+    detail_observation:{
+      status:'available',
+      evaluated_capability_rank:'C',
+      race_count:0,
+      fixture_source_url:sourceUrl,
+    },
     acquisition_attempt:{
       attempted_at:checkedAt,
       status:'success',
