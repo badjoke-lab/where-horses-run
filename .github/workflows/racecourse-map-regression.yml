@@ -9,6 +9,7 @@ on:
       - 'data/static/racecourse-location-supplement-evidence-v1.json'
       - 'data/static/country-page-racecourses-12-zimbabwe.json'
       - 'scripts/generate-racecourse-map-geojson.mjs'
+      - 'scripts/check-calendar-public-map-parity.mjs'
       - 'scripts/check-country-page-map-scope.mjs'
       - 'src/components/CountryHubPage.astro'
       - 'src/lib/data.ts'
@@ -41,6 +42,9 @@ jobs:
 
       - name: Validate racecourse map projection
         run: npm run validate:racecourse-map-projection
+
+      - name: Validate public Calendar map parity
+        run: npm run validate:calendar-public-map-parity
 
       - name: Validate country-page map scope
         run: npm run validate:country-page-map-scope
