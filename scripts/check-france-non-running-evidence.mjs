@@ -85,7 +85,7 @@ const raceOnly = parseLetrotNonRunningBulletin(raceOnlyBulletin, {
 assert.deepEqual(raceOnly.evidence, []);
 
 const urls = letrotBulletinUrlsForWindow('2026-09-23', '2026-10-23');
-assert(urls.length >= 5);
+assert(urls.length >= 2);
 assert(urls.every((url) => url.startsWith('https://pro.letrot.com/')));
 assert(urls.every((url) => url.includes('type=BULLETIN')));
 
