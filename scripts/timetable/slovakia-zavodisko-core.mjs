@@ -158,7 +158,7 @@ export function buildSlovakiaMeetingRecord(row, { checkedAt } = {}) {
     evidence_support: {
       meeting_identity: e,
       meeting_date: e,
-      first_race_time: e,
+      race_times: e,
     },
   };
 
