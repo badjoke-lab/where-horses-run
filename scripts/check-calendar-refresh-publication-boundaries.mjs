@@ -134,7 +134,7 @@ assert.equal((workflow.match(/--timezone=Pacific\/Auckland/g) ?? []).length, 4, 
 
 assert.equal((workflow.match(/run-united-kingdom-bha-official-window\.mjs/g) ?? []).length, 2, 'United Kingdom BHA must be collected in both normal and latest-main rebuild paths');
 assert.equal((workflow.match(/--authority-id=british-horseracing-authority/g) ?? []).length, 2, 'United Kingdom BHA observations must be applied in both execution paths');
-assert.equal((workflow.match(/--artifact=\.calendar-unified\/united-kingdom\.json/g) ?? []).length, 4, 'United Kingdom BHA artifact must pass exclusion and apply layers in both execution paths');
+assert.equal((workflow.match(/--artifact=\.calendar-unified\/united-kingdom\.json/g) ?? []).length, 6, 'United Kingdom BHA artifact must pass exclusion, apply, and meeting-presence layers in both execution paths');
 assert.equal((workflow.match(/--racing-system-id=united-kingdom-bha-system/g) ?? []).length, 2, 'United Kingdom BHA apply path must bind the canonical racing system id in both execution paths');
 assert.equal((workflow.match(/--timezone=Europe\/London/g) ?? []).length, 2, 'United Kingdom BHA apply path must bind Europe/London in both execution paths');
 
