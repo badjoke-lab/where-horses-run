@@ -3,12 +3,13 @@ import fs from 'node:fs/promises';
 
 const read = (path) => fs.readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
-const [brand, map, runtime, compact, timetable] = await Promise.all([
+const [brand, map, runtime, compact, timetable, media] = await Promise.all([
   read('src/styles/brand-v1.css'),
   read('src/components/RacecourseMap.astro'),
   read('src/components/MeetingLiveStatusRuntime.astro'),
   read('src/styles/meeting-list-compact-v1.css'),
   read('src/components/TimetableMeetingList.astro'),
+  read('src/data/racingMediaLinks.ts'),
 ]);
 
 assert.doesNotMatch(
@@ -60,6 +61,68 @@ assert.match(compact, /presentation-state='today'[^\{]*\{[\s\S]*?background:\s*#
   'today rows must use #fffcf4');
 assert.match(compact, /presentation-state='ended'[^\{]*\{[\s\S]*?background:\s*#f6f7f8 !important;/,
   'ended rows must use #f6f7f8');
+
+assert.match(
+  media,
+  /export type RacingMediaAccessTag =[\s\S]*?'free'[\s\S]*?'betting_account_required'[\s\S]*?'paid'[\s\S]*?'geo_restricted'/,
+  'media registry must model visible access conditions independently from stream state',
+);
+for (const authorityId of [
+  'korea-racing-authority',
+  'sorec',
+  'teletrak-chile',
+  'horse-racing-ireland',
+  'hipodromo-de-monterrico',
+  'jockey-club-of-saudi-arabia',
+  'france-galop',
+  'new-zealand-thoroughbred-racing',
+  'harness-racing-new-zealand',
+  'british-horseracing-authority',
+]) {
+  assert.match(media, new RegExp(`authority_id: '${authorityId}'`), `media registry must cover ${authorityId}`);
+}
+assert.match(media, /id: 'kra-krbc-youtube-selected-2026'[\s\S]*?coverage: 'selected_meetings'[\s\S]*?access_tags: \['free'\]/,
+  'KRA/KRBC must remain explicitly selected-coverage rather than pretending every meeting is streamed');
+assert.match(media, /id: 'nz-tab-watch-bet-live-2026'[\s\S]*?access_tags: \['betting_account_required', 'geo_restricted'\]/,
+  'New Zealand TAB stream must expose betting-account and geo restrictions');
+assert.match(media, /id: 'nz-tab-watch-bet-live-2026'[\s\S]*?coverage: 'selected_meetings'/,
+  'New Zealand TAB stream must not overclaim all-meeting coverage');
+assert.match(media, /id: 'nz-hrnz-tab-watch-bet-live-2026'[\s\S]*?coverage: 'selected_meetings'/,
+  'New Zealand harness TAB stream must not overclaim all-meeting coverage');
+assert.match(media, /id: 'sorec-tv-live-2026'[\s\S]*?coverage: 'selected_meetings'[\s\S]*?access_tags: \['access_unknown'\]/,
+  'SOREC TV must stay selected-coverage with unknown public access conditions');
+assert.match(media, /id: 'letrot-equidia-live-2026'[\s\S]*?coverage: 'selected_meetings'[\s\S]*?access_tags: \['access_unknown'\]/,
+  'LeTROT Equidia route must not overclaim access or all-meeting coverage');
+assert.match(media, /id: 'monterrico-live-2026'[\s\S]*?https:\/\/monterrico\.elturf\.com\/carreras-senal-en-vivo/,
+  'Monterrico must link to the exact official live-signal page');
+assert.match(media, /id: 'chile-valparaiso-live-2026'[\s\S]*?https:\/\/www\.sporting\.cl\/hipica\/front\/es\/signal\/index\.html/,
+  'Valparaiso must link to the exact official live-signal page');
+assert.match(media, /id: 'ireland-racing-tv-live-2026'[\s\S]*?access_tags: \['paid'\]/,
+  'Irish Racing TV route must expose paid access');
+assert.match(media, /id: 'uk-sky-sports-racing-live-2026'[\s\S]*?access_tags: \['paid', 'geo_restricted'\]/,
+  'ATR Player route must expose paid and geographic restrictions');
+assert.match(media, /id: 'france-galop-equidia-live-2026'[\s\S]*?access: 'subscription'[\s\S]*?access_tags: \['paid'\]/,
+  'France Galop Equidia route must expose the subscription requirement stated by France Galop');
+assert.match(media, /id: 'uk-sky-sports-racing-live-2026'[\s\S]*?bangor-on-dee-racecourse[\s\S]*?chester-racecourse[\s\S]*?doncaster-racecourse[\s\S]*?lingfield-park-racecourse[\s\S]*?newbury-racecourse[\s\S]*?windsor-racecourse/,
+  'Sky Sports Racing mapping must include the current ATR official rights-list courses');
+assert.match(media, /id: 'uk-racing-tv-live-2026'[\s\S]*?scope: 'track'[\s\S]*?coverage: 'all_meetings'[\s\S]*?aintree-racecourse[\s\S]*?wincanton-racecourse[\s\S]*?york-racecourse/,
+  'Racing TV mapping must be explicit by racecourse rather than an authority-wide fallback');
+
+assert.match(timetable, /data-live-access-tags=/,
+  'Calendar rows must expose media access tags to the rendered DOM');
+assert.match(timetable, /meeting-row__stream-badges/,
+  'Calendar must render stream access badges visibly rather than hiding conditions in a title tooltip');
+assert.match(timetable, /BETTING ACCOUNT/,
+  'English Calendar access labels must include betting-account disclosure');
+assert.match(timetable, /投票口座/,
+  'Japanese Calendar access labels must include betting-account disclosure');
+assert.doesNotMatch(
+  timetable,
+  /record\.authority_id === 'korea-racing-authority'.*kra-krbc/s,
+  'selected KRA/KRBC media must not be wired into the global per-day live detector',
+);
+assert.match(compact, /\.meeting-row__stream-badge[\s\S]*?font-size:\s*0\.54rem/,
+  'stream access badges must retain compact desktop presentation');
 
 assert.doesNotMatch(timetable, /#fff3c4/,
   'TimetableMeetingList must not retain the old merged upcoming/today row color');
