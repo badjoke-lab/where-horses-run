@@ -133,6 +133,39 @@ const mediaTitle = (record: TimetableMeetingRow) => {
     ? record.live_media.access_note_ja ?? `${record.live_media.provider_label}の公式配信ページ`
     : record.live_media.access_note_en ?? `Official stream page from ${record.live_media.provider_label}`;
 };
+const mediaBadgeLabels = lang === 'ja'
+  ? {
+      free: '無料',
+      account_required: '会員',
+      betting_account_required: '投票口座',
+      paid: '有料',
+      geo_restricted: '地域制限',
+      access_unknown: '条件未確認',
+      selected_meetings: '一部配信',
+      feature_only: '特定競走',
+      seasonal: '季節限定',
+    }
+  : {
+      free: 'FREE',
+      account_required: 'ACCOUNT',
+      betting_account_required: 'BETTING ACCOUNT',
+      paid: 'PAID',
+      geo_restricted: 'GEO',
+      access_unknown: 'ACCESS ?',
+      selected_meetings: 'SELECTED',
+      feature_only: 'FEATURE ONLY',
+      seasonal: 'SEASONAL',
+    };
+const mediaBadges = (record: TimetableMeetingRow) => {
+  if (!record.live_media) return [];
+  const accessBadges = record.live_media.access_tags
+    .map((tag) => mediaBadgeLabels[tag])
+    .filter(Boolean);
+  const coverageBadge = record.live_media.coverage === 'all_meetings'
+    ? null
+    : mediaBadgeLabels[record.live_media.coverage];
+  return coverageBadge ? [...accessBadges, coverageBadge] : accessBadges;
+};
 const isMeetingStateEligible = (record: TimetableMeetingRow) =>
   Boolean(record.first_race_time_local && record.last_race_time_local);
 const hasStaleRecords = groups.some((group) => group.records.some((record) => freshnessFor(record).status === 'stale'));
@@ -191,6 +224,10 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
                 data-rank={record.capability_rank}
                 data-live-available={String(record.live_media !== null)}
                 data-live-platform={record.live_media?.platform ?? ''}
+                data-live-provider={record.live_media?.provider_label ?? ''}
+                data-live-access={record.live_media?.access ?? ''}
+                data-live-access-tags={record.live_media?.access_tags.join(',') ?? ''}
+                data-live-coverage={record.live_media?.coverage ?? ''}
                 data-media-id={record.live_media?.id ?? ''}
                 data-live-detector-id={liveDetectorId}
                 data-meeting-state-eligible={String(isMeetingStateEligible(record))}
@@ -214,7 +251,12 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
                 </div>
                 <div class="meeting-row__links">
                   {record.live_media && (
-                    <a href={record.live_media.landing_url} target="_blank" rel="noopener noreferrer" title={mediaTitle(record)} data-live-link data-live-default-href={record.live_media.landing_url}>{text.officialStream}</a>
+                    <span class="meeting-row__stream">
+                      <a href={record.live_media.landing_url} target="_blank" rel="noopener noreferrer" title={mediaTitle(record)} data-live-link data-live-default-href={record.live_media.landing_url}>{text.officialStream}</a>
+                      <span class="meeting-row__stream-badges" aria-label={lang === 'ja' ? '配信条件' : 'Stream access'}>
+                        {mediaBadges(record).map((badge) => <span class="meeting-row__stream-badge">{badge}</span>)}
+                      </span>
+                    </span>
                   )}
                   {record.detail_path && <a href={localizedDetailPath(record.detail_path)}>{text.detail}</a>}
                   <a href={record.official_source_url} target="_blank" rel="noopener noreferrer">{text.officialSite}</a>
