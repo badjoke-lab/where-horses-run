@@ -26,7 +26,7 @@ function writeArtifact(rel, value) {
   fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
 }
 function state(rank, freshness) {
-  const hk = { meeting_id: 'hk-test-2026-09-11', country_id: 'hong-kong', authority_id: 'hkjc', capability_rank: rank, freshness: { generated_at: freshness, last_checked_date: '2026-09-11' } };
+  const hk = { meeting_id: 'hk-test-2026-09-11', country_id: 'hong-kong', authority_id: 'hkjc', capability_rank: rank, first_post: rank === 'B' ? '13:55' : '13:40', freshness: { generated_at: freshness, last_checked_date: '2026-09-11' } };
   const jra = { meeting_id: 'jra-test-2026-09-11', country_id: 'japan', authority_id: 'japan-racing-association', capability_rank: 'A+', freshness: { generated_at: freshness, last_checked_date: '2026-09-11' } };
   const saudi = { meeting_id: 'saudi-test-2026-09-11', country_id: 'saudi-arabia', authority_id: 'jockey-club-of-saudi-arabia', capability_rank: 'C', freshness: { generated_at: freshness, last_checked_date: '2026-09-11' } };
   write('data/generated/timetable/canonical/meetings.json', { meetings: [hk, jra, saudi] });
@@ -92,6 +92,13 @@ try {
   assert.equal(hk.checked, 1);
   assert.equal(hk.changed, 1);
   assert.equal(hk.promoted, 1);
+  assert.equal(hk.changes.length, 1);
+  assert.equal(hk.changes[0].meeting_id, 'hk-test-2026-09-11');
+  assert.equal(hk.changes[0].change_type, 'promoted');
+  assert.deepEqual(hk.changes[0].fields.find((row) => row.field === 'canonical.first_post'), {
+    field: 'canonical.first_post', old_value: '13:40', new_value: '13:55',
+  });
+  assert.equal(hk.changes[0].fields.some((row) => row.field.includes('freshness')), false);
   const saudi = summary.systems.find((row) => row.racing_system_id === 'saudi-arabia-jcsa-system');
   assert.equal(saudi.status, 'audited');
   assert.equal(saudi.checked, 1);
@@ -102,6 +109,7 @@ try {
   assert.equal(jra.checked, 1);
   assert.equal(jra.changed, 0, 'freshness-only change must not count as substantive');
   assert.equal(jra.promoted, 0);
+  assert.deepEqual(jra.changes, []);
   console.log('refresh audit summary check: ok');
 } finally {
   fs.rmSync(root, { recursive: true, force: true });
