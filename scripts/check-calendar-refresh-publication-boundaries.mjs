@@ -125,8 +125,8 @@ assert.equal((workflow.match(/--timezone=Europe\/Paris/g) ?? []).length, 4, 'Fra
 assert.equal((workflow.match(/run-new-zealand-official-window\.mjs/g) ?? []).length, 2, 'New Zealand must be collected in both normal and latest-main rebuild paths');
 assert.equal((workflow.match(/--authority-id=new-zealand-thoroughbred-racing/g) ?? []).length, 2, 'New Zealand Thoroughbred observations must be applied in both execution paths');
 assert.equal((workflow.match(/--authority-id=harness-racing-new-zealand/g) ?? []).length, 2, 'New Zealand harness observations must be applied in both execution paths');
-assert.equal((workflow.match(/--artifact=\.calendar-unified\/new-zealand-thoroughbred\.json/g) ?? []).length, 4, 'New Zealand Thoroughbred artifact must pass exclusion and apply layers in both execution paths');
-assert.equal((workflow.match(/--artifact=\.calendar-unified\/new-zealand-harness\.json/g) ?? []).length, 4, 'New Zealand harness artifact must pass exclusion and apply layers in both execution paths');
+assert.equal((workflow.match(/--artifact=\.calendar-unified\/new-zealand-thoroughbred\.json/g) ?? []).length, 6, 'New Zealand Thoroughbred artifact must pass exclusion, apply, and meeting-presence layers in both execution paths');
+assert.equal((workflow.match(/--artifact=\.calendar-unified\/new-zealand-harness\.json/g) ?? []).length, 6, 'New Zealand harness artifact must pass exclusion, apply, and meeting-presence layers in both execution paths');
 assert.equal((workflow.match(/--racing-system-id=new-zealand-thoroughbred-system/g) ?? []).length, 2, 'New Zealand Thoroughbred apply path must bind the canonical racing system id in both execution paths');
 assert.equal((workflow.match(/--racing-system-id=new-zealand-harness-system/g) ?? []).length, 2, 'New Zealand harness apply path must bind the canonical racing system id in both execution paths');
 assert.equal((workflow.match(/--timezone=Pacific\/Auckland/g) ?? []).length, 4, 'New Zealand apply paths must bind Pacific/Auckland for both systems in both execution paths');

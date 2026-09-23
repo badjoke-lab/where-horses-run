@@ -310,42 +310,47 @@
       "country_id": "new-zealand",
       "system_id": "new-zealand-thoroughbred-system",
       "authority_id": "new-zealand-thoroughbred-racing",
-      "mode": "unsupported",
-      "automation_status": "not_implemented",
-      "whole_meeting_non_running": "not_proven",
+      "mode": "automated",
+      "automation_status": "active",
+      "whole_meeting_non_running": "supported",
       "postponement": "not_proven",
       "partial_race_policy": "never_promote_to_whole_meeting",
       "source_absence_policy": "absent_unconfirmed",
       "acquisition_failure_policy": "preserve_verified_state",
       "replacement_date_policy": "independent_meeting_only",
-      "evidence_source_family": "New Zealand Thoroughbred positive schedule/programme sources; no bounded whole-meeting negative-evidence route proven in this country-addition pass",
+      "evidence_source_family": "NZTR official News index; bounded explicit future-meeting removal and whole-meeting venue-transfer evidence",
       "evidence_urls": [
-        "https://nztr.co.nz/racing-programme-guide"
+        "https://nztr.co.nz/news",
+        "https://nztr.co.nz/news/awapuni-synthetic-meeting-update-and-incentive-series-confirmed",
+        "https://nztr.co.nz/news/ellerslie-25-may-meeting-transferred-following-abandonment-saturday"
       ],
-      "example_evidence_url": null,
+      "example_evidence_url": "https://nztr.co.nz/news/awapuni-synthetic-meeting-update-and-incentive-series-confirmed",
       "reviewed_at": "2026-09-23",
-      "notes": "New Zealand Calendar production uses positive official schedule evidence only. Source invisibility, unpublished detail, or acquisition failure remains absent_unconfirmed and preserves verified state. Cancellation/postponement automation is outside this expansion pass."
+      "notes": "Production scans only the current official NZTR News index as a bounded positive-evidence subset. Explicit future-meeting removal from the racing calendar and explicit whole-meeting venue transfer may suppress the original canonical meeting. An abandonment after racing has begun, including the Awapuni 2025 abandonment after the first race, is rejected and never suppresses the whole meeting. Date text without a year must resolve uniquely inside the active window using the article publication date. Evidence binds only to exactly one existing canonical meeting; replacement venue/date never creates a meeting. News/index/article acquisition failure emits no negative evidence and preserves verified state."
     },
     {
       "record_id": "new-zealand-harness-system",
       "country_id": "new-zealand",
       "system_id": "new-zealand-harness-system",
       "authority_id": "harness-racing-new-zealand",
-      "mode": "unsupported",
-      "automation_status": "not_implemented",
-      "whole_meeting_non_running": "not_proven",
-      "postponement": "not_proven",
+      "mode": "automated",
+      "automation_status": "active",
+      "whole_meeting_non_running": "supported",
+      "postponement": "supported",
       "partial_race_policy": "never_promote_to_whole_meeting",
       "source_absence_policy": "absent_unconfirmed",
       "acquisition_failure_policy": "preserve_verified_state",
       "replacement_date_policy": "independent_meeting_only",
-      "evidence_source_family": "Harness Racing New Zealand positive schedule/programme sources; no bounded whole-meeting negative-evidence route proven in this country-addition pass",
+      "evidence_source_family": "Harness Racing New Zealand official News index; bounded explicit called-off, postponed, and whole-meeting venue-transfer evidence",
       "evidence_urls": [
-        "https://infohorse.hrnz.co.nz/datahrs/calendar/raceday/dates_index.htm"
+        "https://www.hrnz.co.nz/news/",
+        "https://www.hrnz.co.nz/news/cambridges-thursday-meeting-called-off-not-viable/",
+        "https://www.hrnz.co.nz/news/thursdays-alexandra-park-meeting-postponed-until-saturday/",
+        "https://www.hrnz.co.nz/news/methven-meeting-transferred-to-ashburton/"
       ],
-      "example_evidence_url": null,
+      "example_evidence_url": "https://www.hrnz.co.nz/news/thursdays-alexandra-park-meeting-postponed-until-saturday/",
       "reviewed_at": "2026-09-23",
-      "notes": "New Zealand Calendar production uses positive official schedule evidence only. Source invisibility, unpublished detail, or acquisition failure remains absent_unconfirmed and preserves verified state. Cancellation/postponement automation is outside this expansion pass."
+      "notes": "Production scans only the current official HRNZ News index as a bounded positive-evidence subset. Explicit whole-meeting called-off, postponement, or venue-transfer wording may produce evidence. Relative weekday wording is not sufficient by itself: the derived candidate date and original venue must bind to exactly one existing canonical HRNZ meeting with the expected canonical meeting ID. Replacement venue/date remains evidence only and never creates a meeting. News/index/article acquisition failure emits no negative evidence and preserves verified state."
     },
     {
       "record_id": "united-kingdom-bha-system",
