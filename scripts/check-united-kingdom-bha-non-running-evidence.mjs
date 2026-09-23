@@ -42,6 +42,16 @@ assert(t.evidence.some(x=>x.date==='2026-07-23'&&x.replacement_racecourse_id==='
 assert(t.evidence.some(x=>x.date==='2026-08-13'&&x.replacement_racecourse_id==='lingfield-park-racecourse'));
 assert(t.evidence.some(x=>x.date==='2026-08-02'&&x.replacement_racecourse_id===null));
 
+const currentTransferUrl='https://www.britishhorseracing.com/press_releases/bha-confirms-the-transfer-of-two-chelmsford-city-fixtures-to-southwell/';
+const currentTransfer='<html><body>British Horseracing Authority BHA confirms the transfer of two Chelmsford City fixtures to Southwell '
+  +'10 Sep 2026 BHA Features Racing/Fixtures '
+  +'The British Horseracing Authority has today confirmed that two upcoming fixtures scheduled to take place at Chelmsford City Racecourse have been transferred to Southwell. '
+  +'The fixtures are scheduled for the evenings of 8 October and 15 October and will remain on the same date.'
+  +'</body></html>';
+const current=parseBhaNonRunningArticle(currentTransfer,{sourceUrl:currentTransferUrl,startDate:'2026-09-23',endDateExclusive:'2026-10-23'});
+assert.deepEqual(current.evidence.map(x=>x.date),['2026-10-08','2026-10-15']);
+assert(current.evidence.every(x=>x.replacement_racecourse_id==='southwell-racecourse'));
+
 const partial='<html><body>British Horseracing Authority BHA confirms abandonment of Steeple Chases at Fontwell on Sunday 22 February '
   +'17 Feb 2026 BHA Features Racing/Fixtures '
   +"The two Steeple Chases scheduled to take place at Fontwell's fixture on Sunday 22 February have been abandoned and replaced by an additional Hurdle race. "
