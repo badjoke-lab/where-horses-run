@@ -3,7 +3,7 @@ import { resolveBhaRacecourseId } from './united-kingdom-bha-core.mjs';
 export const BHA_NON_RUNNING_SOURCE_ID='bha-press-release-explicit-non-running';
 export const BHA_PRESS_RELEASES_URL='https://www.britishhorseracing.com/press_releases/';
 
-const MONTHS={january:1,february:2,march:3,april:4,may:5,june:6,july:7,august:8,september:9,october:10,november:11,december:12};
+const MONTHS={jan:1,january:1,feb:2,february:2,mar:3,march:3,apr:4,april:4,may:5,jun:6,june:6,jul:7,july:7,aug:8,august:8,sep:9,sept:9,september:9,oct:10,october:10,nov:11,november:11,dec:12,december:12};
 const MONTH_PATTERN=Object.keys(MONTHS).join('|');
 const WEEKDAYS=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
 
@@ -19,7 +19,7 @@ function iso(y,m,d){const s=String(y)+'-'+String(m).padStart(2,'0')+'-'+String(d
 function inWindow(date,start,end){return (!start||date>=start)&&(!end||date<end);}
 function dateFrom(day,month,year){return iso(Number(year),MONTHS[fold(month)],Number(day));}
 function publicationDate(text){
-  const rx=new RegExp('\\b(\\d{1,2})\\s+('+MONTH_PATTERN+')\\s+(20\\d{2})\\b','i');
+  const rx=new RegExp('\\b(\\d{1,2})\\s+('+MONTH_PATTERN+')\\s+(20\\d{2})\\s+(?:bha|racing\\/fixtures)\\b','i');
   const m=fold(text).match(rx);return m?dateFrom(m[1],m[2],m[3]):null;
 }
 function nextWeekday(base,weekday){
