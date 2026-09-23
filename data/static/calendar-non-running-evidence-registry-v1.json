@@ -265,42 +265,45 @@
       "country_id": "france",
       "system_id": "france-france-galop-system",
       "authority_id": "france-galop",
-      "mode": "unsupported",
-      "automation_status": "not_implemented",
-      "whole_meeting_non_running": "not_proven",
+      "mode": "automated",
+      "automation_status": "active",
+      "whole_meeting_non_running": "supported",
       "postponement": "not_proven",
       "partial_race_policy": "never_promote_to_whole_meeting",
       "source_absence_policy": "absent_unconfirmed",
       "acquisition_failure_policy": "preserve_verified_state",
       "replacement_date_policy": "independent_meeting_only",
-      "evidence_source_family": "FNCH official programme indexes and France Galop positive schedule evidence; no bounded whole-meeting negative-evidence route proven in this country-addition pass",
+      "evidence_source_family": "France Galop official Hippodromes news archive; bounded explicit whole-meeting cancellation and same-date venue-transfer evidence",
       "evidence_urls": [
-        "https://www.fnch.fr/calendrier"
+        "https://www.france-galop.com/fr/hippodromes",
+        "https://www.france-galop.com/fr/content/annulation-des-reunions-de-la-teste-deauville-jeudi-25-juin-2026",
+        "https://www.france-galop.com/fr/content/transfert-de-la-reunion-de-marseille-borely-salon-de-provence"
       ],
-      "example_evidence_url": null,
-      "reviewed_at": "2026-09-22",
-      "notes": "France Calendar production uses FNCH positive programme evidence for France Galop. Source invisibility, missing programme detail, or acquisition failure remains absent_unconfirmed and preserves verified state. Whole-meeting cancellation/postponement automation is intentionally not implemented by this expansion lane."
+      "example_evidence_url": "https://www.france-galop.com/fr/content/annulation-des-reunions-de-la-teste-deauville-jeudi-25-juin-2026",
+      "reviewed_at": "2026-09-23",
+      "notes": "Production uses the official France Galop Hippodromes archive only as a bounded positive-evidence subset. Official content articles must explicitly cancel a whole meeting or transfer the whole meeting away from its original venue/date identity. Notices that cancel or reprogramme only named races are rejected. Replacement venue/date information is evidence only and never creates a meeting. Archive/article absence or acquisition/parser failure emits no negative evidence and preserves verified canonical/public state."
     },
     {
       "record_id": "france-letrot-system",
       "country_id": "france",
       "system_id": "france-letrot-system",
       "authority_id": "letrot",
-      "mode": "unsupported",
-      "automation_status": "not_implemented",
-      "whole_meeting_non_running": "not_proven",
-      "postponement": "not_proven",
+      "mode": "automated",
+      "automation_status": "active",
+      "whole_meeting_non_running": "supported",
+      "postponement": "supported",
       "partial_race_policy": "never_promote_to_whole_meeting",
       "source_absence_policy": "absent_unconfirmed",
       "acquisition_failure_policy": "preserve_verified_state",
       "replacement_date_policy": "independent_meeting_only",
-      "evidence_source_family": "FNCH official programme indexes and LETROT positive schedule evidence; no bounded whole-meeting negative-evidence route proven in this country-addition pass",
+      "evidence_source_family": "LeTROT/SETF official weekly bulletin PDFs; bounded explicit whole-meeting annulment plus reported replacement-date wording",
       "evidence_urls": [
-        "https://www.fnch.fr/calendrier"
+        "https://pro.letrot.com/siteletrotws-LMeiJS3SZYjkmC1qpyBvHCsYjfwGkj/publication",
+        "https://pro.letrot.com/siteletrotws-LMeiJS3SZYjkmC1qpyBvHCsYjfwGkj/publication?annee=2021&semaine=40&type=BULLETIN"
       ],
-      "example_evidence_url": null,
-      "reviewed_at": "2026-09-22",
-      "notes": "France Calendar production uses FNCH positive programme evidence for LETROT. Source invisibility, missing programme detail, or acquisition failure remains absent_unconfirmed and preserves verified state. Whole-meeting cancellation/postponement automation is intentionally not implemented by this expansion lane."
+      "example_evidence_url": "https://pro.letrot.com/siteletrotws-LMeiJS3SZYjkmC1qpyBvHCsYjfwGkj/publication?annee=2021&semaine=40&type=BULLETIN",
+      "reviewed_at": "2026-09-23",
+      "notes": "Production checks a bounded set of official SETF/LeTROT weekly bulletins around the refresh start date. Only explicit wording equivalent to 'La réunion annulée du [date] est reportée au [date]' with a resolvable preceding racecourse heading may suppress the original canonical meeting. Race-level 'courses annulées' notices do not match and never suppress the whole meeting. The replacement date remains evidence only and is never generated as a meeting. Bulletin fetch/parse failure preserves verified state."
     },
     {
       "record_id": "new-zealand-thoroughbred-system",
