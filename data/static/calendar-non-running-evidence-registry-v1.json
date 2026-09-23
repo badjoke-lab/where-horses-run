@@ -375,6 +375,28 @@
       "example_evidence_url": "https://www.britishhorseracing.com/press_releases/bha-confirms-abandonment-of-four-fixtures-following-met-office-extreme-heat-warning/",
       "reviewed_at": "2026-09-23",
       "notes": "Production scans the current official BHA Press Releases index as a bounded positive-evidence subset. Explicit whole-fixture abandonment, cancellation, or venue transfer may suppress the original canonical meeting only after exact date/racecourse binding to one existing BHA meeting. Steeple Chase/race-only abandonment, all-Hurdle conversions, surface-only transfers, start-time changes, and other partial programme changes are rejected. Replacement venue/date is evidence only and never creates a meeting. Index/article absence or acquisition/parser failure emits no negative evidence and preserves verified state."
+    },
+    {
+      "record_id": "bahrain-turf-club-system",
+      "country_id": "bahrain",
+      "system_id": "bahrain-turf-club-system",
+      "authority_id": "bahrain-turf-club",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Bahrain Turf Club positive season-programme and racecard evidence; no bounded whole-meeting negative-evidence route proven in this country-addition pass",
+      "evidence_urls": [
+        "https://bahrainturfclub.com/racing/rehc-racing-season-imported",
+        "https://bahrainturfclub.com/racecard/"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-09-24",
+      "notes": "Bahrain Calendar production uses positive official programme and racecard evidence only. Source absence, an empty source-visible window, unpublished racecards, or acquisition failure never confirms non-running and never erases verified state."
     }
   ]
 }
