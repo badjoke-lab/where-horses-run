@@ -221,7 +221,7 @@ export function letrotBulletinUrlsForWindow(startDate, endDateExclusive) {
     throw new Error('LeTROT bulletin window requires ISO dates');
   }
   const first = plusDays(startDate, -7);
-  const last = plusDays(endDateExclusive, 1);
+  const last = plusDays(startDate, 7);
   const seen = new Set();
   const urls = [];
   for (let date = first; date <= last; date = plusDays(date, 1)) {
