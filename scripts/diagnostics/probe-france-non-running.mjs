@@ -86,28 +86,30 @@ async function fetchText(url) {
       signal: AbortSignal.timeout(20_000),
     });
     const contentType = response.headers.get('content-type') ?? '';
-    if (/pdf/i.test(contentType)) {
-      const bytes = new Uint8Array(await response.arrayBuffer());
-      const body = await extractPdfText(bytes);
+    const raw = new Uint8Array(await response.arrayBuffer());
+    const isPdf = /pdf/i.test(contentType)
+      || (raw.length >= 4 && String.fromCharCode(...raw.slice(0, 4)) === '%PDF');
+    if (isPdf) {
+      const body = await extractPdfText(raw);
       return {
         requested_url: url,
         final_url: response.url,
         status: response.status,
         ok: response.ok,
         content_type: contentType,
-        bytes: bytes.byteLength,
+        bytes: raw.byteLength,
         document_kind: 'pdf',
         body,
       };
     }
-    const body = await response.text();
+    const body = new TextDecoder().decode(raw);
     return {
       requested_url: url,
       final_url: response.url,
       status: response.status,
       ok: response.ok,
       content_type: contentType,
-      bytes: Buffer.byteLength(body),
+      bytes: raw.byteLength,
       document_kind: 'html',
       body,
     };
