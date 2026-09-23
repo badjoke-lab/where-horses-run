@@ -427,7 +427,7 @@
       "supports_source_visible_horizon": true,
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
-      "operator_notes": "GitHub Actions reads official HRNZ season/month Racing Dates and follows linked official programme pages to resolve physical venue and first-race start time through rank B. Programme fetch failures are retry states and never evidence of non-running."
+      "operator_notes": "GitHub Actions prefers official HRNZ season/month Racing Dates and linked programme pages. When that live Infohorse route is blocked before any Harness rows are recovered, the same authority's official Final Racing Calendar PDF on www.hrnz.co.nz is the bounded fallback for meeting date, source-verified physical venue, and scheduled first-race time through rank B. Primary-route failure is retained as a recovered route diagnostic; unresolved venue or source absence is never evidence of non-running."
     }
   ]
 }
