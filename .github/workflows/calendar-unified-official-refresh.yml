@@ -34,6 +34,8 @@ on:
       - 'scripts/check-nar-non-running-discovery.mjs'
       - 'scripts/check-sorec-non-running-evidence.mjs'
       - 'scripts/check-chile-clubhipico-non-running-evidence.mjs'
+      - 'scripts/check-france-non-running-evidence.mjs'
+      - 'scripts/timetable/france-non-running-evidence.mjs'
       - 'data/static/calendar-non-running-evidence-registry-v1.json'
       - 'data/static/calendar-non-running-evidence-registry.schema.json'
       - 'scripts/check-kra-window-bounds.mjs'
@@ -138,6 +140,7 @@ jobs:
           node scripts/check-nar-non-running-discovery.mjs
           node scripts/check-sorec-non-running-evidence.mjs
           node scripts/check-chile-clubhipico-non-running-evidence.mjs
+          node scripts/check-france-non-running-evidence.mjs
           node scripts/check-peru-fetch-failure-retention.mjs
       - name: Exercise Japan mother-set safety contracts
         run: |
@@ -576,7 +579,9 @@ jobs:
             --artifact=.calendar-unified/sorec.json \
             --artifact=.calendar-unified/chile.json \
             --artifact=.calendar-unified/ireland.json \
-            --artifact=.calendar-unified/peru.json
+            --artifact=.calendar-unified/peru.json \
+            --artifact=.calendar-unified/france-galop.json \
+            --artifact=.calendar-unified/france-letrot.json
           node scripts/check-confirmed-non-running-publication.mjs
       - name: Validate generated public site state
         run: npm run build
@@ -730,7 +735,9 @@ jobs:
             --artifact=.calendar-unified/sorec.json \
             --artifact=.calendar-unified/chile.json \
             --artifact=.calendar-unified/ireland.json \
-            --artifact=.calendar-unified/peru.json
+            --artifact=.calendar-unified/peru.json \
+            --artifact=.calendar-unified/france-galop.json \
+            --artifact=.calendar-unified/france-letrot.json
             node scripts/check-confirmed-non-running-publication.mjs
             npm run build
           }
