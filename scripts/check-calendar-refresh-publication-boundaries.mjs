@@ -115,8 +115,8 @@ assert.equal((workflow.match(/--timezone=Asia\/Riyadh/g) ?? []).length, 2, 'Saud
 assert.equal((workflow.match(/run-france-fnch-official-window\.mjs/g) ?? []).length, 2, 'France FNCH must be collected in both normal and latest-main rebuild paths');
 assert.equal((workflow.match(/--authority-id=france-galop/g) ?? []).length, 2, 'France Galop observations must be applied in both normal and latest-main rebuild paths');
 assert.equal((workflow.match(/--authority-id=letrot/g) ?? []).length, 2, 'France LETROT observations must be applied in both normal and latest-main rebuild paths');
-assert.equal((workflow.match(/--artifact=\.calendar-unified\/france-galop\.json/g) ?? []).length, 4, 'France Galop artifact must pass exclusion and apply layers in both execution paths');
-assert.equal((workflow.match(/--artifact=\.calendar-unified\/france-letrot\.json/g) ?? []).length, 4, 'France LETROT artifact must pass exclusion and apply layers in both execution paths');
+assert.equal((workflow.match(/--artifact=\.calendar-unified\/france-galop\.json/g) ?? []).length, 6, 'France Galop artifact must pass exclusion, apply, and meeting-presence layers in both execution paths');
+assert.equal((workflow.match(/--artifact=\.calendar-unified\/france-letrot\.json/g) ?? []).length, 6, 'France LETROT artifact must pass exclusion, apply, and meeting-presence layers in both execution paths');
 assert.equal((workflow.match(/--racing-system-id=france-france-galop-system/g) ?? []).length, 2, 'France Galop apply path must bind the canonical racing system id in both execution paths');
 assert.equal((workflow.match(/--racing-system-id=france-letrot-system/g) ?? []).length, 2, 'France LETROT apply path must bind the canonical racing system id in both execution paths');
 assert.equal((workflow.match(/--timezone=Europe\/Paris/g) ?? []).length, 4, 'France apply paths must bind Europe/Paris for both systems in both execution paths');
