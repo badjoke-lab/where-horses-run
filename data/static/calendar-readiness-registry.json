@@ -6,7 +6,7 @@
   "programme_state": {
     "country_target": 98,
     "countries_with_closed_decision": 98,
-    "readiness_records": 120,
+    "readiness_records": 121,
     "next_backfill_work_ids": []
   },
   "records": [
@@ -563,51 +563,6 @@
         "The Quarter Horse system must remain separate from Thoroughbred and Arabian racing."
       ],
       "notes": "Race-time capability is reviewed, but Calendar operation is blocked until the meeting date is verified."
-    },
-    {
-      "readiness_id": "bahrain--bahrain-turf-club-system--btc-racecard-route",
-      "country_id": "bahrain",
-      "country_tracker_delivery_no": "09",
-      "system_id": "bahrain-turf-club-system",
-      "system_name_en": "Bahrain Turf Club system",
-      "authority_source_key": "bahrain/bahrain-turf-club/btc-racecard-route",
-      "racecourse_ids": [],
-      "coverage_scope": "system_only",
-      "technical_rank": "A+",
-      "public_ceiling": "A",
-      "confirmed_fields": {
-        "meeting_date": true,
-        "racecourse": false,
-        "first_race_time": true,
-        "last_race_time": true,
-        "per_race_post_times": true,
-        "race_name": false,
-        "distance": true,
-        "surface": false,
-        "course": false
-      },
-      "source_format": "html",
-      "access_mode": "date_route",
-      "automation_mode": "semi_automatic",
-      "refresh_classes": [
-        "seasonal",
-        "near_meeting"
-      ],
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "fallback": "hide_from_current_calendar",
-      "source_status": "verified",
-      "checked_date": "2026-06-17",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when the racecard route changes or a reliable venue identity is confirmed.",
-      "blocked_reason": null,
-      "source_test_ref": "docs/timetable-source-tests/09-bahrain/final-summary.json",
-      "limitations": [
-        "Reliable venue identity was not confirmed.",
-        "Race names, surface, and course labels were not reliably confirmed.",
-        "Prohibited racecard fields must be ignored."
-      ],
-      "notes": "A bounded source prototype can begin, but candidate promotion must require a verified venue."
     },
     {
       "readiness_id": "qatar--qatar-qrec-calendar-system--qrec-season-calendar",
@@ -5382,7 +5337,99 @@
         "Acquisition failure or source absence is not non-running evidence."
       ],
       "notes": "Latest NZTR Racing Programme Guide supplies current date/racecourse mother-set observations for the Thoroughbred system."
+    },
+    {
+      "readiness_id": "bahrain--bahrain-turf-club-system--btc-race-programme",
+      "country_id": "bahrain",
+      "country_tracker_delivery_no": "09",
+      "system_id": "bahrain-turf-club-system",
+      "system_name_en": "Bahrain Turf Club system",
+      "authority_source_key": "bahrain/bahrain-turf-club/btc-race-programme",
+      "racecourse_ids": [
+        "rashid-equestrian-and-horseracing-club-racecourse"
+      ],
+      "coverage_scope": "authority_wide",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "seasonal",
+        "near_meeting"
+      ],
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-09-24",
+      "evidence_reviewed_at": "2026-09-24",
+      "revalidation_trigger": "Revalidate when Bahrain Turf Club changes the season programme route or programme layout.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/09-bahrain/final-summary.json",
+      "limitations": [
+        "The season programme is a meeting-date/racecourse mother set and does not itself supply race post times.",
+        "Source absence or acquisition failure is not non-running evidence."
+      ],
+      "notes": "Automated Bahrain Turf Club season programme supplies authoritative current meeting dates at the verified sole racing venue."
+    },
+    {
+      "readiness_id": "bahrain--bahrain-turf-club-system--btc-racecard-route",
+      "country_id": "bahrain",
+      "country_tracker_delivery_no": "09",
+      "system_id": "bahrain-turf-club-system",
+      "system_name_en": "Bahrain Turf Club system",
+      "authority_source_key": "bahrain/bahrain-turf-club/btc-racecard-route",
+      "racecourse_ids": [
+        "rashid-equestrian-and-horseracing-club-racecourse"
+      ],
+      "coverage_scope": "authority_wide",
+      "technical_rank": "A",
+      "public_ceiling": "A",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": true,
+        "last_race_time": true,
+        "per_race_post_times": true,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "date_route",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "seasonal",
+        "near_meeting"
+      ],
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "downgrade_to_C",
+      "source_status": "verified",
+      "checked_date": "2026-09-24",
+      "evidence_reviewed_at": "2026-09-24",
+      "revalidation_trigger": "Revalidate when the Bahrain Turf Club racecard route or race navigation changes.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/09-bahrain/final-summary.json",
+      "limitations": [
+        "Calendar publication uses race labels and post times through A only; A+ distance and other racecard content remain outside this runner.",
+        "Unpublished racecards remain valid C meetings from the season mother set."
+      ],
+      "notes": "Date-specific Bahrain Turf Club racecard navigation supplies complete per-race post times through public rank A."
     }
   ],
-  "last_updated": "2026-09-23"
+  "last_updated": "2026-09-24"
 }
