@@ -1,0 +1,42 @@
+name: HRNZ fallback live probe
+
+on:
+  push:
+    branches:
+      - probe/hrnz-fallback-live-20260923
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies
+        run: npm install --no-package-lock --no-audit --no-fund
+      - name: Run New Zealand 30-day window
+        run: |
+          node scripts/timetable/run-new-zealand-official-window.mjs \
+            --as-of=2026-09-23 \
+            --days=30 \
+            --thoroughbred-output=/tmp/new-zealand-thoroughbred.json \
+            --harness-output=/tmp/new-zealand-harness.json
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const h=JSON.parse(fs.readFileSync('/tmp/new-zealand-harness.json','utf8'));
+          console.log('HRNZ_DISCOVERY',JSON.stringify(h.discovery));
+          console.log('HRNZ_DIAGNOSTICS',JSON.stringify(h.diagnostics));
+          console.log('HRNZ_RECORDS',JSON.stringify(h.records.map(r=>({
+            date:r.date,
+            racecourse_id:r.racecourse_id,
+            first_race_time_local:r.first_race_time_local,
+            capability_rank:r.capability_rank,
+            route_id:r.route_id,
+            completion:r.acquisition_completion?.disposition
+          }))));
+          NODE
