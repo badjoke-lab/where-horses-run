@@ -38,7 +38,7 @@ function candidates(html){
 function fingerprint(key,html){
   const s=fold(html);
   const common={authority:s.includes('british horseracing authority')||s.includes('bha')};
-  if(key==='whole') return {...common,match:s.includes("wednesday's fixtures at kempton park, salisbury, worcester and ffos las have been abandoned")};
+  if(key==='whole') return {...common,match:s.includes('abandonment of four fixtures')&&s.includes('kempton park')&&s.includes('salisbury')&&s.includes('worcester')&&s.includes('ffos las')&&s.includes('abandoned')};
   if(key==='transfer') return {...common,match:s.includes('three upcoming fixtures scheduled to take place at chelmsford city racecourse')&&s.includes('have been transferred')&&s.includes('sunday 2 august will be cancelled')};
   if(key==='partial') return {...common,match:s.includes('two steeple chases scheduled to take place at fontwell')&&s.includes('have been abandoned')&&s.includes('fixture now will consist of six races')};
   return common;
