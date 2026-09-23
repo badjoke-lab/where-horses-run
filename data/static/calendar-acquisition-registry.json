@@ -458,7 +458,7 @@
       "system_id": "slovakia-zavodisko-system",
       "country_id": "slovakia",
       "authority_id": "zavodisko",
-      "profile_status": "active",
+      "profile_status": "provisional",
       "primary_runner": "github_actions",
       "fallback_runner": null,
       "schedule_source_id": "zavodisko-2026-calendar",
@@ -481,7 +481,7 @@
         "detail_source_id",
         "detail_adapter_id"
       ],
-      "operator_notes": "GitHub Actions reads the official Závodisko 2026 national calendar and emits meeting date, verified timetable identity and official first-race time through B. Reviewed B+ meeting-page capability is known, but no reusable full-calendar detail source/adapter is connected; detail_source_id and detail_adapter_id therefore remain explicit pending fields, and current B observations remain implementation_gap rather than terminal success. Public output remains capped at C. Acquisition failure or source absence preserves stronger verified state and never confirms non-running."
+      "operator_notes": "GitHub Actions reads the official Závodisko 2026 national calendar and emits meeting date, verified timetable identity and official first-race time through B. The profile remains provisional because reviewed B+ meeting-page capability is known but no reusable full-calendar detail source/adapter is connected; detail_source_id and detail_adapter_id are explicit pending fields, and current B observations remain implementation_gap rather than terminal success. Public output remains capped at C. Acquisition failure or source absence preserves stronger verified state and never confirms non-running."
     }
   ]
 }
