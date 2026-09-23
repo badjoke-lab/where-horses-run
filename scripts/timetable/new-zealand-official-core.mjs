@@ -14,6 +14,7 @@ export const HRNZ_AUTHORITY_ID = 'harness-racing-new-zealand';
 export const HRNZ_SYSTEM_ID = 'new-zealand-harness-system';
 export const HRNZ_SOURCE_ID = 'hrnz-raceday-calendar';
 export const HRNZ_INDEX_URL = 'https://infohorse.hrnz.co.nz/datahrs/calendar/raceday/dates_index.htm';
+export const HRNZ_FINAL_CALENDAR_URL = 'https://www.hrnz.co.nz/assets/2026.27-Final-Racing-Calendar-TAB-NZ-v1.1.pdf';
 
 const MONTHS = Object.freeze({
   jan:1,january:1,feb:2,february:2,mar:3,march:3,apr:4,april:4,may:5,
@@ -29,6 +30,15 @@ const VENUE_ALIASES = Object.freeze({
   'cambridge-raceway':'cambridge-raceway',
   'cambridge-synthetic':'cambridge-synthetic-racecourse',
   'addington-raceway':'addington-raceway',
+  'alexandra-park':'alexandra-park-racecourse',
+  'ascot-park-raceway':'ascot-park-racecourse',
+  'gore-raceway':'gore-raceway',
+  'mt-harding-racecourse':'mt-harding-racecourse',
+  'oamaru-racecourse':'oamaru-racecourse',
+  'motukarara-raceway':'motukarara-raceway',
+  'rangiora-raceway':'rangiora-raceway',
+  'ashburton-raceway':'ashburton-raceway',
+  'central-southland-raceway':'central-southland-raceway',
   'ellerslie':'ellerslie-racecourse',
   'hastings':'hastings-racecourse',
   'hawera':'hawera-racecourse',
@@ -192,6 +202,119 @@ export function parseLoveracingMeetingPage(html,{sourceUrl=null}={}) {
   };
 }
 
+
+const HRNZ_FALLBACK_CLUB_VENUES = Object.freeze({
+  'waikato-bop-harness':'Cambridge Raceway',
+  'auckland-tc':'Alexandra Park',
+  'nz-metro-tc':'Addington Raceway',
+  'nz-metro-tc-p':'Addington Raceway',
+  'timaru-hrc':'Phar Lap Raceway',
+  'gore-hrc':'Gore Raceway',
+  'methven-tc':'Mt Harding Racecourse',
+  'northern-southland-tc':'Ascot Park Raceway',
+  'invercargill-hrc':'Ascot Park Raceway',
+  'oamaru-hrc':'Oamaru Racecourse',
+  'ashburton-tc':'Ashburton Raceway',
+  'winton-hrc':'Central Southland Raceway',
+  'rangiora-hrc':'Rangiora Raceway',
+  'banks-pen-tc':'Motukarara Raceway',
+});
+
+const HRNZ_FALLBACK_DATE_VENUES = Object.freeze({
+  '2026-10-01/wyndham-hrc':'Gore Raceway',
+  '2026-10-11/akaroa-tc':'Mt Harding Racecourse',
+});
+
+const HRNZ_EXPLICIT_VENUES = Object.freeze({
+  'ascot-park':'Ascot Park Raceway',
+  'timaru':'Phar Lap Raceway',
+  'gore':'Gore Raceway',
+  'methven':'Mt Harding Racecourse',
+  'cambridge':'Cambridge Raceway',
+  'addington':'Addington Raceway',
+});
+
+function hrnzCalendarIsoDate(token,seasonStartYear){
+  const match=String(token??'').trim().match(/^(\d{1,2})-([A-Za-z]+)$/);
+  if(!match) return null;
+  const month=monthNumber(match[2]);
+  if(!month) return null;
+  const year=month>=7?seasonStartYear:seasonStartYear+1;
+  return isoDate(year,month,Number(match[1]));
+}
+
+function hrnzFallbackVenue(clubLabel,date,explicitVenue){
+  if(explicitVenue){
+    const explicit=HRNZ_EXPLICIT_VENUES[slugify(explicitVenue)];
+    if(explicit) return explicit;
+  }
+  const clubKey=slugify(clubLabel).replace(/-p$/,'');
+  return HRNZ_FALLBACK_DATE_VENUES[`${date}/${clubKey}`] ?? HRNZ_FALLBACK_CLUB_VENUES[clubKey] ?? null;
+}
+
+export function parseHrnzFinalCalendarItems(items,{seasonStartYear=2026,sourceUrl=HRNZ_FINAL_CALENDAR_URL}={}){
+  if(!Array.isArray(items)||!items.length) throw new Error('HRNZ final calendar PDF items must be non-empty');
+  const normalized=items
+    .map(item=>({
+      page:Number(item.page??1),
+      page_width:Number(item.page_width??1190.52),
+      str:String(item.str??'').replace(/\s+/g,' ').trim(),
+      x:Number(item.x),
+      y:Number(item.y),
+    }))
+    .filter(item=>item.str&&Number.isFinite(item.x)&&Number.isFinite(item.y)&&Number.isFinite(item.page_width)&&item.page_width>0);
+
+  const dateHeaders=normalized
+    .map(item=>({...item,date:hrnzCalendarIsoDate(item.str,seasonStartYear)}))
+    .filter(item=>item.date);
+
+  const records=[];
+  const unknown_venues=[];
+  for(const item of normalized){
+    const match=item.str.match(/^(.+?)\(x(\d+)\)\s+(\d{1,2}):(\d{2})(am|pm)$/i);
+    if(!match) continue;
+    const rawClub=match[1].trim();
+    if(!(/\bHarness\b/i.test(rawClub)||/\bHRC\b/i.test(rawClub)||/\bTC(?:\(P\))?(?:@|$)/i.test(rawClub))) continue;
+
+    const header=dateHeaders
+      .filter(row=>row.page===item.page&&row.y>item.y&&row.x>item.x)
+      .map(row=>({...row,deltaY:row.y-item.y,deltaX:row.x-item.x}))
+      .filter(row=>row.deltaY<105&&row.deltaX<170)
+      .sort((a,b)=>a.deltaY-b.deltaY||a.deltaX-b.deltaX)[0];
+    if(!header) continue;
+
+    let club_label=rawClub.replace(/\(P\)$/i,'').trim();
+    let explicitVenue=null;
+    const at=club_label.match(/^(.+?)@(.+)$/);
+    if(at){
+      club_label=at[1].trim();
+      explicitVenue=at[2].trim();
+    }
+    const venue_label=hrnzFallbackVenue(club_label,header.date,explicitVenue);
+    if(!venue_label){
+      unknown_venues.push({date:header.date,club_label,source_text:item.str});
+      continue;
+    }
+    const first_race_time_local=to24Hour(match[3],match[4],match[5]);
+    records.push({
+      date:header.date,
+      club_label,
+      venue_label,
+      racecourse_id:resolveNewZealandRacecourseId(venue_label),
+      first_race_time_local,
+      source_url:sourceUrl,
+      source_kind:'final_calendar_pdf',
+    });
+  }
+
+  const deduped=new Map();
+  for(const row of records) deduped.set(`${row.date}/${row.racecourse_id}`,row);
+  return {
+    records:[...deduped.values()].sort((a,b)=>a.date.localeCompare(b.date)||a.racecourse_id.localeCompare(b.racecourse_id)),
+    unknown_venues,
+  };
+}
+
 export function parseHrnzIndex(html,{sourceUrl=HRNZ_INDEX_URL}={}) {
   if(typeof html!=='string'||!html.trim()) throw new Error('HRNZ racing dates index HTML must be non-empty');
   if(!/Racing\s+Dates/i.test(nzVisibleText(html))) throw new Error('HRNZ racing dates fingerprint missing');
@@ -302,16 +425,19 @@ export function buildLoveracingDetailedRecord(scheduleRow,detail,{checkedAt,prog
 
 export function buildHrnzRecord(row,{checkedAt,calendarUrl,detailStatus='available',attemptStatus='success',errorCode=null}={}) {
   const meetingId=`new-zealand-harness-${row.racecourse_id}-${row.date}`;
+  const fallbackPdf=row.source_kind==='final_calendar_pdf';
+  const routeId=fallbackPdf?'hrnz-final-racing-calendar-pdf':(row.source_url?'hrnz-programme':'hrnz-racing-dates');
+  const extractionMethod=fallbackPdf?'official_hrnz_final_racing_calendar_pdf':(row.source_url?'official_hrnz_programme':'official_hrnz_racing_dates');
   const record={
     candidate_id:meetingId,meeting_id:meetingId,country_id:'new-zealand',
     authority_id:HRNZ_AUTHORITY_ID,racing_system_id:HRNZ_SYSTEM_ID,racecourse_id:row.racecourse_id,
     date:row.date,timezone:NEW_ZEALAND_TIMEZONE,first_race_time_local:row.first_race_time_local??null,last_race_time_local:null,timetable_rows:[],
-    source:{source_id:HRNZ_SOURCE_ID,official_url:row.source_url??calendarUrl,checked_at:checkedAt,extraction_method:row.source_url?'official_hrnz_programme':'official_hrnz_racing_dates'},
-    route_id:row.source_url?'hrnz-programme':'hrnz-racing-dates',confidence:'high',review_status:'needs_review',
-    notes:`Official HRNZ observation; club: ${row.club_label??'unknown'}; venue: ${row.venue_label??'pending programme'}.`,
+    source:{source_id:HRNZ_SOURCE_ID,official_url:row.source_url??calendarUrl,checked_at:checkedAt,extraction_method:extractionMethod},
+    route_id:routeId,confidence:'high',review_status:'needs_review',
+    notes:`Official HRNZ observation; club: ${row.club_label??'unknown'}; venue: ${row.venue_label??'pending programme'}${fallbackPdf?'; recovered from official final racing calendar PDF after live Infohorse route failure':''}.`,
   };
   record.detail_observation={status:detailStatus,evaluated_capability_rank:'B',race_count:0,detail_url:row.source_url??null};
-  record.acquisition_attempt={attempted_at:checkedAt,status:attemptStatus,source_id:HRNZ_SOURCE_ID,route_id:'hrnz-programme',error_code:errorCode};
+  record.acquisition_attempt={attempted_at:checkedAt,status:attemptStatus,source_id:HRNZ_SOURCE_ID,route_id:routeId,error_code:errorCode};
   const calendarEvidence=evidence(HRNZ_SOURCE_ID,calendarUrl,checkedAt);
   record.evidence_support={meeting_date:calendarEvidence,meeting_identity:calendarEvidence};
   if(row.source_url&&row.first_race_time_local) record.evidence_support.race_times=evidence(HRNZ_SOURCE_ID,row.source_url,checkedAt);

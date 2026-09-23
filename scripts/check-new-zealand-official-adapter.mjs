@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { validateCalendarAuthorityMetadataV1 } from './timetable/calendar-authority-metadata.mjs';
 import {
   parseNztrRpgLandingPage,parseNztrRpgProgrammeText,parseLoveracingIndex,parseLoveracingMeetingPage,
-  parseHrnzIndex,parseHrnzMonthPage,parseHrnzProgrammePage,resolveNewZealandRacecourseId,
+  HRNZ_FINAL_CALENDAR_URL,parseHrnzIndex,parseHrnzMonthPage,parseHrnzProgrammePage,parseHrnzFinalCalendarItems,resolveNewZealandRacecourseId,
   buildNztrFixtureRecord,buildLoveracingDetailedRecord,buildHrnzRecord,
 } from './timetable/new-zealand-official-core.mjs';
 
@@ -63,6 +63,35 @@ assert.equal(harnessDetail.venue_label,'Addington Raceway');
 assert.equal(harnessDetail.racecourse_id,'addington-raceway');
 assert.equal(harnessDetail.first_race_time_local,'16:30');
 
+const pageWidth=1190.52;
+const hrnzPdfItems=[
+  {page:3,page_width:pageWidth,str:'23-Sept',x:474.36,y:763.8},
+  {page:3,page_width:pageWidth,str:'24-Sept',x:638.04,y:763.8},
+  {page:3,page_width:pageWidth,str:'25-Sept',x:801.72,y:763.8},
+  {page:3,page_width:pageWidth,str:'27-Sept',x:1129.08,y:763.8},
+  {page:3,page_width:pageWidth,str:'NZ Metro TC(x8) 4:30pm',x:350.64,y:726.72},
+  {page:3,page_width:pageWidth,str:'Waikato BOP Harness(x8) 5:00pm',x:514.32,y:733.92},
+  {page:3,page_width:pageWidth,str:'Auckland TC(x9) 5:00pm',x:678,y:733.92},
+  {page:3,page_width:pageWidth,str:'Gore HRC(x10) 12:30pm',x:1005.36,y:719.52},
+  {page:3,page_width:pageWidth,str:'1-Oct',x:648.84,y:650.16},
+  {page:3,page_width:pageWidth,str:'Wyndham HRC(x10) 2:00pm',x:514.32,y:605.88},
+  {page:3,page_width:pageWidth,str:'11-Oct',x:1134.24,y:535.8},
+  {page:3,page_width:pageWidth,str:'Akaroa TC(x10) 1:00pm',x:1005.36,y:498.72},
+];
+const hrnzPdf=parseHrnzFinalCalendarItems(hrnzPdfItems,{seasonStartYear:2026,sourceUrl:HRNZ_FINAL_CALENDAR_URL});
+assert.deepEqual(hrnzPdf.unknown_venues,[]);
+assert.deepEqual(
+  hrnzPdf.records.map(row=>[row.date,row.racecourse_id,row.first_race_time_local]),
+  [
+    ['2026-09-23','addington-raceway','16:30'],
+    ['2026-09-24','cambridge-raceway','17:00'],
+    ['2026-09-25','alexandra-park-racecourse','17:00'],
+    ['2026-09-27','gore-raceway','12:30'],
+    ['2026-10-01','gore-raceway','14:00'],
+    ['2026-10-11','mt-harding-racecourse','13:00'],
+  ],
+);
+
 const checkedAt='2026-09-23T00:00:00Z';
 const fixture=buildNztrFixtureRecord(schedule[0],{checkedAt,programmeUrl:landing.programme_url});
 assert.equal(fixture.capability_rank,'C');
@@ -78,6 +107,11 @@ assert.deepEqual(validateCalendarAuthorityMetadataV1({acquisition_attempt:detail
 
 const harness=buildHrnzRecord(harnessDetail,{checkedAt,calendarUrl:hrnzRows[0].source_url});
 assert.equal(harness.capability_rank,'B');
+const recoveredHarness=buildHrnzRecord(hrnzPdf.records[0],{checkedAt,calendarUrl:HRNZ_FINAL_CALENDAR_URL});
+assert.equal(recoveredHarness.capability_rank,'B');
+assert.equal(recoveredHarness.route_id,'hrnz-final-racing-calendar-pdf');
+assert.equal(recoveredHarness.source.extraction_method,'official_hrnz_final_racing_calendar_pdf');
+assert.equal(recoveredHarness.acquisition_completion.disposition,'complete_current_best_available');
 assert.equal(harness.first_race_time_local,'16:30');
 assert.equal(harness.acquisition_completion.disposition,'complete_current_best_available');
 assert.deepEqual(validateCalendarAuthorityMetadataV1({acquisition_attempt:harness.acquisition_attempt,acquisition_completion:harness.acquisition_completion,evidence_support:harness.evidence_support}),[]);

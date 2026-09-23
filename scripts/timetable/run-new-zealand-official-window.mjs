@@ -5,9 +5,9 @@ import {
   NEW_ZEALAND_TIMEZONE,
   NZTR_AUTHORITY_ID,NZTR_SYSTEM_ID,NZTR_RPG_SOURCE_ID,NZTR_RPG_LANDING_URL,
   LOVERACING_SOURCE_ID,LOVERACING_INDEX_URL,
-  HRNZ_AUTHORITY_ID,HRNZ_SYSTEM_ID,HRNZ_SOURCE_ID,HRNZ_INDEX_URL,
+  HRNZ_AUTHORITY_ID,HRNZ_SYSTEM_ID,HRNZ_SOURCE_ID,HRNZ_INDEX_URL,HRNZ_FINAL_CALENDAR_URL,
   parseNztrRpgLandingPage,parseNztrRpgProgrammeText,parseLoveracingIndex,parseLoveracingMeetingPage,
-  parseHrnzIndex,parseHrnzMonthPage,parseHrnzProgrammePage,
+  parseHrnzIndex,parseHrnzMonthPage,parseHrnzProgrammePage,parseHrnzFinalCalendarItems,
   buildNztrFixtureRecord,buildLoveracingDetailedRecord,buildHrnzRecord,
 } from './new-zealand-official-core.mjs';
 
@@ -50,6 +50,36 @@ async function getPdfText(url){
     if(line) lines.push(line);
   }
   return lines.join('\n');
+}
+
+async function getPdfLayout(url){
+  const response=await fetch(url,{redirect:'follow',headers:{
+    'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)',
+    accept:'application/pdf,*/*;q=0.8','accept-language':'en-NZ,en;q=0.9'
+  },signal:AbortSignal.timeout(30000)});
+  if(!response.ok) throw new Error(`HTTP ${response.status}`);
+  const bytes=new Uint8Array(await response.arrayBuffer());
+  if(bytes.length<4||String.fromCharCode(...bytes.slice(0,4))!=='%PDF') throw new Error('HRNZ final calendar response is not PDF');
+  const pdf=await getDocument({data:bytes,disableWorker:true}).promise;
+  const items=[];
+  for(let pageNumber=1;pageNumber<=pdf.numPages;pageNumber+=1){
+    const page=await pdf.getPage(pageNumber);
+    const content=await page.getTextContent();
+    const pageWidth=Number(page.view?.[2]??0)-Number(page.view?.[0]??0);
+    for(const item of content.items){
+      if(!('str' in item)) continue;
+      const value=item.str.replace(/\s+/g,' ').trim();
+      if(!value) continue;
+      items.push({
+        page:pageNumber,
+        page_width:pageWidth,
+        str:value,
+        x:Number(item.transform?.[4]),
+        y:Number(item.transform?.[5]),
+      });
+    }
+  }
+  return {items,url:response.url||url};
 }
 function write(file,value){const target=path.resolve(file);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,`${JSON.stringify(value,null,2)}\n`);}
 function rankCounts(records){return Object.fromEntries(['C','B','B+','A','A+'].map(rank=>[rank,records.filter(r=>r.capability_rank===rank).length]));}
@@ -106,10 +136,15 @@ const thoroughbredRecords=thoroughbredRows.map(row=>{
   return buildNztrFixtureRecord(row,{checkedAt:generatedAt,programmeUrl:rpgProgrammeUrl});
 });
 
-// Harness: current HRNZ season index -> month pages -> programme pages.
-const harnessDiagnostics={source_errors:[],parse_failures:[],unknown_venues:[]};
+// Harness: prefer current HRNZ season/month/programme pages. GitHub-hosted runners
+// can be challenged by Cloudflare, so recover the same authority's current season
+// from its directly accessible final racing-calendar PDF when the primary route fails.
+const harnessDiagnostics={source_errors:[],route_failures:[],parse_failures:[],unknown_venues:[]};
 const harnessRecords=[];
 const seenHarness=new Set();
+let hrnzPrimaryError=null;
+let hrnzFallbackUsed=false;
+let hrnzScheduleSourceUrl=HRNZ_INDEX_URL;
 try{
   const index=await getHtml(HRNZ_INDEX_URL);
   const monthUrls=parseHrnzIndex(index.html,{sourceUrl:index.url});
@@ -142,7 +177,40 @@ try{
     }
   }
 }catch(error){
-  harnessDiagnostics.source_errors.push({stage:'hrnz_index',source_url:HRNZ_INDEX_URL,error:String(error?.message??error)});
+  hrnzPrimaryError={stage:'hrnz_index',source_url:HRNZ_INDEX_URL,error:String(error?.message??error)};
+}
+
+if(harnessRecords.length===0&&hrnzPrimaryError){
+  try{
+    const layout=await getPdfLayout(HRNZ_FINAL_CALENDAR_URL);
+    const [startYear,startMonth]=start.split('-').map(Number);
+    const seasonStartYear=startMonth>=7?startYear:startYear-1;
+    const parsed=parseHrnzFinalCalendarItems(layout.items,{seasonStartYear,sourceUrl:layout.url});
+    const fallbackRows=parsed.records.filter(row=>inWindow(row.date,start,end));
+    harnessDiagnostics.unknown_venues.push(...parsed.unknown_venues.filter(row=>inWindow(row.date,start,end)));
+    for(const row of fallbackRows){
+      harnessRecords.push(buildHrnzRecord(row,{
+        checkedAt:generatedAt,
+        calendarUrl:layout.url,
+        detailStatus:row.first_race_time_local?'available':'not_published',
+        attemptStatus:row.first_race_time_local?'success':'pending_publication',
+        errorCode:null,
+      }));
+    }
+    if(harnessRecords.length){
+      hrnzFallbackUsed=true;
+      hrnzScheduleSourceUrl=layout.url;
+      harnessDiagnostics.route_failures.push({...hrnzPrimaryError,recovered_by:'hrnz_final_racing_calendar_pdf'});
+    }else{
+      harnessDiagnostics.source_errors.push(hrnzPrimaryError);
+      harnessDiagnostics.source_errors.push({stage:'hrnz_final_calendar_pdf',source_url:layout.url,error:'fallback produced zero in-window meetings'});
+    }
+  }catch(error){
+    harnessDiagnostics.source_errors.push(hrnzPrimaryError);
+    harnessDiagnostics.source_errors.push({stage:'hrnz_final_calendar_pdf',source_url:HRNZ_FINAL_CALENDAR_URL,error:String(error?.message??error)});
+  }
+}else if(hrnzPrimaryError){
+  harnessDiagnostics.route_failures.push({...hrnzPrimaryError,recovered_by:'existing_harness_records'});
 }
 
 thoroughbredRecords.sort((a,b)=>a.date.localeCompare(b.date)||a.racecourse_id.localeCompare(b.racecourse_id));
@@ -161,9 +229,29 @@ const harness={
   schema_version:'new-zealand-hrnz-official-window-candidates-v1',
   generated_at:generatedAt,country_id:'new-zealand',authority_id:HRNZ_AUTHORITY_ID,racing_system_id:HRNZ_SYSTEM_ID,timezone:NEW_ZEALAND_TIMEZONE,
   source_id:HRNZ_SOURCE_ID,detail_source_id:HRNZ_SOURCE_ID,collection_target_rank:'best_available',raw_body_retained:false,
-  acquisition_attempt:{attempted_at:generatedAt,status:harnessDiagnostics.source_errors.some(x=>x.stage==='hrnz_index')?'network_error':'success',source_id:HRNZ_SOURCE_ID,route_id:'hrnz-racing-dates',error_code:harnessDiagnostics.source_errors.some(x=>x.stage==='hrnz_index')?'fetch_error':null},
-  discovery:{method:'hrnz_racing_dates_plus_programme_pages',schedule_source_url:HRNZ_INDEX_URL,detail_source_url:HRNZ_INDEX_URL,rank_counts:rankCounts(harnessRecords),detail_status_counts:detailCounts(harnessRecords)},
-  window:{start_date:start,end_date_exclusive:end,days,coverage_claim:harnessDiagnostics.source_errors.some(x=>x.stage==='hrnz_index')?'partial_source_visible_horizon':'official_hrnz_calendar_horizon',coverage_note:'Official HRNZ Racing Dates month pages provide the harness meeting mother set. Linked official programme pages resolve the physical venue and may provide the first-race start time through rank B. Missing or failed programme retrieval is a retry state and never negative evidence.'},
+  acquisition_attempt:{
+    attempted_at:generatedAt,
+    status:harnessRecords.length?'success':'network_error',
+    source_id:HRNZ_SOURCE_ID,
+    route_id:hrnzFallbackUsed?'hrnz-final-racing-calendar-pdf':'hrnz-racing-dates',
+    error_code:harnessRecords.length?null:'fetch_error',
+  },
+  discovery:{
+    method:hrnzFallbackUsed?'hrnz_racing_dates_or_final_calendar_pdf':'hrnz_racing_dates_plus_programme_pages',
+    schedule_source_url:hrnzScheduleSourceUrl,
+    detail_source_url:HRNZ_INDEX_URL,
+    fallback_source_url:HRNZ_FINAL_CALENDAR_URL,
+    fallback_used:hrnzFallbackUsed,
+    rank_counts:rankCounts(harnessRecords),
+    detail_status_counts:detailCounts(harnessRecords),
+  },
+  window:{
+    start_date:start,end_date_exclusive:end,days,
+    coverage_claim:harnessRecords.length?'official_hrnz_calendar_horizon':'partial_source_visible_horizon',
+    coverage_note:hrnzFallbackUsed
+      ? 'The official HRNZ final racing-calendar PDF recovered the Harness mother set after the live Infohorse route was blocked. The PDF supplies meeting date, club, scheduled first-race time, and source-verified physical venue mappings through rank B. An unresolved venue is diagnostic-only; source absence or route failure never confirms non-running.'
+      : 'Official HRNZ Racing Dates month pages provide the harness meeting mother set. Linked official programme pages resolve the physical venue and may provide the first-race start time through rank B. Missing or failed programme retrieval is a retry state and never negative evidence.',
+  },
   records:harnessRecords,diagnostics:harnessDiagnostics,
 };
 write(thoroughbredOutput,thoroughbred);
@@ -171,6 +259,6 @@ write(harnessOutput,harness);
 console.log(JSON.stringify({
   start_date:start,end_date_exclusive:end,
   thoroughbred:{output:thoroughbredOutput,meetings:thoroughbredRecords.length,rank_counts:thoroughbred.discovery.rank_counts,detail_status_counts:thoroughbred.discovery.detail_status_counts,source_errors:tbDiagnostics.source_errors.length},
-  harness:{output:harnessOutput,meetings:harnessRecords.length,rank_counts:harness.discovery.rank_counts,detail_status_counts:harness.discovery.detail_status_counts,source_errors:harnessDiagnostics.source_errors.length},
+  harness:{output:harnessOutput,meetings:harnessRecords.length,rank_counts:harness.discovery.rank_counts,detail_status_counts:harness.discovery.detail_status_counts,source_errors:harnessDiagnostics.source_errors.length,route_failures:harnessDiagnostics.route_failures.length,unknown_venues:harnessDiagnostics.unknown_venues.length,fallback_used:hrnzFallbackUsed},
   raw_body_retained:false,
 }));
