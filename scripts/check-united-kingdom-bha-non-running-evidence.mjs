@@ -37,7 +37,7 @@ const transfer='<html><body>British Horseracing Authority BHA confirms the trans
   +'</body></html>';
 const t=parseBhaNonRunningArticle(transfer,{sourceUrl:transferUrl,startDate:'2026-07-01',endDateExclusive:'2026-08-20'});
 assert.equal(t.evidence.length,4);
-assert.deepEqual(t.evidence.map(x=>x.date),['2026-07-23','2026-08-06','2026-08-13','2026-08-02'].sort().sort((a,b)=>a.localeCompare(b))===null?[]:t.evidence.map(x=>x.date));
+assert.deepEqual(t.evidence.map(x=>x.date).sort(),['2026-07-23','2026-08-02','2026-08-06','2026-08-13']);
 assert(t.evidence.some(x=>x.date==='2026-07-23'&&x.replacement_racecourse_id==='southwell-racecourse'));
 assert(t.evidence.some(x=>x.date==='2026-08-13'&&x.replacement_racecourse_id==='lingfield-park-racecourse'));
 assert(t.evidence.some(x=>x.date==='2026-08-02'&&x.replacement_racecourse_id===null));
