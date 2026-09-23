@@ -13,7 +13,7 @@ const WEEKDAYS = Object.freeze({
   sunday:0,monday:1,tuesday:2,wednesday:3,thursday:4,friday:5,saturday:6,
 });
 const MONTH_PATTERN=Object.keys(MONTHS).join('|');
-const WEEKDAY_PATTERN=Object.keys(WEEKDAYS).join('|');
+const WEEKDAY_PATTERN='(?:'+Object.keys(WEEKDAYS).join('|')+')';
 
 const HRNZ_VENUE_ALIASES=Object.freeze({
   'cambridge':'cambridge-raceway',
