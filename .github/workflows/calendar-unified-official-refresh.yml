@@ -341,7 +341,9 @@ jobs:
             --artifact=.calendar-unified/nar-non-running.json
           node scripts/check-confirmed-non-running-publication.mjs
       - name: Validate Japan generated public site state
-        run: npm run build
+        run: |
+          npm run validate:calendar-public-map-parity
+          npm run build
       - name: Persist Japan official state before non-Japan collection
         shell: bash
         run: |
@@ -375,6 +377,7 @@ jobs:
               --artifact=.calendar-unified/banei-non-running.json \
               --artifact=.calendar-unified/nar-non-running.json
             node scripts/check-confirmed-non-running-publication.mjs
+            npm run validate:calendar-public-map-parity
             npm run build
           }
 
@@ -613,7 +616,9 @@ jobs:
             --artifact=.calendar-unified/united-kingdom.json
           node scripts/check-confirmed-non-running-publication.mjs
       - name: Validate generated public site state
-        run: npm run build
+        run: |
+          npm run validate:calendar-public-map-parity
+          npm run build
       - name: Persist remaining canonical and public rolling state
         shell: bash
         run: |
@@ -791,6 +796,7 @@ jobs:
             --artifact=.calendar-unified/new-zealand-harness.json \
             --artifact=.calendar-unified/united-kingdom.json
             node scripts/check-confirmed-non-running-publication.mjs
+            npm run validate:calendar-public-map-parity
             npm run build
           }
 
