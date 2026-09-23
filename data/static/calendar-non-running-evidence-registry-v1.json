@@ -357,21 +357,24 @@
       "country_id": "united-kingdom",
       "system_id": "united-kingdom-bha-system",
       "authority_id": "british-horseracing-authority",
-      "mode": "unsupported",
-      "automation_status": "not_implemented",
-      "whole_meeting_non_running": "not_proven",
+      "mode": "automated",
+      "automation_status": "active",
+      "whole_meeting_non_running": "supported",
       "postponement": "not_proven",
       "partial_race_policy": "never_promote_to_whole_meeting",
       "source_absence_policy": "absent_unconfirmed",
       "acquisition_failure_policy": "preserve_verified_state",
       "replacement_date_policy": "independent_meeting_only",
-      "evidence_source_family": "BHA annual Fixture List and positive reviewed fixture-transfer evidence; no bounded automated whole-meeting negative-evidence route is enabled by this country-addition pass",
+      "evidence_source_family": "BHA official Press Releases index; bounded explicit whole-fixture abandonment, cancellation, and venue-transfer evidence",
       "evidence_urls": [
-        "https://www.britishhorseracing.com/racing/fixtures/full-year/"
+        "https://www.britishhorseracing.com/press_releases/",
+        "https://www.britishhorseracing.com/press_releases/bha-confirms-abandonment-of-four-fixtures-following-met-office-extreme-heat-warning/",
+        "https://www.britishhorseracing.com/press_releases/bha-confirms-the-transfer-of-three-chelmsford-city-fixtures/",
+        "https://www.britishhorseracing.com/press_releases/bha-confirms-the-transfer-of-two-chelmsford-city-fixtures-to-southwell/"
       ],
-      "example_evidence_url": null,
+      "example_evidence_url": "https://www.britishhorseracing.com/press_releases/bha-confirms-abandonment-of-four-fixtures-following-met-office-extreme-heat-warning/",
       "reviewed_at": "2026-09-23",
-      "notes": "UK Calendar production uses BHA positive fixture evidence only in this expansion lane. Missing annual rows, source acquisition failure, or a changed fixture route remains absent_unconfirmed and preserves verified state; cancellation/postponement automation belongs to the separate negative-evidence lane."
+      "notes": "Production scans the current official BHA Press Releases index as a bounded positive-evidence subset. Explicit whole-fixture abandonment, cancellation, or venue transfer may suppress the original canonical meeting only after exact date/racecourse binding to one existing BHA meeting. Steeple Chase/race-only abandonment, all-Hurdle conversions, surface-only transfers, start-time changes, and other partial programme changes are rejected. Replacement venue/date is evidence only and never creates a meeting. Index/article absence or acquisition/parser failure emits no negative evidence and preserves verified state."
     }
   ]
 }
