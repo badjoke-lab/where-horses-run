@@ -453,6 +453,32 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "GitHub Actions selects the official BHA annual Fixture List PDF for the active year, extracts national flat/jump meeting date and racecourse observations at the system's current technical ceiling C, and overlays reviewed BHA transfer corrections where available. The registry detail slot intentionally points to the same C-only BHA fixture route because no richer reusable national race-time route is established. Race times are not inferred. Acquisition failure or source absence preserves stronger verified state and is never treated as non-running evidence."
+    },
+    {
+      "system_id": "bahrain-turf-club-system",
+      "country_id": "bahrain",
+      "authority_id": "bahrain-turf-club",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "btc-race-programme",
+      "detail_source_id": "btc-racecard-route",
+      "schedule_adapter_id": "bahrain-btc-season-programme-v1",
+      "detail_adapter_id": "bahrain-btc-racecard-navigation-v1",
+      "technical_capability_rank": "A",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "A",
+      "supported_observation_ranks": [
+        "C",
+        "A"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "GitHub Actions reads the official Bahrain Turf Club 2026/27 season programme as the meeting-date mother set for Rashid Equestrian & Horseracing Club and uses the official date-specific racecard navigation for complete per-race post times through rank A. An officially empty requested window is valid. Unpublished detail remains C/pending; acquisition or parser failure preserves stronger verified state and never proves non-running."
     }
   ]
 }
