@@ -129,6 +129,7 @@ jobs:
           node scripts/check-france-fnch-adapter.mjs
           node scripts/check-new-zealand-official-adapter.mjs
           node scripts/check-united-kingdom-bha-adapter.mjs
+          node scripts/check-slovakia-zavodisko-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
@@ -302,6 +303,7 @@ jobs:
           node scripts/check-france-fnch-adapter.mjs
           node scripts/check-new-zealand-official-adapter.mjs
           node scripts/check-united-kingdom-bha-adapter.mjs
+          node scripts/check-slovakia-zavodisko-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
@@ -447,7 +449,7 @@ jobs:
           node scripts/timetable/run-kra-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/kra.json
-      - name: Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France, New Zealand and United Kingdom official windows
+      - name: Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France, New Zealand, United Kingdom and Slovakia official windows
         run: |
           node scripts/timetable/run-tjk-current-best-available.mjs \
             --days="${{ steps.scope.outputs.days }}" \
@@ -478,6 +480,9 @@ jobs:
           node scripts/timetable/run-united-kingdom-bha-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/united-kingdom.json
+          node scripts/timetable/run-slovakia-zavodisko-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/slovakia.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -494,7 +499,8 @@ jobs:
             --artifact=.calendar-unified/france-letrot.json \
             --artifact=.calendar-unified/new-zealand-thoroughbred.json \
             --artifact=.calendar-unified/new-zealand-harness.json \
-            --artifact=.calendar-unified/united-kingdom.json
+            --artifact=.calendar-unified/united-kingdom.json \
+            --artifact=.calendar-unified/slovakia.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -581,6 +587,12 @@ jobs:
             --authority-id=british-horseracing-authority \
             --racing-system-id=united-kingdom-bha-system \
             --timezone=Europe/London
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/slovakia.json \
+            --country-id=slovakia \
+            --authority-id=zavodisko \
+            --racing-system-id=slovakia-zavodisko-system \
+            --timezone=Europe/Bratislava
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
@@ -654,6 +666,9 @@ jobs:
             node scripts/timetable/run-united-kingdom-bha-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/united-kingdom.json
+            node scripts/timetable/run-slovakia-zavodisko-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/slovakia.json
             node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --artifact=.calendar-unified/uae.json \
@@ -668,7 +683,8 @@ jobs:
               --artifact=.calendar-unified/france-letrot.json \
               --artifact=.calendar-unified/new-zealand-thoroughbred.json \
               --artifact=.calendar-unified/new-zealand-harness.json \
-              --artifact=.calendar-unified/united-kingdom.json
+              --artifact=.calendar-unified/united-kingdom.json \
+              --artifact=.calendar-unified/slovakia.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --country-id=hong-kong \
@@ -753,6 +769,12 @@ jobs:
               --authority-id=british-horseracing-authority \
               --racing-system-id=united-kingdom-bha-system \
               --timezone=Europe/London
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/slovakia.json \
+              --country-id=slovakia \
+              --authority-id=zavodisko \
+              --racing-system-id=slovakia-zavodisko-system \
+              --timezone=Europe/Bratislava
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
             node scripts/timetable/apply-meeting-presence-dispositions.mjs \
             --artifact=.calendar-unified/hkjc.json \
