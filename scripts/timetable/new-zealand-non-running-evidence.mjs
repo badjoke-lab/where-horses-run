@@ -157,7 +157,7 @@ export function parseNztrNonRunningArticle(html,options={}){
   if(!normalized.includes('nztr')&&!normalized.includes('new zealand thoroughbred racing')) throw new Error('NZTR article fingerprint missing');
   const published=publicationDate(text);
 
-  if(/following a slip in the first race/.test(normalized)||/abandoned after race\s*1\b/.test(normalized)||/partial abandon/.test(normalized)){
+  if(/following a slip in the first race/.test(normalized)||/abandoned after race\s*1\b/.test(normalized)){
     return {evidence:[],diagnostics:{disposition:'rejected_partial_or_in_progress_abandonment'}};
   }
 
