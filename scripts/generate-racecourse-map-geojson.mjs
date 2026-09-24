@@ -52,6 +52,10 @@ const calendarMapRegressionIds = [
   'laval-racecourse',
   'toulouse-racecourse',
   'la-teste-racecourse',
+  // United Kingdom rolling venues (3)
+  'cheltenham-racecourse',
+  'doncaster-racecourse',
+  'newbury-racecourse',
   // Slovakia (1)
   'bratislava-racecourse',
   // France Calendar rolling venues (4)
