@@ -126,18 +126,156 @@ function pendingFromArtifact(artifact, records) {
   if (Number.isInteger(explicit)) return explicit;
   return records.filter((row) => ['not_published', 'details_pending'].includes(row?.detail_observation?.status)).length;
 }
+function diffValues(before, after, prefix = '') {
+  const left = withoutVolatile(before ?? null);
+  const right = withoutVolatile(after ?? null);
+  if (JSON.stringify(left) === JSON.stringify(right)) return [];
+  if (Array.isArray(left) || Array.isArray(right) || !left || !right || typeof left !== 'object' || typeof right !== 'object') {
+    return [{ field: prefix || '
+
+const repoRoot = path.resolve(arg('repo-root', '.'));
+const artifactRoot = path.resolve(arg('artifact-root', '.'));
+const output = path.resolve(arg('output', '.calendar-audit/refresh-audit-summary.json'));
+const sourceRunId = arg('source-run-id');
+const sourceHeadSha = arg('source-head-sha');
+const runStartedAt = arg('run-started-at');
+const runCompletedAt = arg('run-completed-at');
+const sourceConclusion = arg('source-conclusion', 'unknown');
+for (const [name, value] of Object.entries({ sourceRunId, sourceHeadSha, runStartedAt, runCompletedAt })) {
+  if (!value) throw new Error(`missing required --${name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)} argument`);
+}
+
+const resultSha = findResultSha(repoRoot, sourceHeadSha, runStartedAt, runCompletedAt);
+const before = stateMaps(repoRoot, sourceHeadSha);
+const after = stateMaps(repoRoot, resultSha);
+const systems = [];
+
+const japan = selectJapanReconciliation(artifactRoot);
+if (japan) {
+  const byGroup = new Map();
+  for (const row of japan.data.reconciliations ?? []) {
+    const group = row.acquisition_group ?? 'unknown';
+    if (!byGroup.has(group)) byGroup.set(group, []);
+    byGroup.get(group).push(row);
+  }
+  for (const [group, rows] of [...byGroup.entries()].sort(([a], [b]) => a.localeCompare(b))) {
+    const ids = [...new Set(rows.map((row) => row.meeting_id).filter(Boolean))];
+    const state = summarizeMeetingIds({ ids, before, after });
+    const outcomes = Object.fromEntries([...new Set(rows.map((row) => row.outcome))].sort()
+      .map((name) => [name, rows.filter((row) => row.outcome === name).length]));
+    const completionCounts = Object.fromEntries([...new Set(rows.map((row) => row.acquisition_completion))].sort()
+      .map((name) => [name, rows.filter((row) => row.acquisition_completion === name).length]));
+    systems.push({
+      country_id: 'japan', authority_id: null, racing_system_id: null, acquisition_group: group,
+      status: 'audited', checked: ids.length, ...state,
+      pending: rows.filter((row) => ['pending_publication', 'retry_required', 'implementation_gap'].includes(row.acquisition_completion)).length,
+      fetch_failed: Number(outcomes.acquisition_failed ?? 0),
+      parse_failed: Number(outcomes.conflict ?? 0),
+      raw_reconciliation: { outcomes, completion_counts: completionCounts },
+    });
+  }
+  const sourceFailures = (japan.data.source_completeness ?? []).reduce((sum, row) => sum + Number(row.failure_count ?? 0) + Number(row.programme_failure_count ?? 0), 0);
+  systems.push({
+    country_id: 'japan', authority_id: null, racing_system_id: null, acquisition_group: 'source-health',
+    status: japan.data.complete && japan.data.mother_set_complete ? 'complete' : 'incomplete',
+    checked: japan.data.official_meeting_count ?? 0, changed: 0, unchanged: 0, promoted: 0, added: 0,
+    pending: (japan.data.source_completeness ?? []).reduce((sum, row) => sum + Number(row.pending_count ?? 0) + Number(row.programme_not_published_count ?? 0), 0),
+    fetch_failed: sourceFailures, parse_failed: 0,
+    reconciliation_scope: japan.data.scope ?? null,
+    reconciliation_checked_at: japan.data.checked_at ?? null,
+    mother_set_complete: Boolean(japan.data.mother_set_complete),
+  });
+} else {
+  systems.push({ country_id: 'japan', authority_id: null, racing_system_id: null, acquisition_group: 'all', status: 'artifact_missing', checked: 0, changed: 0, unchanged: 0, promoted: 0, added: 0, pending: 0, fetch_failed: 1, parse_failed: 0 });
+}
+
+for (const config of SYSTEMS) {
+  const artifactPath = path.join(artifactRoot, '.calendar-unified', config.file);
+  if (!fs.existsSync(artifactPath)) {
+    systems.push({ ...config, status: 'artifact_missing', checked: 0, changed: 0, unchanged: 0, promoted: 0, added: 0, pending: 0, fetch_failed: 1, parse_failed: 0 });
+    continue;
+  }
+  const artifact = readJson(artifactPath);
+  const records = recordsFromArtifact(artifact);
+  const ids = [...new Set(records.map((row) => row?.meeting_id).filter(Boolean))];
+  const state = summarizeMeetingIds({ ids, before, after });
+  systems.push({
+    country_id: config.country_id,
+    authority_id: config.authority_id,
+    racing_system_id: config.racing_system_id,
+    status: 'audited',
+    observed_records: records.length,
+    checked: ids.length,
+    ...state,
+    pending: pendingFromArtifact(artifact, records),
+    fetch_failed: countNonJapanFetchFailures(artifact, records),
+    parse_failed: countNonJapanParseFailures(artifact),
+    diagnostics: {
+      unknown_venues: countArray(artifact.diagnostics?.unknown_venues),
+      detail_conflict: Number(artifact.discovery?.detail_status_counts?.conflict ?? 0),
+      source_warnings: countArray(artifact.diagnostics?.source_warnings),
+    },
+  });
+}
+
+const reportRows = systems.filter((row) => row.acquisition_group !== 'source-health');
+const totals = reportRows.reduce((acc, row) => {
+  for (const key of ['checked', 'changed', 'unchanged', 'promoted', 'added', 'pending', 'fetch_failed', 'parse_failed']) acc[key] += Number(row[key] ?? 0);
+  return acc;
+}, { checked: 0, changed: 0, unchanged: 0, promoted: 0, added: 0, pending: 0, fetch_failed: 0, parse_failed: 0 });
+
+const summary = {
+  schema_version: 'calendar-refresh-audit-summary-v1',
+  generated_at: new Date().toISOString(),
+  source_run_id: String(sourceRunId),
+  source_head_sha: sourceHeadSha,
+  result_sha: resultSha,
+  source_conclusion: sourceConclusion,
+  run_started_at: runStartedAt,
+  run_completed_at: runCompletedAt,
+  semantics: {
+    changes: 'Per-meeting substantive field differences from source_head_sha to result_sha. Volatile freshness/generated timestamps are excluded.',
+    checked: 'Unique meeting_ids present in the source-run acquisition artifacts.',
+    changed: 'Checked meeting_ids with a substantive canonical/detail/public difference from source_head_sha to result_sha; freshness-only changes are excluded.',
+    unchanged: 'checked - changed.',
+    promoted: 'Previously existing checked meeting_ids whose canonical capability rank increased.',
+    added: 'Checked meeting_ids absent from canonical at source_head_sha and present at result_sha.',
+    pending: 'Known detail publication/acquisition work still pending in the source-run artifact.',
+    fetch_failed: 'Explicit source/acquisition failures represented in the source-run artifact.',
+    parse_failed: 'Explicit parse/conflict failures represented in the source-run artifact.',
+  },
+  totals,
+  systems,
+};
+writeJson(output, summary);
+console.log(JSON.stringify({ output, source_run_id: String(sourceRunId), result_sha: resultSha, totals }));
+, old_value: left, new_value: right }];
+  }
+  const keys = [...new Set([...Object.keys(left), ...Object.keys(right)])].sort();
+  return keys.flatMap((key) => diffValues(left[key], right[key], prefix ? `${prefix}.${key}` : key));
+}
 function summarizeMeetingIds({ ids, before, after }) {
   let changed = 0;
   let promoted = 0;
   let added = 0;
+  const changes = [];
   for (const meetingId of ids) {
     const oldState = meetingState(before, meetingId);
     const newState = meetingState(after, meetingId);
-    if (!sameSubstance(oldState, newState)) changed += 1;
-    if (!oldState.canonical && newState.canonical) added += 1;
-    if (oldState.canonical && rank(newState.canonical?.capability_rank) > rank(oldState.canonical?.capability_rank)) promoted += 1;
+    const fieldChanges = diffValues(oldState, newState);
+    const isChanged = fieldChanges.length > 0;
+    if (isChanged) changed += 1;
+    const isAdded = !oldState.canonical && Boolean(newState.canonical);
+    if (isAdded) added += 1;
+    const isPromoted = Boolean(oldState.canonical) && rank(newState.canonical?.capability_rank) > rank(oldState.canonical?.capability_rank);
+    if (isPromoted) promoted += 1;
+    if (isChanged) changes.push({
+      meeting_id: meetingId,
+      change_type: isAdded ? 'added' : isPromoted ? 'promoted' : 'updated',
+      fields: fieldChanges,
+    });
   }
-  return { changed, unchanged: Math.max(0, ids.length - changed), promoted, added };
+  return { changed, unchanged: Math.max(0, ids.length - changed), promoted, added, changes };
 }
 
 const repoRoot = path.resolve(arg('repo-root', '.'));
