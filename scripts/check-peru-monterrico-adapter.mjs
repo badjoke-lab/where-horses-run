@@ -102,8 +102,15 @@ if(process.env.GITHUB_ACTIONS==='true') {
               const componentHits=[...componentBody.matchAll(/.{0,260}(?:\/api\/|programa|temporada|reunion|fecha).{0,500}/gi)].slice(0,80).map(m=>m[0].replace(/\s+/g,' '));
               const symbolHits={};
               for(const symbol of ['url_api_programas','app_pertenece_validacion','ruta_api_programas','dominio_apis','respuesta_items_programas','lista_programas','programas-pdf-sistema','tipo_calendario']) {
-                const re=new RegExp('.{0,420}'+symbol+'.{0,900}','gi');
-                symbolHits[symbol]=[...componentBody.matchAll(re)].slice(0,20).map(m=>m[0].replace(/\s+/g,' '));
+                const snippets=[];
+                let from=0;
+                while(snippets.length<12) {
+                  const idx=componentBody.indexOf(symbol,from);
+                  if(idx<0) break;
+                  snippets.push(componentBody.slice(Math.max(0,idx-500),Math.min(componentBody.length,idx+1400)).replace(/\s+/g,' '));
+                  from=idx+symbol.length;
+                }
+                symbolHits[symbol]=snippets;
               }
               componentDiagnostics.push({url:componentUrl,status:componentResponse.status,length:componentBody.length,hits:componentHits,symbol_hits:symbolHits});
             } catch(error) {
