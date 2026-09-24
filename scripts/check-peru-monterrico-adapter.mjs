@@ -122,7 +122,7 @@ if(process.env.GITHUB_ACTIONS==='true') {
           scriptDiagnostics.push({url:scriptUrl,error:String(error?.message??error)});
         }
       }
-            const inferredMonthlyUrl='https://hipodromodemonterrico.com.pe/api/general/programas-pdf-sistema/programa_temporada/2026-09-01/2026-09-30';
+            const inferredMonthlyUrl='https://hipodromodemonterrico.com.pe/api/general/calendarios/programa_temporada/2026-09-01/2026-09-30';
       let inferredMonthlyProbe={url:inferredMonthlyUrl};
       try {
         const inferredResponse=await fetch(inferredMonthlyUrl,{headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)','accept':'application/json,text/plain;q=0.9,*/*;q=0.5'}});
