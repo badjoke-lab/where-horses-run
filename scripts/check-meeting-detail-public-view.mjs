@@ -29,14 +29,18 @@ for (const token of [
   'getPublicTimetableMeetingRows',
   'PublicTimetableMeetingDetail',
   'PublicTimetableMeetingRow',
-  'detail.effective_public_rank',
   'detail.show_race_name',
   'detail.show_distance',
   'detail.show_surface',
   'detail.show_course',
   'detail.timetable_rows.map',
+  '<h1 id="page-title"><a href={trackPath}>{racecourseName}</a></h1>',
+  'Today’s races',
+  'source-strip',
   'Open official source',
-  'Publication boundary',
+  'About this data',
+  '@media (max-width: 720px)',
+  'race-cell--name',
 ]) requireText(page, token, 'meeting detail page');
 
 for (const forbidden of [
@@ -50,6 +54,11 @@ for (const forbidden of [
   'payouts',
   'predictions',
   'tips',
+  'Capability rank:',
+  'Public rank:',
+  'Publication policy:',
+  'Source status:',
+  'Publication boundary',
 ]) rejectText(page, forbidden, 'meeting detail page');
 
 const details = publicDetails.details ?? [];
