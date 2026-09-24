@@ -3,6 +3,7 @@ import { execFileSync } from 'node:child_process';
 import assert from 'node:assert/strict';
 import { validateCalendarAuthorityMetadataV1 } from './timetable/calendar-authority-metadata.mjs';
 import {
+  PERU_MONTERRICO_ENTRY_PROGRAMME_URL,
   buildMonterricoFallbackRecord,
   buildMonterricoMeetingRecord,
   extractMonterricoEntryProgrammeLinks,
@@ -67,6 +68,21 @@ if(process.env.GITHUB_ACTIONS==='true') {
     ],{encoding:'utf8'});
     const artifact=JSON.parse(fs.readFileSync(liveOutput,'utf8'));
     const dates=new Set(artifact.records.map(row=>row.date));
+    console.log('PERU_MONTERRICO_LIVE_FALLBACK_DEBUG:',JSON.stringify({
+      records:artifact.records.length,
+      dates:[...dates].sort(),
+      acquisition_status:artifact.acquisition_attempt?.status,
+      coverage_claim:artifact.window?.coverage_claim,
+      fallback_discovery:artifact.discovery?.fallback_discovery,
+      runner_stdout:stdout.trim(),
+    }));
+    if(!dates.has('2026-09-26') || !dates.has('2026-09-27')) {
+      const response=await fetch(PERU_MONTERRICO_ENTRY_PROGRAMME_URL,{headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'}});
+      const body=await response.text();
+      const idSnippets=[...body.matchAll(/.{0,120}id_reunion.{0,180}/gi)].slice(0,30).map(m=>m[0].replace(/\s+/g,' '));
+      const programmeSnippets=[...body.matchAll(/.{0,120}Programa.{0,180}/gi)].slice(0,30).map(m=>m[0].replace(/\s+/g,' '));
+      console.log('PERU_MONTERRICO_ENTRY_HTML_DEBUG:',JSON.stringify({status:response.status,content_type:response.headers.get('content-type'),length:body.length,id_snippets:idSnippets,programme_snippets:programmeSnippets}));
+    }
     assert.ok(dates.has('2026-09-26'),'Peru live fallback must recover the published 2026-09-26 Monterrico meeting');
     assert.ok(dates.has('2026-09-27'),'Peru live fallback must recover the published 2026-09-27 Monterrico meeting');
     console.log('PERU_MONTERRICO_LIVE_FALLBACK:',JSON.stringify({
