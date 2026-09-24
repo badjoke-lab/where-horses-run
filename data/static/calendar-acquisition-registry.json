@@ -536,6 +536,34 @@
         "detail_adapter_id"
       ],
       "operator_notes": "GitHub Actions reads the official Svensk Galopp 2026 race-day calendar PDF as the Swedish Thoroughbred meeting-date and venue mother set through rank C. Generic calendar event times remain source context only and are not promoted to first-race time. The profile remains provisional because explicit Första starttid event-page enrichment is known but no reusable detail source/adapter is connected; detail_source_id and detail_adapter_id therefore remain pending. Source failure preserves stronger verified state and never proves non-running."
+    },
+    {
+      "system_id": "germany-deutscher-galopp-system",
+      "country_id": "germany",
+      "authority_id": "deutscher-galopp",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "deutscher-galopp-calendar",
+      "detail_source_id": "deutscher-galopp-calendar",
+      "schedule_adapter_id": "germany-deutscher-galopp-annual-calendar-v1",
+      "detail_adapter_id": "germany-deutscher-galopp-race-table-v1",
+      "technical_capability_rank": "A",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C",
+        "B",
+        "B+",
+        "A"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": true,
+      "pending_fields": [],
+      "operator_notes": "GitHub Actions reads the official Deutscher Galopp 2026 annual calendar PDF as the gallop meeting-date and venue mother set, then enriches visible meetings from the official race-calendar table when per-race post times are published. Complete continuous timed rows can reach A; unpublished detail remains C/pending. Public country output remains capped at C because other German horse-racing codes are outside the reviewed scope. Source failure preserves stronger verified state and never proves non-running."
     }
   ]
 }

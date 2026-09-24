@@ -2540,28 +2540,29 @@
         "surface": false,
         "course": false
       },
-      "source_format": "html",
+      "source_format": "html+pdf",
       "access_mode": "direct",
-      "automation_mode": "semi_automatic",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "seasonal",
-        "weekly",
+        "annual",
+        "daily",
         "near_meeting"
       ],
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "fallback": "downgrade_to_C",
-      "source_status": "partial",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when Deutscher Galopp changes schedule routes or additional racing codes are reviewed.",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-09-24",
+      "evidence_reviewed_at": "2026-09-24",
+      "revalidation_trigger": "Revalidate when Deutscher Galopp changes the annual calendar PDF, race-calendar table route, or when additional German racing codes are reviewed.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/42-germany/final-summary.json",
       "limitations": [
-        "The decision covers the reviewed gallop system only.",
-        "Other horse-racing codes remain unreviewed."
+        "Production coverage is Deutscher Galopp gallop only; other German horse-racing codes remain unreviewed.",
+        "Public output remains capped at C at country level despite A-capable gallop observations.",
+        "Unpublished per-race post times remain pending and are not inferred from meeting-level start labels."
       ],
-      "notes": "Bounded prototype decision for Deutscher Galopp schedules."
+      "notes": "Automated Deutscher Galopp annual-calendar mother set plus current race-table enrichment supports best-available C through A for the reviewed gallop system. Calendar timetable identities and map locations use the existing Germany All-Tier Master IDs, but readiness.racecourse_ids remains empty until those IDs are promoted into the repository racecourse-page master."
     },
     {
       "readiness_id": "italy--italy-masaf-gallop-system--masaf-calendar-2026",

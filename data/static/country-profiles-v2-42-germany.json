@@ -1,1 +1,91 @@
-[{"schema_version":"2.0.0","country_id":"germany","slug":"germany","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-20","public_display_ceiling":"C","source_test_status":"partial","hero":{"summary_en":"Deutscher Galopp provides reviewed gallop schedules; other horse-racing codes remain unreviewed.","summary_ja":"Deutscher Galoppのギャロップ日程は確認済みだが、他の競馬体系は未確認。"},"overview":{"paragraphs_en":["The profile is limited to the reviewed gallop system."],"paragraphs_ja":["プロフィールは確認済みギャロップ体系に限定する。"]},"racing_types":[{"id":"thoroughbred-flat","name_en":"Thoroughbred flat racing","name_ja":"サラブレッド平地競走","summary_en":"Verified through Deutscher Galopp.","summary_ja":"Deutscher Galoppで確認済み。"}],"seasonality":{"pattern":"official-source-required","summary_en":"Use the current Deutscher Galopp calendar.","summary_ja":"現行Deutscher Galoppカレンダーを確認する。"},"schedule":{"timezone":"Europe/Berlin","utc_offset_label":"Verify the current local UTC offset","day_patterns":["official-source-required"],"time_patterns":["meeting-date-only"],"summary_en":"The reviewed gallop system has detailed schedules, but country output remains at meeting-date level.","summary_ja":"確認済みギャロップ体系は詳細日程に対応するが、国ページ表示は開催日レベルに保つ。"},"surfaces":{"ids":[],"summary_en":"Surface details are not normalized.","summary_ja":"馬場情報は共通化しない。"},"systems":[{"id":"germany-deutscher-galopp-system","name_en":"Deutscher Galopp","name_ja":"Deutscher Galopp","summary_en":"Reviewed national gallop calendar and schedule system.","summary_ja":"確認済み全国ギャロップカレンダー・日程体系。","organiser_source_ids":["germany-deutscher-galopp-home"],"distributor_source_ids":["germany-deutscher-galopp-calendar"]}],"principal_racecourse_ids":[],"calendar_guidance_en":"Use Deutscher Galopp for the reviewed gallop scope and keep the country ceiling at C.","calendar_guidance_ja":"確認済みギャロップ範囲ではDeutscher Galoppを使用し、国上限をCに保つ。","coverage_note_en":"Additional horse-racing codes require separate review.","coverage_note_ja":"追加の競馬体系は別途確認が必要。","revalidation":{"triggers_en":["Deutscher Galopp routes change","Additional racing codes are reviewed"],"triggers_ja":["Deutscher Galopp導線変更時","追加競馬体系を確認したとき"]},"related_glossary_ids":["racecourse","meeting","fixture","post-time"]}]
+[
+  {
+    "schema_version": "2.0.0",
+    "country_id": "germany",
+    "slug": "germany",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-09-24",
+    "public_display_ceiling": "C",
+    "source_test_status": "partial",
+    "hero": {
+      "summary_en": "Deutscher Galopp is production-routed for Germany's reviewed gallop system; other horse-racing codes remain outside the current Calendar scope.",
+      "summary_ja": "ドイツでは確認済みDeutscher Galoppギャロップ体系をproduction経路に接続済みです。他の競馬体系は現在のCalendar対象外です。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "The official Deutscher Galopp 2026 annual calendar is used as the gallop meeting mother set, with the official race calendar supplying published per-race post times through A. Country-level public display remains capped at C because other German horse-racing codes have not been reviewed."
+      ],
+      "paragraphs_ja": [
+        "Deutscher Galopp公式2026年年間日程をギャロップ開催母表として使用し、公式レースカレンダーから公開済みレース時刻をAまで取得します。他のドイツ競馬体系が未確認のため、国全体の公開上限はCのままです。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "thoroughbred-flat",
+        "name_en": "Thoroughbred flat racing",
+        "name_ja": "サラブレッド平地競走",
+        "summary_en": "Verified through Deutscher Galopp.",
+        "summary_ja": "Deutscher Galoppで確認済み。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "official-source-required",
+      "summary_en": "Use the current Deutscher Galopp calendar.",
+      "summary_ja": "現行Deutscher Galoppカレンダーを確認する。"
+    },
+    "schedule": {
+      "timezone": "Europe/Berlin",
+      "utc_offset_label": "Verify the current local UTC offset",
+      "day_patterns": [
+        "official-source-required"
+      ],
+      "time_patterns": [
+        "best-available-gallop-detail"
+      ],
+      "summary_en": "Canonical Deutscher Galopp observations may reach A; public Germany output remains capped at C.",
+      "summary_ja": "Deutscher Galoppのcanonical観測はAまで到達可能ですが、Germany公開表示はC上限を維持します。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Surface details are not normalized.",
+      "summary_ja": "馬場情報は共通化しない。"
+    },
+    "systems": [
+      {
+        "id": "germany-deutscher-galopp-system",
+        "name_en": "Deutscher Galopp",
+        "name_ja": "Deutscher Galopp",
+        "summary_en": "Reviewed national gallop calendar and schedule system.",
+        "summary_ja": "確認済み全国ギャロップカレンダー・日程体系。",
+        "organiser_source_ids": [
+          "germany-deutscher-galopp-home"
+        ],
+        "distributor_source_ids": [
+          "germany-deutscher-galopp-calendar"
+        ]
+      }
+    ],
+    "principal_racecourse_ids": [],
+    "calendar_guidance_en": "Use Deutscher Galopp for the reviewed gallop scope. Preserve stronger canonical timing evidence, but publish Germany at C until other racing codes are reviewed.",
+    "calendar_guidance_ja": "確認済みギャロップ範囲ではDeutscher Galoppを使用します。強いcanonical時刻証拠は保持しますが、他体系の確認まではGermany公開をCに保ちます。",
+    "coverage_note_en": "Production routing covers Deutscher Galopp gallop only; it is not a claim of complete multi-code German horse-racing coverage.",
+    "coverage_note_ja": "production経路はDeutscher Galoppギャロップのみを対象とし、ドイツの複数競馬体系全体の完全coverageを意味しません。",
+    "revalidation": {
+      "triggers_en": [
+        "Deutscher Galopp routes change",
+        "Additional racing codes are reviewed"
+      ],
+      "triggers_ja": [
+        "Deutscher Galopp導線変更時",
+        "追加競馬体系を確認したとき"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture",
+      "post-time"
+    ]
+  }
+]

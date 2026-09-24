@@ -440,6 +440,28 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-09-24",
       "notes": "Sweden Calendar production uses positive Svensk Galopp meeting evidence only. Source absence, PDF acquisition failure or calendar omission does not prove cancellation or postponement and must preserve stronger verified state."
+    },
+    {
+      "record_id": "germany-deutscher-galopp-system",
+      "country_id": "germany",
+      "system_id": "germany-deutscher-galopp-system",
+      "authority_id": "deutscher-galopp",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Deutscher Galopp positive annual-calendar and current race-table evidence; no bounded whole-meeting negative-evidence route is implemented in this country-addition pass",
+      "evidence_urls": [
+        "https://www.deutscher-galopp.de/gr-wAssets/docs/renntermine2026.pdf",
+        "https://www.deutscher-galopp.de/gr/renntage/rennkalender.php"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-09-24",
+      "notes": "Germany gallop production uses positive Deutscher Galopp meeting evidence only. Source omission, unpublished race times, acquisition failure or parser failure do not confirm cancellation/postponement and must preserve stronger verified state."
     }
   ]
 }

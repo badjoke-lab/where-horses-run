@@ -13,7 +13,7 @@ const orderedSteps = [
   'Collect HKJC official window',
   'Collect UAE official window',
   'Collect KRA official window',
-  'Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France, New Zealand, United Kingdom, Slovakia, Bahrain and Sweden official windows',
+  'Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France, New Zealand, United Kingdom, Slovakia, Bahrain, Sweden and Germany official windows',
   'Apply non-Japan official observations monotonically',
   'Re-apply frozen reviewed Calendar observations',
   'Apply explicit meeting presence dispositions',
@@ -157,6 +157,12 @@ assert.equal((workflow.match(/--artifact=\.calendar-unified\/sweden\.json/g) ?? 
 assert.equal((workflow.match(/--racing-system-id=sweden-svensk-galopp-system/g) ?? []).length, 2, 'Sweden apply path must bind the canonical racing system id in both execution paths');
 assert.equal((workflow.match(/--timezone=Europe\/Stockholm/g) ?? []).length, 2, 'Sweden apply path must bind Europe/Stockholm in both execution paths');
 
+assert.equal((workflow.match(/run-germany-deutscher-galopp-official-window\.mjs/g) ?? []).length, 2, 'Germany Deutscher Galopp must be collected in both normal and latest-main rebuild paths');
+assert.equal((workflow.match(/--authority-id=deutscher-galopp/g) ?? []).length, 2, 'Germany Deutscher Galopp observations must be applied in both execution paths');
+assert.equal((workflow.match(/--artifact=\.calendar-unified\/germany\.json/g) ?? []).length, 4, 'Germany artifact must pass exclusion and apply layers in both execution paths');
+assert.equal((workflow.match(/--racing-system-id=germany-deutscher-galopp-system/g) ?? []).length, 2, 'Germany apply path must bind the canonical racing system id in both execution paths');
+assert.equal((workflow.match(/--timezone=Europe\/Berlin/g) ?? []).length, 2, 'Germany apply path must bind Europe/Berlin in both execution paths');
+
 console.log('CALENDAR_REFRESH_PUBLICATION_BOUNDARIES: pass');
 console.log('SOREC_UNIFIED_REFRESH_PATHS: 2');
 console.log('IRELAND_HRI_UNIFIED_REFRESH_PATHS: 2');
@@ -168,3 +174,4 @@ console.log('UNITED_KINGDOM_BHA_UNIFIED_REFRESH_PATHS: 2');
 console.log('SLOVAKIA_ZAVODISKO_UNIFIED_REFRESH_PATHS: 2');
 console.log('BAHRAIN_BTC_UNIFIED_REFRESH_PATHS: 2');
 console.log('SWEDEN_SVENSK_GALOPP_UNIFIED_REFRESH_PATHS: 2');
+console.log('GERMANY_DEUTSCHER_GALOPP_UNIFIED_REFRESH_PATHS: 2');
