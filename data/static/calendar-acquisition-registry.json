@@ -564,6 +564,34 @@
       "supports_rank_upgrade_retry": true,
       "pending_fields": [],
       "operator_notes": "GitHub Actions reads the official Deutscher Galopp 2026 annual calendar PDF as the gallop meeting-date and venue mother set, then enriches visible meetings from the official race-calendar table when per-race post times are published. Complete continuous timed rows can reach A; unpublished detail remains C/pending. Public country output remains capped at C because other German horse-racing codes are outside the reviewed scope. Source failure preserves stronger verified state and never proves non-running."
+    },
+    {
+      "system_id": "spain-reviewed-gallop-system",
+      "country_id": "spain",
+      "authority_id": "hipodromo-zarzuela",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "zarzuela-programme-2026",
+      "detail_source_id": "zarzuela-programme-2026",
+      "schedule_adapter_id": "spain-zarzuela-autumn-programme-v1",
+      "detail_adapter_id": "spain-zarzuela-jornada-v1",
+      "technical_capability_rank": "A",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C",
+        "B",
+        "B+",
+        "A"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": true,
+      "pending_fields": [],
+      "operator_notes": "GitHub Actions reads the official Hipódromo de la Zarzuela autumn 2026 programme PDF as the bounded meeting-date mother set, then enriches each date from the official /carreras/jornada/YYYYMMDD page when continuous per-race post times are published. Complete detail may reach A; unpublished detail remains C/pending. Public Spain output remains capped at C because wider venue/code coverage is incomplete. Source failure preserves stronger verified state and never proves non-running."
     }
   ]
 }
