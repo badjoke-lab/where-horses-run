@@ -71,6 +71,7 @@ const surfaceValues = [...new Set(detail.timetable_rows.map((row) => row.surface
 const courseValues = [...new Set(detail.timetable_rows.map((row) => row.course_label).filter((value): value is string => Boolean(value)))];
 const summarySurface = surfaceValues.length === 1 ? surfaceValues[0] : null;
 const summaryCourse = courseValues.length === 1 ? courseValues[0] : null;
+const summaryCourseText = summaryCourse ?? summarySurface;
 
 ---
 
@@ -99,20 +100,22 @@ const summaryCourse = courseValues.length === 1 ? courseValues[0] : null;
       </div>
 
       <dl class="meeting-summary" aria-label="Meeting summary">
-        <div>
-          <dt>Races</dt>
-          <dd>{raceCount}</dd>
-        </div>
+        {raceCount > 0 && (
+          <div>
+            <dt>Races</dt>
+            <dd>{raceCount}</dd>
+          </div>
+        )}
         {(firstRaceTime || lastRaceTime) && (
           <div>
             <dt>Venue time</dt>
             <dd>{firstRaceTime ?? "—"}{lastRaceTime ? `–${lastRaceTime}` : ""}</dd>
           </div>
         )}
-        {(summarySurface || summaryCourse) && (
+        {summaryCourseText && (
           <div>
-            <dt>Course</dt>
-            <dd>{[summarySurface, summaryCourse].filter(Boolean).join(" · ")}</dd>
+            <dt>Surface / course</dt>
+            <dd>{summaryCourseText}</dd>
           </div>
         )}
       </dl>
