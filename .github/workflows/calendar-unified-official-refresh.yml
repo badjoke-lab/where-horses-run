@@ -24,6 +24,7 @@ on:
       - 'scripts/check-calendar-refresh-publication-boundaries.mjs'
       - 'scripts/check-bahrain-btc-adapter.mjs'
       - 'scripts/check-sweden-svensk-galopp-adapter.mjs'
+      - 'scripts/check-germany-deutscher-galopp-adapter.mjs'
       - 'scripts/check-calendar-public-map-parity.mjs'
       - 'data/static/racecourse-locations-v1.json'
       - 'src/lib/racecourseMapLocationPolicy.mjs'
@@ -74,6 +75,7 @@ on:
       - 'scripts/check-calendar-refresh-publication-boundaries.mjs'
       - 'scripts/check-bahrain-btc-adapter.mjs'
       - 'scripts/check-sweden-svensk-galopp-adapter.mjs'
+      - 'scripts/check-germany-deutscher-galopp-adapter.mjs'
       - 'scripts/check-calendar-public-map-parity.mjs'
       - 'data/static/racecourse-locations-v1.json'
       - 'src/lib/racecourseMapLocationPolicy.mjs'
@@ -142,6 +144,7 @@ jobs:
           node scripts/check-slovakia-zavodisko-adapter.mjs
           node scripts/check-bahrain-btc-adapter.mjs
           node scripts/check-sweden-svensk-galopp-adapter.mjs
+          node scripts/check-germany-deutscher-galopp-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
@@ -318,6 +321,7 @@ jobs:
           node scripts/check-slovakia-zavodisko-adapter.mjs
           node scripts/check-bahrain-btc-adapter.mjs
           node scripts/check-sweden-svensk-galopp-adapter.mjs
+          node scripts/check-germany-deutscher-galopp-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
@@ -466,7 +470,7 @@ jobs:
           node scripts/timetable/run-kra-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/kra.json
-      - name: Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France, New Zealand, United Kingdom, Slovakia, Bahrain and Sweden official windows
+      - name: Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France, New Zealand, United Kingdom, Slovakia, Bahrain, Sweden and Germany official windows
         run: |
           node scripts/timetable/run-tjk-current-best-available.mjs \
             --days="${{ steps.scope.outputs.days }}" \
@@ -506,6 +510,9 @@ jobs:
           node scripts/timetable/run-sweden-svensk-galopp-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/sweden.json
+          node scripts/timetable/run-germany-deutscher-galopp-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/germany.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -525,7 +532,8 @@ jobs:
             --artifact=.calendar-unified/united-kingdom.json \
             --artifact=.calendar-unified/slovakia.json \
             --artifact=.calendar-unified/bahrain.json \
-            --artifact=.calendar-unified/sweden.json
+            --artifact=.calendar-unified/sweden.json \
+            --artifact=.calendar-unified/germany.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -630,6 +638,12 @@ jobs:
             --authority-id=svensk-galopp \
             --racing-system-id=sweden-svensk-galopp-system \
             --timezone=Europe/Stockholm
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/germany.json \
+            --country-id=germany \
+            --authority-id=deutscher-galopp \
+            --racing-system-id=germany-deutscher-galopp-system \
+            --timezone=Europe/Berlin
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
@@ -714,6 +728,9 @@ jobs:
             node scripts/timetable/run-sweden-svensk-galopp-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/sweden.json
+            node scripts/timetable/run-germany-deutscher-galopp-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/germany.json
             node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --artifact=.calendar-unified/uae.json \
@@ -731,7 +748,8 @@ jobs:
               --artifact=.calendar-unified/united-kingdom.json \
               --artifact=.calendar-unified/slovakia.json \
               --artifact=.calendar-unified/bahrain.json \
-              --artifact=.calendar-unified/sweden.json
+              --artifact=.calendar-unified/sweden.json \
+              --artifact=.calendar-unified/germany.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --country-id=hong-kong \
@@ -834,6 +852,12 @@ jobs:
               --authority-id=svensk-galopp \
               --racing-system-id=sweden-svensk-galopp-system \
               --timezone=Europe/Stockholm
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/germany.json \
+              --country-id=germany \
+              --authority-id=deutscher-galopp \
+              --racing-system-id=germany-deutscher-galopp-system \
+              --timezone=Europe/Berlin
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
             node scripts/timetable/apply-meeting-presence-dispositions.mjs \
             --artifact=.calendar-unified/hkjc.json \
