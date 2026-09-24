@@ -45,6 +45,7 @@ assert.equal(record.first_race_time_local, null);
 assert.equal(record.detail_observation.published_event_time_local, null);
 assert.equal(record.acquisition_completion.observed_rank, 'C');
 assert.equal(record.acquisition_completion.technical_capability_rank, 'C');
+assert.equal(record.acquisition_completion.disposition, 'not_applicable');
 assert.equal(record.acquisition_completion.higher_rank_open, false);
 assert.deepEqual(validateCalendarAuthorityMetadataV1({
   acquisition_attempt: record.acquisition_attempt,
