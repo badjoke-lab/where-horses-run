@@ -84,7 +84,7 @@ if(process.env.GITHUB_ACTIONS==='true') {
       const apiSnippets=[...body.matchAll(/.{0,160}(?:\/api\/|axios|fetch\s*\().{0,220}/gi)].slice(0,40).map(m=>m[0].replace(/\s+/g,' '));
       const scriptSrcs=[...body.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)].map(m=>new URL(m[1],PERU_MONTERRICO_ENTRY_PROGRAMME_URL).toString());
       const scriptDiagnostics=[];
-      for(const scriptUrl of scriptSrcs.slice(0,20)) {
+      for(const scriptUrl of scriptSrcs.filter(url=>/app-mont|app-mixings|jcp-by-kapital/i.test(url)).slice(0,20)) {
         try {
           const scriptResponse=await fetch(scriptUrl,{headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'}});
           const scriptBody=await scriptResponse.text();
