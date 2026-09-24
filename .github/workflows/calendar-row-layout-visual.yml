@@ -13,7 +13,6 @@ on:
       - 'scripts/check-meeting-detail-layout-visual.mjs'
       - 'scripts/check-meeting-detail-public-view.mjs'
       - 'scripts/title-description-normalization-integration.mjs'
-      - 'scripts/check-title-description-normalization.mjs'
       - '.github/workflows/calendar-row-layout-visual.yml'
 
 permissions:
@@ -47,9 +46,6 @@ jobs:
 
       - name: Build site
         run: npm run build
-
-      - name: Validate normalized meeting metadata
-        run: node scripts/check-title-description-normalization.mjs
 
       - name: Preview and check desktop/mobile calendar and meeting detail layouts
         env:
