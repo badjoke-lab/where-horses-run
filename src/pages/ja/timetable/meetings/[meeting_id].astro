@@ -59,7 +59,6 @@ const countryPath = country ? `/ja/countries/${country.slug}/` : '/ja/countries/
 const trackPath = track ? `/ja/tracks/${track.slug}/` : '/ja/tracks/';
 const authorityName = authorityNameById[meeting.authority_id] ?? titleCaseId(meeting.authority_id);
 
-const pageKind = detail.effective_public_rank === 'A+' ? '番組概要' : 'レース時刻表';
 const hasRaceRows = detail.timetable_rows.length > 0;
 const hasRaceName = detail.show_race_name && detail.timetable_rows.some((row) => row.race_name);
 const hasDistance = detail.show_distance && detail.timetable_rows.some((row) => row.distance_m !== undefined);
@@ -67,15 +66,16 @@ const hasSurface = detail.show_surface && detail.timetable_rows.some((row) => ro
 const hasCourse = detail.show_course && detail.timetable_rows.some((row) => row.course_label);
 const firstRaceTime = detail.timetable_rows[0]?.post_time_local ?? null;
 const lastRaceTime = detail.timetable_rows.at(-1)?.post_time_local ?? null;
+const raceCount = detail.timetable_rows.length;
+const surfaceValues = [...new Set(detail.timetable_rows.map((row) => row.surface).filter((value): value is string => Boolean(value)))];
+const courseValues = [...new Set(detail.timetable_rows.map((row) => row.course_label).filter((value): value is string => Boolean(value)))];
+const summarySurface = surfaceValues.length === 1 ? surfaceValues[0] : null;
+const summaryCourse = courseValues.length === 1 ? courseValues[0] : null;
 
-const timeCoverageNoteByRank: Record<string, string> = {
-  A: 'この公開詳細ページでは、レースラベル、発走時刻に加え、各レースで取得できた公開許可済みの番組項目を表示します。',
-  'A+': 'この公開詳細ページでは、レースラベル、発走時刻と、全レースで揃った公開許可済みの番組概要項目を表示します。',
-};
 ---
 
 <BaseLayout
-  title={`${racecourseName} ${pageKind} | 競馬どこ？`}
+  title={`${racecourseName} 開催情報 | 競馬どこ？`}
   description="公式ソースへのリンクと公開ポリシーで制御されたタイムテーブル情報を表示する開催詳細ページです。"
   lang="ja"
   canonicalPath={`/ja/timetable/meetings/${meeting.meeting_id}/`}
@@ -89,66 +89,39 @@ const timeCoverageNoteByRank: Record<string, string> = {
       <a href="/ja/major-countries/current-timetable/">← 現在のタイムテーブル</a>
     </nav>
 
-    <section aria-labelledby="page-title">
-      <p class="eyebrow">{pageKind}</p>
-      <h1 id="page-title"><a href={trackPath}>{racecourseName}</a></h1>
-      <p><span data-meeting-projected-date>{meeting.date}</span></p>
-      <p>{authorityName} · <a href={countryPath}>{countryName}</a></p>
-      <p>開催地タイムゾーン: {detail.timezone}</p>
-      <p>表示タイムゾーン: <strong data-timezone-label>{detail.timezone}</strong></p>
-      <p>取得ランク: {detail.capability_rank}</p>
-      <p>公開ランク: {detail.effective_public_rank}</p>
-      <p>公開ポリシー: {detail.policy_id}</p>
-      <p>ソース状態: {detail.source_status}</p>
-      <MeetingTimezoneProjection sourceDate={detail.date} sourceTimeZone={detail.timezone} lang="ja" />
-    </section>
+    <section class="meeting-hero" aria-labelledby="page-title">
+      <div class="meeting-hero__header">
+        <div>
+          <h1 id="page-title"><a href={trackPath}>{racecourseName}</a></h1>
+          <p class="meeting-date"><span data-meeting-projected-date>{meeting.date}</span></p>
+          <p class="meeting-context">{authorityName} · <a href={countryPath}>{countryName}</a></p>
+        </div>
+        <MeetingTimezoneProjection sourceDate={detail.date} sourceTimeZone={detail.timezone} lang="ja" />
+      </div>
 
-    <section class="meeting-facts" aria-labelledby="meeting-facts-title">
-      <h2 id="meeting-facts-title">開催情報</h2>
-      <dl class="meeting-facts__grid">
+      <dl class="meeting-summary" aria-label="開催概要">
         <div>
-          <dt>競馬場</dt>
-          <dd><a href={trackPath}>{racecourseName}</a></dd>
+          <dt>レース数</dt>
+          <dd>{raceCount}R</dd>
         </div>
-        <div>
-          <dt>開催日</dt>
-          <dd>{meeting.date}</dd>
-        </div>
-        {firstRaceTime && (
+        {(firstRaceTime || lastRaceTime) && (
           <div>
-            <dt>第1レース発走</dt>
-            <dd>{meeting.date} {firstRaceTime}（{detail.timezone}）</dd>
+            <dt>開催地時刻</dt>
+            <dd>{firstRaceTime ?? "—"}{lastRaceTime ? `–${lastRaceTime}` : ""}</dd>
           </div>
         )}
-        {lastRaceTime && (
+        {(summarySurface || summaryCourse) && (
           <div>
-            <dt>最終レース発走</dt>
-            <dd>{meeting.date} {lastRaceTime}（{detail.timezone}）</dd>
-          </div>
-        )}
-        <div>
-          <dt>公式ソース</dt>
-          <dd><a href={detail.official_source_url}>公式ソースを開く</a></dd>
-        </div>
-        {detail.last_checked_date && (
-          <div>
-            <dt>最終確認</dt>
-            <dd>{detail.last_checked_date}</dd>
+            <dt>コース</dt>
+            <dd>{[summarySurface, summaryCourse].filter(Boolean).join(" · ")}</dd>
           </div>
         )}
       </dl>
     </section>
 
-    <section aria-labelledby="coverage-title">
-      <h2 id="coverage-title">時刻情報の範囲</h2>
-      <p>{timeCoverageNoteByRank[detail.effective_public_rank]}</p>
-      <p>競馬どこ？では、出走馬一覧、馬名、騎手名、調教師名、オッズ、結果、払戻、予想、買い目、raw source text、完全なレースカードを再掲載しません。</p>
-    </section>
-
     {hasRaceRows && (
       <section aria-labelledby="race-timetable-title">
-        <h2 id="race-timetable-title">{pageKind}</h2>
-        <p>公開可能なタイムテーブル行: {detail.timetable_rows.length}件</p>
+        <h2 id="race-timetable-title">本日のレース一覧</h2>
         <div class="table-scroll" role="region" aria-label="公開可能なレース時刻表" tabindex="0">
           <table>
             <thead>
@@ -164,12 +137,12 @@ const timeCoverageNoteByRank: Record<string, string> = {
             <tbody>
               {detail.timetable_rows.map((row) => (
                 <tr>
-                  <td>{row.label}</td>
-                  <td><time data-meeting-source-time={row.post_time_local}>{meeting.date} {row.post_time_local}</time></td>
-                  {hasRaceName && <td>{displayValue(row.race_name)}</td>}
-                  {hasDistance && <td>{row.distance_m ? `${row.distance_m}m` : '非表示'}</td>}
-                  {hasSurface && <td>{displayValue(row.surface)}</td>}
-                  {hasCourse && <td>{displayValue(row.course_label)}</td>}
+                  <td class="race-cell--label">{row.label}</td>
+                  <td class="race-cell--time"><time data-meeting-source-time={row.post_time_local} data-meeting-time-display="compact">{meeting.date} {row.post_time_local}</time></td>
+                  {hasRaceName && <td class="race-cell--name">{displayValue(row.race_name)}</td>}
+                  {hasDistance && <td class="race-cell--distance">{row.distance_m ? `${row.distance_m}m` : '非表示'}</td>}
+                  {hasSurface && <td class="race-cell--surface">{displayValue(row.surface)}</td>}
+                  {hasCourse && <td class="race-cell--course">{displayValue(row.course_label)}</td>}
                 </tr>
               ))}
             </tbody>
@@ -178,17 +151,20 @@ const timeCoverageNoteByRank: Record<string, string> = {
       </section>
     )}
 
-    <section aria-labelledby="official-source-title">
-      <h2 id="official-source-title">公式ソース</h2>
-      <p><a href={detail.official_source_url}>公式ソースを開く</a></p>
-      <p>最終確認: {displayValue(detail.last_checked_date)}</p>
+    <section class="source-strip" aria-label="公式ソース">
+      <span>公式ソース</span>
+      <a href={detail.official_source_url}>公式ソースを開く</a>
+      <span class="source-strip__checked">最終確認 {displayValue(detail.last_checked_date)}</span>
     </section>
 
-    <section aria-labelledby="boundary-title">
-      <h2 id="boundary-title">公開表示の境界</h2>
-      <p>このページは公開用meeting detail datasetだけを使用します。Aでも各レースで取得・検証済みかつ公開許可された番組項目を表示できます。A+は全レースでレース名、距離、馬場、コースが揃った場合だけです。</p>
-      <p>完全な公式情報は、公式ソースで確認してください。</p>
-    </section>
+    <details class="data-notes">
+      <summary>データについて</summary>
+      <div class="data-notes__body">
+        <p>開催地タイムゾーン: {detail.timezone}</p>
+        <p>このページには、取得・確認できた公開対象の開催時刻と番組概要だけを表示しています。完全な公式情報は公式ソースで確認してください。</p>
+      </div>
+    </details>
+
   </div>
 </BaseLayout>
 
@@ -196,50 +172,84 @@ const timeCoverageNoteByRank: Record<string, string> = {
   .detail-nav {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
-    margin-block-end: 2rem;
+    gap: 0.9rem;
+    margin-block-end: 1.5rem;
+    font-size: 0.9rem;
   }
 
-  .eyebrow {
-    font-size: 0.85rem;
-    letter-spacing: 0.04em;
+  .meeting-hero {
+    margin-block-start: 0;
   }
 
-  section {
-    margin-block-start: 2rem;
+  .meeting-hero__header {
+    align-items: end;
+    display: grid;
+    gap: 1rem 2rem;
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   h1,
   h2,
   p {
-    margin-block: 0 0.75rem;
+    margin-block: 0 0.65rem;
   }
 
-  .meeting-facts {
+  h1 {
+    line-height: 1.15;
+  }
+
+  .meeting-date {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  .meeting-context {
+    color: var(--whr-color-muted);
+    font-size: 0.9rem;
+  }
+
+  :global(.meeting-timezone-control) {
+    margin-block: 0;
+  }
+
+  :global(.meeting-timezone-control output) {
+    display: none;
+  }
+
+  .meeting-summary {
     border: 1px solid var(--whr-color-border);
-    border-radius: 0.75rem;
-    padding: 1rem;
-  }
-
-  .meeting-facts__grid {
+    border-radius: 0.7rem;
     display: grid;
-    gap: 0.85rem 1.5rem;
-    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-    margin: 0;
+    gap: 0;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    margin: 1rem 0 0;
+    overflow: hidden;
   }
 
-  .meeting-facts__grid div {
-    min-width: 0;
+  .meeting-summary div {
+    padding: 0.85rem 1rem;
+    text-align: center;
   }
 
-  .meeting-facts__grid dt {
-    font-size: 0.85rem;
+  .meeting-summary div + div {
+    border-inline-start: 1px solid var(--whr-color-border);
+  }
+
+  .meeting-summary dt {
+    color: var(--whr-color-muted);
+    font-size: 0.78rem;
     font-weight: 700;
     margin-block-end: 0.2rem;
   }
 
-  .meeting-facts__grid dd {
+  .meeting-summary dd {
+    font-size: 1.3rem;
+    font-weight: 800;
     margin: 0;
+  }
+
+  section[aria-labelledby="race-timetable-title"] {
+    margin-block-start: 1.5rem;
   }
 
   .table-scroll {
@@ -257,5 +267,183 @@ const timeCoverageNoteByRank: Record<string, string> = {
     padding: 0.55rem 0.4rem;
     text-align: left;
     vertical-align: top;
+  }
+
+  th {
+    color: var(--whr-color-muted);
+    font-size: 0.82rem;
+  }
+
+  .race-cell--label,
+  .race-cell--time {
+    white-space: nowrap;
+  }
+
+  .race-cell--label {
+    font-weight: 800;
+  }
+
+  .source-strip {
+    align-items: center;
+    border: 1px solid var(--whr-color-border);
+    border-radius: 0.65rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin-block-start: 1rem;
+    padding: 0.75rem 0.9rem;
+    font-size: 0.9rem;
+  }
+
+  .source-strip__checked {
+    color: var(--whr-color-muted);
+    margin-inline-start: auto;
+  }
+
+  .data-notes {
+    border: 1px solid var(--whr-color-border);
+    border-radius: 0.65rem;
+    margin-block-start: 1rem;
+    padding: 0.8rem 0.9rem;
+  }
+
+  .data-notes summary {
+    cursor: pointer;
+    font-weight: 800;
+  }
+
+  .data-notes__body {
+    color: var(--whr-color-muted);
+    font-size: 0.9rem;
+    padding-block-start: 0.8rem;
+  }
+
+  .data-notes__body p:last-child {
+    margin-block-end: 0;
+  }
+
+  @media (max-width: 720px) {
+    .detail-nav {
+      gap: 0.5rem 0.8rem;
+      margin-block-end: 1.15rem;
+    }
+
+    .meeting-hero__header {
+      align-items: stretch;
+      grid-template-columns: 1fr;
+    }
+
+    :global(.meeting-timezone-control),
+    :global(.meeting-timezone-control label),
+    :global(.meeting-timezone-control select) {
+      width: 100%;
+    }
+
+    :global(.meeting-timezone-control select) {
+      max-width: none;
+    }
+
+    .meeting-summary {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .meeting-summary div {
+      padding: 0.7rem 0.6rem;
+      text-align: left;
+    }
+
+    .meeting-summary div + div {
+      border-inline-start: 0;
+    }
+
+    .meeting-summary div:nth-child(even) {
+      border-inline-start: 1px solid var(--whr-color-border);
+    }
+
+    .meeting-summary div:nth-child(n + 3) {
+      border-block-start: 1px solid var(--whr-color-border);
+    }
+
+    .meeting-summary dd {
+      font-size: 1.05rem;
+    }
+
+    .table-scroll {
+      overflow: visible;
+    }
+
+    table,
+    tbody {
+      display: block;
+      width: 100%;
+    }
+
+    thead {
+      display: none;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--whr-color-border);
+      display: grid;
+      grid-template-columns: 3rem minmax(0, 1fr) auto auto auto;
+      gap: 0.15rem 0.55rem;
+      padding: 0.7rem 0.15rem;
+    }
+
+    tbody td {
+      border: 0;
+      min-width: 0;
+      padding: 0;
+    }
+
+    .race-cell--label {
+      grid-column: 1;
+      grid-row: 1 / span 3;
+      font-size: 1rem;
+    }
+
+    .race-cell--time {
+      font-weight: 800;
+      grid-column: 2 / -1;
+      grid-row: 1;
+    }
+
+    .race-cell--name {
+      grid-column: 2 / -1;
+      grid-row: 2;
+      overflow-wrap: anywhere;
+    }
+
+    .race-cell--distance {
+      grid-column: 2;
+      grid-row: 3;
+    }
+
+    .race-cell--surface {
+      grid-column: 3;
+      grid-row: 3;
+    }
+
+    .race-cell--course {
+      grid-column: 4 / -1;
+      grid-row: 3;
+    }
+
+    .race-cell--surface::before,
+    .race-cell--course::before {
+      content: "·";
+      margin-inline-end: 0.55rem;
+      opacity: 0.55;
+    }
+
+    .source-strip {
+      align-items: flex-start;
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .source-strip__checked {
+      margin-inline-start: 0;
+    }
   }
 </style>
