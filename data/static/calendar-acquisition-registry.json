@@ -508,6 +508,34 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "GitHub Actions reads the official Bahrain Turf Club 2026/27 season programme as the meeting-date mother set for Rashid Equestrian & Horseracing Club and uses the official date-specific racecard navigation for complete per-race post times through rank A. An officially empty requested window is valid. Unpublished detail remains C/pending; acquisition or parser failure preserves stronger verified state and never proves non-running."
+    },
+    {
+      "system_id": "sweden-svensk-galopp-system",
+      "country_id": "sweden",
+      "authority_id": "svensk-galopp",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "svensk-galopp-calendar",
+      "detail_source_id": null,
+      "schedule_adapter_id": "sweden-svensk-galopp-calendar-c-v1",
+      "detail_adapter_id": null,
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [
+        "detail_source_id",
+        "detail_adapter_id"
+      ],
+      "operator_notes": "GitHub Actions reads the official Svensk Galopp 2026 race-day calendar PDF as the Swedish Thoroughbred meeting-date and venue mother set. Generic calendar event times remain source context only and are not promoted to first-race time. Explicit Första starttid event-page enrichment is reserved for a separate reviewed detail adapter. Source failure preserves stronger verified state and never proves non-running."
     }
   ]
 }
