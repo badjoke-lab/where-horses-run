@@ -366,6 +366,11 @@ const summaryCourseText = summaryCourse ?? summarySurface;
       border-block-start: 1px solid var(--whr-color-border);
     }
 
+    .meeting-summary div:last-child:nth-child(odd) {
+      border-inline-start: 0;
+      grid-column: 1 / -1;
+    }
+
     .meeting-summary dd {
       font-size: 1.05rem;
     }
@@ -387,7 +392,7 @@ const summaryCourseText = summaryCourse ?? summarySurface;
     tbody tr {
       border-bottom: 1px solid var(--whr-color-border);
       display: grid;
-      grid-template-columns: 3rem minmax(0, 1fr) auto auto auto;
+      grid-template-columns: 4.5rem minmax(0, 1fr) auto auto auto;
       gap: 0.15rem 0.55rem;
       padding: 0.7rem 0.15rem;
     }
