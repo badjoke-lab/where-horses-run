@@ -127,10 +127,10 @@ function verifyPages(pages, contract, methodsContract, publicDetails) {
   }
   for (const page of meetings) {
     const racecourse = strip(page.html.match(/<h1[^>]*id="page-title"[^>]*>([\s\S]*?)<\/h1>/i)?.[1] ?? '');
-    const pageKind = strip(page.html.match(/<p[^>]*class="[^"]*eyebrow[^"]*"[^>]*>([\s\S]*?)<\/p>/i)?.[1] ?? '');
-    const date = page.html.match(/<p[^>]*>\s*(\d{4}-\d{2}-\d{2})\s*<\/p>/)?.[1] ?? '';
-    expect(racecourse && pageKind && date, `${page.url}: meeting identity is incomplete`);
-    expect(page.title.includes(racecourse) && page.title.includes(pageKind) && page.title.includes(date), `${page.url}: meeting title differs`);
+    const date = page.html.match(/<span[^>]*data-meeting-projected-date[^>]*>\s*(\d{4}-\d{2}-\d{2})\s*<\/span>/i)?.[1] ?? '';
+    expect(racecourse && date, `${page.url}: meeting identity is incomplete`);
+    expect(page.title.includes(racecourse) && page.title.includes(date), `${page.url}: meeting title differs`);
+    expect(page.lang === 'ja' ? page.title.includes('開催情報') : page.title.includes('Meeting'), `${page.url}: meeting title kind differs`);
     expect(page.description.includes(racecourse) && page.description.includes(date), `${page.url}: meeting description differs`);
   }
   const affected = pages.filter((page) => contract.country_duplicate_resolution.paths.includes(page.pathname));
