@@ -79,6 +79,10 @@ try {
           };
           const failures = [];
           const bodyText = document.body.innerText;
+          const pageTitle = document.title;
+          const metaDescription = document.querySelector('meta[name="description"]')?.getAttribute('content') ?? '';
+          const headingText = document.querySelector('#page-title')?.textContent?.replace(/\s+/g, ' ').trim() ?? '';
+          const meetingDate = document.querySelector('[data-meeting-projected-date]')?.textContent?.trim() ?? '';
           const raceRows = [...document.querySelectorAll('tbody tr')];
           const h1Link = document.querySelector('#page-title a');
           const timezone = document.querySelector('[data-meeting-timezone-select]');
@@ -95,6 +99,8 @@ try {
             data_notes_collapsed: details instanceof HTMLDetailsElement ? !details.open : null,
             table_header_visible: visible(tableHeader),
             forbidden_visible_text: forbidden.filter((token) => bodyText.includes(token)),
+            title: pageTitle,
+            meta_description: metaDescription,
           };
 
           if (raceRows.length !== expectedRows) failures.push(`race row count ${raceRows.length} != ${expectedRows}`);
@@ -105,6 +111,8 @@ try {
           if (!visible(timezone)) failures.push('timezone selector is not visible');
           if (!(details instanceof HTMLDetailsElement) || details.open) failures.push('data notes are not collapsed by default');
           if (checks.forbidden_visible_text.length) failures.push(`internal metadata is visible: ${checks.forbidden_visible_text.join(', ')}`);
+          if (!headingText || !meetingDate || !pageTitle.includes(headingText) || !pageTitle.includes(meetingDate)) failures.push('meeting title metadata is missing racecourse/date identity');
+          if (!metaDescription.includes(headingText) || !metaDescription.includes(meetingDate)) failures.push('meeting description metadata is missing racecourse/date identity');
           if (mobile && visible(tableHeader)) failures.push('mobile table header should be hidden');
           if (!mobile && !visible(tableHeader)) failures.push('desktop table header should be visible');
 
