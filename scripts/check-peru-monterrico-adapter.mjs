@@ -81,7 +81,20 @@ if(process.env.GITHUB_ACTIONS==='true') {
       const body=await response.text();
       const idSnippets=[...body.matchAll(/.{0,120}id_reunion.{0,180}/gi)].slice(0,30).map(m=>m[0].replace(/\s+/g,' '));
       const programmeSnippets=[...body.matchAll(/.{0,120}Programa.{0,180}/gi)].slice(0,30).map(m=>m[0].replace(/\s+/g,' '));
-      console.log('PERU_MONTERRICO_ENTRY_HTML_DEBUG:',JSON.stringify({status:response.status,content_type:response.headers.get('content-type'),length:body.length,id_snippets:idSnippets,programme_snippets:programmeSnippets}));
+      const apiSnippets=[...body.matchAll(/.{0,160}(?:\/api\/|axios|fetch\s*\().{0,220}/gi)].slice(0,40).map(m=>m[0].replace(/\s+/g,' '));
+      const scriptSrcs=[...body.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)].map(m=>new URL(m[1],PERU_MONTERRICO_ENTRY_PROGRAMME_URL).toString());
+      const scriptDiagnostics=[];
+      for(const scriptUrl of scriptSrcs.slice(0,20)) {
+        try {
+          const scriptResponse=await fetch(scriptUrl,{headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'}});
+          const scriptBody=await scriptResponse.text();
+          const hits=[...scriptBody.matchAll(/.{0,180}(?:programa-de-entradas|programas\/fecha|programas|entradas|id_reunion|reunion).{0,260}/gi)].slice(0,25).map(m=>m[0].replace(/\s+/g,' '));
+          if(hits.length) scriptDiagnostics.push({url:scriptUrl,status:scriptResponse.status,length:scriptBody.length,hits});
+        } catch(error) {
+          scriptDiagnostics.push({url:scriptUrl,error:String(error?.message??error)});
+        }
+      }
+      console.log('PERU_MONTERRICO_ENTRY_HTML_DEBUG:',JSON.stringify({status:response.status,content_type:response.headers.get('content-type'),length:body.length,id_snippets:idSnippets,programme_snippets:programmeSnippets,api_snippets:apiSnippets,script_srcs:scriptSrcs,script_diagnostics:scriptDiagnostics}));
     }
     assert.ok(dates.has('2026-09-26'),'Peru live fallback must recover the published 2026-09-26 Monterrico meeting');
     assert.ok(dates.has('2026-09-27'),'Peru live fallback must recover the published 2026-09-27 Monterrico meeting');
