@@ -3,6 +3,7 @@ import { validateCalendarAuthorityMetadataV1 } from './timetable/calendar-author
 import {
   buildMonterricoFallbackRecord,
   buildMonterricoMeetingRecord,
+  extractMonterricoEntryProgrammeLinks,
   extractMonterricoReunionIds,
   parseMonterricoProgrammeHtml,
 } from './timetable/peru-monterrico-core.mjs';
@@ -12,6 +13,16 @@ assert.deepEqual(extractMonterricoReunionIds({reuniones:[{id_reunion:102400}]}),
 assert.deepEqual(extractMonterricoReunionIds({reuniones:[{idReunion:'102401'}]}),[102401]);
 assert.throws(()=>extractMonterricoReunionIds({resultados:[]}),/missing reuniones/);
 assert.throws(()=>extractMonterricoReunionIds({reuniones:[{foo:'bar'}]}),/without a resolvable reunion id/);
+
+const entryHtml='<!doctype html><html><body><table>'+
+'<tr><td>26Sep26</td><td>Carlos Palacios Villacampa</td><td><a href="/carreras-proximos-programas?id_reunion=102401">Programa</a></td></tr>'+
+'<tr><td>27Sep26</td><td>Deepak</td><td><a href="https://hipodromodemonterrico.com.pe/carreras-proximos-programas?id_reunion=102402">Programa</a></td></tr>'+
+'<tr><td></td><td>Another race</td><td><a href="/carreras-proximos-programas?id_reunion=102402">Programa</a></td></tr>'+
+'</table></body></html>';
+assert.deepEqual(extractMonterricoEntryProgrammeLinks(entryHtml),[
+  {date:'2026-09-26',reunion_id:102401,programme_url:'https://hipodromodemonterrico.com.pe/carreras-proximos-programas?id_reunion=102401'},
+  {date:'2026-09-27',reunion_id:102402,programme_url:'https://hipodromodemonterrico.com.pe/carreras-proximos-programas?id_reunion=102402'},
+]);
 
 const html='<!doctype html><html><body>'+
 '<h1>Reunión N°387 Hipódromo de Monterrico, Domingo 20 de Septiembre del año 2026</h1>'+
