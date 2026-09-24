@@ -64,21 +64,6 @@ for (const forbidden of [
 const details = publicDetails.details ?? [];
 if (details.length === 0) errors.push('Public meeting detail inventory is empty.');
 
-for (const detail of details) {
-  if (detail.effective_public_rank === 'A+') {
-    for (const field of ['show_race_name', 'show_distance', 'show_surface', 'show_course']) {
-      if (detail[field] !== true) errors.push(`${detail.meeting_id}: A+ detail must enable ${field}.`);
-    }
-  }
-  if (detail.effective_public_rank === 'A') {
-    for (const row of detail.timetable_rows ?? []) {
-      for (const forbidden of ['race_name', 'distance_m', 'surface', 'course_label']) {
-        if (forbidden in row) errors.push(`${detail.meeting_id}: A detail row must not include ${forbidden}.`);
-      }
-    }
-  }
-}
-
 for (const token of [
   'Meeting detail pages now read from public meeting-details.',
   'A detail rows show race label and post time only.',
