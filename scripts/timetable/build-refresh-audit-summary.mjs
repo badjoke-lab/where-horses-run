@@ -24,6 +24,7 @@ const SYSTEMS = [
   { key: 'slovakia', file: 'slovakia.json', country_id: 'slovakia', authority_id: 'zavodisko', racing_system_id: 'slovakia-zavodisko-system' },
   { key: 'bahrain', file: 'bahrain.json', country_id: 'bahrain', authority_id: 'bahrain-turf-club', racing_system_id: 'bahrain-turf-club-system' },
   { key: 'sweden', file: 'sweden.json', country_id: 'sweden', authority_id: 'svensk-galopp', racing_system_id: 'sweden-svensk-galopp-system' },
+  { key: 'germany', file: 'germany.json', country_id: 'germany', authority_id: 'deutscher-galopp', racing_system_id: 'germany-deutscher-galopp-system' },
 ];
 
 const STATE_FILES = {
