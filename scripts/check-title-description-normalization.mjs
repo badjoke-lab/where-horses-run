@@ -87,7 +87,7 @@ function verifyWiring() {
   const config = read(ASTRO_CONFIG_PATH);
   const integration = read(INTEGRATION_PATH);
   expect(config.includes("import titleDescriptionNormalizationIntegration from './scripts/title-description-normalization-integration.mjs';") && config.includes('titleDescriptionNormalizationIntegration()'), 'Astro normalization wiring is missing');
-  for (const marker of ["name: 'where-horses-run-title-description-normalization'", "'astro:build:done'", 'meetingMetadata(page)', 'duplicatedCountryDescriptions']) expect(integration.includes(marker), `Normalization marker is missing: ${marker}`);
+  for (const marker of ["const PROJECT_NAME = 'where-horses-run-title-description-normalization';", "'astro:build:done'", 'meetingMetadata(page)', 'countryMetadata(page)']) expect(integration.includes(marker), `Normalization marker is missing: ${marker}`);
 }
 function verifyPages(pages, contract, methodsContract, publicDetails) {
   const english = pages.filter((page) => page.lang === 'en').length;
