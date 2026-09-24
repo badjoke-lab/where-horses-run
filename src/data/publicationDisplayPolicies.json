@@ -396,6 +396,26 @@
       "show_live_label": false,
       "show_replay_label": false,
       "notes": "Sweden Svensk Galopp public Calendar output is currently limited to reviewed meeting date and racecourse rank C. Generic event times are not treated as first-race post times."
+    },
+    {
+      "id": "germany-deutscher-galopp-reviewed-c",
+      "priority": 350,
+      "match": {
+        "authority_ids": [
+          "deutscher-galopp"
+        ]
+      },
+      "max_public_rank": "C",
+      "include_in_public_list": true,
+      "detail_fields": {
+        "show_race_name": false,
+        "show_distance": false,
+        "show_surface": false,
+        "show_course": false
+      },
+      "show_live_label": false,
+      "show_replay_label": false,
+      "notes": "Germany public Calendar output remains capped at C because the production scope covers Deutscher Galopp only; other German racing codes remain unreviewed. Stronger canonical gallop timing evidence may be retained without widening the country-level public claim."
     }
   ]
 }
