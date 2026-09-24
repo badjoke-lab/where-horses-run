@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import assert from 'node:assert/strict';
 import { validateCalendarAuthorityMetadataV1 } from './timetable/calendar-authority-metadata.mjs';
 import {
@@ -53,5 +55,31 @@ assert.equal(fallback.capability_rank,'C');
 assert.equal(fallback.detail_observation.status,'not_published');
 assert.equal(fallback.acquisition_attempt.status,'pending_publication');
 assert.deepEqual(validateCalendarAuthorityMetadataV1({acquisition_attempt:fallback.acquisition_attempt,evidence_support:fallback.evidence_support},fallback.meeting_id),[]);
+
+if(process.env.GITHUB_ACTIONS==='true') {
+  const liveOutput='.peru-live-fallback-smoke-'+process.pid+'.json';
+  try {
+    const stdout=execFileSync(process.execPath,[
+      'scripts/timetable/run-peru-monterrico-official-window.mjs',
+      '--as-of=2026-09-24',
+      '--days=4',
+      '--output='+liveOutput,
+    ],{encoding:'utf8'});
+    const artifact=JSON.parse(fs.readFileSync(liveOutput,'utf8'));
+    const dates=new Set(artifact.records.map(row=>row.date));
+    assert.ok(dates.has('2026-09-26'),'Peru live fallback must recover the published 2026-09-26 Monterrico meeting');
+    assert.ok(dates.has('2026-09-27'),'Peru live fallback must recover the published 2026-09-27 Monterrico meeting');
+    console.log('PERU_MONTERRICO_LIVE_FALLBACK:',JSON.stringify({
+      records:artifact.records.length,
+      dates:[...dates].sort(),
+      acquisition_status:artifact.acquisition_attempt?.status,
+      coverage_claim:artifact.window?.coverage_claim,
+      fallback_discovery:artifact.discovery?.fallback_discovery,
+      runner_stdout:stdout.trim(),
+    }));
+  } finally {
+    fs.rmSync(liveOutput,{force:true});
+  }
+}
 
 console.log('PERU_MONTERRICO_ADAPTER: pass');
