@@ -115,7 +115,16 @@ if(process.env.GITHUB_ACTIONS==='true') {
           scriptDiagnostics.push({url:scriptUrl,error:String(error?.message??error)});
         }
       }
-      console.log('PERU_MONTERRICO_ENTRY_HTML_DEBUG:',JSON.stringify({status:response.status,content_type:response.headers.get('content-type'),length:body.length,id_snippets:idSnippets,programme_snippets:programmeSnippets,api_snippets:apiSnippets,entry_component_snippets:entryComponentSnippets,script_srcs:scriptSrcs,script_diagnostics:scriptDiagnostics}));
+            const inferredMonthlyUrl='https://hipodromodemonterrico.com.pe/api/general/programas-pdf-sistema/programa_temporada/2026-09-01/2026-09-30';
+      let inferredMonthlyProbe={url:inferredMonthlyUrl};
+      try {
+        const inferredResponse=await fetch(inferredMonthlyUrl,{headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)','accept':'application/json,text/plain;q=0.9,*/*;q=0.5'}});
+        const inferredBody=await inferredResponse.text();
+        inferredMonthlyProbe={url:inferredMonthlyUrl,status:inferredResponse.status,content_type:inferredResponse.headers.get('content-type'),length:inferredBody.length,preview:inferredBody.slice(0,5000)};
+      } catch(error) {
+        inferredMonthlyProbe={url:inferredMonthlyUrl,error:String(error?.message??error)};
+      }
+console.log('PERU_MONTERRICO_ENTRY_HTML_DEBUG:',JSON.stringify({status:response.status,content_type:response.headers.get('content-type'),length:body.length,id_snippets:idSnippets,programme_snippets:programmeSnippets,api_snippets:apiSnippets,entry_component_snippets:entryComponentSnippets,script_srcs:scriptSrcs,script_diagnostics:scriptDiagnostics,inferred_monthly_probe:inferredMonthlyProbe}));
     }
     assert.ok(dates.has('2026-09-26'),'Peru live fallback must recover the published 2026-09-26 Monterrico meeting');
     assert.ok(dates.has('2026-09-27'),'Peru live fallback must recover the published 2026-09-27 Monterrico meeting');
