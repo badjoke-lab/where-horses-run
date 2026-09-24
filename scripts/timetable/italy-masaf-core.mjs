@@ -155,48 +155,83 @@ export function parseItalyMasafCalendarPages(pages, { year = 2026, sourceUrl } =
       parse_failures.push({ code: 'gg_header_missing', page_number: page.page_number, month });
       continue;
     }
-    const gg = ggCandidates.sort((a, b) => b.y - a.y)[0];
 
-    const headers = [];
-    for (const item of items) {
-      if (Math.abs(item.y - gg.y) > 5) continue;
-      const code = normalizeItalyVenueCode(item.str);
-      if (!VENUES[code]) continue;
-      headers.push({ code, x: item.x, y: item.y });
+    let chosen = null;
+    for (const gg of ggCandidates) {
+      const sameY = [];
+      const sameX = [];
+      for (const item of items) {
+        const code = normalizeItalyVenueCode(item.str);
+        if (!VENUES[code]) continue;
+        if (Math.abs(item.y - gg.y) <= 6) sameY.push({ code, x: item.x, y: item.y });
+        if (Math.abs(item.x - gg.x) <= 6) sameX.push({ code, x: item.x, y: item.y });
+      }
+      const horizontal = { gg, headers: sameY, venueAxis: 'x', dayAxis: 'y' };
+      const rotated = { gg, headers: sameX, venueAxis: 'y', dayAxis: 'x' };
+      const candidate = horizontal.headers.length >= rotated.headers.length ? horizontal : rotated;
+      if (!chosen || candidate.headers.length > chosen.headers.length) chosen = candidate;
     }
-    const uniqueHeaders = [...new Map(headers.map((row) => [row.code, row])).values()].sort((a, b) => a.x - b.x);
+
+    const { gg, venueAxis, dayAxis } = chosen;
+    const uniqueHeaders = [...new Map(chosen.headers.map((row) => [row.code, row])).values()]
+      .sort((a, b) => a[venueAxis] - b[venueAxis]);
     if (uniqueHeaders.length < 20) {
-      parse_failures.push({ code: 'venue_header_incomplete', page_number: page.page_number, month, header_count: uniqueHeaders.length });
+      parse_failures.push({
+        code: 'venue_header_incomplete',
+        page_number: page.page_number,
+        month,
+        header_count: uniqueHeaders.length,
+        detected_orientation: venueAxis === 'x' ? 'horizontal' : 'rotated',
+      });
       continue;
     }
 
-    const gaps = uniqueHeaders.slice(1).map((row, index) => row.x - uniqueHeaders[index].x).filter((value) => value > 0);
-    const xTolerance = Math.max(5, (median(gaps) ?? 12) * 0.52);
+    const venueGaps = uniqueHeaders.slice(1)
+      .map((row, index) => row[venueAxis] - uniqueHeaders[index][venueAxis])
+      .filter((value) => value > 0);
+    const venueTolerance = Math.max(5, (median(venueGaps) ?? 12) * 0.52);
+    const firstVenueGap = venueGaps[0] ?? 40;
+    const dayHeaderTolerance = Math.min(30, Math.max(8, firstVenueGap * 0.55));
+
     const dayRows = items
       .map((item) => ({ ...item, match: item.str.match(/^(\d{1,2})(?:\s+(?:lun|mar|mer|gio|ven|sab|dom))?$/i) }))
-      .filter((item) => item.match && Math.abs(item.x - gg.x) < 28)
-      .map((item) => ({ day: Number(item.match[1]), y: item.y, x: item.x }))
+      .filter((item) => item.match && Math.abs(item[venueAxis] - gg[venueAxis]) <= dayHeaderTolerance)
+      .map((item) => ({ day: Number(item.match[1]), x: item.x, y: item.y }))
       .filter((row) => row.day >= 1 && row.day <= 31);
 
     if (!dayRows.length) {
-      parse_failures.push({ code: 'day_rows_missing', page_number: page.page_number, month });
+      parse_failures.push({
+        code: 'day_rows_missing',
+        page_number: page.page_number,
+        month,
+        detected_orientation: venueAxis === 'x' ? 'horizontal' : 'rotated',
+      });
       continue;
     }
+
+    const orderedDays = [...new Map(dayRows.map((row) => [row.day, row])).values()]
+      .sort((a, b) => a[dayAxis] - b[dayAxis]);
+    const dayGaps = orderedDays.slice(1)
+      .map((row, index) => row[dayAxis] - orderedDays[index][dayAxis])
+      .filter((value) => value > 0);
+    const dayTolerance = Math.max(4.5, (median(dayGaps) ?? 9) * 0.45);
 
     for (const item of items) {
       const token = item.str.toUpperCase().replace(/\s+/g, '');
       if (!/^(?:T|G|O|M)[A-Z]*$/.test(token)) continue;
-      if (Math.abs(item.y - gg.y) <= 6) continue;
-      const dayRow = dayRows.reduce((best, row) => {
-        const distance = Math.abs(item.y - row.y);
+      if (Math.abs(item[venueAxis] - gg[venueAxis]) <= dayHeaderTolerance) continue;
+
+      const dayRow = orderedDays.reduce((best, row) => {
+        const distance = Math.abs(item[dayAxis] - row[dayAxis]);
         return !best || distance < best.distance ? { row, distance } : best;
       }, null);
-      if (!dayRow || dayRow.distance > 4.5) continue;
+      if (!dayRow || dayRow.distance > dayTolerance) continue;
+
       const header = uniqueHeaders.reduce((best, row) => {
-        const distance = Math.abs(item.x - row.x);
+        const distance = Math.abs(item[venueAxis] - row[venueAxis]);
         return !best || distance < best.distance ? { row, distance } : best;
       }, null);
-      if (!header || header.distance > xTolerance) continue;
+      if (!header || header.distance > venueTolerance) continue;
 
       let venue;
       try { venue = resolveItalyRacecourse(header.row.code); }
@@ -204,6 +239,7 @@ export function parseItalyMasafCalendarPages(pages, { year = 2026, sourceUrl } =
         unknown_venues.push({ page_number: page.page_number, month, day: dayRow.row.day, venue_code: header.row.code, race_code: token });
         continue;
       }
+
       const date = `${year}-${pad(month)}-${pad(dayRow.row.day)}`;
       for (const system_id of systemsForRaceCode(token)) {
         records.push({
