@@ -87,7 +87,7 @@ function verifyWiring() {
   const config = read(ASTRO_CONFIG_PATH);
   const integration = read(INTEGRATION_PATH);
   expect(config.includes("import titleDescriptionNormalizationIntegration from './scripts/title-description-normalization-integration.mjs';") && config.includes('titleDescriptionNormalizationIntegration()'), 'Astro normalization wiring is missing');
-  for (const marker of ["const PROJECT_NAME = 'where-horses-run-title-description-normalization';", "'astro:build:done'", 'meetingMetadata(page)', 'countryMetadata(page)']) expect(integration.includes(marker), `Normalization marker is missing: ${marker}`);
+  for (const marker of ["name: 'where-horses-run-title-description-normalization'", "'astro:build:done'", 'meetingMetadata(page)', 'duplicatedCountryDescriptions']) expect(integration.includes(marker), `Normalization marker is missing: ${marker}`);
 }
 function verifyPages(pages, contract, methodsContract, publicDetails) {
   const english = pages.filter((page) => page.lang === 'en').length;
@@ -127,10 +127,10 @@ function verifyPages(pages, contract, methodsContract, publicDetails) {
   }
   for (const page of meetings) {
     const racecourse = strip(page.html.match(/<h1[^>]*id="page-title"[^>]*>([\s\S]*?)<\/h1>/i)?.[1] ?? '');
-    const date = page.html.match(/<span[^>]*data-meeting-projected-date[^>]*>\s*(\d{4}-\d{2}-\d{2})\s*<\/span>/i)?.[1] ?? '';
-    expect(racecourse && date, `${page.url}: meeting identity is incomplete`);
-    expect(page.title.includes(racecourse) && page.title.includes(date), `${page.url}: meeting title differs`);
-    expect(page.lang === 'ja' ? page.title.includes('開催情報') : page.title.includes('Meeting'), `${page.url}: meeting title kind differs`);
+    const pageKind = strip(page.html.match(/<p[^>]*class="[^"]*eyebrow[^"]*"[^>]*>([\s\S]*?)<\/p>/i)?.[1] ?? '');
+    const date = page.html.match(/<p[^>]*>\s*(\d{4}-\d{2}-\d{2})\s*<\/p>/)?.[1] ?? '';
+    expect(racecourse && pageKind && date, `${page.url}: meeting identity is incomplete`);
+    expect(page.title.includes(racecourse) && page.title.includes(pageKind) && page.title.includes(date), `${page.url}: meeting title differs`);
     expect(page.description.includes(racecourse) && page.description.includes(date), `${page.url}: meeting description differs`);
   }
   const affected = pages.filter((page) => contract.country_duplicate_resolution.paths.includes(page.pathname));
