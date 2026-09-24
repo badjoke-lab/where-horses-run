@@ -1,1 +1,113 @@
-[{"schema_version":"2.0.0","country_id":"italy","slug":"italy","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-20","public_display_ceiling":"C","source_test_status":"complete","hero":{"summary_en":"MASAF publishes the reviewed national trot and gallop calendar; reusable race times are not established.","summary_ja":"MASAFの全国トロット・ギャロップカレンダーを確認済みだが、再利用可能なレース時刻は未確認。"},"overview":{"paragraphs_en":["The profile preserves trot and gallop as separate racing contexts under the reviewed national calendar."],"paragraphs_ja":["プロフィールは確認済み全国カレンダー上でトロットとギャロップを別の競馬文脈として維持する。"]},"racing_types":[{"id":"thoroughbred-flat","name_en":"Gallop racing","name_ja":"ギャロップ競走","summary_en":"Included in the reviewed MASAF calendar.","summary_ja":"確認済みMASAFカレンダーに含まれる。"},{"id":"harness-racing","name_en":"Trot racing","name_ja":"トロット競走","summary_en":"Included in the reviewed MASAF calendar.","summary_ja":"確認済みMASAFカレンダーに含まれる。"}],"seasonality":{"pattern":"official-source-required","summary_en":"Use the current MASAF calendar.","summary_ja":"現行MASAFカレンダーを確認する。"},"schedule":{"timezone":"Europe/Rome","utc_offset_label":"Verify the current local UTC offset","day_patterns":["official-source-required"],"time_patterns":["meeting-date-only"],"summary_en":"Meeting dates and racecourses are confirmed; race times remain outside the reviewed scope.","summary_ja":"開催日と競馬場は確認済みだが、レース時刻は確認範囲外。"},"surfaces":{"ids":[],"summary_en":"Surface details are not normalized.","summary_ja":"馬場情報は共通化しない。"},"systems":[{"id":"italy-masaf-gallop-system","name_en":"MASAF gallop calendar","name_ja":"MASAFギャロップカレンダー","summary_en":"Reviewed national gallop calendar context.","summary_ja":"確認済み全国ギャロップカレンダー文脈。","organiser_source_ids":["italy-masaf-calendar-home"],"distributor_source_ids":["italy-masaf-calendar-2026"]},{"id":"italy-masaf-trot-system","name_en":"MASAF trot calendar","name_ja":"MASAFトロットカレンダー","summary_en":"Reviewed national trot calendar context.","summary_ja":"確認済み全国トロットカレンダー文脈。","organiser_source_ids":["italy-masaf-calendar-home"],"distributor_source_ids":["italy-masaf-calendar-2026"]}],"principal_racecourse_ids":[],"calendar_guidance_en":"Use MASAF and retain trot and gallop as separate contexts.","calendar_guidance_ja":"MASAFを使用し、トロットとギャロップを別文脈として維持する。","coverage_note_en":"A stable national race-time route is not established.","coverage_note_ja":"安定した全国レース時刻導線は未確認。","revalidation":{"triggers_en":["The MASAF calendar changes","Trot or gallop source structures change"],"triggers_ja":["MASAFカレンダー変更時","トロット・ギャロップのソース構造変更時"]},"related_glossary_ids":["racecourse","meeting","fixture","post-time"]}]
+[
+  {
+    "schema_version": "2.0.0",
+    "country_id": "italy",
+    "slug": "italy",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-09-25",
+    "public_display_ceiling": "C",
+    "source_test_status": "complete",
+    "hero": {
+      "summary_en": "MASAF publishes the reviewed national 2026 trot and gallop calendar; production Calendar now follows the latest official amendment automatically at meeting-date level.",
+      "summary_ja": "MASAFの2026年全国トロット・ギャロップカレンダーを確認済みで、Calendarは最新の公式改訂版を開催日レベルで自動追跡する。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "The profile preserves trot and gallop as separate racing contexts under the reviewed MASAF national calendar. Obstacle-coded days remain within the gallop context and mixed-coded days may appear in both systems."
+      ],
+      "paragraphs_ja": [
+        "確認済みMASAF全国カレンダー上でトロットとギャロップを別系統として維持する。障害コード日はギャロップ系統に含め、混合コード日は両系統に現れ得る。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "thoroughbred-flat",
+        "name_en": "Gallop racing",
+        "name_ja": "ギャロップ競走",
+        "summary_en": "Included in the reviewed MASAF calendar.",
+        "summary_ja": "確認済みMASAFカレンダーに含まれる。"
+      },
+      {
+        "id": "harness-racing",
+        "name_en": "Trot racing",
+        "name_ja": "トロット競走",
+        "summary_en": "Included in the reviewed MASAF calendar.",
+        "summary_ja": "確認済みMASAFカレンダーに含まれる。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "official-source-required",
+      "summary_en": "Use the current MASAF calendar.",
+      "summary_ja": "現行MASAFカレンダーを確認する。"
+    },
+    "schedule": {
+      "timezone": "Europe/Rome",
+      "utc_offset_label": "Verify the current local UTC offset",
+      "day_patterns": [
+        "official-source-required"
+      ],
+      "time_patterns": [
+        "meeting-date-only"
+      ],
+      "summary_en": "Meeting dates and physical racecourses are collected from the latest official MASAF 2026 calendar amendment; race times remain outside the reviewed source capability.",
+      "summary_ja": "開催日と物理競馬場はMASAFの最新2026年公式改訂カレンダーから収集する。レース時刻は確認済みソース能力の範囲外。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Surface details are not normalized.",
+      "summary_ja": "馬場情報は共通化しない。"
+    },
+    "systems": [
+      {
+        "id": "italy-masaf-gallop-system",
+        "name_en": "MASAF gallop calendar",
+        "name_ja": "MASAFギャロップカレンダー",
+        "summary_en": "Reviewed national gallop calendar context.",
+        "summary_ja": "確認済み全国ギャロップカレンダー文脈。",
+        "organiser_source_ids": [
+          "italy-masaf-calendar-home"
+        ],
+        "distributor_source_ids": [
+          "italy-masaf-calendar-2026"
+        ]
+      },
+      {
+        "id": "italy-masaf-trot-system",
+        "name_en": "MASAF trot calendar",
+        "name_ja": "MASAFトロットカレンダー",
+        "summary_en": "Reviewed national trot calendar context.",
+        "summary_ja": "確認済み全国トロットカレンダー文脈。",
+        "organiser_source_ids": [
+          "italy-masaf-calendar-home"
+        ],
+        "distributor_source_ids": [
+          "italy-masaf-calendar-2026"
+        ]
+      }
+    ],
+    "principal_racecourse_ids": [],
+    "calendar_guidance_en": "Use the MASAF 2026 normative index, follow the latest calendar amendment to its official PDF, and retain trot and gallop as separate systems.",
+    "calendar_guidance_ja": "MASAFの2026年法令・改訂一覧から最新カレンダー改訂版の公式PDFを追い、トロットとギャロップを別系統として維持する。",
+    "coverage_note_en": "National meeting-date and racecourse coverage is automated at rank C; no stable reusable national race-time route is established.",
+    "coverage_note_ja": "全国の開催日・競馬場はランクCで自動取得するが、安定した全国レース時刻導線は未確立。",
+    "revalidation": {
+      "triggers_en": [
+        "The MASAF 2026 normative index or amendment-page structure changes",
+        "The national calendar PDF grid or venue/discipline codes change",
+        "A reusable national race-time route becomes available"
+      ],
+      "triggers_ja": [
+        "MASAF 2026年法令・改訂一覧または改訂ページ構造の変更時",
+        "全国カレンダーPDFの表構造・会場コード・競走種別コード変更時",
+        "再利用可能な全国レース時刻導線が確立した時"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture",
+      "post-time"
+    ]
+  }
+]
