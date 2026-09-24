@@ -20,6 +20,9 @@ const SYSTEMS = [
   { key: 'france-letrot', file: 'france-letrot.json', country_id: 'france', authority_id: 'letrot', racing_system_id: 'france-letrot-system' },
   { key: 'new-zealand-thoroughbred', file: 'new-zealand-thoroughbred.json', country_id: 'new-zealand', authority_id: 'new-zealand-thoroughbred-racing', racing_system_id: 'new-zealand-thoroughbred-system' },
   { key: 'new-zealand-harness', file: 'new-zealand-harness.json', country_id: 'new-zealand', authority_id: 'harness-racing-new-zealand', racing_system_id: 'new-zealand-harness-system' },
+  { key: 'united-kingdom', file: 'united-kingdom.json', country_id: 'united-kingdom', authority_id: 'british-horseracing-authority', racing_system_id: 'united-kingdom-bha-system' },
+  { key: 'slovakia', file: 'slovakia.json', country_id: 'slovakia', authority_id: 'zavodisko', racing_system_id: 'slovakia-zavodisko-system' },
+  { key: 'bahrain', file: 'bahrain.json', country_id: 'bahrain', authority_id: 'bahrain-turf-club', racing_system_id: 'bahrain-turf-club-system' },
 ];
 
 const STATE_FILES = {
