@@ -2586,26 +2586,29 @@
         "surface": false,
         "course": false
       },
-      "source_format": "html",
+      "source_format": "html+pdf",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "seasonal",
-        "manual"
+        "annual",
+        "daily",
+        "near_meeting"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when MASAF changes the national gallop calendar structure.",
+      "checked_date": "2026-09-25",
+      "evidence_reviewed_at": "2026-09-25",
+      "revalidation_trigger": "Revalidate when MASAF changes the 2026 normative index, amended national calendar page, PDF grid structure, or discipline coding.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/43-italy/final-summary.json",
       "limitations": [
-        "Reusable race times are not established."
+        "The official national calendar establishes meeting date and physical racecourse only; first-race and per-race post times are not inferred.",
+        "Obstacle-coded days are retained in the MASAF gallop system; mixed-coded days are represented in both reviewed MASAF systems.",
+        "Calendar timetable identities use All-Tier Racecourse Master IDs while readiness.racecourse_ids remains empty until those IDs are promoted into the repository racecourse-page master."
       ],
-      "notes": "Manual C-level decision for the MASAF gallop calendar."
+      "notes": "Automated MASAF latest-amendment discovery plus national 2026 calendar-PDF acquisition supports rank C for the reviewed gallop system. Source omission, acquisition failure or parser failure preserves stronger verified state and never proves non-running."
     },
     {
       "readiness_id": "italy--italy-masaf-trot-system--masaf-calendar-2026",
@@ -2629,26 +2632,29 @@
         "surface": false,
         "course": false
       },
-      "source_format": "html",
+      "source_format": "html+pdf",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "seasonal",
-        "manual"
+        "annual",
+        "daily",
+        "near_meeting"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when MASAF changes the national trot calendar structure.",
+      "checked_date": "2026-09-25",
+      "evidence_reviewed_at": "2026-09-25",
+      "revalidation_trigger": "Revalidate when MASAF changes the 2026 normative index, amended national calendar page, PDF grid structure, or discipline coding.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/43-italy/final-summary.json",
       "limitations": [
-        "Reusable race times are not established."
+        "The official national calendar establishes meeting date and physical racecourse only; first-race and per-race post times are not inferred.",
+        "Obstacle-coded days are retained in the MASAF gallop system; mixed-coded days are represented in both reviewed MASAF systems.",
+        "Calendar timetable identities use All-Tier Racecourse Master IDs while readiness.racecourse_ids remains empty until those IDs are promoted into the repository racecourse-page master."
       ],
-      "notes": "Manual C-level decision for the MASAF trot calendar."
+      "notes": "Automated MASAF latest-amendment discovery plus national 2026 calendar-PDF acquisition supports rank C for the reviewed trot system. Source omission, acquisition failure or parser failure preserves stronger verified state and never proves non-running."
     },
     {
       "readiness_id": "spain--spain-reviewed-gallop-system--zarzuela-programme-2026",
@@ -5436,5 +5442,5 @@
       "notes": "Date-specific Bahrain Turf Club racecard navigation supplies complete per-race post times through public rank A."
     }
   ],
-  "last_updated": "2026-09-24"
+  "last_updated": "2026-09-25"
 }
