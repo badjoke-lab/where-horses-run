@@ -13,7 +13,7 @@ const orderedSteps = [
   'Collect HKJC official window',
   'Collect UAE official window',
   'Collect KRA official window',
-  'Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France, New Zealand, United Kingdom, Slovakia, Bahrain, Sweden, Germany and Spain official windows',
+  'Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France, New Zealand, United Kingdom, Slovakia, Bahrain, Sweden, Germany, Spain and Italy official windows',
   'Apply non-Japan official observations monotonically',
   'Re-apply frozen reviewed Calendar observations',
   'Apply explicit meeting presence dispositions',
@@ -169,6 +169,14 @@ assert.equal((workflow.match(/--artifact=\.calendar-unified\/spain\.json/g) ?? [
 assert.equal((workflow.match(/--racing-system-id=spain-reviewed-gallop-system/g) ?? []).length, 2, 'Spain apply path must bind the canonical racing system id in both execution paths');
 assert.equal((workflow.match(/--timezone=Europe\/Madrid/g) ?? []).length, 2, 'Spain apply path must bind Europe/Madrid in both execution paths');
 
+assert.equal((workflow.match(/run-italy-masaf-official-window\\.mjs/g) ?? []).length, 2, 'Italy MASAF must be collected in both normal and latest-main rebuild paths');
+assert.equal((workflow.match(/--authority-id=masaf/g) ?? []).length, 4, 'Italy MASAF gallop and trot observations must be applied in both execution paths');
+assert.equal((workflow.match(/--artifact=\\.calendar-unified\\/italy-gallop\\.json/g) ?? []).length, 4, 'Italy gallop artifact must pass exclusion and apply layers in both execution paths');
+assert.equal((workflow.match(/--artifact=\\.calendar-unified\\/italy-trot\\.json/g) ?? []).length, 4, 'Italy trot artifact must pass exclusion and apply layers in both execution paths');
+assert.equal((workflow.match(/--racing-system-id=italy-masaf-gallop-system/g) ?? []).length, 2, 'Italy gallop apply path must bind the canonical racing system id in both execution paths');
+assert.equal((workflow.match(/--racing-system-id=italy-masaf-trot-system/g) ?? []).length, 2, 'Italy trot apply path must bind the canonical racing system id in both execution paths');
+assert.equal((workflow.match(/--timezone=Europe\\/Rome/g) ?? []).length, 4, 'Italy MASAF apply paths must bind Europe/Rome for both systems in both execution paths');
+
 console.log('CALENDAR_REFRESH_PUBLICATION_BOUNDARIES: pass');
 console.log('SOREC_UNIFIED_REFRESH_PATHS: 2');
 console.log('IRELAND_HRI_UNIFIED_REFRESH_PATHS: 2');
@@ -182,3 +190,4 @@ console.log('BAHRAIN_BTC_UNIFIED_REFRESH_PATHS: 2');
 console.log('SWEDEN_SVENSK_GALOPP_UNIFIED_REFRESH_PATHS: 2');
 console.log('GERMANY_DEUTSCHER_GALOPP_UNIFIED_REFRESH_PATHS: 2');
 console.log('SPAIN_ZARZUELA_UNIFIED_REFRESH_PATHS: 2');
+console.log('ITALY_MASAF_UNIFIED_REFRESH_PATHS: 2');
