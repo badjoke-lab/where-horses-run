@@ -123,7 +123,7 @@ export function buildSwedenMeetingRecord(row, { checkedAt } = {}) {
     review_status: 'needs_review',
     notes: `Official Svensk Galopp 2026 race-day calendar observation; source venue label: ${row.venue_label}; event: ${row.event_label}. Calendar event time ${row.published_event_time_local ?? 'TBA'} is retained only as source context and is not promoted to first-race time without an explicit Första starttid source.`,
     detail_observation: {
-      status: 'not_published',
+      status: 'not_applicable',
       evaluated_capability_rank: 'C',
       race_count: 0,
       calendar_url: SWEDEN_CALENDAR_URL,
