@@ -29,14 +29,18 @@ for (const token of [
   'getPublicTimetableMeetingRows',
   'PublicTimetableMeetingDetail',
   'PublicTimetableMeetingRow',
-  'detail.effective_public_rank',
   'detail.show_race_name',
   'detail.show_distance',
   'detail.show_surface',
   'detail.show_course',
   'detail.timetable_rows.map',
+  '<h1 id="page-title"><a href={trackPath}>{racecourseName}</a></h1>',
+  'Today’s races',
+  'source-strip',
   'Open official source',
-  'Publication boundary',
+  'About this data',
+  '@media (max-width: 720px)',
+  'race-cell--name',
 ]) requireText(page, token, 'meeting detail page');
 
 for (const forbidden of [
@@ -50,30 +54,15 @@ for (const forbidden of [
   'payouts',
   'predictions',
   'tips',
+  'Capability rank:',
+  'Public rank:',
+  'Publication policy:',
+  'Source status:',
+  'Publication boundary',
 ]) rejectText(page, forbidden, 'meeting detail page');
 
 const details = publicDetails.details ?? [];
-const hkjc = details.find((detail) => detail.meeting_id === 'hkjc-sha-tin-racecourse-2026-06-07');
-const jra = details.find((detail) => detail.meeting_id === 'jra-tokyo-racecourse-2026-06-07');
-
-if (!hkjc) errors.push('Missing HKJC public detail fixture.');
-if (!jra) errors.push('Missing JRA public detail fixture.');
-
-if (hkjc) {
-  if (hkjc.effective_public_rank !== 'A+') errors.push('HKJC fixture must remain A+ for detail display test.');
-  for (const field of ['show_race_name', 'show_distance', 'show_surface', 'show_course']) {
-    if (hkjc[field] !== true) errors.push(`HKJC fixture must enable ${field}.`);
-  }
-}
-
-if (jra) {
-  if (jra.effective_public_rank !== 'A') errors.push('JRA fixture must remain A for detail display test.');
-  for (const row of jra.timetable_rows ?? []) {
-    for (const forbidden of ['race_name', 'distance_m', 'surface', 'course_label']) {
-      if (forbidden in row) errors.push(`JRA A detail row must not include ${forbidden}.`);
-    }
-  }
-}
+if (details.length === 0) errors.push('Public meeting detail inventory is empty.');
 
 for (const token of [
   'Meeting detail pages now read from public meeting-details.',

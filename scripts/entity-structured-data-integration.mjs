@@ -189,9 +189,12 @@ function buildMeetingEvent(route, canonicalUrl, html) {
     'meeting date',
     route.relative,
   );
-  const timezoneMatch = html.match(/<p>\s*(?:Venue timezone|開催地タイムゾーン):\s*([^<]+)<\/p>/i);
-  const timezone = timezoneMatch ? stripTags(timezoneMatch[1]) : null;
-  if (!timezone) throw new Error(`Missing visible venue timezone in ${route.relative}`);
+  const timezone = extractAttribute(
+    html,
+    /<div\s+[^>]*data-meeting-timezone-root[^>]*>/i,
+    'data-source-timezone',
+    route.relative,
+  );
 
   const trackHref = extractAttribute(
     html,

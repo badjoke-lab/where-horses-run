@@ -118,19 +118,18 @@ function meetingMetadata(page) {
   const match = page.pathname.match(/^\/(ja\/)?timetable\/meetings\/[^/]+\/$/);
   if (!match) return null;
   const racecourseName = readText(page.html, /<h1[^>]*id="page-title"[^>]*>([\s\S]*?)<\/h1>/i, 'meeting heading', page.relative);
-  const pageKind = readText(page.html, /<p[^>]*class="eyebrow"[^>]*>([\s\S]*?)<\/p>/i, 'meeting page kind', page.relative);
   const date = page.html.match(/<span[^>]*data-meeting-projected-date[^>]*>\s*(\d{4}-\d{2}-\d{2})\s*<\/span>/i)?.[1]
     ?? page.html.match(/<p[^>]*>\s*(\d{4}-\d{2}-\d{2})\s*<\/p>/)?.[1];
   if (!date) throw new Error(`Missing meeting date in ${page.relative}`);
   if (page.lang === 'ja') {
     return {
-      title: `${racecourseName} — ${date} ${pageKind} | 競馬どこ？`,
-      description: `${date}の${racecourseName}開催について、公式ソースへのリンクと公開ポリシーで制御されたタイムテーブル情報を表示する開催詳細ページです。`,
+      title: `${racecourseName} — ${date} 開催情報 | 競馬どこ？`,
+      description: `${date}の${racecourseName}開催について、レース時刻、公開中の番組概要、公式ソースを確認できます。`,
     };
   }
   return {
-    title: `${racecourseName} — ${date} ${pageKind} | Where Horses Run`,
-    description: `Official-source based ${pageKind.toLowerCase()} for ${racecourseName} on ${date}, with public-policy-controlled timetable information and the official source link.`,
+    title: `${racecourseName} — ${date} Meeting | Where Horses Run`,
+    description: `View race times, available programme summary fields, and the official source for ${racecourseName} on ${date}.`,
   };
 }
 

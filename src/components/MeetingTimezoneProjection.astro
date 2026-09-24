@@ -90,7 +90,9 @@ const timeZoneOptions = [
       const projectedDate = formatDate(instant, timeZone);
       const projectedTime = formatTime(instant, timeZone);
       if (index === 0) firstProjectedDate = projectedDate;
-      cell.textContent = `${projectedDate} ${projectedTime}`;
+      cell.textContent = cell.dataset.meetingTimeDisplay === 'compact' && projectedDate === sourceDate
+        ? projectedTime
+        : `${projectedDate} ${projectedTime}`;
       cell.setAttribute('datetime', instant.toISOString());
       cell.setAttribute('title', `${sourceDate} ${sourceTime} ${sourceTimeZone}`);
     });
