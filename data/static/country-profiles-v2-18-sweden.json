@@ -1,17 +1,90 @@
 [
   {
-    "schema_version":"2.0.0","country_id":"sweden","slug":"sweden","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-18","public_display_ceiling":"C","source_test_status":"complete",
-    "hero":{"summary_en":"Sweden is confirmed at calendar level through Svensk Galopp.","summary_ja":"スウェーデンはSvensk Galoppを通じてカレンダーレベルで確認済みです。"},
-    "overview":{"paragraphs_en":["The reviewed official calendar confirms race days and venues. Reusable first-race or per-race times were not confirmed."],"paragraphs_ja":["レビュー済み公式カレンダーで開催日と会場を確認しました。第1レースまたはレース別時刻は未確認です。"]},
-    "racing_types":[{"id":"thoroughbred-flat","name_en":"Thoroughbred flat racing","name_ja":"サラブレッド平地競走","summary_en":"Calendar-level meeting coverage is confirmed.","summary_ja":"カレンダーレベルの開催情報を確認済みです。"}],
-    "seasonality":{"pattern":"official-calendar-required","summary_en":"Use the current Svensk Galopp calendar for race days and venues.","summary_ja":"開催日と会場はSvensk Galoppの現行カレンダーで確認します。"},
-    "schedule":{"timezone":"Europe/Stockholm","utc_offset_label":"Verify current Sweden civil-time offset","day_patterns":["official-calendar-required"],"time_patterns":["not-available-at-rank-c"],"summary_en":"Public output is limited to meeting date and venue.","summary_ja":"公開表示は開催日と会場に限定します。"},
-    "surfaces":{"ids":[],"summary_en":"Surface coverage remains under review.","summary_ja":"馬場種別は調査中です。"},
-    "systems":[{"id":"sweden-svensk-galopp-system","name_en":"Svensk Galopp calendar system","name_ja":"Svensk Galoppカレンダー体系","summary_en":"Svensk Galopp provides the reviewed official calendar.","summary_ja":"Svensk Galoppがレビュー済み公式カレンダーを提供します。","organiser_source_ids":["sweden-svensk-galopp-calendar"],"distributor_source_ids":[]}],
-    "principal_racecourse_ids":[],
-    "calendar_guidance_en":"Show only the official meeting date and venue until a stable timetable source is confirmed.","calendar_guidance_ja":"安定した時刻表sourceを確認するまで公式の開催日と会場のみ表示します。",
-    "coverage_note_en":"Calendar-level completion does not establish first, last, or per-race times.","coverage_note_ja":"カレンダーレベルの完了は第1・最終・レース別時刻を意味しません。",
-    "revalidation":{"triggers_en":["Calendar-route change","Stable timetable source confirmed","Venue inventory change"],"triggers_ja":["カレンダー導線変更時","安定した時刻表source確認時","会場一覧変更時"]},
-    "related_glossary_ids":["racecourse","meeting","fixture"]
+    "schema_version": "2.0.0",
+    "country_id": "sweden",
+    "slug": "sweden",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-09-24",
+    "public_display_ceiling": "C",
+    "source_test_status": "complete",
+    "hero": {
+      "summary_en": "Sweden is production-routed at calendar level through Svensk Galopp's official 2026 race-day calendar.",
+      "summary_ja": "スウェーデンはSvensk Galopp公式2026年開催日程を通じてカレンダーレベルでproduction経路に接続済みです。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "The official Svensk Galopp 2026 race-day calendar provides the automated meeting-date and venue mother set. Generic event times are not treated as verified first-race post times; explicit Första starttid enrichment remains separate."
+      ],
+      "paragraphs_ja": [
+        "Svensk Galopp公式2026年開催日程を開催日・会場の自動取得母表として使用します。一般イベント時刻は第1競走時刻として扱わず、明示的なFörsta starttid取得は別段階とします。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "thoroughbred-flat",
+        "name_en": "Thoroughbred flat racing",
+        "name_ja": "サラブレッド平地競走",
+        "summary_en": "Calendar-level meeting coverage is confirmed.",
+        "summary_ja": "カレンダーレベルの開催情報を確認済みです。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "official-calendar-required",
+      "summary_en": "Use the current Svensk Galopp calendar for race days and venues.",
+      "summary_ja": "開催日と会場はSvensk Galoppの現行カレンダーで確認します。"
+    },
+    "schedule": {
+      "timezone": "Europe/Stockholm",
+      "utc_offset_label": "Verify current Sweden civil-time offset",
+      "day_patterns": [
+        "official-calendar-required"
+      ],
+      "time_patterns": [
+        "not-available-at-rank-c"
+      ],
+      "summary_en": "Public output is limited to meeting date and venue.",
+      "summary_ja": "公開表示は開催日と会場に限定します。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Surface coverage remains under review.",
+      "summary_ja": "馬場種別は調査中です。"
+    },
+    "systems": [
+      {
+        "id": "sweden-svensk-galopp-system",
+        "name_en": "Svensk Galopp calendar system",
+        "name_ja": "Svensk Galoppカレンダー体系",
+        "summary_en": "Svensk Galopp provides the reviewed official calendar.",
+        "summary_ja": "Svensk Galoppがレビュー済み公式カレンダーを提供します。",
+        "organiser_source_ids": [
+          "sweden-svensk-galopp-calendar"
+        ],
+        "distributor_source_ids": []
+      }
+    ],
+    "principal_racecourse_ids": [],
+    "calendar_guidance_en": "Publish official meeting date and venue at C; do not infer first-race time from the generic calendar event time.",
+    "calendar_guidance_ja": "公式の開催日・会場をCで公開し、一般カレンダーのイベント時刻から第1競走時刻を推定しません。",
+    "coverage_note_en": "Production routing currently establishes meeting date and venue only. Explicit first-race-time event pages can be reviewed as a later promotion route.",
+    "coverage_note_ja": "production経路で現在保証するのは開催日と会場です。明示的な第1競走時刻を持つイベントページは後続の昇格経路として審査できます。",
+    "revalidation": {
+      "triggers_en": [
+        "Calendar-route change",
+        "Stable timetable source confirmed",
+        "Venue inventory change"
+      ],
+      "triggers_ja": [
+        "カレンダー導線変更時",
+        "安定した時刻表source確認時",
+        "会場一覧変更時"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture"
+    ]
   }
 ]
