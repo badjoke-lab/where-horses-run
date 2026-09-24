@@ -2672,28 +2672,29 @@
         "surface": false,
         "course": false
       },
-      "source_format": "html",
+      "source_format": "html+pdf",
       "access_mode": "direct",
-      "automation_mode": "semi_automatic",
+      "automation_mode": "automatic",
       "refresh_classes": [
         "seasonal",
         "weekly",
         "near_meeting"
       ],
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "fallback": "downgrade_to_C",
-      "source_status": "partial",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when the reviewed gallop programme changes or additional Spanish codes are reviewed.",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-09-25",
+      "evidence_reviewed_at": "2026-09-25",
+      "revalidation_trigger": "Revalidate when the Hipódromo de la Zarzuela seasonal programme PDF or date-specific jornada route changes, or when additional Spanish venues/codes are reviewed.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/44-spain/final-summary.json",
       "limitations": [
-        "The prototype scope is limited to the reviewed Zarzuela programme.",
-        "Wider code and venue coverage remains incomplete."
+        "Production scope is limited to Hipódromo de la Zarzuela.",
+        "Country public output remains capped at C because wider Spanish venue and racing-code coverage is incomplete.",
+        "Unpublished jornada post times remain pending and are never inferred."
       ],
-      "notes": "Bounded prototype decision for the reviewed Spanish gallop subsystem."
+      "notes": "Automated Zarzuela autumn-programme mother set plus date-specific jornada enrichment supports best-available C through A for the reviewed single-venue gallop subsystem. Calendar identity/map uses the existing All-Tier Master ID; readiness.racecourse_ids stays empty until promoted into the repository racecourse-page master."
     },
     {
       "readiness_id": "norway--norway-dnt-harness-system--dnt-terminliste-2026",

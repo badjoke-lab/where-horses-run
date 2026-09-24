@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-non-running-evidence-registry-v1",
-  "reviewed_at": "2026-09-24",
+  "reviewed_at": "2026-09-25",
   "records": [
     {
       "record_id": "japan-jra-system",
@@ -462,6 +462,28 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-09-24",
       "notes": "Germany gallop production uses positive Deutscher Galopp meeting evidence only. Source omission, unpublished race times, acquisition failure or parser failure do not confirm cancellation/postponement and must preserve stronger verified state."
+    },
+    {
+      "record_id": "spain-reviewed-gallop-system",
+      "country_id": "spain",
+      "system_id": "spain-reviewed-gallop-system",
+      "authority_id": "hipodromo-zarzuela",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Hipódromo de la Zarzuela positive seasonal-programme and date-specific jornada evidence; no bounded whole-meeting negative-evidence route implemented in this country-addition pass",
+      "evidence_urls": [
+        "https://www.hipodromodelazarzuela.es/carreras",
+        "https://www.hipodromodelazarzuela.es/sites/default/files/PROGRAMA%20OTO%C3%91O%20HZ%202026%20v6%20SN.pdf"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-09-25",
+      "notes": "Spain Zarzuela production uses positive official meeting evidence only. Source absence, unpublished jornada detail, acquisition failure or parser failure do not prove cancellation/postponement and preserve stronger verified state."
     }
   ]
 }

@@ -25,6 +25,7 @@ const SYSTEMS = [
   { key: 'bahrain', file: 'bahrain.json', country_id: 'bahrain', authority_id: 'bahrain-turf-club', racing_system_id: 'bahrain-turf-club-system' },
   { key: 'sweden', file: 'sweden.json', country_id: 'sweden', authority_id: 'svensk-galopp', racing_system_id: 'sweden-svensk-galopp-system' },
   { key: 'germany', file: 'germany.json', country_id: 'germany', authority_id: 'deutscher-galopp', racing_system_id: 'germany-deutscher-galopp-system' },
+  { key: 'spain', file: 'spain.json', country_id: 'spain', authority_id: 'hipodromo-zarzuela', racing_system_id: 'spain-reviewed-gallop-system' },
 ];
 
 const STATE_FILES = {
