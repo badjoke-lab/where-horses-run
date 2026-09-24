@@ -23,6 +23,7 @@ const SYSTEMS = [
   { key: 'united-kingdom', file: 'united-kingdom.json', country_id: 'united-kingdom', authority_id: 'british-horseracing-authority', racing_system_id: 'united-kingdom-bha-system' },
   { key: 'slovakia', file: 'slovakia.json', country_id: 'slovakia', authority_id: 'zavodisko', racing_system_id: 'slovakia-zavodisko-system' },
   { key: 'bahrain', file: 'bahrain.json', country_id: 'bahrain', authority_id: 'bahrain-turf-club', racing_system_id: 'bahrain-turf-club-system' },
+  { key: 'sweden', file: 'sweden.json', country_id: 'sweden', authority_id: 'svensk-galopp', racing_system_id: 'sweden-svensk-galopp-system' },
 ];
 
 const STATE_FILES = {
