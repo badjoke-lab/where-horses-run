@@ -513,7 +513,7 @@
       "system_id": "sweden-svensk-galopp-system",
       "country_id": "sweden",
       "authority_id": "svensk-galopp",
-      "profile_status": "active",
+      "profile_status": "provisional",
       "primary_runner": "github_actions",
       "fallback_runner": null,
       "schedule_source_id": "svensk-galopp-calendar",
@@ -535,7 +535,7 @@
         "detail_source_id",
         "detail_adapter_id"
       ],
-      "operator_notes": "GitHub Actions reads the official Svensk Galopp 2026 race-day calendar PDF as the Swedish Thoroughbred meeting-date and venue mother set. Generic calendar event times remain source context only and are not promoted to first-race time. Explicit Första starttid event-page enrichment is reserved for a separate reviewed detail adapter. Source failure preserves stronger verified state and never proves non-running."
+      "operator_notes": "GitHub Actions reads the official Svensk Galopp 2026 race-day calendar PDF as the Swedish Thoroughbred meeting-date and venue mother set through rank C. Generic calendar event times remain source context only and are not promoted to first-race time. The profile remains provisional because explicit Första starttid event-page enrichment is known but no reusable detail source/adapter is connected; detail_source_id and detail_adapter_id therefore remain pending. Source failure preserves stronger verified state and never proves non-running."
     }
   ]
 }
