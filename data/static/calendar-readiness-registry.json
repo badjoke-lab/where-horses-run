@@ -1125,27 +1125,28 @@
         "surface": false,
         "course": false
       },
-      "source_format": "html",
+      "source_format": "pdf",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "monthly",
+        "annual",
         "near_meeting"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-17",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when the Svensk Galopp calendar route changes or stable race times become available.",
+      "checked_date": "2026-09-24",
+      "evidence_reviewed_at": "2026-09-24",
+      "revalidation_trigger": "Revalidate when Svensk Galopp replaces the annual race-day calendar, changes the calendar route, or an explicit reusable Första starttid route is connected.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/18-sweden/final-summary.json",
       "limitations": [
-        "Reusable first-race and per-race times were not confirmed.",
-        "Surface coverage remains outside this backfill."
+        "The annual official race-day calendar is used for meeting date and venue only.",
+        "Its generic event time is not promoted to first-race time without explicit Första starttid evidence.",
+        "Cancellation/postponement handling remains outside this Calendar Expansion pass."
       ],
-      "notes": "Manual confirmation can maintain C-level Swedish race days and venues from the official calendar."
+      "notes": "Automated Svensk Galopp 2026 calendar-PDF acquisition supports current Swedish Thoroughbred meetings at rank C."
     },
     {
       "readiness_id": "denmark--denmark-dansk-galop-system--dansk-galop-guidance",
