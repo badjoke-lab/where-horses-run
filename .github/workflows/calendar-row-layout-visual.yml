@@ -5,6 +5,9 @@ on:
     paths:
       - 'src/components/TimetableMeetingList.astro'
       - 'src/components/MeetingStatePolicy.astro'
+      - 'src/components/MeetingTimezoneProjection.astro'
+      - 'src/pages/timetable/meetings/[meeting_id].astro'
+      - 'src/pages/ja/timetable/meetings/[meeting_id].astro'
       - 'src/styles/meeting-list-compact-v1.css'
       - 'scripts/check-calendar-row-layout-visual.mjs'
       - '.github/workflows/calendar-row-layout-visual.yml'
