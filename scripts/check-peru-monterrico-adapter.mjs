@@ -91,7 +91,21 @@ if(process.env.GITHUB_ACTIONS==='true') {
           const scriptBody=await scriptResponse.text();
           const hits=[...scriptBody.matchAll(/.{0,180}(?:programa-de-entradas|programas\/fecha|programas|id_reunion|reunion).{0,260}/gi)].slice(0,25).map(m=>m[0].replace(/\s+/g,' '));
           const entryHits=[...scriptBody.matchAll(/.{0,220}entrad.{0,360}/gi)].slice(0,60).map(m=>m[0].replace(/\s+/g,' '));
-          if(hits.length || entryHits.length) scriptDiagnostics.push({url:scriptUrl,status:scriptResponse.status,length:scriptBody.length,hits,entry_hits:entryHits});
+          const programaTemporadaHits=[...scriptBody.matchAll(/.{0,260}compProgramaTemporada.{0,420}/gi)].slice(0,20).map(m=>m[0].replace(/\s+/g,' '));
+          const dominioApiHits=[...scriptBody.matchAll(/.{0,220}dominio_apis.{0,320}/gi)].slice(0,20).map(m=>m[0].replace(/\s+/g,' '));
+          const componentDiagnostics=[];
+          const componentImports=[...scriptBody.matchAll(/compProgramaTemporada\s*=\s*\(\)\s*=>\s*import\(["']([^"']+)["']/gi)].map(m=>new URL(m[1].replace(/\+.*$/,''),scriptUrl).toString());
+          for(const componentUrl of componentImports.slice(0,5)) {
+            try {
+              const componentResponse=await fetch(componentUrl,{headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'}});
+              const componentBody=await componentResponse.text();
+              const componentHits=[...componentBody.matchAll(/.{0,260}(?:\/api\/|programa|temporada|reunion|fecha).{0,500}/gi)].slice(0,80).map(m=>m[0].replace(/\s+/g,' '));
+              componentDiagnostics.push({url:componentUrl,status:componentResponse.status,length:componentBody.length,hits:componentHits});
+            } catch(error) {
+              componentDiagnostics.push({url:componentUrl,error:String(error?.message??error)});
+            }
+          }
+          if(hits.length || entryHits.length || programaTemporadaHits.length) scriptDiagnostics.push({url:scriptUrl,status:scriptResponse.status,length:scriptBody.length,hits,entry_hits:entryHits,programa_temporada_hits:programaTemporadaHits,dominio_api_hits:dominioApiHits,component_imports:componentImports,component_diagnostics:componentDiagnostics});
         } catch(error) {
           scriptDiagnostics.push({url:scriptUrl,error:String(error?.message??error)});
         }
