@@ -131,7 +131,8 @@ if(process.env.GITHUB_ACTIONS==='true') {
       } catch(error) {
         inferredMonthlyProbe={url:inferredMonthlyUrl,error:String(error?.message??error)};
       }
-console.log('PERU_MONTERRICO_ENTRY_HTML_DEBUG:',JSON.stringify({status:response.status,content_type:response.headers.get('content-type'),length:body.length,id_snippets:idSnippets,programme_snippets:programmeSnippets,api_snippets:apiSnippets,entry_component_snippets:entryComponentSnippets,script_srcs:scriptSrcs,script_diagnostics:scriptDiagnostics,inferred_monthly_probe:inferredMonthlyProbe}));
+console.log('PERU_MONTERRICO_MONTHLY_API_PROBE:',JSON.stringify(inferredMonthlyProbe));
+      console.log('PERU_MONTERRICO_ENTRY_HTML_DEBUG:',JSON.stringify({status:response.status,content_type:response.headers.get('content-type'),length:body.length,id_snippets:idSnippets,programme_snippets:programmeSnippets,api_snippets:apiSnippets,entry_component_snippets:entryComponentSnippets,script_srcs:scriptSrcs,script_diagnostics:scriptDiagnostics,inferred_monthly_probe:inferredMonthlyProbe}));
     }
     assert.ok(dates.has('2026-09-26'),'Peru live fallback must recover the published 2026-09-26 Monterrico meeting');
     assert.ok(dates.has('2026-09-27'),'Peru live fallback must recover the published 2026-09-27 Monterrico meeting');
