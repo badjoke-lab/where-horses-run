@@ -251,10 +251,15 @@ export function buildGermanyMeetingRecord(scheduleRow, detailRows = [], { checke
   if (timed.length) {
     const detailEvidence=evidence(detailUrl,checkedAt);
     record.evidence_support.race_times=detailEvidence;
-    if (timed.length===sorted.length) record.evidence_support.timetable=detailEvidence;
   }
 
   const capability_rank=deriveBestAvailableRank(record,timetable_rows);
+  if (record.detail_observation.status === 'available') {
+    record.detail_observation.evaluated_capability_rank = capability_rank;
+    if (capability_rank === 'A') {
+      record.evidence_support.timetable = evidence(detailUrl,checkedAt);
+    }
+  }
   record.acquisition_completion=classifyAcquisitionCompletion(
     {...record,capability_rank},
     {technical_capability_rank:'A'},
