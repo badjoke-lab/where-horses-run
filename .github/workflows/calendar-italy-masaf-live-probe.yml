@@ -1,0 +1,67 @@
+name: Italy MASAF live probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-italy-masaf-live-probe.yml'
+      - 'scripts/timetable/italy-masaf-core.mjs'
+      - 'scripts/timetable/run-italy-masaf-official-window.mjs'
+      - 'scripts/check-italy-masaf-adapter.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - name: Dump current MASAF PDF layout
+        run: |
+          node --input-type=module - <<'NODE'
+          import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
+          const url='https://www.masaf.gov.it/flex/cm/pages/ServeAttachment.php/L/IT/D/1%252F5%252F9%252FD.443ea063ead1986dcecf/P/BLOB%3AID%3D25118/E/pdf?mode=download';
+          const response=await fetch(url,{redirect:'follow'});
+          if(!response.ok) throw new Error('HTTP '+response.status);
+          const bytes=new Uint8Array(await response.arrayBuffer());
+          const pdf=await getDocument({data:bytes,disableWorker:true}).promise;
+          for (const pageNumber of [9,10]) {
+            const page=await pdf.getPage(pageNumber);
+            const content=await page.getTextContent();
+            const items=content.items.filter(x=>'str' in x && String(x.str).trim()).map(x=>({
+              str:String(x.str).replace(/\\s+/g,' ').trim(),
+              x:Number(x.transform?.[4]?.toFixed?.(2) ?? x.transform?.[4]),
+              y:Number(x.transform?.[5]?.toFixed?.(2) ?? x.transform?.[5]),
+              w:Number(x.width?.toFixed?.(2) ?? x.width)
+            }));
+            console.log('ITALY_PDF_LAYOUT_PAGE_'+pageNumber+' '+JSON.stringify(items));
+          }
+          NODE
+      - name: Validate Italy adapter
+        run: npm run validate:italy-masaf
+      - name: Probe live MASAF 30-day window
+        run: |
+          mkdir -p .calendar-italy-probe
+          node scripts/timetable/run-italy-masaf-official-window.mjs \
+            --as-of=2026-09-25 \
+            --days=30 \
+            --gallop-output=.calendar-italy-probe/italy-gallop.json \
+            --trot-output=.calendar-italy-probe/italy-trot.json
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          for (const file of ['italy-gallop.json','italy-trot.json']) {
+            const data=JSON.parse(fs.readFileSync('.calendar-italy-probe/'+file,'utf8'));
+            console.log(JSON.stringify({
+              file,
+              records:data.records.length,
+              venues:[...new Set(data.records.map(r=>r.racecourse_id))].sort(),
+              dates:[...new Set(data.records.map(r=>r.date))].sort(),
+              diagnostics:data.diagnostics,
+              discovery:data.discovery
+            }));
+          }
+          NODE
