@@ -8,6 +8,9 @@
     const resetRows = () => {
       rows().forEach((row) => {
         row.dataset.streamState = 'unknown';
+        row.querySelectorAll('[data-media-route]').forEach((route) => {
+          if (route instanceof HTMLElement) route.dataset.streamState = 'unknown';
+        });
         const badge = row.querySelector('[data-stream-live-badge]');
         if (badge instanceof HTMLElement) badge.hidden = true;
         row.querySelectorAll('[data-live-link]').forEach((link) => {
