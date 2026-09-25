@@ -3,13 +3,15 @@ import fs from 'node:fs/promises';
 
 const read = (path) => fs.readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
-const [brand, map, runtime, compact, timetable, media] = await Promise.all([
+const [brand, map, runtime, compact, timetable, media, liveStatusApi, rowsModel] = await Promise.all([
   read('src/styles/brand-v1.css'),
   read('src/components/RacecourseMap.astro'),
   read('src/components/MeetingLiveStatusRuntime.astro'),
   read('src/styles/meeting-list-compact-v1.css'),
   read('src/components/TimetableMeetingList.astro'),
   read('src/data/racingMediaLinks.ts'),
+  read('functions/api/live-status.js'),
+  read('src/data/timetableMeetingRows.ts'),
 ]);
 
 assert.doesNotMatch(
@@ -38,10 +40,14 @@ assert.match(brand, /html:lang\(ja\) \.site-brand::after[\s\S]*?color:\s*var\(--
 
 assert.doesNotMatch(runtime, /youtube\.com\/watch\?v=/,
   'Calendar runtime must not synthesize direct YouTube watch URLs');
-assert.match(runtime, /● Live now ↗/, 'verified-live English stream label must be present');
-assert.match(runtime, /● 公式配信中 ↗/, 'verified-live Japanese stream label must be present');
+assert.match(runtime, /querySelectorAll\('\[data-live-link\]'\)/,
+  'Calendar runtime must evaluate every stream provider link in a meeting row');
+assert.match(runtime, /link\.dataset\.liveLiveLabel/,
+  'Calendar runtime must promote only the detected provider link to its live label');
+assert.match(runtime, /row\.dataset\.streamState = rowIsLive \? 'live' : 'unknown'/,
+  'Calendar row live state must aggregate provider-specific live state for the map');
 assert.match(runtime, /link\.href = defaultHref;/,
-  'Calendar runtime must keep the reviewed official landing destination');
+  'Calendar runtime must keep each reviewed official landing destination');
 
 assert.match(
   compact,
@@ -50,8 +56,8 @@ assert.match(
 );
 assert.match(
   compact,
-  /data-stream-state='live'[\s\S]*?a\[data-live-link\][\s\S]*?background:\s*#fff0ef[\s\S]*?color:\s*#9d0000/,
-  'only verified-live official-stream links may receive the live accent',
+  /meeting-row__stream\[data-stream-state='live'\][\s\S]*?a\[data-live-link\][\s\S]*?background:\s*#fff0ef[\s\S]*?color:\s*#9d0000/,
+  'only the verified-live provider link may receive the live accent',
 );
 assert.match(compact, /presentation-state='running'[^\{]*\{[\s\S]*?background:\s*#fff7f6 !important;/,
   'running rows must use #fff7f6');
@@ -110,8 +116,8 @@ assert.match(media, /id: 'uk-racing-tv-live-2026'[\s\S]*?scope: 'track'[\s\S]*?c
 
 assert.match(timetable, /data-live-access-tags=/,
   'Calendar rows must expose media access tags to the rendered DOM');
-assert.match(timetable, /meeting-row__stream-badges/,
-  'Calendar must render stream access badges visibly rather than hiding conditions in a title tooltip');
+assert.match(timetable, /meeting-row__stream-access/,
+  'Calendar must render stream access conditions visibly rather than hiding them in a title tooltip');
 assert.match(timetable, /BETTING ACCOUNT/,
   'English Calendar access labels must include betting-account disclosure');
 assert.match(timetable, /投票口座/,
@@ -123,6 +129,27 @@ assert.doesNotMatch(
 );
 assert.match(compact, /\.meeting-row__stream-badge[\s\S]*?font-size:\s*0\.54rem/,
   'stream access badges must retain compact desktop presentation');
+
+assert.match(rowsModel, /live_media: readonly RacingMediaLink\[\]/,
+  'meeting rows must support multiple reviewed live-media routes');
+assert.match(rowsModel, /function getLiveMediaForMeeting/,
+  'meeting rows must return all matching reviewed live-media routes');
+assert.match(media, /id: 'jcsa-dazn-live-2026'[\s\S]*?provider_label: 'DAZN'[\s\S]*?coverage: 'all_meetings'|id: 'jcsa-dazn-live-2026'[\s\S]*?coverage: 'all_meetings'[\s\S]*?provider_label: 'DAZN'/,
+  'Saudi racing must expose the JCSA-reviewed DAZN all-meeting route');
+assert.match(media, /id: 'jcsa-youtube-live-2026'[\s\S]*?coverage: 'selected_meetings'[\s\S]*?provider_label: 'YouTube'/,
+  'Saudi racing must expose YouTube separately without overclaiming all-meeting coverage');
+assert.match(media, /https:\/\/www\.youtube\.com\/@JockeyClub_SA\/streams/,
+  'Saudi YouTube route must use the official JCSA streams landing page');
+assert.match(timetable, /meeting-row__streams/,
+  'Calendar must render multiple provider routes in one stream column');
+assert.match(timetable, /record\.live_media\.map/,
+  'Calendar must render every reviewed provider for the meeting');
+assert.match(timetable, /data-live-live-label=/,
+  'provider links must carry provider-specific live labels');
+assert.match(liveStatusApi, /id: 'jcsa-youtube-live-2026'[\s\S]*?handle: '@JockeyClub_SA'[\s\S]*?time_zone: 'Asia\/Riyadh'/,
+  'JCSA YouTube detector must use the official handle and Saudi local date');
+assert.doesNotMatch(liveStatusApi, /DAZN/i,
+  'paid or broadcaster-web routes must not be added to runtime live detection');
 
 assert.doesNotMatch(timetable, /#fff3c4/,
   'TimetableMeetingList must not retain the old merged upcoming/today row color');
