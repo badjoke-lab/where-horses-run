@@ -26,6 +26,8 @@ const SYSTEMS = [
   { key: 'sweden', file: 'sweden.json', country_id: 'sweden', authority_id: 'svensk-galopp', racing_system_id: 'sweden-svensk-galopp-system' },
   { key: 'germany', file: 'germany.json', country_id: 'germany', authority_id: 'deutscher-galopp', racing_system_id: 'germany-deutscher-galopp-system' },
   { key: 'spain', file: 'spain.json', country_id: 'spain', authority_id: 'hipodromo-zarzuela', racing_system_id: 'spain-reviewed-gallop-system' },
+  { key: 'italy-gallop', file: 'italy-gallop.json', country_id: 'italy', authority_id: 'masaf', racing_system_id: 'italy-masaf-gallop-system' },
+  { key: 'italy-trot', file: 'italy-trot.json', country_id: 'italy', authority_id: 'masaf', racing_system_id: 'italy-masaf-trot-system' },
 ];
 
 const STATE_FILES = {

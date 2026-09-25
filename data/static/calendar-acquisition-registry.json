@@ -592,6 +592,56 @@
       "supports_rank_upgrade_retry": true,
       "pending_fields": [],
       "operator_notes": "GitHub Actions reads the official Hipódromo de la Zarzuela autumn 2026 programme PDF as the bounded meeting-date mother set, then enriches each date from the official /carreras/jornada/YYYYMMDD page when continuous per-race post times are published. Complete detail may reach A; unpublished detail remains C/pending. Public Spain output remains capped at C because wider venue/code coverage is incomplete. Source failure preserves stronger verified state and never proves non-running."
+    },
+    {
+      "system_id": "italy-masaf-gallop-system",
+      "country_id": "italy",
+      "authority_id": "masaf",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "masaf-calendar-2026",
+      "detail_source_id": "masaf-calendar-2026",
+      "schedule_adapter_id": "italy-masaf-current-calendar-v1",
+      "detail_adapter_id": "italy-masaf-current-calendar-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "GitHub Actions discovers the latest official MASAF 2026 calendar modification, follows ALLEGATO n. 1, and emits the Italy MASAF gallop meeting-date/racecourse mother set through rank C. The detail slot intentionally points to the same C-only official calendar route because no reusable national race-time route is established. Source failure preserves stronger verified state and never proves non-running."
+    },
+    {
+      "system_id": "italy-masaf-trot-system",
+      "country_id": "italy",
+      "authority_id": "masaf",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "masaf-calendar-2026",
+      "detail_source_id": "masaf-calendar-2026",
+      "schedule_adapter_id": "italy-masaf-current-calendar-v1",
+      "detail_adapter_id": "italy-masaf-current-calendar-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "GitHub Actions discovers the latest official MASAF 2026 calendar modification, follows ALLEGATO n. 1, and emits the Italy MASAF trot meeting-date/racecourse mother set through rank C. The detail slot intentionally points to the same C-only official calendar route because no reusable national race-time route is established. Source failure preserves stronger verified state and never proves non-running."
     }
   ]
 }

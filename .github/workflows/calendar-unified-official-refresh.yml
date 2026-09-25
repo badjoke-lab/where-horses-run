@@ -26,6 +26,9 @@ on:
       - 'scripts/check-sweden-svensk-galopp-adapter.mjs'
       - 'scripts/check-germany-deutscher-galopp-adapter.mjs'
       - 'scripts/check-spain-zarzuela-adapter.mjs'
+      - 'scripts/check-italy-masaf-adapter.mjs'
+      - 'scripts/timetable/italy-masaf-core.mjs'
+      - 'scripts/timetable/run-italy-masaf-official-window.mjs'
       - 'scripts/check-calendar-public-map-parity.mjs'
       - 'data/static/racecourse-locations-v1.json'
       - 'src/lib/racecourseMapLocationPolicy.mjs'
@@ -78,6 +81,9 @@ on:
       - 'scripts/check-sweden-svensk-galopp-adapter.mjs'
       - 'scripts/check-germany-deutscher-galopp-adapter.mjs'
       - 'scripts/check-spain-zarzuela-adapter.mjs'
+      - 'scripts/check-italy-masaf-adapter.mjs'
+      - 'scripts/timetable/italy-masaf-core.mjs'
+      - 'scripts/timetable/run-italy-masaf-official-window.mjs'
       - 'scripts/check-calendar-public-map-parity.mjs'
       - 'data/static/racecourse-locations-v1.json'
       - 'src/lib/racecourseMapLocationPolicy.mjs'
@@ -148,6 +154,7 @@ jobs:
           node scripts/check-sweden-svensk-galopp-adapter.mjs
           node scripts/check-germany-deutscher-galopp-adapter.mjs
           node scripts/check-spain-zarzuela-adapter.mjs
+          node scripts/check-italy-masaf-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
@@ -326,6 +333,7 @@ jobs:
           node scripts/check-sweden-svensk-galopp-adapter.mjs
           node scripts/check-germany-deutscher-galopp-adapter.mjs
           node scripts/check-spain-zarzuela-adapter.mjs
+          node scripts/check-italy-masaf-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
@@ -474,7 +482,7 @@ jobs:
           node scripts/timetable/run-kra-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/kra.json
-      - name: Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France, New Zealand, United Kingdom, Slovakia, Bahrain, Sweden, Germany and Spain official windows
+      - name: Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France, New Zealand, United Kingdom, Slovakia, Bahrain, Sweden, Germany, Spain and Italy official windows
         run: |
           node scripts/timetable/run-tjk-current-best-available.mjs \
             --days="${{ steps.scope.outputs.days }}" \
@@ -520,6 +528,10 @@ jobs:
           node scripts/timetable/run-spain-zarzuela-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/spain.json
+          node scripts/timetable/run-italy-masaf-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --gallop-output=.calendar-unified/italy-gallop.json \
+            --trot-output=.calendar-unified/italy-trot.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -541,7 +553,9 @@ jobs:
             --artifact=.calendar-unified/bahrain.json \
             --artifact=.calendar-unified/sweden.json \
             --artifact=.calendar-unified/germany.json \
-            --artifact=.calendar-unified/spain.json
+            --artifact=.calendar-unified/spain.json \
+            --artifact=.calendar-unified/italy-gallop.json \
+            --artifact=.calendar-unified/italy-trot.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -658,6 +672,18 @@ jobs:
             --authority-id=hipodromo-zarzuela \
             --racing-system-id=spain-reviewed-gallop-system \
             --timezone=Europe/Madrid
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/italy-gallop.json \
+            --country-id=italy \
+            --authority-id=masaf \
+            --racing-system-id=italy-masaf-gallop-system \
+            --timezone=Europe/Rome
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/italy-trot.json \
+            --country-id=italy \
+            --authority-id=masaf \
+            --racing-system-id=italy-masaf-trot-system \
+            --timezone=Europe/Rome
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
@@ -748,6 +774,10 @@ jobs:
             node scripts/timetable/run-spain-zarzuela-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/spain.json
+            node scripts/timetable/run-italy-masaf-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --gallop-output=.calendar-unified/italy-gallop.json \
+              --trot-output=.calendar-unified/italy-trot.json
             node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --artifact=.calendar-unified/uae.json \
@@ -767,7 +797,9 @@ jobs:
               --artifact=.calendar-unified/bahrain.json \
               --artifact=.calendar-unified/sweden.json \
               --artifact=.calendar-unified/germany.json \
-              --artifact=.calendar-unified/spain.json
+              --artifact=.calendar-unified/spain.json \
+              --artifact=.calendar-unified/italy-gallop.json \
+              --artifact=.calendar-unified/italy-trot.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --country-id=hong-kong \
@@ -882,6 +914,18 @@ jobs:
               --authority-id=hipodromo-zarzuela \
               --racing-system-id=spain-reviewed-gallop-system \
               --timezone=Europe/Madrid
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/italy-gallop.json \
+              --country-id=italy \
+              --authority-id=masaf \
+              --racing-system-id=italy-masaf-gallop-system \
+              --timezone=Europe/Rome
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/italy-trot.json \
+              --country-id=italy \
+              --authority-id=masaf \
+              --racing-system-id=italy-masaf-trot-system \
+              --timezone=Europe/Rome
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
             node scripts/timetable/apply-meeting-presence-dispositions.mjs \
             --artifact=.calendar-unified/hkjc.json \
