@@ -164,7 +164,7 @@ assert.equal((workflow.match(/--racing-system-id=germany-deutscher-galopp-system
 assert.equal((workflow.match(/--timezone=Europe\/Berlin/g) ?? []).length, 2, 'Germany apply path must bind Europe/Berlin in both execution paths');
 
 assert.equal((workflow.match(/run-spain-zarzuela-official-window\.mjs/g) ?? []).length, 2, 'Spain Zarzuela must be collected in both normal and latest-main rebuild paths');
-assert.equal(workflow.split('run-italy-masaf-official-window.mjs').length - 1, 2, 'Italy MASAF must be collected in both normal and latest-main rebuild paths');
+assert.equal(workflow.split('node scripts/timetable/run-italy-masaf-official-window.mjs').length - 1, 2, 'Italy MASAF must be collected in both normal and latest-main rebuild paths');
 assert.equal(workflow.split('--artifact=.calendar-unified/italy-gallop.json').length - 1, 4, 'Italy MASAF gallop artifact must pass exclusion and apply layers in both execution paths');
 assert.equal(workflow.split('--artifact=.calendar-unified/italy-trot.json').length - 1, 4, 'Italy MASAF trot artifact must pass exclusion and apply layers in both execution paths');
 assert.equal(workflow.split('--authority-id=masaf').length - 1, 4, 'Italy MASAF observations must apply both systems in both execution paths');
