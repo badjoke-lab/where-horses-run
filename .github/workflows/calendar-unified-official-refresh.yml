@@ -28,6 +28,9 @@ on:
       - 'scripts/check-spain-zarzuela-adapter.mjs'
       - 'scripts/check-italy-masaf-adapter.mjs'
       - 'scripts/check-south-africa-race-coast-adapter.mjs'
+      - 'scripts/check-south-africa-four-racing-adapter.mjs'
+      - 'scripts/timetable/south-africa-four-racing-core.mjs'
+      - 'scripts/timetable/run-south-africa-four-racing-official-window.mjs'
       - 'scripts/timetable/italy-masaf-core.mjs'
       - 'scripts/timetable/run-italy-masaf-official-window.mjs'
       - 'scripts/check-calendar-public-map-parity.mjs'
@@ -84,6 +87,9 @@ on:
       - 'scripts/check-spain-zarzuela-adapter.mjs'
       - 'scripts/check-italy-masaf-adapter.mjs'
       - 'scripts/check-south-africa-race-coast-adapter.mjs'
+      - 'scripts/check-south-africa-four-racing-adapter.mjs'
+      - 'scripts/timetable/south-africa-four-racing-core.mjs'
+      - 'scripts/timetable/run-south-africa-four-racing-official-window.mjs'
       - 'scripts/timetable/italy-masaf-core.mjs'
       - 'scripts/timetable/run-italy-masaf-official-window.mjs'
       - 'scripts/check-calendar-public-map-parity.mjs'
@@ -158,6 +164,7 @@ jobs:
           node scripts/check-spain-zarzuela-adapter.mjs
           node scripts/check-italy-masaf-adapter.mjs
           node scripts/check-south-africa-race-coast-adapter.mjs
+          node scripts/check-south-africa-four-racing-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
@@ -338,6 +345,7 @@ jobs:
           node scripts/check-spain-zarzuela-adapter.mjs
           node scripts/check-italy-masaf-adapter.mjs
           node scripts/check-south-africa-race-coast-adapter.mjs
+          node scripts/check-south-africa-four-racing-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
@@ -539,6 +547,9 @@ jobs:
           node scripts/timetable/run-south-africa-race-coast-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/south-africa-race-coast.json
+          node scripts/timetable/run-south-africa-four-racing-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/south-africa-four-racing.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -563,7 +574,8 @@ jobs:
             --artifact=.calendar-unified/spain.json \
             --artifact=.calendar-unified/italy-gallop.json \
             --artifact=.calendar-unified/italy-trot.json \
-            --artifact=.calendar-unified/south-africa-race-coast.json
+            --artifact=.calendar-unified/south-africa-race-coast.json \
+            --artifact=.calendar-unified/south-africa-four-racing.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -698,6 +710,12 @@ jobs:
             --authority-id=race-coast \
             --racing-system-id=south-africa-race-coast-system \
             --timezone=Africa/Johannesburg
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/south-africa-four-racing.json \
+            --country-id=south-africa \
+            --authority-id=four-racing \
+            --racing-system-id=south-africa-4racing-system \
+            --timezone=Africa/Johannesburg
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
@@ -817,7 +835,8 @@ jobs:
               --artifact=.calendar-unified/spain.json \
               --artifact=.calendar-unified/italy-gallop.json \
               --artifact=.calendar-unified/italy-trot.json \
-              --artifact=.calendar-unified/south-africa-race-coast.json
+              --artifact=.calendar-unified/south-africa-race-coast.json \
+              --artifact=.calendar-unified/south-africa-four-racing.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --country-id=hong-kong \
@@ -949,6 +968,12 @@ jobs:
               --country-id=south-africa \
               --authority-id=race-coast \
               --racing-system-id=south-africa-race-coast-system \
+              --timezone=Africa/Johannesburg
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/south-africa-four-racing.json \
+              --country-id=south-africa \
+              --authority-id=four-racing \
+              --racing-system-id=south-africa-4racing-system \
               --timezone=Africa/Johannesburg
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
             node scripts/timetable/apply-meeting-presence-dispositions.mjs \

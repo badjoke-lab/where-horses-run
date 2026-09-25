@@ -1,0 +1,43 @@
+name: South Africa 4Racing live probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-south-africa-four-racing-live-probe.yml'
+      - 'scripts/timetable/south-africa-four-racing-core.mjs'
+      - 'scripts/timetable/run-south-africa-four-racing-official-window.mjs'
+      - 'scripts/check-south-africa-four-racing-adapter.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - name: Validate 4Racing adapter
+        run: npm run validate:south-africa-four-racing
+      - name: Probe live 4Racing 30-day window
+        run: |
+          mkdir -p .calendar-south-africa-probe
+          node scripts/timetable/run-south-africa-four-racing-official-window.mjs \
+            --as-of=2026-09-26 \
+            --days=30 \
+            --output=.calendar-south-africa-probe/four-racing.json
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const data=JSON.parse(fs.readFileSync('.calendar-south-africa-probe/four-racing.json','utf8'));
+          console.log(JSON.stringify({records:data.records.length,venues:[...new Set(data.records.map(r=>r.racecourse_id))].sort(),version:data.discovery.fixture_version,diagnostics:data.diagnostics}));
+          if(data.diagnostics.source_errors.length) process.exitCode=1;
+          if(data.diagnostics.parse_failures.length) process.exitCode=1;
+          if(data.diagnostics.unknown_venues.length) process.exitCode=1;
+          if(data.records.length===0) process.exitCode=1;
+          if(!data.records.some(r=>r.racecourse_id==='south-africa--turffontein')) process.exitCode=1;
+          if(!data.records.some(r=>r.racecourse_id==='south-africa--vaal')) process.exitCode=1;
+          if(!data.records.some(r=>r.racecourse_id==='south-africa--fairview')) process.exitCode=1;
+          NODE
