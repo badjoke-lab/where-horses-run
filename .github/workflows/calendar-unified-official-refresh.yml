@@ -813,6 +813,9 @@ jobs:
             node scripts/timetable/run-south-africa-race-coast-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/south-africa-race-coast.json
+            node scripts/timetable/run-south-africa-four-racing-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/south-africa-four-racing.json
             node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --artifact=.calendar-unified/uae.json \

@@ -175,7 +175,7 @@ assert.equal((workflow.match(/run-south-africa-race-coast-official-window\.mjs/g
 assert.equal(workflow.split('--artifact=.calendar-unified/south-africa-race-coast.json').length - 1, 4, 'South Africa Race Coast artifact must pass exclusion and apply layers in both execution paths');
 assert.equal(workflow.split('--authority-id=race-coast').length - 1, 2, 'South Africa Race Coast observations must be applied in both execution paths');
 assert.equal(workflow.split('--racing-system-id=south-africa-race-coast-system').length - 1, 2, 'South Africa Race Coast apply path must bind its canonical racing system in both execution paths');
-assert.equal((workflow.match(/run-south-africa-four-racing-official-window\\.mjs/g) ?? []).length, 2, 'South Africa 4Racing must be collected in both normal and latest-main rebuild paths');
+assert.equal(workflow.split('node scripts/timetable/run-south-africa-four-racing-official-window.mjs').length - 1, 2, 'South Africa 4Racing must be collected in both normal and latest-main rebuild paths');
 assert.equal(workflow.split('--artifact=.calendar-unified/south-africa-four-racing.json').length - 1, 4, 'South Africa 4Racing artifact must pass exclusion and apply layers in both execution paths');
 assert.equal(workflow.split('--racing-system-id=south-africa-4racing-system').length - 1, 2, 'South Africa 4Racing apply path must bind its canonical racing system in both execution paths');
 assert.equal(workflow.split('--timezone=Africa/Johannesburg').length - 1, 2, 'South Africa Race Coast apply paths must bind Africa/Johannesburg in both execution paths');
