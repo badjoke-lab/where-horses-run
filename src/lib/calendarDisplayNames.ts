@@ -20,6 +20,30 @@ const displayEntryByRacecourseId = new Map(
     .map((entry) => [entry.racecourse_id, entry] as const),
 );
 
+const countryFlagEmojiById: Record<string, string> = {
+  japan: '🇯🇵',
+  'hong-kong': '🇭🇰',
+  'united-arab-emirates': '🇦🇪',
+  'south-korea': '🇰🇷',
+  turkey: '🇹🇷',
+  morocco: '🇲🇦',
+  chile: '🇨🇱',
+  ireland: '🇮🇪',
+  peru: '🇵🇪',
+  'saudi-arabia': '🇸🇦',
+  france: '🇫🇷',
+  'new-zealand': '🇳🇿',
+  'united-kingdom': '🇬🇧',
+  slovakia: '🇸🇰',
+  bahrain: '🇧🇭',
+  sweden: '🇸🇪',
+  germany: '🇩🇪',
+  spain: '🇪🇸',
+  italy: '🇮🇹',
+  'south-africa': '🇿🇦',
+  finland: '🇫🇮',
+};
+
 const authorityCompactLabelById: Record<string, string> = {
   jra: 'JRA',
   hkjc: 'HKJC',
@@ -43,6 +67,10 @@ const authorityCompactLabelJaById: Record<string, string> = {
 
 const normalizeNonEmpty = (value: unknown): string | null =>
   typeof value === 'string' && value.trim().length > 0 ? value.trim() : null;
+
+export function getCalendarCountryFlagEmoji(countryId: string): string {
+  return countryFlagEmojiById[countryId] ?? '🌐';
+}
 
 export function getCalendarCountryDisplayName(
   countryId: string,

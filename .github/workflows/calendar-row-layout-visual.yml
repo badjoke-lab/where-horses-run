@@ -44,6 +44,9 @@ jobs:
       - name: Validate meeting detail public view
         run: node scripts/check-meeting-detail-public-view.mjs
 
+      - name: Validate Calendar stream UI contract
+        run: node scripts/check-calendar-stream-brand-regressions.mjs
+
       - name: Build site
         run: npm run build
 
@@ -51,6 +54,7 @@ jobs:
         env:
           BASE_URL: http://127.0.0.1:4321
           VISUAL_AUDIT_OUTPUT: artifacts/calendar-row-layout-visual
+          STREAM_VISUAL_AUDIT_OUTPUT: artifacts/calendar-stream-links
           MEETING_DETAIL_VISUAL_OUTPUT: artifacts/meeting-detail-layout-visual
         run: |
           npm run preview -- --host 127.0.0.1 --port 4321 > /tmp/whr-preview.log 2>&1 &
@@ -69,6 +73,7 @@ jobs:
             exit 1
           fi
           node scripts/check-calendar-row-layout-visual.mjs
+          VISUAL_AUDIT_OUTPUT="$STREAM_VISUAL_AUDIT_OUTPUT" node scripts/check-calendar-all-stream-links-visual.mjs
           node scripts/check-meeting-detail-layout-visual.mjs
 
       - name: Upload visual evidence
@@ -78,5 +83,6 @@ jobs:
           name: calendar-row-layout-visual-${{ github.run_id }}
           path: |
             artifacts/calendar-row-layout-visual
+            artifacts/calendar-stream-links
             artifacts/meeting-detail-layout-visual
           if-no-files-found: warn
