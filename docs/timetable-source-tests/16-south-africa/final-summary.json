@@ -1,22 +1,25 @@
 {
   "country": "South Africa",
-  "status": "Partial",
-  "checked_date": "2026-09-25",
-  "technical_rank": "Race Coast C production-ready; 4Racing precise-date mother set unresolved",
+  "status": "Production-ready",
+  "checked_date": "2026-09-26",
+  "technical_rank": "Race Coast C + 4Racing C production-ready",
   "public_ceiling": "C",
   "systems": [
     "4Racing",
     "Race Coast"
   ],
   "official_sources": [
-    "https://www.4racing.com/racing/fixtures/",
-    "https://www.racecoast.co.za/fixtures/"
+    "https://www.4racing.com/",
+    "https://www.racecoast.co.za/fixtures/",
+    "https://www.sahorseracing.co.za/Programs/FX/Jan%20to%20Dec%202026.pdf"
   ],
   "confirmed_fields": {
     "race_coast_meeting_date": true,
     "race_coast_racecourse": true,
     "race_coast_post_times": false,
-    "four_racing_precise_date_mother_set": false
+    "four_racing_precise_date_mother_set": true,
+    "four_racing_racecourse": true,
+    "four_racing_post_times": false
   },
-  "decision": "Replace the legacy Gold Circle system assumption with current Race Coast. Route Race Coast KZN & Western Cape fixtures at C. Keep 4Racing separate and unrouted until a current official precise-date mother set is established."
+  "decision": "Use the current 4Racing + Race Coast operator model. Route Race Coast KZN & Western Cape fixtures from the current Race Coast site at rank C, and route 4Racing Turffontein/Vaal/Fairview precise dates from the jointly reviewed 2026 National Fixtures PDF at rank C. Do not use the retired Gold Circle operator model and do not infer race times."
 }
