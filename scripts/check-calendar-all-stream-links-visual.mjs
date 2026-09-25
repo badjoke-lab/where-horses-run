@@ -57,6 +57,9 @@ const inspect = async (page, pathname, lang) => {
     if (expected && item.text !== expected) {
       failures.push(`${item.meeting_id}/${item.media_id}: stream label ${JSON.stringify(item.text)} expected ${JSON.stringify(expected)}`);
     }
+    if (item.live_role === 'watch-direct' && item.default_text && !/^Watch(?:\s|$|·)/.test(item.default_text)) {
+      failures.push(`${item.meeting_id}/${item.media_id}: single-provider default label must use Watch wording, got ${JSON.stringify(item.default_text)}`);
+    }
   }
 
   const entry = { pathname, lang, checked_links: result.length, links: result, failures };
