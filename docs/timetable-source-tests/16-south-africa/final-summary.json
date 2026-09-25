@@ -1,1 +1,22 @@
-{"country":"South Africa","status":"Partial","checked_date":"2026-06-17","technical_rank":"A+ on tested operator pages","public_ceiling":"A","systems":["4Racing","Gold Circle"],"official_sources":["https://www.4racing.com/","https://www.goldcircle.co.za/"],"confirmed_fields":{"operator_specific_meeting_date":true,"operator_specific_racecourse":true,"operator_specific_race_labels":true,"operator_specific_post_times":true},"decision":"Treat 4Racing and Gold Circle as separate operator systems. Tested pages expose timetable and programme fields, but no single complete national source is claimed."}
+{
+  "country": "South Africa",
+  "status": "Partial",
+  "checked_date": "2026-09-25",
+  "technical_rank": "Race Coast C production-ready; 4Racing precise-date mother set unresolved",
+  "public_ceiling": "C",
+  "systems": [
+    "4Racing",
+    "Race Coast"
+  ],
+  "official_sources": [
+    "https://www.4racing.com/racing/fixtures/",
+    "https://www.racecoast.co.za/fixtures/"
+  ],
+  "confirmed_fields": {
+    "race_coast_meeting_date": true,
+    "race_coast_racecourse": true,
+    "race_coast_post_times": false,
+    "four_racing_precise_date_mother_set": false
+  },
+  "decision": "Replace the legacy Gold Circle system assumption with current Race Coast. Route Race Coast KZN & Western Cape fixtures at C. Keep 4Racing separate and unrouted until a current official precise-date mother set is established."
+}
