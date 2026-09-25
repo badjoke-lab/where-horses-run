@@ -61,10 +61,24 @@ function nearestDay(x, dayColumns){
 }
 export function classifyMasafCode(value){
   const code=norm(value).replace(/[^A-Z+]/g,'');
-  if(!code)return null;
+  if(!code||code.length>5)return null;
   if(/^T[A-Z]*$/.test(code))return 'trot';
   if(/^G[A-Z]*$/.test(code)||/^(O|OST|SIEPI)$/.test(code))return 'gallop';
   return null;
+}
+function decodeHtml(value){return String(value??'').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'").replace(/&#x([0-9a-f]+);/gi,(_,c)=>String.fromCodePoint(Number.parseInt(c,16))).replace(/&#(\\d+);/g,(_,c)=>String.fromCodePoint(Number(c)));}
+function absoluteMasafUrl(href,base){return new URL(decodeHtml(href),base).href;}
+export function findLatestMasafCalendarDetailUrl(html,baseUrl=ITALY_NORMATIVA_URL){
+  const anchors=[...String(html).matchAll(/<a\\b[^>]*href=["']([^"']+)["'][^>]*>([\\s\\S]*?)<\\/a>/gi)].map(m=>({href:m[1],text:m[2].replace(/<[^>]+>/g,' ').replace(/\\s+/g,' ').trim()}));
+  const hit=anchors.find(a=>/modifica del calendario delle corse ippiche per l.?anno 2026/i.test(a.text));
+  if(!hit)throw new Error('MASAF current calendar modification detail link not found');
+  return absoluteMasafUrl(hit.href,baseUrl);
+}
+export function findMasafCalendarPdfUrl(html,baseUrl){
+  const anchors=[...String(html).matchAll(/<a\\b[^>]*href=["']([^"']+)["'][^>]*>([\\s\\S]*?)<\\/a>/gi)].map(m=>({href:m[1],text:m[2].replace(/<[^>]+>/g,' ').replace(/\\s+/g,' ').trim()}));
+  const hit=anchors.find(a=>/ALLEGATO\\s*n\\.?\\s*1/i.test(a.text)&&/Calendario corse ippiche/i.test(a.text));
+  if(!hit)throw new Error('MASAF ALLEGATO n. 1 calendar PDF link not found');
+  return absoluteMasafUrl(hit.href,baseUrl);
 }
 function findVenue(text){
   const n=norm(text);
