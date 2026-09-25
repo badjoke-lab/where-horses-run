@@ -5,19 +5,19 @@
     "slug": "south-africa",
     "status": "reviewed",
     "page_kind": "country",
-    "last_reviewed": "2026-09-25",
+    "last_reviewed": "2026-09-26",
     "public_display_ceiling": "C",
     "source_test_status": "partial",
     "hero": {
-      "summary_en": "South African programme information is split between 4Racing and Race Coast.",
-      "summary_ja": "南アフリカの番組情報は4RacingとRace Coastに分かれています。"
+      "summary_en": "South African programme information is split between 4Racing and Race Coast, with both current operator systems now production-routed.",
+      "summary_ja": "南アフリカの番組情報は4RacingとRace Coastに分かれており、現在は両operator体系をproduction routingしています。"
     },
     "overview": {
       "paragraphs_en": [
-        "Race Coast now provides the reviewed KZN & Western Cape fixture mother set. 4Racing remains a separate subsystem and is not yet production-routed because a reusable precise-date mother set has not been established."
+        "Race Coast supplies its current KZN & Western Cape fixture mother set, while the jointly reviewed South Africa 2026 National Fixtures PDF supplies precise dates for the 4Racing Highveld & Eastern Cape scope. Both routes publish meeting date and physical racecourse at rank C."
       ],
       "paragraphs_ja": [
-        "Race CoastはKZN・Western Capeのレビュー済み開催母表を提供しています。4Racingは別体系で、再利用可能な正確な開催日母表が未確立のため、まだproduction routingしていません。"
+        "Race CoastはKZN・Western Capeの現行開催母表を提供し、4RacingのHighveld・Eastern Cape範囲は4RacingとRace Coastが共同レビューしたSouth Africa 2026 National Fixtures PDFから正確な開催日を取得します。両routeとも開催日と物理競馬場をCで公開します。"
       ]
     },
     "racing_types": [
@@ -31,8 +31,8 @@
     ],
     "seasonality": {
       "pattern": "operator-calendars-required",
-      "summary_en": "Use Race Coast fixtures for its four current venues; 4Racing requires separate confirmation.",
-      "summary_ja": "Race Coastの4会場は公式fixturesを使用し、4Racingは別途確認が必要です。"
+      "summary_en": "Use the Race Coast fixtures page for its four current venues and the jointly reviewed national fixture PDF for Turffontein, Vaal and Fairview.",
+      "summary_ja": "Race Coastの4会場は公式fixtures、Turffontein・Vaal・Fairviewは共同レビュー済みnational fixture PDFを使用します。"
     },
     "schedule": {
       "timezone": "Africa/Johannesburg",
@@ -41,10 +41,10 @@
         "varies-by-operator"
       ],
       "time_patterns": [
-        "race-coast-date-only"
+        "date-only"
       ],
-      "summary_en": "Race Coast production currently confirms meeting date and venue only; post times are not inferred.",
-      "summary_ja": "現在のRace Coast productionは開催日と会場のみを確認し、発走時刻は推測しません。"
+      "summary_en": "Both current South Africa operator routes confirm meeting date and venue only; post times are not inferred.",
+      "summary_ja": "現在の南アフリカ両operator routeは開催日と会場のみを確認し、発走時刻は推測しません。"
     },
     "surfaces": {
       "ids": [],
@@ -56,10 +56,10 @@
         "id": "south-africa-4racing-system",
         "name_en": "4Racing system",
         "name_ja": "4Racing体系",
-        "summary_en": "4Racing remains a separate reviewed operator system; current precise-date mother-set routing is pending.",
-        "summary_ja": "4Racingは別個のoperator体系として維持し、正確な開催日母表のproduction routingは保留中です。",
+        "summary_en": "4Racing's Turffontein, Vaal and Fairview mother set is production-routed from the jointly reviewed 2026 National Fixtures PDF.",
+        "summary_ja": "4RacingのTurffontein・Vaal・Fairview母表は、共同レビュー済み2026 National Fixtures PDFからproduction routingしています。",
         "organiser_source_ids": [
-          "south-africa-4racing-home"
+          "sa-horseracing-national-fixtures-2026"
         ],
         "distributor_source_ids": []
       },
@@ -75,21 +75,29 @@
         "distributor_source_ids": []
       }
     ],
-    "principal_racecourse_ids": [],
-    "calendar_guidance_en": "Race Coast is production-routed at C for its KZN & Western Cape venues. Treat 4Racing as a separate unrouted subsystem until a precise-date official mother set is established.",
-    "calendar_guidance_ja": "Race CoastはKZN・Western Capeの会場をCでproduction routingしています。4Racingは正確な公式開催日母表が確立するまで別の未routing体系として扱います。",
-    "coverage_note_en": "Current production support is partial South Africa coverage: Race Coast only, rank C. 4Racing is not claimed.",
-    "coverage_note_ja": "現在のproduction対応は南アフリカの一部のみで、Race CoastをCで対応します。4Racing対応済みとはみなしません。",
+    "principal_racecourse_ids": [
+      "south-africa--turffontein",
+      "south-africa--vaal",
+      "south-africa--fairview",
+      "south-africa--hollywoodbets-greyville",
+      "south-africa--hollywoodbets-scottsville",
+      "south-africa--hollywoodbets-durbanville",
+      "south-africa--hollywoodbets-kenilworth"
+    ],
+    "calendar_guidance_en": "Use separate production routes for the two current operator systems: Race Coast official fixtures for KZN & Western Cape, and the jointly reviewed national fixture PDF for 4Racing's Turffontein, Vaal and Fairview scope.",
+    "calendar_guidance_ja": "現在の2 operator体系は別routeで扱います。KZN・Western CapeはRace Coast公式fixtures、4RacingのTurffontein・Vaal・Fairviewは共同レビュー済みnational fixture PDFを使用します。",
+    "coverage_note_en": "Current production support covers both current South Africa operator systems at rank C for meeting date and physical racecourse; race times remain out of scope.",
+    "coverage_note_ja": "現在のproduction対応は南アフリカの2つの現行operator体系を開催日・物理競馬場のCでカバーします。発走時刻は対象外です。",
     "revalidation": {
       "triggers_en": [
-        "Race Coast fixture route change",
-        "Race Coast operator scope change",
-        "4Racing precise-date mother set found"
+        "Race Coast fixture route or operator scope change",
+        "National fixture PDF version or venue-code change",
+        "4Racing operator scope change"
       ],
       "triggers_ja": [
-        "Race Coast開催導線変更時",
-        "Race Coast運営範囲変更時",
-        "4Racingの正確な開催日母表が見つかった時"
+        "Race Coast開催導線・運営範囲変更時",
+        "National fixture PDFのversion・会場code変更時",
+        "4Racing運営範囲変更時"
       ]
     },
     "related_glossary_ids": [

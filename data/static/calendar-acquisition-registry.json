@@ -666,7 +666,32 @@
       "supports_source_visible_horizon": true,
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
-      "operator_notes": "GitHub Actions parses the official Race Coast KZN & Western Cape fixtures page and emits meeting-date/racecourse observations at rank C. Greyville turf/poly labels map to one physical racecourse. 4Racing remains a separate unrouted subsystem. Source failure preserves stronger verified state and never proves non-running."
+      "operator_notes": "GitHub Actions parses the current official Race Coast KZN & Western Cape fixtures page and emits meeting-date/racecourse observations at rank C. Greyville turf/poly labels map to one physical racecourse. 4Racing is routed separately from the jointly maintained national fixture PDF. Source failure preserves stronger verified state and never proves non-running."
+    },
+    {
+      "system_id": "south-africa-4racing-system",
+      "country_id": "south-africa",
+      "authority_id": "four-racing",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "sa-horseracing-national-fixtures-2026",
+      "detail_source_id": "sa-horseracing-national-fixtures-2026",
+      "schedule_adapter_id": "south-africa-four-racing-national-fixtures-v1",
+      "detail_adapter_id": "south-africa-four-racing-national-fixtures-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "GitHub Actions parses the jointly maintained South Africa 2026 National Fixtures PDF and emits the 4Racing Turffontein, Vaal and Fairview meeting-date/racecourse mother set at rank C. Course variants map to physical venues. Race Coast remains a separate operator route. Source failure preserves stronger verified state and never proves non-running."
     }
   ]
 }
