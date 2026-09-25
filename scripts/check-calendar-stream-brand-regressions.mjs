@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 
 const read = (path) => fs.readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
-const [brand, map, runtime, compact, timetable, media, liveStatusApi, rowsModel, filters] = await Promise.all([
+const [brand, map, runtime, compact, timetable, media, liveStatusApi, rowsModel, filters, meetingStatePolicy] = await Promise.all([
   read('src/styles/brand-v1.css'),
   read('src/components/RacecourseMap.astro'),
   read('src/components/MeetingLiveStatusRuntime.astro'),
@@ -13,6 +13,7 @@ const [brand, map, runtime, compact, timetable, media, liveStatusApi, rowsModel,
   read('functions/api/live-status.js'),
   read('src/data/timetableMeetingRows.ts'),
   read('src/components/CalendarFilters.astro'),
+  read('src/components/MeetingStatePolicy.astro'),
 ]);
 
 assert.doesNotMatch(
@@ -176,6 +177,8 @@ assert.match(filters, /link\.dataset\.liveDefaultLabel/,
   'Calendar filters must preserve the reviewed Watch label during live-state refresh');
 assert.doesNotMatch(filters, /link\.textContent\s*=\s*state === 'live'[\s\S]*?Official stream/,
   'Calendar filters must never rewrite Watch controls back to legacy Official stream copy');
+assert.match(meetingStatePolicy, /\[data-live-link\]:not\(\[data-live-role\]\)/,
+  'legacy neutral stream styling must exclude new Watch and provider action controls');
 assert.doesNotMatch(timetable, /#fff3c4/,
   'TimetableMeetingList must not retain the old merged upcoming/today row color');
 assert.doesNotMatch(timetable, /presentation-state='running'[^\n]*#fff0ef/,
