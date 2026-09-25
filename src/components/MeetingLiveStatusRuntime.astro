@@ -4,23 +4,38 @@
 
     const rows = () => [...document.querySelectorAll('[data-calendar-meeting-row]')]
       .filter((row) => row instanceof HTMLElement && row.dataset.liveAvailable === 'true');
+    const streamNodes = (row) => [...row.querySelectorAll('[data-stream-media]')]
+      .filter((node) => node instanceof HTMLElement);
 
-    const streamLabel = (live = false) => document.documentElement.lang === 'ja'
-      ? (live ? '● 公式配信中 ↗' : '公式配信 ↗')
-      : (live ? '● Live now ↗' : 'Official stream ↗');
+    const resetLink = (stream) => {
+      if (!(stream instanceof HTMLElement)) return;
+      stream.dataset.streamState = 'known';
+      const link = stream.querySelector('[data-live-link]');
+      if (!(link instanceof HTMLAnchorElement)) return;
+      const defaultHref = link.dataset.liveDefaultHref;
+      const defaultLabel = link.dataset.liveDefaultLabel;
+      if (defaultHref) link.href = defaultHref;
+      if (defaultLabel) link.textContent = defaultLabel;
+    };
 
     const resetRows = () => {
       rows().forEach((row) => {
-        row.dataset.streamState = 'unknown';
-        const badge = row.querySelector('[data-stream-live-badge]');
-        if (badge instanceof HTMLElement) badge.hidden = true;
-        const link = row.querySelector('[data-live-link]');
-        if (link instanceof HTMLAnchorElement) {
-          const defaultHref = link.dataset.liveDefaultHref;
-          if (defaultHref) link.href = defaultHref;
-          link.textContent = streamLabel(false);
-        }
+        row.dataset.streamState = row.dataset.liveAvailable === 'true' ? 'known' : 'unknown';
+        streamNodes(row).forEach(resetLink);
       });
+      window.dispatchEvent(new CustomEvent('whr:streamstatechange'));
+    };
+
+    const stateFor = (stream, byDetectorId, sourceDate) => {
+      const detectorId = stream.dataset.streamDetectorId || '';
+      if (!detectorId) return 'known';
+      const entry = byDetectorId.get(detectorId);
+      const rawState = ['live', 'upcoming', 'ended', 'offline'].includes(entry?.status) ? entry.status : 'unknown';
+      const eventSpecific = rawState === 'live' || rawState === 'upcoming' || rawState === 'ended';
+      const dateMatches = typeof entry?.event_date === 'string' && entry.event_date === sourceDate;
+      if (rawState === 'live' && dateMatches) return 'live';
+      if (eventSpecific && !dateMatches) return 'known';
+      return rawState === 'unknown' ? 'known' : 'known';
     };
 
     const applyPayload = (payload) => {
@@ -32,24 +47,27 @@
       );
 
       rows().forEach((row) => {
-        const detectorId = row.dataset.liveDetectorId || '';
-        const entry = detectorId ? byDetectorId.get(detectorId) : null;
-        const rawState = ['live', 'upcoming', 'ended', 'offline'].includes(entry?.status) ? entry.status : 'unknown';
         const sourceDate = row.dataset.sourceDate || row.dataset.date || '';
-        const eventSpecific = rawState === 'live' || rawState === 'upcoming' || rawState === 'ended';
-        const dateMatches = typeof entry?.event_date === 'string' && entry.event_date === sourceDate;
-        const state = eventSpecific && !dateMatches ? 'unknown' : rawState;
-        row.dataset.streamState = state;
+        let rowLive = false;
 
-        const badge = row.querySelector('[data-stream-live-badge]');
-        if (badge instanceof HTMLElement) badge.hidden = state !== 'live';
+        streamNodes(row).forEach((stream) => {
+          const state = stateFor(stream, byDetectorId, sourceDate);
+          stream.dataset.streamState = state;
+          if (state === 'live') rowLive = true;
 
-        const link = row.querySelector('[data-live-link]');
-        if (link instanceof HTMLAnchorElement) {
-          const defaultHref = link.dataset.liveDefaultHref || link.href;
-          link.href = defaultHref;
-          link.textContent = streamLabel(state === 'live' && dateMatches);
-        }
+          const link = stream.querySelector('[data-live-link]');
+          if (link instanceof HTMLAnchorElement) {
+            const defaultHref = link.dataset.liveDefaultHref || link.href;
+            const defaultLabel = link.dataset.liveDefaultLabel || link.textContent || '';
+            const activeLabel = link.dataset.liveActiveLabel || defaultLabel;
+            link.href = defaultHref;
+            link.textContent = state === 'live' ? activeLabel : defaultLabel;
+          }
+        });
+
+        row.dataset.streamState = rowLive
+          ? 'live'
+          : (row.dataset.liveAvailable === 'true' ? 'known' : 'unknown');
       });
       window.dispatchEvent(new CustomEvent('whr:streamstatechange'));
     };
@@ -59,8 +77,11 @@
       timer = window.setTimeout(refresh, Math.max(60, Math.min(3600, seconds || 300)) * 1000);
     };
 
+    const hasRuntimeDetector = () => rows().some((row) =>
+      streamNodes(row).some((stream) => Boolean(stream.dataset.streamDetectorId)));
+
     const refresh = async () => {
-      if (!rows().some((row) => row.dataset.liveDetectorId)) {
+      if (!hasRuntimeDetector()) {
         resetRows();
         return;
       }
