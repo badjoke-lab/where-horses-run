@@ -82,7 +82,8 @@
     "validate:sweden-svensk-galopp": "node --check scripts/timetable/sweden-svensk-galopp-core.mjs && node --check scripts/timetable/run-sweden-svensk-galopp-official-window.mjs && node scripts/check-sweden-svensk-galopp-adapter.mjs",
     "validate:germany-deutscher-galopp": "node --check scripts/timetable/germany-deutscher-galopp-core.mjs && node --check scripts/timetable/run-germany-deutscher-galopp-official-window.mjs && node scripts/check-germany-deutscher-galopp-adapter.mjs",
     "validate:spain-zarzuela": "node --check scripts/timetable/spain-zarzuela-core.mjs && node --check scripts/timetable/run-spain-zarzuela-official-window.mjs && node scripts/check-spain-zarzuela-adapter.mjs",
-    "validate:italy-masaf": "node --check scripts/timetable/italy-masaf-core.mjs && node --check scripts/timetable/run-italy-masaf-official-window.mjs && node scripts/check-italy-masaf-adapter.mjs"
+    "validate:italy-masaf": "node --check scripts/timetable/italy-masaf-core.mjs && node --check scripts/timetable/run-italy-masaf-official-window.mjs && node scripts/check-italy-masaf-adapter.mjs",
+    "validate:finland-hippos": "node --check scripts/timetable/finland-hippos-core.mjs && node --check scripts/timetable/run-finland-hippos-official-window.mjs && node scripts/check-finland-hippos-adapter.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0",
