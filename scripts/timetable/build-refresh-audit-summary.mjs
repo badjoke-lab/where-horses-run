@@ -28,6 +28,7 @@ const SYSTEMS = [
   { key: 'spain', file: 'spain.json', country_id: 'spain', authority_id: 'hipodromo-zarzuela', racing_system_id: 'spain-reviewed-gallop-system' },
   { key: 'italy-gallop', file: 'italy-gallop.json', country_id: 'italy', authority_id: 'masaf', racing_system_id: 'italy-masaf-gallop-system' },
   { key: 'italy-trot', file: 'italy-trot.json', country_id: 'italy', authority_id: 'masaf', racing_system_id: 'italy-masaf-trot-system' },
+  { key: 'south-africa-race-coast', file: 'south-africa-race-coast.json', country_id: 'south-africa', authority_id: 'race-coast', racing_system_id: 'south-africa-race-coast-system' },
 ];
 
 const STATE_FILES = {
