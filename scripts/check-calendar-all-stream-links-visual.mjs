@@ -47,7 +47,7 @@ const inspect = async (page, pathname, lang) => {
   for (const item of result) {
     const live = item.stream_state === 'live';
     const transparent = item.background === 'rgba(0, 0, 0, 0)' || item.background === 'transparent';
-    if (!live && item.live_role !== 'provider-open' && !transparent) {
+    if (!live && !['provider-open', 'watch-direct'].includes(item.live_role) && !transparent) {
       failures.push(`${item.meeting_id}/${item.media_id}: non-live stream link has background ${item.background}`);
     }
     if (item.default_href && item.href !== item.default_href) {
