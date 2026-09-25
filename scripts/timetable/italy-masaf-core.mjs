@@ -76,7 +76,7 @@ export function findLatestMasafCalendarDetailUrl(html,baseUrl=ITALY_NORMATIVA_UR
 }
 export function findMasafCalendarPdfUrl(html,baseUrl){
   const anchors=[...String(html).matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)].map(m=>({href:m[1],text:m[2].replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()}));
-  const hit=anchors.find(a=>/ALLEGATO\\s*n\\.?\\s*1/i.test(a.text)&&/Calendario corse ippiche/i.test(a.text));
+  const hit=anchors.find(a=>/ALLEGATO\s*n\.?\s*1/i.test(a.text)&&/Calendario corse ippiche/i.test(a.text));
   if(!hit)throw new Error('MASAF ALLEGATO n. 1 calendar PDF link not found');
   return absoluteMasafUrl(hit.href,baseUrl);
 }
