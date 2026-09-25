@@ -6,156 +6,338 @@ export const ITALY_AUTHORITY_ID = 'masaf';
 export const ITALY_SOURCE_ID = 'masaf-calendar-2026';
 export const ITALY_GALLOP_SYSTEM_ID = 'italy-masaf-gallop-system';
 export const ITALY_TROT_SYSTEM_ID = 'italy-masaf-trot-system';
-export const ITALY_NORMATIVA_URL = 'https://www.masaf.gov.it/flex/cm/pages/ServeBLOB.php/L/IT/IDPagina/6174?YY=2026';
+export const ITALY_NORMATIVE_INDEX_URL = 'https://www.masaf.gov.it/flex/cm/pages/ServeBLOB.php/L/IT/IDPagina/6174?YY=2026';
 
 const MONTHS = Object.freeze({
-  GENNAIO:1,FEBBRAIO:2,MARZO:3,APRILE:4,MAGGIO:5,GIUGNO:6,
-  LUGLIO:7,AGOSTO:8,SETTEMBRE:9,OTTOBRE:10,NOVEMBRE:11,DICEMBRE:12,
+  GENNAIO: 1, FEBBRAIO: 2, MARZO: 3, APRILE: 4, MAGGIO: 5, GIUGNO: 6,
+  LUGLIO: 7, AGOSTO: 8, SETTEMBRE: 9, OTTOBRE: 10, NOVEMBRE: 11, DICEMBRE: 12,
 });
 
-export const ITALY_VENUES = Object.freeze([
-  ['PADOVA','italy--ippodromo-breda','Ippodromo Breda'],
-  ['AVERSA','italy--ippodromo-cirigliano','Ippodromo Cirigliano'],
-  ['SASSARI','italy--ippodromo-don-meloni','Ippodromo Don Meloni'],
-  ['CASARANO','italy--ippodromo-euroitalia','Ippodromo Euroitalia'],
-  ['LIVORNO','italy--ippodromo-federico-caprilli','Ippodromo Federico Caprilli'],
-  ['PALERMO','italy--ippodromo-la-favorita','Ippodromo La Favorita'],
-  ['MODENA','italy--ippodromo-la-ghirlandina','Ippodromo La Ghirlandina'],
-  ['VARESE','italy--ippodromo-le-bettole','Ippodromo Le Bettole'],
-  ['CORRIDONIA','italy--ippodromo-martini','Ippodromo Martini'],
-  ['TRIESTE','italy--ippodromo-montebello','Ippodromo Montebello'],
-  ['TARANTO','italy--ippodromo-paolo-sesto','Ippodromo Paolo Sesto'],
-  ['CHILIVANI','italy--ippodromo-pinna','Ippodromo Pinna'],
-  ['TREVISO','italy--ippodromo-s-artemio','Ippodromo S. Artemio'],
-  ['MONTEGIORGIO','italy--ippodromo-s-paolo','Ippodromo S. Paolo'],
-  ['PISA','italy--ippodromo-san-rossore','Ippodromo San Rossore'],
-  ['MILANO','italy--ippodromo-san-siro','Ippodromo San Siro'],
-  ['MONTECATINI','italy--ippodromo-sesana','Ippodromo Sesana'],
-  ['TORINO','italy--ippodromo-stupinigi','Ippodromo Stupinigi'],
-  ['PONTECAGNANO','italy--ippodromo-valentinia','Ippodromo Valentinia'],
-  ['ALBENGA','italy--ippodromo-dei-fiori','Ippodromo dei Fiori'],
-  ['AVEZZANO','italy--ippodromo-dei-marsi','Ippodromo dei Marsi'],
-  ['FOLLONICA','italy--ippodromo-dei-pini','Ippodromo dei Pini'],
-  ['CASTELLUCCIO','italy--ippodromo-dei-sauri','Ippodromo dei Sauri'],
-  ['GARIGLIANO','italy--ippodromo-del-garigliano','Ippodromo del Garigliano'],
-  ['SIRACUSA','italy--ippodromo-del-mediterraneo','Ippodromo del Mediterraneo'],
-  ['CESENA','italy--ippodromo-del-savio','Ippodromo del Savio'],
-  ['FIRENZE','italy--ippodromo-del-visarno','Ippodromo del Visarno'],
-  ['BOLOGNA','italy--ippodromo-dell-arcoveggio','Ippodromo dell’Arcoveggio'],
-  ['NAPOLI','italy--ippodromo-di-agnano','Ippodromo di Agnano'],
-  ['MERANO','italy--ippodromo-di-maia','Ippodromo di Maia'],
-  ['ROMA','italy--ippodromo-di-roma-capannelle','Ippodromo di Roma Capannelle'],
-]);
+const VENUES = Object.freeze({
+  TO: ['italy--ippodromo-stupinigi', 'Ippodromo Stupinigi'],
+  MI: ['italy--ippodromo-san-siro', 'Ippodromo San Siro'],
+  VA: ['italy--ippodromo-le-bettole', 'Ippodromo Le Bettole'],
+  ALB: ['italy--ippodromo-dei-fiori', 'Ippodromo dei Fiori'],
+  ME: ['italy--ippodromo-di-maia', 'Ippodromo di Maia'],
+  TV: ['italy--ippodromo-s-artemio', 'Ippodromo S. Artemio'],
+  PD: ['italy--ippodromo-breda', 'Ippodromo Breda'],
+  BO: ['italy--ippodromo-dell-arcoveggio', 'Ippodromo dell’Arcoveggio'],
+  MO: ['italy--ippodromo-la-ghirlandina', 'Ippodromo La Ghirlandina'],
+  CE: ['italy--ippodromo-del-savio', 'Ippodromo del Savio'],
+  FI: ['italy--ippodromo-del-visarno', 'Ippodromo del Visarno'],
+  MTC: ['italy--ippodromo-sesana', 'Ippodromo Sesana'],
+  PI: ['italy--ippodromo-san-rossore', 'Ippodromo San Rossore'],
+  LI: ['italy--ippodromo-federico-caprilli', 'Ippodromo Federico Caprilli'],
+  MTG: ['italy--ippodromo-s-paolo', 'Ippodromo S. Paolo'],
+  COR: ['italy--ippodromo-martini', 'Ippodromo Martini'],
+  RM: ['italy--ippodromo-di-roma-capannelle', 'Ippodromo di Roma Capannelle'],
+  TC: ['italy--ippodromo-dei-marsi', 'Ippodromo dei Marsi'],
+  NA: ['italy--ippodromo-di-agnano', 'Ippodromo di Agnano'],
+  SCD: ['italy--ippodromo-del-garigliano', 'Ippodromo del Garigliano'],
+  AV: ['italy--ippodromo-cirigliano', 'Ippodromo Cirigliano'],
+  PTC: ['italy--ippodromo-valentinia', 'Ippodromo Valentinia'],
+  CDS: ['italy--ippodromo-dei-sauri', 'Ippodromo dei Sauri'],
+  TA: ['italy--ippodromo-paolo-sesto', 'Ippodromo Paolo Sesto'],
+  CAS: ['italy--ippodromo-euroitalia', 'Ippodromo Euroitalia'],
+  PA: ['italy--ippodromo-la-favorita', 'Ippodromo La Favorita'],
+  SR: ['italy--ippodromo-del-mediterraneo', 'Ippodromo del Mediterraneo'],
+  CHI: ['italy--ippodromo-don-meloni', 'Ippodromo Don Meloni'],
+  SS: ['italy--ippodromo-pinna', 'Ippodromo Pinna'],
+});
 
-function norm(value){
-  return String(value??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[’']/g,'').replace(/\s+/g,' ').trim().toUpperCase();
+const HEADER_ALIASES = Object.freeze({
+  CES: 'CE', CE: 'CE', MCT: 'MTC', MTC: 'MTC', LIV: 'LI', LI: 'LI', CDS: 'CDS',
+});
+
+function decodeHtml(value) {
+  return String(value ?? '')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&nbsp;|&#160;/gi, ' ')
+    .replace(/&#x([0-9a-f]+);/gi, (_, code) => String.fromCodePoint(Number.parseInt(code, 16)))
+    .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)));
 }
-function pad(value){return String(value).padStart(2,'0');}
-function nearestDay(x, dayColumns){
-  let best=null;
-  for(const col of dayColumns){
-    const d=Math.abs(col.x-x);
-    if(!best||d<best.distance)best={...col,distance:d};
+
+function visibleText(value) {
+  return decodeHtml(String(value ?? '').replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
+}
+
+function absoluteMasafUrl(href, base = 'https://www.masaf.gov.it/') {
+  const decoded = decodeHtml(href);
+  return new URL(decoded, base).toString();
+}
+
+function pad(value) { return String(value).padStart(2, '0'); }
+
+export function normalizeItalyVenueCode(value) {
+  const raw = String(value ?? '').trim().toUpperCase().replace(/[^A-Z]/g, '');
+  return HEADER_ALIASES[raw] ?? raw;
+}
+
+export function resolveItalyRacecourse(code) {
+  const normalized = normalizeItalyVenueCode(code);
+  const row = VENUES[normalized];
+  if (!row) throw new Error(`Unknown MASAF venue code: ${code}`);
+  return { venue_code: normalized, racecourse_id: row[0], venue_label: row[1] };
+}
+
+export function parseItalyMasafLatestCalendarPageUrl(html, { baseUrl = ITALY_NORMATIVE_INDEX_URL } = {}) {
+  const candidates = [];
+  for (const match of String(html ?? '').matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)) {
+    const text = visibleText(match[2]);
+    if (!/modifica del calendario delle corse ippiche per l['’]anno 2026/i.test(text)) continue;
+    const date = text.match(/(\d{2})\/(\d{2})\/(2026)/);
+    if (!date) continue;
+    candidates.push({
+      iso: `${date[3]}-${date[2]}-${date[1]}`,
+      url: absoluteMasafUrl(match[1], baseUrl),
+    });
   }
-  return best&&best.distance<=9?best.day:null;
+  candidates.sort((a, b) => b.iso.localeCompare(a.iso));
+  if (!candidates.length) throw new Error('MASAF 2026 calendar amendment page not discovered');
+  return candidates[0];
 }
-export function classifyMasafCode(value){
-  const code=norm(value).replace(/[^A-Z+]/g,'');
-  if(!code||code.length>5)return null;
-  if(/^T[A-Z]*$/.test(code))return 'trot';
-  if(/^G[A-Z]*$/.test(code)||/^(O|OST|SIEPI)$/.test(code))return 'gallop';
-  return null;
-}
-function decodeHtml(value){return String(value??'').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'").replace(/&#x([0-9a-f]+);/gi,(_,c)=>String.fromCodePoint(Number.parseInt(c,16))).replace(/&#(\d+);/g,(_,c)=>String.fromCodePoint(Number(c)));}
-function absoluteMasafUrl(href,base){return new URL(decodeHtml(href),base).href;}
-export function findLatestMasafCalendarDetailUrl(html,baseUrl=ITALY_NORMATIVA_URL){
-  const anchors=[...String(html).matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)].map(m=>({href:m[1],text:m[2].replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()}));
-  const hit=anchors.find(a=>/modifica del calendario delle corse ippiche per l.?anno 2026/i.test(a.text));
-  if(!hit)throw new Error('MASAF current calendar modification detail link not found');
-  return absoluteMasafUrl(hit.href,baseUrl);
-}
-export function findMasafCalendarPdfUrl(html,baseUrl){
-  const anchors=[...String(html).matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)].map(m=>({href:m[1],text:m[2].replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()}));
-  const hit=anchors.find(a=>/ALLEGATO\s*n\.?\s*1/i.test(a.text)&&/Calendario corse ippiche/i.test(a.text));
-  if(!hit)throw new Error('MASAF ALLEGATO n. 1 calendar PDF link not found');
-  return absoluteMasafUrl(hit.href,baseUrl);
-}
-function findVenue(text){
-  const n=norm(text);
-  const hit=ITALY_VENUES.find(([label])=>n===label||n.startsWith(label+' ')||n.includes(' '+label+' '));
-  return hit?{label:hit[0],racecourse_id:hit[1],venue_name:hit[2]}:null;
-}
-function groupRows(items,tolerance=2.5){
-  const sorted=[...items].filter(x=>String(x.str??'').trim()).sort((a,b)=>(b.y-a.y)||(a.x-b.x));
-  const rows=[];
-  for(const item of sorted){
-    let row=rows.find(r=>Math.abs(r.y-item.y)<=tolerance);
-    if(!row){row={y:item.y,items:[]};rows.push(row);}
-    row.items.push(item);
+
+export function parseItalyMasafCalendarAttachmentUrl(html, { baseUrl } = {}) {
+  const candidates = [];
+  for (const match of String(html ?? '').matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)) {
+    const text = visibleText(match[2]);
+    if (!/ALLEGATO\s*(?:n\.?\s*)?1\b/i.test(text)) continue;
+    if (!/Calendario (?:nazionale delle )?corse ippiche.*2026/i.test(text)) continue;
+    candidates.push(absoluteMasafUrl(match[1], baseUrl));
   }
-  for(const row of rows)row.items.sort((a,b)=>a.x-b.x);
-  return rows.sort((a,b)=>b.y-a.y);
+  if (!candidates.length) throw new Error('MASAF calendar attachment not discovered');
+  return candidates[0];
 }
-export function parseMasafCalendarPages(pages,{year=2026,sourceUrl=ITALY_NORMATIVA_URL}={}){
-  const records=[]; const parse_failures=[]; const unknown_venues=[];
-  for(const page of pages){
-    const items=(page.items??[]).map(x=>({str:String(x.str??'').trim(),x:Number(x.x),y:Number(x.y)})).filter(x=>x.str);
-    const pageText=norm(items.map(x=>x.str).join(' '));
-    const monthName=Object.keys(MONTHS).find(m=>pageText.includes(m));
-    if(!monthName)continue;
-    const month=MONTHS[monthName];
-    const rows=groupRows(items);
-    let dayColumns=[];
-    for(const row of rows){
-      const cols=row.items.map(x=>({day:/^(?:[1-9]|[12]\d|3[01])$/.test(x.str)?Number(x.str):null,x:x.x})).filter(x=>x.day);
-      if(cols.length>dayColumns.length)dayColumns=cols;
+
+function monthFromItems(items) {
+  const joined = items.map((item) => item.str).join(' ').replace(/\s+/g, ' ').toUpperCase();
+  const found = Object.keys(MONTHS).find((name) => joined.includes(`GIORNATE DI CORSE DI ${name}`));
+  return found ? MONTHS[found] : null;
+}
+
+function itemPoint(item) {
+  return {
+    str: String(item?.str ?? '').trim(),
+    x: Number(item?.x ?? item?.transform?.[4]),
+    y: Number(item?.y ?? item?.transform?.[5]),
+  };
+}
+
+function median(values) {
+  const ordered = [...values].sort((a, b) => a - b);
+  if (!ordered.length) return null;
+  const mid = Math.floor(ordered.length / 2);
+  return ordered.length % 2 ? ordered[mid] : (ordered[mid - 1] + ordered[mid]) / 2;
+}
+
+function systemsForRaceCode(code) {
+  const token = String(code ?? '').toUpperCase();
+  if (token.startsWith('T')) return [ITALY_TROT_SYSTEM_ID];
+  if (token.startsWith('G') || token.startsWith('O')) return [ITALY_GALLOP_SYSTEM_ID];
+  if (token.startsWith('M')) return [ITALY_TROT_SYSTEM_ID, ITALY_GALLOP_SYSTEM_ID];
+  return [];
+}
+
+export function parseItalyMasafCalendarPages(pages, { year = 2026, sourceUrl } = {}) {
+  const records = [];
+  const parse_failures = [];
+  const unknown_venues = [];
+
+  for (const page of pages ?? []) {
+    const items = (page.items ?? []).map(itemPoint).filter((item) => item.str && Number.isFinite(item.x) && Number.isFinite(item.y));
+    const month = monthFromItems(items);
+    if (!month) continue;
+
+    const ggCandidates = items.filter((item) => item.str.toUpperCase() === 'GG');
+    if (!ggCandidates.length) {
+      parse_failures.push({ code: 'gg_header_missing', page_number: page.page_number, month });
+      continue;
     }
-    if(dayColumns.length<7){parse_failures.push({code:'day_header_not_found',page:page.page_number,month:monthName,day_columns:dayColumns.length});continue;}
-    for(const row of rows){
-      const rowText=row.items.map(x=>x.str).join(' ');
-      const venue=findVenue(rowText);
-      if(!venue)continue;
-      for(const item of row.items){
-        const system=classifyMasafCode(item.str);
-        if(!system)continue;
-        const day=nearestDay(item.x,dayColumns);
-        if(!day){parse_failures.push({code:'code_without_day_column',page:page.page_number,month:monthName,venue:venue.label,code:item.str,x:item.x});continue;}
+
+    let chosen = null;
+    for (const gg of ggCandidates) {
+      const sameY = [];
+      const sameX = [];
+      for (const item of items) {
+        const code = normalizeItalyVenueCode(item.str);
+        if (!VENUES[code]) continue;
+        if (Math.abs(item.y - gg.y) <= 6) sameY.push({ code, x: item.x, y: item.y });
+        if (Math.abs(item.x - gg.x) <= 6) sameX.push({ code, x: item.x, y: item.y });
+      }
+      const horizontal = { gg, headers: sameY, venueAxis: 'x', dayAxis: 'y' };
+      const rotated = { gg, headers: sameX, venueAxis: 'y', dayAxis: 'x' };
+      const candidate = horizontal.headers.length >= rotated.headers.length ? horizontal : rotated;
+      if (!chosen || candidate.headers.length > chosen.headers.length) chosen = candidate;
+    }
+
+    const { gg, venueAxis, dayAxis } = chosen;
+    const uniqueHeaders = [...new Map(chosen.headers.map((row) => [row.code, row])).values()]
+      .sort((a, b) => a[venueAxis] - b[venueAxis]);
+    if (uniqueHeaders.length < 20) {
+      parse_failures.push({
+        code: 'venue_header_incomplete',
+        page_number: page.page_number,
+        month,
+        header_count: uniqueHeaders.length,
+        detected_orientation: venueAxis === 'x' ? 'horizontal' : 'rotated',
+      });
+      continue;
+    }
+
+    const venueGaps = uniqueHeaders.slice(1)
+      .map((row, index) => row[venueAxis] - uniqueHeaders[index][venueAxis])
+      .filter((value) => value > 0);
+    const venueTolerance = Math.max(5, (median(venueGaps) ?? 12) * 0.52);
+    const firstVenueGap = venueGaps[0] ?? 40;
+    const dayHeaderTolerance = Math.min(30, Math.max(8, firstVenueGap * 0.55));
+
+    const dayRows = items
+      .map((item) => ({ ...item, match: item.str.match(/^(\d{1,2})(?:\s+(?:lun|mar|mer|gio|ven|sab|dom))?$/i) }))
+      .filter((item) => item.match && Math.abs(item[venueAxis] - gg[venueAxis]) <= dayHeaderTolerance)
+      .map((item) => ({ day: Number(item.match[1]), x: item.x, y: item.y }))
+      .filter((row) => row.day >= 1 && row.day <= 31);
+
+    if (!dayRows.length) {
+      parse_failures.push({
+        code: 'day_rows_missing',
+        page_number: page.page_number,
+        month,
+        detected_orientation: venueAxis === 'x' ? 'horizontal' : 'rotated',
+      });
+      continue;
+    }
+
+    const orderedDays = [...new Map(dayRows.map((row) => [row.day, row])).values()]
+      .sort((a, b) => a[dayAxis] - b[dayAxis]);
+    const dayGaps = orderedDays.slice(1)
+      .map((row, index) => row[dayAxis] - orderedDays[index][dayAxis])
+      .filter((value) => value > 0);
+    const dayTolerance = Math.max(4.5, (median(dayGaps) ?? 9) * 0.45);
+
+    for (const item of items) {
+      const token = item.str.toUpperCase().replace(/\s+/g, '');
+      if (!/^(?:T|G|O|M)[A-Z]*$/.test(token)) continue;
+      if (Math.abs(item[venueAxis] - gg[venueAxis]) <= dayHeaderTolerance) continue;
+
+      const dayRow = orderedDays.reduce((best, row) => {
+        const distance = Math.abs(item[dayAxis] - row[dayAxis]);
+        return !best || distance < best.distance ? { row, distance } : best;
+      }, null);
+      if (!dayRow || dayRow.distance > dayTolerance) continue;
+
+      const header = uniqueHeaders.reduce((best, row) => {
+        const distance = Math.abs(item[venueAxis] - row[venueAxis]);
+        return !best || distance < best.distance ? { row, distance } : best;
+      }, null);
+      if (!header || header.distance > venueTolerance) continue;
+
+      let venue;
+      try { venue = resolveItalyRacecourse(header.row.code); }
+      catch {
+        unknown_venues.push({ page_number: page.page_number, month, day: dayRow.row.day, venue_code: header.row.code, race_code: token });
+        continue;
+      }
+
+      const date = `${year}-${pad(month)}-${pad(dayRow.row.day)}`;
+      for (const system_id of systemsForRaceCode(token)) {
         records.push({
-          date:`${year}-${pad(month)}-${pad(day)}`,
-          venue_label:venue.label,venue_name:venue.venue_name,racecourse_id:venue.racecourse_id,
-          system,calendar_code:norm(item.str),source_url:sourceUrl,
+          date,
+          system_id,
+          racecourse_id: venue.racecourse_id,
+          venue_code: venue.venue_code,
+          venue_label: venue.venue_label,
+          race_code: token,
+          discipline: token.startsWith('O') ? 'obstacle' : token.startsWith('T') ? 'trot' : token.startsWith('G') ? 'gallop' : 'mixed',
+          source_url: sourceUrl,
         });
       }
     }
-    for(const row of rows){
-      const left=row.items.find(x=>x.x<180);
-      if(!left)continue;
-      const n=norm(left.str);
-      if(/^[A-Z][A-Z .'-]{3,}$/.test(n)&&!findVenue(n)&&row.items.some(x=>classifyMasafCode(x.str))){
-        unknown_venues.push({page:page.page_number,month:monthName,label:left.str});
-      }
+  }
+
+  const deduped = new Map();
+  for (const row of records) {
+    const key = `${row.system_id}/${row.date}/${row.racecourse_id}`;
+    const existing = deduped.get(key);
+    if (existing) {
+      existing.race_code = [...new Set(`${existing.race_code},${row.race_code}`.split(','))].join(',');
+      if (existing.discipline !== row.discipline) existing.discipline = 'mixed';
+    } else {
+      deduped.set(key, { ...row });
     }
   }
-  const unique=new Map();
-  for(const row of records)unique.set(`${row.system}|${row.racecourse_id}|${row.date}`,row);
-  return {records:[...unique.values()].sort((a,b)=>a.date.localeCompare(b.date)||a.racecourse_id.localeCompare(b.racecourse_id)||a.system.localeCompare(b.system)),parse_failures,unknown_venues};
-}
-function evidence(url,checkedAt){return {source_id:ITALY_SOURCE_ID,official_source_url:url,observed_at:checkedAt,successfully_verified_at:checkedAt,acquisition_method:'automatic'};}
-export function buildMasafMeetingRecord(scheduleRow,{checkedAt}={}){
-  const isTrot=scheduleRow.system==='trot';
-  const systemId=isTrot?ITALY_TROT_SYSTEM_ID:ITALY_GALLOP_SYSTEM_ID;
-  const meetingId=`italy-masaf-${scheduleRow.system}-${scheduleRow.racecourse_id.replace(/^italy--/,'')}-${scheduleRow.date}`;
-  const ev=evidence(scheduleRow.source_url??ITALY_NORMATIVA_URL,checkedAt);
-  const record={
-    candidate_id:meetingId,meeting_id:meetingId,country_id:'italy',authority_id:ITALY_AUTHORITY_ID,racing_system_id:systemId,
-    racecourse_id:scheduleRow.racecourse_id,date:scheduleRow.date,timezone:ITALY_TIMEZONE,first_race_time_local:null,last_race_time_local:null,timetable_rows:[],
-    source:{source_id:ITALY_SOURCE_ID,official_url:scheduleRow.source_url??ITALY_NORMATIVA_URL,checked_at:checkedAt,extraction_method:'official_masaf_current_calendar_pdf'},
-    route_id:'masaf-current-calendar-pdf',confidence:'high',review_status:'needs_review',
-    notes:`Official MASAF 2026 national ${isTrot?'trot':'gallop'} calendar observation; meeting date and physical racecourse only. Race times are not inferred.`,
-    acquisition_attempt:{attempted_at:checkedAt,status:'success',source_id:ITALY_SOURCE_ID,route_id:'masaf-current-calendar-pdf',error_code:null},
-    evidence_support:{meeting_identity:ev,meeting_date:ev},
+
+  return {
+    records: [...deduped.values()].sort((a, b) => a.date.localeCompare(b.date) || a.racecourse_id.localeCompare(b.racecourse_id) || a.system_id.localeCompare(b.system_id)),
+    parse_failures,
+    unknown_venues,
   };
-  const capability_rank=deriveBestAvailableRank(record,record.timetable_rows);
-  record.acquisition_completion=classifyAcquisitionCompletion({...record,capability_rank},{technical_capability_rank:'C'});
-  return {...record,capability_rank};
+}
+
+function evidence(url, checkedAt) {
+  return {
+    source_id: ITALY_SOURCE_ID,
+    official_source_url: url,
+    observed_at: checkedAt,
+    successfully_verified_at: checkedAt,
+    acquisition_method: 'automatic',
+  };
+}
+
+export function buildItalyMasafMeetingRecord(row, { checkedAt } = {}) {
+  if (![ITALY_GALLOP_SYSTEM_ID, ITALY_TROT_SYSTEM_ID].includes(row.system_id)) {
+    throw new Error(`Unsupported Italy system: ${row.system_id}`);
+  }
+  const systemToken = row.system_id === ITALY_TROT_SYSTEM_ID ? 'trot' : 'gallop';
+  const meetingId = `italy-masaf-${systemToken}-${row.racecourse_id}-${row.date}`;
+  const e = evidence(row.source_url, checkedAt);
+  const record = {
+    candidate_id: meetingId,
+    meeting_id: meetingId,
+    country_id: 'italy',
+    authority_id: ITALY_AUTHORITY_ID,
+    racing_system_id: row.system_id,
+    racecourse_id: row.racecourse_id,
+    date: row.date,
+    timezone: ITALY_TIMEZONE,
+    first_race_time_local: null,
+    last_race_time_local: null,
+    timetable_rows: [],
+    source: {
+      source_id: ITALY_SOURCE_ID,
+      official_url: row.source_url,
+      checked_at: checkedAt,
+      extraction_method: 'official_masaf_national_calendar_pdf',
+    },
+    route_id: 'masaf-national-calendar-pdf',
+    confidence: 'high',
+    review_status: 'needs_review',
+    notes: `Official MASAF 2026 national calendar observation; venue code ${row.venue_code}; source race-day code ${row.race_code}; discipline ${row.discipline}. This source establishes date and physical racecourse only; first-race and per-race post times are not inferred.`,
+    detail_observation: {
+      status: 'not_applicable',
+      evaluated_capability_rank: 'C',
+      race_count: 0,
+      venue_code: row.venue_code,
+      schedule_code: row.race_code,
+      discipline: row.discipline,
+    },
+    acquisition_attempt: {
+      attempted_at: checkedAt,
+      status: 'success',
+      source_id: ITALY_SOURCE_ID,
+      route_id: 'masaf-national-calendar-pdf',
+      error_code: null,
+    },
+    evidence_support: {
+      meeting_identity: e,
+      meeting_date: e,
+    },
+  };
+  const capability_rank = deriveBestAvailableRank(record, []);
+  record.acquisition_completion = classifyAcquisitionCompletion(
+    { ...record, capability_rank },
+    { technical_capability_rank: 'C' },
+  );
+  return { ...record, capability_rank };
 }
