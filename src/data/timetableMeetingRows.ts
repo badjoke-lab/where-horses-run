@@ -48,7 +48,7 @@ export type TimetableMeetingRow = {
   public_gap_status: PublicGapStatus;
   source_status?: string;
   last_checked_date?: string | null;
-  live_media: RacingMediaLink | null;
+  live_media: readonly RacingMediaLink[];
 };
 
 export type TimetableMeetingDayGroup = {
@@ -106,11 +106,11 @@ const liveMediaPriority = (record: RacingMediaLink): number => {
   return platformPriority + scopePriority;
 };
 
-function getPreferredLiveMediaForMeeting(input: {
+function getLiveMediaForMeeting(input: {
   authority_id: string;
   racecourse_id: string;
-}): RacingMediaLink | null {
-  const candidates = reviewedRacingMediaLinks
+}): readonly RacingMediaLink[] {
+  return reviewedRacingMediaLinks
     .filter((record) => {
       if (record.kind !== 'live' || record.authority_id !== input.authority_id) return false;
       return !record.racecourse_ids || record.racecourse_ids.includes(input.racecourse_id);
@@ -120,8 +120,6 @@ function getPreferredLiveMediaForMeeting(input: {
       right.verified_at.localeCompare(left.verified_at) ||
       left.id.localeCompare(right.id),
     );
-
-  return candidates[0] ?? null;
 }
 
 function toMeetingRow(record: PublicTimetableMeetingRow): TimetableMeetingRow {
@@ -137,7 +135,7 @@ function toMeetingRow(record: PublicTimetableMeetingRow): TimetableMeetingRow {
     coverage_status: PublicCoverageStatus;
     public_gap_status: PublicGapStatus;
   };
-  const liveMedia = getPreferredLiveMediaForMeeting({
+  const liveMedia = getLiveMediaForMeeting({
     authority_id: record.authority_id,
     racecourse_id: record.racecourse_id,
   });
