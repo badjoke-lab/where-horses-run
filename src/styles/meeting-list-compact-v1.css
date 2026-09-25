@@ -621,7 +621,8 @@
 .timetable-timezone-projection .meeting-row__watch-panel {
   position: absolute;
   inset-block-start: calc(100% + 0.35rem);
-  inset-inline-start: 0;
+  inset-inline-start: auto;
+  inset-inline-end: 0;
   z-index: 60;
   width: min(31rem, 72vw);
   padding: 0.65rem;
