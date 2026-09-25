@@ -11,28 +11,43 @@ assert.equal(deriveMeetingStreamState({ hasOfficialDestination: true, detectorSt
 
 const filterSource = readFileSync(new URL('../src/components/CalendarFilters.astro', import.meta.url), 'utf8');
 const listSource = readFileSync(new URL('../src/components/TimetableMeetingList.astro', import.meta.url), 'utf8');
+const runtimeSource = readFileSync(new URL('../src/components/MeetingLiveStatusRuntime.astro', import.meta.url), 'utf8');
+const escapeRegex = (value) => value.replace(/[.*+?^$(){}|[\]\\]/g, '\\$&');
+
 for (const marker of [
   'deriveMeetingStreamState',
-  "link.href = defaultHref",
-  "link.textContent = state === 'live'",
-  "'● Live now ↗'",
-  "'● 公式配信中 ↗'",
-  "'Official stream ↗'",
-  "'公式配信 ↗'",
+  "querySelectorAll('[data-stream-media]')",
+  'streamNode.dataset.streamDetectorId',
+  'link.dataset.liveDefaultLabel',
+  'link.dataset.liveActiveLabel',
+  'row.dataset.streamState = rowLive',
 ]) {
-  assert.match(filterSource, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `CalendarFilters missing ${marker}`);
+  assert.match(filterSource, new RegExp(escapeRegex(marker)), 'CalendarFilters missing ' + marker);
 }
-assert.doesNotMatch(listSource, /data-stream-live-badge/, 'Calendar rows must not render a standalone stream-live badge');
-assert.doesNotMatch(filterSource, /data-stream-live-badge/, 'stream refresh must not depend on a standalone live badge');
-assert.match(listSource, /Official site ↗/, 'official-site action must remain separate from official-stream action');
-assert.match(listSource, /公式サイト ↗/, 'Japanese official-site action must remain separate from official-stream action');
+
+for (const marker of [
+  "querySelectorAll('[data-stream-media]')",
+  'stream.dataset.streamDetectorId',
+  'link.dataset.liveDefaultLabel',
+  'link.dataset.liveActiveLabel',
+  'row.dataset.streamState = rowLive',
+]) {
+  assert.match(runtimeSource, new RegExp(escapeRegex(marker)), 'MeetingLiveStatusRuntime missing ' + marker);
+}
+
+assert.match(listSource, /data-stream-media/, 'Calendar rows must render provider-level stream nodes');
+assert.match(listSource, /data-live-default-label=/, 'Calendar stream links must preserve their provider default label');
+assert.match(listSource, /data-live-active-label=/, 'Calendar stream links must preserve their provider live label');
+assert.match(listSource, /meeting-row__streams/, 'Calendar rows must support multiple stream providers');
+assert.match(listSource, /Official site ↗/, 'official-site action must remain separate from stream actions');
+assert.match(listSource, /公式サイト ↗/, 'Japanese official-site action must remain separate from stream actions');
+
 assert.doesNotMatch(filterSource, /canUseEventSpecificStreamUrl/, 'Calendar must not construct event-specific direct stream URLs');
 assert.doesNotMatch(filterSource, /youtube\.com\/watch\?v=/, 'Calendar must keep reviewed official landing/source links instead of direct watch URLs');
-assert.doesNotMatch(filterSource, /const eventSpecific = rawState === 'live' \|\| rawState === 'upcoming' \|\| rawState === 'ended'/, 'old detector leakage logic must be removed');
+assert.doesNotMatch(runtimeSource, /youtube\.com\/watch\?v=/, 'runtime must never synthesize direct YouTube watch URLs');
 
 console.log('MEETING_STREAM_STATE: pass');
 console.log('EXACT_EVENT_DATE_REQUIRED_FOR_LIVE: pass');
-console.log('OFFLINE_NEVER_COLORS_MEETING_LIVE: pass');
-console.log('LIVE_COPY_IS_SINGLE_LINK_STATE: pass');
+console.log('MULTI_PROVIDER_STREAM_STATE: pass');
 console.log('OFFICIAL_STREAM_AND_SITE_ACTIONS_REMAIN_SEPARATE: pass');
-console.log('OFFICIAL_STREAM_LINK_REMAINS_REVIEWED_DESTINATION: pass');
+console.log('OFFICIAL_STREAM_LINKS_REMAIN_REVIEWED_DESTINATIONS: pass');
