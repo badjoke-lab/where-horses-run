@@ -9,8 +9,17 @@
       rows().forEach((row) => {
         row.dataset.streamState = 'unknown';
         row.querySelectorAll('[data-media-route]').forEach((route) => {
-          if (route instanceof HTMLElement) route.dataset.streamState = 'unknown';
+          if (!(route instanceof HTMLElement)) return;
+          route.dataset.streamState = 'unknown';
+          const indicator = route.querySelector('[data-provider-live-indicator]');
+          if (indicator instanceof HTMLElement) indicator.hidden = true;
         });
+        const watchSummary = row.querySelector('[data-watch-summary-label]');
+        if (watchSummary instanceof HTMLElement) {
+          const summary = watchSummary.closest('[data-watch-summary]');
+          const defaultLabel = summary instanceof HTMLElement ? summary.dataset.watchDefaultLabel : '';
+          if (defaultLabel) watchSummary.textContent = defaultLabel;
+        }
         const badge = row.querySelector('[data-stream-live-badge]');
         if (badge instanceof HTMLElement) badge.hidden = true;
         row.querySelectorAll('[data-live-link]').forEach((link) => {
@@ -45,7 +54,11 @@
           const state = eventSpecific && !dateMatches ? 'unknown' : rawState;
           const isLive = state === 'live' && dateMatches;
           const route = link.closest('[data-media-route]');
-          if (route instanceof HTMLElement) route.dataset.streamState = state;
+          if (route instanceof HTMLElement) {
+            route.dataset.streamState = state;
+            const indicator = route.querySelector('[data-provider-live-indicator]');
+            if (indicator instanceof HTMLElement) indicator.hidden = !isLive;
+          }
 
           const defaultHref = link.dataset.liveDefaultHref || link.href;
           const defaultLabel = link.dataset.liveDefaultLabel || link.textContent || '';
@@ -56,6 +69,15 @@
         });
 
         row.dataset.streamState = rowIsLive ? 'live' : 'unknown';
+        const watchSummary = row.querySelector('[data-watch-summary-label]');
+        if (watchSummary instanceof HTMLElement) {
+          const summary = watchSummary.closest('[data-watch-summary]');
+          if (summary instanceof HTMLElement) {
+            const defaultLabel = summary.dataset.watchDefaultLabel || watchSummary.textContent || '';
+            const liveLabel = summary.dataset.watchLiveLabel || defaultLabel;
+            watchSummary.textContent = rowIsLive ? liveLabel : defaultLabel;
+          }
+        }
 
         const badge = row.querySelector('[data-stream-live-badge]');
         if (badge instanceof HTMLElement) badge.hidden = !rowIsLive;
