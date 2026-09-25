@@ -30,6 +30,7 @@ const inspect = async (page, pathname, lang) => {
             racecourse: row.dataset.racecourse || '',
             media_id: route instanceof HTMLElement ? route.dataset.mediaId || '' : '',
             detector_id: link.dataset.liveDetectorId || '',
+            live_role: link.dataset.liveRole || '',
             stream_state: route instanceof HTMLElement ? route.dataset.streamState || 'unknown' : 'unknown',
             text: normalize(link.textContent),
             default_text: link.dataset.liveDefaultLabel || '',
@@ -46,7 +47,7 @@ const inspect = async (page, pathname, lang) => {
   for (const item of result) {
     const live = item.stream_state === 'live';
     const transparent = item.background === 'rgba(0, 0, 0, 0)' || item.background === 'transparent';
-    if (!live && !transparent) {
+    if (!live && item.live_role !== 'provider-open' && !transparent) {
       failures.push(`${item.meeting_id}/${item.media_id}: non-live stream link has background ${item.background}`);
     }
     if (item.default_href && item.href !== item.default_href) {
