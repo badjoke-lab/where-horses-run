@@ -100,12 +100,6 @@ const displayAuthority = (authorityId: string) =>
 const displayCountry = (countryId: string) =>
   countryLabelById[countryId] ?? titleCaseId(countryId);
 
-const liveMediaPriority = (record: RacingMediaLink): number => {
-  const platformPriority = record.platform === 'youtube' ? 0 : 100;
-  const scopePriority = record.racecourse_ids ? 0 : 10;
-  return platformPriority + scopePriority;
-};
-
 function getLiveMediaForMeeting(input: {
   authority_id: string;
   racecourse_id: string;
@@ -114,12 +108,7 @@ function getLiveMediaForMeeting(input: {
     .filter((record) => {
       if (record.kind !== 'live' || record.authority_id !== input.authority_id) return false;
       return !record.racecourse_ids || record.racecourse_ids.includes(input.racecourse_id);
-    })
-    .sort((left, right) =>
-      liveMediaPriority(left) - liveMediaPriority(right) ||
-      right.verified_at.localeCompare(left.verified_at) ||
-      left.id.localeCompare(right.id),
-    );
+    });
 }
 
 function toMeetingRow(record: PublicTimetableMeetingRow): TimetableMeetingRow {
