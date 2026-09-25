@@ -47,10 +47,12 @@ export function parseRaceCoastFixturesHtml(html,{year=2026,sourceUrl=RACE_COAST_
   for(const match of tr){
     const cells=[...match[1].matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)].map(m=>text(m[1]));
     if(cells.length<4) continue;
-    let first=cells[0].toUpperCase();
-    if(MONTHS[first]) month=MONTHS[first];
-    const dayText=MONTHS[first]?cells[1]:cells[0];
-    const venueText=MONTHS[first]?cells[3]:cells[2];
+    const first=cells[0].toUpperCase();
+    const monthRow=Boolean(MONTHS[first]);
+    const continuationRow=!monthRow && first==='';
+    if(monthRow) month=MONTHS[first];
+    const dayText=(monthRow||continuationRow)?cells[1]:cells[0];
+    const venueText=(monthRow||continuationRow)?cells[3]:cells[2];
     const day=Number(dayText);
     if(!month||!Number.isInteger(day)||day<1||day>31) continue;
     let venue;
