@@ -116,8 +116,12 @@ assert.match(media, /id: 'uk-racing-tv-live-2026'[\s\S]*?scope: 'track'[\s\S]*?c
 
 assert.match(timetable, /data-live-access-tags=/,
   'Calendar rows must expose media access tags to the rendered DOM');
-assert.match(timetable, /meeting-row__stream-access/,
-  'Calendar must render stream access conditions visibly rather than hiding them in a title tooltip');
+assert.match(timetable, /meeting-row__watch-menu/,
+  'Calendar must collapse multiple providers into a bounded Watch control');
+assert.match(timetable, /meeting-row__watch-panel/,
+  'multiple-provider Watch controls must expose a provider panel');
+assert.match(timetable, /meeting-row__country-flag/,
+  'Calendar rows must show a country flag next to Country / Authority');
 assert.match(timetable, /BETTING ACCOUNT/,
   'English Calendar access labels must include betting-account disclosure');
 assert.match(timetable, /投票口座/,
@@ -127,8 +131,12 @@ assert.doesNotMatch(
   /record\.authority_id === 'korea-racing-authority'.*kra-krbc/s,
   'selected KRA/KRBC media must not be wired into the global per-day live detector',
 );
-assert.match(compact, /\.meeting-row__stream-badge[\s\S]*?font-size:\s*0\.54rem/,
-  'stream access badges must retain compact desktop presentation');
+assert.match(compact, /\.meeting-row__watch-panel[\s\S]*?position:\s*absolute/,
+  'desktop multiple-provider Watch must use a compact popover');
+assert.match(compact, /@media \(max-width:\s*1023px\)[\s\S]*?\.meeting-row__watch-panel[\s\S]*?position:\s*fixed/,
+  'mobile multiple-provider Watch must use a bottom sheet');
+assert.match(compact, /grid-template-columns:[\s\S]*?1\.8fr[\s\S]*?0\.9fr[\s\S]*?0\.75fr[\s\S]*?1\.2fr/,
+  'mobile action row must reserve stable Watch, Details, Map and Official slots');
 
 assert.match(rowsModel, /live_media: readonly RacingMediaLink\[\]/,
   'meeting rows must support multiple reviewed live-media routes');
@@ -140,10 +148,10 @@ assert.match(media, /id: 'jcsa-youtube-live-2026'[\s\S]*?coverage: 'selected_mee
   'Saudi racing must expose YouTube separately without overclaiming all-meeting coverage');
 assert.match(media, /https:\/\/www\.youtube\.com\/@JockeyClub_SA\/streams/,
   'Saudi YouTube route must use the official JCSA streams landing page');
-assert.match(timetable, /meeting-row__streams/,
-  'Calendar must render multiple provider routes in one stream column');
+assert.match(timetable, /data-watch-summary-label/,
+  'Calendar must aggregate multiple providers into Watch N');
 assert.match(timetable, /record\.live_media\.map/,
-  'Calendar must render every reviewed provider for the meeting');
+  'Watch panel must render every reviewed provider for the meeting');
 assert.match(timetable, /data-live-live-label=/,
   'provider links must carry provider-specific live labels');
 assert.match(liveStatusApi, /id: 'jcsa-youtube-live-2026'[\s\S]*?handle: '@JockeyClub_SA'[\s\S]*?time_zone: 'Asia\/Riyadh'/,
@@ -151,6 +159,16 @@ assert.match(liveStatusApi, /id: 'jcsa-youtube-live-2026'[\s\S]*?handle: '@Jocke
 assert.doesNotMatch(liveStatusApi, /DAZN/i,
   'paid or broadcaster-web routes must not be added to runtime live detection');
 
+assert.match(timetable, /data-time-empty=/,
+  'Calendar must mark time-empty rows explicitly');
+assert.doesNotMatch(timetable, /: '—'/,
+  'Calendar must not render a dash placeholder for missing meeting times');
+assert.match(timetable, /moveMapActionIntoLinks/,
+  'Calendar must move existing Map actions into the bounded action row');
+assert.match(runtime, /data-provider-live-indicator/,
+  'provider panel must expose LIVE state only for the detected provider');
+assert.match(runtime, /data-watch-summary-label/,
+  'row-level Watch summary must reflect whether any provider is live');
 assert.doesNotMatch(timetable, /#fff3c4/,
   'TimetableMeetingList must not retain the old merged upcoming/today row color');
 assert.doesNotMatch(timetable, /presentation-state='running'[^\n]*#fff0ef/,
