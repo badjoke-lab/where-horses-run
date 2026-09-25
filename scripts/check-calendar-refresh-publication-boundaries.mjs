@@ -177,8 +177,9 @@ assert.equal(workflow.split('--authority-id=race-coast').length - 1, 2, 'South A
 assert.equal(workflow.split('--racing-system-id=south-africa-race-coast-system').length - 1, 2, 'South Africa Race Coast apply path must bind its canonical racing system in both execution paths');
 assert.equal(workflow.split('node scripts/timetable/run-south-africa-four-racing-official-window.mjs').length - 1, 2, 'South Africa 4Racing must be collected in both normal and latest-main rebuild paths');
 assert.equal(workflow.split('--artifact=.calendar-unified/south-africa-four-racing.json').length - 1, 4, 'South Africa 4Racing artifact must pass exclusion and apply layers in both execution paths');
+assert.equal(workflow.split('--authority-id=four-racing').length - 1, 2, 'South Africa 4Racing observations must be applied in both execution paths');
 assert.equal(workflow.split('--racing-system-id=south-africa-4racing-system').length - 1, 2, 'South Africa 4Racing apply path must bind its canonical racing system in both execution paths');
-assert.equal(workflow.split('--timezone=Africa/Johannesburg').length - 1, 2, 'South Africa Race Coast apply paths must bind Africa/Johannesburg in both execution paths');
+assert.equal(workflow.split('--timezone=Africa/Johannesburg').length - 1, 4, 'Both South Africa operator systems must bind Africa/Johannesburg in both execution paths');
 assert.equal((workflow.match(/--authority-id=hipodromo-zarzuela/g) ?? []).length, 2, 'Spain Zarzuela observations must be applied in both execution paths');
 assert.equal((workflow.match(/--artifact=\.calendar-unified\/spain\.json/g) ?? []).length, 4, 'Spain artifact must pass exclusion and apply layers in both execution paths');
 assert.equal((workflow.match(/--racing-system-id=spain-reviewed-gallop-system/g) ?? []).length, 2, 'Spain apply path must bind the canonical racing system id in both execution paths');
