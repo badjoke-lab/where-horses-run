@@ -54,6 +54,9 @@ const southAfricaCanonicalIds = [
   'south-africa--hollywoodbets-scottsville',
   'south-africa--hollywoodbets-durbanville',
   'south-africa--hollywoodbets-kenilworth',
+  'south-africa--turffontein',
+  'south-africa--vaal',
+  'south-africa--fairview',
 ];
 const peruCanonicalIds = [
   'monterrico-racecourse',

@@ -92,6 +92,9 @@ const calendarMapRegressionIds = [
   'south-africa--hollywoodbets-scottsville',
   'south-africa--hollywoodbets-durbanville',
   'south-africa--hollywoodbets-kenilworth',
+  'south-africa--turffontein',
+  'south-africa--vaal',
+  'south-africa--fairview',
   // Morocco (7)
   'casablanca-anfa-racecourse',
   'meknes-racecourse',
