@@ -4,6 +4,7 @@ import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import {
   ITALY_AUTHORITY_ID, ITALY_GALLOP_SYSTEM_ID, ITALY_NORMATIVA_URL, ITALY_SOURCE_ID,
   ITALY_TIMEZONE, ITALY_TROT_SYSTEM_ID, buildMasafMeetingRecord, parseMasafCalendarPages,
+  findLatestMasafCalendarDetailUrl, findMasafCalendarPdfUrl,
 } from './italy-masaf-core.mjs';
 
 function arg(name,fallback=null){const p=`--${name}=`;const v=process.argv.find(x=>x.startsWith(p));return v?v.slice(p.length):fallback;}
@@ -11,23 +12,7 @@ function plusDays(date,count){const d=new Date(`${date}T00:00:00Z`);d.setUTCDate
 function localDate(now=new Date()){const parts=new Intl.DateTimeFormat('en-CA',{timeZone:ITALY_TIMEZONE,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now);const v=Object.fromEntries(parts.filter(p=>p.type!=='literal').map(p=>[p.type,p.value]));return `${v.year}-${v.month}-${v.day}`;}
 function inWindow(date,start,end){return date>=start&&date<end;}
 function write(file,value){const target=path.resolve(file);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,`${JSON.stringify(value,null,2)}\n`);}
-function decodeHtml(value){return String(value??'').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'").replace(/&#x([0-9a-f]+);/gi,(_,c)=>String.fromCodePoint(Number.parseInt(c,16))).replace(/&#(\d+);/g,(_,c)=>String.fromCodePoint(Number(c)));}
-function absoluteMasafUrl(href,base){return new URL(decodeHtml(href),base).href;}
 async function getHtml(url){const response=await fetch(url,{redirect:'follow',headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)','accept':'text/html,application/xhtml+xml;q=0.9,*/*;q=0.5','accept-language':'it-IT,it;q=0.9,en;q=0.6'},signal:AbortSignal.timeout(25000)});if(!response.ok)throw new Error(`HTTP ${response.status}`);return {html:await response.text(),url:response.url||url};}
-export function findLatestMasafCalendarDetailUrl(html,baseUrl=ITALY_NORMATIVA_URL){
-  const anchors=[...String(html).matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)]
-    .map(m=>({href:m[1],text:m[2].replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()}));
-  const hit=anchors.find(a=>/modifica del calendario delle corse ippiche per l.?anno 2026/i.test(a.text));
-  if(!hit)throw new Error('MASAF current calendar modification detail link not found');
-  return absoluteMasafUrl(hit.href,baseUrl);
-}
-export function findMasafCalendarPdfUrl(html,baseUrl){
-  const anchors=[...String(html).matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)]
-    .map(m=>({href:m[1],text:m[2].replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()}));
-  const hit=anchors.find(a=>/ALLEGATO\s*n\.?\s*1/i.test(a.text)&&/Calendario corse ippiche/i.test(a.text));
-  if(!hit)throw new Error('MASAF ALLEGATO n. 1 calendar PDF link not found');
-  return absoluteMasafUrl(hit.href,baseUrl);
-}
 async function getPdfPages(url){
   const response=await fetch(url,{redirect:'follow',headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)','accept':'application/pdf,*/*;q=0.8','accept-language':'it-IT,it;q=0.9,en;q=0.6'},signal:AbortSignal.timeout(30000)});
   if(!response.ok)throw new Error(`HTTP ${response.status}`);
