@@ -65,6 +65,7 @@ const text = lang === 'ja'
         status: '状態',
         stream: '配信',
         detail: '詳細',
+        map: '地図',
         source: '公式',
       },
     }
@@ -89,8 +90,9 @@ const text = lang === 'ja'
         time: 'Time',
         rank: 'Rank',
         status: 'Status',
-        stream: 'Stream',
+        stream: 'Watch',
         detail: 'Details',
+        map: 'Map',
         source: 'Source',
       },
     };
@@ -209,6 +211,7 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
             <span class="meeting-list__columns-actions">
               <span>{text.columns.stream}</span>
               <span>{text.columns.detail}</span>
+              <span>{text.columns.map}</span>
               <span>{text.columns.source}</span>
             </span>
           </li>
@@ -463,12 +466,12 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
   };
   const createColumnHeader = (uiLang) => {
     const labels = uiLang === 'ja'
-      ? { racecourse: '競馬場', system: '国・主催', time: '時刻', rank: 'ランク', status: '状態', stream: '配信', detail: '詳細', source: '公式' }
-      : { racecourse: 'Racecourse', system: 'Country / authority', time: 'Time', rank: 'Rank', status: 'Status', stream: 'Stream', detail: 'Details', source: 'Source' };
+      ? { racecourse: '競馬場', system: '国・主催', time: '時刻', rank: 'ランク', status: '状態', stream: '配信', detail: '詳細', map: '地図', source: '公式' }
+      : { racecourse: 'Racecourse', system: 'Country / authority', time: 'Time', rank: 'Rank', status: 'Status', stream: 'Watch', detail: 'Details', map: 'Map', source: 'Source' };
     const header = document.createElement('li');
     header.className = 'meeting-list__columns';
     header.setAttribute('aria-hidden', 'true');
-    header.innerHTML = `<span>${labels.racecourse}</span><span>${labels.system}</span><span>${labels.time}</span><span>${labels.rank}</span><span>${labels.status}</span><span class="meeting-list__columns-actions"><span>${labels.stream}</span><span>${labels.detail}</span><span>${labels.source}</span></span>`;
+    header.innerHTML = `<span>${labels.racecourse}</span><span>${labels.system}</span><span>${labels.time}</span><span>${labels.rank}</span><span>${labels.status}</span><span class="meeting-list__columns-actions"><span>${labels.stream}</span><span>${labels.detail}</span><span>${labels.map}</span><span>${labels.source}</span></span>`;
     return header;
   };
   const moveMapActionIntoLinks = (root) => {
