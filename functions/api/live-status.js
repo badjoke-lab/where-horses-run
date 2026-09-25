@@ -1,5 +1,5 @@
 const YOUTUBE_API = 'https://www.googleapis.com/youtube/v3';
-const JAPAN_TIME_ZONE = 'Asia/Tokyo';
+const DEFAULT_TIME_ZONE = 'Asia/Tokyo';
 const DISCOVERY_CACHE_SECONDS = 15 * 60;
 const IDLE_STATUS_CACHE_SECONDS = 15 * 60;
 const LIVE_STATUS_REFRESH_SECONDS = 60;
@@ -26,6 +26,7 @@ const YOUTUBE_LIVE_DETECTORS = [
   { id: 'nar-hyogo-youtube-live-2026', handle: '@sonodahimejiweb' },
   { id: 'nar-kochi-youtube-live-2026', handle: '@KeibaOrJp' },
   { id: 'nar-saga-youtube-live-2026', handle: '@sagakeibaofficial' },
+  { id: 'jcsa-youtube-live-2026', channel_id: 'UC4xAL1Lid7vrrm-xtxyyvwA', time_zone: 'Asia/Riyadh' },
 ];
 
 const safeVideoId = (value) => typeof value === 'string' && /^[A-Za-z0-9_-]{11}$/.test(value) ? value : null;
@@ -64,12 +65,12 @@ const statusFromVideo = (video) => {
   return 'offline';
 };
 
-const japanDateFor = (isoValue) => {
+const dateForTimeZone = (isoValue, timeZone = DEFAULT_TIME_ZONE) => {
   if (!isoValue) return null;
   const date = new Date(isoValue);
   if (Number.isNaN(date.getTime())) return null;
   const parts = new Intl.DateTimeFormat('en-US', {
-    timeZone: JAPAN_TIME_ZONE,
+    timeZone,
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
@@ -89,7 +90,7 @@ const normalizedStatus = (detector, video = null) => {
     media_id: detector.id,
     status: video ? statusFromVideo(video) : 'offline',
     video_id: safeVideoId(video?.id),
-    event_date: japanDateFor(actualStart ?? scheduledStart),
+    event_date: dateForTimeZone(actualStart ?? scheduledStart, detector.time_zone ?? DEFAULT_TIME_ZONE),
     scheduled_start_at: scheduledStart,
     checked_at: new Date().toISOString(),
   };
@@ -97,7 +98,7 @@ const normalizedStatus = (detector, video = null) => {
 
 const internalCacheKey = (request, namespace) => {
   const origin = new URL(request.url).origin;
-  return new Request(`${origin}/api/live-status/__cache/${namespace}/v3`, { method: 'GET' });
+  return new Request(`${origin}/api/live-status/__cache/${namespace}/v4`, { method: 'GET' });
 };
 
 async function readCachedJson(cache, key) {
