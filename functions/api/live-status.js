@@ -1,5 +1,4 @@
 const YOUTUBE_API = 'https://www.googleapis.com/youtube/v3';
-const JAPAN_TIME_ZONE = 'Asia/Tokyo';
 const DISCOVERY_CACHE_SECONDS = 15 * 60;
 const IDLE_STATUS_CACHE_SECONDS = 15 * 60;
 const LIVE_STATUS_REFRESH_SECONDS = 60;
@@ -12,20 +11,21 @@ const RECENT_VIDEO_LIMIT = 10;
 // Runtime detectors are separate from public media links. Calendar links stay
 // on reviewed official landing pages; these sources only determine live state.
 const YOUTUBE_LIVE_DETECTORS = [
-  { id: 'jra-youtube-live-2026', channel_id: 'UCj6AKkCWS6FJqf0o5wP45eQ' },
-  { id: 'banei-youtube-live-2026', channel_id: 'UCyjlxPcoYAbpwlr5wjUA_5g' },
-  { id: 'nar-monbetsu-youtube-live-2026', channel_id: 'UC6tQosgNJOmZUGmtkSvI6zA' },
-  { id: 'nar-iwate-youtube-live-2026', handle: '@IwateKeibaITV' },
-  { id: 'nar-urawa-youtube-live-2026', channel_id: 'UCdtB0m4BIjadiqV3C0Vi9SQ' },
-  { id: 'nar-funabashi-youtube-live-2026', channel_id: 'UCfnIcvhLkVVCTd86yemmGnQ' },
-  { id: 'nar-oi-youtube-live-2026', handle: '@tckkeiba' },
-  { id: 'nar-kawasaki-youtube-live-2026', channel_id: 'UCF7v-dGy_jQ_7bOi7oab2PA' },
-  { id: 'nar-kanazawa-youtube-live-2026', channel_id: 'UCMRX5ABMJWPR6aWlyZYeKog' },
-  { id: 'nar-kasamatsu-youtube-live-2026', channel_id: 'UCmPuLUWCwfAW99ezdCj6ayQ' },
-  { id: 'nar-nagoya-youtube-live-2026', channel_id: 'UCuAGB0_QDb68etl8v-JcSzA' },
-  { id: 'nar-hyogo-youtube-live-2026', handle: '@sonodahimejiweb' },
-  { id: 'nar-kochi-youtube-live-2026', handle: '@KeibaOrJp' },
-  { id: 'nar-saga-youtube-live-2026', handle: '@sagakeibaofficial' },
+  { id: 'jra-youtube-live-2026', channel_id: 'UCj6AKkCWS6FJqf0o5wP45eQ', time_zone: 'Asia/Tokyo' },
+  { id: 'banei-youtube-live-2026', channel_id: 'UCyjlxPcoYAbpwlr5wjUA_5g', time_zone: 'Asia/Tokyo' },
+  { id: 'nar-monbetsu-youtube-live-2026', channel_id: 'UC6tQosgNJOmZUGmtkSvI6zA', time_zone: 'Asia/Tokyo' },
+  { id: 'nar-iwate-youtube-live-2026', handle: '@IwateKeibaITV', time_zone: 'Asia/Tokyo' },
+  { id: 'nar-urawa-youtube-live-2026', channel_id: 'UCdtB0m4BIjadiqV3C0Vi9SQ', time_zone: 'Asia/Tokyo' },
+  { id: 'nar-funabashi-youtube-live-2026', channel_id: 'UCfnIcvhLkVVCTd86yemmGnQ', time_zone: 'Asia/Tokyo' },
+  { id: 'nar-oi-youtube-live-2026', handle: '@tckkeiba', time_zone: 'Asia/Tokyo' },
+  { id: 'nar-kawasaki-youtube-live-2026', channel_id: 'UCF7v-dGy_jQ_7bOi7oab2PA', time_zone: 'Asia/Tokyo' },
+  { id: 'nar-kanazawa-youtube-live-2026', channel_id: 'UCMRX5ABMJWPR6aWlyZYeKog', time_zone: 'Asia/Tokyo' },
+  { id: 'nar-kasamatsu-youtube-live-2026', channel_id: 'UCmPuLUWCwfAW99ezdCj6ayQ', time_zone: 'Asia/Tokyo' },
+  { id: 'nar-nagoya-youtube-live-2026', channel_id: 'UCuAGB0_QDb68etl8v-JcSzA', time_zone: 'Asia/Tokyo' },
+  { id: 'nar-hyogo-youtube-live-2026', handle: '@sonodahimejiweb', time_zone: 'Asia/Tokyo' },
+  { id: 'nar-kochi-youtube-live-2026', handle: '@KeibaOrJp', time_zone: 'Asia/Tokyo' },
+  { id: 'nar-saga-youtube-live-2026', handle: '@sagakeibaofficial', time_zone: 'Asia/Tokyo' },
+  { id: 'jcsa-youtube-live-2026', handle: '@JockeyClub_SA', time_zone: 'Asia/Riyadh' },
 ];
 
 const safeVideoId = (value) => typeof value === 'string' && /^[A-Za-z0-9_-]{11}$/.test(value) ? value : null;
@@ -64,12 +64,12 @@ const statusFromVideo = (video) => {
   return 'offline';
 };
 
-const japanDateFor = (isoValue) => {
+const localDateFor = (isoValue, timeZone) => {
   if (!isoValue) return null;
   const date = new Date(isoValue);
   if (Number.isNaN(date.getTime())) return null;
   const parts = new Intl.DateTimeFormat('en-US', {
-    timeZone: JAPAN_TIME_ZONE,
+    timeZone,
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
@@ -89,7 +89,7 @@ const normalizedStatus = (detector, video = null) => {
     media_id: detector.id,
     status: video ? statusFromVideo(video) : 'offline',
     video_id: safeVideoId(video?.id),
-    event_date: japanDateFor(actualStart ?? scheduledStart),
+    event_date: localDateFor(actualStart ?? scheduledStart, detector.time_zone),
     scheduled_start_at: scheduledStart,
     checked_at: new Date().toISOString(),
   };
