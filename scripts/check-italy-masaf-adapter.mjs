@@ -1,9 +1,8 @@
 import assert from 'node:assert/strict';
 import { validateCalendarAuthorityMetadataV1 } from './timetable/calendar-authority-metadata.mjs';
-import { buildMasafMeetingRecord, classifyMasafCode, parseMasafCalendarPages } from './timetable/italy-masaf-core.mjs';
-import { findLatestMasafCalendarDetailUrl, findMasafCalendarPdfUrl } from './timetable/run-italy-masaf-official-window.mjs';
+import { buildMasafMeetingRecord, classifyMasafCode, parseMasafCalendarPages, findLatestMasafCalendarDetailUrl, findMasafCalendarPdfUrl } from './timetable/italy-masaf-core.mjs';
 
-assert.equal(classifyMasafCode('T'),'trot');assert.equal(classifyMasafCode('TF'),'trot');assert.equal(classifyMasafCode('G'),'gallop');assert.equal(classifyMasafCode('GF'),'gallop');assert.equal(classifyMasafCode('X'),null);
+assert.equal(classifyMasafCode('T'),'trot');assert.equal(classifyMasafCode('TF'),'trot');assert.equal(classifyMasafCode('G'),'gallop');assert.equal(classifyMasafCode('GF'),'gallop');assert.equal(classifyMasafCode('X'),null);assert.equal(classifyMasafCode('TORINO'),null);
 const normative='<a href="/flex/cm/pages/ServeBLOB.php/L/IT/IDPagina/25118">D.D.G. n. 456638 del 10/09/2026 - di modifica del calendario delle corse ippiche per l\'anno 2026</a>';
 assert.equal(findLatestMasafCalendarDetailUrl(normative),'https://www.masaf.gov.it/flex/cm/pages/ServeBLOB.php/L/IT/IDPagina/25118');
 const detail='<a href="/flex/cm/pages/ServeAttachment.php/L/IT/D/x/P/BLOB:ID=25118/E/pdf?mode=download">ALLEGATO n. 1 Calendario corse ippiche per l\'anno 2026 aggiornato al 10 settembre 2026</a>';
