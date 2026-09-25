@@ -49,6 +49,7 @@ export type TimetableMeetingRow = {
   source_status?: string;
   last_checked_date?: string | null;
   live_media: RacingMediaLink | null;
+  live_media_links: readonly RacingMediaLink[];
 };
 
 export type TimetableMeetingDayGroup = {
@@ -101,16 +102,17 @@ const displayCountry = (countryId: string) =>
   countryLabelById[countryId] ?? titleCaseId(countryId);
 
 const liveMediaPriority = (record: RacingMediaLink): number => {
+  const explicitOrder = record.display_order ?? 1000;
   const platformPriority = record.platform === 'youtube' ? 0 : 100;
   const scopePriority = record.racecourse_ids ? 0 : 10;
-  return platformPriority + scopePriority;
+  return explicitOrder * 1000 + platformPriority + scopePriority;
 };
 
-function getPreferredLiveMediaForMeeting(input: {
+function getLiveMediaForMeeting(input: {
   authority_id: string;
   racecourse_id: string;
-}): RacingMediaLink | null {
-  const candidates = reviewedRacingMediaLinks
+}): readonly RacingMediaLink[] {
+  return reviewedRacingMediaLinks
     .filter((record) => {
       if (record.kind !== 'live' || record.authority_id !== input.authority_id) return false;
       return !record.racecourse_ids || record.racecourse_ids.includes(input.racecourse_id);
@@ -120,8 +122,6 @@ function getPreferredLiveMediaForMeeting(input: {
       right.verified_at.localeCompare(left.verified_at) ||
       left.id.localeCompare(right.id),
     );
-
-  return candidates[0] ?? null;
 }
 
 function toMeetingRow(record: PublicTimetableMeetingRow): TimetableMeetingRow {
@@ -137,10 +137,11 @@ function toMeetingRow(record: PublicTimetableMeetingRow): TimetableMeetingRow {
     coverage_status: PublicCoverageStatus;
     public_gap_status: PublicGapStatus;
   };
-  const liveMedia = getPreferredLiveMediaForMeeting({
+  const liveMediaLinks = getLiveMediaForMeeting({
     authority_id: record.authority_id,
     racecourse_id: record.racecourse_id,
   });
+  const liveMedia = liveMediaLinks[0] ?? null;
 
   return {
     meeting_id: record.meeting_id,
@@ -164,6 +165,7 @@ function toMeetingRow(record: PublicTimetableMeetingRow): TimetableMeetingRow {
     source_status: record.source_status,
     last_checked_date: record.last_checked_date,
     live_media: liveMedia,
+    live_media_links: liveMediaLinks,
   };
 }
 

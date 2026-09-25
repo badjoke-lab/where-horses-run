@@ -132,30 +132,42 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
 
       for (const row of rows()) {
         if (!(row instanceof HTMLElement)) continue;
-        const detectorId = row.dataset.liveDetectorId || '';
-        const entry = byDetectorId.get(detectorId);
         const sourceDate = row.dataset.sourceDate || row.dataset.date || '';
-        const detectorStatus = entry?.status === 'live' || entry?.status === 'upcoming' || entry?.status === 'ended' || entry?.status === 'offline'
-          ? entry.status
-          : 'unknown';
-        const eventDate = typeof entry?.event_date === 'string' ? entry.event_date : '';
-        const state = deriveMeetingStreamState({
-          hasOfficialDestination: row.dataset.liveAvailable === 'true',
-          detectorStatus,
-          eventDate,
-          sourceDate,
-        });
-        row.dataset.streamState = state;
-        if (state === 'live') hasLiveMeeting = true;
+        const streamNodes = [...row.querySelectorAll('[data-stream-media]')]
+          .filter((node) => node instanceof HTMLElement);
+        let rowLive = false;
 
-        const link = row.querySelector('[data-live-link]');
-        if (link instanceof HTMLAnchorElement) {
-          const defaultHref = link.dataset.liveDefaultHref || link.href;
-          link.href = defaultHref;
-          link.textContent = state === 'live'
-            ? (isJa ? '● 公式配信中 ↗' : '● Live now ↗')
-            : (isJa ? '公式配信 ↗' : 'Official stream ↗');
+        for (const streamNode of streamNodes) {
+          if (!(streamNode instanceof HTMLElement)) continue;
+          const detectorId = streamNode.dataset.streamDetectorId || '';
+          const entry = detectorId ? byDetectorId.get(detectorId) : null;
+          const detectorStatus = entry?.status === 'live' || entry?.status === 'upcoming' || entry?.status === 'ended' || entry?.status === 'offline'
+            ? entry.status
+            : 'unknown';
+          const eventDate = typeof entry?.event_date === 'string' ? entry.event_date : '';
+          const state = deriveMeetingStreamState({
+            hasOfficialDestination: true,
+            detectorStatus,
+            eventDate,
+            sourceDate,
+          });
+          streamNode.dataset.streamState = state;
+          if (state === 'live') rowLive = true;
+
+          const link = streamNode.querySelector('[data-live-link]');
+          if (link instanceof HTMLAnchorElement) {
+            const defaultHref = link.dataset.liveDefaultHref || link.href;
+            const defaultLabel = link.dataset.liveDefaultLabel || link.textContent || '';
+            const activeLabel = link.dataset.liveActiveLabel || defaultLabel;
+            link.href = defaultHref;
+            link.textContent = state === 'live' ? activeLabel : defaultLabel;
+          }
         }
+
+        row.dataset.streamState = rowLive
+          ? 'live'
+          : (row.dataset.liveAvailable === 'true' ? 'known' : 'unknown');
+        if (rowLive) hasLiveMeeting = true;
       }
 
       setLiveOptionAvailability(hasLiveMeeting);

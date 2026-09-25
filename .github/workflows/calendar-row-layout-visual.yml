@@ -4,12 +4,20 @@ on:
   pull_request:
     paths:
       - 'src/components/TimetableMeetingList.astro'
+      - 'src/components/CalendarFilters.astro'
+      - 'src/components/MeetingLiveStatusRuntime.astro'
+      - 'src/data/timetableMeetingRows.ts'
+      - 'src/data/racingMediaLinks.ts'
+      - 'functions/api/live-status.js'
       - 'src/components/MeetingStatePolicy.astro'
       - 'src/components/MeetingTimezoneProjection.astro'
       - 'src/pages/timetable/meetings/**'
       - 'src/pages/ja/timetable/meetings/**'
       - 'src/styles/meeting-list-compact-v1.css'
       - 'scripts/check-calendar-row-layout-visual.mjs'
+      - 'scripts/check-calendar-all-stream-links-visual.mjs'
+      - 'scripts/check-calendar-stream-brand-regressions.mjs'
+      - 'scripts/check-meeting-stream-state.mjs'
       - 'scripts/check-meeting-detail-layout-visual.mjs'
       - 'scripts/check-meeting-detail-public-view.mjs'
       - 'scripts/title-description-normalization-integration.mjs'
@@ -41,6 +49,11 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
+      - name: Validate Calendar stream contracts
+        run: |
+          node scripts/check-calendar-stream-brand-regressions.mjs
+          node scripts/check-meeting-stream-state.mjs
+
       - name: Validate meeting detail public view
         run: node scripts/check-meeting-detail-public-view.mjs
 
@@ -69,6 +82,7 @@ jobs:
             exit 1
           fi
           node scripts/check-calendar-row-layout-visual.mjs
+          node scripts/check-calendar-all-stream-links-visual.mjs
           node scripts/check-meeting-detail-layout-visual.mjs
 
       - name: Upload visual evidence

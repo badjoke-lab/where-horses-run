@@ -105,7 +105,7 @@ try {
             }
 
             const actionSelectors = {
-              stream: '.meeting-row__links > [data-live-link]',
+              stream: '.meeting-row__links > .meeting-row__streams',
               details: '.meeting-row__links > a:not([target])',
               source: '.meeting-row__links > a[target]:not([data-live-link])',
             };

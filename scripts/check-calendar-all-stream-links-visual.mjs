@@ -19,23 +19,29 @@ const inspect = async (page, pathname, lang) => {
     const normalize = (value) => String(value || '').replace(/\s+/g, ' ').trim();
     return [...document.querySelectorAll('[data-calendar-meeting-row]')]
       .filter((row) => row instanceof HTMLElement)
-      .map((row) => {
-        const link = row.querySelector('[data-live-link]');
-        if (!(link instanceof HTMLAnchorElement)) return null;
-        const style = getComputedStyle(link);
-        return {
-          meeting_id: row.dataset.meetingId || '',
-          date: row.dataset.sourceDate || row.dataset.date || '',
-          racecourse: row.dataset.racecourse || '',
-          stream_state: row.dataset.streamState || 'unknown',
-          text: normalize(link.textContent),
-          href: link.href,
-          default_href: link.dataset.liveDefaultHref || '',
-          background: style.backgroundColor,
-          color: style.color,
-        };
-      })
-      .filter(Boolean);
+      .flatMap((row) => [...row.querySelectorAll('[data-stream-media]')]
+        .filter((stream) => stream instanceof HTMLElement)
+        .map((stream) => {
+          const link = stream.querySelector('[data-live-link]');
+          if (!(link instanceof HTMLAnchorElement)) return null;
+          const style = getComputedStyle(link);
+          return {
+            meeting_id: row.dataset.meetingId || '',
+            date: row.dataset.sourceDate || row.dataset.date || '',
+            racecourse: row.dataset.racecourse || '',
+            row_stream_state: row.dataset.streamState || 'unknown',
+            stream_state: stream.dataset.streamState || 'known',
+            detector_id: stream.dataset.streamDetectorId || '',
+            text: normalize(link.textContent),
+            href: link.href,
+            default_href: link.dataset.liveDefaultHref || '',
+            default_label: link.dataset.liveDefaultLabel || '',
+            active_label: link.dataset.liveActiveLabel || '',
+            background: style.backgroundColor,
+            color: style.color,
+          };
+        })
+        .filter(Boolean));
   });
 
   const failures = [];
@@ -48,10 +54,8 @@ const inspect = async (page, pathname, lang) => {
     if (item.default_href && item.href !== item.default_href) {
       failures.push(`${item.meeting_id}: stream href diverged from reviewed landing URL`);
     }
-    const expected = lang === 'ja'
-      ? (live ? '● 公式配信中 ↗' : '公式配信 ↗')
-      : (live ? '● Live now ↗' : 'Official stream ↗');
-    if (item.text !== expected) {
+    const expected = live ? item.active_label : item.default_label;
+    if (expected && item.text !== expected) {
       failures.push(`${item.meeting_id}: stream label ${JSON.stringify(item.text)} expected ${JSON.stringify(expected)}`);
     }
   }

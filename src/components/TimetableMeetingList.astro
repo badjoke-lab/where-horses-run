@@ -1,5 +1,6 @@
 ---
 import type { TimetableMeetingDayGroup, TimetableMeetingRow } from '../data/timetableMeetingRows';
+import type { RacingMediaLink } from '../data/racingMediaLinks';
 import { getTimetableDateContext } from '../data/timetableMeetingRows';
 import { getCountries, getRacecourses } from '../lib/data';
 import { evaluatePublicFreshness } from '../lib/timetable/publicFreshnessState.mjs';
@@ -95,28 +96,25 @@ const timeZoneOptions = [
   { value: 'UTC', label: 'UTC — UTC+00:00' },
 ];
 
-const narLiveDetectorByRacecourseId: Record<string, string> = {
-  'monbetsu-racecourse': 'nar-monbetsu-youtube-live-2026',
-  'morioka-racecourse': 'nar-iwate-youtube-live-2026',
-  'mizusawa-racecourse': 'nar-iwate-youtube-live-2026',
-  'urawa-racecourse': 'nar-urawa-youtube-live-2026',
-  'funabashi-racecourse': 'nar-funabashi-youtube-live-2026',
-  'oi-racecourse': 'nar-oi-youtube-live-2026',
-  'kawasaki-racecourse': 'nar-kawasaki-youtube-live-2026',
-  'kanazawa-racecourse': 'nar-kanazawa-youtube-live-2026',
-  'kasamatsu-racecourse': 'nar-kasamatsu-youtube-live-2026',
-  'nagoya-racecourse': 'nar-nagoya-youtube-live-2026',
-  'sonoda-racecourse': 'nar-hyogo-youtube-live-2026',
-  'himeji-racecourse': 'nar-hyogo-youtube-live-2026',
-  'kochi-racecourse': 'nar-kochi-youtube-live-2026',
-  'saga-racecourse': 'nar-saga-youtube-live-2026',
-};
-const liveDetectorIdFor = (record: TimetableMeetingRow) => {
-  if (record.authority_id === 'jra') return 'jra-youtube-live-2026';
-  if (record.authority_id === 'banei-tokachi' && record.racecourse_id === 'obihiro-racecourse') return 'banei-youtube-live-2026';
-  if (record.authority_id === 'nar-local-government-racing') return narLiveDetectorByRacecourseId[record.racecourse_id] ?? '';
-  return '';
-};
+const runtimeLiveDetectorIds = new Set([
+  'jra-youtube-live-2026',
+  'banei-youtube-live-2026',
+  'nar-monbetsu-youtube-live-2026',
+  'nar-iwate-youtube-live-2026',
+  'nar-urawa-youtube-live-2026',
+  'nar-funabashi-youtube-live-2026',
+  'nar-oi-youtube-live-2026',
+  'nar-kawasaki-youtube-live-2026',
+  'nar-kanazawa-youtube-live-2026',
+  'nar-kasamatsu-youtube-live-2026',
+  'nar-nagoya-youtube-live-2026',
+  'nar-hyogo-youtube-live-2026',
+  'nar-kochi-youtube-live-2026',
+  'nar-saga-youtube-live-2026',
+  'jcsa-youtube-live-2026',
+]);
+const liveDetectorIdForMedia = (media: RacingMediaLink) =>
+  runtimeLiveDetectorIds.has(media.id) ? media.id : '';
 const localizedDetailPath = (detailPath: string) => lang === 'ja' ? `/ja${detailPath}` : detailPath;
 const displayRacecourse = (record: TimetableMeetingRow) => getCalendarRacecourseDisplayName(record.racecourse_id, record.racecourse_name, lang);
 const displayAuthority = (record: TimetableMeetingRow) => getCalendarAuthorityDisplayName(record.authority_id, record.authority_label, lang);
@@ -127,12 +125,9 @@ const raceTime = (record: TimetableMeetingRow) => {
   if (record.first_race_time_local) return `${record.first_race_time_local}–`;
   return '—';
 };
-const mediaTitle = (record: TimetableMeetingRow) => {
-  if (!record.live_media) return undefined;
-  return lang === 'ja'
-    ? record.live_media.access_note_ja ?? `${record.live_media.provider_label}の公式配信ページ`
-    : record.live_media.access_note_en ?? `Official stream page from ${record.live_media.provider_label}`;
-};
+const mediaTitle = (media: RacingMediaLink) => lang === 'ja'
+  ? media.access_note_ja ?? `${media.provider_label}の公式配信ページ`
+  : media.access_note_en ?? `Official stream page from ${media.provider_label}`;
 const mediaBadgeLabels = lang === 'ja'
   ? {
       free: '無料',
@@ -156,12 +151,28 @@ const mediaBadgeLabels = lang === 'ja'
       feature_only: 'FEATURE ONLY',
       seasonal: 'SEASONAL',
     };
-const mediaBadges = (record: TimetableMeetingRow) => {
-  if (!record.live_media) return [];
-  return record.live_media.access_tags
+const mediaBadges = (media: RacingMediaLink) => {
+  const accessBadges = media.access_tags
     .map((tag) => mediaBadgeLabels[tag])
     .filter(Boolean);
+  const coverageBadge = media.coverage === 'all_meetings'
+    ? null
+    : mediaBadgeLabels[media.coverage];
+  return coverageBadge ? [...accessBadges, coverageBadge] : accessBadges;
 };
+const mediaDisplayName = (media: RacingMediaLink, multiple: boolean) => {
+  if (!multiple) return lang === 'ja' ? '公式配信' : 'Official stream';
+  if (lang === 'ja' && media.calendar_label_ja) return media.calendar_label_ja;
+  if (lang !== 'ja' && media.calendar_label_en) return media.calendar_label_en;
+  if (media.platform === 'youtube') return 'YouTube';
+  return media.provider_label;
+};
+const mediaDefaultLabel = (media: RacingMediaLink, multiple: boolean) =>
+  `${mediaDisplayName(media, multiple)} ↗`;
+const mediaLiveLabel = (media: RacingMediaLink, multiple: boolean) =>
+  multiple
+    ? `● ${mediaDisplayName(media, true)} LIVE ↗`
+    : (lang === 'ja' ? '● 公式配信中 ↗' : '● Live now ↗');
 const isMeetingStateEligible = (record: TimetableMeetingRow) =>
   Boolean(record.first_race_time_local && record.last_race_time_local);
 const hasStaleRecords = groups.some((group) => group.records.some((record) => freshnessFor(record).status === 'stale'));
@@ -199,7 +210,11 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
           {group.records.map((record) => {
             const racecourse = displayRacecourse(record);
             const racecourseSearch = getCalendarRacecourseSearchAliases(record.racecourse_id, record.racecourse_name).join(' | ');
-            const liveDetectorId = liveDetectorIdFor(record);
+            const liveMediaLinks = record.live_media_links;
+            const multipleLiveMedia = liveMediaLinks.length > 1;
+            const primaryLiveDetectorId = liveMediaLinks
+              .map((media) => liveDetectorIdForMedia(media))
+              .find(Boolean) ?? '';
             const racecourseHref = racecourseHrefFor(record);
             const countryHref = countryHrefFor(record);
             const countryLabel = displayCountry(record);
@@ -218,14 +233,15 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
                 data-country={record.country_id}
                 data-authority={record.authority_id}
                 data-rank={record.capability_rank}
-                data-live-available={String(record.live_media !== null)}
+                data-live-available={String(liveMediaLinks.length > 0)}
                 data-live-platform={record.live_media?.platform ?? ''}
                 data-live-provider={record.live_media?.provider_label ?? ''}
                 data-live-access={record.live_media?.access ?? ''}
                 data-live-access-tags={record.live_media?.access_tags.join(',') ?? ''}
                 data-live-coverage={record.live_media?.coverage ?? ''}
                 data-media-id={record.live_media?.id ?? ''}
-                data-live-detector-id={liveDetectorId}
+                data-live-media-count={String(liveMediaLinks.length)}
+                data-live-detector-id={primaryLiveDetectorId}
                 data-meeting-state-eligible={String(isMeetingStateEligible(record))}
                 data-meeting-state="unknown"
                 data-meeting-presentation-state="unknown"
@@ -246,12 +262,35 @@ const hasStaleRecords = groups.some((group) => group.records.some((record) => fr
                   <span class="meeting-row__meeting-badge meeting-row__meeting-badge--ended" data-meeting-ended-badge hidden>{text.meetingEnded}</span>
                 </div>
                 <div class="meeting-row__links">
-                  {record.live_media && (
-                    <span class="meeting-row__stream">
-                      <a href={record.live_media.landing_url} target="_blank" rel="noopener noreferrer" title={mediaTitle(record)} data-live-link data-live-default-href={record.live_media.landing_url}>{text.officialStream}</a>
-                      <small class="meeting-row__stream-access" aria-label={lang === 'ja' ? '配信条件' : 'Stream access'}>
-                        {mediaBadges(record).join(lang === 'ja' ? '・' : ' · ')}
-                      </small>
+                  {liveMediaLinks.length > 0 && (
+                    <span class="meeting-row__streams">
+                      {liveMediaLinks.map((media) => {
+                        const detectorId = liveDetectorIdForMedia(media);
+                        const defaultLabel = mediaDefaultLabel(media, multipleLiveMedia);
+                        const activeLabel = mediaLiveLabel(media, multipleLiveMedia);
+                        return (
+                          <span
+                            class="meeting-row__stream"
+                            data-stream-media
+                            data-stream-detector-id={detectorId}
+                            data-stream-state="known"
+                          >
+                            <a
+                              href={media.landing_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title={mediaTitle(media)}
+                              data-live-link
+                              data-live-default-href={media.landing_url}
+                              data-live-default-label={defaultLabel}
+                              data-live-active-label={activeLabel}
+                            >{defaultLabel}</a>
+                            <small class="meeting-row__stream-access" aria-label={lang === 'ja' ? '配信条件' : 'Stream access'}>
+                              {mediaBadges(media).join(lang === 'ja' ? '・' : ' · ')}
+                            </small>
+                          </span>
+                        );
+                      })}
                     </span>
                   )}
                   {record.detail_path && <a href={localizedDetailPath(record.detail_path)}>{text.detail}</a>}

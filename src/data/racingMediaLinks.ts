@@ -28,6 +28,9 @@ export type RacingMediaLink = {
   access_tags: readonly RacingMediaAccessTag[];
   provider: RacingMediaProvider;
   provider_label: string;
+  calendar_label_en?: string;
+  calendar_label_ja?: string;
+  display_order?: number;
   platform: RacingMediaPlatform;
   delivery: RacingMediaDelivery;
   authority_id: string;
@@ -440,24 +443,51 @@ export const reviewedRacingMediaLinks: readonly RacingMediaLink[] = [
     access_note_ja: 'モンテリコ競馬場公式Webライブ',
   },
   {
-    id: 'jcsa-live-2026',
+    id: 'jcsa-dazn-live-2026',
     kind: 'live',
     scope: 'authority',
     coverage: 'all_meetings',
     access: 'open',
     access_tags: ['free'],
-    provider: 'authority',
-    provider_label: 'JCSA',
-    platform: 'official_web',
+    provider: 'broadcaster',
+    provider_label: 'DAZN',
+    calendar_label_en: 'DAZN',
+    calendar_label_ja: 'DAZN',
+    display_order: 10,
+    platform: 'broadcaster_web',
     delivery: 'link',
     authority_id: 'jockey-club-of-saudi-arabia',
-    landing_url: 'https://www.jcsa.sa/en/racing/live-racing-stream/watch-live/',
+    landing_url: 'https://www.dazn.com/competition/competition:1adrk4o9v4x9316vgfndane2zu',
     evidence_url: 'https://www.jcsa.sa/en/racing/live-racing-stream/watch-live/',
-    verified_at: '2026-09-23',
+    verified_at: '2026-09-25',
     label_en: 'Official live',
     label_ja: '公式ライブ',
-    access_note_en: 'JCSA lists free live viewing and links to DAZN and YouTube for Saudi racing.',
-    access_note_ja: 'JCSA公式。サウジ競馬を無料視聴できるDAZN・YouTubeへの導線を掲載',
+    access_note_en: 'JCSA states that every race is available live for free on DAZN.',
+    access_note_ja: 'JCSA公式案内では全レースをDAZNで無料ライブ配信',
+  },
+  {
+    id: 'jcsa-youtube-live-2026',
+    kind: 'live',
+    scope: 'authority',
+    coverage: 'selected_meetings',
+    access: 'open',
+    access_tags: ['free'],
+    provider: 'authority',
+    provider_label: 'JCSA YouTube',
+    calendar_label_en: 'YouTube',
+    calendar_label_ja: 'YouTube',
+    display_order: 20,
+    platform: 'youtube',
+    delivery: 'link',
+    authority_id: 'jockey-club-of-saudi-arabia',
+    landing_url: 'https://www.youtube.com/@JockeyClub_SA/streams',
+    evidence_url: 'https://www.jcsa.sa/en/racing/live-racing-stream/watch-live/',
+    verified_at: '2026-09-25',
+    label_en: 'Official live',
+    label_ja: '公式ライブ',
+    youtube_channel_id: 'UC4xAL1Lid7vrrm-xtxyyvwA',
+    access_note_en: 'Official JCSA YouTube live route. JCSA confirms YouTube live viewing, but this review does not claim every meeting is carried there.',
+    access_note_ja: 'JCSA公式YouTubeライブ。公式にライブ視聴導線は確認済みですが、全開催配信とは断定しません',
   },
   {
     id: 'france-galop-equidia-live-2026',
