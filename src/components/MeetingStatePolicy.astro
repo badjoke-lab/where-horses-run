@@ -265,8 +265,8 @@
     box-shadow: none !important;
   }
 
-  .meeting-row[data-stream-state='unknown'] [data-live-link],
-  .meeting-row[data-stream-state='known'] [data-live-link] {
+  .meeting-row[data-stream-state='unknown'] [data-live-link]:not([data-live-role]),
+  .meeting-row[data-stream-state='known'] [data-live-link]:not([data-live-role]) {
     background: transparent !important;
     border-radius: 0 !important;
     color: inherit !important;

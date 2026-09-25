@@ -105,9 +105,10 @@ try {
             }
 
             const actionSelectors = {
-              stream: '.meeting-row__links > [data-live-link]',
-              details: '.meeting-row__links > a:not([target])',
-              source: '.meeting-row__links > a[target]:not([data-live-link])',
+              stream: '.meeting-row__links > .meeting-row__stream--single, .meeting-row__links > .meeting-row__watch-menu',
+              details: '.meeting-row__links > .meeting-row__detail-link',
+              map: '.meeting-row__links > .meeting-row__map-focus',
+              source: '.meeting-row__links > .meeting-row__official-link',
             };
             checks.action_spread_px = {};
             for (const [name, selector] of Object.entries(actionSelectors)) {
@@ -158,6 +159,12 @@ try {
                 if (systemRect.top + tolerance < identityRect.bottom) failures.push('mobile system row overlaps identity row');
                 if (Math.abs(timeRect.top - statusRect.top) > 8) failures.push('mobile time and status are not on the same row');
                 if (actionsRect.top + tolerance < Math.max(timeRect.bottom, statusRect.bottom)) failures.push('mobile actions overlap time/status row');
+                const mapAction = first.querySelector('.meeting-row__links > .meeting-row__map-focus');
+                if (!(mapAction instanceof HTMLElement)) failures.push('mobile Map action is not in the action row');
+                const timeEmptyRows = rows.filter((row) => row instanceof HTMLElement && row.querySelector('.meeting-row__time[data-time-empty="true"]'));
+                if (timeEmptyRows.some((row) => (row.querySelector('.meeting-row__time')?.textContent || '').trim() === '—')) {
+                  failures.push('time-empty rows must not render a dash placeholder');
+                }
               }
             }
           }

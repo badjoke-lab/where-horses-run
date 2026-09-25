@@ -560,3 +560,352 @@
     margin: 0 !important;
   }
 }
+
+
+/* Calendar Watch consolidation: provider count stays bounded in the row. */
+.timetable-timezone-projection .meeting-row__country-flag {
+  display: inline-block;
+  flex: 0 0 auto;
+  margin-inline-end: 0.28rem;
+  font-size: 1rem;
+  line-height: 1;
+  vertical-align: -0.08em;
+}
+
+.timetable-timezone-projection .meeting-row__watch-menu {
+  position: relative;
+  min-width: 0;
+}
+
+.timetable-timezone-projection .meeting-row__watch-summary,
+.timetable-timezone-projection .meeting-row__watch-direct {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px !important;
+  max-width: 100%;
+  padding: 0.16rem 0.5rem !important;
+  border: 1px solid rgba(7, 35, 69, 0.22) !important;
+  border-radius: 0.38rem !important;
+  background: #fff !important;
+  color: var(--whr-color-navy) !important;
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+  text-decoration: none !important;
+  white-space: normal;
+  text-align: center;
+  cursor: pointer;
+}
+
+.timetable-timezone-projection .meeting-row__watch-summary {
+  list-style: none;
+}
+
+.timetable-timezone-projection .meeting-row__watch-summary::-webkit-details-marker {
+  display: none;
+}
+
+.timetable-timezone-projection .meeting-row[data-stream-state='live'] .meeting-row__watch-summary {
+  border-color: #a40000 !important;
+  background: #fff0ef !important;
+  color: #9d0000 !important;
+}
+
+.timetable-timezone-projection .meeting-row__stream[data-stream-state='live'] .meeting-row__watch-direct {
+  border-color: #a40000 !important;
+  background: #fff0ef !important;
+  color: #9d0000 !important;
+}
+
+.timetable-timezone-projection .meeting-row__watch-panel {
+  position: absolute;
+  inset-block-start: calc(100% + 0.35rem);
+  inset-inline-start: auto;
+  inset-inline-end: 0;
+  z-index: 60;
+  width: min(31rem, 72vw);
+  padding: 0.65rem;
+  border: 1px solid rgba(7, 35, 69, 0.18);
+  border-radius: 0.55rem;
+  background: #fff;
+  box-shadow: 0 12px 30px rgba(7, 35, 69, 0.18);
+  color: var(--whr-color-navy);
+  white-space: normal;
+}
+
+.timetable-timezone-projection .meeting-row__watch-panel-head {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-block-end: 0.5rem;
+  border-block-end: 1px solid rgba(7, 35, 69, 0.12);
+}
+
+.timetable-timezone-projection .meeting-row__watch-panel-head > div {
+  display: grid;
+  gap: 0.08rem;
+  min-width: 0;
+}
+
+.timetable-timezone-projection .meeting-row__watch-panel-head small {
+  color: var(--whr-color-muted);
+  font-size: 0.66rem;
+  line-height: 1.3;
+}
+
+.timetable-timezone-projection .meeting-row__watch-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--whr-color-navy) 7%, #fff);
+  color: var(--whr-color-navy);
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.timetable-timezone-projection .meeting-row__watch-options {
+  display: grid;
+}
+
+.timetable-timezone-projection .meeting-row__watch-option {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.05rem;
+  border-block-end: 1px solid rgba(7, 35, 69, 0.1);
+}
+
+.timetable-timezone-projection .meeting-row__watch-option:last-child {
+  border-block-end: 0;
+}
+
+.timetable-timezone-projection .meeting-row__watch-provider {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.45rem;
+  min-width: 0;
+}
+
+.timetable-timezone-projection .meeting-row__watch-provider strong {
+  font-size: 0.78rem;
+}
+
+.timetable-timezone-projection .meeting-row__watch-provider small {
+  color: var(--whr-color-muted);
+  font-size: 0.62rem;
+  font-weight: 750;
+}
+
+.timetable-timezone-projection .meeting-row__watch-live {
+  color: #b00000;
+  font-size: 0.66rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.timetable-timezone-projection .meeting-row__watch-live[hidden] {
+  display: none !important;
+}
+
+.timetable-timezone-projection .meeting-row__watch-option > a[data-live-link] {
+  min-height: 28px;
+  padding: 0.15rem 0.45rem !important;
+  border: 1px solid rgba(7, 35, 69, 0.18) !important;
+  border-radius: 0.38rem !important;
+  background: #fff !important;
+  color: var(--whr-color-navy) !important;
+  font-size: 0.68rem !important;
+  font-weight: 800 !important;
+  text-decoration: none !important;
+}
+
+@media (min-width: 1024px) {
+  .timetable-timezone-projection .meeting-list__columns-actions,
+  .timetable-timezone-projection .meeting-row__links {
+    grid-template-columns:
+      minmax(8rem, 1.45fr)
+      minmax(3.8rem, 0.62fr)
+      minmax(3.4rem, 0.56fr)
+      minmax(4.8rem, 0.82fr) !important;
+  }
+
+  .timetable-timezone-projection .meeting-row__links > .meeting-row__stream--single,
+  .timetable-timezone-projection .meeting-row__links > .meeting-row__watch-menu {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  .timetable-timezone-projection .meeting-row__links > .meeting-row__detail-link {
+    grid-column: 2 !important;
+    justify-self: start;
+  }
+
+  .timetable-timezone-projection .meeting-row__links > .meeting-row__map-focus {
+    grid-column: 3 !important;
+    justify-self: start;
+  }
+
+  .timetable-timezone-projection .meeting-row__links > .meeting-row__official-link {
+    grid-column: 4 !important;
+    justify-self: start;
+  }
+}
+
+@media (max-width: 1023px) {
+  .timetable-timezone-projection .meeting-row {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    grid-template-rows: auto auto minmax(1.4rem, auto) auto !important;
+    align-items: start !important;
+    padding: 0.48rem 0.5rem !important;
+    gap: 0.12rem 0.55rem !important;
+  }
+
+  .timetable-timezone-projection .meeting-row__identity {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    min-width: 0;
+  }
+
+  .timetable-timezone-projection .meeting-row__rank {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    justify-self: end;
+  }
+
+  .timetable-timezone-projection .meeting-row__system {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    margin: 0 !important;
+    line-height: 1.24 !important;
+  }
+
+  .timetable-timezone-projection .meeting-row__time {
+    grid-column: 1 !important;
+    grid-row: 3 !important;
+    justify-self: start !important;
+    align-self: center;
+    min-height: 1.25rem;
+    margin: 0 !important;
+    font-size: 0.72rem !important;
+    line-height: 1.2 !important;
+    white-space: nowrap;
+  }
+
+  .timetable-timezone-projection .meeting-row__time[data-time-empty='true'] {
+    visibility: hidden;
+  }
+
+  .timetable-timezone-projection .meeting-row__status {
+    grid-column: 2 !important;
+    grid-row: 3 !important;
+    justify-content: flex-end;
+    justify-self: end;
+    align-self: center;
+  }
+
+  .timetable-timezone-projection .meeting-row__links {
+    grid-column: 1 / -1 !important;
+    grid-row: 4 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.8fr) minmax(3.2rem, 0.9fr) minmax(2.9rem, 0.75fr) minmax(4.5rem, 1.2fr) !important;
+    align-items: stretch;
+    gap: 0.3rem !important;
+    margin-block-start: 0.15rem;
+    white-space: normal !important;
+  }
+
+  .timetable-timezone-projection .meeting-row__links > .meeting-row__stream--single,
+  .timetable-timezone-projection .meeting-row__links > .meeting-row__watch-menu {
+    grid-column: 1;
+    min-width: 0;
+  }
+
+  .timetable-timezone-projection .meeting-row__links > .meeting-row__detail-link {
+    grid-column: 2;
+  }
+
+  .timetable-timezone-projection .meeting-row__links > .meeting-row__map-focus {
+    grid-column: 3;
+  }
+
+  .timetable-timezone-projection .meeting-row__links > .meeting-row__official-link {
+    grid-column: 4;
+  }
+
+  .timetable-timezone-projection .meeting-row__watch-summary,
+  .timetable-timezone-projection .meeting-row__watch-direct,
+  .timetable-timezone-projection .meeting-row__links > .meeting-row__detail-link,
+  .timetable-timezone-projection .meeting-row__links > .meeting-row__official-link,
+  .timetable-timezone-projection .meeting-row__links > .meeting-row__map-focus {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 30px !important;
+    padding: 0.14rem 0.3rem !important;
+    border: 1px solid rgba(7, 35, 69, 0.18) !important;
+    border-radius: 0.38rem !important;
+    background: #fff !important;
+    color: var(--whr-color-navy) !important;
+    font-size: 0.61rem !important;
+    font-weight: 750 !important;
+    line-height: 1.12 !important;
+    text-align: center;
+    white-space: normal;
+  }
+
+  .timetable-timezone-projection .meeting-row__watch-summary,
+  .timetable-timezone-projection .meeting-row__watch-direct {
+    font-size: 0.59rem !important;
+  }
+
+  .timetable-timezone-projection .meeting-row__watch-menu[open]::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 79;
+    background: rgba(7, 21, 38, 0.32);
+  }
+
+  .timetable-timezone-projection .meeting-row__watch-panel {
+    position: fixed;
+    inset-inline: 0;
+    inset-block: auto 0;
+    z-index: 80;
+    width: 100%;
+    max-height: min(72vh, 36rem);
+    overflow: auto;
+    padding: 0.8rem 0.85rem max(1rem, env(safe-area-inset-bottom));
+    border: 0;
+    border-block-start: 1px solid rgba(7, 35, 69, 0.16);
+    border-radius: 0.8rem 0.8rem 0 0;
+    box-shadow: 0 -12px 30px rgba(7, 35, 69, 0.2);
+  }
+
+  .timetable-timezone-projection .meeting-row__watch-panel-head small {
+    font-size: 0.66rem;
+  }
+
+  .timetable-timezone-projection .meeting-row__watch-option {
+    padding-block: 0.65rem;
+  }
+
+  .timetable-timezone-projection .meeting-row__watch-provider strong {
+    font-size: 0.82rem;
+  }
+
+  .timetable-timezone-projection .meeting-row__watch-provider small {
+    font-size: 0.64rem;
+  }
+}

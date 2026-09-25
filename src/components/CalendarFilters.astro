@@ -132,29 +132,52 @@ const ranks = ['A+', 'A', 'B+', 'B', 'C'].filter((rank) => records.some((record)
 
       for (const row of rows()) {
         if (!(row instanceof HTMLElement)) continue;
-        const detectorId = row.dataset.liveDetectorId || '';
-        const entry = byDetectorId.get(detectorId);
         const sourceDate = row.dataset.sourceDate || row.dataset.date || '';
-        const detectorStatus = entry?.status === 'live' || entry?.status === 'upcoming' || entry?.status === 'ended' || entry?.status === 'offline'
-          ? entry.status
-          : 'unknown';
-        const eventDate = typeof entry?.event_date === 'string' ? entry.event_date : '';
-        const state = deriveMeetingStreamState({
-          hasOfficialDestination: row.dataset.liveAvailable === 'true',
-          detectorStatus,
-          eventDate,
-          sourceDate,
-        });
-        row.dataset.streamState = state;
-        if (state === 'live') hasLiveMeeting = true;
+        let rowIsLive = false;
 
-        const link = row.querySelector('[data-live-link]');
-        if (link instanceof HTMLAnchorElement) {
+        row.querySelectorAll('[data-live-link]').forEach((link) => {
+          if (!(link instanceof HTMLAnchorElement)) return;
+          const detectorId = link.dataset.liveDetectorId || '';
+          const entry = detectorId ? byDetectorId.get(detectorId) : null;
+          const detectorStatus = entry?.status === 'live' || entry?.status === 'upcoming' || entry?.status === 'ended' || entry?.status === 'offline'
+            ? entry.status
+            : 'unknown';
+          const eventDate = typeof entry?.event_date === 'string' ? entry.event_date : '';
+          const state = deriveMeetingStreamState({
+            hasOfficialDestination: true,
+            detectorStatus,
+            eventDate,
+            sourceDate,
+          });
+          const isLive = state === 'live';
+          const route = link.closest('[data-media-route]');
+          if (route instanceof HTMLElement) {
+            route.dataset.streamState = state;
+            const indicator = route.querySelector('[data-provider-live-indicator]');
+            if (indicator instanceof HTMLElement) indicator.hidden = !isLive;
+          }
+
           const defaultHref = link.dataset.liveDefaultHref || link.href;
+          const defaultLabel = link.dataset.liveDefaultLabel || link.textContent || '';
+          const liveLabel = link.dataset.liveLiveLabel || defaultLabel;
           link.href = defaultHref;
-          link.textContent = state === 'live'
-            ? (isJa ? '● 公式配信中 ↗' : '● Live now ↗')
-            : (isJa ? '公式配信 ↗' : 'Official stream ↗');
+          link.textContent = isLive ? liveLabel : defaultLabel;
+          if (isLive) rowIsLive = true;
+        });
+
+        row.dataset.streamState = rowIsLive
+          ? 'live'
+          : row.dataset.liveAvailable === 'true' ? 'known' : 'unknown';
+        if (rowIsLive) hasLiveMeeting = true;
+
+        const watchSummaryLabel = row.querySelector('[data-watch-summary-label]');
+        if (watchSummaryLabel instanceof HTMLElement) {
+          const summary = watchSummaryLabel.closest('[data-watch-summary]');
+          if (summary instanceof HTMLElement) {
+            const defaultLabel = summary.dataset.watchDefaultLabel || watchSummaryLabel.textContent || '';
+            const liveLabel = summary.dataset.watchLiveLabel || defaultLabel;
+            watchSummaryLabel.textContent = rowIsLive ? liveLabel : defaultLabel;
+          }
         }
       }
 
