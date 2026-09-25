@@ -2586,26 +2586,28 @@
         "surface": false,
         "course": false
       },
-      "source_format": "html",
+      "source_format": "html+pdf",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "seasonal",
-        "manual"
+        "annual",
+        "rolling"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when MASAF changes the national gallop calendar structure.",
+      "checked_date": "2026-09-25",
+      "evidence_reviewed_at": "2026-09-25",
+      "revalidation_trigger": "Revalidate when MASAF changes the 2026 normative index, calendar modification detail-page pattern, ALLEGATO n. 1 PDF structure, or the national racecourse/code layout.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/43-italy/final-summary.json",
       "limitations": [
-        "Reusable race times are not established."
+        "Current technical capability is C: meeting date, physical racecourse and gallop/trot context only.",
+        "Reusable first-race and per-race post times are not established.",
+        "Source omission, acquisition failure or parser failure is not non-running evidence."
       ],
-      "notes": "Manual C-level decision for the MASAF gallop calendar."
+      "notes": "Automatic C-level production route for the MASAF gallop calendar. GitHub Actions discovers the latest official 2026 modification and parses ALLEGATO n. 1; the two racing contexts remain separate. Calendar identities use All-Tier Racecourse Master IDs while readiness.racecourse_ids stays empty until those IDs are promoted into the repository racecourse-page master."
     },
     {
       "readiness_id": "italy--italy-masaf-trot-system--masaf-calendar-2026",
@@ -2629,26 +2631,28 @@
         "surface": false,
         "course": false
       },
-      "source_format": "html",
+      "source_format": "html+pdf",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "seasonal",
-        "manual"
+        "annual",
+        "rolling"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when MASAF changes the national trot calendar structure.",
+      "checked_date": "2026-09-25",
+      "evidence_reviewed_at": "2026-09-25",
+      "revalidation_trigger": "Revalidate when MASAF changes the 2026 normative index, calendar modification detail-page pattern, ALLEGATO n. 1 PDF structure, or the national racecourse/code layout.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/43-italy/final-summary.json",
       "limitations": [
-        "Reusable race times are not established."
+        "Current technical capability is C: meeting date, physical racecourse and gallop/trot context only.",
+        "Reusable first-race and per-race post times are not established.",
+        "Source omission, acquisition failure or parser failure is not non-running evidence."
       ],
-      "notes": "Manual C-level decision for the MASAF trot calendar."
+      "notes": "Automatic C-level production route for the MASAF trot calendar. GitHub Actions discovers the latest official 2026 modification and parses ALLEGATO n. 1; the two racing contexts remain separate. Calendar identities use All-Tier Racecourse Master IDs while readiness.racecourse_ids stays empty until those IDs are promoted into the repository racecourse-page master."
     },
     {
       "readiness_id": "spain--spain-reviewed-gallop-system--zarzuela-programme-2026",
@@ -5436,5 +5440,5 @@
       "notes": "Date-specific Bahrain Turf Club racecard navigation supplies complete per-race post times through public rank A."
     }
   ],
-  "last_updated": "2026-09-24"
+  "last_updated": "2026-09-25"
 }
