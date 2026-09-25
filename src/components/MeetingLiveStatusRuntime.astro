@@ -5,21 +5,18 @@
     const rows = () => [...document.querySelectorAll('[data-calendar-meeting-row]')]
       .filter((row) => row instanceof HTMLElement && row.dataset.liveAvailable === 'true');
 
-    const streamLabel = (live = false) => document.documentElement.lang === 'ja'
-      ? (live ? '● 公式配信中 ↗' : '公式配信 ↗')
-      : (live ? '● Live now ↗' : 'Official stream ↗');
-
     const resetRows = () => {
       rows().forEach((row) => {
         row.dataset.streamState = 'unknown';
         const badge = row.querySelector('[data-stream-live-badge]');
         if (badge instanceof HTMLElement) badge.hidden = true;
-        const link = row.querySelector('[data-live-link]');
-        if (link instanceof HTMLAnchorElement) {
+        row.querySelectorAll('[data-live-link]').forEach((link) => {
+          if (!(link instanceof HTMLAnchorElement)) return;
           const defaultHref = link.dataset.liveDefaultHref;
+          const defaultLabel = link.dataset.liveDefaultLabel;
           if (defaultHref) link.href = defaultHref;
-          link.textContent = streamLabel(false);
-        }
+          if (defaultLabel) link.textContent = defaultLabel;
+        });
       });
     };
 
@@ -32,24 +29,33 @@
       );
 
       rows().forEach((row) => {
-        const detectorId = row.dataset.liveDetectorId || '';
-        const entry = detectorId ? byDetectorId.get(detectorId) : null;
-        const rawState = ['live', 'upcoming', 'ended', 'offline'].includes(entry?.status) ? entry.status : 'unknown';
         const sourceDate = row.dataset.sourceDate || row.dataset.date || '';
-        const eventSpecific = rawState === 'live' || rawState === 'upcoming' || rawState === 'ended';
-        const dateMatches = typeof entry?.event_date === 'string' && entry.event_date === sourceDate;
-        const state = eventSpecific && !dateMatches ? 'unknown' : rawState;
-        row.dataset.streamState = state;
+        let rowIsLive = false;
+
+        row.querySelectorAll('[data-live-link]').forEach((link) => {
+          if (!(link instanceof HTMLAnchorElement)) return;
+          const detectorId = link.dataset.liveDetectorId || '';
+          const entry = detectorId ? byDetectorId.get(detectorId) : null;
+          const rawState = ['live', 'upcoming', 'ended', 'offline'].includes(entry?.status) ? entry.status : 'unknown';
+          const eventSpecific = rawState === 'live' || rawState === 'upcoming' || rawState === 'ended';
+          const dateMatches = typeof entry?.event_date === 'string' && entry.event_date === sourceDate;
+          const state = eventSpecific && !dateMatches ? 'unknown' : rawState;
+          const isLive = state === 'live' && dateMatches;
+          const route = link.closest('[data-media-route]');
+          if (route instanceof HTMLElement) route.dataset.streamState = state;
+
+          const defaultHref = link.dataset.liveDefaultHref || link.href;
+          const defaultLabel = link.dataset.liveDefaultLabel || link.textContent || '';
+          const liveLabel = link.dataset.liveLiveLabel || defaultLabel;
+          link.href = defaultHref;
+          link.textContent = isLive ? liveLabel : defaultLabel;
+          if (isLive) rowIsLive = true;
+        });
+
+        row.dataset.streamState = rowIsLive ? 'live' : 'unknown';
 
         const badge = row.querySelector('[data-stream-live-badge]');
-        if (badge instanceof HTMLElement) badge.hidden = state !== 'live';
-
-        const link = row.querySelector('[data-live-link]');
-        if (link instanceof HTMLAnchorElement) {
-          const defaultHref = link.dataset.liveDefaultHref || link.href;
-          link.href = defaultHref;
-          link.textContent = streamLabel(state === 'live' && dateMatches);
-        }
+        if (badge instanceof HTMLElement) badge.hidden = !rowIsLive;
       });
       window.dispatchEvent(new CustomEvent('whr:streamstatechange'));
     };
@@ -60,7 +66,7 @@
     };
 
     const refresh = async () => {
-      if (!rows().some((row) => row.dataset.liveDetectorId)) {
+      if (!rows().some((row) => row.querySelector('[data-live-link][data-live-detector-id]:not([data-live-detector-id=""])'))) {
         resetRows();
         return;
       }
