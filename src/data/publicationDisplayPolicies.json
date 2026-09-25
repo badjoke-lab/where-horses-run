@@ -456,6 +456,46 @@
       "show_live_label": false,
       "show_replay_label": false,
       "notes": "Italy MASAF public Calendar output is rank C: official meeting date and racecourse, with gallop and trot kept as separate racing systems. Race times are not inferred."
+    },
+    {
+      "id": "south-africa-race-coast-reviewed-c",
+      "priority": 350,
+      "match": {
+        "authority_ids": [
+          "race-coast"
+        ]
+      },
+      "max_public_rank": "C",
+      "include_in_public_list": true,
+      "detail_fields": {
+        "show_race_name": false,
+        "show_distance": false,
+        "show_surface": false,
+        "show_course": false
+      },
+      "show_live_label": false,
+      "show_replay_label": false,
+      "notes": "South Africa public Calendar output from Race Coast is limited to reviewed meeting date and racecourse rank C. It is operator-specific and does not imply 4Racing coverage."
+    },
+    {
+      "id": "south-africa-four-racing-reviewed-c",
+      "priority": 350,
+      "match": {
+        "authority_ids": [
+          "four-racing"
+        ]
+      },
+      "max_public_rank": "C",
+      "include_in_public_list": true,
+      "detail_fields": {
+        "show_race_name": false,
+        "show_distance": false,
+        "show_surface": false,
+        "show_course": false
+      },
+      "show_live_label": false,
+      "show_replay_label": false,
+      "notes": "South Africa public Calendar output from 4Racing is limited to reviewed meeting date and physical racecourse rank C from the jointly reviewed national fixture mother set. Race times are not inferred."
     }
   ]
 }

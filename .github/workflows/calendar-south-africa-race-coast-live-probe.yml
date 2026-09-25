@@ -1,0 +1,46 @@
+name: South Africa Race Coast live probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-south-africa-race-coast-live-probe.yml'
+      - 'scripts/timetable/south-africa-race-coast-core.mjs'
+      - 'scripts/timetable/run-south-africa-race-coast-official-window.mjs'
+      - 'scripts/check-south-africa-race-coast-adapter.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - name: Validate Race Coast adapter
+        run: npm run validate:south-africa-race-coast
+      - name: Probe live Race Coast 30-day window
+        run: |
+          mkdir -p .calendar-south-africa-probe
+          node scripts/timetable/run-south-africa-race-coast-official-window.mjs \
+            --as-of=2026-09-25 \
+            --days=30 \
+            --output=.calendar-south-africa-probe/race-coast.json
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const data=JSON.parse(fs.readFileSync('.calendar-south-africa-probe/race-coast.json','utf8'));
+          console.log(JSON.stringify({
+            file:'race-coast.json',
+            records:data.records.length,
+            venues:[...new Set(data.records.map(r=>r.racecourse_id))].sort(),
+            dates:[...new Set(data.records.map(r=>r.date))].sort(),
+            diagnostics:data.diagnostics,
+            discovery:data.discovery
+          }));
+          if(data.diagnostics.source_errors.length) process.exitCode=1;
+          if(data.diagnostics.parse_failures.length) process.exitCode=1;
+          if(data.records.length===0) process.exitCode=1;
+          NODE

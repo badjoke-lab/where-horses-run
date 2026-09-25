@@ -13,7 +13,7 @@ const orderedSteps = [
   'Collect HKJC official window',
   'Collect UAE official window',
   'Collect KRA official window',
-  'Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France, New Zealand, United Kingdom, Slovakia, Bahrain, Sweden, Germany, Spain and Italy official windows',
+  'Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France, New Zealand, United Kingdom, Slovakia, Bahrain, Sweden, Germany, Spain, Italy and South Africa official windows',
   'Apply non-Japan official observations monotonically',
   'Re-apply frozen reviewed Calendar observations',
   'Apply explicit meeting presence dispositions',
@@ -171,6 +171,15 @@ assert.equal(workflow.split('--authority-id=masaf').length - 1, 4, 'Italy MASAF 
 assert.equal(workflow.split('--racing-system-id=italy-masaf-gallop-system').length - 1, 2, 'Italy gallop apply path must bind its canonical racing system in both execution paths');
 assert.equal(workflow.split('--racing-system-id=italy-masaf-trot-system').length - 1, 2, 'Italy trot apply path must bind its canonical racing system in both execution paths');
 assert.equal(workflow.split('--timezone=Europe/Rome').length - 1, 4, 'Italy MASAF apply paths must bind Europe/Rome in both execution paths');
+assert.equal((workflow.match(/run-south-africa-race-coast-official-window\.mjs/g) ?? []).length, 2, 'South Africa Race Coast must be collected in both normal and latest-main rebuild paths');
+assert.equal(workflow.split('--artifact=.calendar-unified/south-africa-race-coast.json').length - 1, 4, 'South Africa Race Coast artifact must pass exclusion and apply layers in both execution paths');
+assert.equal(workflow.split('--authority-id=race-coast').length - 1, 2, 'South Africa Race Coast observations must be applied in both execution paths');
+assert.equal(workflow.split('--racing-system-id=south-africa-race-coast-system').length - 1, 2, 'South Africa Race Coast apply path must bind its canonical racing system in both execution paths');
+assert.equal(workflow.split('node scripts/timetable/run-south-africa-four-racing-official-window.mjs').length - 1, 2, 'South Africa 4Racing must be collected in both normal and latest-main rebuild paths');
+assert.equal(workflow.split('--artifact=.calendar-unified/south-africa-four-racing.json').length - 1, 4, 'South Africa 4Racing artifact must pass exclusion and apply layers in both execution paths');
+assert.equal(workflow.split('--authority-id=four-racing').length - 1, 2, 'South Africa 4Racing observations must be applied in both execution paths');
+assert.equal(workflow.split('--racing-system-id=south-africa-4racing-system').length - 1, 2, 'South Africa 4Racing apply path must bind its canonical racing system in both execution paths');
+assert.equal(workflow.split('--timezone=Africa/Johannesburg').length - 1, 4, 'Both South Africa operator systems must bind Africa/Johannesburg in both execution paths');
 assert.equal((workflow.match(/--authority-id=hipodromo-zarzuela/g) ?? []).length, 2, 'Spain Zarzuela observations must be applied in both execution paths');
 assert.equal((workflow.match(/--artifact=\.calendar-unified\/spain\.json/g) ?? []).length, 4, 'Spain artifact must pass exclusion and apply layers in both execution paths');
 assert.equal((workflow.match(/--racing-system-id=spain-reviewed-gallop-system/g) ?? []).length, 2, 'Spain apply path must bind the canonical racing system id in both execution paths');
@@ -190,3 +199,4 @@ console.log('SWEDEN_SVENSK_GALOPP_UNIFIED_REFRESH_PATHS: 2');
 console.log('GERMANY_DEUTSCHER_GALOPP_UNIFIED_REFRESH_PATHS: 2');
 console.log('SPAIN_ZARZUELA_UNIFIED_REFRESH_PATHS: 2');
 console.log('ITALY_MASAF_UNIFIED_REFRESH_PATHS: 2');
+console.log('SOUTH_AFRICA_RACE_COAST_UNIFIED_REFRESH_PATHS: 2');

@@ -87,6 +87,14 @@ const calendarMapRegressionIds = [
   'italy--ippodromo-stupinigi',
   'italy--ippodromo-valentinia',
   'italy--ippodromo-del-mediterraneo',
+  // South Africa Race Coast (4)
+  'south-africa--hollywoodbets-greyville',
+  'south-africa--hollywoodbets-scottsville',
+  'south-africa--hollywoodbets-durbanville',
+  'south-africa--hollywoodbets-kenilworth',
+  'south-africa--turffontein',
+  'south-africa--vaal',
+  'south-africa--fairview',
   // Morocco (7)
   'casablanca-anfa-racecourse',
   'meknes-racecourse',

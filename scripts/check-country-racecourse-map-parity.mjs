@@ -49,6 +49,15 @@ const italyCanonicalIds = [
   'italy--ippodromo-valentinia',
   'italy--ippodromo-del-mediterraneo',
 ];
+const southAfricaCanonicalIds = [
+  'south-africa--hollywoodbets-greyville',
+  'south-africa--hollywoodbets-scottsville',
+  'south-africa--hollywoodbets-durbanville',
+  'south-africa--hollywoodbets-kenilworth',
+  'south-africa--turffontein',
+  'south-africa--vaal',
+  'south-africa--fairview',
+];
 const peruCanonicalIds = [
   'monterrico-racecourse',
 ];
@@ -67,10 +76,11 @@ assert.equal(chileCanonicalIds.length, 4, 'Chile must expose four canonical acti
 assert.equal(franceCanonicalIds.length, 5, 'France current Calendar scope must expose five current physical racecourses');
 assert.equal(koreaCanonicalIds.length, 4, 'South Korea must expose four canonical active physical racecourses');
 assert.equal(italyCanonicalIds.length, 18, 'Italy current MASAF rolling scope must expose eighteen physical racecourses');
+assert.equal(southAfricaCanonicalIds.length, 4, 'South Africa Race Coast scope must expose four canonical physical racecourses');
 assert.equal(peruCanonicalIds.length, 1, 'Peru reviewed Calendar scope must expose Monterrico as the canonical active physical racecourse');
 assert.equal(saudiCanonicalIds.length, 2, 'Saudi Arabia JCSA scope must expose Taif and Riyadh canonical active physical racecourses');
 
-for (const id of [...chileCanonicalIds, ...franceCanonicalIds, ...koreaCanonicalIds, ...italyCanonicalIds, ...peruCanonicalIds, ...saudiCanonicalIds]) {
+for (const id of [...chileCanonicalIds, ...franceCanonicalIds, ...koreaCanonicalIds, ...italyCanonicalIds, ...southAfricaCanonicalIds, ...peruCanonicalIds, ...saudiCanonicalIds]) {
   assert(publishableIds.has(id), `${id}: expected publishable map location`);
 }
 
@@ -82,6 +92,8 @@ console.log('SOUTH_KOREA_PUBLIC_RACECOURSE_COUNT: 4');
 console.log('SOUTH_KOREA_MAP_LOCATION_COUNT: 4');
 console.log('ITALY_PUBLIC_RACECOURSE_COUNT: 18');
 console.log('ITALY_MAP_LOCATION_COUNT: 18');
+console.log('SOUTH_AFRICA_RACE_COAST_PUBLIC_RACECOURSE_COUNT: 4');
+console.log('SOUTH_AFRICA_RACE_COAST_MAP_LOCATION_COUNT: 4');
 console.log('PERU_PUBLIC_RACECOURSE_COUNT: 1');
 console.log('PERU_MAP_LOCATION_COUNT: 1');
 console.log('SAUDI_ARABIA_PUBLIC_RACECOURSE_COUNT: 2');
