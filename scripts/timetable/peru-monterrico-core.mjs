@@ -6,6 +6,7 @@ export const PERU_MONTERRICO_AUTHORITY_ID = 'hipodromo-de-monterrico';
 export const PERU_MONTERRICO_RACECOURSE_ID = 'monterrico-racecourse';
 export const PERU_MONTERRICO_TIMEZONE = 'America/Lima';
 export const PERU_MONTERRICO_PROGRAMME_URL = 'https://hipodromodemonterrico.com.pe/carreras-proximos-programas';
+export const PERU_MONTERRICO_ENTRY_PROGRAMME_URL = 'https://hipodromodemonterrico.com.pe/programa-de-entradas';
 export const PERU_MONTERRICO_DATE_API_PREFIX = 'https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/fecha/';
 
 const MONTHS = { enero:1,febrero:2,marzo:3,abril:4,mayo:5,junio:6,julio:7,agosto:8,septiembre:9,setiembre:9,octubre:10,noviembre:11,diciembre:12 };
@@ -67,6 +68,39 @@ export function extractMonterricoReunionIds(payload) {
   if (rows.length && !unique.length) throw new Error('Monterrico date API exposed reunion rows without a resolvable reunion id');
   return unique;
 }
+const SHORT_MONTHS = { ene:1,feb:2,mar:3,abr:4,may:5,jun:6,jul:7,ago:8,sep:9,set:9,oct:10,nov:11,dic:12 };
+
+function compactProgrammeDate(value) {
+  const m = text(value).match(/\b(\d{1,2})\s*(Ene|Feb|Mar|Abr|May|Jun|Jul|Ago|Sep|Set|Oct|Nov|Dic)\s*(\d{2}|20\d{2})\b/i);
+  if (!m) return null;
+  const year = m[3].length === 2 ? 2000 + Number(m[3]) : Number(m[3]);
+  const month = SHORT_MONTHS[m[2].toLowerCase()];
+  if (!month) return null;
+  return String(year) + '-' + String(month).padStart(2,'0') + '-' + String(Number(m[1])).padStart(2,'0');
+}
+
+export function extractMonterricoEntryProgrammeLinks(html) {
+  if (typeof html !== 'string' || !html.trim()) throw new Error('Monterrico entry programme HTML must be non-empty');
+  const found = [];
+  let lastDate = null;
+  for (const rowMatch of String(html).matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)) {
+    const raw = rowMatch[1];
+    const rowDate = compactProgrammeDate(raw);
+    if (rowDate) lastDate = rowDate;
+    if (!lastDate) continue;
+    for (const hrefMatch of raw.matchAll(/href\s*=\s*["']([^"']*carreras-proximos-programas[^"']*id_reunion=(\d+)[^"']*)["']/gi)) {
+      const reunionId = Number(hrefMatch[2]);
+      if (!Number.isInteger(reunionId) || reunionId < 10000) continue;
+      const href = decodeHtml(hrefMatch[1]);
+      const programmeUrl = new URL(href, PERU_MONTERRICO_ENTRY_PROGRAMME_URL).toString();
+      found.push({ date:lastDate, reunion_id:reunionId, programme_url:programmeUrl });
+    }
+  }
+  const unique = new Map();
+  for (const row of found) unique.set(row.date + '|' + row.reunion_id, row);
+  return [...unique.values()].sort((a,b)=>a.date.localeCompare(b.date) || a.reunion_id-b.reunion_id);
+}
+
 function meetingDate(html) {
   const value = normalized(html);
   const m = value.match(/reunion\s+n\s*[°º]?\s*\d+\s+hipodromo de monterrico,\s*(?:lunes|martes|miercoles|jueves|viernes|sabado|domingo)\s+(\d{1,2})\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre)\s+del\s+ano\s+(20\d{2})/i);
