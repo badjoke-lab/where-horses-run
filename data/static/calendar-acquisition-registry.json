@@ -570,25 +570,22 @@
       "primary_runner": "github_actions",
       "fallback_runner": null,
       "schedule_source_id": "zarzuela-programme-2026",
-      "detail_source_id": "zarzuela-programme-2026",
+      "detail_source_id": null,
       "schedule_adapter_id": "spain-zarzuela-autumn-programme-v1",
-      "detail_adapter_id": "spain-zarzuela-jornada-v1",
-      "technical_capability_rank": "A",
+      "detail_adapter_id": null,
+      "technical_capability_rank": "C",
       "collection_target_rank": "best_available",
-      "public_ceiling": "A",
+      "public_ceiling": "C",
       "supported_observation_ranks": [
-        "C",
-        "B",
-        "B+",
-        "A"
+        "C"
       ],
       "supports_date_window": true,
       "supports_cross_month_window": true,
       "supports_selected_meetings": false,
       "supports_source_visible_horizon": true,
-      "supports_rank_upgrade_retry": true,
+      "supports_rank_upgrade_retry": false,
       "pending_fields": [],
-      "operator_notes": "GitHub Actions reads the official Hipódromo de la Zarzuela autumn 2026 programme PDF as the bounded meeting-date mother set, then enriches each date from the official /carreras/jornada/YYYYMMDD page when continuous per-race post times are published. Complete detail may reach A; unpublished detail remains C/pending. Public Spain output remains capped at C because wider venue/code coverage is incomplete. Source failure preserves stronger verified state and never proves non-running."
+      "operator_notes": "GitHub Actions reads the Jockey Club Español-approved Hipódromo de la Zarzuela autumn 2026 programme from the official JCE-linked Drive document as the production meeting mother set. This route verifies meeting identity/date through C. Organizer jornada detail pages are not production-connected while the Hipódromo host TLS chain is not reliably reachable from GitHub Actions. No A/B detail capability is claimed until a stable official detail route is independently verified."
     },
     {
       "system_id": "italy-masaf-gallop-system",
