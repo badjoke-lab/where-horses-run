@@ -194,6 +194,10 @@ assert.equal(workflow.split('--racing-system-id=brazil-gavea-system').length - 1
 assert.equal(workflow.split('--racing-system-id=brazil-cristal-system').length - 1, 2, 'Brazil Cristal apply path must bind its canonical racing system in both execution paths');
 assert.equal(workflow.split('node scripts/timetable/run-brazil-cidade-jardim-official-window.mjs').length - 1, 2, 'Brazil Cidade Jardim must be collected in both normal and latest-main rebuild paths');
 assert.equal(workflow.split('--artifact=.calendar-unified/brazil-cidade-jardim.json').length - 1, 4, 'Brazil Cidade Jardim artifact must pass exclusion and apply layers in both execution paths');
+assert.equal(workflow.split('node scripts/timetable/run-brazil-sorocaba-official-window.mjs').length - 1, 2, 'Brazil Sorocaba must be collected in both normal and latest-main rebuild paths');
+assert.equal(workflow.split('--artifact=.calendar-unified/brazil-sorocaba.json').length - 1, 4, 'Brazil Sorocaba artifact must pass exclusion and apply layers in both execution paths');
+assert.equal(workflow.split('--authority-id=jockey-club-de-sorocaba').length - 1, 2, 'Brazil Sorocaba observations must be applied in both execution paths');
+assert.equal(workflow.split('--racing-system-id=brazil-sorocaba-system').length - 1, 2, 'Brazil Sorocaba apply path must bind its canonical racing system in both execution paths');
 assert.equal(workflow.split('--authority-id=jockey-club-de-sao-paulo').length - 1, 2, 'Brazil Cidade Jardim observations must be applied in both execution paths');
 assert.equal(workflow.split('--racing-system-id=brazil-cidade-jardim-system').length - 1, 2, 'Brazil Cidade Jardim apply path must bind its canonical racing system in both execution paths');
 assert.equal(workflow.split('--timezone=America/Sao_Paulo').length - 1, 6, 'Brazil Gávea, Cristal and Cidade Jardim apply paths must bind America/Sao_Paulo in both execution paths');
@@ -221,3 +225,4 @@ console.log('SOUTH_AFRICA_FOUR_RACING_UNIFIED_REFRESH_PATHS: 2');
 console.log('PANAMA_PRESIDENTE_REMON_UNIFIED_REFRESH_PATHS: 2');
 console.log('BRAZIL_JCB_REUNIOES_UNIFIED_REFRESH_PATHS: 2');
 console.log('BRAZIL_CIDADE_JARDIM_UNIFIED_REFRESH_PATHS: 2');
+console.log('BRAZIL_SOROCABA_UNIFIED_REFRESH_PATHS: 2');
