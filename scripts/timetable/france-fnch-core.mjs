@@ -130,22 +130,25 @@ function programmeHref(block, baseUrl) {
 
 function systemDefsFromDisciplineText(value) {
   const text = normalized(value);
-  const defs = [];
-  if (/\btrot\b/.test(text)) {
-    defs.push({
-      key: 'letrot',
-      authority_id: FRANCE_LETROT_AUTHORITY_ID,
-      racing_system_id: FRANCE_LETROT_SYSTEM_ID,
-    });
-  }
-  if (/\b(galop|plat|obstacle)\b/.test(text)) {
-    defs.push({
+  const hasTrot = /\btrot\b/.test(text);
+  const hasGalop = /\b(galop|plat|obstacle)\b/.test(text);
+  if (hasGalop) {
+    return [{
       key: 'galop',
       authority_id: FRANCE_GALOP_AUTHORITY_ID,
       racing_system_id: FRANCE_GALOP_SYSTEM_ID,
-    });
+      mixed_disciplines: hasTrot,
+    }];
   }
-  return defs;
+  if (hasTrot) {
+    return [{
+      key: 'letrot',
+      authority_id: FRANCE_LETROT_AUTHORITY_ID,
+      racing_system_id: FRANCE_LETROT_SYSTEM_ID,
+      mixed_disciplines: false,
+    }];
+  }
+  return [];
 }
 
 export function parseFnchRegionalProgrammePage(html, { sourceUrl } = {}) {
@@ -214,6 +217,7 @@ export function parseFnchRegionalProgrammePage(html, { sourceUrl } = {}) {
         racecourse_id: resolveFranceRacecourseId(venue),
         scheduled_start_local,
         discipline_text: disciplineText,
+        mixed_disciplines: Boolean(def.mixed_disciplines),
         programme_url,
         source_url: sourceUrl,
       });
@@ -234,7 +238,7 @@ export function parseFnchProgrammeText(text) {
 
   const patterns = [
     /(\d{1,2})(?:\s*(?:e|er|re|ere|eme))?\s*course\s*[-:]*\s*depart\s*:\s*(\d{1,2})\s*h\.?\s*(\d{2})/gi,
-    /(?:^|\n|\s)(\d{1,2})\s+(\d{1,2})\s*h\s*(\d{2})\b/gi,
+    /(?:^|\n)\s*(\d{1,2})\s*(?:\n+\s*|\s{2,})(\d{1,2})\s*h\s*(\d{2})\b/gi,
   ];
   const byNumber = new Map();
 
@@ -256,12 +260,8 @@ export function parseFnchProgrammeText(text) {
 
   const rows = [...byNumber.values()].sort((a, b) => a.number - b.number);
   if (!rows.length) return [];
-  if (rows.some((row, index) => row.number !== index + 1)) {
-    throw new Error('FNCH programme race rows are not continuous from Race 1');
-  }
-  if (rows.some((row, index) => index > 0 && row.post_time_local <= rows[index - 1].post_time_local)) {
-    throw new Error('FNCH programme post times are not strictly increasing');
-  }
+  if (rows.some((row, index) => row.number !== index + 1)) return [];
+  if (rows.some((row, index) => index > 0 && row.post_time_local <= rows[index - 1].post_time_local)) return [];
   return rows.map(({ number, ...row }) => row);
 }
 
@@ -300,7 +300,8 @@ function baseRecord(row, checkedAt) {
     route_id: 'fnch-regional-programme-index',
     confidence: 'high',
     review_status: 'needs_review',
-    notes: `Official FNCH regional programme observation; source venue label: ${row.venue_label}; discipline: ${row.discipline_text}.`,
+    mixed_disciplines: Boolean(row.mixed_disciplines),
+    notes: `Official FNCH regional programme observation; source venue label: ${row.venue_label}; discipline: ${row.discipline_text}.${row.mixed_disciplines ? ' Mixed-discipline physical meeting emitted once through the France Galop calendar route to prevent duplicate public meetings.' : ''}`,
   };
 }
 
@@ -340,6 +341,36 @@ export function buildFnchFixtureRecord(
     { technical_capability_rank: 'A' },
   );
 
+  return { ...record, capability_rank };
+}
+
+export function buildFnchMixedMeetingRecord(row, { checkedAt } = {}) {
+  const record = baseRecord(row, checkedAt);
+  record.first_race_time_local = row.scheduled_start_local ?? null;
+  record.detail_observation = {
+    status: 'not_applicable',
+    evaluated_capability_rank: record.first_race_time_local ? 'B' : 'C',
+    race_count: 0,
+    programme_url: row.programme_url,
+  };
+  record.acquisition_attempt = {
+    attempted_at: checkedAt,
+    status: 'success',
+    source_id: FRANCE_FNCH_SOURCE_ID,
+    route_id: 'fnch-regional-programme-index',
+    error_code: null,
+  };
+  const meetingEvidence = evidence(row.source_url, checkedAt);
+  record.evidence_support = {
+    meeting_identity: meetingEvidence,
+    meeting_date: meetingEvidence,
+    ...(record.first_race_time_local ? { first_race_time: meetingEvidence } : {}),
+  };
+  const capability_rank = deriveBestAvailableRank(record, []);
+  record.acquisition_completion = classifyAcquisitionCompletion(
+    { ...record, capability_rank },
+    { technical_capability_rank: capability_rank },
+  );
   return { ...record, capability_rank };
 }
 

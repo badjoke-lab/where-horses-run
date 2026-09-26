@@ -11,6 +11,7 @@ import {
   FRANCE_LETROT_SYSTEM_ID,
   FRANCE_TIMEZONE,
   buildFnchFixtureRecord,
+  buildFnchMixedMeetingRecord,
   buildFnchProgrammeRecord,
   parseFnchRegionalProgrammePage,
 } from './france-fnch-core.mjs';
@@ -41,6 +42,26 @@ async function getHtml(url){
   if(!response.ok) throw new Error(`HTTP ${response.status}`);
   return {html:await response.text(),url:response.url||url};
 }
+function raceHeaderCount(text){
+  return [...String(text??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').matchAll(/\b\d{1,2}\s*(?:e|er|re|ere|eme)?\s*course\s*[–—-]\s*depart\s*:/gi)].length;
+}
+function pdfJsLayoutLines(items){
+  const rows=[];
+  for(const item of items){
+    if(!item || !('str' in item)) continue;
+    const value=String(item.str??'').replace(/\s+/g,' ').trim();
+    if(!value) continue;
+    const x=Number(item.transform?.[4]??0);
+    const y=Number(item.transform?.[5]??0);
+    let row=rows.find(candidate=>Math.abs(candidate.y-y)<=1.5);
+    if(!row){row={y,items:[]};rows.push(row);}
+    row.items.push({x,value});
+  }
+  return rows
+    .sort((a,b)=>b.y-a.y)
+    .map(row=>row.items.sort((a,b)=>a.x-b.x).map(item=>item.value).join(' ').replace(/\s+/g,' ').trim())
+    .filter(Boolean);
+}
 async function getPdfText(url){
   const response=await fetch(url,{redirect:'follow',headers:{
     'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)',
@@ -49,18 +70,29 @@ async function getPdfText(url){
   if(!response.ok) throw new Error(`HTTP ${response.status}`);
   const bytes=new Uint8Array(await response.arrayBuffer());
   if(bytes.length<4||String.fromCharCode(...bytes.slice(0,4))!=='%PDF') throw new Error('programme response is not PDF');
+
   const pdf=await getDocument({data:bytes,disableWorker:true}).promise;
-  const lines=[];
+  const sequentialLines=[];
+  const layoutLines=[];
   for(let pageNumber=1;pageNumber<=pdf.numPages;pageNumber+=1){
-    const page=await pdf.getPage(pageNumber);const content=await page.getTextContent();let line='';
+    const page=await pdf.getPage(pageNumber);
+    const content=await page.getTextContent();
+
+    let line='';
     for(const item of content.items){
       if(!('str' in item)) continue;
-      const value=item.str.replace(/\s+/g,' ').trim();if(value) line+=`${line?' ':''}${value}`;
-      if(item.hasEOL&&line){lines.push(line);line='';}
+      const value=item.str.replace(/\s+/g,' ').trim();
+      if(value) line+=`${line?' ':''}${value}`;
+      if(item.hasEOL&&line){sequentialLines.push(line);line='';}
     }
-    if(line) lines.push(line);
+    if(line) sequentialLines.push(line);
+
+    layoutLines.push(...pdfJsLayoutLines(content.items));
   }
-  return lines.join('\n');
+
+  const sequentialText=sequentialLines.join('\n');
+  const layoutText=layoutLines.join('\n');
+  return raceHeaderCount(layoutText)>raceHeaderCount(sequentialText)?layoutText:sequentialText;
 }
 function canonicalMeetings(file){
   if(!fs.existsSync(file)) return [];
@@ -90,13 +122,17 @@ function artifactFor({systemKey,records,generatedAt,start,end,days,sourceErrors,
   const scopedParseFailures=scopeDiagnostics(parseFailures,systemKey);
   const rankCounts=Object.fromEntries(['C','B','B+','A','A+'].map(rank=>[rank,selected.filter(r=>r.capability_rank===rank).length]));
   const detailStatusCounts=Object.fromEntries(['available','not_published','source_error','parser_failure'].map(status=>[status,selected.filter(r=>r.detail_observation?.status===status).length]));
+  const supersededMeetingIds=isGalop
+    ? selected.filter((record)=>record.mixed_disciplines===true).map((record)=>record.meeting_id.replace(/^france-galop-/,'france-letrot-'))
+    : [];
   return {
     schema_version:'france-fnch-official-window-candidates-v1',generated_at:generatedAt,country_id:'france',authority_id,racing_system_id,timezone:FRANCE_TIMEZONE,
     source_id:FRANCE_FNCH_SOURCE_ID,detail_source_id:FRANCE_FNCH_SOURCE_ID,collection_target_rank:'best_available',raw_body_retained:false,
     acquisition_attempt:{attempted_at:generatedAt,status:sourcePages.length?'success':'network_error',source_id:FRANCE_FNCH_SOURCE_ID,route_id:'fnch-regional-programme-index',error_code:sourcePages.length?null:'fetch_error'},
     discovery:{method:'official_fnch_regional_programme_indexes_plus_published_programme_pdfs',schedule_source_id:FRANCE_FNCH_SOURCE_ID,schedule_source_url:FRANCE_FNCH_CALENDAR_URL,detail_source_id:FRANCE_FNCH_SOURCE_ID,regional_pages:sourcePages,rank_counts:rankCounts,detail_status_counts:detailStatusCounts,non_running_source_id:nonRunningDiagnostics.source_id,non_running_source_status:nonRunningDiagnostics.status},
-    window:{start_date:start,end_date_exclusive:end,days,coverage_claim:scopedSourceErrors.length?'partial_source_visible_horizon':'source_visible_horizon',coverage_note:'FNCH regional programme indexes are treated as a source-visible meeting horizon, not proof that every date in the requested window has been exhaustively published. Visible meetings are attributed by discipline to France Galop or LETROT. Published official programme PDFs may supply complete per-race post times through rank A. Missing programme detail stays pending; retrieval/parser failures remain retry states; absence from FNCH pages never confirms non-running.'},
+    window:{start_date:start,end_date_exclusive:end,days,coverage_claim:scopedSourceErrors.length?'partial_source_visible_horizon':'source_visible_horizon',coverage_note:'FNCH regional programme indexes are treated as a source-visible meeting horizon, not proof that every date in the requested window has been exhaustively published. Visible meetings are attributed by discipline to France Galop or LETROT. Single-discipline published official programme PDFs may supply complete per-race post times through rank A. Mixed-discipline physical meetings are emitted once and stop safely at the FNCH regional-index first-race time (rank B), because discipline-specific programme PDFs are not a complete physical-meeting race table. Missing single-discipline programme detail stays pending; retrieval/parser failures remain retry states; absence from FNCH pages never confirms non-running.'},
     records:selected,
+    superseded_meeting_ids:[...new Set(supersededMeetingIds)].sort(),
     meeting_presence_records:meetingPresenceRecords,
     diagnostics:{source_errors:scopedSourceErrors,parse_failures:scopedParseFailures,unknown_disciplines:unknownDisciplines,source_pages_checked:sourcePages.length,non_running:nonRunningDiagnostics},
   };
@@ -120,6 +156,10 @@ for(const url of FRANCE_FNCH_REGIONAL_PROGRAMME_URLS){
 const rows=dedupeRows(sourceRows).filter(row=>inWindow(row.date,start,end));
 const records=[];
 for(const row of rows){
+  if(row.mixed_disciplines){
+    records.push(buildFnchMixedMeetingRecord(row,{checkedAt:generatedAt}));
+    continue;
+  }
   if(!row.programme_url){records.push(buildFnchFixtureRecord(row,{checkedAt:generatedAt}));continue;}
   try{
     const programmeText=await getPdfText(row.programme_url);

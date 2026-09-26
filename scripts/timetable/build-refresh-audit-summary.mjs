@@ -123,12 +123,19 @@ function selectJapanReconciliation(artifactRoot) {
     .sort((a, b) => String(b.data.checked_at ?? '').localeCompare(String(a.data.checked_at ?? '')))[0];
 }
 function countNonJapanFetchFailures(artifact, records) {
-  if (Array.isArray(artifact.diagnostics?.fetch_failures)) return artifact.diagnostics.fetch_failures.length;
-  if (Array.isArray(artifact.diagnostics?.source_failures)) return artifact.diagnostics.source_failures.length;
-  if (Array.isArray(artifact.diagnostics?.source_errors)) return artifact.diagnostics.source_errors.length;
-  const statusCount = artifact.discovery?.detail_status_counts?.source_error;
-  if (Number.isInteger(statusCount)) return statusCount;
-  return records.filter((row) => row?.detail_observation?.status === 'source_error').length;
+  let diagnosticCount = 0;
+  if (Array.isArray(artifact.diagnostics?.fetch_failures)) diagnosticCount = artifact.diagnostics.fetch_failures.length;
+  else if (Array.isArray(artifact.diagnostics?.source_failures)) diagnosticCount = artifact.diagnostics.source_failures.length;
+  else if (Array.isArray(artifact.diagnostics?.source_errors)) diagnosticCount = artifact.diagnostics.source_errors.length;
+  else {
+    const statusCount = artifact.discovery?.detail_status_counts?.source_error;
+    diagnosticCount = Number.isInteger(statusCount)
+      ? statusCount
+      : records.filter((row) => row?.detail_observation?.status === 'source_error').length;
+  }
+  const acquisitionFailed = ['network_error', 'source_error', 'fetch_failed', 'failed']
+    .includes(String(artifact.acquisition_attempt?.status ?? '').toLowerCase());
+  return Math.max(diagnosticCount, acquisitionFailed ? 1 : 0);
 }
 function countNonJapanParseFailures(artifact) {
   return countArray(artifact.diagnostics?.parse_failures) + countArray(artifact.discovery?.parse_failures);

@@ -318,10 +318,10 @@
         "per_race_post_times": true,
         "race_name": true,
         "distance": true,
-        "surface": true,
+        "surface": false,
         "course": false
       },
-      "source_format": "mixed",
+      "source_format": "json_api",
       "access_mode": "api_call",
       "automation_mode": "automatic",
       "refresh_classes": [
@@ -334,15 +334,15 @@
       "source_status": "verified",
       "checked_date": "2026-09-21",
       "evidence_reviewed_at": "2026-09-21",
-      "revalidation_trigger": "Revalidate if the Monterrico date API, upcoming-programmes route, programme table structure, or reviewed venue scope changes.",
+      "revalidation_trigger": "Revalidate if the Monterrico date API, reunion JSON API, carreras payload structure, or reviewed venue scope changes.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/06-peru/final-summary.json",
       "limitations": [
         "Only the Hipódromo de Monterrico programme system is included; complete Peru-wide racing coverage is not claimed.",
-        "The production route publishes only public-safe timetable fields and does not retain raw API or programme bodies.",
-        "The current production adapter does not fabricate course labels; source-tested surface enrichment is not required for A publication."
+        "The production route does not retain raw API bodies.",
+        "Surface and course labels are not claimed by the current production adapter."
       ],
-      "notes": "The production candidate route discovers reunions through the official date API and resolves complete public-safe timetable rows through the official programme page. Current evidence derives A under the canonical rank contract; lower-rank observations remain explicit pending/retry states."
+      "notes": "The production route discovers reunion ids through the official date API and resolves complete timetable rows through the official reunion JSON API. The carreras array supplies post times, names and distances through A; surface/course are not fabricated."
     },
     {
       "readiness_id": "mexico--mexico-candidate-route--hipodromo-site-candidate",
@@ -2546,7 +2546,7 @@
       "racecourse_ids": [],
       "coverage_scope": "authority_wide",
       "technical_rank": "A",
-      "public_ceiling": "C",
+      "public_ceiling": "A",
       "confirmed_fields": {
         "meeting_date": true,
         "racecourse": true,
@@ -2577,7 +2577,7 @@
       "source_test_ref": "docs/timetable-source-tests/42-germany/final-summary.json",
       "limitations": [
         "Production coverage is Deutscher Galopp gallop only; other German horse-racing codes remain unreviewed.",
-        "Public output remains capped at C at country level despite A-capable gallop observations.",
+        "Public meeting rank follows verified evidence through A; incomplete country/code coverage remains a separate scope limitation.",
         "Unpublished per-race post times remain pending and are not inferred from meeting-level start labels."
       ],
       "notes": "Automated Deutscher Galopp annual-calendar mother set plus current race-table enrichment supports best-available C through A for the reviewed gallop system. Calendar timetable identities and map locations use the existing Germany All-Tier Master IDs, but readiness.racecourse_ids remains empty until those IDs are promoted into the repository racecourse-page master."
@@ -2681,20 +2681,20 @@
       "authority_source_key": "spain/hipodromo-zarzuela/zarzuela-programme-2026",
       "racecourse_ids": [],
       "coverage_scope": "single_racecourse",
-      "technical_rank": "A",
+      "technical_rank": "C",
       "public_ceiling": "C",
       "confirmed_fields": {
         "meeting_date": true,
         "racecourse": true,
-        "first_race_time": true,
-        "last_race_time": true,
-        "per_race_post_times": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
         "race_name": false,
         "distance": false,
         "surface": false,
         "course": false
       },
-      "source_format": "html+pdf",
+      "source_format": "pdf",
       "access_mode": "direct",
       "automation_mode": "automatic",
       "refresh_classes": [
@@ -2708,15 +2708,15 @@
       "source_status": "verified",
       "checked_date": "2026-09-25",
       "evidence_reviewed_at": "2026-09-25",
-      "revalidation_trigger": "Revalidate when the Hipódromo de la Zarzuela seasonal programme PDF or date-specific jornada route changes, or when additional Spanish venues/codes are reviewed.",
+      "revalidation_trigger": "Revalidate when the JCE-approved seasonal programme changes or when a production-reachable official Zarzuela detail route is independently verified.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/44-spain/final-summary.json",
       "limitations": [
         "Production scope is limited to Hipódromo de la Zarzuela.",
-        "Country public output remains capped at C because wider Spanish venue and racing-code coverage is incomplete.",
-        "Unpublished jornada post times remain pending and are never inferred."
+        "Production currently verifies meeting identity/date through C from the JCE-approved seasonal programme.",
+        "Organizer jornada detail pages are not claimed as production-capable while their TLS chain is not reliably reachable from GitHub Actions."
       ],
-      "notes": "Automated Zarzuela autumn-programme mother set plus date-specific jornada enrichment supports best-available C through A for the reviewed single-venue gallop subsystem. Calendar identity/map uses the existing All-Tier Master ID; readiness.racecourse_ids stays empty until promoted into the repository racecourse-page master."
+      "notes": "Automated JCE-approved Zarzuela seasonal programme route is production-ready through C. Higher detail ranks are deliberately not claimed until an official detail route is stable from the production runner."
     },
     {
       "readiness_id": "norway--norway-dnt-harness-system--dnt-terminliste-2026",
@@ -3121,8 +3121,8 @@
       "authority_source_key": "slovakia/zavodisko/zavodisko-2026-calendar",
       "racecourse_ids": [],
       "coverage_scope": "countrywide",
-      "technical_rank": "B+",
-      "public_ceiling": "C",
+      "technical_rank": "B",
+      "public_ceiling": "B",
       "confirmed_fields": {
         "meeting_date": true,
         "racecourse": true,
@@ -3142,7 +3142,7 @@
         "weekly",
         "near_meeting"
       ],
-      "readiness": "prototype_ready",
+      "readiness": "ready",
       "implementation_status": "candidate_active",
       "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
@@ -3153,11 +3153,10 @@
       "source_test_ref": "docs/timetable-source-tests/52-slovakia/final-summary.json",
       "limitations": [
         "The automated annual-calendar route supplies meeting date, racecourse and official first-race time through B.",
-        "Previously reviewed B+ meeting-page capability is not yet connected as a reusable full-calendar route and remains an explicit implementation gap.",
         "Per-race post times are not confirmed across the full calendar.",
         "Public output remains capped at C."
       ],
-      "notes": "Automated production candidate reads the current Závodisko annual calendar through rank B. The registered B+ capability remains intentionally open as an implementation_gap until a reusable full-calendar last-race route is connected; public output remains capped at C."
+      "notes": "Automatic Závodisko 2026 calendar route supports meeting date, racecourse and official first-race time through rank B. No stronger reusable production detail route is currently claimed."
     },
     {
       "readiness_id": "cyprus--nicosia-national-racing-system--nrc-meetings-schedule",

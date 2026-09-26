@@ -45,11 +45,11 @@ assert.equal(record.racing_system_id,'slovakia-zavodisko-system');
 assert.equal(record.capability_rank,'B');
 assert.equal(record.first_race_time_local,'13:00');
 assert.equal(record.last_race_time_local,null);
-assert.equal(record.acquisition_completion.disposition,'implementation_gap');
+assert.equal(record.acquisition_completion.disposition,'complete_current_best_available');
 assert.equal(record.acquisition_completion.observed_rank,'B');
-assert.equal(record.acquisition_completion.technical_capability_rank,'B+');
+assert.equal(record.acquisition_completion.technical_capability_rank,'B');
 assert.equal(record.acquisition_completion.evaluated_capability_rank,'B');
-assert.equal(record.acquisition_completion.higher_rank_open,true);
+assert.equal(record.acquisition_completion.higher_rank_open,false);
 assert.deepEqual(validateCalendarAuthorityMetadataV1({
   acquisition_attempt:record.acquisition_attempt,
   acquisition_completion:record.acquisition_completion,
