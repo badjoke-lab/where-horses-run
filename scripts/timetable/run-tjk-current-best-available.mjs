@@ -178,6 +178,17 @@ try {
     schedule_source_id: 'tjk-annual-programme',
   };
 }
+const fallbackPageFailures = (annual.pages ?? []).filter((page) => page.status === 'fallback_page_failed');
+if (!acquisitionFailure && annual.fixtures.length === 0 && fallbackPageFailures.length > 0) {
+  acquisitionFailure = {
+    attempted_at: retrievedAt,
+    status: 'network_error',
+    source_id: annual.schedule_source_id,
+    route_id: 'tjk-annual-programme-page-fallback',
+    error_code: 'fallback_exhausted',
+  };
+}
+
 const candidates = [];
 for (const fixture of annual.fixtures) {
   candidates.push(await enrichBestAvailableFromAnnualFixture(fixture, startDate));
@@ -227,6 +238,15 @@ const artifact = {
     detail_pages_attempted: candidates.length,
     rank_counts: rankCounts,
     detail_status_counts: detailStatusCounts,
+    fallback_page_failures: fallbackPageFailures.length,
+  },
+  diagnostics: {
+    fetch_failures: fallbackPageFailures.map((page) => ({
+      stage: 'annual_page_fallback',
+      date: page.date ?? null,
+      source_url: page.url,
+      error_code: page.error_code ?? 'fetch_error',
+    })),
   },
   candidates,
   window: { start_date: startDate, end_date_exclusive: endDateExclusive, days },
