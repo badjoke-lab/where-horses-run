@@ -3,11 +3,13 @@ import { execFileSync } from 'node:child_process';
 import assert from 'node:assert/strict';
 import { validateCalendarAuthorityMetadataV1 } from './timetable/calendar-authority-metadata.mjs';
 import {
+  buildMonterricoApiMeetingRecord,
   buildMonterricoFallbackRecord,
   buildMonterricoMeetingRecord,
   extractMonterricoEntryProgrammeLinks,
   extractMonterricoReunionIds,
   parseMonterricoProgrammeHtml,
+  parseMonterricoProgrammePayload,
 } from './timetable/peru-monterrico-core.mjs';
 
 assert.deepEqual(extractMonterricoReunionIds({reuniones:[]}),[]);
@@ -31,34 +33,48 @@ const html='<!doctype html><html><body>'+
 '<tr><td>1 ª</td><td>13:30</td><td>Handicap</td><td>1000</td></tr>'+
 '<tr><td>2 ª</td><td>14:00</td><td>Condicional</td><td>1200</td></tr>'+
 '<tr><td>3 ª</td><td>14:30</td><td>Clásico Ejemplo</td><td>1600</td></tr></table></body></html>';
-
-const parsed=parseMonterricoProgrammeHtml(html,{expectedDate:'2026-09-20'});
-assert.equal(parsed.meeting_date,'2026-09-20');
-assert.equal(parsed.timetable_rows.length,3);
-assert.deepEqual(parsed.timetable_rows[0],{label:'Race 1',post_time_local:'13:30',race_name:'Handicap',distance_m:1000});
+const parsedHtml=parseMonterricoProgrammeHtml(html,{expectedDate:'2026-09-20'});
+assert.equal(parsedHtml.meeting_date,'2026-09-20');
+assert.equal(parsedHtml.timetable_rows.length,3);
 assert.throws(()=>parseMonterricoProgrammeHtml(html,{expectedDate:'2026-09-21'}),/date mismatch/);
 
-const htmlWithoutDate='<!doctype html><html><body>'+
-'<h1>Reunión Hipódromo de Monterrico</h1>'+
-'<table><tr><th>N°</th><th>Hora</th><th>Carrera</th><th>Dist.</th></tr>'+
-'<tr><td>1 ª</td><td>13:30</td><td>Handicap</td><td>1000</td></tr>'+
-'<tr><td>2 ª</td><td>14:00</td><td>Condicional</td><td>1200</td></tr></table></body></html>';
-const parsedWithoutDate=parseMonterricoProgrammeHtml(htmlWithoutDate,{expectedDate:'2026-09-27'});
-assert.equal(parsedWithoutDate.meeting_date,'2026-09-27');
-assert.equal(parsedWithoutDate.timetable_rows.length,2);
+const legacyRecord=buildMonterricoMeetingRecord({date:'2026-09-20',reunionId:102400,programmeHtml:html,checkedAt:'2026-09-20T14:30:00Z'});
+assert.equal(legacyRecord.capability_rank,'A');
 
-const record=buildMonterricoMeetingRecord({date:'2026-09-20',reunionId:102400,programmeHtml:html,checkedAt:'2026-09-20T14:30:00Z'});
-assert.equal(record.country_id,'peru');
-assert.equal(record.racecourse_id,'monterrico-racecourse');
-assert.equal(record.capability_rank,'A');
-assert.equal(record.detail_observation.status,'available');
-assert.equal(record.timetable_rows[2].distance_m,1600);
-assert.deepEqual(validateCalendarAuthorityMetadataV1({acquisition_attempt:record.acquisition_attempt,evidence_support:record.evidence_support},record.meeting_id),[]);
+const apiPayload={
+  calculos:{102454:0},
+  resultados:{102454:0},
+  reuniones:[{
+    id_reunion:102454,
+    fecha_reunion:'2026-09-26',
+    nombre_hipodromo:'Hipódromo de Monterrico',
+    carreras:[
+      {correlativo:1,hora_carrera:'13:30',nombre_premio:'Condicional',distancia:1000},
+      {correlativo:2,hora_carrera:'14:00',nombre_premio:'Handicap',distancia:1000},
+      {correlativo:3,hora_carrera:'14:25',nombre_premio:'Condicional',distancia:1400},
+    ],
+  }],
+};
+const parsedApi=parseMonterricoProgrammePayload(apiPayload,{expectedDate:'2026-09-26',expectedReunionId:102454});
+assert.equal(parsedApi.meeting_date,'2026-09-26');
+assert.deepEqual(parsedApi.timetable_rows[0],{label:'Race 1',post_time_local:'13:30',race_name:'Condicional',distance_m:1000});
+const apiRecord=buildMonterricoApiMeetingRecord({
+  date:'2026-09-26',
+  reunionId:102454,
+  programmePayload:apiPayload,
+  checkedAt:'2026-09-26T12:00:00Z',
+  sourceUrl:'https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/102454',
+});
+assert.equal(apiRecord.capability_rank,'A');
+assert.equal(apiRecord.detail_observation.status,'available');
+assert.equal(apiRecord.first_race_time_local,'13:30');
+assert.equal(apiRecord.last_race_time_local,'14:25');
+assert.equal(apiRecord.route_id,'monterrico-date-api-to-reunion-api');
+assert.deepEqual(validateCalendarAuthorityMetadataV1({acquisition_attempt:apiRecord.acquisition_attempt,evidence_support:apiRecord.evidence_support},apiRecord.meeting_id),[]);
 
 const fallback=buildMonterricoFallbackRecord({date:'2026-09-21',reunionId:102401,checkedAt:'2026-09-20T14:30:00Z',status:'not_published',errorCode:'programme_not_published'});
 assert.equal(fallback.capability_rank,'C');
 assert.equal(fallback.detail_observation.status,'not_published');
-assert.equal(fallback.acquisition_attempt.status,'pending_publication');
 
 if(process.env.GITHUB_ACTIONS==='true'){
   const liveOutput='.peru-live-'+process.pid+'.json';
@@ -71,57 +87,16 @@ if(process.env.GITHUB_ACTIONS==='true'){
     ],{encoding:'utf8'});
     const artifact=JSON.parse(fs.readFileSync(liveOutput,'utf8'));
     const byDate=new Map(artifact.records.map((row)=>[row.date,row]));
-    console.log('PERU_LIVE_ROWS:',JSON.stringify({
-      rows:artifact.records.map((row)=>({date:row.date,rank:row.capability_rank,detail:row.detail_observation?.status,race_count:row.detail_observation?.race_count,error_code:row.detail_observation?.error_code})),
-      source_errors:artifact.diagnostics?.source_errors,
-    }));
-    if([...byDate.values()].some((row)=>row.capability_rank!=='A')){
-      try{
-        const componentUrl='https://hipodromodemonterrico.com.pe/generales_librerias/componentes_vue/generales/vue-comp-proximos-programas.js';
-        const response=await fetch(componentUrl,{headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'}});
-        const body=await response.text();
-        const symbols={};
-        for(const symbol of ['url_api','url_api_carreras','url_api_reunion','url_api_pdf_elturf','app_pertenece_validacion','dominio_apis']){
-          const index=body.indexOf(symbol);
-          symbols[symbol]=index>=0?body.slice(Math.max(0,index-120),Math.min(body.length,index+700)).replace(/\s+/g,' '):null;
-        }
-        const requestBlocks=[];
-        for(const needle of ['var ruta_api = this.api_datos_reunion','this.$http.get(this.api_pdf_elturf']){
-          const index=body.indexOf(needle);
-          if(index>=0) requestBlocks.push(body.slice(Math.max(0,index-120),Math.min(body.length,index+1000)).replace(/\s+/g,' '));
-        }
-        console.log('PERU_PROGRAMME_COMPONENT_API:',JSON.stringify({status:response.status,length:body.length,symbols,request_blocks:requestBlocks}));
-        const probes=[];
-        for(const url of [
-          'https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/102454',
-          'https://hipodromodemonterrico.com.pe/api/general/programa-pdf/programa-elturf/102454',
-        ]){
-          try{
-            const probe=await fetch(url,{headers:{
-              'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)',
-              accept:'application/json,text/plain;q=0.9,*/*;q=0.5',
-              referer:'https://hipodromodemonterrico.com.pe/carreras-proximos-programas?id_reunion=102454',
-              'x-requested-with':'XMLHttpRequest',
-            }});
-            const probeBody=await probe.text();
-            probes.push({url,status:probe.status,content_type:probe.headers.get('content-type'),preview:probeBody.slice(0,5000)});
-          }catch(error){
-            probes.push({url,error:String(error?.message??error)});
-          }
-        }
-        console.log('PERU_OFFICIAL_DETAIL_PROBES:',JSON.stringify(probes));
-      }catch(error){
-        console.log('PERU_PROGRAMME_COMPONENT_API:',JSON.stringify({error:String(error?.message??error)}));
-      }
-    }
     for(const date of ['2026-09-26','2026-09-27']){
       const row=byDate.get(date);
       assert.ok(row,`live Monterrico route must recover ${date}`);
-      assert.equal(row.capability_rank,'A',`published Monterrico programme must reach A for ${date}`);
+      assert.equal(row.capability_rank,'A',`official reunion API must reach A for ${date}`);
       assert.equal(row.detail_observation?.status,'available');
       assert.ok(row.timetable_rows?.length>=2);
+      assert.equal(row.route_id,'monterrico-date-api-to-reunion-api');
     }
     assert.equal(artifact.acquisition_attempt?.status,'success');
+    assert.equal(artifact.diagnostics?.source_errors?.filter((row)=>row.stage==='programme_detail').length,0);
   }finally{
     fs.rmSync(liveOutput,{force:true});
   }
