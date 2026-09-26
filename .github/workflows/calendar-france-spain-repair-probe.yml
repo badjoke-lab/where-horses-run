@@ -25,7 +25,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - run: npm ci --ignore-scripts
+      - run: npm install --no-package-lock --no-audit --no-fund
       - name: Probe France live parser and dedupe
         run: node scripts/check-france-fnch-adapter.mjs
   spain:
@@ -36,6 +36,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-      - run: npm ci --ignore-scripts
+      - run: npm install --no-package-lock --no-audit --no-fund
       - name: Probe Spain live recovery
         run: node scripts/check-spain-zarzuela-adapter.mjs
