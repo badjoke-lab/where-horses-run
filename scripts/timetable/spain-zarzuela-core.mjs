@@ -90,7 +90,7 @@ export function parseZarzuelaMeetingHtml(html, { date, sourceUrl } = {}) {
   if (typeof html !== 'string' || !html.trim()) throw new Error('Zarzuela meeting HTML must be non-empty');
   const visible = zarzuelaVisibleText(html);
   if (!/Carreras de la Jornada/i.test(visible)) {
-    return { race_rows: [], status: 'not_published', parse_failures: [] };
+    return { race_rows: [], status: 'not_published', parse_failures: [], meeting_present: false };
   }
 
   const race_rows = [];
@@ -126,6 +126,7 @@ export function parseZarzuelaMeetingHtml(html, { date, sourceUrl } = {}) {
     race_rows: rows,
     status: rows.length ? (rows.every((row) => row.post_time_local) ? 'available' : 'not_published') : 'not_published',
     parse_failures,
+    meeting_present: true,
   };
 }
 
