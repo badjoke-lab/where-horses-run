@@ -33,6 +33,7 @@ const SYSTEMS = [
   { key: 'panama', file: 'panama.json', country_id: 'panama', authority_id: 'hipica-de-panama', racing_system_id: 'presidente-remon-racing-system' },
   { key: 'brazil-gavea', file: 'brazil-gavea.json', country_id: 'brazil', authority_id: 'jockey-club-brasileiro', racing_system_id: 'brazil-gavea-system' },
   { key: 'brazil-cristal', file: 'brazil-cristal.json', country_id: 'brazil', authority_id: 'jockey-club-do-rio-grande-do-sul', racing_system_id: 'brazil-cristal-system' },
+  { key: 'brazil-cidade-jardim', file: 'brazil-cidade-jardim.json', country_id: 'brazil', authority_id: 'jockey-club-de-sao-paulo', racing_system_id: 'brazil-cidade-jardim-system' },
 ];
 
 const STATE_FILES = {
