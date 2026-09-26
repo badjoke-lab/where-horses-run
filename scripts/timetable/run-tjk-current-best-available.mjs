@@ -21,6 +21,7 @@ const TJK_RACECOURSE_IDENTITIES = new Map([
   ['7', { racecourse_id: 'elazig-racecourse', name_en: 'Elazig Racecourse', name_ja: 'エラズー競馬場' }],
   ['8', { racecourse_id: 'diyarbakir-racecourse', name_en: 'Diyarbakir Racecourse', name_ja: 'ディヤルバクル競馬場' }],
   ['9', { racecourse_id: 'kocaeli-racecourse', name_en: 'Kocaeli Racecourse', name_ja: 'コジャエリ競馬場' }],
+  ['10', { racecourse_id: 'antalya-racecourse', name_en: 'Antalya Racecourse', name_ja: 'アンタルヤ競馬場' }],
 ]);
 
 function addDays(iso, days) {
@@ -40,6 +41,19 @@ function bindRacecourseIdentity(candidate) {
     racecourse_name_ja: identity.name_ja,
     timezone: TIMEZONE,
   };
+}
+
+async function retry(operation, { attempts = 3, baseDelayMs = 1_000 } = {}) {
+  let lastError;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error;
+      if (attempt < attempts) await new Promise((resolve) => setTimeout(resolve, baseDelayMs * attempt));
+    }
+  }
+  throw lastError;
 }
 
 async function fetchHtml(url) {
@@ -150,7 +164,7 @@ const retrievedAt = now.toISOString();
 let annual;
 let acquisitionFailure = null;
 try {
-  annual = await discoverAnnualFixtures({ startDate, endDateExclusive });
+  annual = await retry(() => discoverAnnualFixtures({ startDate, endDateExclusive }), { attempts: 3, baseDelayMs: 2_000 });
 } catch (error) {
   acquisitionFailure = {
     attempted_at: retrievedAt,
