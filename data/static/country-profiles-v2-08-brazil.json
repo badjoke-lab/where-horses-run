@@ -5,19 +5,21 @@
     "slug": "brazil",
     "status": "reviewed",
     "page_kind": "country",
-    "last_reviewed": "2026-06-17",
+    "last_reviewed": "2026-09-26",
     "public_display_ceiling": "A",
     "source_test_status": "complete",
     "hero": {
-      "summary_en": "Brazil is represented as several verified venue and racing-code systems, not one national timetable.",
-      "summary_ja": "ブラジルは全国一括時刻表ではなく、複数の確認済み会場・競走区分体系として表示します。"
+      "summary_en": "Brazil is represented as multiple venue/operator systems. The current automatic Calendar route covers Gávea and Cristal only.",
+      "summary_ja": "ブラジルは複数の会場・運営体系として扱います。現在のCalendar自動取得はガヴェアとクリスタルのみを対象とします。"
     },
     "overview": {
       "paragraphs_en": [
-        "The reviewed batch covers Gávea, Cidade Jardim, Cristal and Sorocaba through four separate official authorities. Tarumã remains unresolved."
+        "Current production Calendar routing uses the official JCB Reuniões page as the Gávea/Cristal meeting mother set and matching public JCB Raceday pages for best-available race detail through A+.",
+        "Public output remains capped at A under the reviewed Brazil publication boundary. Cidade Jardim remains researched but is not yet in the automatic production route; Sorocaba remains blocked until exact meeting-date pairing is verifiable. Tarumã remains unresolved."
       ],
       "paragraphs_ja": [
-        "レビュー済み対象は4つの異なる公式主体によるガヴェア、シダージ・ジャルジン、クリスタル、ソロカバです。タルマンは未解決です。"
+        "現在のproduction CalendarはJCB公式Reuniõesページをガヴェア/クリスタルの開催母表として使い、対応する公開JCB RacedayページからA+までのBest Availableレース詳細を自動取得します。",
+        "公開上限はレビュー済みBrazil境界に従いAのままです。シダージ・ジャルジンは調査済みですが自動production未接続、ソロカバは正確な開催日対応が検証できるまでblocked、タルマンは未解決です。"
       ]
     },
     "racing_types": [
@@ -45,8 +47,8 @@
     ],
     "seasonality": {
       "pattern": "multi-venue-calendars-required",
-      "summary_en": "Each authority requires its own current calendar check.",
-      "summary_ja": "公式主体ごとに現行日程を確認する必要があります。"
+      "summary_en": "Gávea and Cristal use the current JCB source-visible meeting horizon; other Brazilian systems still require their own current-source resolution.",
+      "summary_ja": "ガヴェアとクリスタルはJCBの現行公開範囲を使用し、その他のブラジル体系は引き続き個別の現行ソース解決が必要です。"
     },
     "schedule": {
       "timezone": "America/Sao_Paulo",
@@ -58,8 +60,8 @@
         "published-by-official-source",
         "date-verification-required-for-sorocaba"
       ],
-      "summary_en": "Dates and times remain attached to their venue and authority.",
-      "summary_ja": "日付と時刻は会場・公式主体と結び付けて扱います。"
+      "summary_en": "For source-visible Gávea and Cristal meetings, the automatic route attempts matching JCB Raceday detail for all race post times plus race name, distance, surface and course label. Missing detail falls back safely to the schedule observation.",
+      "summary_ja": "公開済みのガヴェア/クリスタル開催について、対応するJCB Racedayから全レース発走時刻・レース名・距離・馬場・コース表記を自動取得します。詳細未公開時は安全に日程観測へフォールバックします。"
     },
     "surfaces": {
       "ids": [],
@@ -71,13 +73,14 @@
         "id": "brazil-gavea-system",
         "name_en": "Gávea system",
         "name_ja": "ガヴェア体系",
-        "summary_en": "Jockey Club Brasileiro distributes the reviewed programme.",
-        "summary_ja": "Jockey Club Brasileiroがレビュー済み番組を配信します。",
+        "summary_en": "Jockey Club Brasileiro supplies the current meeting mother set and public JCB Raceday detail used by the automatic route.",
+        "summary_ja": "Jockey Club Brasileiroの現行開催母表と公開JCB Raceday詳細を自動routeで使用します。",
         "organiser_source_ids": [
           "brazil-jockey-club-brasileiro"
         ],
         "distributor_source_ids": [
-          "brazil-gavea-programme"
+          "jcb-current-meetings-gavea",
+          "jcb-raceday-gavea"
         ]
       },
       {
@@ -97,13 +100,14 @@
         "id": "brazil-cristal-system",
         "name_en": "Cristal system",
         "name_ja": "クリスタル体系",
-        "summary_en": "Jockey Club do Rio Grande do Sul distributes the reviewed programme.",
-        "summary_ja": "Jockey Club do Rio Grande do Sulがレビュー済み番組を配信します。",
+        "summary_en": "JCRGS remains the venue operator; the reviewed automatic route uses JCB current-meeting distribution plus matching public JCB Raceday detail.",
+        "summary_ja": "競馬場運営主体はJCRGSのまま、確認済み自動routeではJCBの現行開催配信と対応する公開JCB Raceday詳細を使用します。",
         "organiser_source_ids": [
           "brazil-jockey-club-rio-grande-do-sul"
         ],
         "distributor_source_ids": [
-          "brazil-cristal-programme"
+          "jcb-current-meetings-cristal",
+          "jcb-raceday-cristal"
         ]
       },
       {
@@ -120,21 +124,26 @@
         ]
       }
     ],
-    "principal_racecourse_ids": [],
-    "calendar_guidance_en": "Select the authority first and do not merge different racing codes.",
-    "calendar_guidance_ja": "先に公式主体を選び、異なる競走区分を統合しないでください。",
-    "coverage_note_en": "The four reviewed systems are not claimed to be a complete active list.",
-    "coverage_note_ja": "レビュー済み4体系を完全な現行一覧とは断定しません。",
+    "principal_racecourse_ids": [
+      "brazil--hipodromo-da-gavea",
+      "brazil--hipodromo-do-cristal"
+    ],
+    "calendar_guidance_en": "Keep Brazilian systems separate. Use JCB Reuniões only as the source-visible Gávea/Cristal meeting mother set, then use the matching JCB Raceday page for best-available detail. Never infer non-running from omission.",
+    "calendar_guidance_ja": "ブラジル各体系は分離して扱います。JCB Reuniõesは公開済みガヴェア/クリスタル開催の母表として使い、対応するJCB RacedayからBest Available詳細を取得します。未掲載から非開催を推測しません。",
+    "coverage_note_en": "Automatic production coverage is currently limited to Gávea and Cristal; it is not complete Brazil-wide coverage.",
+    "coverage_note_ja": "現在の自動production coverageはガヴェアとクリスタルに限定され、ブラジル全体の完全coverageではありません。",
     "revalidation": {
       "triggers_en": [
-        "An authority route changes",
-        "The Sorocaba date is verified",
+        "The JCB Reuniões page, JCB Raceday structure or venue labels change",
+        "Cidade Jardim obtains a stable current automatic schedule route",
+        "The Sorocaba exact meeting date becomes verifiable",
         "Tarumã becomes verifiable"
       ],
       "triggers_ja": [
-        "公式主体の導線が変更されたとき",
-        "ソロカバの日付を確認できたとき",
-        "タルマンを確認できたとき"
+        "JCB Reuniõesページ、JCB Raceday構造または会場名表記が変更されたとき",
+        "シダージ・ジャルジンに安定した現行自動日程導線が得られたとき",
+        "ソロカバの正確な開催日を検証できるようになったとき",
+        "タルマンを確認できるようになったとき"
       ]
     },
     "related_glossary_ids": [

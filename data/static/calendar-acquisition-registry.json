@@ -717,6 +717,64 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "GitHub Actions parses the current official Programa Oficial category and emits source-visible meeting-date/Hipódromo Presidente Remón observations at rank C. Calendar/event hours are never used as post times. The source-visible horizon is not negative evidence for unlisted dates; fetch or parse failure preserves stronger verified state."
+    },
+    {
+      "system_id": "brazil-gavea-system",
+      "country_id": "brazil",
+      "authority_id": "jockey-club-brasileiro",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "jcb-current-meetings-gavea",
+      "detail_source_id": "jcb-raceday-gavea",
+      "schedule_adapter_id": "brazil-jcb-current-meetings-v1",
+      "detail_adapter_id": "brazil-jcb-raceday-v1",
+      "technical_capability_rank": "A+",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "A",
+      "supported_observation_ranks": [
+        "C",
+        "B",
+        "B+",
+        "A",
+        "A+"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": false,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": true,
+      "pending_fields": [],
+      "operator_notes": "Automatic route reads JCB Reuniões for Gávea meeting identity/date, then matching JCB Raceday HTML for full race times and normalized race name/distance/surface/course. Best available may derive A+; public remains capped at A. Missing detail never erases stronger verified state."
+    },
+    {
+      "system_id": "brazil-cristal-system",
+      "country_id": "brazil",
+      "authority_id": "jockey-club-do-rio-grande-do-sul",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "jcb-current-meetings-cristal",
+      "detail_source_id": "jcb-raceday-cristal",
+      "schedule_adapter_id": "brazil-jcb-current-meetings-v1",
+      "detail_adapter_id": "brazil-jcb-raceday-v1",
+      "technical_capability_rank": "A+",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "A",
+      "supported_observation_ranks": [
+        "C",
+        "B",
+        "B+",
+        "A",
+        "A+"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": false,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": true,
+      "pending_fields": [],
+      "operator_notes": "Automatic route reads JCB Reuniões for Cristal meeting identity/date, then matching JCB Raceday HTML for full race times and normalized race name/distance/surface/course. JCRGS remains the venue operator. Best available may derive A+; public remains capped at A."
     }
   ]
 }

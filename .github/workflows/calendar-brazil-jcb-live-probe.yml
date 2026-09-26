@@ -1,0 +1,53 @@
+name: Brazil JCB current meetings live probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-brazil-jcb-live-probe.yml'
+      - 'scripts/timetable/brazil-jcb-current-meetings-core.mjs'
+      - 'scripts/timetable/run-brazil-jcb-current-meetings-window.mjs'
+      - 'scripts/check-brazil-jcb-current-meetings-adapter.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - name: Validate Brazil JCB adapter
+        run: npm run validate:brazil-jcb-current-meetings
+      - name: Probe live Brazil 30-day source-visible window
+        run: |
+          mkdir -p .calendar-brazil-probe
+          node scripts/timetable/run-brazil-jcb-current-meetings-window.mjs \
+            --as-of=2026-09-26 \
+            --days=30 \
+            --gavea-output=.calendar-brazil-probe/gavea.json \
+            --cristal-output=.calendar-brazil-probe/cristal.json
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const files=['gavea','cristal'];
+          const data=files.map(name=>[name,JSON.parse(fs.readFileSync(`.calendar-brazil-probe/${name}.json`,'utf8'))]);
+          console.log(JSON.stringify(Object.fromEntries(data.map(([name,value])=>[name,{
+            records:value.records.length,
+            dates:value.records.map(r=>r.date),
+            venues:[...new Set(value.records.map(r=>r.racecourse_id))],
+            diagnostics:value.diagnostics,
+            discovery:value.discovery,
+          }]))));
+          for(const [,value] of data){
+            if(value.diagnostics.source_errors.length) process.exitCode=1;
+            if(value.diagnostics.parse_failures.length) process.exitCode=1;
+            if(value.records.some(r=>!['C','B','B+','A','A+'].includes(r.capability_rank))) process.exitCode=1;
+          }
+          if(data.reduce((n,[,value])=>n+value.records.length,0)===0) process.exitCode=1;
+          const enriched=data.flatMap(([,value])=>value.records).filter(r=>['A','A+'].includes(r.capability_rank));
+          console.log(JSON.stringify({enriched_records:enriched.length,enriched:enriched.map(r=>({id:r.meeting_id,rank:r.capability_rank,first:r.first_race_time_local,last:r.last_race_time_local,races:r.timetable_rows.length}))}));
+          if(enriched.length===0) process.exitCode=1;
+          NODE

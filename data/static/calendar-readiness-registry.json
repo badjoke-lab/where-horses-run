@@ -439,51 +439,10 @@
       "country_tracker_delivery_no": "08",
       "system_id": "brazil-cristal-system",
       "system_name_en": "Cristal system",
-      "authority_source_key": "brazil/jockey-club-do-rio-grande-do-sul/cristal-programme",
-      "racecourse_ids": [],
-      "coverage_scope": "single_racecourse",
-      "technical_rank": "A",
-      "public_ceiling": "A",
-      "confirmed_fields": {
-        "meeting_date": true,
-        "racecourse": true,
-        "first_race_time": true,
-        "last_race_time": true,
-        "per_race_post_times": true,
-        "race_name": false,
-        "distance": false,
-        "surface": false,
-        "course": false
-      },
-      "source_format": "pdf",
-      "access_mode": "direct",
-      "automation_mode": "manual_import",
-      "refresh_classes": [
-        "weekly",
-        "near_meeting"
+      "authority_source_key": "brazil/jockey-club-do-rio-grande-do-sul/jcb-current-meetings-cristal",
+      "racecourse_ids": [
+        "brazil--hipodromo-do-cristal"
       ],
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "fallback": "downgrade_to_C",
-      "source_status": "verified",
-      "checked_date": "2026-06-17",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when the Cristal programme route or document format changes.",
-      "blocked_reason": null,
-      "source_test_ref": "docs/timetable-source-tests/08-brazil/final-summary.json",
-      "limitations": [
-        "The decision is venue-specific and does not establish national completeness."
-      ],
-      "notes": "A bounded manual-import prototype may begin for reviewed Cristal programmes."
-    },
-    {
-      "readiness_id": "brazil--brazil-gavea-system--gavea-programme",
-      "country_id": "brazil",
-      "country_tracker_delivery_no": "08",
-      "system_id": "brazil-gavea-system",
-      "system_name_en": "Gávea system",
-      "authority_source_key": "brazil/jockey-club-brasileiro/gavea-programme",
-      "racecourse_ids": [],
       "coverage_scope": "single_racecourse",
       "technical_rank": "A+",
       "public_ceiling": "A",
@@ -493,32 +452,82 @@
         "first_race_time": true,
         "last_race_time": true,
         "per_race_post_times": true,
-        "race_name": false,
-        "distance": false,
-        "surface": false,
-        "course": false
+        "race_name": true,
+        "distance": true,
+        "surface": true,
+        "course": true
       },
-      "source_format": "pdf",
+      "source_format": "html",
       "access_mode": "direct",
-      "automation_mode": "manual_import",
+      "automation_mode": "automatic",
       "refresh_classes": [
         "weekly",
         "near_meeting"
       ],
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "fallback": "downgrade_to_C",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-17",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when the Gávea programme route or document format changes.",
+      "checked_date": "2026-09-26",
+      "evidence_reviewed_at": "2026-09-26",
+      "revalidation_trigger": "Revalidate if the JCB Reuniões mother-set page, JCB Raceday detail structure, venue naming, or source-visible horizon behaviour changes.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/08-brazil/final-summary.json",
       "limitations": [
-        "The decision is venue-specific and does not establish national completeness.",
-        "Programme summary fields beyond times were not normalized in this backfill."
+        "The JCB Reuniões page is a short source-visible horizon; an unlisted future date is not evidence of non-running.",
+        "Matching JCB Raceday detail is attempted only for source-visible Gávea/Cristal meetings; detail failure preserves the safe schedule observation and stronger verified canonical state.",
+        "Internal best-available evidence may reach A+, but public output remains capped at A pending reviewed A+ authority approval.",
+        "This does not establish complete Brazil-wide racing-system coverage."
       ],
-      "notes": "A bounded manual-import prototype may begin for reviewed Gávea programmes."
+      "notes": "Automatic production route uses JCB Reuniões as the Cristal meeting mother set and matching JCB Raceday detail through A+; JCRGS remains the venue operator and public output remains capped at A."
+    },
+    {
+      "readiness_id": "brazil--brazil-gavea-system--gavea-programme",
+      "country_id": "brazil",
+      "country_tracker_delivery_no": "08",
+      "system_id": "brazil-gavea-system",
+      "system_name_en": "Gávea system",
+      "authority_source_key": "brazil/jockey-club-brasileiro/jcb-current-meetings-gavea",
+      "racecourse_ids": [
+        "brazil--hipodromo-da-gavea"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "A+",
+      "public_ceiling": "A",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": true,
+        "last_race_time": true,
+        "per_race_post_times": true,
+        "race_name": true,
+        "distance": true,
+        "surface": true,
+        "course": true
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-09-26",
+      "evidence_reviewed_at": "2026-09-26",
+      "revalidation_trigger": "Revalidate if the JCB Reuniões mother-set page, JCB Raceday detail structure, venue naming, or source-visible horizon behaviour changes.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/08-brazil/final-summary.json",
+      "limitations": [
+        "The JCB Reuniões page is a short source-visible horizon; an unlisted future date is not evidence of non-running.",
+        "Matching JCB Raceday detail is attempted only for source-visible Gávea/Cristal meetings; detail failure preserves the safe schedule observation and stronger verified canonical state.",
+        "Internal best-available evidence may reach A+, but public output remains capped at A pending reviewed A+ authority approval.",
+        "This does not establish complete Brazil-wide racing-system coverage."
+      ],
+      "notes": "Automatic production route uses JCB Reuniões as the Gávea meeting mother set and JCB Raceday as best-available detail through A+; public output remains capped at A."
     },
     {
       "readiness_id": "brazil--brazil-sorocaba-system--sorocaba-programme",

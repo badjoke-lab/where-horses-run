@@ -516,6 +516,27 @@
       "show_live_label": false,
       "show_replay_label": false,
       "notes": "Panama public Calendar output is limited to official Programa Oficial meeting date and Hipódromo Presidente Remón identity at rank C. Event or operating hours such as 08:00-17:00 are not race post times and must not be published as such."
+    },
+    {
+      "id": "brazil-jcb-current-meetings-reviewed-a",
+      "priority": 350,
+      "match": {
+        "authority_ids": [
+          "jockey-club-brasileiro",
+          "jockey-club-do-rio-grande-do-sul"
+        ]
+      },
+      "max_public_rank": "A",
+      "include_in_public_list": true,
+      "detail_fields": {
+        "show_race_name": true,
+        "show_distance": true,
+        "show_surface": true,
+        "show_course": true
+      },
+      "show_live_label": false,
+      "show_replay_label": false,
+      "notes": "Brazil Gávea/Cristal production uses the JCB current-meetings mother set plus matching JCB Raceday detail. Internal best-available evidence may derive A+, while public output remains capped at A under the reviewed Brazil publication boundary until A+ authority review is completed."
     }
   ]
 }

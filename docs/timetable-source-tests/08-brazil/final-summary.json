@@ -74,5 +74,77 @@
       "Quarter Horse"
     ]
   },
-  "raw_storage_note": "Raw evidence remains only under .whr-local-source-tests/08-brazil/ and must not be committed."
+  "raw_storage_note": "Raw evidence remains only under .whr-local-source-tests/08-brazil/ and must not be committed.",
+  "checked_date": "2026-09-26",
+  "production_route": {
+    "status": "candidate_active",
+    "automation_mode": "automatic",
+    "current_source_url": "https://site.jcb.com.br/conteudo/Reunioes?cn=BNL&cp=BNL_site",
+    "routed_systems": [
+      {
+        "system_id": "brazil-gavea-system",
+        "racecourse_id": "brazil--hipodromo-da-gavea",
+        "authority_id": "jockey-club-brasileiro"
+      },
+      {
+        "system_id": "brazil-cristal-system",
+        "racecourse_id": "brazil--hipodromo-do-cristal",
+        "authority_id": "jockey-club-do-rio-grande-do-sul"
+      }
+    ],
+    "source_visible_example": {
+      "observed_on": "2026-09-26",
+      "rows": [
+        {
+          "date": "2026-09-26",
+          "venue": "Cristal RS"
+        },
+        {
+          "date": "2026-09-27",
+          "venue": "Gavea"
+        },
+        {
+          "date": "2026-09-28",
+          "venue": "Gavea"
+        },
+        {
+          "date": "2026-09-29",
+          "venue": "Gavea"
+        }
+      ]
+    },
+    "limitations": [
+      "JCB Reuniões exposes a short current meeting horizon; missing future dates are not negative evidence.",
+      "Matching JCB Raceday pages are attempted for source-visible Gávea/Cristal meetings and can support A+ internally when all normalized detail fields are present.",
+      "Public output remains capped at A until the reviewed A+ authority boundary is changed.",
+      "Detail fetch/parser failure must preserve the safe schedule observation and any stronger verified canonical state.",
+      "Cidade Jardim, Sorocaba and Tarumã are not automatically routed by this production change."
+    ],
+    "technical_capability_rank": "A+",
+    "public_ceiling": "A",
+    "schedule_source_url": "https://site.jcb.com.br/conteudo/Reunioes?cn=BNL&cp=BNL_site",
+    "detail_source_pattern": "https://apostas.jcb.com.br/pt-br/raceday?dia=YYYY-MM-DD",
+    "detail_fields": [
+      "per_race_post_times",
+      "race_name",
+      "distance",
+      "surface",
+      "course"
+    ],
+    "live_revalidation": {
+      "observed_on": "2026-09-26",
+      "gavea": {
+        "date": "2026-09-27",
+        "detail_status": "available",
+        "first_post": "15:36",
+        "race_count": 8
+      },
+      "cristal": {
+        "date": "2026-09-26",
+        "detail_status": "available",
+        "first_post": "13:45",
+        "race_count": 9
+      }
+    }
+  }
 }

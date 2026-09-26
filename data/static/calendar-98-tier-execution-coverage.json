@@ -13,9 +13,9 @@
   },
   "counts": {
     "tier_total": 98,
-    "registry_profile_total": 27,
-    "registry_routed_tiers": 21,
-    "active_runner_gap_tiers": 50,
+    "registry_profile_total": 29,
+    "registry_routed_tiers": 22,
+    "active_runner_gap_tiers": 49,
     "status_only_tiers": 20,
     "no_runner_required_tiers": 7
   },
@@ -40,11 +40,11 @@
     "spain",
     "italy",
     "south-africa",
-    "panama"
+    "panama",
+    "brazil"
   ],
   "active_runner_gap_country_ids": [
     "mexico",
-    "brazil",
     "qatar",
     "zimbabwe",
     "uruguay",
@@ -127,6 +127,7 @@
   ],
   "policy_notes": {
     "united-states": "Do not treat Equibase web pages as an automation path. Equibase web automation remains blocked without authorization; U.S. runner work must descend through automation-safe official regulator/operator sources.",
-    "status_only": "A status-only tier returning no current dated official trigger is a valid zero state, not a failed active collector."
+    "status_only": "A status-only tier returning no current dated official trigger is a valid zero state, not a failed active collector.",
+    "brazil": "Brazil is country-routed but only Gávea and Cristal are active automatic production systems. Cidade Jardim remains outside automatic routing pending current-source revalidation; Sorocaba remains blocked until exact meeting-date pairing is verifiable."
   }
 }

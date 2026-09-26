@@ -31,6 +31,8 @@ const SYSTEMS = [
   { key: 'south-africa-race-coast', file: 'south-africa-race-coast.json', country_id: 'south-africa', authority_id: 'race-coast', racing_system_id: 'south-africa-race-coast-system' },
   { key: 'south-africa-four-racing', file: 'south-africa-four-racing.json', country_id: 'south-africa', authority_id: 'four-racing', racing_system_id: 'south-africa-4racing-system' },
   { key: 'panama', file: 'panama.json', country_id: 'panama', authority_id: 'hipica-de-panama', racing_system_id: 'presidente-remon-racing-system' },
+  { key: 'brazil-gavea', file: 'brazil-gavea.json', country_id: 'brazil', authority_id: 'jockey-club-brasileiro', racing_system_id: 'brazil-gavea-system' },
+  { key: 'brazil-cristal', file: 'brazil-cristal.json', country_id: 'brazil', authority_id: 'jockey-club-do-rio-grande-do-sul', racing_system_id: 'brazil-cristal-system' },
 ];
 
 const STATE_FILES = {
