@@ -214,7 +214,7 @@ export function buildZarzuelaMeetingRecord(scheduleRow, detailRows = [], { check
   }
   record.acquisition_completion = classifyAcquisitionCompletion(
     { ...record, capability_rank },
-    { technical_capability_rank: 'A' },
+    { technical_capability_rank: 'C' },
   );
   return { ...record, capability_rank };
 }
