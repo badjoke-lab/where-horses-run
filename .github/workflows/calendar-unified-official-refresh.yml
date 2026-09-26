@@ -22,6 +22,7 @@ on:
       - 'scripts/check-panama-presidente-remon-adapter.mjs'
       - 'scripts/check-brazil-jcb-reunioes-adapter.mjs'
       - 'scripts/check-brazil-cidade-jardim-adapter.mjs'
+      - 'scripts/check-brazil-sorocaba-adapter.mjs'
       - 'scripts/timetable/south-africa-four-racing-core.mjs'
       - 'scripts/timetable/run-south-africa-four-racing-official-window.mjs'
       - 'scripts/timetable/panama-presidente-remon-core.mjs'
@@ -30,6 +31,8 @@ on:
       - 'scripts/timetable/run-brazil-jcb-reunioes-official-window.mjs'
       - 'scripts/timetable/brazil-cidade-jardim-core.mjs'
       - 'scripts/timetable/run-brazil-cidade-jardim-official-window.mjs'
+      - 'scripts/timetable/brazil-sorocaba-core.mjs'
+      - 'scripts/timetable/run-brazil-sorocaba-official-window.mjs'
       - 'scripts/timetable/italy-masaf-core.mjs'
       - 'scripts/timetable/run-italy-masaf-official-window.mjs'
       - 'scripts/check-calendar-public-map-parity.mjs'
@@ -90,6 +93,7 @@ on:
       - 'scripts/check-panama-presidente-remon-adapter.mjs'
       - 'scripts/check-brazil-jcb-reunioes-adapter.mjs'
       - 'scripts/check-brazil-cidade-jardim-adapter.mjs'
+      - 'scripts/check-brazil-sorocaba-adapter.mjs'
       - 'scripts/timetable/south-africa-four-racing-core.mjs'
       - 'scripts/timetable/run-south-africa-four-racing-official-window.mjs'
       - 'scripts/timetable/panama-presidente-remon-core.mjs'
@@ -98,6 +102,8 @@ on:
       - 'scripts/timetable/run-brazil-jcb-reunioes-official-window.mjs'
       - 'scripts/timetable/brazil-cidade-jardim-core.mjs'
       - 'scripts/timetable/run-brazil-cidade-jardim-official-window.mjs'
+      - 'scripts/timetable/brazil-sorocaba-core.mjs'
+      - 'scripts/timetable/run-brazil-sorocaba-official-window.mjs'
       - 'scripts/timetable/italy-masaf-core.mjs'
       - 'scripts/timetable/run-italy-masaf-official-window.mjs'
       - 'scripts/check-calendar-public-map-parity.mjs'
@@ -176,6 +182,7 @@ jobs:
           node scripts/check-panama-presidente-remon-adapter.mjs
           node scripts/check-brazil-jcb-reunioes-adapter.mjs
           node scripts/check-brazil-cidade-jardim-adapter.mjs
+          node scripts/check-brazil-sorocaba-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
@@ -347,6 +354,7 @@ jobs:
           node scripts/check-panama-presidente-remon-adapter.mjs
           node scripts/check-brazil-jcb-reunioes-adapter.mjs
           node scripts/check-brazil-cidade-jardim-adapter.mjs
+          node scripts/check-brazil-sorocaba-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
@@ -561,6 +569,9 @@ jobs:
           node scripts/timetable/run-brazil-cidade-jardim-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/brazil-cidade-jardim.json
+          node scripts/timetable/run-brazil-sorocaba-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/brazil-sorocaba.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -590,7 +601,8 @@ jobs:
             --artifact=.calendar-unified/panama.json \
             --artifact=.calendar-unified/brazil-gavea.json \
             --artifact=.calendar-unified/brazil-cristal.json \
-            --artifact=.calendar-unified/brazil-cidade-jardim.json
+            --artifact=.calendar-unified/brazil-cidade-jardim.json \
+            --artifact=.calendar-unified/brazil-sorocaba.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -755,6 +767,12 @@ jobs:
             --authority-id=jockey-club-de-sao-paulo \
             --racing-system-id=brazil-cidade-jardim-system \
             --timezone=America/Sao_Paulo
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/brazil-sorocaba.json \
+            --country-id=brazil \
+            --authority-id=jockey-club-de-sorocaba \
+            --racing-system-id=brazil-sorocaba-system \
+            --timezone=America/Sao_Paulo
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
@@ -865,6 +883,9 @@ jobs:
             node scripts/timetable/run-brazil-cidade-jardim-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/brazil-cidade-jardim.json
+            node scripts/timetable/run-brazil-sorocaba-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/brazil-sorocaba.json
             node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --artifact=.calendar-unified/uae.json \
@@ -892,7 +913,8 @@ jobs:
             --artifact=.calendar-unified/panama.json \
             --artifact=.calendar-unified/brazil-gavea.json \
             --artifact=.calendar-unified/brazil-cristal.json \
-            --artifact=.calendar-unified/brazil-cidade-jardim.json
+            --artifact=.calendar-unified/brazil-cidade-jardim.json \
+            --artifact=.calendar-unified/brazil-sorocaba.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --country-id=hong-kong \
@@ -1054,6 +1076,12 @@ jobs:
               --country-id=brazil \
               --authority-id=jockey-club-de-sao-paulo \
               --racing-system-id=brazil-cidade-jardim-system \
+              --timezone=America/Sao_Paulo
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/brazil-sorocaba.json \
+              --country-id=brazil \
+              --authority-id=jockey-club-de-sorocaba \
+              --racing-system-id=brazil-sorocaba-system \
               --timezone=America/Sao_Paulo
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
             node scripts/timetable/apply-meeting-presence-dispositions.mjs \
