@@ -297,7 +297,7 @@
       "supports_source_visible_horizon": false,
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
-      "operator_notes": "GitHub Actions scans the requested Peru-local date window through the official Monterrico date API, then evaluates each discovered reunion through the official programme page. Complete race rows support evidence-derived A; unpublished detail remains valid C with pending publication and fetch/parser failures remain valid C with explicit retry state. Coverage is limited to the reviewed Monterrico system and does not claim complete Peru-wide racing coverage."
+      "operator_notes": "GitHub Actions scans the requested Peru-local date window through the official Monterrico date API, then resolves each discovered reunion through the official Monterrico reunion JSON API at /api/general/carreras/general/programas/{id_reunion}. The carreras array supplies continuous per-race post times, race names and distances through evidence-derived A. Unpublished or unavailable detail preserves the verified C meeting identity with explicit pending/retry state. Coverage is limited to the reviewed Monterrico system."
     },
     {
       "system_id": "saudi-arabia-jcsa-system",
