@@ -126,10 +126,20 @@ export async function discoverAnnualFixtures({ startDate, endDateExclusive, fetc
     while (cursor < end) {
       const day = cursor.toISOString().slice(0, 10);
       const fallbackUrl = buildQueryUrl(ANNUAL_PAGE_URL, day, day);
-      const fallbackHtml = await fetchHtml(fallbackUrl, fetchImpl);
-      pages.push({ page_number: null, date: day, url: fallbackUrl, status: 'fallback_page_ok' });
-      for (const fixture of extractAnnualFixtures(fallbackHtml, { startDate: day, endDateExclusive: new Date(cursor.valueOf() + 86_400_000).toISOString().slice(0, 10) })) {
-        all.set(fixture.candidate_id, fixture);
+      try {
+        const fallbackHtml = await fetchHtml(fallbackUrl, fetchImpl);
+        pages.push({ page_number: null, date: day, url: fallbackUrl, status: 'fallback_page_ok' });
+        for (const fixture of extractAnnualFixtures(fallbackHtml, { startDate: day, endDateExclusive: new Date(cursor.valueOf() + 86_400_000).toISOString().slice(0, 10) })) {
+          all.set(fixture.candidate_id, fixture);
+        }
+      } catch (fallbackError) {
+        pages.push({
+          page_number: null,
+          date: day,
+          url: fallbackUrl,
+          status: 'fallback_page_failed',
+          error_code: fallbackError?.name === 'TimeoutError' ? 'timeout' : 'fetch_error',
+        });
       }
       cursor.setUTCDate(cursor.getUTCDate() + 1);
     }
