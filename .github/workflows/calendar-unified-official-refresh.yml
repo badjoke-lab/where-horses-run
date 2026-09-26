@@ -19,8 +19,11 @@ on:
       - 'scripts/check-italy-masaf-adapter.mjs'
       - 'scripts/check-south-africa-race-coast-adapter.mjs'
       - 'scripts/check-south-africa-four-racing-adapter.mjs'
+      - 'scripts/check-panama-presidente-remon-adapter.mjs'
       - 'scripts/timetable/south-africa-four-racing-core.mjs'
       - 'scripts/timetable/run-south-africa-four-racing-official-window.mjs'
+      - 'scripts/timetable/panama-presidente-remon-core.mjs'
+      - 'scripts/timetable/run-panama-presidente-remon-official-window.mjs'
       - 'scripts/timetable/italy-masaf-core.mjs'
       - 'scripts/timetable/run-italy-masaf-official-window.mjs'
       - 'scripts/check-calendar-public-map-parity.mjs'
@@ -78,8 +81,11 @@ on:
       - 'scripts/check-italy-masaf-adapter.mjs'
       - 'scripts/check-south-africa-race-coast-adapter.mjs'
       - 'scripts/check-south-africa-four-racing-adapter.mjs'
+      - 'scripts/check-panama-presidente-remon-adapter.mjs'
       - 'scripts/timetable/south-africa-four-racing-core.mjs'
       - 'scripts/timetable/run-south-africa-four-racing-official-window.mjs'
+      - 'scripts/timetable/panama-presidente-remon-core.mjs'
+      - 'scripts/timetable/run-panama-presidente-remon-official-window.mjs'
       - 'scripts/timetable/italy-masaf-core.mjs'
       - 'scripts/timetable/run-italy-masaf-official-window.mjs'
       - 'scripts/check-calendar-public-map-parity.mjs'
@@ -155,6 +161,7 @@ jobs:
           node scripts/check-italy-masaf-adapter.mjs
           node scripts/check-south-africa-race-coast-adapter.mjs
           node scripts/check-south-africa-four-racing-adapter.mjs
+          node scripts/check-panama-presidente-remon-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
@@ -323,6 +330,7 @@ jobs:
           node scripts/check-italy-masaf-adapter.mjs
           node scripts/check-south-africa-race-coast-adapter.mjs
           node scripts/check-south-africa-four-racing-adapter.mjs
+          node scripts/check-panama-presidente-remon-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
@@ -527,6 +535,9 @@ jobs:
           node scripts/timetable/run-south-africa-four-racing-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/south-africa-four-racing.json
+          node scripts/timetable/run-panama-presidente-remon-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/panama.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -552,7 +563,8 @@ jobs:
             --artifact=.calendar-unified/italy-gallop.json \
             --artifact=.calendar-unified/italy-trot.json \
             --artifact=.calendar-unified/south-africa-race-coast.json \
-            --artifact=.calendar-unified/south-africa-four-racing.json
+            --artifact=.calendar-unified/south-africa-four-racing.json \
+            --artifact=.calendar-unified/panama.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -693,6 +705,12 @@ jobs:
             --authority-id=four-racing \
             --racing-system-id=south-africa-4racing-system \
             --timezone=Africa/Johannesburg
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/panama.json \
+            --country-id=panama \
+            --authority-id=hipica-de-panama \
+            --racing-system-id=presidente-remon-racing-system \
+            --timezone=America/Panama
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
@@ -793,6 +811,9 @@ jobs:
             node scripts/timetable/run-south-africa-four-racing-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/south-africa-four-racing.json
+            node scripts/timetable/run-panama-presidente-remon-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/panama.json
             node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --artifact=.calendar-unified/uae.json \
@@ -816,7 +837,8 @@ jobs:
               --artifact=.calendar-unified/italy-gallop.json \
               --artifact=.calendar-unified/italy-trot.json \
               --artifact=.calendar-unified/south-africa-race-coast.json \
-              --artifact=.calendar-unified/south-africa-four-racing.json
+              --artifact=.calendar-unified/south-africa-four-racing.json \
+            --artifact=.calendar-unified/panama.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --country-id=hong-kong \
@@ -955,6 +977,12 @@ jobs:
               --authority-id=four-racing \
               --racing-system-id=south-africa-4racing-system \
               --timezone=Africa/Johannesburg
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/panama.json \
+              --country-id=panama \
+              --authority-id=hipica-de-panama \
+              --racing-system-id=presidente-remon-racing-system \
+              --timezone=America/Panama
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
             node scripts/timetable/apply-meeting-presence-dispositions.mjs \
             --artifact=.calendar-unified/hkjc.json \
