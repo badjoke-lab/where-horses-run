@@ -792,6 +792,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic JCSP monthly Projeto de Inscrições discovery and PDF parser. Publishes meeting date plus Cidade Jardim physical venue at rank C only. Missing future monthly PDFs are publication-state warnings, not non-running evidence."
+    },
+    {
+      "system_id": "brazil-sorocaba-system",
+      "country_id": "brazil",
+      "authority_id": "jockey-club-de-sorocaba",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "sorocaba-calendar-2026",
+      "detail_source_id": "sorocaba-calendar-2026",
+      "schedule_adapter_id": "brazil-sorocaba-calendar-v1",
+      "detail_adapter_id": "brazil-sorocaba-calendar-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": false,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic annual-calendar PDF route for Sorocaba. Publishes exact meeting date plus physical venue at rank C only; programme timing remains separate."
     }
   ]
 }
