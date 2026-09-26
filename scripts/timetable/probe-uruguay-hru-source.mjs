@@ -37,9 +37,25 @@ if(pdfAnchor){
     const pdf=await getDocument({data:bytes,disableWorker:true}).promise;
     console.log('PDF_PAGES '+pdf.numPages);
     for(let n=1;n<=Math.min(pdf.numPages,8);n++){
-      const p=await pdf.getPage(n); const c=await p.getTextContent();
-      const text=c.items.filter(i=>'str' in i).map(i=>i.str).join(' ').replace(/\s+/g,' ').trim();
+      const p=await pdf.getPage(n); const content=await p.getTextContent();
+      const items=content.items.filter(i=>'str' in i).map(i=>({str:String(i.str).replace(/\\s+/g,' ').trim(),x:Number(i.transform?.[4]),y:Number(i.transform?.[5])})).filter(i=>i.str);
+      const text=items.map(i=>i.str).join(' ').replace(/\\s+/g,' ').trim();
       console.log('PDF_PAGE_'+n+' '+text.slice(0,12000));
+      if(n===1){
+        const local=items.filter(i=>/^(?:Maroñas|Las Piedras)$/i.test(i.str));
+        const dayTokens=items.filter(i=>/^(?:[1-9]|[12]\\d|3[01])$/.test(i.str));
+        console.log('PDF_LOCAL_COORDS');
+        for(const item of local){
+          const candidates=dayTokens
+            .map(day=>({day:day.str,x:day.x,y:day.y,dx:Math.abs(day.x-item.x),dy:day.y-item.y}))
+            .filter(day=>day.dy>0)
+            .sort((a,b)=>a.dx-b.dx||a.dy-b.dy)
+            .slice(0,8);
+          console.log(JSON.stringify({venue:item,candidates}));
+        }
+        console.log('PDF_DAY_COORDS');
+        for(const item of dayTokens) console.log(JSON.stringify(item));
+      }
     }
   }
 }
