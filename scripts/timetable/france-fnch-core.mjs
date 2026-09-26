@@ -344,6 +344,36 @@ export function buildFnchFixtureRecord(
   return { ...record, capability_rank };
 }
 
+export function buildFnchMixedMeetingRecord(row, { checkedAt } = {}) {
+  const record = baseRecord(row, checkedAt);
+  record.first_race_time_local = row.scheduled_start_local ?? null;
+  record.detail_observation = {
+    status: 'not_applicable',
+    evaluated_capability_rank: record.first_race_time_local ? 'B' : 'C',
+    race_count: 0,
+    programme_url: row.programme_url,
+  };
+  record.acquisition_attempt = {
+    attempted_at: checkedAt,
+    status: 'success',
+    source_id: FRANCE_FNCH_SOURCE_ID,
+    route_id: 'fnch-regional-programme-index',
+    error_code: null,
+  };
+  const meetingEvidence = evidence(row.source_url, checkedAt);
+  record.evidence_support = {
+    meeting_identity: meetingEvidence,
+    meeting_date: meetingEvidence,
+    ...(record.first_race_time_local ? { first_race_time: meetingEvidence } : {}),
+  };
+  const capability_rank = deriveBestAvailableRank(record, []);
+  record.acquisition_completion = classifyAcquisitionCompletion(
+    { ...record, capability_rank },
+    { technical_capability_rank: capability_rank },
+  );
+  return { ...record, capability_rank };
+}
+
 export function buildFnchProgrammeRecord(row, { checkedAt, programmeText } = {}) {
   const rows = parseFnchProgrammeText(programmeText);
   if (!rows.length) {
