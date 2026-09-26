@@ -34,6 +34,7 @@ const SYSTEMS = [
   { key: 'brazil-gavea', file: 'brazil-gavea.json', country_id: 'brazil', authority_id: 'jockey-club-brasileiro', racing_system_id: 'brazil-gavea-system' },
   { key: 'brazil-cristal', file: 'brazil-cristal.json', country_id: 'brazil', authority_id: 'jockey-club-do-rio-grande-do-sul', racing_system_id: 'brazil-cristal-system' },
   { key: 'brazil-cidade-jardim', file: 'brazil-cidade-jardim.json', country_id: 'brazil', authority_id: 'jockey-club-de-sao-paulo', racing_system_id: 'brazil-cidade-jardim-system' },
+  { key: 'brazil-sorocaba', file: 'brazil-sorocaba.json', country_id: 'brazil', authority_id: 'jockey-club-de-sorocaba', racing_system_id: 'brazil-sorocaba-system' },
 ];
 
 const STATE_FILES = {
