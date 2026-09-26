@@ -1,121 +1,15 @@
-name: Calendar unified official refresh
+name: Calendar near official refresh
 
 on:
   schedule:
-    - cron: '17 3 * * *'   # full rolling 30-day mother set
+    - cron: '17 11,19 * * *' # rolling near-3-day detail refresh
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/calendar-unified-official-refresh.yml'
-      - 'package.json'
-      - 'scripts/timetable/**'
-      - 'scripts/check-calendar-refresh-publication-boundaries.mjs'
-      - 'scripts/check-bahrain-btc-adapter.mjs'
-      - 'scripts/check-sweden-svensk-galopp-adapter.mjs'
-      - 'scripts/check-germany-deutscher-galopp-adapter.mjs'
-      - 'scripts/check-spain-zarzuela-adapter.mjs'
-      - 'scripts/check-italy-masaf-adapter.mjs'
-      - 'scripts/check-south-africa-race-coast-adapter.mjs'
-      - 'scripts/check-south-africa-four-racing-adapter.mjs'
-      - 'scripts/timetable/south-africa-four-racing-core.mjs'
-      - 'scripts/timetable/run-south-africa-four-racing-official-window.mjs'
-      - 'scripts/timetable/italy-masaf-core.mjs'
-      - 'scripts/timetable/run-italy-masaf-official-window.mjs'
-      - 'scripts/check-calendar-public-map-parity.mjs'
-      - 'data/static/racecourse-locations-v1.json'
-      - 'src/lib/racecourseMapLocationPolicy.mjs'
-      - 'scripts/check-calendar-live-source-readiness.mjs'
-      - 'scripts/check-calendar-non-running-evidence-registry.mjs'
-      - 'scripts/check-hkjc-non-running-evidence.mjs'
-      - 'scripts/check-uae-era-non-running-evidence.mjs'
-      - 'scripts/check-jra-non-running-evidence.mjs'
-      - 'scripts/check-jra-non-running-discovery.mjs'
-      - 'scripts/check-banei-non-running-evidence.mjs'
-      - 'scripts/check-banei-non-running-discovery.mjs'
-      - 'scripts/check-nar-non-running-evidence.mjs'
-      - 'scripts/check-nar-non-running-discovery.mjs'
-      - 'scripts/check-sorec-non-running-evidence.mjs'
-      - 'scripts/check-chile-clubhipico-non-running-evidence.mjs'
-      - 'scripts/check-france-non-running-evidence.mjs'
-      - 'scripts/timetable/france-non-running-evidence.mjs'
-      - 'data/static/calendar-non-running-evidence-registry-v1.json'
-      - 'data/static/calendar-non-running-evidence-registry.schema.json'
-      - 'scripts/check-kra-window-bounds.mjs'
-      - 'scripts/check-japan-mother-set-safety.mjs'
-      - 'scripts/check-japan-per-family-absence-reconciliation.mjs'
-      - 'scripts/check-jra-official-30d-completeness.mjs'
-      - 'scripts/check-banei-official-program-fallback.mjs'
-      - 'scripts/check-nankankeiba-official-30d.mjs'
-      - 'scripts/check-nankan-official-programme-fallback.mjs'
-      - 'scripts/check-iwatekeiba-official-30d.mjs'
-      - 'scripts/check-iwate-official-programme-fallback.mjs'
-      - 'scripts/check-hyogo-official-30d.mjs'
-      - 'scripts/check-tokai-official-30d.mjs'
-      - 'scripts/check-hokkaido-official-30d.mjs'
-      - 'scripts/check-kanazawa-official-30d.mjs'
-      - 'scripts/check-kochi-official-30d.mjs'
-      - 'scripts/check-saga-official-30d.mjs'
-      - 'data/static/authority-source-inventory-japan-v2.json'
-      - 'data/static/calendar-reviewed-exclusions.json'
-      - 'data/static/calendar-reviewed-public-observations.json'
-      - 'data/static/banei-2026-09-06-public-detail-v1.json'
-      - 'data/static/banei-2026-09-07-public-detail-v1.json'
-      - 'data/static/japan-2026-09-05-reviewed-a-plus-v1.json'
-      - 'data/static/japan-2026-09-06-kochi-reviewed-a-plus-v1.json'
-      - 'src/data/publicationDisplayPolicies.json'
-  pull_request:
-    paths:
-      - '.github/workflows/calendar-unified-official-refresh.yml'
-      - 'package.json'
-      - 'scripts/timetable/**'
-      - 'scripts/check-calendar-refresh-publication-boundaries.mjs'
-      - 'scripts/check-bahrain-btc-adapter.mjs'
-      - 'scripts/check-sweden-svensk-galopp-adapter.mjs'
-      - 'scripts/check-germany-deutscher-galopp-adapter.mjs'
-      - 'scripts/check-spain-zarzuela-adapter.mjs'
-      - 'scripts/check-italy-masaf-adapter.mjs'
-      - 'scripts/check-south-africa-race-coast-adapter.mjs'
-      - 'scripts/check-south-africa-four-racing-adapter.mjs'
-      - 'scripts/timetable/south-africa-four-racing-core.mjs'
-      - 'scripts/timetable/run-south-africa-four-racing-official-window.mjs'
-      - 'scripts/timetable/italy-masaf-core.mjs'
-      - 'scripts/timetable/run-italy-masaf-official-window.mjs'
-      - 'scripts/check-calendar-public-map-parity.mjs'
-      - 'data/static/racecourse-locations-v1.json'
-      - 'src/lib/racecourseMapLocationPolicy.mjs'
-      - 'scripts/check-calendar-live-source-readiness.mjs'
-      - 'scripts/check-chile-clubhipico-non-running-evidence.mjs'
-      - 'scripts/check-kra-window-bounds.mjs'
-      - 'scripts/check-japan-mother-set-safety.mjs'
-      - 'scripts/check-japan-per-family-absence-reconciliation.mjs'
-      - 'scripts/check-jra-official-30d-completeness.mjs'
-      - 'scripts/check-banei-official-program-fallback.mjs'
-      - 'scripts/check-nankankeiba-official-30d.mjs'
-      - 'scripts/check-nankan-official-programme-fallback.mjs'
-      - 'scripts/check-iwatekeiba-official-30d.mjs'
-      - 'scripts/check-iwate-official-programme-fallback.mjs'
-      - 'scripts/check-hyogo-official-30d.mjs'
-      - 'scripts/check-tokai-official-30d.mjs'
-      - 'scripts/check-hokkaido-official-30d.mjs'
-      - 'scripts/check-kanazawa-official-30d.mjs'
-      - 'scripts/check-kochi-official-30d.mjs'
-      - 'scripts/check-saga-official-30d.mjs'
-      - 'data/static/authority-source-inventory-japan-v2.json'
-      - 'data/static/calendar-reviewed-exclusions.json'
-      - 'data/static/calendar-reviewed-public-observations.json'
-      - 'data/static/banei-2026-09-06-public-detail-v1.json'
-      - 'data/static/banei-2026-09-07-public-detail-v1.json'
-      - 'data/static/japan-2026-09-05-reviewed-a-plus-v1.json'
-      - 'data/static/japan-2026-09-06-kochi-reviewed-a-plus-v1.json'
-      - 'src/data/publicationDisplayPolicies.json'
 
 permissions:
   contents: write
 
 concurrency:
-  group: calendar-unified-official-refresh-${{ github.event_name == 'pull_request' && 'smoke' || 'production' }}
+  group: calendar-near-official-refresh-${{ github.event_name == 'pull_request' && 'smoke' || 'production' }}
   cancel-in-progress: false
 
 jobs:
@@ -281,7 +175,7 @@ jobs:
           fi
 
   refresh:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -297,10 +191,10 @@ jobs:
         name: Resolve rolling window scope
         shell: bash
         run: |
-          echo "scope=full" >> "$GITHUB_OUTPUT"
-          echo "days=30" >> "$GITHUB_OUTPUT"
+          echo "scope=near" >> "$GITHUB_OUTPUT"
+          echo "days=3" >> "$GITHUB_OUTPUT"
           echo "japan_date=$(TZ=Asia/Tokyo date +%F)" >> "$GITHUB_OUTPUT"
-          echo "Resolved scope=full days=30"
+          echo "Resolved scope=near days=3"
       - name: Validate production refresh syntax
         run: |
           for file in scripts/timetable/*.mjs; do
