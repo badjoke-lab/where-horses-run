@@ -196,7 +196,15 @@ const supersededMeetingIds = Array.isArray(artifact.superseded_meeting_ids)
   ? [...new Set(artifact.superseded_meeting_ids.filter((value) => typeof value === 'string' && value))]
   : [];
 for (const meetingId of supersededMeetingIds) {
-  if (!canonicalById.has(meetingId) && !detailsById.has(meetingId)) continue;
+  const stored = canonicalById.get(meetingId) ?? null;
+  if (!stored && !detailsById.has(meetingId)) continue;
+  const expectedCountry = artifact.country_id ?? defaults.country_id ?? null;
+  if (stored && expectedCountry && stored.country_id !== expectedCountry) {
+    throw new Error(`superseded meeting ${meetingId} belongs to ${stored.country_id}, not artifact country ${expectedCountry}`);
+  }
+  if (records.some((record) => record?.meeting_id === meetingId)) {
+    throw new Error(`superseded meeting ${meetingId} is also present in the current observation records`);
+  }
   canonicalById.delete(meetingId);
   detailsById.delete(meetingId);
   changed = true;
