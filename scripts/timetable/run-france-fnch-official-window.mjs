@@ -1,7 +1,5 @@
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
-import { execFileSync } from 'node:child_process';
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import {
   FRANCE_FNCH_CALENDAR_URL,
@@ -46,6 +44,23 @@ async function getHtml(url){
 function raceHeaderCount(text){
   return [...String(text??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').matchAll(/\b\d{1,2}\s*(?:e|er|re|ere|eme)?\s*course\s*[–—-]\s*depart\s*:/gi)].length;
 }
+function pdfJsLayoutLines(items){
+  const rows=[];
+  for(const item of items){
+    if(!item || !('str' in item)) continue;
+    const value=String(item.str??'').replace(/\s+/g,' ').trim();
+    if(!value) continue;
+    const x=Number(item.transform?.[4]??0);
+    const y=Number(item.transform?.[5]??0);
+    let row=rows.find(candidate=>Math.abs(candidate.y-y)<=1.5);
+    if(!row){row={y,items:[]};rows.push(row);}
+    row.items.push({x,value});
+  }
+  return rows
+    .sort((a,b)=>b.y-a.y)
+    .map(row=>row.items.sort((a,b)=>a.x-b.x).map(item=>item.value).join(' ').replace(/\s+/g,' ').trim())
+    .filter(Boolean);
+}
 async function getPdfText(url){
   const response=await fetch(url,{redirect:'follow',headers:{
     'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)',
@@ -56,30 +71,27 @@ async function getPdfText(url){
   if(bytes.length<4||String.fromCharCode(...bytes.slice(0,4))!=='%PDF') throw new Error('programme response is not PDF');
 
   const pdf=await getDocument({data:bytes,disableWorker:true}).promise;
-  const lines=[];
+  const sequentialLines=[];
+  const layoutLines=[];
   for(let pageNumber=1;pageNumber<=pdf.numPages;pageNumber+=1){
-    const page=await pdf.getPage(pageNumber);const content=await page.getTextContent();let line='';
+    const page=await pdf.getPage(pageNumber);
+    const content=await page.getTextContent();
+
+    let line='';
     for(const item of content.items){
       if(!('str' in item)) continue;
-      const value=item.str.replace(/\s+/g,' ').trim();if(value) line+=`${line?' ':''}${value}`;
-      if(item.hasEOL&&line){lines.push(line);line='';}
+      const value=item.str.replace(/\s+/g,' ').trim();
+      if(value) line+=`${line?' ':''}${value}`;
+      if(item.hasEOL&&line){sequentialLines.push(line);line='';}
     }
-    if(line) lines.push(line);
-  }
-  const pdfjsText=lines.join('\n');
+    if(line) sequentialLines.push(line);
 
-  let popplerText='';
-  const temp=path.join(os.tmpdir(),`whr-fnch-${process.pid}-${Math.random().toString(16).slice(2)}.pdf`);
-  try{
-    fs.writeFileSync(temp,bytes);
-    popplerText=execFileSync('pdftotext',['-layout',temp,'-'],{encoding:'utf8',maxBuffer:16*1024*1024,timeout:20000});
-  }catch{
-    popplerText='';
-  }finally{
-    fs.rmSync(temp,{force:true});
+    layoutLines.push(...pdfJsLayoutLines(content.items));
   }
 
-  return raceHeaderCount(popplerText)>raceHeaderCount(pdfjsText)?popplerText:pdfjsText;
+  const sequentialText=sequentialLines.join('\n');
+  const layoutText=layoutLines.join('\n');
+  return raceHeaderCount(layoutText)>raceHeaderCount(sequentialText)?layoutText:sequentialText;
 }
 function canonicalMeetings(file){
   if(!fs.existsSync(file)) return [];
