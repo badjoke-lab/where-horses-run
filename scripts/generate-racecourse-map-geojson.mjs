@@ -95,6 +95,8 @@ const calendarMapRegressionIds = [
   'south-africa--turffontein',
   'south-africa--vaal',
   'south-africa--fairview',
+  // Panama (1)
+  'panama--hipodromo-presidente-remon',
   // Morocco (7)
   'casablanca-anfa-racecourse',
   'meknes-racecourse',
