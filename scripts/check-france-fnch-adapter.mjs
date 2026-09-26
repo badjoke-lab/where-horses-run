@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import assert from 'node:assert/strict';
 import { validateCalendarAuthorityMetadataV1 } from './timetable/calendar-authority-metadata.mjs';
 import {
@@ -129,7 +130,32 @@ if(process.env.GITHUB_ACTIONS==='true'){
       ...(galop.diagnostics?.parse_failures??[]).filter((row)=>row.stage==='programme_pdf').map((row)=>({...row,system:'galop'})),
       ...(letrot.diagnostics?.parse_failures??[]).filter((row)=>row.stage==='programme_pdf').map((row)=>({...row,system:'letrot'})),
     ];
-    if(liveParseFailures.length) console.log('FRANCE_LIVE_PARSE_FAILURES:',JSON.stringify(liveParseFailures));
+    if(liveParseFailures.length) {
+      console.log('FRANCE_LIVE_PARSE_FAILURES:',JSON.stringify(liveParseFailures));
+      for(const failure of liveParseFailures.slice(0,2)){
+        try{
+          const response=await fetch(failure.source_url,{headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'}});
+          const bytes=new Uint8Array(await response.arrayBuffer());
+          const pdf=await getDocument({data:bytes,disableWorker:true}).promise;
+          const out=[];
+          for(let pageNumber=1;pageNumber<=Math.min(pdf.numPages,3);pageNumber+=1){
+            const page=await pdf.getPage(pageNumber);
+            const content=await page.getTextContent();
+            let line='';
+            for(const item of content.items){
+              if(!('str' in item)) continue;
+              const value=item.str.replace(/\s+/g,' ').trim();
+              if(value) line+=`${line?' ':''}${value}`;
+              if(item.hasEOL&&line){out.push(line);line='';}
+            }
+            if(line) out.push(line);
+          }
+          console.log('FRANCE_PARSE_TEXT:',JSON.stringify({source_url:failure.source_url,lines:out.slice(0,120)}));
+        }catch(error){
+          console.log('FRANCE_PARSE_TEXT:',JSON.stringify({source_url:failure.source_url,error:String(error?.message??error)}));
+        }
+      }
+    }
     assert.equal(galop.diagnostics?.source_errors?.filter((row)=>row.stage==='programme_pdf').length,0,'live France Galop programme PDFs must not fail acquisition');
     assert.equal(letrot.diagnostics?.source_errors?.filter((row)=>row.stage==='programme_pdf').length,0,'live LETROT programme PDFs must not fail acquisition');
     assert.equal(galop.diagnostics?.parse_failures?.filter((row)=>row.stage==='programme_pdf').length,0,'live France Galop published programme PDFs must parse without race-row failure');
