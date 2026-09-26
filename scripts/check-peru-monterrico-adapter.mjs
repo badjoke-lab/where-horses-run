@@ -91,6 +91,25 @@ if(process.env.GITHUB_ACTIONS==='true'){
           if(index>=0) requestBlocks.push(body.slice(Math.max(0,index-120),Math.min(body.length,index+1000)).replace(/\s+/g,' '));
         }
         console.log('PERU_PROGRAMME_COMPONENT_API:',JSON.stringify({status:response.status,length:body.length,symbols,request_blocks:requestBlocks}));
+        const probes=[];
+        for(const url of [
+          'https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/102454',
+          'https://hipodromodemonterrico.com.pe/api/general/programa-pdf/programa-elturf/102454',
+        ]){
+          try{
+            const probe=await fetch(url,{headers:{
+              'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)',
+              accept:'application/json,text/plain;q=0.9,*/*;q=0.5',
+              referer:'https://hipodromodemonterrico.com.pe/carreras-proximos-programas?id_reunion=102454',
+              'x-requested-with':'XMLHttpRequest',
+            }});
+            const probeBody=await probe.text();
+            probes.push({url,status:probe.status,content_type:probe.headers.get('content-type'),preview:probeBody.slice(0,5000)});
+          }catch(error){
+            probes.push({url,error:String(error?.message??error)});
+          }
+        }
+        console.log('PERU_OFFICIAL_DETAIL_PROBES:',JSON.stringify(probes));
       }catch(error){
         console.log('PERU_PROGRAMME_COMPONENT_API:',JSON.stringify({error:String(error?.message??error)}));
       }
