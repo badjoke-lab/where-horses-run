@@ -27,6 +27,16 @@ console.log('CALENDAR_ANCHORS');
 for(const a of anchors.filter(a=>/pdf|calend|files\.php|hipica|racing/i.test(a.href+' '+a.text))) console.log(JSON.stringify(a));
 console.log('CALENDAR_SCRIPTS');
 for(const s of extractScripts(cal.text,cal.r.url||calendarUrl)) console.log(s);
+console.log('CALENDAR_LOCAL_HTML_SNIPPETS');
+for (const needle of ['Maroñas','Maro&ntilde;as','Las Piedras']) {
+  let from=0;
+  while(true){
+    const idx=cal.text.toLowerCase().indexOf(needle.toLowerCase(),from);
+    if(idx<0) break;
+    console.log(JSON.stringify({needle,idx,snippet:cal.text.slice(Math.max(0,idx-700),Math.min(cal.text.length,idx+900)).replace(/\s+/g,' ')}));
+    from=idx+needle.length;
+  }
+}
 
 const pdfAnchor=anchors.find(a=>/\.pdf(?:$|\?)/i.test(a.href)||/calendario mensual/i.test(a.text));
 if(pdfAnchor){
