@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import { validateCalendarAuthorityMetadataV1 } from './timetable/calendar-authority-metadata.mjs';
 import {
@@ -27,6 +28,7 @@ const html=`<html><body><h1>Domingo, 20 de Septiembre de 2026</h1><p>Carreras de
 </table></body></html>`;
 const parsed=parseZarzuelaMeetingHtml(html,{date:'2026-09-20',sourceUrl:'https://example.test/jornada'});
 assert.equal(parsed.status,'available');
+assert.equal(parsed.meeting_present,true);
 assert.equal(parsed.race_rows.length,3);
 assert.equal(parsed.race_rows[0].distance_m,1400);
 const checkedAt='2026-09-25T00:00:00Z';
@@ -40,6 +42,11 @@ assert.deepEqual(validateCalendarAuthorityMetadataV1({acquisition_attempt:record
 const futureHtml=`<html><body><p>Carreras de la Jornada</p><table><tr><td>PREMIO 197</td><td>Dist.:1.600</td><td>Hora:</td><td>Carrera:</td></tr></table></body></html>`;
 const future=parseZarzuelaMeetingHtml(futureHtml,{date:'2026-10-18',sourceUrl:'https://example.test/future'});
 assert.equal(future.status,'not_published');
+assert.equal(future.meeting_present,true);
 assert.equal(future.race_rows.length,0);
+
+const runnerSource=fs.readFileSync('scripts/timetable/run-spain-zarzuela-official-window.mjs','utf8');
+assert.match(runnerSource,/meeting_page_schedule_fallback/,'Zarzuela runner must recover schedule dates from official jornada pages when the season PDF is unavailable');
+assert.match(runnerSource,/meetingPageCache/,'Zarzuela fallback discovery must reuse fetched meeting pages for detail parsing');
 
 console.log('SPAIN_ZARZUELA_ADAPTER: pass');
