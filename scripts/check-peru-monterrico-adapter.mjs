@@ -94,7 +94,14 @@ if(process.env.GITHUB_ACTIONS==='true') {
           const programaTemporadaHits=[...scriptBody.matchAll(/.{0,260}compProgramaTemporada.{0,420}/gi)].slice(0,20).map(m=>m[0].replace(/\s+/g,' '));
           const dominioApiHits=[...scriptBody.matchAll(/.{0,220}dominio_apis.{0,320}/gi)].slice(0,20).map(m=>m[0].replace(/\s+/g,' '));
           const componentDiagnostics=[];
-          const componentImports=[...scriptBody.matchAll(/compProgramaTemporada\s*=\s*\(\)\s*=>\s*import\(["']([^"']+)["']/gi)].map(m=>new URL(m[1].replace(/\+.*$/,''),scriptUrl).toString());
+          const componentImports=[...scriptBody.matchAll(/compProgramaTemporada\s*=\s*\(\)\s*=>\s*import\(["']([^"']+)["']/gi)].map(m=>{
+            const componentUrl=new URL(m[1].replace(/\+.*$/,''),scriptUrl);
+            if(componentUrl.searchParams.get('v')===''){
+              const parentVersion=new URL(scriptUrl).searchParams.get('v');
+              if(parentVersion) componentUrl.searchParams.set('v',parentVersion);
+            }
+            return componentUrl.toString();
+          });
           for(const componentUrl of componentImports.slice(0,5)) {
             try {
               const componentResponse=await fetch(componentUrl,{headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'}});
