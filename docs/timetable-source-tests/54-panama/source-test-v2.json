@@ -3,8 +3,8 @@
   "delivery_no": "54",
   "country_id": "panama",
   "country_name_en": "Panama",
-  "checked_date": "2026-06-29",
-  "evidence_reviewed_at": "2026-06-29",
+  "checked_date": "2026-09-26",
+  "evidence_reviewed_at": "2026-09-26",
   "country_completeness": "single_racecourse",
   "records": [
     {
@@ -12,27 +12,43 @@
       "system_id": "presidente-remon-racing-system",
       "system_name_en": "Hipódromo Presidente Remón racing system",
       "authority_source_key": "panama/hipica-de-panama/presidente-remon-programa-oficial",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "panama--hipodromo-presidente-remon"
+      ],
       "coverage_scope": "single_racecourse",
       "technical_rank": "C",
       "public_ceiling": "C",
-      "confirmed_fields": {"meeting_date": true, "racecourse": true, "first_race_time": false, "last_race_time": false, "per_race_post_times": false, "race_name": false, "distance": false, "surface": false, "course": false},
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
       "source_format": "html",
       "access_mode": "date_route",
-      "automation_mode": "semi_automatic",
-      "refresh_classes": ["weekly", "near_meeting"],
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "fallback": "downgrade_to_C",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "revalidation_trigger": "Revalidate if the official programme category, event permalink pattern, or operator identity changes.",
+      "revalidation_trigger": "Revalidate if the official Programa Oficial category, event-title/permalink pattern, operator identity, or source-visible calendar behaviour changes.",
       "blocked_reason": null,
       "limitations": [
         "Only Hipódromo Presidente Remón is covered.",
-        "Event-page operating hours must not be interpreted as race times.",
-        "Detailed programme documents and betting-oriented material remain excluded."
+        "Event-page and calendar operating hours such as 08:00-17:00 must not be interpreted as race times.",
+        "Unlisted future dates are outside the source-visible published horizon and are not evidence of non-running.",
+        "Detailed programme documents, participant data, betting-oriented material and results remain excluded."
       ],
-      "notes": "Stable official event permalinks support a bounded C-level candidate prototype without claiming live acquisition."
+      "notes": "Live revalidation on 2026-09-26 confirmed the current official Programa Oficial category and current September event titles, including 2026-09-26 and 2026-09-27. The automatic adapter extracts date plus the single physical racecourse at rank C only."
     }
   ],
   "public_safe": true

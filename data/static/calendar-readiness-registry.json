@@ -3195,7 +3195,9 @@
       "system_id": "presidente-remon-racing-system",
       "system_name_en": "Hipódromo Presidente Remón racing system",
       "authority_source_key": "panama/hipica-de-panama/presidente-remon-programa-oficial",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "panama--hipodromo-presidente-remon"
+      ],
       "coverage_scope": "single_racecourse",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -3212,26 +3214,27 @@
       },
       "source_format": "html",
       "access_mode": "date_route",
-      "automation_mode": "semi_automatic",
+      "automation_mode": "automatic",
       "refresh_classes": [
         "weekly",
         "near_meeting"
       ],
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "fallback": "downgrade_to_C",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-29",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate if the official programme category, event permalink pattern, or operator identity changes.",
+      "checked_date": "2026-09-26",
+      "evidence_reviewed_at": "2026-09-26",
+      "revalidation_trigger": "Revalidate if the official Programa Oficial category, event-title/permalink pattern, operator identity, or source-visible calendar behaviour changes.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/54-panama/source-test-v2.json",
       "limitations": [
-        "Only Hipódromo Presidente Remón is covered.",
-        "Event-page operating hours must not be interpreted as race times.",
-        "Detailed programme documents and betting-oriented material remain excluded."
+        "Only Hipódromo Presidente Remón is covered; this is a single-racecourse system.",
+        "Event-page and calendar operating hours such as 08:00-17:00 are not race post times and are never promoted.",
+        "The official category is treated as a source-visible publication horizon; omission of a future date is not negative evidence.",
+        "Detailed programme documents, participant data, betting material and results remain excluded from this Calendar route."
       ],
-      "notes": "Stable official event permalinks support a bounded C-level candidate prototype without claiming live acquisition."
+      "notes": "Automatic production candidate parses current official Programa Oficial event titles into rank C meeting-date/racecourse observations. The 2026-09-26 live source exposes current September meetings including 2026-09-26 and 2026-09-27; source failures preserve stronger verified canonical state."
     },
     {
       "readiness_id": "kuwait--hec-racing-app-system--hec-racing-app",

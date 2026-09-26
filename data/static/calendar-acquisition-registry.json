@@ -692,6 +692,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "GitHub Actions parses the jointly maintained South Africa 2026 National Fixtures PDF and emits the 4Racing Turffontein, Vaal and Fairview meeting-date/racecourse mother set at rank C. Course variants map to physical venues. Race Coast remains a separate operator route. Source failure preserves stronger verified state and never proves non-running."
+    },
+    {
+      "system_id": "presidente-remon-racing-system",
+      "country_id": "panama",
+      "authority_id": "hipica-de-panama",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "presidente-remon-programa-oficial",
+      "detail_source_id": "presidente-remon-programa-oficial",
+      "schedule_adapter_id": "panama-presidente-remon-programa-oficial-v1",
+      "detail_adapter_id": "panama-presidente-remon-programa-oficial-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": false,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "GitHub Actions parses the current official Programa Oficial category and emits source-visible meeting-date/Hipódromo Presidente Remón observations at rank C. Calendar/event hours are never used as post times. The source-visible horizon is not negative evidence for unlisted dates; fetch or parse failure preserves stronger verified state."
     }
   ]
 }

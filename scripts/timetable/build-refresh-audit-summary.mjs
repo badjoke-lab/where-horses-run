@@ -30,6 +30,7 @@ const SYSTEMS = [
   { key: 'italy-trot', file: 'italy-trot.json', country_id: 'italy', authority_id: 'masaf', racing_system_id: 'italy-masaf-trot-system' },
   { key: 'south-africa-race-coast', file: 'south-africa-race-coast.json', country_id: 'south-africa', authority_id: 'race-coast', racing_system_id: 'south-africa-race-coast-system' },
   { key: 'south-africa-four-racing', file: 'south-africa-four-racing.json', country_id: 'south-africa', authority_id: 'four-racing', racing_system_id: 'south-africa-4racing-system' },
+  { key: 'panama', file: 'panama.json', country_id: 'panama', authority_id: 'hipica-de-panama', racing_system_id: 'presidente-remon-racing-system' },
 ];
 
 const STATE_FILES = {

@@ -180,6 +180,11 @@ assert.equal(workflow.split('--artifact=.calendar-unified/south-africa-four-raci
 assert.equal(workflow.split('--authority-id=four-racing').length - 1, 2, 'South Africa 4Racing observations must be applied in both execution paths');
 assert.equal(workflow.split('--racing-system-id=south-africa-4racing-system').length - 1, 2, 'South Africa 4Racing apply path must bind its canonical racing system in both execution paths');
 assert.equal(workflow.split('--timezone=Africa/Johannesburg').length - 1, 4, 'Both South Africa operator systems must bind Africa/Johannesburg in both execution paths');
+assert.equal(workflow.split('node scripts/timetable/run-panama-presidente-remon-official-window.mjs').length - 1, 2, 'Panama Presidente Remon must be collected in both normal and latest-main rebuild paths');
+assert.equal(workflow.split('--artifact=.calendar-unified/panama.json').length - 1, 4, 'Panama artifact must pass exclusion and apply layers in both execution paths');
+assert.equal(workflow.split('--authority-id=hipica-de-panama').length - 1, 2, 'Panama observations must be applied in both execution paths');
+assert.equal(workflow.split('--racing-system-id=presidente-remon-racing-system').length - 1, 2, 'Panama apply path must bind its canonical racing system in both execution paths');
+assert.equal(workflow.split('--timezone=America/Panama').length - 1, 2, 'Panama apply paths must bind America/Panama in both execution paths');
 assert.equal((workflow.match(/--authority-id=hipodromo-zarzuela/g) ?? []).length, 2, 'Spain Zarzuela observations must be applied in both execution paths');
 assert.equal((workflow.match(/--artifact=\.calendar-unified\/spain\.json/g) ?? []).length, 4, 'Spain artifact must pass exclusion and apply layers in both execution paths');
 assert.equal((workflow.match(/--racing-system-id=spain-reviewed-gallop-system/g) ?? []).length, 2, 'Spain apply path must bind the canonical racing system id in both execution paths');
@@ -200,3 +205,5 @@ console.log('GERMANY_DEUTSCHER_GALOPP_UNIFIED_REFRESH_PATHS: 2');
 console.log('SPAIN_ZARZUELA_UNIFIED_REFRESH_PATHS: 2');
 console.log('ITALY_MASAF_UNIFIED_REFRESH_PATHS: 2');
 console.log('SOUTH_AFRICA_RACE_COAST_UNIFIED_REFRESH_PATHS: 2');
+console.log('SOUTH_AFRICA_FOUR_RACING_UNIFIED_REFRESH_PATHS: 2');
+console.log('PANAMA_PRESIDENTE_REMON_UNIFIED_REFRESH_PATHS: 2');
