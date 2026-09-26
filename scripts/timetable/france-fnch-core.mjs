@@ -300,6 +300,7 @@ function baseRecord(row, checkedAt) {
     route_id: 'fnch-regional-programme-index',
     confidence: 'high',
     review_status: 'needs_review',
+    mixed_disciplines: Boolean(row.mixed_disciplines),
     notes: `Official FNCH regional programme observation; source venue label: ${row.venue_label}; discipline: ${row.discipline_text}.${row.mixed_disciplines ? ' Mixed-discipline physical meeting emitted once through the France Galop calendar route to prevent duplicate public meetings.' : ''}`,
   };
 }
