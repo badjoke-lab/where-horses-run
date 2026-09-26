@@ -1,6 +1,6 @@
 # Live broadcast audit method
 
-Status: draft  
+Status: active  
 Scope: public-safe research foundation for official live broadcast and replay availability
 
 This document defines how Where Horses Run may research and record official live broadcast and replay availability across racing jurisdictions and racing types. It is intentionally link-first: it records where a user can check an official or clearly official-partner source, but it does not republish video or detailed race data.
@@ -135,13 +135,29 @@ When updating coverage records:
 
 ## 8. Display guidance
 
-User-facing displays should remain link-first and neutral:
+User-facing displays should remain link-first and neutral.
 
-- Use labels such as "Official live source", "Official replay source", or "Official broadcast partner".
-- Show account, paid TV, or geographic restriction notices when present.
-- Do not imply that Where Horses Run provides, owns, hosts, or guarantees the stream.
-- Do not display `unsafe_unofficial` as a usable source.
-- If availability is uncertain, show `not_verified` or omit the row until research is complete.
+For Calendar/Today meeting rows, the public action contract is governed by the Calendar presentation specifications:
+
+- one reviewed provider -> `Watch · <material access condition>`;
+- two or more reviewed providers -> `Watch N`, with provider choices exposed in a chooser;
+- desktop multi-provider chooser -> anchored popover;
+- mobile multi-provider chooser -> bottom sheet;
+- provider-specific LIVE state is shown only when a stable eligible detector verifies that provider for the expected meeting/date;
+- if any provider is verified live, the collapsed action may become `● LIVE · Watch N`;
+- paid/account/betting-account/geo-gated routes remain usable reviewed destinations without runtime LIVE monitoring;
+- provider logos are not required for Calendar rows or the chooser.
+
+Research/reporting surfaces outside Calendar may still use descriptive labels such as "Official live source", "Official replay source", or "Official broadcast partner".
+
+Always:
+
+- show account, paid TV/subscription, betting-account, geographic, and material coverage restrictions when present;
+- do not imply that Where Horses Run provides, owns, hosts, or guarantees the stream;
+- do not display `unsafe_unofficial` as a usable source;
+- do not collapse multiple reviewed providers to the first route;
+- do not synthesize direct watch URLs from detector payloads;
+- if availability is uncertain, use `not_verified` rather than guessing.
 
 ---
 
@@ -159,11 +175,13 @@ For each new Calendar country/system, review and record at minimum:
 4. access condition: free/open, account required, betting account required, paid/subscription, geo restricted, or unknown;
 5. racecourse/authority scope so one system's route is not borrowed for another;
 6. evidence URL and review date;
-7. whether runtime LIVE detection is eligible as a **separate** question.
+7. whether runtime LIVE detection is eligible as a **separate** question;
+8. every simultaneously applicable reviewed provider route; do not discard a second provider merely because one route already exists;
+9. the provider-specific detector identity, when one exists, so one provider's LIVE state cannot be copied to another.
 
 Runtime LIVE detection is not required for paid, account-gated, betting-account-gated, or geo-gated services. Those services should be represented primarily by a reviewed link plus access disclosure. Runtime LIVE detection should be considered only for free/open services that expose a stable public signal without login, bypass, private credentials, direct media-manifest scraping, or fragile reverse engineering.
 
-For Calendar runtime use, update the reviewed media registry used by the Calendar when a displayable route exists. Keep broader research coverage records synchronized when they are in scope. If no usable route is found, record that reviewed disposition explicitly rather than leaving the country unaudited.
+For Calendar runtime use, update the reviewed media registry used by the Calendar when a displayable route exists. Preserve all applicable reviewed routes so the Calendar can render one direct Watch action or a bounded multi-provider `Watch N` chooser without inventing coverage. Keep broader research coverage records synchronized when they are in scope. If no usable route is found, record that reviewed disposition explicitly rather than leaving the country unaudited.
 
 This gate applies to every future Calendar country/system addition, regardless of whether the racing calendar source itself is already production-ready.
 
