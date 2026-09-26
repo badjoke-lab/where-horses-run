@@ -48,12 +48,12 @@ if(pdfAnchor){
     console.log('PDF_PAGES '+pdf.numPages);
     for(let n=1;n<=Math.min(pdf.numPages,8);n++){
       const p=await pdf.getPage(n); const content=await p.getTextContent();
-      const items=content.items.filter(i=>'str' in i).map(i=>({str:String(i.str).replace(/\\s+/g,' ').trim(),x:Number(i.transform?.[4]),y:Number(i.transform?.[5])})).filter(i=>i.str);
-      const text=items.map(i=>i.str).join(' ').replace(/\\s+/g,' ').trim();
+      const items=content.items.filter(i=>'str' in i).map(i=>({str:String(i.str).replace(/\s+/g,' ').trim(),x:Number(i.transform?.[4]),y:Number(i.transform?.[5]),width:Number(i.width??0),height:Number(i.height??0)})).filter(i=>i.str);
+      const text=items.map(i=>i.str).join(' ').replace(/\s+/g,' ').trim();
       console.log('PDF_PAGE_'+n+' '+text.slice(0,12000));
       if(n===1){
         const local=items.filter(i=>/^(?:Maroñas|Las Piedras)$/i.test(i.str));
-        const dayTokens=items.filter(i=>/^(?:[1-9]|[12]\\d|3[01])$/.test(i.str));
+        const dayTokens=items.filter(i=>/^(?:[1-9]|[12]\d|3[01])$/.test(i.str));
         console.log('PDF_LOCAL_COORDS');
         for(const item of local){
           const candidates=dayTokens
@@ -66,7 +66,7 @@ if(pdfAnchor){
         console.log('PDF_DAY_COORDS');
         for(const item of dayTokens) console.log(JSON.stringify(item));
         console.log('PDF_GRID_ITEMS');
-        for(const item of items.filter(i=>i.y>=300&&(/^(?:\\d{1,2}(?:\\s+\\d{1,2})*)$/.test(i.str)||/Maroñas|Las Piedras/i.test(i.str)))) console.log(JSON.stringify(item));
+        for(const item of items.filter(i=>i.y>=300&&(/^(?:\d{1,2}(?:\s+\d{1,2})*)$/.test(i.str)||/Maroñas|Las Piedras/i.test(i.str)))) console.log(JSON.stringify(item));
       }
     }
   }
