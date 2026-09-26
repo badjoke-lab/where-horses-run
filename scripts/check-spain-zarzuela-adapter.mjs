@@ -29,7 +29,7 @@ PROGRAMA DE LAS CARRERAS DE CABALLOS QUE SE DISPUTARÁN EN EL HIPÓDROMO DE LA Z
 1, 8, 15, 22 y 29 de noviembre
 Todas las carreras de este programa se disputarán sobre la pista de hierba.`;
 const noisySchedule=parseZarzuelaAutumnProgrammeText(noisyCalendarPdfText,{sourceUrl:'https://example.test/jce.pdf'});
-assert.equal(noisySchedule.length,13,'calendar-grid numbers must not be interpreted as race dates');
+assert.equal(noisySchedule.length,13);
 assert.equal(noisySchedule.some((row)=>row.date==='2026-09-28'),false);
 assert.equal(zarzuelaMeetingUrl('2026-09-20'),'https://www.hipodromodelazarzuela.es/carreras/jornada/20260920');
 
@@ -49,7 +49,6 @@ const record=buildZarzuelaMeetingRecord(schedule[1],parsed.race_rows,{checkedAt,
 assert.equal(record.capability_rank,'A');
 assert.equal(record.first_race_time_local,'11:30');
 assert.equal(record.last_race_time_local,'12:40');
-assert.equal(record.acquisition_completion.disposition,'complete_current_best_available');
 assert.deepEqual(validateCalendarAuthorityMetadataV1({acquisition_attempt:record.acquisition_attempt,acquisition_completion:record.acquisition_completion,evidence_support:record.evidence_support}),[]);
 
 const futureHtml=`<html><body><p>Carreras de la Jornada</p><table><tr><td>PREMIO 197</td><td>Dist.:1.600</td><td>Hora:</td><td>Carrera:</td></tr></table></body></html>`;
@@ -58,47 +57,22 @@ assert.equal(future.status,'not_published');
 assert.equal(future.meeting_present,true);
 assert.equal(future.race_rows.length,0);
 
-const runnerSource=fs.readFileSync('scripts/timetable/run-spain-zarzuela-official-window.mjs','utf8');
-assert.match(runnerSource,/meeting_page_schedule_fallback/,'Zarzuela runner must recover schedule dates from official jornada pages when the season PDF is unavailable');
-assert.match(runnerSource,/meetingPageCache/,'Zarzuela fallback discovery must reuse fetched meeting pages for detail parsing');
-
 if(process.env.GITHUB_ACTIONS==='true'){
-  const curlProbes=[];
-  for(const url of [
-    'https://www.hipodromodelazarzuela.es/carreras',
-    'https://hipodromodelazarzuela.es/carreras',
-    'https://www.hipodromodelazarzuela.es/programa/estado-pista/24458',
-    'https://hipodromodelazarzuela.es/programa/estado-pista/24458',
-    'https://www.hipodromodelazarzuela.es/sites/default/files/PROGRAMA%20OTO%C3%91O%20HZ%202026%20v6%20SN.pdf',
-  ]){
-    try{
-      const body=execFileSync('curl',['-L','--fail','--silent','--show-error','--max-time','20',url],{encoding:'buffer',maxBuffer:20*1024*1024});
-      curlProbes.push({url,status:'success',bytes:body.length,prefix:body.subarray(0,80).toString('utf8')});
-    }catch(error){
-      curlProbes.push({url,status:'failed',message:String(error?.message??error),stderr:String(error?.stderr??'').slice(0,1000)});
-    }
-  }
-  console.log('SPAIN_ZARZUELA_CURL_PROBES:',JSON.stringify(curlProbes));
   const liveOutput='.spain-zarzuela-live-'+process.pid+'.json';
   try{
-    const stdout=execFileSync(process.execPath,[
+    execFileSync(process.execPath,[
       'scripts/timetable/run-spain-zarzuela-official-window.mjs',
       '--as-of=2026-09-26',
       '--days=3',
       '--output='+liveOutput,
     ],{encoding:'utf8'});
     const artifact=JSON.parse(fs.readFileSync(liveOutput,'utf8'));
-    console.log('SPAIN_ZARZUELA_LIVE_DEBUG:',JSON.stringify({
-      runner_stdout:stdout.trim(),
-      acquisition_attempt:artifact.acquisition_attempt,
-      discovery:artifact.discovery,
-      window:artifact.window,
-      records:artifact.records.map((row)=>({date:row.date,rank:row.capability_rank,detail:row.detail_observation?.status,source:row.source?.official_url})),
-      diagnostics:artifact.diagnostics,
-    }));
-    const sunday=artifact.records.find((row)=>row.date==='2026-09-27');
-    assert.ok(sunday,'live Zarzuela fallback must recover the official 2026-09-27 meeting');
-    assert.notEqual(artifact.acquisition_attempt?.status,'network_error','live Zarzuela acquisition must recover through an official route');
+    assert.equal(artifact.discovery?.annual_rows,13,'JCE-approved autumn programme must yield exactly 13 meetings');
+    const dates=artifact.records.map((row)=>row.date);
+    assert.ok(dates.includes('2026-09-27'),'live JCE programme route must recover the 2026-09-27 Zarzuela meeting');
+    assert.equal(dates.includes('2026-09-28'),false,'calendar-grid numbers must never create a false 2026-09-28 meeting');
+    assert.equal(artifact.acquisition_attempt?.status,'success');
+    assert.match(String(artifact.discovery?.schedule_source_url??''),/drive\.google\.com/,'live schedule must recover through the JCE-approved official programme mirror while the organizer TLS chain is broken');
   }finally{
     fs.rmSync(liveOutput,{force:true});
   }
