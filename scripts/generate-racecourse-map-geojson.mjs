@@ -52,17 +52,22 @@ const calendarMapRegressionIds = [
   'laval-racecourse',
   'toulouse-racecourse',
   'la-teste-racecourse',
-  // United Kingdom rolling venues (3)
+  // United Kingdom rolling venues (5)
   'cheltenham-racecourse',
   'doncaster-racecourse',
   'newbury-racecourse',
+  'aintree-racecourse',
+  'wincanton-racecourse',
   // Slovakia (1)
   'bratislava-racecourse',
-  // France Calendar rolling venues (4)
+  // France Calendar rolling venues (7)
   'abbeville-racecourse',
   'le-pertre-racecourse',
   'lyon-parilly-racecourse',
   'nimes-racecourse',
+  'bordeaux-racecourse',
+  'cazaubon-barbotan-racecourse',
+  'le-croise-laroche-racecourse',
   // South Korea (4)
   'seoul-racecourse',
   'busan-gyeongnam-racecourse',
@@ -87,6 +92,7 @@ const calendarMapRegressionIds = [
   'italy--ippodromo-stupinigi',
   'italy--ippodromo-valentinia',
   'italy--ippodromo-del-mediterraneo',
+  'italy--ippodromo-breda',
   // South Africa Race Coast (4)
   'south-africa--hollywoodbets-greyville',
   'south-africa--hollywoodbets-scottsville',
