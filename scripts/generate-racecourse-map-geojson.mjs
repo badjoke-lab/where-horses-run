@@ -103,10 +103,11 @@ const calendarMapRegressionIds = [
   'south-africa--fairview',
   // Panama (1)
   'panama--hipodromo-presidente-remon',
-  // Brazil current production scope (3)
+  // Brazil current production scope (4)
   'brazil--hipodromo-da-gavea',
   'brazil--hipodromo-do-cristal',
   'brazil--hipodromo-de-cidade-jardim',
+  'brazil--jockey-club-de-sorocaba',
   // Morocco (7)
   'casablanca-anfa-racecourse',
   'meknes-racecourse',

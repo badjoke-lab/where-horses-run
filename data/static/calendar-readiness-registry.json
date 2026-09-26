@@ -539,17 +539,19 @@
       "country_tracker_delivery_no": "08",
       "system_id": "brazil-sorocaba-system",
       "system_name_en": "Sorocaba system",
-      "authority_source_key": "brazil/jockey-club-de-sorocaba/sorocaba-programme",
-      "racecourse_ids": [],
+      "authority_source_key": "brazil/jockey-club-de-sorocaba/sorocaba-calendar-2026",
+      "racecourse_ids": [
+        "brazil--jockey-club-de-sorocaba"
+      ],
       "coverage_scope": "single_racecourse",
-      "technical_rank": "A+",
-      "public_ceiling": "A",
+      "technical_rank": "C",
+      "public_ceiling": "C",
       "confirmed_fields": {
-        "meeting_date": false,
+        "meeting_date": true,
         "racecourse": true,
-        "first_race_time": true,
-        "last_race_time": true,
-        "per_race_post_times": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
         "race_name": false,
         "distance": false,
         "surface": false,
@@ -557,25 +559,27 @@
       },
       "source_format": "pdf",
       "access_mode": "direct",
-      "automation_mode": "blocked",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "event_driven",
-        "manual"
+        "weekly",
+        "near_meeting"
       ],
-      "readiness": "blocked",
-      "implementation_status": "not_started",
-      "fallback": "hide_from_current_calendar",
-      "source_status": "partial",
-      "checked_date": "2026-06-17",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Reopen after the programme can be paired with a verified exact meeting date.",
-      "blocked_reason": "An exact meeting-date pairing is required before current Calendar ingestion.",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-09-26",
+      "evidence_reviewed_at": "2026-09-26",
+      "revalidation_trigger": "Revalidate if the official Sorocaba annual calendar PDF route, month layout, or date-row structure changes.",
+      "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/08-brazil/final-summary.json",
       "limitations": [
-        "The exact meeting date was unresolved in the reviewed sample.",
-        "The Quarter Horse system must remain separate from Thoroughbred and Arabian racing."
+        "Current automatic production route is rank C only: meeting date plus physical venue.",
+        "The annual official calendar is the date mother set; programme timing remains a separate future rank-upgrade path.",
+        "Quarter Horse racing remains a distinct Sorocaba system and must not be merged with Thoroughbred systems.",
+        "Acquisition or parser failure is not evidence of non-running."
       ],
-      "notes": "Race-time capability is reviewed, but Calendar operation is blocked until the meeting date is verified."
+      "notes": "The previous exact-date blocker is closed by the official 2026 Jockey Club de Sorocaba calendar, which supplies explicit meeting dates including 26 September, 10 October and 24 October 2026."
     },
     {
       "readiness_id": "qatar--qatar-qrec-calendar-system--qrec-season-calendar",
