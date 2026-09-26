@@ -103,9 +103,17 @@ export function extractMonterricoEntryProgrammeLinks(html) {
 
 function meetingDate(html) {
   const value = normalized(html);
-  const m = value.match(/reunion\s+n\s*[°º]?\s*\d+\s+hipodromo de monterrico,\s*(?:lunes|martes|miercoles|jueves|viernes|sabado|domingo)\s+(\d{1,2})\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre)\s+del\s+ano\s+(20\d{2})/i);
-  if (!m) return null;
-  return m[3] + '-' + String(MONTHS[m[2]]).padStart(2,'0') + '-' + String(Number(m[1])).padStart(2,'0');
+  const patterns = [
+    /reunion\s+n\s*[°º]?\s*\d+\s+hipodromo de monterrico,\s*(?:lunes|martes|miercoles|jueves|viernes|sabado|domingo)\s+(\d{1,2})\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre)\s+del\s+(?:ano\s+)?(20\d{2})/i,
+    /(?:lunes|martes|miercoles|jueves|viernes|sabado|domingo)\s+(\d{1,2})\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre)\s+(?:del\s+)?(?:ano\s+)?(20\d{2})/i,
+    /\b(\d{1,2})\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre)\s+(?:del\s+)?(?:ano\s+)?(20\d{2})\b/i,
+  ];
+  for (const pattern of patterns) {
+    const m = value.match(pattern);
+    if (!m) continue;
+    return m[3] + '-' + String(MONTHS[m[2]]).padStart(2,'0') + '-' + String(Number(m[1])).padStart(2,'0');
+  }
+  return null;
 }
 function cells(row) {
   return [...String(row).matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)].map(m => text(m[1]));
