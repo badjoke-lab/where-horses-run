@@ -108,6 +108,7 @@ if(process.env.GITHUB_ACTIONS==='true') {
               const componentBody=await componentResponse.text();
               const componentHits=[...componentBody.matchAll(/.{0,260}(?:\/api\/|programa|temporada|reunion|fecha).{0,500}/gi)].slice(0,80).map(m=>m[0].replace(/\s+/g,' '));
               const staticPdfHits=[...componentBody.matchAll(/.{0,320}(?:pdf_programa_temporada|pdf_monterrico|programas-pdf-sistema|\.pdf).{0,900}/gi)].slice(0,80).map(m=>m[0].replace(/\s+/g,' '));
+              const programmeRouteHits=[...componentBody.matchAll(/.{0,800}(?:tipo_pdf\s*=|ruta_api\+|this\.\$http\.get\(this\.ruta_api|programa_mensual).{0,1800}/gi)].slice(0,30).map(m=>m[0].replace(/\s+/g,' '));
               const symbolHits={};
               for(const symbol of ['url_api_programas','app_pertenece_validacion','ruta_api_programas','dominio_apis','respuesta_items_programas','lista_programas','programas-pdf-sistema','tipo_calendario']) {
                 const snippets=[];
@@ -120,7 +121,7 @@ if(process.env.GITHUB_ACTIONS==='true') {
                 }
                 symbolHits[symbol]=snippets;
               }
-              componentDiagnostics.push({url:componentUrl,status:componentResponse.status,length:componentBody.length,static_pdf_hits:staticPdfHits,symbol_hits:symbolHits});
+              componentDiagnostics.push({url:componentUrl,status:componentResponse.status,length:componentBody.length,static_pdf_hits:staticPdfHits,programme_route_hits:programmeRouteHits,symbol_hits:symbolHits});
             } catch(error) {
               componentDiagnostics.push({url:componentUrl,error:String(error?.message??error)});
             }
