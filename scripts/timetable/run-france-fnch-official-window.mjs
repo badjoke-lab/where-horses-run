@@ -11,6 +11,7 @@ import {
   FRANCE_LETROT_SYSTEM_ID,
   FRANCE_TIMEZONE,
   buildFnchFixtureRecord,
+  buildFnchMixedMeetingRecord,
   buildFnchProgrammeRecord,
   parseFnchRegionalProgrammePage,
 } from './france-fnch-core.mjs';
@@ -129,7 +130,7 @@ function artifactFor({systemKey,records,generatedAt,start,end,days,sourceErrors,
     source_id:FRANCE_FNCH_SOURCE_ID,detail_source_id:FRANCE_FNCH_SOURCE_ID,collection_target_rank:'best_available',raw_body_retained:false,
     acquisition_attempt:{attempted_at:generatedAt,status:sourcePages.length?'success':'network_error',source_id:FRANCE_FNCH_SOURCE_ID,route_id:'fnch-regional-programme-index',error_code:sourcePages.length?null:'fetch_error'},
     discovery:{method:'official_fnch_regional_programme_indexes_plus_published_programme_pdfs',schedule_source_id:FRANCE_FNCH_SOURCE_ID,schedule_source_url:FRANCE_FNCH_CALENDAR_URL,detail_source_id:FRANCE_FNCH_SOURCE_ID,regional_pages:sourcePages,rank_counts:rankCounts,detail_status_counts:detailStatusCounts,non_running_source_id:nonRunningDiagnostics.source_id,non_running_source_status:nonRunningDiagnostics.status},
-    window:{start_date:start,end_date_exclusive:end,days,coverage_claim:scopedSourceErrors.length?'partial_source_visible_horizon':'source_visible_horizon',coverage_note:'FNCH regional programme indexes are treated as a source-visible meeting horizon, not proof that every date in the requested window has been exhaustively published. Visible meetings are attributed by discipline to France Galop or LETROT. Published official programme PDFs may supply complete per-race post times through rank A. Missing programme detail stays pending; retrieval/parser failures remain retry states; absence from FNCH pages never confirms non-running.'},
+    window:{start_date:start,end_date_exclusive:end,days,coverage_claim:scopedSourceErrors.length?'partial_source_visible_horizon':'source_visible_horizon',coverage_note:'FNCH regional programme indexes are treated as a source-visible meeting horizon, not proof that every date in the requested window has been exhaustively published. Visible meetings are attributed by discipline to France Galop or LETROT. Single-discipline published official programme PDFs may supply complete per-race post times through rank A. Mixed-discipline physical meetings are emitted once and stop safely at the FNCH regional-index first-race time (rank B), because discipline-specific programme PDFs are not a complete physical-meeting race table. Missing single-discipline programme detail stays pending; retrieval/parser failures remain retry states; absence from FNCH pages never confirms non-running.'},
     records:selected,
     superseded_meeting_ids:[...new Set(supersededMeetingIds)].sort(),
     meeting_presence_records:meetingPresenceRecords,
@@ -155,6 +156,10 @@ for(const url of FRANCE_FNCH_REGIONAL_PROGRAMME_URLS){
 const rows=dedupeRows(sourceRows).filter(row=>inWindow(row.date,start,end));
 const records=[];
 for(const row of rows){
+  if(row.mixed_disciplines){
+    records.push(buildFnchMixedMeetingRecord(row,{checkedAt:generatedAt}));
+    continue;
+  }
   if(!row.programme_url){records.push(buildFnchFixtureRecord(row,{checkedAt:generatedAt}));continue;}
   try{
     const programmeText=await getPdfText(row.programme_url);
