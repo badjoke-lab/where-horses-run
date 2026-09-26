@@ -2,7 +2,7 @@
 
 Status: active canonical Calendar presentation refinement  
 Adopted: 2026-09-08  
-Last amended: 2026-09-23  
+Last amended: 2026-09-26  
 Applies to: Calendar/Today List row state semantics, current-day rank boundary, Today vs Calendar grouping, official-stream presentation, EN/JA labels, country/authority/racecourse display names, List/Month/Map naming and state parity  
 Parent Calendar specification: `docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md`  
 Active execution schedule: `docs/calendar/calendar-presentation-state-001-display-correction-schedule.md`
@@ -236,69 +236,134 @@ No Map-only reinterpretation is permitted.
 
 Meeting lifecycle state and official-stream state remain independent.
 
-The separate visible `Official stream live` / `公式配信中` badge is removed from Calendar meeting rows. A verified-live stream is represented only by the official-stream link itself.
+The Calendar row uses **Watch** as the public stream action. Legacy generic row copy such as `Official stream ↗` / `公式配信 ↗` must not be reintroduced by runtime refresh, filters, or fallback code.
 
-Exact verified live:
+### 7.1 One reviewed provider
 
-```text
-EN: ● Live now ↗
-JA: ● 公式配信中 ↗
-```
+A meeting with exactly one reviewed provider uses a direct bounded Watch action.
 
-Official destination known but not verified live now:
+Default examples:
 
 ```text
-EN: Official stream ↗
-JA: 公式配信 ↗
+Watch · FREE
+Watch · PAID
+Watch · ACCOUNT
+Watch · BETTING ACCOUNT · GEO · SELECTED
 ```
 
-The verified-live link may use a restrained red live accent, but it must not create another large status pill competing with the meeting-state badge.
-
-### 7.1 Access-condition presentation
-
-Access conditions belong to the official-stream action, not to meeting lifecycle state.
-
-When a reviewed stream requires payment, an account, a betting account, or has a geographic restriction, Calendar/Today should expose that fact directly beside the official-stream link. Do not hide material access restrictions only in a tooltip.
-
-Preferred compact examples:
+Japanese access-condition labels remain localized:
 
 ```text
-Official stream ↗  FREE
-Official stream ↗  PAID
-Official stream ↗  ACCOUNT
-Official stream ↗  BETTING ACCOUNT
-Official stream ↗  GEO
-
-公式配信 ↗  無料
-公式配信 ↗  有料
-公式配信 ↗  会員
-公式配信 ↗  投票口座
-公式配信 ↗  地域制限
+Watch · 無料
+Watch · 有料
+Watch · 会員
+Watch · 投票口座 · 地域制限 · 一部配信
 ```
 
-Multiple access restrictions may be joined into one compact phrase. Access-condition text must remain visually subordinate to the stream link.
+The word `Watch` remains the compact product action label on both EN and JA Calendar rows; access-condition text is localized.
 
-Do not create a second vertical stack of tiny pills under the stream link. Desktop should prefer a single-line stream action where space allows; mobile may wrap the whole action naturally, but the access phrase should remain one coherent unit. The stream presentation must not cause unpredictable row-height growth or break column alignment.
+If the single eligible provider is verified live for the expected meeting/date, the direct action may become:
 
-Coverage qualifiers such as selected-meetings, feature-only, or seasonal remain data facts. In the compact Calendar row, material access restrictions have display priority over coverage qualifiers; coverage may remain in title/detail/context when showing both would make the primary action unreadable.
+```text
+● LIVE · Watch
+```
 
-LIVE state remains separate: a paid/account/geo label never means live now, and absence of a LIVE detector never suppresses a valid reviewed stream link.
+Do not change the reviewed destination URL when promoting LIVE state.
 
-Detector binding/fail-closed rules from the parent Calendar specification remain unchanged. Wrong-date, stale, unavailable, ended, offline, upcoming, unknown, or otherwise mismatched detector data must not render as live.
+### 7.2 Multiple reviewed providers
+
+A meeting with two or more reviewed providers must not render every provider inline in the row. Collapse them to:
+
+```text
+Watch N
+```
+
+where `N` is the number of reviewed provider routes applicable to that meeting.
+
+Opening `Watch N` reveals the provider choices, each with:
+
+```text
+provider name
+material access condition(s)
+material coverage qualifier(s), when needed
+Open ↗
+provider-specific ● LIVE, only when verified
+```
+
+Desktop uses a compact anchored popover. Mobile uses a bottom sheet. Provider logos are not part of the required Calendar-row contract; text labels are sufficient and avoid consuming row space.
+
+If at least one eligible provider is verified live, the collapsed action may become:
+
+```text
+● LIVE · Watch N
+```
+
+Only the verified provider receives `● LIVE` inside the chooser. Other paid/account/geo-gated or undetected providers remain ordinary reviewed destinations.
+
+### 7.3 Access-condition presentation
+
+Access conditions belong to the Watch action, not to meeting lifecycle state.
+
+Material conditions must remain visible to the user:
+
+```text
+FREE / 無料
+ACCOUNT / 会員
+BETTING ACCOUNT / 投票口座
+PAID / 有料
+GEO / 地域制限
+ACCESS ? / 条件未確認
+SELECTED / 一部配信
+FEATURE ONLY / 特定競走
+SEASONAL / 季節限定
+```
+
+One-provider rows place the material condition directly in the compact Watch label. Multi-provider rows place provider-specific conditions in the Watch chooser.
+
+A paid/account/geo condition never means LIVE. Absence of a LIVE detector never suppresses a valid reviewed stream destination.
+
+Detector binding/fail-closed rules from the parent Calendar specification remain unchanged. Wrong-date, stale, unavailable, ended, offline, upcoming, unknown, or otherwise mismatched detector data must not render as LIVE.
 
 Calendar must not synthesize direct video/watch URLs from detector payloads. Public stream links remain on reviewed official destinations/landing pages allowed by the applicable media-publication contract.
 
-## 8. Official stream and official site are separate actions
+### 7.4 Runtime/filter preservation
 
-The Calendar row keeps stable semantic action slots.
+Every runtime layer that touches stream state must iterate applicable provider links rather than assuming one stream route per meeting.
+
+Runtime/filter code must preserve:
 
 ```text
-meeting state | official stream | details | official site
+reviewed provider route count
+provider-specific detector identity
+reviewed destination URL
+Watch / Watch N default label
+material access/coverage conditions
+provider-specific LIVE state
 ```
 
-If the reviewed official-stream destination URL and the reviewed official-site/source URL happen to be identical, **do not deduplicate the visible actions merely because the href values match**.
+It must not:
 
-The labels describe different user intents. URL equality must not make row structure change unpredictably from one meeting to another.
+```text
+rewrite Watch back to Official stream
+evaluate only the first provider
+copy one provider's LIVE state to all providers
+drop a paid/account route because it lacks a detector
+replace the reviewed landing URL with a detector-derived URL
+```
+
+## 8. Watch, Details, Map, and Official are separate actions
+
+The compact Calendar row keeps stable semantic action slots:
+
+```text
+Watch | Details | Map | Official
+```
+
+`Watch` may be absent when no reviewed stream destination exists. The remaining actions keep their semantic order.
+
+If the reviewed Watch destination and reviewed official-site/source URL happen to be identical, **do not deduplicate the visible actions merely because the href values match**. The labels describe different user intents.
+
+For mobile, these actions form the fourth row of the compact meeting card. Map is an action in this row rather than an extra control attached to the racecourse identity. This avoids uneven racecourse-name rows and preserves one stable action zone across long venue names and multiple-provider meetings.
 
 ## 9. Japanese UI localization boundary
 
@@ -314,8 +379,9 @@ Racing now      -> 開催中
 Finished        -> 終了
 Today meeting   -> 本日開催
 Scheduled       -> 開催予定
-Official stream -> 公式配信
-Live now        -> 公式配信中
+Watch           -> Watch
+Open            -> 開く
+Live now        -> LIVE
 Official site   -> 公式サイト
 Filters         -> 絞り込み
 Country         -> 国
@@ -471,7 +537,10 @@ At 393×852:
 - removing the redundant stream-live badge must reduce visual clutter rather than create new vertical controls;
 - long foreign racecourse names may wrap;
 - do not force tiny typography solely to keep one-line rows;
-- row actions remain in stable order and do not disappear because stream/site hrefs match;
+- row actions remain in stable `Watch | Details | Map | Official` order and do not disappear because stream/site hrefs match;
+- one-provider Watch labels remain bounded and disclose material access conditions;
+- multi-provider `Watch N` opens as a bottom sheet rather than expanding the meeting row vertically;
+- provider chooser content may scroll within the sheet when provider count grows;
 - Today group headings must not consume the screen with duplicate or semantically overlapping categories.
 
 ## 18. Required regression coverage
@@ -489,7 +558,13 @@ Today range -> no `Upcoming / racing today`
 Today range -> no `開催前・本日開催`
 Tomorrow range -> future meetings are Scheduled / 開催予定
 7-day range -> current day uses current-day states, later dates use Scheduled / 開催予定
-Calendar selected today -> current-day states, no Scheduled fallback for B/C
+Calendar selected today -> current-day states, no Scheduled fallback
+one provider, not live -> Watch · condition; never legacy Official stream
+one provider, verified live -> ● LIVE · Watch; reviewed destination unchanged
+multiple providers -> Watch N; all reviewed routes preserved in chooser
+one live provider among multiple -> ● LIVE · Watch N; only that provider marked LIVE internally
+paid/account/geo provider without detector -> still visible with access disclosure
+runtime/filter refresh -> does not rewrite Watch labels, drop routes, or collapse to first provider for B/C
 Calendar selected future date -> Scheduled / 開催予定 only
 future meeting -> not yellow solely because its start time is later
 B/C first-time presence does not authorize `running`
