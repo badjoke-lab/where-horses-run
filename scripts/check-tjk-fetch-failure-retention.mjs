@@ -41,4 +41,29 @@ assert.equal(fallback.fixtures[0].date, '2026-09-26');
 assert.equal(fallback.fixtures[1].date, '2026-09-27');
 assert.match(fallbackCalls[1], /\/Query\/Page\/YillikYarisProgramiCoklu/, 'fallback must use the official annual Page route');
 
+const partialFallback = await discoverAnnualFixtures({
+  startDate: '2026-09-26',
+  endDateExclusive: '2026-09-28',
+  fetchImpl: async (url) => {
+    if (url.includes('/Query/Data/YillikYarisProgramiCoklu')) {
+      const error = new Error('simulated broad annual timeout');
+      error.name = 'TimeoutError';
+      throw error;
+    }
+    const parsed = new URL(url);
+    const date = parsed.searchParams.get('QueryParameter_Tarih_Start');
+    if (date === '26/09/2026') {
+      const error = new Error('simulated daily fallback timeout');
+      error.name = 'TimeoutError';
+      throw error;
+    }
+    const href = `/TR/YarisSever/Info/Page/GunlukYarisProgrami?QueryParameter_Tarih=${encodeURIComponent(date)}&SehirAdi=Ankara&SehirId=5`;
+    return { ok: true, status: 200, text: async () => `<a href="${href}">Ankara</a>` };
+  },
+});
+assert.equal(partialFallback.fixtures.length, 1, 'one failed fallback day must not discard other recovered dates');
+assert.equal(partialFallback.fixtures[0].date, '2026-09-27');
+assert.equal(partialFallback.pages.filter((page) => page.status === 'fallback_page_failed').length, 1);
+assert.equal(partialFallback.pages.filter((page) => page.status === 'fallback_page_ok').length, 1);
+
 console.log('TJK_FETCH_FAILURE_RETENTION: pass');
