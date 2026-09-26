@@ -2529,7 +2529,7 @@
       "racecourse_ids": [],
       "coverage_scope": "authority_wide",
       "technical_rank": "A",
-      "public_ceiling": "C",
+      "public_ceiling": "A",
       "confirmed_fields": {
         "meeting_date": true,
         "racecourse": true,
@@ -2560,7 +2560,7 @@
       "source_test_ref": "docs/timetable-source-tests/42-germany/final-summary.json",
       "limitations": [
         "Production coverage is Deutscher Galopp gallop only; other German horse-racing codes remain unreviewed.",
-        "Public output remains capped at C at country level despite A-capable gallop observations.",
+        "Public meeting rank follows verified evidence through A; incomplete country/code coverage remains a separate scope limitation.",
         "Unpublished per-race post times remain pending and are not inferred from meeting-level start labels."
       ],
       "notes": "Automated Deutscher Galopp annual-calendar mother set plus current race-table enrichment supports best-available C through A for the reviewed gallop system. Calendar timetable identities and map locations use the existing Germany All-Tier Master IDs, but readiness.racecourse_ids remains empty until those IDs are promoted into the repository racecourse-page master."
@@ -2665,7 +2665,7 @@
       "racecourse_ids": [],
       "coverage_scope": "single_racecourse",
       "technical_rank": "A",
-      "public_ceiling": "C",
+      "public_ceiling": "A",
       "confirmed_fields": {
         "meeting_date": true,
         "racecourse": true,
