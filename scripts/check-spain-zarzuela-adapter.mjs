@@ -54,7 +54,9 @@ if(process.env.GITHUB_ACTIONS==='true'){
   const curlProbes=[];
   for(const url of [
     'https://www.hipodromodelazarzuela.es/carreras',
+    'https://hipodromodelazarzuela.es/carreras',
     'https://www.hipodromodelazarzuela.es/programa/estado-pista/24458',
+    'https://hipodromodelazarzuela.es/programa/estado-pista/24458',
     'https://www.hipodromodelazarzuela.es/sites/default/files/PROGRAMA%20OTO%C3%91O%20HZ%202026%20v6%20SN.pdf',
   ]){
     try{
