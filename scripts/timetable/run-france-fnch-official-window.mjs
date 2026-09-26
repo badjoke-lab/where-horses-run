@@ -90,6 +90,9 @@ function artifactFor({systemKey,records,generatedAt,start,end,days,sourceErrors,
   const scopedParseFailures=scopeDiagnostics(parseFailures,systemKey);
   const rankCounts=Object.fromEntries(['C','B','B+','A','A+'].map(rank=>[rank,selected.filter(r=>r.capability_rank===rank).length]));
   const detailStatusCounts=Object.fromEntries(['available','not_published','source_error','parser_failure'].map(status=>[status,selected.filter(r=>r.detail_observation?.status===status).length]));
+  const supersededMeetingIds=isGalop
+    ? selected.filter((record)=>record.mixed_disciplines===true).map((record)=>record.meeting_id.replace(/^france-galop-/,'france-letrot-'))
+    : [];
   return {
     schema_version:'france-fnch-official-window-candidates-v1',generated_at:generatedAt,country_id:'france',authority_id,racing_system_id,timezone:FRANCE_TIMEZONE,
     source_id:FRANCE_FNCH_SOURCE_ID,detail_source_id:FRANCE_FNCH_SOURCE_ID,collection_target_rank:'best_available',raw_body_retained:false,
@@ -97,6 +100,7 @@ function artifactFor({systemKey,records,generatedAt,start,end,days,sourceErrors,
     discovery:{method:'official_fnch_regional_programme_indexes_plus_published_programme_pdfs',schedule_source_id:FRANCE_FNCH_SOURCE_ID,schedule_source_url:FRANCE_FNCH_CALENDAR_URL,detail_source_id:FRANCE_FNCH_SOURCE_ID,regional_pages:sourcePages,rank_counts:rankCounts,detail_status_counts:detailStatusCounts,non_running_source_id:nonRunningDiagnostics.source_id,non_running_source_status:nonRunningDiagnostics.status},
     window:{start_date:start,end_date_exclusive:end,days,coverage_claim:scopedSourceErrors.length?'partial_source_visible_horizon':'source_visible_horizon',coverage_note:'FNCH regional programme indexes are treated as a source-visible meeting horizon, not proof that every date in the requested window has been exhaustively published. Visible meetings are attributed by discipline to France Galop or LETROT. Published official programme PDFs may supply complete per-race post times through rank A. Missing programme detail stays pending; retrieval/parser failures remain retry states; absence from FNCH pages never confirms non-running.'},
     records:selected,
+    superseded_meeting_ids:[...new Set(supersededMeetingIds)].sort(),
     meeting_presence_records:meetingPresenceRecords,
     diagnostics:{source_errors:scopedSourceErrors,parse_failures:scopedParseFailures,unknown_disciplines:unknownDisciplines,source_pages_checked:sourcePages.length,non_running:nonRunningDiagnostics},
   };
