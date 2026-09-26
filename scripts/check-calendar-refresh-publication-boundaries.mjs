@@ -192,7 +192,11 @@ assert.equal(workflow.split('--authority-id=jockey-club-brasileiro').length - 1,
 assert.equal(workflow.split('--authority-id=jockey-club-do-rio-grande-do-sul').length - 1, 2, 'Brazil Cristal observations must be applied in both execution paths');
 assert.equal(workflow.split('--racing-system-id=brazil-gavea-system').length - 1, 2, 'Brazil Gávea apply path must bind its canonical racing system in both execution paths');
 assert.equal(workflow.split('--racing-system-id=brazil-cristal-system').length - 1, 2, 'Brazil Cristal apply path must bind its canonical racing system in both execution paths');
-assert.equal(workflow.split('--timezone=America/Sao_Paulo').length - 1, 4, 'Brazil Gávea and Cristal apply paths must bind America/Sao_Paulo in both execution paths');
+assert.equal(workflow.split('node scripts/timetable/run-brazil-cidade-jardim-official-window.mjs').length - 1, 2, 'Brazil Cidade Jardim must be collected in both normal and latest-main rebuild paths');
+assert.equal(workflow.split('--artifact=.calendar-unified/brazil-cidade-jardim.json').length - 1, 4, 'Brazil Cidade Jardim artifact must pass exclusion and apply layers in both execution paths');
+assert.equal(workflow.split('--authority-id=jockey-club-de-sao-paulo').length - 1, 2, 'Brazil Cidade Jardim observations must be applied in both execution paths');
+assert.equal(workflow.split('--racing-system-id=brazil-cidade-jardim-system').length - 1, 2, 'Brazil Cidade Jardim apply path must bind its canonical racing system in both execution paths');
+assert.equal(workflow.split('--timezone=America/Sao_Paulo').length - 1, 6, 'Brazil Gávea, Cristal and Cidade Jardim apply paths must bind America/Sao_Paulo in both execution paths');
 assert.equal((workflow.match(/--authority-id=hipodromo-zarzuela/g) ?? []).length, 2, 'Spain Zarzuela observations must be applied in both execution paths');
 assert.equal((workflow.match(/--artifact=\.calendar-unified\/spain\.json/g) ?? []).length, 4, 'Spain artifact must pass exclusion and apply layers in both execution paths');
 assert.equal((workflow.match(/--racing-system-id=spain-reviewed-gallop-system/g) ?? []).length, 2, 'Spain apply path must bind the canonical racing system id in both execution paths');
@@ -216,3 +220,4 @@ console.log('SOUTH_AFRICA_RACE_COAST_UNIFIED_REFRESH_PATHS: 2');
 console.log('SOUTH_AFRICA_FOUR_RACING_UNIFIED_REFRESH_PATHS: 2');
 console.log('PANAMA_PRESIDENTE_REMON_UNIFIED_REFRESH_PATHS: 2');
 console.log('BRAZIL_JCB_REUNIOES_UNIFIED_REFRESH_PATHS: 2');
+console.log('BRAZIL_CIDADE_JARDIM_UNIFIED_REFRESH_PATHS: 2');
