@@ -1,0 +1,22 @@
+name: Uruguay HRU source probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-uruguay-hru-live-probe.yml'
+      - 'scripts/timetable/probe-uruguay-hru-source.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - name: Probe current HRU source structure
+        run: node scripts/timetable/probe-uruguay-hru-source.mjs
