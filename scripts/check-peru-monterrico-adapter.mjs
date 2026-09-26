@@ -84,11 +84,11 @@ if(process.env.GITHUB_ACTIONS==='true') {
       const apiSnippets=[...body.matchAll(/.{0,160}(?:\/api\/|axios|fetch\s*\().{0,220}/gi)].slice(0,40).map(m=>m[0].replace(/\s+/g,' '));
       const entryComponentSnippets=[...body.matchAll(/.{0,180}entrad.{0,300}/gi)].slice(0,40).map(m=>m[0].replace(/\s+/g,' '));
       const scriptSrcs=[...body.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)].map(m=>new URL(m[1],PERU_MONTERRICO_ENTRY_PROGRAMME_URL).toString());
-      const scriptDiagnostics=[];
+      const scriptDiagnostics=[];\n      const apiBaseClues=[];
       for(const scriptUrl of scriptSrcs.filter(url=>/app-mont|app-mixings|jcp-by-kapital/i.test(url)).slice(0,20)) {
         try {
           const scriptResponse=await fetch(scriptUrl,{headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'}});
-          const scriptBody=await scriptResponse.text();
+          const scriptBody=await scriptResponse.text();\n          const clueSnippets=[];\n          let clueFrom=0;\n          while(clueSnippets.length<30){\n            const clueIndex=scriptBody.indexOf('dominio_apis',clueFrom);\n            if(clueIndex<0) break;\n            clueSnippets.push(scriptBody.slice(Math.max(0,clueIndex-350),Math.min(scriptBody.length,clueIndex+900)).replace(/\\s+/g,' '));\n            clueFrom=clueIndex+12;\n          }\n          if(clueSnippets.length) apiBaseClues.push({url:scriptUrl,clues:clueSnippets});
           const hits=[...scriptBody.matchAll(/.{0,180}(?:programa-de-entradas|programas\/fecha|programas|id_reunion|reunion).{0,260}/gi)].slice(0,25).map(m=>m[0].replace(/\s+/g,' '));
           const entryHits=[...scriptBody.matchAll(/.{0,220}entrad.{0,360}/gi)].slice(0,60).map(m=>m[0].replace(/\s+/g,' '));
           const programaTemporadaHits=[...scriptBody.matchAll(/.{0,260}compProgramaTemporada.{0,420}/gi)].slice(0,20).map(m=>m[0].replace(/\s+/g,' '));
