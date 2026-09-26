@@ -60,6 +60,14 @@ if(process.env.GITHUB_ACTIONS==='true'){
       '--output='+liveOutput,
     ],{encoding:'utf8'});
     const artifact=JSON.parse(fs.readFileSync(liveOutput,'utf8'));
+    console.log('SPAIN_ZARZUELA_LIVE_DEBUG:',JSON.stringify({
+      runner_stdout:stdout.trim(),
+      acquisition_attempt:artifact.acquisition_attempt,
+      discovery:artifact.discovery,
+      window:artifact.window,
+      records:artifact.records.map((row)=>({date:row.date,rank:row.capability_rank,detail:row.detail_observation?.status,source:row.source?.official_url})),
+      diagnostics:artifact.diagnostics,
+    }));
     const sunday=artifact.records.find((row)=>row.date==='2026-09-27');
     assert.ok(sunday,'live Zarzuela fallback must recover the official 2026-09-27 meeting');
     assert.notEqual(artifact.acquisition_attempt?.status,'network_error','live Zarzuela acquisition must recover through an official route');
