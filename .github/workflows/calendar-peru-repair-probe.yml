@@ -1,0 +1,26 @@
+name: Calendar Peru repair probe
+
+on:
+  push:
+    branches:
+      - fix/calendar-production-integrity-20260926
+    paths:
+      - 'scripts/check-peru-monterrico-adapter.mjs'
+      - 'scripts/timetable/peru-monterrico-core.mjs'
+      - 'scripts/timetable/run-peru-monterrico-official-window.mjs'
+      - '.github/workflows/calendar-peru-repair-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Probe Peru live recovery
+        run: node scripts/check-peru-monterrico-adapter.mjs
