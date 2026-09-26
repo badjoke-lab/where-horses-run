@@ -56,8 +56,12 @@ export function parseZarzuelaAutumnProgrammeText(text, { year = 2026, sourceUrl 
     throw new Error('Zarzuela official programme fingerprint missing');
   }
 
+  const marker = normalized.match(/LOS D[IÍ]AS\s+([\s\S]+?)(?:Todas las carreras|Aprobado por|CONDICIONES GENERALES)/i);
+  if (!marker) throw new Error('Zarzuela official programme race-date section not found');
+  const dateSection = marker[1];
+
   const records = [];
-  for (const match of normalized.matchAll(/([0-9,\sy]+)\s+de\s+(septiembre|octubre|noviembre)/gi)) {
+  for (const match of dateSection.matchAll(/([0-9,\sy]+)\s+de\s+(septiembre|octubre|noviembre)/gi)) {
     const month = MONTHS[match[2].toLowerCase()];
     if (!month) continue;
     const days = [...match[1].matchAll(/\d{1,2}/g)].map((item) => Number(item[0]));
