@@ -115,8 +115,32 @@ export async function discoverAnnualFixtures({ startDate, endDateExclusive, fetc
   const pages = [];
 
   const firstUrl = buildQueryUrl(ANNUAL_DATA_URL, startDate, endDateInclusive);
-  const firstHtml = await fetchHtml(firstUrl, fetchImpl);
-  pages.push({ page_number: 0, url: firstUrl, status: 'ok' });
+  let firstHtml = null;
+  try {
+    firstHtml = await fetchHtml(firstUrl, fetchImpl);
+    pages.push({ page_number: 0, url: firstUrl, status: 'ok' });
+  } catch (error) {
+    pages.push({ page_number: 0, url: firstUrl, status: 'fetch_failed' });
+    const cursor = new Date(`${startDate}T00:00:00Z`);
+    const end = new Date(`${endDateExclusive}T00:00:00Z`);
+    while (cursor < end) {
+      const day = cursor.toISOString().slice(0, 10);
+      const fallbackUrl = buildQueryUrl(ANNUAL_PAGE_URL, day, day);
+      const fallbackHtml = await fetchHtml(fallbackUrl, fetchImpl);
+      pages.push({ page_number: null, date: day, url: fallbackUrl, status: 'fallback_page_ok' });
+      for (const fixture of extractAnnualFixtures(fallbackHtml, { startDate: day, endDateExclusive: new Date(cursor.valueOf() + 86_400_000).toISOString().slice(0, 10) })) {
+        all.set(fixture.candidate_id, fixture);
+      }
+      cursor.setUTCDate(cursor.getUTCDate() + 1);
+    }
+    return {
+      fixtures: [...all.values()].sort((a, b) => a.date.localeCompare(b.date) || Number(a.racecourse_source_id) - Number(b.racecourse_source_id)),
+      pages,
+      source_url: ANNUAL_PAGE_URL,
+      schedule_source_id: 'tjk-annual-programme-page-fallback',
+      daily_entry_url: ENTRY_URL,
+    };
+  }
   for (const fixture of extractAnnualFixtures(firstHtml, { startDate, endDateExclusive })) all.set(fixture.candidate_id, fixture);
 
   for (let pageNumber = 1; pageNumber <= maxPages; pageNumber += 1) {
