@@ -29,6 +29,14 @@ assert.equal(resolveFranceRacecourseId('Vichy-Auvergne'),'vichy-racecourse');
 assert.equal(resolveFranceRacecourseId('La Teste de Buch'),'la-teste-racecourse');
 assert.equal(resolveFranceRacecourseId('Senonnes-Pouancé'),'senonnes-pouance-racecourse');
 
+const mixedHtml=`<html><body><h1>Programme des courses</h1>
+<h2>Hippodrome Saint-Malo</h2><div>Réunion</div><div>27 Sep. 2026 À 14h10</div><div>Discipline</div><div>Trot Obstacle</div><a href="/sites/default/files/programs-fede/20260927_Hippodrome%20Saint-Malo.pdf">Télécharger le programme</a>
+</body></html>`;
+const mixed=parseFnchRegionalProgrammePage(mixedHtml,{sourceUrl});
+assert.equal(mixed.records.length,1,'mixed FNCH physical meeting must be emitted once');
+assert.equal(mixed.records[0].system_key,'galop','mixed meeting is routed once through France Galop rather than duplicated across two public systems');
+assert.equal(mixed.records[0].mixed_disciplines,true);
+
 const programme=`MARSEILLE BORELY\nMardi 22 septembre 2026\n1ère Course – Départ : 11 h. 12 PRIX A\n2ème Course – Départ : 11 h. 42 PRIX B\n3ème Course – Départ : 12 h. 17 PRIX C`;
 const rows=parseFnchProgrammeText(programme);
 assert.deepEqual(rows,[
@@ -50,6 +58,19 @@ assert.deepEqual(parseFnchProgrammeText(galopProgramme),[
   {label:'Race 2',post_time_local:'17:07'},
   {label:'Race 3',post_time_local:'17:42'},
 ]);
+
+const noisyProgramme=`HEADER 20 16 h 45
+1
+14H40 Prix A
+2
+15H10 Prix B
+3
+15H40 Prix C`;
+assert.deepEqual(parseFnchProgrammeText(noisyProgramme),[
+  {label:'Race 1',post_time_local:'14:40'},
+  {label:'Race 2',post_time_local:'15:10'},
+  {label:'Race 3',post_time_local:'15:40'},
+],'inline page/header numbers must not be mistaken for race numbers');
 
 const laTesteProgramme=`PROGRAMME DU JEUDI 24 SEPTEMBRE 2026
 1
