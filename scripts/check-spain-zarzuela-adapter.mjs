@@ -19,6 +19,18 @@ const schedule=parseZarzuelaAutumnProgrammeText(pdfText,{sourceUrl:'https://exam
 assert.equal(schedule.length,13);
 assert.deepEqual(schedule.slice(0,5).map((x)=>x.date),['2026-09-10','2026-09-20','2026-09-24','2026-09-27','2026-10-04']);
 assert.equal(schedule.at(-1).date,'2026-11-29');
+
+const noisyCalendarPdfText=`HIPÓDROMO DE LA ZARZUELA
+TEMPORADA 2026 OTOÑO
+Septiembre L M X J V S D 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30
+PROGRAMA DE LAS CARRERAS DE CABALLOS QUE SE DISPUTARÁN EN EL HIPÓDROMO DE LA ZARZUELA LOS DÍAS
+10, 20, 24 y 27 de septiembre
+4, 11, 18 y 25 de octubre
+1, 8, 15, 22 y 29 de noviembre
+Todas las carreras de este programa se disputarán sobre la pista de hierba.`;
+const noisySchedule=parseZarzuelaAutumnProgrammeText(noisyCalendarPdfText,{sourceUrl:'https://example.test/jce.pdf'});
+assert.equal(noisySchedule.length,13,'calendar-grid numbers must not be interpreted as race dates');
+assert.equal(noisySchedule.some((row)=>row.date==='2026-09-28'),false);
 assert.equal(zarzuelaMeetingUrl('2026-09-20'),'https://www.hipodromodelazarzuela.es/carreras/jornada/20260920');
 
 const html=`<html><body><h1>Domingo, 20 de Septiembre de 2026</h1><p>Carreras de la Jornada</p><table>
