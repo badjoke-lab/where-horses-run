@@ -4,6 +4,7 @@ import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import {
   SPAIN_AUTHORITY_ID,
   SPAIN_AUTUMN_PDF_URL,
+  SPAIN_AUTUMN_PDF_FALLBACK_URL,
   SPAIN_SOURCE_ID,
   SPAIN_SYSTEM_ID,
   SPAIN_TIMEZONE,
@@ -27,9 +28,19 @@ if(!output)throw new Error('--output=<path> is required');
 if(!/^\d{4}-\d{2}-\d{2}$/.test(start))throw new Error('--as-of must be YYYY-MM-DD');
 if(!Number.isInteger(days)||days<1||days>62)throw new Error('--days must be 1..62');
 const end=plusDays(start,days);const generatedAt=new Date().toISOString();
-const sourceErrors=[];const parseFailures=[];let annualRows=[];let annualStatus='success';
+const sourceErrors=[];const parseFailures=[];let annualRows=[];let annualStatus='source_error';let scheduleSourceUrl=SPAIN_AUTUMN_PDF_URL;
 const meetingPageCache=new Map();
-try{const text=await getPdfText(SPAIN_AUTUMN_PDF_URL);annualRows=parseZarzuelaAutumnProgrammeText(text,{year:Number(start.slice(0,4)),sourceUrl:SPAIN_AUTUMN_PDF_URL});}catch(error){annualStatus='source_error';sourceErrors.push({stage:'autumn_programme_pdf',source_url:SPAIN_AUTUMN_PDF_URL,error:String(error?.message??error)});}
+for(const sourceUrl of [SPAIN_AUTUMN_PDF_URL,SPAIN_AUTUMN_PDF_FALLBACK_URL]){
+  try{
+    const text=await getPdfText(sourceUrl);
+    annualRows=parseZarzuelaAutumnProgrammeText(text,{year:Number(start.slice(0,4)),sourceUrl});
+    annualStatus='success';
+    scheduleSourceUrl=sourceUrl;
+    break;
+  }catch(error){
+    sourceErrors.push({stage:'autumn_programme_pdf',source_url:sourceUrl,error:String(error?.message??error)});
+  }
+}
 
 if(annualStatus!=='success'){
   const cursor=new Date(`${start}T00:00:00Z`);
@@ -80,6 +91,6 @@ for(const row of scheduleRows){
 const rankCounts=Object.fromEntries(['C','B','B+','A','A+'].map((rank)=>[rank,records.filter((r)=>r.capability_rank===rank).length]));
 const completionCounts=Object.fromEntries(['promoted','complete_current_best_available','pending_publication','retry_required','implementation_gap','not_applicable'].map((name)=>[name,records.filter((r)=>r.acquisition_completion?.disposition===name).length]));
 const scheduleRecovered=annualStatus==='success'||annualStatus==='meeting_page_fallback';
-const artifact={schema_version:'spain-zarzuela-official-window-candidates-v1',generated_at:generatedAt,country_id:'spain',authority_id:SPAIN_AUTHORITY_ID,racing_system_id:SPAIN_SYSTEM_ID,timezone:SPAIN_TIMEZONE,source_id:SPAIN_SOURCE_ID,detail_source_id:SPAIN_SOURCE_ID,collection_target_rank:'best_available',raw_body_retained:false,acquisition_attempt:{attempted_at:generatedAt,status:scheduleRecovered?'success':'network_error',source_id:SPAIN_SOURCE_ID,route_id:annualStatus==='meeting_page_fallback'?'zarzuela-meeting-page-schedule-fallback':'zarzuela-autumn-programme-pdf',error_code:scheduleRecovered?null:'programme_fetch_failed'},discovery:{method:annualStatus==='meeting_page_fallback'?'official_date_specific_meeting_pages_schedule_fallback':'official_autumn_programme_pdf_plus_date_specific_meeting_pages',schedule_source_url:annualStatus==='meeting_page_fallback'?zarzuelaMeetingUrl(start):SPAIN_AUTUMN_PDF_URL,annual_rows:annualRows.length,rank_counts:rankCounts,completion_counts:completionCounts},window:{start_date:start,end_date_exclusive:end,days,coverage_claim:annualStatus==='success'?'official_season_programme_mother_set':annualStatus==='meeting_page_fallback'?'official_meeting_page_source_visible_horizon':'acquisition_failed_preserve_verified_state',coverage_note:'The official Hipódromo de la Zarzuela autumn programme is the preferred meeting mother set. If that document is unavailable, date-specific official jornada pages are probed across the requested window and source-visible meetings are recovered directly. Complete meeting pages may provide per-race post times through A. Unpublished details remain C/pending. Wider Spanish venue and racing-code coverage is not claimed. Source absence or failure never proves non-running.'},records,diagnostics:{source_errors:sourceErrors,parse_failures:parseFailures,annual_source_status:annualStatus}};
+const artifact={schema_version:'spain-zarzuela-official-window-candidates-v1',generated_at:generatedAt,country_id:'spain',authority_id:SPAIN_AUTHORITY_ID,racing_system_id:SPAIN_SYSTEM_ID,timezone:SPAIN_TIMEZONE,source_id:SPAIN_SOURCE_ID,detail_source_id:SPAIN_SOURCE_ID,collection_target_rank:'best_available',raw_body_retained:false,acquisition_attempt:{attempted_at:generatedAt,status:scheduleRecovered?'success':'network_error',source_id:SPAIN_SOURCE_ID,route_id:annualStatus==='meeting_page_fallback'?'zarzuela-meeting-page-schedule-fallback':'zarzuela-autumn-programme-pdf',error_code:scheduleRecovered?null:'programme_fetch_failed'},discovery:{method:annualStatus==='meeting_page_fallback'?'official_date_specific_meeting_pages_schedule_fallback':'official_autumn_programme_pdf_plus_date_specific_meeting_pages',schedule_source_url:annualStatus==='meeting_page_fallback'?zarzuelaMeetingUrl(start):scheduleSourceUrl,annual_rows:annualRows.length,rank_counts:rankCounts,completion_counts:completionCounts},window:{start_date:start,end_date_exclusive:end,days,coverage_claim:annualStatus==='success'?'official_season_programme_mother_set':annualStatus==='meeting_page_fallback'?'official_meeting_page_source_visible_horizon':'acquisition_failed_preserve_verified_state',coverage_note:'The official Hipódromo de la Zarzuela autumn programme is the preferred meeting mother set. If that document is unavailable, date-specific official jornada pages are probed across the requested window and source-visible meetings are recovered directly. Complete meeting pages may provide per-race post times through A. Unpublished details remain C/pending. Wider Spanish venue and racing-code coverage is not claimed. Source absence or failure never proves non-running.'},records,diagnostics:{source_errors:sourceErrors,parse_failures:parseFailures,annual_source_status:annualStatus}};
 write(output,artifact);
 console.log(JSON.stringify({output,start_date:start,end_date_exclusive:end,annual_rows:annualRows.length,meetings_emitted:records.length,rank_counts:rankCounts,completion_counts:completionCounts,source_errors:sourceErrors.length,parse_failures:parseFailures.length,raw_body_retained:false}));
