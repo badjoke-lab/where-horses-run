@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import assert from 'node:assert/strict';
 import { validateCalendarAuthorityMetadataV1 } from './timetable/calendar-authority-metadata.mjs';
 import {
@@ -48,5 +49,23 @@ assert.equal(future.race_rows.length,0);
 const runnerSource=fs.readFileSync('scripts/timetable/run-spain-zarzuela-official-window.mjs','utf8');
 assert.match(runnerSource,/meeting_page_schedule_fallback/,'Zarzuela runner must recover schedule dates from official jornada pages when the season PDF is unavailable');
 assert.match(runnerSource,/meetingPageCache/,'Zarzuela fallback discovery must reuse fetched meeting pages for detail parsing');
+
+if(process.env.GITHUB_ACTIONS==='true'){
+  const liveOutput='.spain-zarzuela-live-'+process.pid+'.json';
+  try{
+    execFileSync(process.execPath,[
+      'scripts/timetable/run-spain-zarzuela-official-window.mjs',
+      '--as-of=2026-09-26',
+      '--days=3',
+      '--output='+liveOutput,
+    ],{encoding:'utf8'});
+    const artifact=JSON.parse(fs.readFileSync(liveOutput,'utf8'));
+    const sunday=artifact.records.find((row)=>row.date==='2026-09-27');
+    assert.ok(sunday,'live Zarzuela fallback must recover the official 2026-09-27 meeting');
+    assert.notEqual(artifact.acquisition_attempt?.status,'network_error','live Zarzuela acquisition must recover through an official route');
+  }finally{
+    fs.rmSync(liveOutput,{force:true});
+  }
+}
 
 console.log('SPAIN_ZARZUELA_ADAPTER: pass');
