@@ -125,6 +125,11 @@ if(process.env.GITHUB_ACTIONS==='true'){
     assert.deepEqual(overlaps.map((row)=>row.date+'|'+row.racecourse_id),[],'live FNCH route must not duplicate one physical meeting across Galop and LETROT');
     assert.ok(Array.isArray(galop.superseded_meeting_ids),'France Galop artifact must expose explicit stale duplicate cleanup ids');
     assert.ok(galop.superseded_meeting_ids.some((id)=>id.includes('saint-malo-racecourse-2026-09-27')),'live mixed Saint-Malo meeting must supersede the stale LETROT duplicate id');
+    const liveParseFailures=[
+      ...(galop.diagnostics?.parse_failures??[]).filter((row)=>row.stage==='programme_pdf').map((row)=>({...row,system:'galop'})),
+      ...(letrot.diagnostics?.parse_failures??[]).filter((row)=>row.stage==='programme_pdf').map((row)=>({...row,system:'letrot'})),
+    ];
+    if(liveParseFailures.length) console.log('FRANCE_LIVE_PARSE_FAILURES:',JSON.stringify(liveParseFailures));
     assert.equal(galop.diagnostics?.source_errors?.filter((row)=>row.stage==='programme_pdf').length,0,'live France Galop programme PDFs must not fail acquisition');
     assert.equal(letrot.diagnostics?.source_errors?.filter((row)=>row.stage==='programme_pdf').length,0,'live LETROT programme PDFs must not fail acquisition');
     assert.equal(galop.diagnostics?.parse_failures?.filter((row)=>row.stage==='programme_pdf').length,0,'live France Galop published programme PDFs must parse without race-row failure');
