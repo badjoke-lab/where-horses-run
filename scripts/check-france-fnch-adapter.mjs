@@ -53,6 +53,16 @@ assert.deepEqual(rows,[
   {label:'Race 3',post_time_local:'12:17'},
 ]);
 
+const spacedOrdinalProgramme=`LE PERTRE
+1 ère Course – Départ : 14 h. 45 PRIX A
+2 ème Course – Départ : 15 h. 15 PRIX B
+3 ème Course – Départ : 15 h. 45 PRIX C`;
+assert.deepEqual(parseFnchProgrammeText(spacedOrdinalProgramme),[
+  {label:'Race 1',post_time_local:'14:45'},
+  {label:'Race 2',post_time_local:'15:15'},
+  {label:'Race 3',post_time_local:'15:45'},
+],'FNCH spaced ordinal race headers must parse exactly');
+
 const galopProgramme=`TOULOUSE
 mercredi 23 septembre 2026 : 16h02
 1
