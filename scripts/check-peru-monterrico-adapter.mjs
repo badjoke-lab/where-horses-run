@@ -132,6 +132,10 @@ if(process.env.GITHUB_ACTIONS==='true') {
         try {
           const scriptResponse=await fetch(scriptUrl,{headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'}});
           const scriptBody=await scriptResponse.text();
+          const requestBuilderIndex=scriptBody.indexOf('construir_envio_traer_datos');
+          const requestBuilderSnippet=requestBuilderIndex>=0
+            ? scriptBody.slice(Math.max(0,requestBuilderIndex-3500),Math.min(scriptBody.length,requestBuilderIndex+12000)).replace(/\s+/g,' ')
+            : '';
           const clueSnippets=[];
           let clueFrom=0;
           while(clueSnippets.length<30){
@@ -140,7 +144,7 @@ if(process.env.GITHUB_ACTIONS==='true') {
             clueSnippets.push(scriptBody.slice(Math.max(0,clueIndex-350),Math.min(scriptBody.length,clueIndex+900)).replace(/\s+/g,' '));
             clueFrom=clueIndex+12;
           }
-          if(clueSnippets.length) apiBaseClues.push({url:scriptUrl,clues:clueSnippets});
+          if(clueSnippets.length || requestBuilderSnippet) apiBaseClues.push({url:scriptUrl,request_builder:requestBuilderSnippet,clues:clueSnippets});
           const hits=[...scriptBody.matchAll(/.{0,180}(?:programa-de-entradas|programas\/fecha|programas|id_reunion|reunion).{0,260}/gi)].slice(0,25).map(m=>m[0].replace(/\s+/g,' '));
           const entryHits=[...scriptBody.matchAll(/.{0,220}entrad.{0,360}/gi)].slice(0,60).map(m=>m[0].replace(/\s+/g,' '));
           const programaTemporadaHits=[...scriptBody.matchAll(/.{0,260}compProgramaTemporada.{0,420}/gi)].slice(0,20).map(m=>m[0].replace(/\s+/g,' '));
@@ -159,6 +163,10 @@ if(process.env.GITHUB_ACTIONS==='true') {
               const componentResponse=await fetch(componentUrl,{headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'}});
               const componentBody=await componentResponse.text();
               const componentHits=[...componentBody.matchAll(/.{0,260}(?:\/api\/|programa|temporada|reunion|fecha).{0,500}/gi)].slice(0,80).map(m=>m[0].replace(/\s+/g,' '));
+              const componentRequestBuilderIndex=componentBody.indexOf('construir_envio_traer_datos');
+              const componentRequestBuilder=componentRequestBuilderIndex>=0
+                ? componentBody.slice(Math.max(0,componentRequestBuilderIndex-3500),Math.min(componentBody.length,componentRequestBuilderIndex+12000)).replace(/\s+/g,' ')
+                : '';
               const staticPdfHits=[...componentBody.matchAll(/.{0,320}(?:pdf_programa_temporada|pdf_monterrico|programas-pdf-sistema|\.pdf).{0,900}/gi)].slice(0,80).map(m=>m[0].replace(/\s+/g,' '));
               const programmeRouteHits=[...componentBody.matchAll(/.{0,800}(?:tipo_pdf\s*=|ruta_api\+|this\.\$http\.get\(this\.ruta_api|programa_mensual).{0,1800}/gi)].slice(0,30).map(m=>m[0].replace(/\s+/g,' '));
               const symbolHits={};
