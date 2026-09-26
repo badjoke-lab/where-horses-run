@@ -1,6 +1,6 @@
 {
   "schema_version": "public-timetable-meeting-list-v0",
-  "generated_at": "2026-09-26T12:40:20.463Z",
+  "generated_at": "2026-09-26T12:44:33.059Z",
   "canonical_source": "data/generated/timetable/canonical/meetings.json",
   "policy_source": "src/data/publicationDisplayPolicies.json",
   "readiness_source": "data/static/calendar-readiness-registry.json",
@@ -24845,11 +24845,51 @@
       "detail_path": null,
       "show_live_label": false,
       "show_replay_label": false
+    },
+    {
+      "meeting_id": "new-zealand-harness-ashburton-racecourse-2026-10-26",
+      "country_id": "new-zealand",
+      "authority_id": "harness-racing-new-zealand",
+      "racecourse_id": "ashburton-racecourse",
+      "date": "2026-10-26",
+      "timezone": "Pacific/Auckland",
+      "capability_rank": "B",
+      "max_public_rank": "B",
+      "effective_public_rank": "B",
+      "first_race_time_local": "12:00",
+      "last_race_time_local": null,
+      "policy_id": "new-zealand-harness-reviewed-b",
+      "source_status": "verified",
+      "official_source_url": "https://www.hrnz.co.nz/assets/2026.27-Final-Racing-Calendar-TAB-NZ-v1.1.pdf",
+      "last_checked_date": "2026-09-26",
+      "detail_path": null,
+      "show_live_label": false,
+      "show_replay_label": false
+    },
+    {
+      "meeting_id": "new-zealand-thoroughbred-te-rapa-racecourse-2026-10-26",
+      "country_id": "new-zealand",
+      "authority_id": "new-zealand-thoroughbred-racing",
+      "racecourse_id": "te-rapa-racecourse",
+      "date": "2026-10-26",
+      "timezone": "Pacific/Auckland",
+      "capability_rank": "C",
+      "max_public_rank": "C",
+      "effective_public_rank": "C",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "policy_id": "new-zealand-thoroughbred-reviewed-a",
+      "source_status": "verified",
+      "official_source_url": "https://nztr.co.nz/sites/nztrindustry/files/2026-08/Programming%20A4%2025%20Aug.pdf",
+      "last_checked_date": "2026-09-26",
+      "detail_path": null,
+      "show_live_label": false,
+      "show_replay_label": false
     }
   ],
   "publication_snapshot": {
     "schema_version": "calendar-publication-snapshot-v1",
-    "snapshot_id": "sha256:bf04378579c176ac03338650a1e27522d235bc1599e83d5779ecdac6700321af",
-    "generated_at": "2026-09-26T12:40:20.463Z"
+    "snapshot_id": "sha256:6ffdbbe4e3f6c6df948435019b4dde5c2ddf0a6198f974250599462820af9ff5",
+    "generated_at": "2026-09-26T12:44:33.059Z"
   }
 }
