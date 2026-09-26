@@ -84,8 +84,8 @@
         "id": "brazil-cidade-jardim-system",
         "name_en": "Cidade Jardim system",
         "name_ja": "シダージ・ジャルジン体系",
-        "summary_en": "Jockey Club de São Paulo distributes separate evidence by racing code.",
-        "summary_ja": "Jockey Club de São Pauloが競走区分別の根拠を配信します。",
+        "summary_en": "Jockey Club de São Paulo publishes monthly Projeto de Inscrições documents used for current rank-C meeting dates.",
+        "summary_ja": "Jockey Club de São Pauloの月次Projeto de Inscrições文書から現在のCランク開催日を取得します。",
         "organiser_source_ids": [
           "brazil-jockey-club-sao-paulo"
         ],
@@ -122,12 +122,13 @@
     ],
     "principal_racecourse_ids": [
       "brazil--hipodromo-da-gavea",
-      "brazil--hipodromo-do-cristal"
+      "brazil--hipodromo-do-cristal",
+      "brazil--hipodromo-de-cidade-jardim"
     ],
-    "calendar_guidance_en": "The first automatic production route uses the official JCB Reuniões table for source-visible Gávea and Cristal meeting dates at rank C. Keep venue/operator identities separate. Cidade Jardim remains outside this route until its current source is independently automated; Sorocaba remains blocked until exact meeting-date pairing is verified.",
-    "calendar_guidance_ja": "最初の自動production導線ではJCB公式Reuniões表からGáveaとCristalの公開済み開催日をCランクで取得します。会場・運営主体は分離保持します。Cidade Jardimは現行ソースを別途自動化するまで対象外、Sorocabaは正確な開催日対応が確認できるまでblockedのままです。",
-    "coverage_note_en": "Current production coverage is intentionally partial: Gávea and Cristal only.",
-    "coverage_note_ja": "現在のproduction範囲は意図的に部分対応で、GáveaとCristalのみです。",
+    "calendar_guidance_en": "Automatic production covers Gávea and Cristal from the official JCB Reuniões table and Cidade Jardim from official JCSP monthly Projeto de Inscrições documents, all at rank C for meeting date plus physical venue. Keep venue/operator identities separate. Sorocaba remains blocked until exact meeting-date pairing is verified.",
+    "calendar_guidance_ja": "自動productionではJCB公式Reuniões表からGávea・Cristal、JCSP公式の月次Projeto de Inscrições文書からCidade Jardimを取得し、いずれも開催日＋物理競馬場をCランクで扱います。会場・運営主体は分離保持します。Sorocabaは正確な開催日対応が確認できるまでblockedのままです。",
+    "coverage_note_en": "Current production coverage includes Gávea, Cristal and Cidade Jardim; Sorocaba remains blocked and Tarumã unresolved.",
+    "coverage_note_ja": "現在のproduction範囲はGávea、Cristal、Cidade Jardimです。Sorocabaはblocked、Tarumãは未解決のままです。",
     "revalidation": {
       "triggers_en": [
         "An authority route changes",
