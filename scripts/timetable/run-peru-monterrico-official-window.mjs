@@ -30,9 +30,12 @@ function localDate(now=new Date()) {
 }
 async function get(url,accept) {
   const response=await fetch(url,{redirect:'follow',headers:{
-    'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)',
+    'user-agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36',
     accept,
-    'accept-language':'es-PE,es;q=0.9,en;q=0.7'
+    'accept-language':'es-PE,es;q=0.9,en;q=0.7',
+    referer:'https://hipodromodemonterrico.com.pe/programa-de-entradas',
+    origin:'https://hipodromodemonterrico.com.pe',
+    'x-requested-with':'XMLHttpRequest'
   },signal:AbortSignal.timeout(20000)});
   if(!response.ok) throw new Error('HTTP '+response.status);
   return {body:await response.text(),contentType:response.headers.get('content-type')??'',url:response.url||url};
