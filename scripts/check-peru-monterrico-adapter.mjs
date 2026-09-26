@@ -80,9 +80,17 @@ if(process.env.GITHUB_ACTIONS==='true'){
         const componentUrl='https://hipodromodemonterrico.com.pe/generales_librerias/componentes_vue/generales/vue-comp-proximos-programas.js';
         const response=await fetch(componentUrl,{headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'}});
         const body=await response.text();
-        const apiHits=[...body.matchAll(/.{0,300}(?:\$http\.(?:get|post)|id_reunion|url_api|ruta_api).{0,900}/gi)]
+        const symbols={};
+        for(const symbol of ['url_api','url_api_carreras','url_api_reunion','url_api_pdf_elturf','app_pertenece_validacion','dominio_apis']){
+          const escaped=symbol.replace(/[.*+?^$(){}|[\]\\]/g,'\\        const apiHits=[...body.matchAll(/.{0,300}(?:\$http\.(?:get|post)|id_reunion|url_api|ruta_api).{0,900}/gi)]
           .slice(0,40).map((m)=>m[0].replace(/\s+/g,' '));
-        console.log('PERU_PROGRAMME_COMPONENT_API:',JSON.stringify({status:response.status,length:body.length,hits:apiHits}));
+        console.log('PERU_PROGRAMME_COMPONENT_API:',JSON.stringify({status:response.status,length:body.length,hits:apiHits}));');
+          const re=new RegExp(escaped+'\\s*:\\s*\\{[\\s\\S]{0,500}?\\}','i');
+          symbols[symbol]=body.match(re)?.[0]?.replace(/\s+/g,' ')??null;
+        }
+        const requestBlocks=[...body.matchAll(/(?:var ruta_api = this\.api_datos_reunion|this\.\$http\.get\(this\.api_pdf_elturf)[\s\S]{0,900}/gi)]
+          .slice(0,10).map((m)=>m[0].replace(/\s+/g,' '));
+        console.log('PERU_PROGRAMME_COMPONENT_API:',JSON.stringify({status:response.status,length:body.length,symbols,request_blocks:requestBlocks}));
       }catch(error){
         console.log('PERU_PROGRAMME_COMPONENT_API:',JSON.stringify({error:String(error?.message??error)}));
       }
