@@ -318,10 +318,10 @@
         "per_race_post_times": true,
         "race_name": true,
         "distance": true,
-        "surface": true,
+        "surface": false,
         "course": false
       },
-      "source_format": "mixed",
+      "source_format": "json_api",
       "access_mode": "api_call",
       "automation_mode": "automatic",
       "refresh_classes": [
@@ -334,15 +334,15 @@
       "source_status": "verified",
       "checked_date": "2026-09-21",
       "evidence_reviewed_at": "2026-09-21",
-      "revalidation_trigger": "Revalidate if the Monterrico date API, upcoming-programmes route, programme table structure, or reviewed venue scope changes.",
+      "revalidation_trigger": "Revalidate if the Monterrico date API, reunion JSON API, carreras payload structure, or reviewed venue scope changes.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/06-peru/final-summary.json",
       "limitations": [
         "Only the Hipódromo de Monterrico programme system is included; complete Peru-wide racing coverage is not claimed.",
-        "The production route publishes only public-safe timetable fields and does not retain raw API or programme bodies.",
-        "The current production adapter does not fabricate course labels; source-tested surface enrichment is not required for A publication."
+        "The production route does not retain raw API bodies.",
+        "Surface and course labels are not claimed by the current production adapter."
       ],
-      "notes": "The production candidate route discovers reunions through the official date API and resolves complete public-safe timetable rows through the official programme page. Current evidence derives A under the canonical rank contract; lower-rank observations remain explicit pending/retry states."
+      "notes": "The production route discovers reunion ids through the official date API and resolves complete timetable rows through the official reunion JSON API. The carreras array supplies post times, names and distances through A; surface/course are not fabricated."
     },
     {
       "readiness_id": "mexico--mexico-candidate-route--hipodromo-site-candidate",
