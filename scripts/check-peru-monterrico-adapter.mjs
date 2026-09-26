@@ -79,6 +79,17 @@ if(process.env.GITHUB_ACTIONS==='true') {
     if(!dates.has('2026-09-26') || !dates.has('2026-09-27')) {
       const response=await fetch(PERU_MONTERRICO_ENTRY_PROGRAMME_URL,{headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'}});
       const body=await response.text();
+      const mixingsUrl='https://hipodromodemonterrico.com.pe/generales_librerias/componentes_vue/app-mixings.js?v=202681812917';
+      let mixingsProbe={url:mixingsUrl};
+      try{
+        const mixingsResponse=await fetch(mixingsUrl,{headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'}});
+        const mixingsBody=await mixingsResponse.text();
+        const fnIndex=mixingsBody.indexOf('construir_envio_traer_datos');
+        mixingsProbe={url:mixingsUrl,status:mixingsResponse.status,length:mixingsBody.length,snippet:fnIndex>=0?mixingsBody.slice(Math.max(0,fnIndex-3000),Math.min(mixingsBody.length,fnIndex+9000)):''};
+      }catch(error){
+        mixingsProbe={url:mixingsUrl,error:String(error?.message??error)};
+      }
+      console.log('PERU_MONTERRICO_MIXINGS_PROBE:',JSON.stringify(mixingsProbe));
       const configUrl='https://hipodromodemonterrico.com.pe/generales_librerias/componentes_vue/generales/config_app/config_app-mont.js?v=5';
       let configProbe={url:configUrl};
       try{
