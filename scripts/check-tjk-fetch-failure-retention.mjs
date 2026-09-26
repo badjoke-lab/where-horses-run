@@ -35,6 +35,7 @@ const fallback = await discoverAnnualFixtures({
 });
 assert.equal(fallback.fixtures.length, 2, 'daily annual page fallback must preserve the requested date window');
 assert.equal(fallback.schedule_source_id, 'tjk-annual-programme-page-fallback', 'fallback source id must be explicit');
+assert.equal(fallback.pages[0]?.status, 'fetch_failed', 'primary annual Data failure must be recorded before fallback');
 assert.equal(fallback.pages.filter((page) => page.status === 'fallback_page_ok').length, 2, 'fallback must fetch one bounded annual page per day');
 assert.equal(fallback.fixtures[0].date, '2026-09-26');
 assert.equal(fallback.fixtures[1].date, '2026-09-27');
