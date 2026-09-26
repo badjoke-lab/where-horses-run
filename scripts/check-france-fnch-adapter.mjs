@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import assert from 'node:assert/strict';
 import { validateCalendarAuthorityMetadataV1 } from './timetable/calendar-authority-metadata.mjs';
 import {
@@ -99,4 +101,28 @@ assert.equal(detailed.last_race_time_local,'12:17');
 assert.equal(detailed.acquisition_completion.disposition,'complete_current_best_available');
 assert.equal(detailed.acquisition_completion.higher_rank_open,false);
 assert.deepEqual(validateCalendarAuthorityMetadataV1({acquisition_attempt:detailed.acquisition_attempt,acquisition_completion:detailed.acquisition_completion,evidence_support:detailed.evidence_support}),[]);
+
+if(process.env.GITHUB_ACTIONS==='true'){
+  const galopOutput='.france-galop-live-'+process.pid+'.json';
+  const letrotOutput='.france-letrot-live-'+process.pid+'.json';
+  try{
+    execFileSync(process.execPath,[
+      'scripts/timetable/run-france-fnch-official-window.mjs',
+      '--as-of=2026-09-26',
+      '--days=3',
+      '--galop-output='+galopOutput,
+      '--letrot-output='+letrotOutput,
+    ],{encoding:'utf8'});
+    const galop=JSON.parse(fs.readFileSync(galopOutput,'utf8'));
+    const letrot=JSON.parse(fs.readFileSync(letrotOutput,'utf8'));
+    const physical=new Set(galop.records.map((row)=>row.date+'|'+row.racecourse_id));
+    const overlaps=letrot.records.filter((row)=>physical.has(row.date+'|'+row.racecourse_id));
+    assert.deepEqual(overlaps.map((row)=>row.date+'|'+row.racecourse_id),[],'live FNCH route must not duplicate one physical meeting across Galop and LETROT');
+    assert.equal(galop.diagnostics?.source_errors?.filter((row)=>row.stage==='programme_pdf').length,0,'live France Galop programme PDFs must not fail acquisition/parsing');
+    assert.equal(letrot.diagnostics?.source_errors?.filter((row)=>row.stage==='programme_pdf').length,0,'live LETROT programme PDFs must not fail acquisition/parsing');
+  }finally{
+    fs.rmSync(galopOutput,{force:true});
+    fs.rmSync(letrotOutput,{force:true});
+  }
+}
 console.log('FRANCE_FNCH_ADAPTER: pass');
