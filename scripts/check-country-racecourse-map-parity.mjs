@@ -64,6 +64,7 @@ const panamaCanonicalIds = [
 const brazilCanonicalIds = [
   'brazil--hipodromo-da-gavea',
   'brazil--hipodromo-do-cristal',
+  'brazil--hipodromo-de-cidade-jardim',
 ];
 const peruCanonicalIds = [
   'monterrico-racecourse',
@@ -105,8 +106,8 @@ console.log('SOUTH_AFRICA_PUBLIC_RACECOURSE_COUNT: 7');
 console.log('SOUTH_AFRICA_MAP_LOCATION_COUNT: 7');
 console.log('PANAMA_PUBLIC_RACECOURSE_COUNT: 1');
 console.log('PANAMA_MAP_LOCATION_COUNT: 1');
-console.log('BRAZIL_PUBLIC_RACECOURSE_COUNT: 2');
-console.log('BRAZIL_MAP_LOCATION_COUNT: 2');
+console.log('BRAZIL_PUBLIC_RACECOURSE_COUNT: 3');
+console.log('BRAZIL_MAP_LOCATION_COUNT: 3');
 console.log('PERU_PUBLIC_RACECOURSE_COUNT: 1');
 console.log('PERU_MAP_LOCATION_COUNT: 1');
 console.log('SAUDI_ARABIA_PUBLIC_RACECOURSE_COUNT: 2');

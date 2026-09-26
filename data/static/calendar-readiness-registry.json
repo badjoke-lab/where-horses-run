@@ -395,17 +395,19 @@
       "country_tracker_delivery_no": "08",
       "system_id": "brazil-cidade-jardim-system",
       "system_name_en": "Cidade Jardim system",
-      "authority_source_key": "brazil/jockey-club-de-sao-paulo/cidade-jardim-programme",
-      "racecourse_ids": [],
+      "authority_source_key": "brazil/jockey-club-de-sao-paulo/cidade-jardim-projeto-inscricoes",
+      "racecourse_ids": [
+        "brazil--hipodromo-de-cidade-jardim"
+      ],
       "coverage_scope": "single_racecourse",
-      "technical_rank": "A+",
-      "public_ceiling": "A",
+      "technical_rank": "C",
+      "public_ceiling": "C",
       "confirmed_fields": {
         "meeting_date": true,
         "racecourse": true,
-        "first_race_time": true,
-        "last_race_time": true,
-        "per_race_post_times": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
         "race_name": false,
         "distance": false,
         "surface": false,
@@ -413,25 +415,27 @@
       },
       "source_format": "pdf",
       "access_mode": "direct",
-      "automation_mode": "manual_import",
+      "automation_mode": "automatic",
       "refresh_classes": [
         "weekly",
         "near_meeting"
       ],
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "fallback": "downgrade_to_C",
-      "source_status": "partial",
-      "checked_date": "2026-06-17",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when the Cidade Jardim programme route changes or Arabian timing becomes complete.",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-09-26",
+      "evidence_reviewed_at": "2026-09-26",
+      "revalidation_trigger": "Revalidate if the JCSP Projeto de Inscrições index, monthly PDF structure, or race-day header changes.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/08-brazil/final-summary.json",
       "limitations": [
-        "Timed Thoroughbred evidence and the untimed Arabian supplementary race must remain separate.",
-        "The decision is venue-specific."
+        "Current automatic production route is rank C only: meeting date plus physical venue.",
+        "Monthly Projeto de Inscrições documents are a source-visible publication horizon; missing future documents are not negative evidence.",
+        "Timed programme evidence remains a separate future rank-upgrade path.",
+        "Arabian supplementary evidence must remain separate from the Thoroughbred production route."
       ],
-      "notes": "A bounded manual-import prototype may begin for the timed Cidade Jardim programme scope."
+      "notes": "Automatic production route discovers official monthly Projeto de Inscrições PDFs. The October 2026 document confirms Cidade Jardim meetings on 3, 10, 17 and 31 October and explicitly notes no racing on 24 October; only positive meeting dates are ingested here."
     },
     {
       "readiness_id": "brazil--brazil-cristal-system--cristal-programme",

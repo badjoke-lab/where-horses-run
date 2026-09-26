@@ -1,0 +1,39 @@
+name: Brazil Cidade Jardim live probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-brazil-cidade-jardim-live-probe.yml'
+      - 'scripts/timetable/brazil-cidade-jardim-core.mjs'
+      - 'scripts/timetable/run-brazil-cidade-jardim-official-window.mjs'
+      - 'scripts/check-brazil-cidade-jardim-adapter.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - name: Validate Cidade Jardim adapter
+        run: npm run validate:brazil-cidade-jardim
+      - name: Probe live 30-day Cidade Jardim window
+        run: |
+          mkdir -p .calendar-brazil-cj-probe
+          node scripts/timetable/run-brazil-cidade-jardim-official-window.mjs \
+            --as-of=2026-09-26 \
+            --days=30 \
+            --output=.calendar-brazil-cj-probe/cidade-jardim.json
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const d=JSON.parse(fs.readFileSync('.calendar-brazil-cj-probe/cidade-jardim.json','utf8'));
+          console.log(JSON.stringify({dates:d.records.map(r=>r.date),documents:d.discovery.project_documents,diagnostics:d.diagnostics}));
+          if(d.diagnostics.source_errors.length||d.diagnostics.parse_failures.length) process.exitCode=1;
+          if(!d.records.some(r=>r.date==='2026-10-03')) process.exitCode=1;
+          if(d.records.some(r=>r.first_race_time_local!==null||r.last_race_time_local!==null)) process.exitCode=1;
+          NODE
