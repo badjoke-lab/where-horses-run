@@ -51,6 +51,20 @@ assert.match(runnerSource,/meeting_page_schedule_fallback/,'Zarzuela runner must
 assert.match(runnerSource,/meetingPageCache/,'Zarzuela fallback discovery must reuse fetched meeting pages for detail parsing');
 
 if(process.env.GITHUB_ACTIONS==='true'){
+  const curlProbes=[];
+  for(const url of [
+    'https://www.hipodromodelazarzuela.es/carreras',
+    'https://www.hipodromodelazarzuela.es/programa/estado-pista/24458',
+    'https://www.hipodromodelazarzuela.es/sites/default/files/PROGRAMA%20OTO%C3%91O%20HZ%202026%20v6%20SN.pdf',
+  ]){
+    try{
+      const body=execFileSync('curl',['-L','--fail','--silent','--show-error','--max-time','20',url],{encoding:'buffer',maxBuffer:20*1024*1024});
+      curlProbes.push({url,status:'success',bytes:body.length,prefix:body.subarray(0,80).toString('utf8')});
+    }catch(error){
+      curlProbes.push({url,status:'failed',message:String(error?.message??error),stderr:String(error?.stderr??'').slice(0,1000)});
+    }
+  }
+  console.log('SPAIN_ZARZUELA_CURL_PROBES:',JSON.stringify(curlProbes));
   const liveOutput='.spain-zarzuela-live-'+process.pid+'.json';
   try{
     const stdout=execFileSync(process.execPath,[
