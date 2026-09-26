@@ -71,6 +71,10 @@ if(process.env.GITHUB_ACTIONS==='true'){
     ],{encoding:'utf8'});
     const artifact=JSON.parse(fs.readFileSync(liveOutput,'utf8'));
     const byDate=new Map(artifact.records.map((row)=>[row.date,row]));
+    console.log('PERU_LIVE_ROWS:',JSON.stringify({
+      rows:artifact.records.map((row)=>({date:row.date,rank:row.capability_rank,detail:row.detail_observation?.status,race_count:row.detail_observation?.race_count,error_code:row.detail_observation?.error_code})),
+      source_errors:artifact.diagnostics?.source_errors,
+    }));
     for(const date of ['2026-09-26','2026-09-27']){
       const row=byDate.get(date);
       assert.ok(row,`live Monterrico route must recover ${date}`);
