@@ -55,6 +55,8 @@ if(pdfAnchor){
         }
         console.log('PDF_DAY_COORDS');
         for(const item of dayTokens) console.log(JSON.stringify(item));
+        console.log('PDF_GRID_ITEMS');
+        for(const item of items.filter(i=>i.y>=300&&(/^(?:\\d{1,2}(?:\\s+\\d{1,2})*)$/.test(i.str)||/Maroñas|Las Piedras/i.test(i.str)))) console.log(JSON.stringify(item));
       }
     }
   }
