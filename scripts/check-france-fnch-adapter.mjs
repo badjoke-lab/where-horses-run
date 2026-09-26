@@ -1,4 +1,6 @@
 import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import assert from 'node:assert/strict';
@@ -150,7 +152,19 @@ if(process.env.GITHUB_ACTIONS==='true'){
             }
             if(line) out.push(line);
           }
-          console.log('FRANCE_PARSE_TEXT:',JSON.stringify({source_url:failure.source_url,lines:out.slice(0,120)}));
+          let popplerHeaders=[];
+          const temp=path.join(os.tmpdir(),'whr-france-debug-'+process.pid+'.pdf');
+          try{
+            fs.writeFileSync(temp,bytes);
+            const poppler=execFileSync('pdftotext',['-layout',temp,'-'],{encoding:'utf8',maxBuffer:16*1024*1024,timeout:20000});
+            popplerHeaders=[...poppler.normalize('NFD').replace(/[\u0300-\u036f]/g,'').matchAll(/\b(\d{1,2})\s*(?:e|er|re|ere|eme)?\s*course\s*[–—-]\s*depart\s*:\s*(\d{1,2})\s*h\.?\s*(\d{2})/gi)].map(m=>({race:Number(m[1]),time:m[2]+':'+m[3]}));
+          }catch(error){
+            popplerHeaders=[{error:String(error?.message??error)}];
+          }finally{
+            fs.rmSync(temp,{force:true});
+          }
+          const pdfjsHeaders=out.filter(line=>/Course\s*[–—-]\s*Départ/i.test(line));
+          console.log('FRANCE_PARSE_TEXT:',JSON.stringify({source_url:failure.source_url,pdfjs_headers:pdfjsHeaders,poppler_headers:popplerHeaders}));
         }catch(error){
           console.log('FRANCE_PARSE_TEXT:',JSON.stringify({source_url:failure.source_url,error:String(error?.message??error)}));
         }
