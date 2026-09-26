@@ -19,12 +19,14 @@ function pad(value){return String(value).padStart(2,'0');}
 export function parseSorocabaCalendarText(text,{year=2026,sourceUrl=BRAZIL_SOROCABA_CALENDAR_URL}={}){
   const clean=String(text??'').replace(/\s+/g,' ').trim();
   if(!/CALEND[ÁA]RIO\s+2026/i.test(clean)) throw new Error('Sorocaba 2026 calendar fingerprint missing');
+  // Text-only fallback is retained for deterministic adapter tests. The live
+  // PDF route uses parseSorocabaCalendarItems because PDF extraction emits
+  // table columns out of reading order.
   const normalized=normalize(clean);
   const records=[];
-  for(let i=0;i<MONTH_NAMES.length;i+=1){
-    const monthName=MONTH_NAMES[i];
+  for(const monthName of MONTH_NAMES){
     const needle=normalize(monthName);
-    let start=normalized.indexOf(needle);
+    const start=normalized.indexOf(needle);
     if(start<0) continue;
     let end=normalized.length;
     for(const other of MONTH_NAMES){
@@ -36,13 +38,43 @@ export function parseSorocabaCalendarText(text,{year=2026,sourceUrl=BRAZIL_SOROC
     const rx=new RegExp('(?:^|\\s)([1-9]|[12]\\d|3[01])\\s+'+weekdayPattern+'\\b','g');
     for(const match of segment.matchAll(rx)){
       const day=Number(match[1]);
-      records.push({
-        date:`${year}-${pad(MONTHS[monthName])}-${pad(day)}`,
-        racecourse_id:BRAZIL_SOROCABA_RACECOURSE_ID,
-        venue_name:'Jockey Club de Sorocaba',
-        source_url:sourceUrl,
-      });
+      records.push({date:`${year}-${pad(MONTHS[monthName])}-${pad(day)}`,racecourse_id:BRAZIL_SOROCABA_RACECOURSE_ID,venue_name:'Jockey Club de Sorocaba',source_url:sourceUrl});
     }
+  }
+  return [...new Map(records.map(row=>[`${row.date}|${row.racecourse_id}`,row])).values()].sort((a,b)=>a.date.localeCompare(b.date));
+}
+
+function point(item){
+  return {str:String(item?.str??'').replace(/\s+/g,' ').trim(),x:Number(item?.x??item?.transform?.[4]),y:Number(item?.y??item?.transform?.[5])};
+}
+export function parseSorocabaCalendarItems(items,{year=2026,sourceUrl=BRAZIL_SOROCABA_CALENDAR_URL}={}){
+  const pts=(items??[]).map(point).filter(p=>p.str&&Number.isFinite(p.x)&&Number.isFinite(p.y));
+  if(!pts.some(p=>/CALEND[ÁA]RIO/i.test(p.str))||!pts.some(p=>/JOCKEY CLUB DE SOROCABA/i.test(p.str))) throw new Error('Sorocaba 2026 calendar fingerprint missing');
+
+  const months=pts.map(p=>({...p,key:normalize(p.str)})).filter(p=>MONTHS[p.key]);
+  if(months.length<2) throw new Error('Sorocaba calendar month column missing');
+
+  const weekdays=pts.filter(p=>/^(?:S[ÁA]BADO|DOMINGO|SEGUNDA(?:-FEIRA)?|TER[ÇC]A(?:-FEIRA)?|QUARTA(?:-FEIRA)?|QUINTA(?:-FEIRA)?|SEXTA(?:-FEIRA)?)$/i.test(p.str));
+  const dayCandidates=pts.filter(p=>/^(?:0?[1-9]|[12]\d|3[01])$/.test(p.str));
+
+  // A real race-date row has a weekday at essentially the same y coordinate.
+  // This excludes distance/purse numbers elsewhere in the one-page table.
+  const dated=dayCandidates.filter(day=>weekdays.some(w=>Math.abs(w.y-day.y)<=3.5));
+
+  // Month names occupy merged cells centered vertically over their blocks.
+  // Assign each dated row to the nearest month-cell center. For the current
+  // PDF this reconstructs the table without depending on text extraction order.
+  const records=[];
+  for(const day of dated){
+    const month=[...months].sort((a,b)=>Math.abs(a.y-day.y)-Math.abs(b.y-day.y))[0];
+    if(!month) continue;
+    const d=Number(day.str);
+    records.push({
+      date:`${year}-${pad(MONTHS[month.key])}-${pad(d)}`,
+      racecourse_id:BRAZIL_SOROCABA_RACECOURSE_ID,
+      venue_name:'Jockey Club de Sorocaba',
+      source_url:sourceUrl,
+    });
   }
   const unique=new Map(records.map(row=>[`${row.date}|${row.racecourse_id}`,row]));
   return [...unique.values()].sort((a,b)=>a.date.localeCompare(b.date));
