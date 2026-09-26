@@ -2,7 +2,7 @@
 
 Status: active canonical Calendar presentation specification  
 Adopted: 2026-09-08  
-Last amended: 2026-09-23  
+Last amended: 2026-09-26  
 Applies to: Calendar meeting lifecycle state, display timezone projection, official-stream state, List/Month/Map presentation, responsive acceptance  
 Parent UI specification: `docs/specs/map-first-site-ui-2026-09-06.md`  
 Active execution schedule: `docs/project-roadmap-2026-09-08-addendum.md`
@@ -125,6 +125,50 @@ If no safe detector exists, keep the reviewed stream link available and leave ru
 
 The Calendar and Today surfaces must not make gated-service monitoring a prerequisite for showing a valid official stream destination.
 
+### 4.2 Bounded Watch action and multiple-provider presentation
+
+The public row action is **Watch**, not a generic `Official stream` label. The row must remain bounded even when a meeting has multiple reviewed providers.
+
+Required presentation:
+
+```text
+one reviewed provider  -> Watch · <material access condition>
+two or more providers  -> Watch N
+```
+
+Examples:
+
+```text
+Watch · FREE
+Watch · PAID
+Watch · ACCOUNT
+Watch · BETTING ACCOUNT · GEO · SELECTED
+Watch 2
+Watch 3
+```
+
+For multiple providers, opening `Watch N` reveals the reviewed provider routes and their material access/coverage conditions. Desktop uses a compact anchored popover; mobile uses a bottom sheet. The provider list is text-first; provider logos are not required and must not be introduced merely to decorate the row.
+
+LIVE state remains provider-specific. If any eligible provider is verified live for the meeting/date, the collapsed row action may become:
+
+```text
+● LIVE · Watch N
+```
+
+Inside the provider chooser, only the provider whose detector is currently verified live receives a `● LIVE` indication. A non-detected paid/account/geo-gated provider must not inherit another provider's LIVE state.
+
+For a single-provider row, a verified-live detector may promote the direct action to `● LIVE · Watch`; otherwise the direct action remains `Watch · <condition>`.
+
+Calendar runtime/filter code must preserve the reviewed Watch labels and destinations. It must not rewrite a Watch control back to legacy `Official stream` copy, collapse multiple providers to the first route, synthesize detector-derived watch URLs, or treat one provider's detector result as the state of every provider.
+
+The stable compact row action order is:
+
+```text
+Watch | Details | Map | Official
+```
+
+If no reviewed stream destination exists, the Watch slot may be absent; the remaining actions must retain their semantic order.
+
 ## 5. Detector matching and fail-closed behavior
 
 A shared detector must not leak a live result from one meeting/date/venue context into another.
@@ -246,7 +290,12 @@ Before merging lifecycle/stream/view implementation, verify at minimum:
 - running + no verified stream state;
 - upcoming + detector result must not be promoted to live for the wrong date;
 - finished + stale prior live payload must not remain live;
-- shared detector date/event mismatch fails closed.
+- shared detector date/event mismatch fails closed;
+- one-provider non-live route renders as `Watch · <condition>`, not legacy `Official stream`;
+- multiple providers collapse to `Watch N` without dropping reviewed routes;
+- one live provider among multiple providers promotes only that provider internally and may promote the aggregate action to `● LIVE · Watch N`;
+- paid/account/geo-gated providers remain visible without requiring runtime LIVE detection;
+- filter/runtime refresh preserves Watch labels, reviewed destinations, and provider-specific state.
 
 ### Views
 
@@ -272,6 +321,8 @@ EN mobile 393×852 List
 EN mobile Month
 EN mobile Map
 JA mobile representative view
+desktop multi-provider Watch popover
+mobile multi-provider Watch bottom sheet
 ```
 
 The reviewer must inspect the screenshots, not merely confirm that an artifact exists. On the 393×852 List screenshot, an actual meeting row must be visible in the first viewport when the focused date contains meetings.
