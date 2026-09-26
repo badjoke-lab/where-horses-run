@@ -155,7 +155,23 @@ const officialPdfApiUrls=[
           officialPdfApiProbes.push({url:probeUrl,error:String(error?.message??error)});
         }
       }
-      console.log('PERU_MONTERRICO_PDF_API_PROBES:',JSON.stringify(officialPdfApiProbes));
+      const mirrorProbeUrls=[
+        'https://monterrico.elturf.com/programa-de-entradas',
+        'https://monterrico.elturf.com/api/general/calendarios/programa_temporada/2026-09-01/2026-09-30',
+        'https://monterrico.elturf.com/api/general/programas-pdf-sistema/pdf_programa_temporada/2026',
+      ];
+      const mirrorProbes=[];
+      for(const probeUrl of mirrorProbeUrls){
+        try{
+          const probeResponse=await fetch(probeUrl,{redirect:'follow',headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)','accept':'text/html,application/json,text/plain;q=0.9,*/*;q=0.5'}});
+          const probeBody=await probeResponse.text();
+          mirrorProbes.push({url:probeUrl,status:probeResponse.status,content_type:probeResponse.headers.get('content-type'),length:probeBody.length,preview:probeBody.slice(0,16000)});
+        }catch(error){
+          mirrorProbes.push({url:probeUrl,error:String(error?.message??error)});
+        }
+      }
+      console.log('PERU_MONTERRICO_MIRROR_PROBES:',JSON.stringify(mirrorProbes));
+console.log('PERU_MONTERRICO_PDF_API_PROBES:',JSON.stringify(officialPdfApiProbes));
 console.log('PERU_MONTERRICO_MONTHLY_API_PROBE:',JSON.stringify(inferredMonthlyProbe));
       console.log('PERU_MONTERRICO_ENTRY_HTML_DEBUG:',JSON.stringify({status:response.status,content_type:response.headers.get('content-type'),length:body.length,id_snippets:idSnippets,programme_snippets:programmeSnippets,api_snippets:apiSnippets,entry_component_snippets:entryComponentSnippets,script_srcs:scriptSrcs,script_diagnostics:scriptDiagnostics,inferred_monthly_probe:inferredMonthlyProbe}));
     }
