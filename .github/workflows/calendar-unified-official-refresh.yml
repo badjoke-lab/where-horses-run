@@ -578,8 +578,6 @@ jobs:
             --artifact=.calendar-unified/south-africa-four-racing.json \
             --artifact=.calendar-unified/panama.json \
             --artifact=.calendar-unified/brazil-gavea.json \
-            --artifact=.calendar-unified/brazil-cristal.json \
-            --artifact=.calendar-unified/brazil-gavea.json \
             --artifact=.calendar-unified/brazil-cristal.json
       - name: Apply non-Japan official observations monotonically
         run: |
@@ -723,12 +721,22 @@ jobs:
             --timezone=Africa/Johannesburg
           node scripts/timetable/apply-official-rolling-observations.mjs \
             --artifact=.calendar-unified/panama.json \
-            --artifact=.calendar-unified/brazil-gavea.json \
-            --artifact=.calendar-unified/brazil-cristal.json \
             --country-id=panama \
             --authority-id=hipica-de-panama \
             --racing-system-id=presidente-remon-racing-system \
             --timezone=America/Panama
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/brazil-gavea.json \
+            --country-id=brazil \
+            --authority-id=jockey-club-brasileiro \
+            --racing-system-id=brazil-gavea-system \
+            --timezone=America/Sao_Paulo
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/brazil-cristal.json \
+            --country-id=brazil \
+            --authority-id=jockey-club-do-rio-grande-do-sul \
+            --racing-system-id=brazil-cristal-system \
+            --timezone=America/Sao_Paulo
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
@@ -861,8 +869,6 @@ jobs:
               --artifact=.calendar-unified/south-africa-race-coast.json \
               --artifact=.calendar-unified/south-africa-four-racing.json \
             --artifact=.calendar-unified/panama.json \
-            --artifact=.calendar-unified/brazil-gavea.json \
-            --artifact=.calendar-unified/brazil-cristal.json \
             --artifact=.calendar-unified/brazil-gavea.json \
             --artifact=.calendar-unified/brazil-cristal.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -1005,12 +1011,22 @@ jobs:
               --timezone=Africa/Johannesburg
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/panama.json \
-            --artifact=.calendar-unified/brazil-gavea.json \
-            --artifact=.calendar-unified/brazil-cristal.json \
               --country-id=panama \
               --authority-id=hipica-de-panama \
               --racing-system-id=presidente-remon-racing-system \
               --timezone=America/Panama
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/brazil-gavea.json \
+              --country-id=brazil \
+              --authority-id=jockey-club-brasileiro \
+              --racing-system-id=brazil-gavea-system \
+              --timezone=America/Sao_Paulo
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/brazil-cristal.json \
+              --country-id=brazil \
+              --authority-id=jockey-club-do-rio-grande-do-sul \
+              --racing-system-id=brazil-cristal-system \
+              --timezone=America/Sao_Paulo
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
             node scripts/timetable/apply-meeting-presence-dispositions.mjs \
             --artifact=.calendar-unified/hkjc.json \
