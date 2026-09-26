@@ -180,7 +180,8 @@ const officialPdfApiUrls=[
           mirrorProbes.push({url:probeUrl,error:String(error?.message??error)});
         }
       }
-      console.log('PERU_MONTERRICO_API_BASE_CLUES:',JSON.stringify(apiBaseClues));\n      console.log('PERU_MONTERRICO_MIRROR_PROBES:',JSON.stringify(mirrorProbes));
+      console.log('PERU_MONTERRICO_API_BASE_CLUES:',JSON.stringify(apiBaseClues));
+      console.log('PERU_MONTERRICO_MIRROR_PROBES:',JSON.stringify(mirrorProbes));
 console.log('PERU_MONTERRICO_PDF_API_PROBES:',JSON.stringify(officialPdfApiProbes));
 console.log('PERU_MONTERRICO_MONTHLY_API_PROBE:',JSON.stringify(inferredMonthlyProbe));
       console.log('PERU_MONTERRICO_ENTRY_HTML_DEBUG:',JSON.stringify({status:response.status,content_type:response.headers.get('content-type'),length:body.length,id_snippets:idSnippets,programme_snippets:programmeSnippets,api_snippets:apiSnippets,entry_component_snippets:entryComponentSnippets,script_srcs:scriptSrcs,script_diagnostics:scriptDiagnostics,inferred_monthly_probe:inferredMonthlyProbe}));
