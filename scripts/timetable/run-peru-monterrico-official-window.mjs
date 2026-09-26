@@ -31,16 +31,25 @@ function localDate(now=new Date()) {
   return v.year+'-'+v.month+'-'+v.day;
 }
 async function get(url,accept) {
-  const response=await fetch(url,{redirect:'follow',headers:{
-    'user-agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36',
-    accept,
-    'accept-language':'es-PE,es;q=0.9,en;q=0.7',
-    referer:'https://hipodromodemonterrico.com.pe/programa-de-entradas',
-    origin:'https://hipodromodemonterrico.com.pe',
-    'x-requested-with':'XMLHttpRequest'
-  },signal:AbortSignal.timeout(20000)});
-  if(!response.ok) throw new Error('HTTP '+response.status);
-  return {body:await response.text(),contentType:response.headers.get('content-type')??'',url:response.url||url};
+  let lastError=null;
+  for(let attempt=1;attempt<=3;attempt+=1) {
+    try {
+      const response=await fetch(url,{redirect:'follow',headers:{
+        'user-agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36',
+        accept,
+        'accept-language':'es-PE,es;q=0.9,en;q=0.7',
+        referer:'https://hipodromodemonterrico.com.pe/programa-de-entradas',
+        origin:'https://hipodromodemonterrico.com.pe',
+        'x-requested-with':'XMLHttpRequest'
+      },signal:AbortSignal.timeout(20000)});
+      if(!response.ok) throw new Error('HTTP '+response.status);
+      return {body:await response.text(),contentType:response.headers.get('content-type')??'',url:response.url||url};
+    } catch(error) {
+      lastError=error;
+      if(attempt<3) await new Promise((resolve)=>setTimeout(resolve,300*attempt));
+    }
+  }
+  throw lastError;
 }
 async function discover(date) {
   const url=PERU_MONTERRICO_DATE_API_PREFIX+date;
