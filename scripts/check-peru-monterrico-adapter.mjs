@@ -75,6 +75,18 @@ if(process.env.GITHUB_ACTIONS==='true'){
       rows:artifact.records.map((row)=>({date:row.date,rank:row.capability_rank,detail:row.detail_observation?.status,race_count:row.detail_observation?.race_count,error_code:row.detail_observation?.error_code})),
       source_errors:artifact.diagnostics?.source_errors,
     }));
+    if([...byDate.values()].some((row)=>row.capability_rank!=='A')){
+      try{
+        const componentUrl='https://hipodromodemonterrico.com.pe/generales_librerias/componentes_vue/generales/vue-comp-proximos-programas.js';
+        const response=await fetch(componentUrl,{headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'}});
+        const body=await response.text();
+        const apiHits=[...body.matchAll(/.{0,300}(?:\$http\.(?:get|post)|id_reunion|url_api|ruta_api).{0,900}/gi)]
+          .slice(0,40).map((m)=>m[0].replace(/\s+/g,' '));
+        console.log('PERU_PROGRAMME_COMPONENT_API:',JSON.stringify({status:response.status,length:body.length,hits:apiHits}));
+      }catch(error){
+        console.log('PERU_PROGRAMME_COMPONENT_API:',JSON.stringify({error:String(error?.message??error)}));
+      }
+    }
     for(const date of ['2026-09-26','2026-09-27']){
       const row=byDate.get(date);
       assert.ok(row,`live Monterrico route must recover ${date}`);
