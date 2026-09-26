@@ -140,6 +140,22 @@ if(process.env.GITHUB_ACTIONS==='true') {
       } catch(error) {
         inferredMonthlyProbe={url:inferredMonthlyUrl,error:String(error?.message??error)};
       }
+const officialPdfApiUrls=[
+        'https://hipodromodemonterrico.com.pe/api/general/programas-pdf-sistema/pdf_programa_temporada/2026',
+        'https://hipodromodemonterrico.com.pe/api/general/programas-pdf-sistema/pdf-programa-mensual/2026',
+        'https://hipodromodemonterrico.com.pe/api/general/programas-pdf-sistema/pdf_programa_temporada_clasicos/2026',
+      ];
+      const officialPdfApiProbes=[];
+      for(const probeUrl of officialPdfApiUrls){
+        try{
+          const probeResponse=await fetch(probeUrl,{headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)','accept':'application/json,text/plain;q=0.9,*/*;q=0.5'}});
+          const probeBody=await probeResponse.text();
+          officialPdfApiProbes.push({url:probeUrl,status:probeResponse.status,content_type:probeResponse.headers.get('content-type'),length:probeBody.length,preview:probeBody.slice(0,12000)});
+        }catch(error){
+          officialPdfApiProbes.push({url:probeUrl,error:String(error?.message??error)});
+        }
+      }
+      console.log('PERU_MONTERRICO_PDF_API_PROBES:',JSON.stringify(officialPdfApiProbes));
 console.log('PERU_MONTERRICO_MONTHLY_API_PROBE:',JSON.stringify(inferredMonthlyProbe));
       console.log('PERU_MONTERRICO_ENTRY_HTML_DEBUG:',JSON.stringify({status:response.status,content_type:response.headers.get('content-type'),length:body.length,id_snippets:idSnippets,programme_snippets:programmeSnippets,api_snippets:apiSnippets,entry_component_snippets:entryComponentSnippets,script_srcs:scriptSrcs,script_diagnostics:scriptDiagnostics,inferred_monthly_probe:inferredMonthlyProbe}));
     }
