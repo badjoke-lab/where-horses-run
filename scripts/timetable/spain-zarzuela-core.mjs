@@ -7,7 +7,8 @@ export const SPAIN_SYSTEM_ID = 'spain-reviewed-gallop-system';
 export const SPAIN_SOURCE_ID = 'zarzuela-programme-2026';
 export const SPAIN_RACECOURSE_ID = 'spain--hipodromo-de-la-zarzuela';
 export const SPAIN_HOME_URL = 'https://www.hipodromodelazarzuela.es/carreras';
-export const SPAIN_AUTUMN_PDF_URL = 'https://www.hipodromodelazarzuela.es/sites/default/files/PROGRAMA%20OTO%C3%91O%20HZ%202026%20v6%20SN.pdf';
+export const SPAIN_AUTUMN_PDF_URL = 'https://www.hipodromodelazarzuela.es/sites/default/files/PROGRAMA%20OTON%CC%83O%20HZ%202026%20v7%20SN%20F.pdf';
+export const SPAIN_AUTUMN_PDF_FALLBACK_URL = 'https://www.hipodromodelazarzuela.es/sites/default/files/PROGRAMA%20OTO%C3%91O%20HZ%202026%20v6%20SN.pdf';
 
 const MONTHS = Object.freeze({
   septiembre: 9,
