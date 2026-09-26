@@ -89,6 +89,27 @@ if(process.env.GITHUB_ACTIONS==='true') {
       }catch(error){
         mixingsProbe={url:mixingsUrl,error:String(error?.message??error)};
       }
+      const frontendHelperUrls=[
+        'https://hipodromodemonterrico.com.pe/generales_librerias/componentes_vue/desarrollo/vue-zzz-funciones-generales.js?v=6',
+        'https://hipodromodemonterrico.com.pe/generales_librerias/componentes_vue/desarrollo/vue-zzz-config.js?v=6',
+      ];
+      const frontendHelperProbes=[];
+      for(const helperUrl of frontendHelperUrls){
+        try{
+          const helperResponse=await fetch(helperUrl,{headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'}});
+          const helperBody=await helperResponse.text();
+          const fnIndex=helperBody.indexOf('construir_envio_traer_datos');
+          const accessIndex=helperBody.search(/(?:x-forwarded-for|headers|Authorization|token|acceso)/i);
+          frontendHelperProbes.push({
+            url:helperUrl,status:helperResponse.status,length:helperBody.length,
+            request_builder:fnIndex>=0?helperBody.slice(Math.max(0,fnIndex-4000),Math.min(helperBody.length,fnIndex+14000)):'',
+            access_clue:accessIndex>=0?helperBody.slice(Math.max(0,accessIndex-3000),Math.min(helperBody.length,accessIndex+9000)):'',
+          });
+        }catch(error){
+          frontendHelperProbes.push({url:helperUrl,error:String(error?.message??error)});
+        }
+      }
+      console.log('PERU_MONTERRICO_FRONTEND_HELPERS:',JSON.stringify(frontendHelperProbes));
       console.log('PERU_MONTERRICO_MIXINGS_PROBE:',JSON.stringify(mixingsProbe));
       const configUrl='https://hipodromodemonterrico.com.pe/generales_librerias/componentes_vue/generales/config_app/config_app-mont.js?v=5';
       let configProbe={url:configUrl};
