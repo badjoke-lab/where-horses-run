@@ -5,7 +5,7 @@
     "slug": "brazil",
     "status": "reviewed",
     "page_kind": "country",
-    "last_reviewed": "2026-06-17",
+    "last_reviewed": "2026-09-26",
     "public_display_ceiling": "A",
     "source_test_status": "complete",
     "hero": {
@@ -120,11 +120,14 @@
         ]
       }
     ],
-    "principal_racecourse_ids": [],
-    "calendar_guidance_en": "Select the authority first and do not merge different racing codes.",
-    "calendar_guidance_ja": "先に公式主体を選び、異なる競走区分を統合しないでください。",
-    "coverage_note_en": "The four reviewed systems are not claimed to be a complete active list.",
-    "coverage_note_ja": "レビュー済み4体系を完全な現行一覧とは断定しません。",
+    "principal_racecourse_ids": [
+      "brazil--hipodromo-da-gavea",
+      "brazil--hipodromo-do-cristal"
+    ],
+    "calendar_guidance_en": "The first automatic production route uses the official JCB Reuniões table for source-visible Gávea and Cristal meeting dates at rank C. Keep venue/operator identities separate. Cidade Jardim remains outside this route until its current source is independently automated; Sorocaba remains blocked until exact meeting-date pairing is verified.",
+    "calendar_guidance_ja": "最初の自動production導線ではJCB公式Reuniões表からGáveaとCristalの公開済み開催日をCランクで取得します。会場・運営主体は分離保持します。Cidade Jardimは現行ソースを別途自動化するまで対象外、Sorocabaは正確な開催日対応が確認できるまでblockedのままです。",
+    "coverage_note_en": "Current production coverage is intentionally partial: Gávea and Cristal only.",
+    "coverage_note_ja": "現在のproduction範囲は意図的に部分対応で、GáveaとCristalのみです。",
     "revalidation": {
       "triggers_en": [
         "An authority route changes",
