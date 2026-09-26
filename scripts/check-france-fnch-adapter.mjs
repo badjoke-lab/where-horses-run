@@ -39,6 +39,11 @@ assert.equal(mixed.records.length,1,'mixed FNCH physical meeting must be emitted
 assert.equal(mixed.records[0].system_key,'galop','mixed meeting is routed once through France Galop rather than duplicated across two public systems');
 assert.equal(mixed.records[0].mixed_disciplines,true);
 
+const applySource=fs.readFileSync('scripts/timetable/apply-official-rolling-observations.mjs','utf8');
+assert.match(applySource,/artifact\.superseded_meeting_ids/,'rolling apply must consume explicit superseded meeting ids');
+assert.match(applySource,/canonicalById\.delete\(meetingId\)/,'rolling apply must remove superseded canonical meetings');
+assert.match(applySource,/detailsById\.delete\(meetingId\)/,'rolling apply must remove superseded canonical details');
+
 const programme=`MARSEILLE BORELY\nMardi 22 septembre 2026\n1ère Course – Départ : 11 h. 12 PRIX A\n2ème Course – Départ : 11 h. 42 PRIX B\n3ème Course – Départ : 12 h. 17 PRIX C`;
 const rows=parseFnchProgrammeText(programme);
 assert.deepEqual(rows,[
@@ -118,6 +123,8 @@ if(process.env.GITHUB_ACTIONS==='true'){
     const physical=new Set(galop.records.map((row)=>row.date+'|'+row.racecourse_id));
     const overlaps=letrot.records.filter((row)=>physical.has(row.date+'|'+row.racecourse_id));
     assert.deepEqual(overlaps.map((row)=>row.date+'|'+row.racecourse_id),[],'live FNCH route must not duplicate one physical meeting across Galop and LETROT');
+    assert.ok(Array.isArray(galop.superseded_meeting_ids),'France Galop artifact must expose explicit stale duplicate cleanup ids');
+    assert.ok(galop.superseded_meeting_ids.some((id)=>id.includes('saint-malo-racecourse-2026-09-27')),'live mixed Saint-Malo meeting must supersede the stale LETROT duplicate id');
     assert.equal(galop.diagnostics?.source_errors?.filter((row)=>row.stage==='programme_pdf').length,0,'live France Galop programme PDFs must not fail acquisition/parsing');
     assert.equal(letrot.diagnostics?.source_errors?.filter((row)=>row.stage==='programme_pdf').length,0,'live LETROT programme PDFs must not fail acquisition/parsing');
   }finally{
