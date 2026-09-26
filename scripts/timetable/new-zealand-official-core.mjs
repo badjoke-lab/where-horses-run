@@ -37,7 +37,7 @@ const VENUE_ALIASES = Object.freeze({
   'oamaru-racecourse':'oamaru-racecourse',
   'motukarara-raceway':'motukarara-raceway',
   'rangiora-raceway':'rangiora-raceway',
-  'ashburton-raceway':'ashburton-raceway',
+  'ashburton-raceway':'ashburton-racecourse',
   'central-southland-raceway':'central-southland-raceway',
   'ellerslie':'ellerslie-racecourse',
   'hastings':'hastings-racecourse',
