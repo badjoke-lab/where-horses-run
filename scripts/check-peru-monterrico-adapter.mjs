@@ -79,6 +79,16 @@ if(process.env.GITHUB_ACTIONS==='true') {
     if(!dates.has('2026-09-26') || !dates.has('2026-09-27')) {
       const response=await fetch(PERU_MONTERRICO_ENTRY_PROGRAMME_URL,{headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'}});
       const body=await response.text();
+      const configUrl='https://hipodromodemonterrico.com.pe/generales_librerias/componentes_vue/generales/config_app/config_app-mont.js?v=5';
+      let configProbe={url:configUrl};
+      try{
+        const configResponse=await fetch(configUrl,{headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'}});
+        const configBody=await configResponse.text();
+        configProbe={url:configUrl,status:configResponse.status,length:configBody.length,body:configBody.slice(0,30000)};
+      }catch(error){
+        configProbe={url:configUrl,error:String(error?.message??error)};
+      }
+      console.log('PERU_MONTERRICO_CONFIG_PROBE:',JSON.stringify(configProbe));
       const idSnippets=[...body.matchAll(/.{0,120}id_reunion.{0,180}/gi)].slice(0,30).map(m=>m[0].replace(/\s+/g,' '));
       const programmeSnippets=[...body.matchAll(/.{0,120}Programa.{0,180}/gi)].slice(0,30).map(m=>m[0].replace(/\s+/g,' '));
       const apiSnippets=[...body.matchAll(/.{0,160}(?:\/api\/|axios|fetch\s*\().{0,220}/gi)].slice(0,40).map(m=>m[0].replace(/\s+/g,' '));
