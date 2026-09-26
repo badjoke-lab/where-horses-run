@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import { validateCalendarAuthorityMetadataV1 } from './timetable/calendar-authority-metadata.mjs';
 import {
   buildFnchFixtureRecord,
+  buildFnchMixedMeetingRecord,
   buildFnchProgrammeRecord,
   parseFnchProgrammeText,
   parseFnchRegionalProgrammePage,
@@ -39,6 +40,12 @@ const mixed=parseFnchRegionalProgrammePage(mixedHtml,{sourceUrl});
 assert.equal(mixed.records.length,1,'mixed FNCH physical meeting must be emitted once');
 assert.equal(mixed.records[0].system_key,'galop','mixed meeting is routed once through France Galop rather than duplicated across two public systems');
 assert.equal(mixed.records[0].mixed_disciplines,true);
+const mixedRecord=buildFnchMixedMeetingRecord(mixed.records[0],{checkedAt:'2026-09-26T00:00:00Z'});
+assert.equal(mixedRecord.capability_rank,'B');
+assert.equal(mixedRecord.first_race_time_local,'14:10');
+assert.equal(mixedRecord.detail_observation.status,'not_applicable');
+assert.equal(mixedRecord.acquisition_completion.higher_rank_open,false);
+assert.equal(mixedRecord.timetable_rows.length,0);
 
 const applySource=fs.readFileSync('scripts/timetable/apply-official-rolling-observations.mjs','utf8');
 assert.match(applySource,/artifact\.superseded_meeting_ids/,'rolling apply must consume explicit superseded meeting ids');
