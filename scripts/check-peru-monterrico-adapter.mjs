@@ -74,6 +74,7 @@ if(process.env.GITHUB_ACTIONS==='true') {
       acquisition_status:artifact.acquisition_attempt?.status,
       coverage_claim:artifact.window?.coverage_claim,
       fallback_discovery:artifact.discovery?.fallback_discovery,
+      diagnostics:artifact.diagnostics,
       runner_stdout:stdout.trim(),
     }));
     if(!dates.has('2026-09-26') || !dates.has('2026-09-27')) {
