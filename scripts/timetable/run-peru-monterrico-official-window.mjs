@@ -3,7 +3,6 @@ import path from 'node:path';
 import {
   PERU_MONTERRICO_AUTHORITY_ID,
   PERU_MONTERRICO_DATE_API_PREFIX,
-  PERU_MONTERRICO_ENTRY_PROGRAMME_URL,
   PERU_MONTERRICO_PROGRAMME_URL,
   PERU_MONTERRICO_REUNION_API_PREFIX,
   PERU_MONTERRICO_SOURCE_ID,
@@ -12,7 +11,6 @@ import {
   buildMonterricoApiMeetingRecord,
   buildMonterricoFallbackRecord,
   buildMonterricoMeetingRecord,
-  extractMonterricoEntryProgrammeLinks,
   extractMonterricoReunionIds,
 } from './peru-monterrico-core.mjs';
 
@@ -58,12 +56,6 @@ async function discover(date) {
   try { payload=JSON.parse(response.body); } catch { throw new Error('invalid_json'); }
   return { ids:extractMonterricoReunionIds(payload), url:response.url };
 }
-async function entryProgrammeLinks() {
-  const response=await get(PERU_MONTERRICO_ENTRY_PROGRAMME_URL,'text/html,application/xhtml+xml;q=0.9,*/*;q=0.5');
-  if(!/html/i.test(response.contentType) && !/<html\b/i.test(response.body)) throw new Error('unexpected_content_type:'+response.contentType);
-  return { links:extractMonterricoEntryProgrammeLinks(response.body), url:response.url };
-}
-
 async function programme(reunionId) {
   const url=PERU_MONTERRICO_REUNION_API_PREFIX+encodeURIComponent(reunionId);
   const response=await get(url,'application/json,text/plain;q=0.9,*/*;q=0.5');
@@ -118,61 +110,17 @@ for(let i=0;i<days;i+=1) {
   }
 }
 
-const failedDiscoveryDates=new Set(errors.filter(row=>row.stage==='date_discovery').map(row=>row.date));
-const fallbackDiscovery={
-  attempted:false,
-  status:'not_needed',
-  source_url:PERU_MONTERRICO_ENTRY_PROGRAMME_URL,
-  links_found:0,
-  links_in_window:0,
-  meetings_recovered:0,
-  errors:[]
-};
-if(failedDiscoveryDates.size) {
-  fallbackDiscovery.attempted=true;
-  try {
-    const entry=await entryProgrammeLinks();
-    const end=plusDays(start,days);
-    const visible=entry.links.filter(row=>row.date>=start && row.date<end);
-    fallbackDiscovery.status='success';
-    fallbackDiscovery.source_url=entry.url;
-    fallbackDiscovery.links_found=entry.links.length;
-    fallbackDiscovery.links_in_window=visible.length;
-    const existingDates=new Set(records.map(row=>row.date));
-    for(const row of visible) {
-      if(!failedDiscoveryDates.has(row.date) || existingDates.has(row.date)) continue;
-      try {
-        const p=await programme(row.reunion_id);
-        const record=buildMonterricoApiMeetingRecord({date:row.date,reunionId:row.reunion_id,programmePayload:p.payload,checkedAt:generatedAt,sourceUrl:p.url});
-        record.route_id='monterrico-entry-programme-to-reunion-api';
-        record.source.extraction_method='official_entry_programme_reunion_api_fallback';
-        record.acquisition_attempt.route_id='monterrico-entry-programme-to-reunion-api';
-        records.push(record);
-        existingDates.add(row.date);
-        fallbackDiscovery.meetings_recovered+=1;
-        const dateRow=dates.find(item=>item.date===row.date);
-        if(dateRow) Object.assign(dateRow,{status:'fallback_available',source_url:p.url,reunion_ids:[row.reunion_id],race_count:record.timetable_rows.length,capability_rank:record.capability_rank});
-      } catch(error) {
-        fallbackDiscovery.errors.push({date:row.date,reunion_id:row.reunion_id,stage:'programme_detail',source_url:row.programme_url,error:String(error?.message??error)});
-      }
-    }
-  } catch(error) {
-    fallbackDiscovery.status='source_error';
-    fallbackDiscovery.errors.push({stage:'entry_programme_discovery',source_url:PERU_MONTERRICO_ENTRY_PROGRAMME_URL,error:String(error?.message??error)});
-  }
-}
-
-const acquisitionAttempt=successfulDateRequests===0 && fallbackDiscovery.meetings_recovered===0 ? {
+const acquisitionAttempt=successfulDateRequests===0 ? {
   attempted_at:generatedAt,
   status:'network_error',
   source_id:PERU_MONTERRICO_SOURCE_ID,
-  route_id:null,
+  route_id:'monterrico-date-api-to-reunion-api',
   error_code:errors.some(row=>/timeout|timed out|aborted/i.test(row.error))?'timeout':'fetch_error'
 } : {
   attempted_at:generatedAt,
   status:'success',
   source_id:PERU_MONTERRICO_SOURCE_ID,
-  route_id:successfulDateRequests===0?'monterrico-entry-programme-fallback':null,
+  route_id:'monterrico-date-api-to-reunion-api',
   error_code:null
 };
 
@@ -191,13 +139,11 @@ const artifact={
   raw_body_retained:false,
   acquisition_attempt:acquisitionAttempt,
   discovery:{
-    method:'official_monterrico_date_api_plus_reunion_api_with_official_entry_fallback',
+    method:'official_monterrico_date_api_plus_reunion_api',
     schedule_source_id:PERU_MONTERRICO_SOURCE_ID,
-    schedule_source_url:PERU_MONTERRICO_PROGRAMME_URL,
+    schedule_source_url:PERU_MONTERRICO_DATE_API_PREFIX,
     detail_source_id:PERU_MONTERRICO_SOURCE_ID,
     detail_source_url:PERU_MONTERRICO_REUNION_API_PREFIX,
-    fallback_schedule_source_url:PERU_MONTERRICO_ENTRY_PROGRAMME_URL,
-    fallback_discovery:fallbackDiscovery,
     date_requests_successful:successfulDateRequests,
     date_requests_total:days,
     rank_counts:rankCounts,
@@ -207,8 +153,8 @@ const artifact={
     start_date:start,
     end_date_exclusive:plusDays(start,days),
     days,
-    coverage_claim:successfulDateRequests===0?(fallbackDiscovery.meetings_recovered?'source_visible_partial':'fetch_failed'):errors.length?'partial':'source_window_complete',
-    coverage_note:'Every requested date is attempted through the official Monterrico date API. Discovered reunion ids are resolved through the same official site reunion JSON API, whose carreras array supplies complete per-race times, names and distances through rank A. If date discovery fails, the official Programa de Entradas page remains a source-visible fallback. Unresolved dates remain explicit acquisition gaps rather than false no-meeting observations.'
+    coverage_claim:successfulDateRequests===0?'fetch_failed':errors.length?'partial':'source_window_complete',
+    coverage_note:'Every requested date is attempted through the official Monterrico date API. Discovered reunion ids are resolved through the same official site reunion JSON API, whose carreras array supplies complete per-race times, names and distances through rank A. Transient official API failures are retried; unresolved dates remain explicit acquisition gaps rather than false no-meeting observations.'
   },
   records,
   diagnostics:{dates,source_errors:errors}
@@ -216,4 +162,4 @@ const artifact={
 const target=path.resolve(output);
 fs.mkdirSync(path.dirname(target),{recursive:true});
 fs.writeFileSync(target,JSON.stringify(artifact,null,2)+'\n');
-console.log(JSON.stringify({output,start_date:start,end_date_exclusive:plusDays(start,days),meetings_emitted:records.length,rank_counts:rankCounts,detail_status_counts:detailCounts,successful_date_requests:successfulDateRequests,source_errors:errors.length,fallback_discovery:fallbackDiscovery,raw_body_retained:false}));
+console.log(JSON.stringify({output,start_date:start,end_date_exclusive:plusDays(start,days),meetings_emitted:records.length,rank_counts:rankCounts,detail_status_counts:detailCounts,successful_date_requests:successfulDateRequests,source_errors:errors.length ,raw_body_retained:false}));
