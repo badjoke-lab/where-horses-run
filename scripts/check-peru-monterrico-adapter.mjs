@@ -82,9 +82,15 @@ if(process.env.GITHUB_ACTIONS==='true'){
         const body=await response.text();
         const symbols={};
         for(const symbol of ['url_api','url_api_carreras','url_api_reunion','url_api_pdf_elturf','app_pertenece_validacion','dominio_apis']){
-          const escaped=symbol.replace(/[.*+?^$(){}|[\]\\]/g,'\\        const apiHits=[...body.matchAll(/.{0,300}(?:\$http\.(?:get|post)|id_reunion|url_api|ruta_api).{0,900}/gi)]
-          .slice(0,40).map((m)=>m[0].replace(/\s+/g,' '));
-        console.log('PERU_PROGRAMME_COMPONENT_API:',JSON.stringify({status:response.status,length:body.length,hits:apiHits}));');
+          const index=body.indexOf(symbol);
+          symbols[symbol]=index>=0?body.slice(Math.max(0,index-120),Math.min(body.length,index+700)).replace(/\s+/g,' '):null;
+        }
+        const requestBlocks=[];
+        for(const needle of ['var ruta_api = this.api_datos_reunion','this.$http.get(this.api_pdf_elturf']){
+          const index=body.indexOf(needle);
+          if(index>=0) requestBlocks.push(body.slice(Math.max(0,index-120),Math.min(body.length,index+1000)).replace(/\s+/g,' '));
+        }
+        console.log('PERU_PROGRAMME_COMPONENT_API:',JSON.stringify({status:response.status,length:body.length,symbols,request_blocks:requestBlocks}));
           const re=new RegExp(escaped+'\\s*:\\s*\\{[\\s\\S]{0,500}?\\}','i');
           symbols[symbol]=body.match(re)?.[0]?.replace(/\s+/g,' ')??null;
         }
