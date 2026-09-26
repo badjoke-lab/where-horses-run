@@ -160,11 +160,18 @@ function publicEligibility(readiness) {
   return null;
 }
 
-export function resolvePublicProjectionDecisionV1(record, policyData, readinessIndex, aliasIndex) {
+function structuralPublicRank(record, hasDetail) {
+  if (!['A', 'A+'].includes(record.capability_rank) || hasDetail) return record.capability_rank;
+  if (record.first_race_time_local && record.last_race_time_local) return 'B+';
+  if (record.first_race_time_local) return 'B';
+  return 'C';
+}
+
+export function resolvePublicProjectionDecisionV1(record, policyData, readinessIndex, aliasIndex, hasDetail = false) {
   const resolved = resolveReadiness(record, readinessIndex, aliasIndex);
   const policy = findPolicy(record, policyData, resolved.canonicalSourceId);
-  const maxPublicRank = lowerRank(policy.max_public_rank, resolved.readiness.public_ceiling);
-  const effectivePublicRank = lowerRank(record.capability_rank, maxPublicRank);
+  const maxPublicRank = record.capability_rank;
+  const effectivePublicRank = structuralPublicRank(record, hasDetail);
   const eligibilityReason = publicEligibility(resolved.readiness);
   const include =
     !eligibilityReason &&
@@ -361,7 +368,7 @@ export function reconcilePublicProjectionV1({
     }
 
     const detail = detailById.get(meetingId) ?? null;
-    const decision = resolvePublicProjectionDecisionV1(meeting, policyData, readinessIndex, aliasIndex);
+    const decision = resolvePublicProjectionDecisionV1(meeting, policyData, readinessIndex, aliasIndex, Boolean(detail));
     decisions.push({ meeting_id: meetingId, ...decision });
 
     if (!decision.include_in_public_list) {
