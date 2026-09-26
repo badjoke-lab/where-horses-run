@@ -1,1 +1,97 @@
-[{"schema_version":"2.0.0","country_id":"panama","slug":"panama","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-29","public_display_ceiling":"C","source_test_status":"partial","hero":{"summary_en":"Official programme pages confirm meeting dates for Hipódromo Presidente Remón.","summary_ja":"公式番組ページでHipódromo Presidente Remónの開催日を確認済み。"},"overview":{"paragraphs_en":["The reviewed scope is limited to Hipódromo Presidente Remón.","Stable event permalinks support a bounded meeting-date prototype."],"paragraphs_ja":["確認済み範囲はHipódromo Presidente Remónに限定する。","安定したイベント固定URLにより限定的な開催日プロトタイプが可能。"]},"racing_types":[{"id":"thoroughbred-flat","name_en":"Flat racing","name_ja":"平地競走","summary_en":"Reviewed for Hipódromo Presidente Remón.","summary_ja":"Hipódromo Presidente Remónで確認済み。"}],"seasonality":{"pattern":"official-source-required","summary_en":"Check the current official programme category.","summary_ja":"現行の公式番組カテゴリを確認する。"},"schedule":{"timezone":"America/Panama","utc_offset_label":"Verify current local offset","day_patterns":["official-source-required"],"time_patterns":["meeting-date-only"],"summary_en":"Meeting dates are confirmed; page operating hours are not race times.","summary_ja":"開催日は確認済みだが、ページ上の営業時間はレース時刻ではない。"},"surfaces":{"ids":[],"summary_en":"Not normalized.","summary_ja":"共通化しない。"},"systems":[{"id":"panama-presidente-remon-system","name_en":"Hipódromo Presidente Remón programme","name_ja":"Hipódromo Presidente Remón番組","summary_en":"Reviewed single-racecourse event-page context.","summary_ja":"確認済み単一競馬場イベントページ文脈。","organiser_source_ids":["panama-presidente-remon-programme"],"distributor_source_ids":[]}],"principal_racecourse_ids":[],"calendar_guidance_en":"Use official event permalinks for meeting dates only and never treat operating hours as post times.","calendar_guidance_ja":"公式イベント固定URLから開催日のみを使用し、営業時間を発走時刻として扱わない。","coverage_note_en":"Only Hipódromo Presidente Remón is reviewed; countrywide coverage is not established.","coverage_note_ja":"Hipódromo Presidente Remónのみ確認済みで、全国網羅性は未確立。","revalidation":{"triggers_en":["Programme category changes","Event permalink structure changes","Operator identity changes"],"triggers_ja":["番組カテゴリ変更時","イベント固定URL構造変更時","運営主体変更時"]},"related_glossary_ids":["racecourse","meeting","fixture","post-time"]}]
+[
+  {
+    "schema_version": "2.0.0",
+    "country_id": "panama",
+    "slug": "panama",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-09-26",
+    "public_display_ceiling": "C",
+    "source_test_status": "complete",
+    "hero": {
+      "summary_en": "The current official Programa Oficial calendar confirms source-visible meeting dates for Hipódromo Presidente Remón.",
+      "summary_ja": "現行の公式Programa OficialカレンダーでHipódromo Presidente Remónの公開済み開催日を確認しています。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "The reviewed Calendar scope is limited to the single physical racecourse Hipódromo Presidente Remón.",
+        "The automatic route extracts official event dates at rank C and deliberately ignores calendar or operating hours as race times."
+      ],
+      "paragraphs_ja": [
+        "Calendarの確認済み範囲は単一の物理競馬場Hipódromo Presidente Remónに限定します。",
+        "自動取得は公式イベント日をCランクで抽出し、カレンダーや営業時間を発走時刻として扱いません。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "thoroughbred-flat",
+        "name_en": "Flat racing",
+        "name_ja": "平地競走",
+        "summary_en": "Reviewed for Hipódromo Presidente Remón.",
+        "summary_ja": "Hipódromo Presidente Remónで確認済み。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "official-source-required",
+      "summary_en": "Use the current official Programa Oficial category as a source-visible publication horizon; do not infer non-running from an unlisted future date.",
+      "summary_ja": "現行Programa Oficialカテゴリを公開済み範囲として使い、将来日の未掲載から非開催を推測しません。"
+    },
+    "schedule": {
+      "timezone": "America/Panama",
+      "utc_offset_label": "UTC-5",
+      "day_patterns": [
+        "official-source-required"
+      ],
+      "time_patterns": [
+        "meeting-date-only"
+      ],
+      "summary_en": "Meeting dates are confirmed from official event titles; event or operating hours are not race times.",
+      "summary_ja": "開催日は公式イベント名から確認し、イベント時間・営業時間は発走時刻として扱いません。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Not normalized.",
+      "summary_ja": "共通化しない。"
+    },
+    "systems": [
+      {
+        "id": "presidente-remon-racing-system",
+        "name_en": "Hipódromo Presidente Remón racing system",
+        "name_ja": "Hipódromo Presidente Remón競馬体系",
+        "summary_en": "Hípica de Panamá publishes the reviewed Programa Oficial event calendar for the single racecourse.",
+        "summary_ja": "Hípica de Panamáが単一競馬場の確認済みPrograma Oficialイベントカレンダーを公開します。",
+        "organiser_source_ids": [
+          "panama-presidente-remon-programme"
+        ],
+        "distributor_source_ids": []
+      }
+    ],
+    "principal_racecourse_ids": [
+      "panama--hipodromo-presidente-remon"
+    ],
+    "calendar_guidance_en": "Use official Programa Oficial event titles for meeting dates only. Never treat 08:00-17:00 event/calendar hours or site operating hours as post times.",
+    "calendar_guidance_ja": "Programa Oficialの公式イベント名から開催日のみを使用します。08:00–17:00などのイベント時間・サイト営業時間を発走時刻として扱いません。",
+    "coverage_note_en": "Single-racecourse rank C production scope; source omission does not prove non-running.",
+    "coverage_note_ja": "単一競馬場のCランクproduction範囲です。ソース未掲載だけでは非開催を意味しません。",
+    "revalidation": {
+      "triggers_en": [
+        "Programa Oficial category changes",
+        "Event-title or permalink structure changes",
+        "Operator identity changes",
+        "Source-visible calendar behaviour changes"
+      ],
+      "triggers_ja": [
+        "Programa Oficialカテゴリ変更時",
+        "イベント名・固定URL構造変更時",
+        "運営主体変更時",
+        "公開カレンダー挙動変更時"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture",
+      "post-time"
+    ]
+  }
+]
