@@ -717,6 +717,56 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "GitHub Actions parses the current official Programa Oficial category and emits source-visible meeting-date/Hipódromo Presidente Remón observations at rank C. Calendar/event hours are never used as post times. The source-visible horizon is not negative evidence for unlisted dates; fetch or parse failure preserves stronger verified state."
+    },
+    {
+      "system_id": "brazil-gavea-system",
+      "country_id": "brazil",
+      "authority_id": "jockey-club-brasileiro",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "jcb-reunioes-weekly",
+      "detail_source_id": "jcb-reunioes-weekly",
+      "schedule_adapter_id": "brazil-jcb-reunioes-v1",
+      "detail_adapter_id": "brazil-jcb-reunioes-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": false,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic JCB Reuniões route for Gávea; date+venue only at rank C. Source omission is not negative evidence."
+    },
+    {
+      "system_id": "brazil-cristal-system",
+      "country_id": "brazil",
+      "authority_id": "jockey-club-do-rio-grande-do-sul",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "jcb-reunioes-weekly",
+      "detail_source_id": "jcb-reunioes-weekly",
+      "schedule_adapter_id": "brazil-jcb-reunioes-v1",
+      "detail_adapter_id": "brazil-jcb-reunioes-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": false,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic JCB Reuniões distributor route for Cristal; JCRGS remains operator authority. Date+venue only at rank C. Source omission is not negative evidence."
     }
   ]
 }

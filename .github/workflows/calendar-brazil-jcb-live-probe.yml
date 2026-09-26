@@ -1,0 +1,46 @@
+name: Brazil JCB reunioes live probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-brazil-jcb-live-probe.yml'
+      - 'scripts/timetable/brazil-jcb-reunioes-core.mjs'
+      - 'scripts/timetable/run-brazil-jcb-reunioes-official-window.mjs'
+      - 'scripts/check-brazil-jcb-reunioes-adapter.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - name: Validate Brazil JCB adapter
+        run: npm run validate:brazil-jcb-reunioes
+      - name: Probe live Brazil JCB source-visible window
+        run: |
+          mkdir -p .calendar-brazil-probe
+          node scripts/timetable/run-brazil-jcb-reunioes-official-window.mjs \
+            --as-of=2026-09-26 \
+            --days=30 \
+            --gavea-output=.calendar-brazil-probe/gavea.json \
+            --cristal-output=.calendar-brazil-probe/cristal.json
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const g=JSON.parse(fs.readFileSync('.calendar-brazil-probe/gavea.json','utf8'));
+          const c=JSON.parse(fs.readFileSync('.calendar-brazil-probe/cristal.json','utf8'));
+          console.log(JSON.stringify({
+            gavea:g.records.map(r=>({date:r.date,venue:r.racecourse_id,rank:r.capability_rank})),
+            cristal:c.records.map(r=>({date:r.date,venue:r.racecourse_id,rank:r.capability_rank})),
+            gavea_diagnostics:g.diagnostics,
+            cristal_diagnostics:c.diagnostics,
+          }));
+          if(g.diagnostics.source_errors.length||g.diagnostics.parse_failures.length) process.exitCode=1;
+          if(c.diagnostics.source_errors.length||c.diagnostics.parse_failures.length) process.exitCode=1;
+          if(g.records.length===0||c.records.length===0) process.exitCode=1;
+          NODE

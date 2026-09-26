@@ -439,17 +439,19 @@
       "country_tracker_delivery_no": "08",
       "system_id": "brazil-cristal-system",
       "system_name_en": "Cristal system",
-      "authority_source_key": "brazil/jockey-club-do-rio-grande-do-sul/cristal-programme",
-      "racecourse_ids": [],
+      "authority_source_key": "brazil/jockey-club-do-rio-grande-do-sul/jcb-reunioes-weekly",
+      "racecourse_ids": [
+        "brazil--hipodromo-do-cristal"
+      ],
       "coverage_scope": "single_racecourse",
-      "technical_rank": "A",
-      "public_ceiling": "A",
+      "technical_rank": "C",
+      "public_ceiling": "C",
       "confirmed_fields": {
         "meeting_date": true,
         "racecourse": true,
-        "first_race_time": true,
-        "last_race_time": true,
-        "per_race_post_times": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
         "race_name": false,
         "distance": false,
         "surface": false,
@@ -457,24 +459,27 @@
       },
       "source_format": "pdf",
       "access_mode": "direct",
-      "automation_mode": "manual_import",
+      "automation_mode": "automatic",
       "refresh_classes": [
         "weekly",
         "near_meeting"
       ],
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "fallback": "downgrade_to_C",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-17",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when the Cristal programme route or document format changes.",
+      "checked_date": "2026-09-26",
+      "evidence_reviewed_at": "2026-09-26",
+      "revalidation_trigger": "Revalidate if the JCB Reuniões table, supported venue labels, or publication/distribution relationship changes.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/08-brazil/final-summary.json",
       "limitations": [
-        "The decision is venue-specific and does not establish national completeness."
+        "Current production route is rank C only: meeting date plus physical venue.",
+        "The JCB Reuniões page is a source-visible weekly publication horizon; unlisted future dates are not negative evidence.",
+        "Gávea and Cristal remain distinct operator authorities even though JCB distributes the reviewed weekly list.",
+        "Programme documents may support higher ranks, but they are outside this first automatic production route."
       ],
-      "notes": "A bounded manual-import prototype may begin for reviewed Cristal programmes."
+      "notes": "Automatic production candidate parses the current official JCB Reuniões table. Live revalidation on 2026-09-26 showed Cristal on 2026-09-26 and Gávea on 2026-09-27, 2026-09-28 and 2026-09-29."
     },
     {
       "readiness_id": "brazil--brazil-gavea-system--gavea-programme",
@@ -482,17 +487,19 @@
       "country_tracker_delivery_no": "08",
       "system_id": "brazil-gavea-system",
       "system_name_en": "Gávea system",
-      "authority_source_key": "brazil/jockey-club-brasileiro/gavea-programme",
-      "racecourse_ids": [],
+      "authority_source_key": "brazil/jockey-club-brasileiro/jcb-reunioes-weekly",
+      "racecourse_ids": [
+        "brazil--hipodromo-da-gavea"
+      ],
       "coverage_scope": "single_racecourse",
-      "technical_rank": "A+",
-      "public_ceiling": "A",
+      "technical_rank": "C",
+      "public_ceiling": "C",
       "confirmed_fields": {
         "meeting_date": true,
         "racecourse": true,
-        "first_race_time": true,
-        "last_race_time": true,
-        "per_race_post_times": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
         "race_name": false,
         "distance": false,
         "surface": false,
@@ -500,25 +507,27 @@
       },
       "source_format": "pdf",
       "access_mode": "direct",
-      "automation_mode": "manual_import",
+      "automation_mode": "automatic",
       "refresh_classes": [
         "weekly",
         "near_meeting"
       ],
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "fallback": "downgrade_to_C",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-17",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when the Gávea programme route or document format changes.",
+      "checked_date": "2026-09-26",
+      "evidence_reviewed_at": "2026-09-26",
+      "revalidation_trigger": "Revalidate if the JCB Reuniões table, supported venue labels, or publication/distribution relationship changes.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/08-brazil/final-summary.json",
       "limitations": [
-        "The decision is venue-specific and does not establish national completeness.",
-        "Programme summary fields beyond times were not normalized in this backfill."
+        "Current production route is rank C only: meeting date plus physical venue.",
+        "The JCB Reuniões page is a source-visible weekly publication horizon; unlisted future dates are not negative evidence.",
+        "Gávea and Cristal remain distinct operator authorities even though JCB distributes the reviewed weekly list.",
+        "Programme documents may support higher ranks, but they are outside this first automatic production route."
       ],
-      "notes": "A bounded manual-import prototype may begin for reviewed Gávea programmes."
+      "notes": "Automatic production candidate parses the current official JCB Reuniões table. Live revalidation on 2026-09-26 showed Cristal on 2026-09-26 and Gávea on 2026-09-27, 2026-09-28 and 2026-09-29."
     },
     {
       "readiness_id": "brazil--brazil-sorocaba-system--sorocaba-programme",
