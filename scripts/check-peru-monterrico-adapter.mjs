@@ -40,6 +40,15 @@ assert.equal(parsed.timetable_rows.length,3);
 assert.deepEqual(parsed.timetable_rows[0],{label:'Race 1',post_time_local:'13:30',race_name:'Handicap',distance_m:1000});
 assert.throws(()=>parseMonterricoProgrammeHtml(html,{expectedDate:'2026-09-21'}),/date mismatch/);
 
+const htmlWithoutDate='<!doctype html><html><body>'+
+'<h1>Reunión Hipódromo de Monterrico</h1>'+
+'<table><tr><th>N°</th><th>Hora</th><th>Carrera</th><th>Dist.</th></tr>'+
+'<tr><td>1 ª</td><td>13:30</td><td>Handicap</td><td>1000</td></tr>'+
+'<tr><td>2 ª</td><td>14:00</td><td>Condicional</td><td>1200</td></tr></table></body></html>';
+const parsedWithoutDate=parseMonterricoProgrammeHtml(htmlWithoutDate,{expectedDate:'2026-09-27'});
+assert.equal(parsedWithoutDate.meeting_date,'2026-09-27','official date API binding must supply the meeting date when the programme shell omits it');
+assert.equal(parsedWithoutDate.timetable_rows.length,2);
+
 const record=buildMonterricoMeetingRecord({date:'2026-09-20',reunionId:102400,programmeHtml:html,checkedAt:'2026-09-20T14:30:00Z'});
 assert.equal(record.country_id,'peru');
 assert.equal(record.racecourse_id,'monterrico-racecourse');
