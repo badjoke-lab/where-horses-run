@@ -1,0 +1,937 @@
+name: Calendar near official refresh
+
+on:
+  schedule:
+    - cron: '17 11,19 * * *' # rolling near-3-day detail refresh
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: calendar-near-official-refresh-${{ github.event_name == 'pull_request' && 'smoke' || 'production' }}
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies
+        run: npm install --no-package-lock --no-audit --no-fund
+      - name: Validate unified refresh syntax
+        run: |
+          for file in scripts/timetable/*.mjs; do
+            node --check "$file"
+          done
+          node scripts/check-calendar-live-source-readiness.mjs
+          node scripts/check-calendar-refresh-publication-boundaries.mjs
+          node scripts/check-kra-window-bounds.mjs
+          node scripts/check-kra-fetch-failure-retention.mjs
+          node scripts/check-tjk-fetch-failure-retention.mjs
+          node scripts/check-tjk-non-running-evidence.mjs
+          node scripts/check-ireland-hri-fixtures-adapter.mjs
+          node scripts/check-peru-monterrico-adapter.mjs
+          node scripts/check-saudi-jcsa-adapter.mjs
+          node scripts/check-france-fnch-adapter.mjs
+          node scripts/check-new-zealand-official-adapter.mjs
+          node scripts/check-united-kingdom-bha-adapter.mjs
+          node scripts/check-slovakia-zavodisko-adapter.mjs
+          node scripts/check-bahrain-btc-adapter.mjs
+          node scripts/check-sweden-svensk-galopp-adapter.mjs
+          node scripts/check-germany-deutscher-galopp-adapter.mjs
+          node scripts/check-spain-zarzuela-adapter.mjs
+          node scripts/check-italy-masaf-adapter.mjs
+          node scripts/check-south-africa-race-coast-adapter.mjs
+          node scripts/check-south-africa-four-racing-adapter.mjs
+          node scripts/check-meeting-presence-contract.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs
+          node scripts/check-hkjc-non-running-evidence.mjs
+          node scripts/check-uae-era-non-running-evidence.mjs
+          node scripts/check-jra-non-running-evidence.mjs
+          node scripts/check-jra-non-running-discovery.mjs
+          node scripts/check-banei-non-running-evidence.mjs
+          node scripts/check-banei-non-running-discovery.mjs
+          node scripts/check-nar-non-running-evidence.mjs
+          node scripts/check-nar-non-running-discovery.mjs
+          node scripts/check-sorec-non-running-evidence.mjs
+          node scripts/check-chile-clubhipico-non-running-evidence.mjs
+          node scripts/check-france-non-running-evidence.mjs
+          node scripts/check-new-zealand-non-running-evidence.mjs
+          node scripts/check-united-kingdom-bha-non-running-evidence.mjs
+          node scripts/check-peru-fetch-failure-retention.mjs
+      - name: Exercise Japan mother-set safety contracts
+        run: |
+          node scripts/check-japan-mother-set-safety.mjs
+          node scripts/check-japan-per-family-absence-reconciliation.mjs
+          node scripts/check-jra-official-30d-completeness.mjs
+          node scripts/check-banei-official-program-fallback.mjs
+          node scripts/check-nankankeiba-official-30d.mjs
+          node scripts/check-nankan-official-programme-fallback.mjs
+          node scripts/check-iwatekeiba-official-30d.mjs
+          node scripts/check-iwate-official-programme-fallback.mjs
+          node scripts/check-hyogo-official-30d.mjs
+          node scripts/check-tokai-official-30d.mjs
+          node scripts/check-hokkaido-official-30d.mjs
+          node scripts/check-kanazawa-official-30d.mjs
+          node scripts/check-kochi-official-30d.mjs
+          node scripts/check-saga-official-30d.mjs
+      - name: Exercise reviewed Calendar preservation
+        run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
+      - name: Exercise confirmed non-running public suppression
+        run: |
+          node scripts/timetable/apply-meeting-presence-dispositions.mjs
+          node scripts/check-confirmed-non-running-publication.mjs
+      - name: Validate site build
+        run: npm run build
+      - name: Check diff formatting
+        run: git diff --check
+      - name: Exercise reset-and-rebuild persistence model
+        shell: bash
+        run: |
+          set -euo pipefail
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+          git init --bare "$tmp/remote.git" >/dev/null
+          git clone "$tmp/remote.git" "$tmp/seed" >/dev/null 2>&1
+          (
+            cd "$tmp/seed"
+            git config user.name test
+            git config user.email test@example.invalid
+            mkdir -p data/generated
+            printf 'base\n' > data/generated/snapshot.json
+            printf 'base-code\n' > code.txt
+            git add .
+            git commit -m base >/dev/null
+            git branch -M main
+            git push origin main >/dev/null 2>&1
+          )
+          git --git-dir="$tmp/remote.git" symbolic-ref HEAD refs/heads/main
+          git clone "$tmp/remote.git" "$tmp/writer" >/dev/null 2>&1
+          git clone "$tmp/remote.git" "$tmp/advancer" >/dev/null 2>&1
+          (
+            cd "$tmp/writer"
+            git config user.name test
+            git config user.email test@example.invalid
+            printf 'stale-generated\n' > data/generated/snapshot.json
+            git add data/generated/snapshot.json
+            git commit -m stale-generated >/dev/null
+          )
+          (
+            cd "$tmp/advancer"
+            git config user.name test
+            git config user.email test@example.invalid
+            printf 'advance-one\n' > code.txt
+            git add code.txt
+            git commit -m advance-one >/dev/null
+            git push origin HEAD:main >/dev/null 2>&1
+          )
+          (
+            cd "$tmp/writer"
+            git fetch origin main >/dev/null 2>&1
+            remote_main="$(git rev-parse origin/main)"
+            parent_sha="$(git rev-parse HEAD^)"
+            test "$parent_sha" != "$remote_main"
+            git reset --hard "$remote_main" >/dev/null
+            printf 'rebuilt-one\n' > data/generated/snapshot.json
+            git add data/generated/snapshot.json
+            git commit -m rebuilt-one >/dev/null
+          )
+          (
+            cd "$tmp/advancer"
+            git fetch origin main >/dev/null 2>&1
+            git reset --hard origin/main >/dev/null
+            printf 'advance-two\n' > code.txt
+            git add code.txt
+            git commit -m advance-two >/dev/null
+            git push origin HEAD:main >/dev/null 2>&1
+          )
+          (
+            cd "$tmp/writer"
+            git fetch origin main >/dev/null 2>&1
+            remote_main="$(git rev-parse origin/main)"
+            parent_sha="$(git rev-parse HEAD^)"
+            test "$parent_sha" != "$remote_main"
+            git reset --hard "$remote_main" >/dev/null
+            printf 'rebuilt-two\n' > data/generated/snapshot.json
+            git add data/generated/snapshot.json
+            git commit -m rebuilt-two >/dev/null
+            candidate_sha="$(git rev-parse HEAD)"
+            git fetch origin main >/dev/null 2>&1
+            test "$(git rev-parse HEAD^)" = "$(git rev-parse origin/main)"
+            git push origin "$candidate_sha:main" >/dev/null 2>&1
+          )
+          git clone "$tmp/remote.git" "$tmp/verify" >/dev/null 2>&1
+          test "$(cat "$tmp/verify/data/generated/snapshot.json")" = "rebuilt-two"
+          test "$(cat "$tmp/verify/code.txt")" = "advance-two"
+          if grep -R -nE '^(<<<<<<<|=======|>>>>>>>)' "$tmp/verify" --exclude-dir=.git; then
+            echo "Conflict markers survived reset-and-rebuild persistence." >&2
+            exit 1
+          fi
+
+  refresh:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies
+        run: npm install --no-package-lock --no-audit --no-fund
+      - id: scope
+        name: Resolve rolling window scope
+        shell: bash
+        run: |
+          echo "scope=near" >> "$GITHUB_OUTPUT"
+          echo "days=3" >> "$GITHUB_OUTPUT"
+          echo "japan_date=$(TZ=Asia/Tokyo date +%F)" >> "$GITHUB_OUTPUT"
+          echo "Resolved scope=near days=3"
+      - name: Validate production refresh syntax
+        run: |
+          for file in scripts/timetable/*.mjs; do
+            node --check "$file"
+          done
+          node scripts/check-calendar-live-source-readiness.mjs
+          node scripts/check-calendar-refresh-publication-boundaries.mjs
+          node scripts/check-kra-window-bounds.mjs
+          node scripts/check-ireland-hri-fixtures-adapter.mjs
+          node scripts/check-peru-monterrico-adapter.mjs
+          node scripts/check-saudi-jcsa-adapter.mjs
+          node scripts/check-france-fnch-adapter.mjs
+          node scripts/check-new-zealand-official-adapter.mjs
+          node scripts/check-united-kingdom-bha-adapter.mjs
+          node scripts/check-slovakia-zavodisko-adapter.mjs
+          node scripts/check-bahrain-btc-adapter.mjs
+          node scripts/check-sweden-svensk-galopp-adapter.mjs
+          node scripts/check-germany-deutscher-galopp-adapter.mjs
+          node scripts/check-spain-zarzuela-adapter.mjs
+          node scripts/check-italy-masaf-adapter.mjs
+          node scripts/check-south-africa-race-coast-adapter.mjs
+          node scripts/check-south-africa-four-racing-adapter.mjs
+          node scripts/check-meeting-presence-contract.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs
+          node scripts/check-hkjc-non-running-evidence.mjs
+          node scripts/check-uae-era-non-running-evidence.mjs
+          node scripts/check-jra-non-running-evidence.mjs
+          node scripts/check-jra-non-running-discovery.mjs
+          node scripts/check-banei-non-running-evidence.mjs
+          node scripts/check-banei-non-running-discovery.mjs
+          node scripts/check-nar-non-running-evidence.mjs
+          node scripts/check-nar-non-running-discovery.mjs
+      - name: Refresh Japan official mother set and best available detail
+        run: |
+          node scripts/timetable/run-japan-zero-based-30d.mjs \
+            --execution-date="${{ steps.scope.outputs.japan_date }}" \
+            --scope="${{ steps.scope.outputs.scope }}"
+      - name: Re-apply frozen reviewed Calendar observations after Japan
+        run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
+      - name: Apply explicit meeting presence dispositions after Japan
+        run: |
+          node scripts/timetable/run-japan-non-running-evidence.mjs \
+            --as-of="${{ steps.scope.outputs.japan_date }}" \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/japan-non-running.json
+          node scripts/timetable/run-banei-non-running-evidence.mjs \
+            --as-of="${{ steps.scope.outputs.japan_date }}" \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/banei-non-running.json
+          node scripts/timetable/run-nar-non-running-evidence.mjs \
+            --as-of="${{ steps.scope.outputs.japan_date }}" \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/nar-non-running.json
+          node scripts/timetable/apply-meeting-presence-dispositions.mjs \
+            --artifact=.calendar-unified/japan-non-running.json \
+            --artifact=.calendar-unified/banei-non-running.json \
+            --artifact=.calendar-unified/nar-non-running.json
+          node scripts/check-confirmed-non-running-publication.mjs
+      - name: Validate Japan generated public site state
+        run: |
+          npm run validate:calendar-public-map-parity
+          npm run build
+      - name: Persist Japan official state before non-Japan collection
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          refresh_japan_on_main() {
+            local remote_main="$1"
+            echo "Resetting to latest main $remote_main and rebuilding Japan snapshot."
+            git reset --hard "$remote_main"
+            npm install --no-package-lock --no-audit --no-fund
+            node scripts/timetable/run-japan-zero-based-30d.mjs \
+              --execution-date="${{ steps.scope.outputs.japan_date }}" \
+              --scope="${{ steps.scope.outputs.scope }}"
+            node scripts/timetable/apply-reviewed-calendar-observations.mjs
+            node scripts/timetable/run-japan-non-running-evidence.mjs \
+              --as-of="${{ steps.scope.outputs.japan_date }}" \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/japan-non-running.json
+            node scripts/timetable/run-banei-non-running-evidence.mjs \
+              --as-of="${{ steps.scope.outputs.japan_date }}" \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/banei-non-running.json
+            node scripts/timetable/run-nar-non-running-evidence.mjs \
+              --as-of="${{ steps.scope.outputs.japan_date }}" \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/nar-non-running.json
+            node scripts/timetable/apply-meeting-presence-dispositions.mjs \
+              --artifact=.calendar-unified/japan-non-running.json \
+              --artifact=.calendar-unified/banei-non-running.json \
+              --artifact=.calendar-unified/nar-non-running.json
+            node scripts/check-confirmed-non-running-publication.mjs
+            npm run validate:calendar-public-map-parity
+            npm run build
+          }
+
+          stage_japan_state() {
+            git add \
+              data/generated/timetable/canonical/meetings.json \
+              data/generated/timetable/canonical/meeting-details.json \
+              data/generated/timetable/public/meeting-list.json \
+              data/generated/timetable/public/meeting-details.json
+            git add data/generated/timetable/japan-zero-based-30d-reconciliation.json 2>/dev/null || true
+            git add data/generated/timetable/japan-zero-based-3d-reconciliation.json 2>/dev/null || true
+            git add data/generated/timetable/meeting-presence.json 2>/dev/null || true
+          }
+
+          git fetch origin main
+          remote_main="$(git rev-parse origin/main)"
+          if [[ "$(git rev-parse HEAD)" != "$remote_main" ]]; then
+            refresh_japan_on_main "$remote_main"
+          fi
+
+          for attempt in 1 2 3; do
+            stage_japan_state
+            if git diff --cached --quiet; then
+              echo "No verified Japan timetable change to persist."
+              exit 0
+            fi
+
+            git commit -m "data: refresh Japan official timetable (${{ steps.scope.outputs.scope }})"
+            candidate_sha="$(git rev-parse HEAD)"
+            parent_sha="$(git rev-parse HEAD^)"
+
+            git fetch origin main
+            remote_main="$(git rev-parse origin/main)"
+            if [[ "$parent_sha" != "$remote_main" ]]; then
+              echo "main advanced before Japan push; rebuilding from $remote_main (attempt $attempt/3)."
+              refresh_japan_on_main "$remote_main"
+              continue
+            fi
+
+            if git push origin "$candidate_sha:main"; then
+              echo "Persisted Japan snapshot from latest main on attempt $attempt/3."
+              exit 0
+            fi
+
+            git fetch origin main
+            remote_main="$(git rev-parse origin/main)"
+            if [[ "$remote_main" != "$parent_sha" ]]; then
+              echo "main advanced during Japan push; rebuilding from $remote_main (attempt $attempt/3)."
+              refresh_japan_on_main "$remote_main"
+              continue
+            fi
+
+            echo "Japan push failed even though main did not advance." >&2
+            exit 1
+          done
+
+          echo "Japan persistence exhausted 3 bounded rebuild attempts." >&2
+          exit 1
+      - name: Collect HKJC official window
+        run: |
+          mkdir -p .calendar-unified
+          node scripts/timetable/run-hkjc-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/hkjc.json
+      - name: Collect UAE official window
+        run: |
+          node scripts/timetable/run-uae-era-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/uae.json
+      - name: Collect KRA official window
+        run: |
+          node scripts/timetable/run-kra-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/kra.json
+      - name: Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France, New Zealand, United Kingdom, Slovakia, Bahrain, Sweden, Germany, Spain, Italy and South Africa official windows
+        run: |
+          node scripts/timetable/run-tjk-current-best-available.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/tjk.json
+          node scripts/timetable/run-sorec-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/sorec.json
+          node scripts/timetable/run-chile-teletrak-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/chile.json
+          node scripts/timetable/run-ireland-hri-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/ireland.json
+          node scripts/timetable/run-peru-monterrico-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/peru.json
+          node scripts/timetable/run-saudi-jcsa-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/saudi-arabia.json
+          node scripts/timetable/run-france-fnch-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --galop-output=.calendar-unified/france-galop.json \
+            --letrot-output=.calendar-unified/france-letrot.json
+          node scripts/timetable/run-new-zealand-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --thoroughbred-output=.calendar-unified/new-zealand-thoroughbred.json \
+            --harness-output=.calendar-unified/new-zealand-harness.json
+          node scripts/timetable/run-united-kingdom-bha-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/united-kingdom.json
+          node scripts/timetable/run-slovakia-zavodisko-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/slovakia.json
+          node scripts/timetable/run-bahrain-btc-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/bahrain.json
+          node scripts/timetable/run-sweden-svensk-galopp-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/sweden.json
+          node scripts/timetable/run-germany-deutscher-galopp-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/germany.json
+          node scripts/timetable/run-spain-zarzuela-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/spain.json
+          node scripts/timetable/run-italy-masaf-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --gallop-output=.calendar-unified/italy-gallop.json \
+            --trot-output=.calendar-unified/italy-trot.json
+          node scripts/timetable/run-south-africa-race-coast-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/south-africa-race-coast.json
+          node scripts/timetable/run-south-africa-four-racing-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/south-africa-four-racing.json
+      - name: Enforce reviewed Calendar exclusions
+        run: |
+          node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
+            --artifact=.calendar-unified/hkjc.json \
+            --artifact=.calendar-unified/uae.json \
+            --artifact=.calendar-unified/kra.json \
+            --artifact=.calendar-unified/tjk.json \
+            --artifact=.calendar-unified/sorec.json \
+            --artifact=.calendar-unified/chile.json \
+            --artifact=.calendar-unified/ireland.json \
+            --artifact=.calendar-unified/peru.json \
+            --artifact=.calendar-unified/saudi-arabia.json \
+            --artifact=.calendar-unified/france-galop.json \
+            --artifact=.calendar-unified/france-letrot.json \
+            --artifact=.calendar-unified/new-zealand-thoroughbred.json \
+            --artifact=.calendar-unified/new-zealand-harness.json \
+            --artifact=.calendar-unified/united-kingdom.json \
+            --artifact=.calendar-unified/slovakia.json \
+            --artifact=.calendar-unified/bahrain.json \
+            --artifact=.calendar-unified/sweden.json \
+            --artifact=.calendar-unified/germany.json \
+            --artifact=.calendar-unified/spain.json \
+            --artifact=.calendar-unified/italy-gallop.json \
+            --artifact=.calendar-unified/italy-trot.json \
+            --artifact=.calendar-unified/south-africa-race-coast.json \
+            --artifact=.calendar-unified/south-africa-four-racing.json
+      - name: Apply non-Japan official observations monotonically
+        run: |
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/hkjc.json \
+            --country-id=hong-kong \
+            --authority-id=hkjc \
+            --racing-system-id=hong-kong-hkjc-system \
+            --timezone=Asia/Hong_Kong
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/uae.json \
+            --country-id=united-arab-emirates \
+            --authority-id=emirates-racing-authority \
+            --racing-system-id=uae-national-racing-system \
+            --timezone=Asia/Dubai
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/kra.json \
+            --country-id=south-korea \
+            --authority-id=korea-racing-authority \
+            --racing-system-id=kra-national-racing-system \
+            --timezone=Asia/Seoul
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/tjk.json \
+            --country-id=turkey \
+            --authority-id=turkiye-jokey-kulubu \
+            --racing-system-id=tjk-national-racing-system \
+            --timezone=Europe/Istanbul
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/sorec.json \
+            --country-id=morocco \
+            --authority-id=sorec \
+            --racing-system-id=sorec-racing-information-system \
+            --timezone=Africa/Casablanca
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/chile.json \
+            --country-id=chile \
+            --authority-id=teletrak-chile \
+            --racing-system-id=chile-teletrak-racing-system \
+            --timezone=America/Santiago
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/ireland.json \
+            --country-id=ireland \
+            --authority-id=horse-racing-ireland \
+            --racing-system-id=ireland-hri-racing-system \
+            --timezone=Europe/Dublin
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/peru.json \
+            --country-id=peru \
+            --authority-id=hipodromo-de-monterrico \
+            --racing-system-id=peru-monterrico-programme-system \
+            --timezone=America/Lima
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/saudi-arabia.json \
+            --country-id=saudi-arabia \
+            --authority-id=jockey-club-of-saudi-arabia \
+            --racing-system-id=saudi-arabia-jcsa-system \
+            --timezone=Asia/Riyadh
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/france-galop.json \
+            --country-id=france \
+            --authority-id=france-galop \
+            --racing-system-id=france-france-galop-system \
+            --timezone=Europe/Paris
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/france-letrot.json \
+            --country-id=france \
+            --authority-id=letrot \
+            --racing-system-id=france-letrot-system \
+            --timezone=Europe/Paris
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/new-zealand-thoroughbred.json \
+            --country-id=new-zealand \
+            --authority-id=new-zealand-thoroughbred-racing \
+            --racing-system-id=new-zealand-thoroughbred-system \
+            --timezone=Pacific/Auckland
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/new-zealand-harness.json \
+            --country-id=new-zealand \
+            --authority-id=harness-racing-new-zealand \
+            --racing-system-id=new-zealand-harness-system \
+            --timezone=Pacific/Auckland
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/united-kingdom.json \
+            --country-id=united-kingdom \
+            --authority-id=british-horseracing-authority \
+            --racing-system-id=united-kingdom-bha-system \
+            --timezone=Europe/London
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/slovakia.json \
+            --country-id=slovakia \
+            --authority-id=zavodisko \
+            --racing-system-id=slovakia-zavodisko-system \
+            --timezone=Europe/Bratislava
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/bahrain.json \
+            --country-id=bahrain \
+            --authority-id=bahrain-turf-club \
+            --racing-system-id=bahrain-turf-club-system \
+            --timezone=Asia/Bahrain
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/sweden.json \
+            --country-id=sweden \
+            --authority-id=svensk-galopp \
+            --racing-system-id=sweden-svensk-galopp-system \
+            --timezone=Europe/Stockholm
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/germany.json \
+            --country-id=germany \
+            --authority-id=deutscher-galopp \
+            --racing-system-id=germany-deutscher-galopp-system \
+            --timezone=Europe/Berlin
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/spain.json \
+            --country-id=spain \
+            --authority-id=hipodromo-zarzuela \
+            --racing-system-id=spain-reviewed-gallop-system \
+            --timezone=Europe/Madrid
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/italy-gallop.json \
+            --country-id=italy \
+            --authority-id=masaf \
+            --racing-system-id=italy-masaf-gallop-system \
+            --timezone=Europe/Rome
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/italy-trot.json \
+            --country-id=italy \
+            --authority-id=masaf \
+            --racing-system-id=italy-masaf-trot-system \
+            --timezone=Europe/Rome
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/south-africa-race-coast.json \
+            --country-id=south-africa \
+            --authority-id=race-coast \
+            --racing-system-id=south-africa-race-coast-system \
+            --timezone=Africa/Johannesburg
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/south-africa-four-racing.json \
+            --country-id=south-africa \
+            --authority-id=four-racing \
+            --racing-system-id=south-africa-4racing-system \
+            --timezone=Africa/Johannesburg
+      - name: Re-apply frozen reviewed Calendar observations
+        run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
+      - name: Apply explicit meeting presence dispositions
+        run: |
+          node scripts/timetable/apply-meeting-presence-dispositions.mjs \
+            --artifact=.calendar-unified/hkjc.json \
+            --artifact=.calendar-unified/uae.json \
+            --artifact=.calendar-unified/kra.json \
+            --artifact=.calendar-unified/tjk.json \
+            --artifact=.calendar-unified/sorec.json \
+            --artifact=.calendar-unified/chile.json \
+            --artifact=.calendar-unified/ireland.json \
+            --artifact=.calendar-unified/peru.json \
+            --artifact=.calendar-unified/france-galop.json \
+            --artifact=.calendar-unified/france-letrot.json \
+            --artifact=.calendar-unified/new-zealand-thoroughbred.json \
+            --artifact=.calendar-unified/new-zealand-harness.json \
+            --artifact=.calendar-unified/united-kingdom.json
+          node scripts/check-confirmed-non-running-publication.mjs
+      - name: Validate generated public site state
+        run: |
+          npm run validate:calendar-public-map-parity
+          npm run build
+      - name: Persist remaining canonical and public rolling state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          refresh_non_japan_on_main() {
+            local remote_main="$1"
+            echo "Resetting to latest main $remote_main and rebuilding non-Japan snapshot."
+            git reset --hard "$remote_main"
+            npm install --no-package-lock --no-audit --no-fund
+            rm -rf .calendar-unified
+            mkdir -p .calendar-unified
+            node scripts/timetable/run-hkjc-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/hkjc.json
+            node scripts/timetable/run-uae-era-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/uae.json
+            node scripts/timetable/run-kra-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/kra.json
+            node scripts/timetable/run-tjk-current-best-available.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/tjk.json
+            node scripts/timetable/run-sorec-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/sorec.json
+            node scripts/timetable/run-chile-teletrak-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/chile.json
+            node scripts/timetable/run-ireland-hri-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/ireland.json
+            node scripts/timetable/run-peru-monterrico-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/peru.json
+            node scripts/timetable/run-saudi-jcsa-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/saudi-arabia.json
+            node scripts/timetable/run-france-fnch-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --galop-output=.calendar-unified/france-galop.json \
+              --letrot-output=.calendar-unified/france-letrot.json
+            node scripts/timetable/run-new-zealand-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --thoroughbred-output=.calendar-unified/new-zealand-thoroughbred.json \
+              --harness-output=.calendar-unified/new-zealand-harness.json
+            node scripts/timetable/run-united-kingdom-bha-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/united-kingdom.json
+            node scripts/timetable/run-slovakia-zavodisko-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/slovakia.json
+            node scripts/timetable/run-bahrain-btc-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/bahrain.json
+            node scripts/timetable/run-sweden-svensk-galopp-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/sweden.json
+            node scripts/timetable/run-germany-deutscher-galopp-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/germany.json
+            node scripts/timetable/run-spain-zarzuela-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/spain.json
+            node scripts/timetable/run-italy-masaf-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --gallop-output=.calendar-unified/italy-gallop.json \
+              --trot-output=.calendar-unified/italy-trot.json
+            node scripts/timetable/run-south-africa-race-coast-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/south-africa-race-coast.json
+            node scripts/timetable/run-south-africa-four-racing-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/south-africa-four-racing.json
+            node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
+              --artifact=.calendar-unified/hkjc.json \
+              --artifact=.calendar-unified/uae.json \
+              --artifact=.calendar-unified/kra.json \
+              --artifact=.calendar-unified/tjk.json \
+              --artifact=.calendar-unified/sorec.json \
+              --artifact=.calendar-unified/chile.json \
+              --artifact=.calendar-unified/ireland.json \
+              --artifact=.calendar-unified/peru.json \
+              --artifact=.calendar-unified/saudi-arabia.json \
+              --artifact=.calendar-unified/france-galop.json \
+              --artifact=.calendar-unified/france-letrot.json \
+              --artifact=.calendar-unified/new-zealand-thoroughbred.json \
+              --artifact=.calendar-unified/new-zealand-harness.json \
+              --artifact=.calendar-unified/united-kingdom.json \
+              --artifact=.calendar-unified/slovakia.json \
+              --artifact=.calendar-unified/bahrain.json \
+              --artifact=.calendar-unified/sweden.json \
+              --artifact=.calendar-unified/germany.json \
+              --artifact=.calendar-unified/spain.json \
+              --artifact=.calendar-unified/italy-gallop.json \
+              --artifact=.calendar-unified/italy-trot.json \
+              --artifact=.calendar-unified/south-africa-race-coast.json \
+              --artifact=.calendar-unified/south-africa-four-racing.json
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/hkjc.json \
+              --country-id=hong-kong \
+              --authority-id=hkjc \
+              --racing-system-id=hong-kong-hkjc-system \
+              --timezone=Asia/Hong_Kong
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/uae.json \
+              --country-id=united-arab-emirates \
+              --authority-id=emirates-racing-authority \
+              --racing-system-id=uae-national-racing-system \
+              --timezone=Asia/Dubai
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/kra.json \
+              --country-id=south-korea \
+              --authority-id=korea-racing-authority \
+              --racing-system-id=kra-national-racing-system \
+              --timezone=Asia/Seoul
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/tjk.json \
+              --country-id=turkey \
+              --authority-id=turkiye-jokey-kulubu \
+              --racing-system-id=tjk-national-racing-system \
+              --timezone=Europe/Istanbul
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/sorec.json \
+              --country-id=morocco \
+              --authority-id=sorec \
+              --racing-system-id=sorec-racing-information-system \
+              --timezone=Africa/Casablanca
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/chile.json \
+              --country-id=chile \
+              --authority-id=teletrak-chile \
+              --racing-system-id=chile-teletrak-racing-system \
+              --timezone=America/Santiago
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/ireland.json \
+              --country-id=ireland \
+              --authority-id=horse-racing-ireland \
+              --racing-system-id=ireland-hri-racing-system \
+              --timezone=Europe/Dublin
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/peru.json \
+              --country-id=peru \
+              --authority-id=hipodromo-de-monterrico \
+              --racing-system-id=peru-monterrico-programme-system \
+              --timezone=America/Lima
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/saudi-arabia.json \
+              --country-id=saudi-arabia \
+              --authority-id=jockey-club-of-saudi-arabia \
+              --racing-system-id=saudi-arabia-jcsa-system \
+              --timezone=Asia/Riyadh
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/france-galop.json \
+              --country-id=france \
+              --authority-id=france-galop \
+              --racing-system-id=france-france-galop-system \
+              --timezone=Europe/Paris
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/france-letrot.json \
+              --country-id=france \
+              --authority-id=letrot \
+              --racing-system-id=france-letrot-system \
+              --timezone=Europe/Paris
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/new-zealand-thoroughbred.json \
+              --country-id=new-zealand \
+              --authority-id=new-zealand-thoroughbred-racing \
+              --racing-system-id=new-zealand-thoroughbred-system \
+              --timezone=Pacific/Auckland
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/new-zealand-harness.json \
+              --country-id=new-zealand \
+              --authority-id=harness-racing-new-zealand \
+              --racing-system-id=new-zealand-harness-system \
+              --timezone=Pacific/Auckland
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/united-kingdom.json \
+              --country-id=united-kingdom \
+              --authority-id=british-horseracing-authority \
+              --racing-system-id=united-kingdom-bha-system \
+              --timezone=Europe/London
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/slovakia.json \
+              --country-id=slovakia \
+              --authority-id=zavodisko \
+              --racing-system-id=slovakia-zavodisko-system \
+              --timezone=Europe/Bratislava
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/bahrain.json \
+              --country-id=bahrain \
+              --authority-id=bahrain-turf-club \
+              --racing-system-id=bahrain-turf-club-system \
+              --timezone=Asia/Bahrain
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/sweden.json \
+              --country-id=sweden \
+              --authority-id=svensk-galopp \
+              --racing-system-id=sweden-svensk-galopp-system \
+              --timezone=Europe/Stockholm
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/germany.json \
+              --country-id=germany \
+              --authority-id=deutscher-galopp \
+              --racing-system-id=germany-deutscher-galopp-system \
+              --timezone=Europe/Berlin
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/spain.json \
+              --country-id=spain \
+              --authority-id=hipodromo-zarzuela \
+              --racing-system-id=spain-reviewed-gallop-system \
+              --timezone=Europe/Madrid
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/italy-gallop.json \
+              --country-id=italy \
+              --authority-id=masaf \
+              --racing-system-id=italy-masaf-gallop-system \
+              --timezone=Europe/Rome
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/italy-trot.json \
+              --country-id=italy \
+              --authority-id=masaf \
+              --racing-system-id=italy-masaf-trot-system \
+              --timezone=Europe/Rome
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/south-africa-race-coast.json \
+              --country-id=south-africa \
+              --authority-id=race-coast \
+              --racing-system-id=south-africa-race-coast-system \
+              --timezone=Africa/Johannesburg
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/south-africa-four-racing.json \
+              --country-id=south-africa \
+              --authority-id=four-racing \
+              --racing-system-id=south-africa-4racing-system \
+              --timezone=Africa/Johannesburg
+            node scripts/timetable/apply-reviewed-calendar-observations.mjs
+            node scripts/timetable/apply-meeting-presence-dispositions.mjs \
+            --artifact=.calendar-unified/hkjc.json \
+            --artifact=.calendar-unified/uae.json \
+            --artifact=.calendar-unified/kra.json \
+            --artifact=.calendar-unified/tjk.json \
+            --artifact=.calendar-unified/sorec.json \
+            --artifact=.calendar-unified/chile.json \
+            --artifact=.calendar-unified/ireland.json \
+            --artifact=.calendar-unified/peru.json \
+            --artifact=.calendar-unified/france-galop.json \
+            --artifact=.calendar-unified/france-letrot.json \
+            --artifact=.calendar-unified/new-zealand-thoroughbred.json \
+            --artifact=.calendar-unified/new-zealand-harness.json \
+            --artifact=.calendar-unified/united-kingdom.json
+            node scripts/check-confirmed-non-running-publication.mjs
+            npm run validate:calendar-public-map-parity
+            npm run build
+          }
+
+          stage_remaining_state() {
+            git add \
+              data/generated/timetable/canonical/meetings.json \
+              data/generated/timetable/canonical/meeting-details.json \
+              data/generated/timetable/public/meeting-list.json \
+              data/generated/timetable/public/meeting-details.json
+            git add data/generated/timetable/japan-zero-based-30d-reconciliation.json 2>/dev/null || true
+            git add data/generated/timetable/japan-zero-based-3d-reconciliation.json 2>/dev/null || true
+            git add data/generated/timetable/meeting-presence.json 2>/dev/null || true
+          }
+
+          git fetch origin main
+          remote_main="$(git rev-parse origin/main)"
+          if [[ "$(git rev-parse HEAD)" != "$remote_main" ]]; then
+            refresh_non_japan_on_main "$remote_main"
+          fi
+
+          for attempt in 1 2 3; do
+            stage_remaining_state
+            if git diff --cached --quiet; then
+              echo "No verified timetable change to persist."
+              exit 0
+            fi
+
+            git commit -m "data: refresh unified official rolling timetable (${{ steps.scope.outputs.scope }})"
+            candidate_sha="$(git rev-parse HEAD)"
+            parent_sha="$(git rev-parse HEAD^)"
+
+            git fetch origin main
+            remote_main="$(git rev-parse origin/main)"
+            if [[ "$parent_sha" != "$remote_main" ]]; then
+              echo "main advanced before rolling-state push; rebuilding from $remote_main (attempt $attempt/3)."
+              refresh_non_japan_on_main "$remote_main"
+              continue
+            fi
+
+            if git push origin "$candidate_sha:main"; then
+              echo "Persisted rolling snapshot from latest main on attempt $attempt/3."
+              exit 0
+            fi
+
+            git fetch origin main
+            remote_main="$(git rev-parse origin/main)"
+            if [[ "$remote_main" != "$parent_sha" ]]; then
+              echo "main advanced during rolling-state push; rebuilding from $remote_main (attempt $attempt/3)."
+              refresh_non_japan_on_main "$remote_main"
+              continue
+            fi
+
+            echo "Rolling-state push failed even though main did not advance." >&2
+            exit 1
+          done
+
+          echo "Rolling-state persistence exhausted 3 bounded rebuild attempts." >&2
+          exit 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: calendar-unified-official-refresh-${{ github.run_id }}
+          include-hidden-files: true
+          retention-days: 14
+          path: |
+            .calendar-unified/
+            data/generated/timetable/japan-zero-based-30d-reconciliation.json
+            data/generated/timetable/japan-zero-based-3d-reconciliation.json
+            data/generated/timetable/meeting-presence.json
