@@ -53,7 +53,7 @@ assert.match(runnerSource,/meetingPageCache/,'Zarzuela fallback discovery must r
 if(process.env.GITHUB_ACTIONS==='true'){
   const liveOutput='.spain-zarzuela-live-'+process.pid+'.json';
   try{
-    execFileSync(process.execPath,[
+    const stdout=execFileSync(process.execPath,[
       'scripts/timetable/run-spain-zarzuela-official-window.mjs',
       '--as-of=2026-09-26',
       '--days=3',
