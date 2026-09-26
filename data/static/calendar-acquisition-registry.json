@@ -462,9 +462,9 @@
       "primary_runner": "github_actions",
       "fallback_runner": null,
       "schedule_source_id": "zavodisko-2026-calendar",
-      "detail_source_id": null,
+      "detail_source_id": "zavodisko-2026-calendar",
       "schedule_adapter_id": "slovakia-zavodisko-calendar-b-v1",
-      "detail_adapter_id": null,
+      "detail_adapter_id": "slovakia-zavodisko-calendar-b-v1",
       "technical_capability_rank": "B",
       "collection_target_rank": "best_available",
       "public_ceiling": "B",
@@ -478,7 +478,7 @@
       "supports_source_visible_horizon": true,
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
-      "operator_notes": "GitHub Actions reads the official Závodisko 2026 national calendar and emits meeting date, verified timetable identity and official first-race time through B. No reusable full-calendar last-race/detail route is currently production-connected, so B is the declared technical capability until such a route is independently verified. Source failure preserves stronger verified state and never confirms non-running."
+      "operator_notes": "GitHub Actions reads the official Závodisko 2026 national calendar and emits meeting date, verified timetable identity and official first-race time through B. The same reviewed calendar adapter supplies the implemented detail level; no stronger reusable full-calendar route is currently claimed. Source failure preserves stronger verified state and never confirms non-running."
     },
     {
       "system_id": "bahrain-turf-club-system",
