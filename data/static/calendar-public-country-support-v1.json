@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-public-country-support-v1",
-  "reviewed_at": "2026-09-25",
+  "reviewed_at": "2026-09-26",
   "basis": "Countries currently wired into the production Calendar unified official refresh on main. Japan uses the official mother-set path; non-Japan countries use official rolling-window collectors and monotonic public observation application.",
   "source_ref": ".github/workflows/calendar-unified-official-refresh.yml",
   "countries": [
@@ -108,6 +108,11 @@
       "country_id": "panama",
       "calendar_supported": true,
       "acquisition_key": "panama-presidente-remon-official-window"
+    },
+    {
+      "country_id": "brazil",
+      "calendar_supported": true,
+      "acquisition_key": "brazil-jcb-current-meetings-window"
     }
   ]
 }

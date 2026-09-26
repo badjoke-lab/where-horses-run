@@ -20,10 +20,13 @@ on:
       - 'scripts/check-south-africa-race-coast-adapter.mjs'
       - 'scripts/check-south-africa-four-racing-adapter.mjs'
       - 'scripts/check-panama-presidente-remon-adapter.mjs'
+      - 'scripts/check-brazil-jcb-current-meetings-adapter.mjs'
       - 'scripts/timetable/south-africa-four-racing-core.mjs'
       - 'scripts/timetable/run-south-africa-four-racing-official-window.mjs'
       - 'scripts/timetable/panama-presidente-remon-core.mjs'
       - 'scripts/timetable/run-panama-presidente-remon-official-window.mjs'
+      - 'scripts/timetable/brazil-jcb-current-meetings-core.mjs'
+      - 'scripts/timetable/run-brazil-jcb-current-meetings-window.mjs'
       - 'scripts/timetable/italy-masaf-core.mjs'
       - 'scripts/timetable/run-italy-masaf-official-window.mjs'
       - 'scripts/check-calendar-public-map-parity.mjs'
@@ -82,10 +85,13 @@ on:
       - 'scripts/check-south-africa-race-coast-adapter.mjs'
       - 'scripts/check-south-africa-four-racing-adapter.mjs'
       - 'scripts/check-panama-presidente-remon-adapter.mjs'
+      - 'scripts/check-brazil-jcb-current-meetings-adapter.mjs'
       - 'scripts/timetable/south-africa-four-racing-core.mjs'
       - 'scripts/timetable/run-south-africa-four-racing-official-window.mjs'
       - 'scripts/timetable/panama-presidente-remon-core.mjs'
       - 'scripts/timetable/run-panama-presidente-remon-official-window.mjs'
+      - 'scripts/timetable/brazil-jcb-current-meetings-core.mjs'
+      - 'scripts/timetable/run-brazil-jcb-current-meetings-window.mjs'
       - 'scripts/timetable/italy-masaf-core.mjs'
       - 'scripts/timetable/run-italy-masaf-official-window.mjs'
       - 'scripts/check-calendar-public-map-parity.mjs'
@@ -162,6 +168,7 @@ jobs:
           node scripts/check-south-africa-race-coast-adapter.mjs
           node scripts/check-south-africa-four-racing-adapter.mjs
           node scripts/check-panama-presidente-remon-adapter.mjs
+          node scripts/check-brazil-jcb-current-meetings-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
@@ -331,6 +338,7 @@ jobs:
           node scripts/check-south-africa-race-coast-adapter.mjs
           node scripts/check-south-africa-four-racing-adapter.mjs
           node scripts/check-panama-presidente-remon-adapter.mjs
+          node scripts/check-brazil-jcb-current-meetings-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
@@ -538,6 +546,10 @@ jobs:
           node scripts/timetable/run-panama-presidente-remon-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/panama.json
+          node scripts/timetable/run-brazil-jcb-current-meetings-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --gavea-output=.calendar-unified/brazil-gavea.json \
+            --cristal-output=.calendar-unified/brazil-cristal.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -564,7 +576,9 @@ jobs:
             --artifact=.calendar-unified/italy-trot.json \
             --artifact=.calendar-unified/south-africa-race-coast.json \
             --artifact=.calendar-unified/south-africa-four-racing.json \
-            --artifact=.calendar-unified/panama.json
+            --artifact=.calendar-unified/panama.json \
+            --artifact=.calendar-unified/brazil-gavea.json \
+            --artifact=.calendar-unified/brazil-cristal.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -711,6 +725,18 @@ jobs:
             --authority-id=hipica-de-panama \
             --racing-system-id=presidente-remon-racing-system \
             --timezone=America/Panama
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/brazil-gavea.json \
+            --country-id=brazil \
+            --authority-id=jockey-club-brasileiro \
+            --racing-system-id=brazil-gavea-system \
+            --timezone=America/Sao_Paulo
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/brazil-cristal.json \
+            --country-id=brazil \
+            --authority-id=jockey-club-do-rio-grande-do-sul \
+            --racing-system-id=brazil-cristal-system \
+            --timezone=America/Sao_Paulo
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
@@ -814,6 +840,10 @@ jobs:
             node scripts/timetable/run-panama-presidente-remon-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/panama.json
+            node scripts/timetable/run-brazil-jcb-current-meetings-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --gavea-output=.calendar-unified/brazil-gavea.json \
+              --cristal-output=.calendar-unified/brazil-cristal.json
             node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --artifact=.calendar-unified/uae.json \
@@ -838,7 +868,9 @@ jobs:
               --artifact=.calendar-unified/italy-trot.json \
               --artifact=.calendar-unified/south-africa-race-coast.json \
               --artifact=.calendar-unified/south-africa-four-racing.json \
-            --artifact=.calendar-unified/panama.json
+            --artifact=.calendar-unified/panama.json \
+            --artifact=.calendar-unified/brazil-gavea.json \
+            --artifact=.calendar-unified/brazil-cristal.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --country-id=hong-kong \
@@ -983,6 +1015,18 @@ jobs:
               --authority-id=hipica-de-panama \
               --racing-system-id=presidente-remon-racing-system \
               --timezone=America/Panama
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/brazil-gavea.json \
+              --country-id=brazil \
+              --authority-id=jockey-club-brasileiro \
+              --racing-system-id=brazil-gavea-system \
+              --timezone=America/Sao_Paulo
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/brazil-cristal.json \
+              --country-id=brazil \
+              --authority-id=jockey-club-do-rio-grande-do-sul \
+              --racing-system-id=brazil-cristal-system \
+              --timezone=America/Sao_Paulo
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
             node scripts/timetable/apply-meeting-presence-dispositions.mjs \
             --artifact=.calendar-unified/hkjc.json \
