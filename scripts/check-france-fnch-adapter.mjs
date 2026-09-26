@@ -1,6 +1,4 @@
 import fs from 'node:fs';
-import os from 'node:os';
-import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import assert from 'node:assert/strict';
@@ -152,19 +150,18 @@ if(process.env.GITHUB_ACTIONS==='true'){
             }
             if(line) out.push(line);
           }
-          let popplerHeaders=[];
-          const temp=path.join(os.tmpdir(),'whr-france-debug-'+process.pid+'.pdf');
-          try{
-            fs.writeFileSync(temp,bytes);
-            const poppler=execFileSync('pdftotext',['-layout',temp,'-'],{encoding:'utf8',maxBuffer:16*1024*1024,timeout:20000});
-            popplerHeaders=[...poppler.normalize('NFD').replace(/[\u0300-\u036f]/g,'').matchAll(/\b(\d{1,2})\s*(?:e|er|re|ere|eme)?\s*course\s*[–—-]\s*depart\s*:\s*(\d{1,2})\s*h\.?\s*(\d{2})/gi)].map(m=>({race:Number(m[1]),time:m[2]+':'+m[3]}));
-          }catch(error){
-            popplerHeaders=[{error:String(error?.message??error)}];
-          }finally{
-            fs.rmSync(temp,{force:true});
+          const rawHeaderItems=[];
+          for(let pageNumber=1;pageNumber<=Math.min(pdf.numPages,4);pageNumber+=1){
+            const page=await pdf.getPage(pageNumber);
+            const content=await page.getTextContent();
+            for(const item of content.items){
+              if(!('str' in item)) continue;
+              const value=String(item.str??'').replace(/\s+/g,' ').trim();
+              if(/course|d[ée]part/i.test(value)) rawHeaderItems.push({page:pageNumber,x:item.transform?.[4]??null,y:item.transform?.[5]??null,value});
+            }
           }
           const pdfjsHeaders=out.filter(line=>/Course\s*[–—-]\s*Départ/i.test(line));
-          console.log('FRANCE_PARSE_TEXT:',JSON.stringify({source_url:failure.source_url,pdfjs_headers:pdfjsHeaders,poppler_headers:popplerHeaders}));
+          console.log('FRANCE_PARSE_TEXT:',JSON.stringify({source_url:failure.source_url,pdfjs_headers:pdfjsHeaders,raw_header_items:rawHeaderItems.slice(0,80)}));
         }catch(error){
           console.log('FRANCE_PARSE_TEXT:',JSON.stringify({source_url:failure.source_url,error:String(error?.message??error)}));
         }
