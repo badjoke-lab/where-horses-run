@@ -67,31 +67,14 @@ if(annualStatus!=='success'){
 }
 
 const scheduleRows=annualRows.filter((row)=>inWindow(row.date,start,end));
-const records=[];
-for(const row of scheduleRows){
-  const url=zarzuelaMeetingUrl(row.date);
-  try{
-    let cached=meetingPageCache.get(row.date);
-    if(!cached){
-      const fetched=await getHtml(url);
-      if(fetched.status===404){records.push(buildZarzuelaMeetingRecord(row,[],{checkedAt:generatedAt,detailStatus:'not_published',detailUrl:url}));continue;}
-      cached={fetched,parsed:parseZarzuelaMeetingHtml(fetched.html,{date:row.date,sourceUrl:fetched.url})};
-    }
-    const {fetched,parsed}=cached;
-    parseFailures.push(...parsed.parse_failures.map((x)=>({...x,stage:'meeting_html',source_url:fetched.url})));
-    records.push(buildZarzuelaMeetingRecord(row,parsed.race_rows,{checkedAt:generatedAt,detailStatus:parsed.status,detailUrl:fetched.url}));
-  }catch(error){
-    const record=buildZarzuelaMeetingRecord(row,[],{checkedAt:generatedAt,detailStatus:'source_error',detailUrl:url});
-    record.acquisition_attempt.status='source_error';
-    record.acquisition_attempt.error_code='meeting_page_fetch_failed';
-    record.acquisition_completion={disposition:'retry_required',observed_rank:record.capability_rank,technical_capability_rank:'A',higher_rank_open:true,reason:'Zarzuela meeting-page acquisition failed; verified C schedule state is preserved.'};
-    records.push(record);
-    sourceErrors.push({stage:'meeting_html',date:row.date,source_url:url,error:String(error?.message??error)});
-  }
-}
+const records=scheduleRows.map((row)=>buildZarzuelaMeetingRecord(row,[],{
+  checkedAt:generatedAt,
+  detailStatus:'available',
+  detailUrl:null,
+}));
 const rankCounts=Object.fromEntries(['C','B','B+','A','A+'].map((rank)=>[rank,records.filter((r)=>r.capability_rank===rank).length]));
 const completionCounts=Object.fromEntries(['promoted','complete_current_best_available','pending_publication','retry_required','implementation_gap','not_applicable'].map((name)=>[name,records.filter((r)=>r.acquisition_completion?.disposition===name).length]));
 const scheduleRecovered=annualStatus==='success'||annualStatus==='meeting_page_fallback';
-const artifact={schema_version:'spain-zarzuela-official-window-candidates-v1',generated_at:generatedAt,country_id:'spain',authority_id:SPAIN_AUTHORITY_ID,racing_system_id:SPAIN_SYSTEM_ID,timezone:SPAIN_TIMEZONE,source_id:SPAIN_SOURCE_ID,detail_source_id:SPAIN_SOURCE_ID,collection_target_rank:'best_available',raw_body_retained:false,acquisition_attempt:{attempted_at:generatedAt,status:scheduleRecovered?'success':'network_error',source_id:SPAIN_SOURCE_ID,route_id:annualStatus==='meeting_page_fallback'?'zarzuela-meeting-page-schedule-fallback':'zarzuela-autumn-programme-pdf',error_code:scheduleRecovered?null:'programme_fetch_failed'},discovery:{method:annualStatus==='meeting_page_fallback'?'official_date_specific_meeting_pages_schedule_fallback':'official_autumn_programme_pdf_plus_date_specific_meeting_pages',schedule_source_url:annualStatus==='meeting_page_fallback'?zarzuelaMeetingUrl(start):scheduleSourceUrl,annual_rows:annualRows.length,rank_counts:rankCounts,completion_counts:completionCounts},window:{start_date:start,end_date_exclusive:end,days,coverage_claim:annualStatus==='success'?'official_season_programme_mother_set':annualStatus==='meeting_page_fallback'?'official_meeting_page_source_visible_horizon':'acquisition_failed_preserve_verified_state',coverage_note:'The Jockey Club Español-approved Hipódromo de la Zarzuela autumn programme is the preferred meeting mother set, with the organizer-hosted copies retained as equivalent official fallbacks. If that document is unavailable, date-specific official jornada pages are probed across the requested window and source-visible meetings are recovered directly. Complete meeting pages may provide per-race post times through A. Unpublished details remain C/pending. Wider Spanish venue and racing-code coverage is not claimed. Source absence or failure never proves non-running.'},records,diagnostics:{source_errors:sourceErrors,parse_failures:parseFailures,annual_source_status:annualStatus}};
+const artifact={schema_version:'spain-zarzuela-official-window-candidates-v1',generated_at:generatedAt,country_id:'spain',authority_id:SPAIN_AUTHORITY_ID,racing_system_id:SPAIN_SYSTEM_ID,timezone:SPAIN_TIMEZONE,source_id:SPAIN_SOURCE_ID,detail_source_id:SPAIN_SOURCE_ID,collection_target_rank:'best_available',raw_body_retained:false,acquisition_attempt:{attempted_at:generatedAt,status:scheduleRecovered?'success':'network_error',source_id:SPAIN_SOURCE_ID,route_id:annualStatus==='meeting_page_fallback'?'zarzuela-meeting-page-schedule-fallback':'zarzuela-autumn-programme-pdf',error_code:scheduleRecovered?null:'programme_fetch_failed'},discovery:{method:annualStatus==='meeting_page_fallback'?'official_date_specific_meeting_pages_schedule_fallback':'official_autumn_programme_pdf_plus_date_specific_meeting_pages',schedule_source_url:annualStatus==='meeting_page_fallback'?zarzuelaMeetingUrl(start):scheduleSourceUrl,annual_rows:annualRows.length,rank_counts:rankCounts,completion_counts:completionCounts},window:{start_date:start,end_date_exclusive:end,days,coverage_claim:annualStatus==='success'?'official_season_programme_mother_set':annualStatus==='meeting_page_fallback'?'official_meeting_page_source_visible_horizon':'acquisition_failed_preserve_verified_state',coverage_note:'The Jockey Club Español-approved Hipódromo de la Zarzuela autumn programme is the production meeting mother set and supplies verified meeting identity/date through rank C. The organizer-hosted detail pages are not production-connected while their TLS chain is not reliably reachable from GitHub Actions. No higher detail rank is claimed until a stable official route is independently verified. Wider Spanish venue and racing-code coverage remains outside this bounded subsystem.'},records,diagnostics:{source_errors:sourceErrors,parse_failures:parseFailures,annual_source_status:annualStatus}};
 write(output,artifact);
 console.log(JSON.stringify({output,start_date:start,end_date_exclusive:end,annual_rows:annualRows.length,meetings_emitted:records.length,rank_counts:rankCounts,completion_counts:completionCounts,source_errors:sourceErrors.length,parse_failures:parseFailures.length,raw_body_retained:false}));
