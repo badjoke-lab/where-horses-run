@@ -121,9 +121,12 @@ function cells(row) {
 export function parseMonterricoProgrammeHtml(html, { expectedDate=null }={}) {
   if (typeof html !== 'string' || !html.trim()) throw new Error('Monterrico programme HTML must be non-empty');
   if (!/Hip[oó]dromo de Monterrico/i.test(text(html)) || !/Reuni[oó]n/i.test(text(html))) throw new Error('Monterrico programme fingerprint missing meeting identity');
-  const date = meetingDate(html);
+  const parsedDate = meetingDate(html);
+  if (expectedDate && parsedDate && parsedDate !== expectedDate) {
+    throw new Error('Monterrico programme date mismatch: expected ' + expectedDate + ', found ' + parsedDate);
+  }
+  const date = parsedDate ?? expectedDate;
   if (!date) throw new Error('Monterrico programme meeting date could not be parsed');
-  if (expectedDate && date !== expectedDate) throw new Error('Monterrico programme date mismatch: expected ' + expectedDate + ', found ' + date);
   const found = [];
   for (const rowMatch of String(html).matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)) {
     const c = cells(rowMatch[1]);
