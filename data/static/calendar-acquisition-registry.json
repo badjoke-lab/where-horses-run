@@ -570,9 +570,9 @@
       "primary_runner": "github_actions",
       "fallback_runner": null,
       "schedule_source_id": "zarzuela-programme-2026",
-      "detail_source_id": null,
+      "detail_source_id": "zarzuela-programme-2026",
       "schedule_adapter_id": "spain-zarzuela-autumn-programme-v1",
-      "detail_adapter_id": null,
+      "detail_adapter_id": "spain-zarzuela-autumn-programme-v1",
       "technical_capability_rank": "C",
       "collection_target_rank": "best_available",
       "public_ceiling": "C",
@@ -585,7 +585,7 @@
       "supports_source_visible_horizon": true,
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
-      "operator_notes": "GitHub Actions reads the Jockey Club Español-approved Hipódromo de la Zarzuela autumn 2026 programme from the official JCE-linked Drive document as the production meeting mother set. This route verifies meeting identity/date through C. Organizer jornada detail pages are not production-connected while the Hipódromo host TLS chain is not reliably reachable from GitHub Actions. No A/B detail capability is claimed until a stable official detail route is independently verified."
+      "operator_notes": "GitHub Actions reads the Jockey Club Español-approved Hipódromo de la Zarzuela autumn 2026 programme from the official JCE-linked Drive document. The same production route supplies and evaluates meeting identity/date through the declared technical capability C, satisfying both schedule and bounded detail-completion roles at C. The organizer jornada A-detail route is not production-connected while its TLS chain is not reliably reachable from GitHub Actions."
     },
     {
       "system_id": "italy-masaf-gallop-system",
