@@ -8,6 +8,7 @@ export const PERU_MONTERRICO_TIMEZONE = 'America/Lima';
 export const PERU_MONTERRICO_PROGRAMME_URL = 'https://hipodromodemonterrico.com.pe/carreras-proximos-programas';
 export const PERU_MONTERRICO_ENTRY_PROGRAMME_URL = 'https://hipodromodemonterrico.com.pe/programa-de-entradas';
 export const PERU_MONTERRICO_DATE_API_PREFIX = 'https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/fecha/';
+export const PERU_MONTERRICO_REUNION_API_PREFIX = 'https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/';
 
 const MONTHS = { enero:1,febrero:2,marzo:3,abril:4,mayo:5,junio:6,julio:7,agosto:8,septiembre:9,setiembre:9,octubre:10,noviembre:11,diciembre:12 };
 
@@ -67,6 +68,52 @@ export function extractMonterricoReunionIds(payload) {
   const unique = [...new Set(ids)];
   if (rows.length && !unique.length) throw new Error('Monterrico date API exposed reunion rows without a resolvable reunion id');
   return unique;
+}
+export function parseMonterricoProgrammePayload(payload, { expectedDate=null, expectedReunionId=null }={}) {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    throw new Error('Monterrico reunion API payload must be an object');
+  }
+  const reunions = Array.isArray(payload.reuniones) ? payload.reuniones : Object.values(payload.reuniones ?? {});
+  const reunion = expectedReunionId == null
+    ? (reunions.length === 1 ? reunions[0] : null)
+    : reunions.find((row) => Number(row?.id_reunion ?? row?.idReunion) === Number(expectedReunionId));
+  if (!reunion || typeof reunion !== 'object') throw new Error('Monterrico reunion API meeting not found');
+
+  const reunionIdValue = Number(reunion.id_reunion ?? reunion.idReunion);
+  if (expectedReunionId != null && reunionIdValue !== Number(expectedReunionId)) {
+    throw new Error('Monterrico reunion API id mismatch');
+  }
+  const date = String(reunion.fecha_reunion ?? '').slice(0,10);
+  if (!/^20\d{2}-\d{2}-\d{2}$/.test(date)) throw new Error('Monterrico reunion API meeting date missing');
+  if (expectedDate && date !== expectedDate) {
+    throw new Error('Monterrico reunion API date mismatch: expected ' + expectedDate + ', found ' + date);
+  }
+
+  const races = Array.isArray(reunion.carreras) ? reunion.carreras : [];
+  const found = [];
+  for (const race of races) {
+    const number = Number(race?.correlativo ?? race?.nro ?? race?.numero_carrera);
+    const time = String(race?.hora_carrera ?? race?.hora ?? '').trim().slice(0,5);
+    const distance = Number(String(race?.distancia ?? '').replace(/[^0-9]/g,''));
+    if (!Number.isInteger(number) || number < 1) continue;
+    if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) continue;
+    if (!Number.isFinite(distance) || distance < 100) continue;
+    found.push({
+      number,
+      label:'Race ' + number,
+      post_time_local:time,
+      race_name:String(race?.nombre_premio ?? race?.tipo_carrera ?? '').trim() || undefined,
+      distance_m:distance,
+    });
+  }
+  found.sort((a,b)=>a.number-b.number);
+  if (!found.length || found.some((row,index)=>row.number!==index+1)) {
+    throw new Error('Monterrico reunion API did not expose a complete race table');
+  }
+  if (found.some((row,index)=>index>0 && row.post_time_local<=found[index-1].post_time_local)) {
+    throw new Error('Monterrico reunion API post times are not strictly increasing');
+  }
+  return { meeting_date:date, timetable_rows:found.map(({number,...row})=>row) };
 }
 const SHORT_MONTHS = { ene:1,feb:2,mar:3,abr:4,may:5,jun:6,jul:7,ago:8,sep:9,set:9,oct:10,nov:11,dic:12 };
 
@@ -165,6 +212,27 @@ export function buildMonterricoMeetingRecord({ date,reunionId,programmeHtml,chec
   record.evidence_support = { meeting_identity:e, meeting_date:e, race_times:e, timetable:e, race_names:e, distances:e };
   return { ...record, capability_rank:deriveBestAvailableRank(record, record.timetable_rows) };
 }
+export function buildMonterricoApiMeetingRecord({ date,reunionId,programmePayload,checkedAt,sourceUrl=null }) {
+  const url = sourceUrl ?? (PERU_MONTERRICO_REUNION_API_PREFIX + encodeURIComponent(reunionId));
+  const parsed = parseMonterricoProgrammePayload(programmePayload, { expectedDate:date, expectedReunionId:reunionId });
+  const record = {
+    candidate_id:'peru-' + PERU_MONTERRICO_RACECOURSE_ID + '-' + date,
+    meeting_id:'peru-' + PERU_MONTERRICO_RACECOURSE_ID + '-' + date,
+    country_id:'peru', authority_id:PERU_MONTERRICO_AUTHORITY_ID, racing_system_id:PERU_MONTERRICO_SYSTEM_ID,
+    racecourse_id:PERU_MONTERRICO_RACECOURSE_ID, date, timezone:PERU_MONTERRICO_TIMEZONE,
+    first_race_time_local:parsed.timetable_rows[0].post_time_local,
+    last_race_time_local:parsed.timetable_rows.at(-1).post_time_local,
+    timetable_rows:parsed.timetable_rows,
+    source:{ source_id:PERU_MONTERRICO_SOURCE_ID, official_url:url, checked_at:checkedAt, extraction_method:'official_reunion_api_json' },
+    route_id:'monterrico-date-api-to-reunion-api', confidence:'high', review_status:'needs_review',
+    detail_observation:{ status:'available', evaluated_capability_rank:'A', race_count:parsed.timetable_rows.length, programme_url:url },
+    acquisition_attempt:{ attempted_at:checkedAt, status:'success', source_id:PERU_MONTERRICO_SOURCE_ID, route_id:'monterrico-date-api-to-reunion-api', error_code:null }
+  };
+  const e = evidence(url, checkedAt);
+  record.evidence_support = { meeting_identity:e, meeting_date:e, race_times:e, timetable:e, race_names:e, distances:e };
+  return { ...record, capability_rank:deriveBestAvailableRank(record, record.timetable_rows) };
+}
+
 export function buildMonterricoFallbackRecord({ date,reunionId,checkedAt,status='source_error',errorCode='programme_detail_unavailable' }) {
   const url = PERU_MONTERRICO_PROGRAMME_URL + '?id_reunion=' + encodeURIComponent(reunionId);
   const record = {
