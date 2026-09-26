@@ -72,6 +72,9 @@ if(process.env.GITHUB_ACTIONS==='true'){
     assert.ok(dates.includes('2026-09-27'),'live JCE programme route must recover the 2026-09-27 Zarzuela meeting');
     assert.equal(dates.includes('2026-09-28'),false,'calendar-grid numbers must never create a false 2026-09-28 meeting');
     assert.equal(artifact.acquisition_attempt?.status,'success');
+    assert.equal(artifact.diagnostics?.source_errors?.length,0,'JCE programme acquisition must not depend on the TLS-broken organizer detail host');
+    assert.ok(artifact.records.every((row)=>row.capability_rank==='C'),'Spain production route must claim only the currently verified C capability');
+    assert.ok(artifact.records.every((row)=>row.acquisition_completion?.disposition==='complete_current_best_available'),'Spain C mother-set observations must close as current best available');
     assert.match(String(artifact.discovery?.schedule_source_url??''),/drive\.google\.com/,'live schedule must recover through the JCE-approved official programme mirror while the organizer TLS chain is broken');
   }finally{
     fs.rmSync(liveOutput,{force:true});
