@@ -2664,20 +2664,20 @@
       "authority_source_key": "spain/hipodromo-zarzuela/zarzuela-programme-2026",
       "racecourse_ids": [],
       "coverage_scope": "single_racecourse",
-      "technical_rank": "A",
-      "public_ceiling": "A",
+      "technical_rank": "C",
+      "public_ceiling": "C",
       "confirmed_fields": {
         "meeting_date": true,
         "racecourse": true,
-        "first_race_time": true,
-        "last_race_time": true,
-        "per_race_post_times": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
         "race_name": false,
         "distance": false,
         "surface": false,
         "course": false
       },
-      "source_format": "html+pdf",
+      "source_format": "pdf",
       "access_mode": "direct",
       "automation_mode": "automatic",
       "refresh_classes": [
@@ -2691,15 +2691,15 @@
       "source_status": "verified",
       "checked_date": "2026-09-25",
       "evidence_reviewed_at": "2026-09-25",
-      "revalidation_trigger": "Revalidate when the Hipódromo de la Zarzuela seasonal programme PDF or date-specific jornada route changes, or when additional Spanish venues/codes are reviewed.",
+      "revalidation_trigger": "Revalidate when the JCE-approved seasonal programme changes or when a production-reachable official Zarzuela detail route is independently verified.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/44-spain/final-summary.json",
       "limitations": [
         "Production scope is limited to Hipódromo de la Zarzuela.",
-        "Country public output remains capped at C because wider Spanish venue and racing-code coverage is incomplete.",
-        "Unpublished jornada post times remain pending and are never inferred."
+        "Production currently verifies meeting identity/date through C from the JCE-approved seasonal programme.",
+        "Organizer jornada detail pages are not claimed as production-capable while their TLS chain is not reliably reachable from GitHub Actions."
       ],
-      "notes": "Automated Zarzuela autumn-programme mother set plus date-specific jornada enrichment supports best-available C through A for the reviewed single-venue gallop subsystem. Calendar identity/map uses the existing All-Tier Master ID; readiness.racecourse_ids stays empty until promoted into the repository racecourse-page master."
+      "notes": "Automated JCE-approved Zarzuela seasonal programme route is production-ready through C. Higher detail ranks are deliberately not claimed until an official detail route is stable from the production runner."
     },
     {
       "readiness_id": "norway--norway-dnt-harness-system--dnt-terminliste-2026",
