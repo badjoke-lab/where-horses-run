@@ -3,14 +3,12 @@ import path from 'node:path';
 import {
   PERU_MONTERRICO_AUTHORITY_ID,
   PERU_MONTERRICO_DATE_API_PREFIX,
-  PERU_MONTERRICO_PROGRAMME_URL,
   PERU_MONTERRICO_REUNION_API_PREFIX,
   PERU_MONTERRICO_SOURCE_ID,
   PERU_MONTERRICO_SYSTEM_ID,
   PERU_MONTERRICO_TIMEZONE,
   buildMonterricoApiMeetingRecord,
   buildMonterricoFallbackRecord,
-  buildMonterricoMeetingRecord,
   extractMonterricoReunionIds,
 } from './peru-monterrico-core.mjs';
 
