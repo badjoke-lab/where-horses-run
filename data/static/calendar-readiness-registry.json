@@ -3104,8 +3104,8 @@
       "authority_source_key": "slovakia/zavodisko/zavodisko-2026-calendar",
       "racecourse_ids": [],
       "coverage_scope": "countrywide",
-      "technical_rank": "B+",
-      "public_ceiling": "C",
+      "technical_rank": "B",
+      "public_ceiling": "B",
       "confirmed_fields": {
         "meeting_date": true,
         "racecourse": true,
@@ -3125,7 +3125,7 @@
         "weekly",
         "near_meeting"
       ],
-      "readiness": "prototype_ready",
+      "readiness": "ready",
       "implementation_status": "candidate_active",
       "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
@@ -3136,11 +3136,10 @@
       "source_test_ref": "docs/timetable-source-tests/52-slovakia/final-summary.json",
       "limitations": [
         "The automated annual-calendar route supplies meeting date, racecourse and official first-race time through B.",
-        "Previously reviewed B+ meeting-page capability is not yet connected as a reusable full-calendar route and remains an explicit implementation gap.",
         "Per-race post times are not confirmed across the full calendar.",
         "Public output remains capped at C."
       ],
-      "notes": "Automated production candidate reads the current Závodisko annual calendar through rank B. The registered B+ capability remains intentionally open as an implementation_gap until a reusable full-calendar last-race route is connected; public output remains capped at C."
+      "notes": "Automatic Závodisko 2026 calendar route supports meeting date, racecourse and official first-race time through rank B. No stronger reusable production detail route is currently claimed."
     },
     {
       "readiness_id": "cyprus--nicosia-national-racing-system--nrc-meetings-schedule",
