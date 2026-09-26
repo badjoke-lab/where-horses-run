@@ -25,6 +25,7 @@ assert.deepEqual(schedule.map(x=>[x.date,x.racecourse_id]),[
 ]);
 assert.equal(resolveNewZealandRacecourseId('Cambridge Synthetic'),'cambridge-synthetic-racecourse');
 assert.equal(resolveNewZealandRacecourseId('Addington Raceway'),'addington-raceway');
+assert.equal(resolveNewZealandRacecourseId('Ashburton Raceway'),'ashburton-racecourse');
 
 const loveracingIndex=`<html><body><h1>RaceInfo</h1><a href="/RaceInfo/55949/Meeting-Overview.aspx">South Canterbury RC</a><a href="/RaceInfo/55950/Meeting-Overview.aspx">Waikato Thoroughbred Racing</a></body></html>`;
 assert.deepEqual(parseLoveracingIndex(loveracingIndex,{sourceUrl:'https://loveracing.nz/RaceInfo.aspx'}),[
