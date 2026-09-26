@@ -1,0 +1,47 @@
+name: Panama Presidente Remon live probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-panama-live-probe.yml'
+      - 'scripts/timetable/panama-presidente-remon-core.mjs'
+      - 'scripts/timetable/run-panama-presidente-remon-official-window.mjs'
+      - 'scripts/check-panama-presidente-remon-adapter.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - name: Validate Panama adapter
+        run: npm run validate:panama-presidente-remon
+      - name: Probe live Panama 30-day source-visible window
+        run: |
+          mkdir -p .calendar-panama-probe
+          node scripts/timetable/run-panama-presidente-remon-official-window.mjs \
+            --as-of=2026-09-26 \
+            --days=30 \
+            --output=.calendar-panama-probe/panama.json
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const data=JSON.parse(fs.readFileSync('.calendar-panama-probe/panama.json','utf8'));
+          console.log(JSON.stringify({
+            records:data.records.length,
+            venues:[...new Set(data.records.map(r=>r.racecourse_id))].sort(),
+            dates:[...new Set(data.records.map(r=>r.date))].sort(),
+            diagnostics:data.diagnostics,
+            discovery:data.discovery,
+            window:data.window,
+          }));
+          if(data.diagnostics.source_errors.length) process.exitCode=1;
+          if(data.diagnostics.parse_failures.length) process.exitCode=1;
+          if(data.records.length===0) process.exitCode=1;
+          if(data.records.some(r=>r.first_race_time_local!==null||r.last_race_time_local!==null)) process.exitCode=1;
+          NODE
