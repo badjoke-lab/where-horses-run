@@ -206,6 +206,11 @@ assert.equal(workflow.split('--artifact=.calendar-unified/mexico.json').length -
 assert.equal(workflow.split('--authority-id=hipodromo-de-las-americas').length - 1, 2, 'Mexico observations must be applied in both execution paths');
 assert.equal(workflow.split('--racing-system-id=mexico-hipodromo-las-americas-system').length - 1, 2, 'Mexico apply path must bind its canonical racing system in both execution paths');
 assert.equal(workflow.split('--timezone=America/Mexico_City').length - 1, 2, 'Mexico apply path must bind America/Mexico_City in both execution paths');
+assert.equal(workflow.split('node scripts/timetable/run-uruguay-hru-official-window.mjs').length - 1, 2, 'Uruguay HRU must be collected in both normal and latest-main rebuild paths');
+assert.equal(workflow.split('--artifact=.calendar-unified/uruguay.json').length - 1, 4, 'Uruguay artifact must pass exclusion and apply layers in both execution paths');
+assert.equal(workflow.split('--authority-id=hru').length - 1, 2, 'Uruguay HRU observations must be applied in both execution paths');
+assert.equal(workflow.split('--racing-system-id=uruguay-hru-system').length - 1, 2, 'Uruguay HRU apply path must bind its canonical racing system in both execution paths');
+assert.equal(workflow.split('--timezone=America/Montevideo').length - 1, 2, 'Uruguay HRU apply path must bind America/Montevideo in both execution paths');
 assert.equal(workflow.split('node scripts/timetable/run-dominican-hvc-official-window.mjs').length - 1, 2, 'Dominican HVC must be collected in both normal and latest-main rebuild paths');
 assert.equal(workflow.split('--artifact=.calendar-unified/dominican-hvc.json').length - 1, 4, 'Dominican HVC artifact must pass exclusion and apply layers in both execution paths');
 assert.equal(workflow.split('--authority-id=hipodromo-v-centenario').length - 1, 2, 'Dominican HVC observations must be applied in both execution paths');
@@ -237,4 +242,5 @@ console.log('BRAZIL_JCB_REUNIOES_UNIFIED_REFRESH_PATHS: 2');
 console.log('BRAZIL_CIDADE_JARDIM_UNIFIED_REFRESH_PATHS: 2');
 console.log('BRAZIL_SOROCABA_UNIFIED_REFRESH_PATHS: 2');
 console.log('MEXICO_AMERICAS_UNIFIED_REFRESH_PATHS: 2');
+console.log('URUGUAY_HRU_UNIFIED_REFRESH_PATHS: 2');
 console.log('DOMINICAN_HVC_UNIFIED_REFRESH_PATHS: 2');

@@ -110,6 +110,9 @@ const calendarMapRegressionIds = [
   'brazil--jockey-club-de-sorocaba',
   // Mexico (1)
   'mexico--hipodromo-de-las-americas',
+  // Uruguay (2)
+  'uruguay--hipodromo-nacional-de-maronas',
+  'uruguay--hipodromo-las-piedras',
   // Dominican Republic (1)
   'dominican-republic--hipodromo-v-centenario',
   // Morocco (7)

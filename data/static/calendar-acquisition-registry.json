@@ -861,6 +861,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic official Programas HTML route. Publishes only source-visible meeting date plus Hipódromo de las Américas at rank C; missing future programmes are not negative evidence."
+    },
+    {
+      "system_id": "uruguay-hru-system",
+      "country_id": "uruguay",
+      "authority_id": "hru",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "hru-calendar",
+      "detail_source_id": "hru-calendar",
+      "schedule_adapter_id": "uruguay-hru-monthly-calendar-v1",
+      "detail_adapter_id": "uruguay-hru-monthly-calendar-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "GitHub Actions follows the official HRU/Maroñas monthly calendar and parses only exact Maroñas / Las Piedras venue cells into rank C meeting-date observations. Overseas simulcast rows in the same PDF are excluded. Missing future monthly publication or fetch/parse failure never proves non-running."
     }
   ]
 }
