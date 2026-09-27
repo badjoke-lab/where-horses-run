@@ -39,6 +39,24 @@ function pad(value) {
   return String(value).padStart(2, '0');
 }
 
+function resolveMonth(value) {
+  const key = normalize(value).replace(/0/g, 'o').replace(/[^a-z]/g, '');
+  if (MONTHS[key]) return MONTHS[key];
+  if (key.startsWith('ener')) return 1;
+  if (key.startsWith('febr')) return 2;
+  if (key.startsWith('marz')) return 3;
+  if (key.startsWith('abri')) return 4;
+  if (key.startsWith('mayo')) return 5;
+  if (key.startsWith('juni')) return 6;
+  if (key.startsWith('juli')) return 7;
+  if (key.startsWith('agos')) return 8;
+  if (key.startsWith('sept')) return 9;
+  if (key.startsWith('octubr')) return 10;
+  if (key.startsWith('novi')) return 11;
+  if (key.startsWith('dici')) return 12;
+  return null;
+}
+
 export function parseHvcPanfletosIndex(html, { baseUrl = HVC_PANFLETOS_URL } = {}) {
   if (typeof html !== 'string' || !html.trim()) throw new Error('HVC panfletos HTML must be non-empty');
   const results = [];
@@ -61,13 +79,17 @@ export function parseHvcPanfletosIndex(html, { baseUrl = HVC_PANFLETOS_URL } = {
 
 export function parseHvcPanfletoText(text, { sourceUrl = null } = {}) {
   const clean = String(text ?? '').replace(/\s+/g, ' ').trim();
-  if (!/CARRERAS/i.test(clean)) throw new Error('HVC panfleto race fingerprint missing');
-  const regex = /LLAMAD(?:A|AS)\s+PARA\s+LA[S]?\s+CARRERAS(?:\s+DEL)?\s+(?:SABADO|SÁBADO|MARTES)\s+(\d{1,2})\s+DE\s+([A-ZÁÉÍÓÚÑ]+)\s+(?:(?:DE|DEL)\s+)?(20\d{2})/giu;
+  if (!/CARR/i.test(clean)) throw new Error('HVC panfleto race fingerprint missing');
+
+  // PDF text extraction is noisy on some stamped pages (examples include
+  // CARRHRAS, SAB^D0, I}E and 0CTUBRu). Anchor on the race-heading shape,
+  // then normalize the weekday/month tokens instead of requiring perfect OCR.
+  const regex = /CAR\S*\s+(?:DEL\s+)?(SAB\S*|MARTES)\s+(\d{1,2})\s+\S{1,4}\s+([A-Z0-9ÁÉÍÓÚÑ]+)\s+(20\d{2})/giu;
   const rows = [];
   for (const match of clean.matchAll(regex)) {
-    const month = MONTHS[normalize(match[2])];
-    const day = Number(match[1]);
-    const year = Number(match[3]);
+    const month = resolveMonth(match[3]);
+    const day = Number(match[2]);
+    const year = Number(match[4]);
     if (!month || !Number.isInteger(day) || day < 1 || day > 31) continue;
     rows.push({
       date: String(year) + '-' + pad(month) + '-' + pad(day),
