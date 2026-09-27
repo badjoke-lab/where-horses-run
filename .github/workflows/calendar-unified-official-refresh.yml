@@ -12,6 +12,8 @@ on:
       - 'package.json'
       - 'scripts/timetable/**'
       - 'scripts/check-calendar-refresh-publication-boundaries.mjs'
+      - 'scripts/check-calendar-public-country-support.mjs'
+      - 'data/static/calendar-public-country-support-v1.json'
       - 'scripts/check-bahrain-btc-adapter.mjs'
       - 'scripts/check-sweden-svensk-galopp-adapter.mjs'
       - 'scripts/check-germany-deutscher-galopp-adapter.mjs'
@@ -86,6 +88,8 @@ on:
       - 'package.json'
       - 'scripts/timetable/**'
       - 'scripts/check-calendar-refresh-publication-boundaries.mjs'
+      - 'scripts/check-calendar-public-country-support.mjs'
+      - 'data/static/calendar-public-country-support-v1.json'
       - 'scripts/check-bahrain-btc-adapter.mjs'
       - 'scripts/check-sweden-svensk-galopp-adapter.mjs'
       - 'scripts/check-germany-deutscher-galopp-adapter.mjs'
@@ -167,6 +171,7 @@ jobs:
           done
           node scripts/check-calendar-live-source-readiness.mjs
           node scripts/check-calendar-refresh-publication-boundaries.mjs
+          node scripts/check-calendar-public-country-support.mjs
           node scripts/check-kra-window-bounds.mjs
           node scripts/check-kra-fetch-failure-retention.mjs
           node scripts/check-tjk-fetch-failure-retention.mjs
@@ -343,6 +348,7 @@ jobs:
           done
           node scripts/check-calendar-live-source-readiness.mjs
           node scripts/check-calendar-refresh-publication-boundaries.mjs
+          node scripts/check-calendar-public-country-support.mjs
           node scripts/check-kra-window-bounds.mjs
           node scripts/check-ireland-hri-fixtures-adapter.mjs
           node scripts/check-peru-monterrico-adapter.mjs
