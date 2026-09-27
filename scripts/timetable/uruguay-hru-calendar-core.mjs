@@ -48,14 +48,11 @@ export function discoverUruguayMonthlyPdf(html,{pageUrl=URUGUAY_CALENDAR_URL}={}
 export function parseUruguayMonthlyCalendarItems(items,{year,month,sourceUrl}={}){
   if(!Number.isInteger(year)||!Number.isInteger(month)||month<1||month>12) throw new Error('Uruguay calendar year/month required');
   const pts=(items??[]).map(point).filter(p=>p.str&&Number.isFinite(p.x)&&Number.isFinite(p.y));
-  const joined=normalize(pts.map(p=>p.str).join(' '));
-  const monthName=MONTH_NAMES[month-1];
-  if(!joined.includes(monthName)||!joined.includes(String(year))) throw new Error('Uruguay monthly calendar fingerprint missing');
-
   const days=pts.filter(p=>/^(?:[1-9]|[12]\d|3[01])$/.test(p.str)).map(p=>({...p,day:Number(p.str)}));
   if(!days.length) throw new Error('Uruguay calendar day grid missing');
 
   const venues=pts.map(p=>({...p,key:normalize(p.str)})).filter(p=>URUGUAY_RACECOURSES[p.key]);
+  if(!venues.length) throw new Error('Uruguay local venue fingerprint missing');
   const records=[]; const parse_failures=[];
   for(const venue of venues){
     const above=days.map(day=>({...day,dy:day.y-venue.y,dx:Math.abs(day.x-venue.x)})).filter(day=>day.dy>0&&day.dy<=115);
