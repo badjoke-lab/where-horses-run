@@ -364,7 +364,7 @@ export function buildFnchMixedMeetingRecord(row, { checkedAt } = {}) {
   record.evidence_support = {
     meeting_identity: meetingEvidence,
     meeting_date: meetingEvidence,
-    ...(record.first_race_time_local ? { first_race_time: meetingEvidence } : {}),
+    ...(record.first_race_time_local ? { race_times: meetingEvidence } : {}),
   };
   const capability_rank = deriveBestAvailableRank(record, []);
   record.acquisition_completion = classifyAcquisitionCompletion(
