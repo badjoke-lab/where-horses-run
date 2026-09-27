@@ -25,6 +25,11 @@ const fallbackFetch = async (url) => {
     error.name = 'TimeoutError';
     throw error;
   }
+  if (url === TJK_STATIC_CALENDAR_URL) {
+    const error = new Error('simulated static calendar failure');
+    error.name = 'TimeoutError';
+    throw error;
+  }
   const parsed = new URL(url);
   const date = parsed.searchParams.get('QueryParameter_Tarih_Start');
   const [day, month, year] = date.split('/');
@@ -46,7 +51,8 @@ assert.equal(fallback.pages[0]?.status, 'fetch_failed', 'primary annual Data fai
 assert.equal(fallback.pages.filter((page) => page.status === 'fallback_page_ok').length, 2, 'fallback must fetch one bounded annual page per day');
 assert.equal(fallback.fixtures[0].date, '2026-09-26');
 assert.equal(fallback.fixtures[1].date, '2026-09-27');
-assert.match(fallbackCalls[1], /\/Query\/Page\/YillikYarisProgramiCoklu/, 'fallback must use the official annual Page route');
+assert.equal(fallbackCalls[1], TJK_STATIC_CALENDAR_URL, 'static official annual calendar must be attempted before daily Page fallback');
+assert.match(fallbackCalls[2], /\/Query\/Page\/YillikYarisProgramiCoklu/, 'daily fallback must remain available after static calendar failure');
 
 const partialFallback = await discoverAnnualFixtures({
   startDate: '2026-09-26',
@@ -54,6 +60,11 @@ const partialFallback = await discoverAnnualFixtures({
   fetchImpl: async (url) => {
     if (url.includes('/Query/Data/YillikYarisProgramiCoklu')) {
       const error = new Error('simulated broad annual timeout');
+      error.name = 'TimeoutError';
+      throw error;
+    }
+    if (url === TJK_STATIC_CALENDAR_URL) {
+      const error = new Error('simulated static calendar failure');
       error.name = 'TimeoutError';
       throw error;
     }
@@ -81,6 +92,11 @@ const concurrentFallback = await discoverAnnualFixtures({
   fetchImpl: async (url) => {
     if (url.includes('/Query/Data/YillikYarisProgramiCoklu')) {
       const error = new Error('simulated broad annual timeout');
+      error.name = 'TimeoutError';
+      throw error;
+    }
+    if (url === TJK_STATIC_CALENDAR_URL) {
+      const error = new Error('simulated static calendar failure');
       error.name = 'TimeoutError';
       throw error;
     }
