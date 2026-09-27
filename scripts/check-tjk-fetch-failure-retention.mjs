@@ -18,28 +18,25 @@ const fallbackFetch = async (url) => {
     error.name = 'TimeoutError';
     throw error;
   }
-  const parsed = new URL(url);
-  const date = parsed.searchParams.get('QueryParameter_Tarih_Start');
-  const [day, month, year] = date.split('/');
-  const href = `/TR/YarisSever/Info/Page/GunlukYarisProgrami?QueryParameter_Tarih=${encodeURIComponent(date)}&SehirAdi=Ankara&SehirId=5`;
-  return {
-    ok: true,
-    status: 200,
-    text: async () => `<a href="${href}">Ankara</a>`,
-  };
+  if (url.includes('/Query/Page/YillikYarisProgrami?')) {
+    const href26 = '/TR/YarisSever/Info/Page/GunlukYarisProgrami?QueryParameter_Tarih=26%2F09%2F2026&SehirAdi=Ankara&SehirId=5';
+    const href27 = '/TR/YarisSever/Info/Page/GunlukYarisProgrami?QueryParameter_Tarih=27%2F09%2F2026&SehirAdi=%C4%B0stanbul&SehirId=3';
+    return { ok:true,status:200,text:async()=>`<a href="${href26}">Ankara</a><a href="${href27}">İstanbul</a>` };
+  }
+  throw new Error('daily fallback should not be reached when simple annual page succeeds');
 };
 const fallback = await discoverAnnualFixtures({
   startDate: '2026-09-26',
   endDateExclusive: '2026-09-28',
   fetchImpl: fallbackFetch,
 });
-assert.equal(fallback.fixtures.length, 2, 'daily annual page fallback must preserve the requested date window');
-assert.equal(fallback.schedule_source_id, 'tjk-annual-programme-page-fallback', 'fallback source id must be explicit');
-assert.equal(fallback.pages[0]?.status, 'fetch_failed', 'primary annual Data failure must be recorded before fallback');
-assert.equal(fallback.pages.filter((page) => page.status === 'fallback_page_ok').length, 2, 'fallback must fetch one bounded annual page per day');
+assert.equal(fallback.fixtures.length, 2, 'simple annual page fallback must preserve the requested date window');
+assert.equal(fallback.schedule_source_id, 'tjk-annual-programme-simple-page-fallback');
+assert.equal(fallback.pages[0]?.status, 'fetch_failed');
+assert.equal(fallback.pages.filter((page) => page.status === 'simple_page_ok').length, 1);
 assert.equal(fallback.fixtures[0].date, '2026-09-26');
 assert.equal(fallback.fixtures[1].date, '2026-09-27');
-assert.match(fallbackCalls[1], /\/Query\/Page\/YillikYarisProgramiCoklu/, 'fallback must use the official annual Page route');
+assert.match(fallbackCalls[1], /\/Query\/Page\/YillikYarisProgrami\?/, 'first fallback must use the simple official annual Page route');
 
 const partialFallback = await discoverAnnualFixtures({
   startDate: '2026-09-26',
@@ -47,6 +44,11 @@ const partialFallback = await discoverAnnualFixtures({
   fetchImpl: async (url) => {
     if (url.includes('/Query/Data/YillikYarisProgramiCoklu')) {
       const error = new Error('simulated broad annual timeout');
+      error.name = 'TimeoutError';
+      throw error;
+    }
+    if (url.includes('/Query/Page/YillikYarisProgrami?')) {
+      const error = new Error('simulated simple page timeout');
       error.name = 'TimeoutError';
       throw error;
     }
@@ -74,6 +76,11 @@ const concurrentFallback = await discoverAnnualFixtures({
   fetchImpl: async (url) => {
     if (url.includes('/Query/Data/YillikYarisProgramiCoklu')) {
       const error = new Error('simulated broad annual timeout');
+      error.name = 'TimeoutError';
+      throw error;
+    }
+    if (url.includes('/Query/Page/YillikYarisProgrami?')) {
+      const error = new Error('simulated simple page timeout');
       error.name = 'TimeoutError';
       throw error;
     }
