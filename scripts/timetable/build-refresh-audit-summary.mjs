@@ -172,6 +172,24 @@ for (const [name, value] of Object.entries({ sourceRunId, sourceHeadSha, runStar
   if (!value) throw new Error(`missing required --${name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)} argument`);
 }
 
+const systemArtifactDir = path.join(artifactRoot, '.calendar-unified');
+const auxiliaryArtifactFiles = new Set([
+  'banei-non-running.json',
+  'japan-non-running.json',
+  'nar-non-running.json',
+  'reviewed-public-observations.json',
+]);
+if (fs.existsSync(systemArtifactDir)) {
+  const auditedFiles = new Set(SYSTEMS.map((config) => config.file));
+  const unknownArtifactFiles = fs.readdirSync(systemArtifactDir)
+    .filter((file) => file.endsWith('.json'))
+    .filter((file) => !auditedFiles.has(file) && !auxiliaryArtifactFiles.has(file))
+    .sort();
+  if (unknownArtifactFiles.length) {
+    throw new Error(`unregistered Calendar audit artifact(s): ${unknownArtifactFiles.join(', ')}. Add every production system artifact to SYSTEMS before the downstream audit can pass.`);
+  }
+}
+
 const resultSha = findResultSha(repoRoot, sourceHeadSha, runStartedAt, runCompletedAt);
 const before = stateMaps(repoRoot, sourceHeadSha);
 const after = stateMaps(repoRoot, resultSha);
