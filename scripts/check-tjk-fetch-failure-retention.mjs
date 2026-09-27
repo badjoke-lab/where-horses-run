@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { discoverAnnualFixtures } from './timetable/tjk-annual-fixture-discovery.mjs';
 
 const source = fs.readFileSync('scripts/timetable/run-tjk-current-best-available.mjs', 'utf8');
@@ -90,5 +91,36 @@ const concurrentFallback = await discoverAnnualFixtures({
 assert.equal(concurrentFallback.fixtures.length, 8);
 assert.equal(maxActiveFallbacks, 4, 'TJK daily fallback must use bounded concurrency instead of 30 serial timeout windows');
 assert.ok(maxActiveFallbacks <= 4, 'TJK fallback concurrency must remain bounded');
+
+if (process.env.GITHUB_ACTIONS === 'true') {
+  const url='https://medya-cdn.tjk.org/haberftp/2025/2026takvim161225.pdf';
+  const response=await fetch(url,{signal:AbortSignal.timeout(12_000),headers:{'user-agent':'WhereHorsesRun-source-verification/1.0'}});
+  assert.equal(response.ok,true,`TJK static calendar must be reachable: HTTP ${response.status}`);
+  const bytes=new Uint8Array(await response.arrayBuffer());
+  assert.equal(String.fromCharCode(...bytes.slice(0,4)),'%PDF');
+  const pdf=await getDocument({data:bytes,disableWorker:true}).promise;
+  assert.equal(pdf.numPages,1);
+  const page=await pdf.getPage(1);
+  const text=await page.getTextContent();
+  const months=new Set(['Ocak','Şubat','Subat','Mart','Nisan','Mayıs','Mayis','Haziran','Temmuz','Ağustos','Agustos','Eylül','Eylul','Ekim','Kasım','Kasim','Aralık','Aralik']);
+  const codes=/^(ADA|ANK|ANT|BUR|DYB|ELZ|İST|IST|İZM|IZM|KOC|URF)$/;
+  const monthItems=[];
+  const codeItems=[];
+  for(const item of text.items){
+    if(!('str' in item)) continue;
+    const value=String(item.str??'').trim();
+    const point={v:value,x:Number(item.transform?.[4]??0),y:Number(item.transform?.[5]??0)};
+    if(months.has(value)) monthItems.push(point);
+    if(codes.test(value)) codeItems.push(point);
+  }
+  monthItems.sort((a,b)=>b.y-a.y||a.x-b.x);
+  codeItems.sort((a,b)=>b.y-a.y||a.x-b.x);
+  console.log('TJK_STATIC_CALENDAR_LAYOUT:',JSON.stringify({
+    url,
+    months:monthItems,
+    code_count:codeItems.length,
+    code_sample:codeItems.slice(-80),
+  }));
+}
 
 console.log('TJK_FETCH_FAILURE_RETENTION: pass');
