@@ -54,6 +54,7 @@ jobs:
           node scripts/check-brazil-cidade-jardim-adapter.mjs
           node scripts/check-brazil-sorocaba-adapter.mjs
           node scripts/check-mexico-americas-adapter.mjs
+          node scripts/check-uruguay-hru-adapter.mjs
           node scripts/check-dominican-hvc-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
@@ -228,6 +229,7 @@ jobs:
           node scripts/check-brazil-cidade-jardim-adapter.mjs
           node scripts/check-brazil-sorocaba-adapter.mjs
           node scripts/check-mexico-americas-adapter.mjs
+          node scripts/check-uruguay-hru-adapter.mjs
           node scripts/check-dominican-hvc-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
@@ -449,6 +451,9 @@ jobs:
           node scripts/timetable/run-mexico-americas-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/mexico.json
+          node scripts/timetable/run-uruguay-hru-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/uruguay.json
           node scripts/timetable/run-dominican-hvc-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/dominican-hvc.json
@@ -484,6 +489,7 @@ jobs:
             --artifact=.calendar-unified/brazil-cidade-jardim.json \
             --artifact=.calendar-unified/brazil-sorocaba.json \
             --artifact=.calendar-unified/mexico.json \
+            --artifact=.calendar-unified/uruguay.json \
             --artifact=.calendar-unified/dominican-hvc.json
       - name: Apply non-Japan official observations monotonically
         run: |
@@ -662,6 +668,12 @@ jobs:
             --racing-system-id=mexico-hipodromo-las-americas-system \
             --timezone=America/Mexico_City
           node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/uruguay.json \
+            --country-id=uruguay \
+            --authority-id=hru \
+            --racing-system-id=uruguay-hru-system \
+            --timezone=America/Montevideo
+          node scripts/timetable/apply-official-rolling-observations.mjs \
             --artifact=.calendar-unified/dominican-hvc.json \
             --country-id=dominican-republic \
             --authority-id=hipodromo-v-centenario \
@@ -783,6 +795,9 @@ jobs:
             node scripts/timetable/run-mexico-americas-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/mexico.json
+            node scripts/timetable/run-uruguay-hru-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/uruguay.json
             node scripts/timetable/run-dominican-hvc-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/dominican-hvc.json
@@ -816,6 +831,7 @@ jobs:
             --artifact=.calendar-unified/brazil-cidade-jardim.json \
             --artifact=.calendar-unified/brazil-sorocaba.json \
             --artifact=.calendar-unified/mexico.json \
+            --artifact=.calendar-unified/uruguay.json \
             --artifact=.calendar-unified/dominican-hvc.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/hkjc.json \
@@ -991,6 +1007,12 @@ jobs:
               --authority-id=hipodromo-de-las-americas \
               --racing-system-id=mexico-hipodromo-las-americas-system \
               --timezone=America/Mexico_City
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/uruguay.json \
+              --country-id=uruguay \
+              --authority-id=hru \
+              --racing-system-id=uruguay-hru-system \
+              --timezone=America/Montevideo
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/dominican-hvc.json \
               --country-id=dominican-republic \

@@ -1087,7 +1087,10 @@
       "system_id": "uruguay-hru-system",
       "system_name_en": "HRU calendar system",
       "authority_source_key": "uruguay/hru/hru-calendar",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "uruguay--hipodromo-nacional-de-maronas",
+        "uruguay--hipodromo-las-piedras"
+      ],
       "coverage_scope": "subset_of_authority_racecourses",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -1102,27 +1105,29 @@
         "surface": false,
         "course": false
       },
-      "source_format": "html",
+      "source_format": "html_pdf",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
         "monthly",
         "near_meeting"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-17",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when the HRU calendar changes or a stable post-time source is confirmed.",
+      "checked_date": "2026-09-27",
+      "evidence_reviewed_at": "2026-09-27",
+      "revalidation_trigger": "Revalidate if the official HRU monthly calendar layout, local venue labels, or publication route changes.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/17-uruguay/final-summary.json",
       "limitations": [
-        "Stable reusable per-race post times were not confirmed.",
-        "The reviewed scope covers Maroñas and Las Piedras."
+        "Automatic route is rank C only: meeting date plus Maroñas or Las Piedras physical venue.",
+        "Only exact local venue labels are admitted; overseas simulcast rows are excluded.",
+        "Missing future monthly PDFs are publication-horizon gaps, not non-running evidence.",
+        "Stable reusable per-race post times remain unconfirmed."
       ],
-      "notes": "Manual confirmation can maintain C-level meeting dates and venue pairings from the official HRU route."
+      "notes": "Automatic monthly HRU route reads the official calendar PDF grid and emits Maroñas / Las Piedras meeting-date observations only."
     },
     {
       "readiness_id": "sweden--sweden-svensk-galopp-system--svensk-galopp-calendar",
