@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {
+  classifyNarNonContinuousRaceDiscovery,
   classifyNarZeroRaceDiscovery,
   narRaceProgrammeLooksPublished,
   narRaceProgrammePublicationSignals,
@@ -50,6 +51,32 @@ assert.deepEqual(
   'published-looking programme must fail closed instead of being silently labeled C',
 );
 
+const oneFutureFeatureRace = `
+<html><body>
+  <table>
+    <tr>
+      <td>12R</td><td>20:30</td>
+      <td><a href="/KeibaWeb/TodayRaceInfo/DebaTable?k_raceNo=12">Ｊ認 サンライズカップ２歳オープン</a></td>
+      <td>右1800m</td>
+    </tr>
+  </table>
+</body></html>`;
+assert.equal(
+  narRaceProgrammeLooksPublished(oneFutureFeatureRace),
+  false,
+  'one advance-published feature race must not be mistaken for a complete race programme',
+);
+assert.deepEqual(
+  classifyNarNonContinuousRaceDiscovery(oneFutureFeatureRace, [12]),
+  { status: 'scheduled_pending_details', reason: 'partial_race_programme_publication' },
+  'a lone advance-published Race 12 must remain pending rather than becoming acquisition_failed',
+);
+assert.deepEqual(
+  classifyNarNonContinuousRaceDiscovery(publishedWithUnknownRaceNumberMarkup, [1, 3]),
+  { status: 'race_number_discovery_incomplete', reason: 'published_programme_with_non_continuous_race_numbers' },
+  'a fully published-looking programme with non-continuous discovered numbers must still fail closed',
+);
+
 const signals = narRaceProgrammePublicationSignals(publishedWithUnknownRaceNumberMarkup);
 assert.equal(signals.race_heading_count, 2);
 assert.equal(signals.post_time_count, 2);
@@ -69,13 +96,18 @@ assert.equal(
 const adapterSource = fs.readFileSync('scripts/timetable/japan-official-30d-adapters.mjs', 'utf8');
 assert.match(
   adapterSource,
-  /import \{ classifyNarZeroRaceDiscovery \} from '\.\/nar-publication-signal\.mjs';/,
+  /classifyNarNonContinuousRaceDiscovery, classifyNarZeroRaceDiscovery/,
   'NAR inspector must import the publication classification guard',
 );
 assert.match(
   adapterSource,
   /if \(!numbers\.length\) return classifyNarZeroRaceDiscovery\(page\.body\);/,
   'zero discovered NAR races must be classified from independent publication signals',
+);
+assert.match(
+  adapterSource,
+  /const raceNumberState = classifyNarNonContinuousRaceDiscovery\(page\.body, numbers\);/,
+  'non-continuous NAR race discovery must be classified from publication signals',
 );
 assert.doesNotMatch(
   adapterSource,
