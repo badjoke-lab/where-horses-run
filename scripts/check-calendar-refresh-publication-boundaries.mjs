@@ -206,6 +206,11 @@ assert.equal(workflow.split('--artifact=.calendar-unified/dominican-hvc.json').l
 assert.equal(workflow.split('--authority-id=hipodromo-v-centenario').length - 1, 2, 'Dominican HVC observations must be applied in both execution paths');
 assert.equal(workflow.split('--racing-system-id=hvc-racing-system').length - 1, 2, 'Dominican HVC apply path must bind its canonical racing system in both execution paths');
 assert.equal(workflow.split('--timezone=America/Santo_Domingo').length - 1, 2, 'Dominican HVC apply paths must bind America/Santo_Domingo in both execution paths');
+assert.equal(workflow.split('node scripts/timetable/run-jamaica-caymanas-official-window.mjs').length - 1, 2, 'Jamaica Caymanas must be collected in both normal and latest-main rebuild paths');
+assert.equal(workflow.split('--artifact=.calendar-unified/jamaica.json').length - 1, 4, 'Jamaica artifact must pass exclusion and apply layers in both execution paths');
+assert.equal(workflow.split('--authority-id=caymanas-park-svrel').length - 1, 2, 'Jamaica observations must be applied in both execution paths');
+assert.equal(workflow.split('--racing-system-id=jamaica-reviewed-system').length - 1, 2, 'Jamaica apply path must bind its canonical racing system in both execution paths');
+assert.equal(workflow.split('--timezone=America/Jamaica').length - 1, 2, 'Jamaica apply paths must bind America/Jamaica in both execution paths');
 assert.equal((workflow.match(/--authority-id=hipodromo-zarzuela/g) ?? []).length, 2, 'Spain Zarzuela observations must be applied in both execution paths');
 assert.equal((workflow.match(/--artifact=\.calendar-unified\/spain\.json/g) ?? []).length, 4, 'Spain artifact must pass exclusion and apply layers in both execution paths');
 assert.equal((workflow.match(/--racing-system-id=spain-reviewed-gallop-system/g) ?? []).length, 2, 'Spain apply path must bind the canonical racing system id in both execution paths');
