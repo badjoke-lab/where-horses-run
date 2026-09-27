@@ -61,6 +61,9 @@ const southAfricaCanonicalIds = [
 const panamaCanonicalIds = [
   'panama--hipodromo-presidente-remon',
 ];
+const jamaicaCanonicalIds = [
+  'jamaica--caymanas-park',
+];
 const brazilCanonicalIds = [
   'brazil--hipodromo-da-gavea',
   'brazil--hipodromo-do-cristal',
@@ -90,12 +93,13 @@ assert.equal(koreaCanonicalIds.length, 4, 'South Korea must expose four canonica
 assert.equal(italyCanonicalIds.length, 18, 'Italy current MASAF rolling scope must expose eighteen physical racecourses');
 assert.equal(southAfricaCanonicalIds.length, 7, 'South Africa current routed scope must expose seven canonical physical racecourses');
 assert.equal(panamaCanonicalIds.length, 1, 'Panama reviewed Calendar scope must expose Hipódromo Presidente Remón as the canonical active physical racecourse');
+assert.equal(jamaicaCanonicalIds.length, 1, 'Jamaica reviewed Calendar scope must expose Caymanas Park as the canonical active physical racecourse');
 assert.equal(brazilCanonicalIds.length, 4, 'Brazil current production scope must expose four canonical physical racecourses');
 assert.equal(dominicanCanonicalIds.length, 1, 'Dominican Republic reviewed Calendar scope must expose Hipódromo V Centenario as the canonical active physical racecourse');
 assert.equal(peruCanonicalIds.length, 1, 'Peru reviewed Calendar scope must expose Monterrico as the canonical active physical racecourse');
 assert.equal(saudiCanonicalIds.length, 2, 'Saudi Arabia JCSA scope must expose Taif and Riyadh canonical active physical racecourses');
 
-for (const id of [...chileCanonicalIds, ...franceCanonicalIds, ...koreaCanonicalIds, ...italyCanonicalIds, ...southAfricaCanonicalIds, ...panamaCanonicalIds, ...brazilCanonicalIds, ...dominicanCanonicalIds, ...peruCanonicalIds, ...saudiCanonicalIds]) {
+for (const id of [...chileCanonicalIds, ...franceCanonicalIds, ...koreaCanonicalIds, ...italyCanonicalIds, ...southAfricaCanonicalIds, ...panamaCanonicalIds, ...jamaicaCanonicalIds, ...brazilCanonicalIds, ...dominicanCanonicalIds, ...peruCanonicalIds, ...saudiCanonicalIds]) {
   assert(publishableIds.has(id), `${id}: expected publishable map location`);
 }
 
@@ -111,6 +115,8 @@ console.log('SOUTH_AFRICA_PUBLIC_RACECOURSE_COUNT: 7');
 console.log('SOUTH_AFRICA_MAP_LOCATION_COUNT: 7');
 console.log('PANAMA_PUBLIC_RACECOURSE_COUNT: 1');
 console.log('PANAMA_MAP_LOCATION_COUNT: 1');
+console.log('JAMAICA_PUBLIC_RACECOURSE_COUNT: 1');
+console.log('JAMAICA_MAP_LOCATION_COUNT: 1');
 console.log('BRAZIL_PUBLIC_RACECOURSE_COUNT: 4');
 console.log('BRAZIL_MAP_LOCATION_COUNT: 4');
 console.log('DOMINICAN_REPUBLIC_PUBLIC_RACECOURSE_COUNT: 1');
