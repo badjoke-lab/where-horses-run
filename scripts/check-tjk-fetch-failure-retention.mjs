@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { discoverAnnualFixtures } from './timetable/tjk-annual-fixture-discovery.mjs';
+import { discoverAnnualFixtures, extractAnnualFixtures, SIMPLE_ANNUAL_PAGE_URL } from './timetable/tjk-annual-fixture-discovery.mjs';
 
 const source = fs.readFileSync('scripts/timetable/run-tjk-current-best-available.mjs', 'utf8');
 assert.match(source, /try \{\s*annual = await retry\(\(\) => discoverAnnualFixtures/, 'annual discovery must be guarded and retried');
@@ -97,5 +97,28 @@ const concurrentFallback = await discoverAnnualFixtures({
 assert.equal(concurrentFallback.fixtures.length, 8);
 assert.equal(maxActiveFallbacks, 4, 'TJK daily fallback must use bounded concurrency instead of 30 serial timeout windows');
 assert.ok(maxActiveFallbacks <= 4, 'TJK fallback concurrency must remain bounded');
+
+if (process.env.GITHUB_ACTIONS === 'true') {
+  const response = await fetch(SIMPLE_ANNUAL_PAGE_URL, {
+    headers: {
+      accept: 'text/html,application/xhtml+xml',
+      'user-agent': 'WhereHorsesRun-source-verification/1.0',
+    },
+    signal: AbortSignal.timeout(12_000),
+  });
+  assert.equal(response.ok, true, `live simple TJK annual page must be reachable from GitHub Actions: HTTP ${response.status}`);
+  const html = await response.text();
+  const liveFixtures = extractAnnualFixtures(html, {
+    startDate: '2026-09-27',
+    endDateExclusive: '2026-10-27',
+  });
+  assert.ok(liveFixtures.length > 0, 'live simple TJK annual page must expose current-window domestic fixtures');
+  console.log('TJK_SIMPLE_ANNUAL_LIVE:', JSON.stringify({
+    url: SIMPLE_ANNUAL_PAGE_URL,
+    fixtures: liveFixtures.length,
+    first: liveFixtures[0]?.date ?? null,
+    last: liveFixtures.at(-1)?.date ?? null,
+  }));
+}
 
 console.log('TJK_FETCH_FAILURE_RETENTION: pass');
