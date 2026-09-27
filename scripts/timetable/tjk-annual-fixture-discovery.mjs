@@ -1,3 +1,5 @@
+import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
+import { TJK_STATIC_CALENDAR_URL, parseTjkStaticCalendarItems } from './tjk-static-calendar-core.mjs';
 import { ENTRY_URL, parseTjkDate } from './tjk-current-future-candidates.mjs';
 
 export const ANNUAL_PAGE_URL = 'https://www.tjk.org/TR/YarisSever/Query/Page/YillikYarisProgramiCoklu';
@@ -42,6 +44,37 @@ function buildQueryUrl(baseUrl, startDate, endDateInclusive, pageNumber = null) 
     url.searchParams.set('Sort', '');
   }
   return url.href;
+}
+
+async function fetchStaticAnnualCalendar(startDate, endDateExclusive, fetchImpl) {
+  const response = await fetchImpl(TJK_STATIC_CALENDAR_URL, {
+    method: 'GET',
+    redirect: 'follow',
+    headers: {
+      accept: 'application/pdf,*/*;q=0.8',
+      'user-agent': 'WhereHorsesRun-source-verification/1.0',
+    },
+    signal: AbortSignal.timeout(12_000),
+  });
+  if (!response.ok) throw new Error(`TJK static annual calendar fetch failed: HTTP ${response.status}`);
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  if (bytes.length < 4 || String.fromCharCode(...bytes.slice(0, 4)) !== '%PDF') {
+    throw new Error('TJK static annual calendar response is not a PDF');
+  }
+  const pdf = await getDocument({ data: bytes, disableWorker: true }).promise;
+  if (pdf.numPages !== 1) throw new Error(`TJK static annual calendar page count changed: ${pdf.numPages}`);
+  const page = await pdf.getPage(1);
+  const text = await page.getTextContent();
+  const parsed = parseTjkStaticCalendarItems(text.items);
+  if (parsed.month_count !== 12 || parsed.unmatched_codes.length !== 0 || parsed.fixtures.length !== 758) {
+    throw new Error(
+      `TJK static annual calendar integrity failed: months=${parsed.month_count} fixtures=${parsed.fixtures.length} unmatched=${parsed.unmatched_codes.length}`,
+    );
+  }
+  return {
+    fixtures: parsed.fixtures.filter((fixture) => fixture.date >= startDate && fixture.date < endDateExclusive),
+    annual_fixture_count: parsed.fixtures.length,
+  };
 }
 
 async function fetchHtml(url, fetchImpl, { allowNotFound = false, timeoutMs = 20_000 } = {}) {
@@ -120,7 +153,43 @@ export async function discoverAnnualFixtures({ startDate, endDateExclusive, fetc
     firstHtml = await fetchHtml(firstUrl, fetchImpl);
     pages.push({ page_number: 0, url: firstUrl, status: 'ok' });
   } catch (error) {
-    pages.push({ page_number: 0, url: firstUrl, status: 'fetch_failed' });
+    pages.push({
+      page_number: 0,
+      url: firstUrl,
+      status: 'fetch_failed',
+      error_code: error?.name === 'TimeoutError' ? 'timeout' : 'fetch_error',
+    });
+
+    try {
+      const staticCalendar = await fetchStaticAnnualCalendar(startDate, endDateExclusive, fetchImpl);
+      pages.push({
+        page_number: null,
+        url: TJK_STATIC_CALENDAR_URL,
+        status: 'static_calendar_ok',
+        annual_fixture_count: staticCalendar.annual_fixture_count,
+        window_fixture_count: staticCalendar.fixtures.length,
+      });
+      return {
+        fixtures: staticCalendar.fixtures,
+        pages,
+        source_url: TJK_STATIC_CALENDAR_URL,
+        schedule_source_id: 'tjk-static-annual-calendar',
+        daily_entry_url: ENTRY_URL,
+        dynamic_route_failure: {
+          stage: 'annual_dynamic_route',
+          source_url: firstUrl,
+          error_code: error?.name === 'TimeoutError' ? 'timeout' : 'fetch_error',
+        },
+      };
+    } catch (staticError) {
+      pages.push({
+        page_number: null,
+        url: TJK_STATIC_CALENDAR_URL,
+        status: 'static_calendar_failed',
+        error_code: staticError?.name === 'TimeoutError' ? 'timeout' : 'fetch_error',
+      });
+    }
+
     const cursor = new Date(`${startDate}T00:00:00Z`);
     const end = new Date(`${endDateExclusive}T00:00:00Z`);
     const fallbackDays = [];

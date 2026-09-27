@@ -1,6 +1,13 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { discoverAnnualFixtures } from './timetable/tjk-annual-fixture-discovery.mjs';
+import {
+  TJK_STATIC_CALENDAR_URL,
+  identifyTjkMonth,
+  identifyTjkVenueCode,
+  parseTjkStaticCalendarItems,
+} from './timetable/tjk-static-calendar-core.mjs';
 
 const source = fs.readFileSync('scripts/timetable/run-tjk-current-best-available.mjs', 'utf8');
 assert.match(source, /try \{\s*annual = await retry\(\(\) => discoverAnnualFixtures/, 'annual discovery must be guarded and retried');
@@ -15,6 +22,11 @@ const fallbackFetch = async (url) => {
   fallbackCalls.push(url);
   if (url.includes('/Query/Data/YillikYarisProgramiCoklu')) {
     const error = new Error('simulated broad annual timeout');
+    error.name = 'TimeoutError';
+    throw error;
+  }
+  if (url === TJK_STATIC_CALENDAR_URL) {
+    const error = new Error('simulated static calendar failure');
     error.name = 'TimeoutError';
     throw error;
   }
@@ -39,7 +51,8 @@ assert.equal(fallback.pages[0]?.status, 'fetch_failed', 'primary annual Data fai
 assert.equal(fallback.pages.filter((page) => page.status === 'fallback_page_ok').length, 2, 'fallback must fetch one bounded annual page per day');
 assert.equal(fallback.fixtures[0].date, '2026-09-26');
 assert.equal(fallback.fixtures[1].date, '2026-09-27');
-assert.match(fallbackCalls[1], /\/Query\/Page\/YillikYarisProgramiCoklu/, 'fallback must use the official annual Page route');
+assert.equal(fallbackCalls[1], TJK_STATIC_CALENDAR_URL, 'static official annual calendar must be attempted before daily Page fallback');
+assert.match(fallbackCalls[2], /\/Query\/Page\/YillikYarisProgramiCoklu/, 'daily fallback must remain available after static calendar failure');
 
 const partialFallback = await discoverAnnualFixtures({
   startDate: '2026-09-26',
@@ -47,6 +60,11 @@ const partialFallback = await discoverAnnualFixtures({
   fetchImpl: async (url) => {
     if (url.includes('/Query/Data/YillikYarisProgramiCoklu')) {
       const error = new Error('simulated broad annual timeout');
+      error.name = 'TimeoutError';
+      throw error;
+    }
+    if (url === TJK_STATIC_CALENDAR_URL) {
+      const error = new Error('simulated static calendar failure');
       error.name = 'TimeoutError';
       throw error;
     }
@@ -77,6 +95,11 @@ const concurrentFallback = await discoverAnnualFixtures({
       error.name = 'TimeoutError';
       throw error;
     }
+    if (url === TJK_STATIC_CALENDAR_URL) {
+      const error = new Error('simulated static calendar failure');
+      error.name = 'TimeoutError';
+      throw error;
+    }
     activeFallbacks += 1;
     maxActiveFallbacks = Math.max(maxActiveFallbacks, activeFallbacks);
     await new Promise((resolve) => setTimeout(resolve, 15));
@@ -90,5 +113,34 @@ const concurrentFallback = await discoverAnnualFixtures({
 assert.equal(concurrentFallback.fixtures.length, 8);
 assert.equal(maxActiveFallbacks, 4, 'TJK daily fallback must use bounded concurrency instead of 30 serial timeout windows');
 assert.ok(maxActiveFallbacks <= 4, 'TJK fallback concurrency must remain bounded');
+
+if (process.env.GITHUB_ACTIONS === 'true') {
+  const url=TJK_STATIC_CALENDAR_URL;
+  const response=await fetch(url,{signal:AbortSignal.timeout(12_000),headers:{'user-agent':'WhereHorsesRun-source-verification/1.0'}});
+  assert.equal(response.ok,true,`TJK static calendar must be reachable: HTTP ${response.status}`);
+  const bytes=new Uint8Array(await response.arrayBuffer());
+  assert.equal(String.fromCharCode(...bytes.slice(0,4)),'%PDF');
+  const pdf=await getDocument({data:bytes,disableWorker:true}).promise;
+  assert.equal(pdf.numPages,1);
+  const page=await pdf.getPage(1);
+  const text=await page.getTextContent();
+  const parsed=parseTjkStaticCalendarItems(text.items);
+  const current=parsed.fixtures.filter((row)=>row.date>='2026-09-27'&&row.date<'2026-10-27');
+  console.log('TJK_STATIC_CALENDAR_PARSE:',JSON.stringify({
+    url,
+    annual_fixtures:parsed.fixtures.length,
+    unmatched_codes:parsed.unmatched_codes.length,
+    code_points:parsed.code_points,
+    day_points:parsed.day_points,
+    month_count:parsed.month_count,
+    current_count:current.length,
+    current_sample:current.slice(0,40).map((row)=>({date:row.date,venue:row.racecourse,source_id:row.racecourse_source_id})),
+    unmatched_sample:parsed.unmatched_codes.slice(0,30),
+  }));
+  assert.equal(parsed.month_count,12);
+  assert.ok(parsed.fixtures.length>=700,'static calendar coordinate parser must recover nearly the whole official annual programme before it can be promoted to production fallback');
+  assert.equal(parsed.unmatched_codes.length,0,'every TJK calendar venue code must bind to a date cell');
+  assert.ok(current.length>0,'static official calendar must recover current-window TJK fixtures');
+}
 
 console.log('TJK_FETCH_FAILURE_RETENTION: pass');
