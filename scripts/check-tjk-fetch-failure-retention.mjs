@@ -6,6 +6,7 @@ import {
   TJK_STATIC_CALENDAR_URL,
   identifyTjkMonth,
   identifyTjkVenueCode,
+  parseTjkStaticCalendarItems,
 } from './timetable/tjk-static-calendar-core.mjs';
 
 const source = fs.readFileSync('scripts/timetable/run-tjk-current-best-available.mjs', 'utf8');
@@ -107,25 +108,23 @@ if (process.env.GITHUB_ACTIONS === 'true') {
   assert.equal(pdf.numPages,1);
   const page=await pdf.getPage(1);
   const text=await page.getTextContent();
-  const months=new Set(['Ocak','Şubat','Subat','Mart','Nisan','Mayıs','Mayis','Haziran','Temmuz','Ağustos','Agustos','Eylül','Eylul','Ekim','Kasım','Kasim','Aralık','Aralik']);
-  const codes=/^(ADA|ANK|ANT|BUR|DYB|ELZ|İST|IST|İZM|IZM|KOC|URF)$/;
-  const monthItems=[];
-  const codeItems=[];
-  for(const item of text.items){
-    if(!('str' in item)) continue;
-    const value=String(item.str??'').trim();
-    const point={v:value,x:Number(item.transform?.[4]??0),y:Number(item.transform?.[5]??0)};
-    if(identifyTjkMonth(value)) monthItems.push({...point,month:identifyTjkMonth(value)});
-    if(identifyTjkVenueCode(value)) codeItems.push({...point,code:identifyTjkVenueCode(value)});
-  }
-  monthItems.sort((a,b)=>b.y-a.y||a.x-b.x);
-  codeItems.sort((a,b)=>b.y-a.y||a.x-b.x);
-  console.log('TJK_STATIC_CALENDAR_LAYOUT:',JSON.stringify({
+  const parsed=parseTjkStaticCalendarItems(text.items);
+  const current=parsed.fixtures.filter((row)=>row.date>='2026-09-27'&&row.date<'2026-10-27');
+  console.log('TJK_STATIC_CALENDAR_PARSE:',JSON.stringify({
     url,
-    months:monthItems,
-    code_count:codeItems.length,
-    code_sample:codeItems.slice(-80),
+    annual_fixtures:parsed.fixtures.length,
+    unmatched_codes:parsed.unmatched_codes.length,
+    code_points:parsed.code_points,
+    day_points:parsed.day_points,
+    month_count:parsed.month_count,
+    current_count:current.length,
+    current_sample:current.slice(0,40).map((row)=>({date:row.date,venue:row.racecourse,source_id:row.racecourse_source_id})),
+    unmatched_sample:parsed.unmatched_codes.slice(0,30),
   }));
+  assert.equal(parsed.month_count,12);
+  assert.ok(parsed.fixtures.length>=700,'static calendar coordinate parser must recover nearly the whole official annual programme before it can be promoted to production fallback');
+  assert.equal(parsed.unmatched_codes.length,0,'every TJK calendar venue code must bind to a date cell');
+  assert.ok(current.length>0,'static official calendar must recover current-window TJK fixtures');
 }
 
 console.log('TJK_FETCH_FAILURE_RETENTION: pass');
