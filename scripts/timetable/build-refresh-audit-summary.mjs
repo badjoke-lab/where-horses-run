@@ -36,6 +36,7 @@ const SYSTEMS = [
   { key: 'brazil-cidade-jardim', file: 'brazil-cidade-jardim.json', country_id: 'brazil', authority_id: 'jockey-club-de-sao-paulo', racing_system_id: 'brazil-cidade-jardim-system' },
   { key: 'brazil-sorocaba', file: 'brazil-sorocaba.json', country_id: 'brazil', authority_id: 'jockey-club-de-sorocaba', racing_system_id: 'brazil-sorocaba-system' },
   { key: 'dominican-hvc', file: 'dominican-hvc.json', country_id: 'dominican-republic', authority_id: 'hipodromo-v-centenario', racing_system_id: 'hvc-racing-system' },
+  { key: 'jamaica', file: 'jamaica.json', country_id: 'jamaica', authority_id: 'caymanas-park-svrel', racing_system_id: 'jamaica-reviewed-system' },
 ];
 
 const STATE_FILES = {
