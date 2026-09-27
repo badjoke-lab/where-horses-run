@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import {
   classifyUaeEraDetailMeeting,
+  detectUaeEraPendingPublication,
   parseUaeEraPublicSafeRacecardHtml,
   uaeEraDetailContractV1,
 } from './timetable/uae-era-detail-artifact-core.mjs';
@@ -62,6 +63,33 @@ for (const invalidUrl of [
   }
   if (!rejected) fail(`invalid source URL was accepted: ${invalidUrl}`);
 }
+
+const pendingMarkup = `
+<main>
+  <h1>07 Oct 2026</h1>
+  <div>Jebel Ali</div>
+  <nav><a href="/racecard/2026-10-07/1/declarations">Race 1</a></nav>
+  <section>Loading races...</section>
+</main>`;
+const pending = detectUaeEraPendingPublication(pendingMarkup, {
+  sourceUrl: 'https://emiratesracing.com/racecard/2026-10-07/1/declarations',
+});
+if (pending.pending_publication !== true) fail('explicit Loading races placeholder must classify as pending publication');
+if (pending.evidence_phrase !== 'Loading races...') fail('pending publication evidence phrase differs');
+
+const publishedMarkup = `
+<main>
+  <h1>07 Oct 2026</h1>
+  <div>Jebel Ali</div>
+  <section>Race 1
+12:30
+1200m
+DIRT</section>
+</main>`;
+const publishedPending = detectUaeEraPendingPublication(publishedMarkup, {
+  sourceUrl: 'https://emiratesracing.com/racecard/2026-10-07/1/declarations',
+});
+if (publishedPending.pending_publication !== false) fail('published post time must not be classified as pending');
 
 if (uaeEraDetailContractV1.public_ceiling !== 'A') fail('UAE public ceiling must remain A');
 
