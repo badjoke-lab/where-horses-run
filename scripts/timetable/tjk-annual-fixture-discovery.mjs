@@ -1,5 +1,6 @@
 import { ENTRY_URL, parseTjkDate } from './tjk-current-future-candidates.mjs';
 
+export const SIMPLE_ANNUAL_PAGE_URL = 'https://www.tjk.org/TR/YarisSever/Query/Page/YillikYarisProgrami';
 export const ANNUAL_PAGE_URL = 'https://www.tjk.org/TR/YarisSever/Query/Page/YillikYarisProgramiCoklu';
 export const ANNUAL_DATA_URL = 'https://www.tjk.org/TR/YarisSever/Query/Data/YillikYarisProgramiCoklu';
 export const ANNUAL_ROWS_URL = 'https://www.tjk.org/TR/YarisSever/Query/DataRows/YillikYarisProgramiCoklu';
@@ -32,11 +33,13 @@ function dateForQuery(iso) {
   return `${day}/${month}/${year}`;
 }
 
-function buildQueryUrl(baseUrl, startDate, endDateInclusive, pageNumber = null) {
+function buildQueryUrl(baseUrl, startDate, endDateInclusive, pageNumber = null, { includeVenueIds = true } = {}) {
   const url = new URL(baseUrl);
   url.searchParams.set('QueryParameter_Tarih_Start', dateForQuery(startDate));
   url.searchParams.set('QueryParameter_Tarih_End', dateForQuery(endDateInclusive));
-  for (const id of DOMESTIC_TJK_VENUES.keys()) url.searchParams.append('QueryParameter_SehirId', id);
+  if (includeVenueIds) {
+    for (const id of DOMESTIC_TJK_VENUES.keys()) url.searchParams.append('QueryParameter_SehirId', id);
+  }
   if (pageNumber !== null) {
     url.searchParams.set('PageNumber', String(pageNumber));
     url.searchParams.set('Sort', '');
@@ -121,6 +124,38 @@ export async function discoverAnnualFixtures({ startDate, endDateExclusive, fetc
     pages.push({ page_number: 0, url: firstUrl, status: 'ok' });
   } catch (error) {
     pages.push({ page_number: 0, url: firstUrl, status: 'fetch_failed' });
+
+    const simpleUrl = buildQueryUrl(
+      SIMPLE_ANNUAL_PAGE_URL,
+      startDate,
+      endDateInclusive,
+      null,
+      { includeVenueIds: false },
+    );
+    try {
+      const simpleHtml = await fetchHtml(simpleUrl, fetchImpl, { timeoutMs: 12_000 });
+      const simpleFixtures = extractAnnualFixtures(simpleHtml, { startDate, endDateExclusive });
+      pages.push({ page_number: null, url: simpleUrl, status: 'simple_page_ok', fixtures: simpleFixtures.length });
+      if (simpleFixtures.length > 0) {
+        for (const fixture of simpleFixtures) all.set(fixture.candidate_id, fixture);
+        return {
+          fixtures: [...all.values()].sort((a, b) => a.date.localeCompare(b.date) || Number(a.racecourse_source_id) - Number(b.racecourse_source_id)),
+          pages,
+          source_url: SIMPLE_ANNUAL_PAGE_URL,
+          schedule_source_id: 'tjk-annual-programme-simple-page-fallback',
+          daily_entry_url: ENTRY_URL,
+        };
+      }
+      pages.push({ page_number: null, url: simpleUrl, status: 'simple_page_empty' });
+    } catch (simpleError) {
+      pages.push({
+        page_number: null,
+        url: simpleUrl,
+        status: 'simple_page_failed',
+        error_code: simpleError?.name === 'TimeoutError' ? 'timeout' : 'fetch_error',
+      });
+    }
+
     const cursor = new Date(`${startDate}T00:00:00Z`);
     const end = new Date(`${endDateExclusive}T00:00:00Z`);
     const fallbackDays = [];
