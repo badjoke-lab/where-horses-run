@@ -219,11 +219,23 @@ function parseFixtureHtml(html, month, sourceUrl) {
   return meetings;
 }
 
+function hasPublishedRacecardSignal(body, text) {
+  const raceNumbers = new Set(
+    [...String(body ?? '').matchAll(/(?:RaceNo|raceno)=([0-9]{1,2})/gi)]
+      .map((match) => Number(match[1]))
+      .filter((value) => Number.isInteger(value) && value >= 1 && value <= 20),
+  );
+  const hasPostTime = /\b\d{1,2}:\d{2}\b/.test(text);
+  const hasRaceShape = /\b\d{3,4}M\b/i.test(text) || /\b(?:Turf|All Weather Track|All Weather|Dirt)\b/i.test(text);
+  return raceNumbers.size >= 2 && hasPostTime && hasRaceShape;
+}
+
 function classifyBody(body) {
   const text = stripHtml(body);
   if (!body || text.length === 0) return { status: reportStatus.EMPTY_RESPONSE, reason: 'Official response body was empty.' };
+  if (hasPublishedRacecardSignal(body, text)) return null;
   if (/access\s*denied|captcha|robot|bot|forbidden|temporarily unavailable|akamai|request blocked/i.test(text)) {
-    return { status: reportStatus.BLOCKED_OR_BOT_PAGE, reason: 'Official response appears to be an access-control or bot-protection page.' };
+    return { status: reportStatus.BLOCKED_OR_BOT_PAGE, reason: 'Official response appears to be an access-control or bot-protection page without published-racecard evidence.' };
   }
   if (/No race card|not available|not yet available|will be available|Race Card is not available/i.test(text)) {
     return { status: reportStatus.RACECARD_NOT_PUBLISHED, reason: 'Official page indicates the racecard is not published yet.' };
