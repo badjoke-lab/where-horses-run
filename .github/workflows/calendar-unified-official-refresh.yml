@@ -52,6 +52,7 @@ on:
       - 'scripts/check-calendar-live-source-readiness.mjs'
       - 'scripts/check-calendar-non-running-evidence-registry.mjs'
       - 'scripts/check-hkjc-non-running-evidence.mjs'
+      - 'scripts/check-hkjc-current-detail-live.mjs'
       - 'scripts/check-uae-era-non-running-evidence.mjs'
       - 'scripts/check-jra-non-running-evidence.mjs'
       - 'scripts/check-jra-non-running-discovery.mjs'
@@ -212,6 +213,7 @@ jobs:
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
+          node scripts/check-hkjc-current-detail-live.mjs
           node scripts/check-uae-era-non-running-evidence.mjs
           node scripts/check-jra-non-running-evidence.mjs
           node scripts/check-jra-non-running-discovery.mjs
@@ -388,6 +390,7 @@ jobs:
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
+          node scripts/check-hkjc-current-detail-live.mjs
           node scripts/check-uae-era-non-running-evidence.mjs
           node scripts/check-jra-non-running-evidence.mjs
           node scripts/check-jra-non-running-discovery.mjs
