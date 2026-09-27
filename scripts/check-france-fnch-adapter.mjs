@@ -42,15 +42,13 @@ assert.equal(mixed.records[0].system_key,'galop','mixed meeting is routed once t
 assert.equal(mixed.records[0].mixed_disciplines,true);
 const mixedRecord=buildFnchMixedMeetingRecord(mixed.records[0],{checkedAt:'2026-09-27T00:00:00Z'});
 assert.equal(mixedRecord.capability_rank,'B');
-assert.ok(mixedRecord.evidence_support.race_times,'mixed-meeting first-race time must use the supported race_times evidence group');
-assert.equal('first_race_time' in mixedRecord.evidence_support,false,'unsupported one-off evidence key must not be emitted');
-assert.deepEqual(validateCalendarAuthorityMetadataV1({acquisition_attempt:mixedRecord.acquisition_attempt,acquisition_completion:mixedRecord.acquisition_completion,evidence_support:mixedRecord.evidence_support},mixedRecord.meeting_id),[]);
-const mixedRecord=buildFnchMixedMeetingRecord(mixed.records[0],{checkedAt:'2026-09-26T00:00:00Z'});
-assert.equal(mixedRecord.capability_rank,'B');
 assert.equal(mixedRecord.first_race_time_local,'14:10');
 assert.equal(mixedRecord.detail_observation.status,'not_applicable');
 assert.equal(mixedRecord.acquisition_completion.higher_rank_open,false);
 assert.equal(mixedRecord.timetable_rows.length,0);
+assert.ok(mixedRecord.evidence_support.race_times,'mixed-meeting first-race time must use the supported race_times evidence group');
+assert.equal('first_race_time' in mixedRecord.evidence_support,false,'unsupported one-off evidence key must not be emitted');
+assert.deepEqual(validateCalendarAuthorityMetadataV1({acquisition_attempt:mixedRecord.acquisition_attempt,acquisition_completion:mixedRecord.acquisition_completion,evidence_support:mixedRecord.evidence_support},mixedRecord.meeting_id),[]);
 
 const applySource=fs.readFileSync('scripts/timetable/apply-official-rolling-observations.mjs','utf8');
 assert.match(applySource,/artifact\.superseded_meeting_ids/,'rolling apply must consume explicit superseded meeting ids');
