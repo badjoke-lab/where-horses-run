@@ -35,6 +35,7 @@ const SYSTEMS = [
   { key: 'brazil-cristal', file: 'brazil-cristal.json', country_id: 'brazil', authority_id: 'jockey-club-do-rio-grande-do-sul', racing_system_id: 'brazil-cristal-system' },
   { key: 'brazil-cidade-jardim', file: 'brazil-cidade-jardim.json', country_id: 'brazil', authority_id: 'jockey-club-de-sao-paulo', racing_system_id: 'brazil-cidade-jardim-system' },
   { key: 'brazil-sorocaba', file: 'brazil-sorocaba.json', country_id: 'brazil', authority_id: 'jockey-club-de-sorocaba', racing_system_id: 'brazil-sorocaba-system' },
+  { key: 'mexico', file: 'mexico.json', country_id: 'mexico', authority_id: 'hipodromo-de-las-americas', racing_system_id: 'mexico-hipodromo-las-americas-system' },
   { key: 'dominican-hvc', file: 'dominican-hvc.json', country_id: 'dominican-republic', authority_id: 'hipodromo-v-centenario', racing_system_id: 'hvc-racing-system' },
 ];
 

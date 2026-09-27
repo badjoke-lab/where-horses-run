@@ -1,34 +1,34 @@
 {
   "country": "Mexico",
   "slug": "mexico",
-  "test_status": "pending",
+  "test_status": "complete",
   "primary_source_candidate": {
-    "name": "Hipodromo de las Americas official website",
+    "name": "Hipódromo de las Américas official Programas",
     "base_url_candidates": [
-      "https://www.hipodromo.com.mx/",
-      "https://www.hipodromo.com.mx/desktop/",
-      "https://hipodromo.com.mx/",
-      "https://hipodromo.com.mx/desktop/"
+      "https://www.hipodromo.com.mx/desktop/index.php/carreras/programas"
     ]
   },
   "tested_scope": {
-    "racecourse": "Hipodromo de las Americas",
-    "positive_meetings": 0,
+    "racecourse": "Hipódromo de las Américas",
+    "positive_meetings": 1,
     "positive_races": 0
   },
   "observed_result": {
-    "dns_status": "failed from local test environment",
-    "http_status": "all tested official URL candidates returned HTTP 000",
-    "curl_exit_codes": [
-      6,
-      28
-    ],
-    "technical_rank": "pending"
+    "dns_status": "reachable",
+    "http_status": "official Programas page reachable and current 2026 programme dates visible",
+    "technical_rank": "C",
+    "public_ceiling": "C",
+    "extraction_scope": "meeting date + single physical racecourse only",
+    "source_visible_horizon": true
   },
   "notes": [
-    "The official site candidate is known, but it was not reachable from the local source-test environment during this run.",
-    "No public programme, PDF, JSON API, or machine-readable race timetable source was confirmed in this run.",
-    "Do not classify Mexico as C from this result; this is an obtainability pending result caused by DNS/reachability failure."
+    "The former DNS/reachability blocker is closed: the official Programas page is reachable.",
+    "The current official page exposes 2026 programme dates including 2026-09-27.",
+    "The automatic production route publishes meeting date and Hipódromo de las Américas identity only at rank C.",
+    "Opening hours are not race post times and are not retained.",
+    "The Programas page is a source-visible publication horizon; absence of a future programme is not evidence of non-running."
   ],
-  "raw_storage_note": "Raw local probe outputs are stored only under .whr-local-source-tests/07-mexico/ and must not be committed."
+  "raw_storage_note": "Raw local probe outputs are stored only under .whr-local-source-tests/07-mexico/ and must not be committed.",
+  "checked_date": "2026-09-27",
+  "evidence_reviewed_at": "2026-09-27"
 }

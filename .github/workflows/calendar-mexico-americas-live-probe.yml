@@ -1,0 +1,44 @@
+name: Mexico Hipodromo Americas live probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-mexico-americas-live-probe.yml'
+      - 'scripts/timetable/mexico-americas-programas-core.mjs'
+      - 'scripts/timetable/run-mexico-americas-official-window.mjs'
+      - 'scripts/check-mexico-americas-adapter.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - name: Validate Mexico adapter
+        run: npm run validate:mexico-americas
+      - name: Probe live Mexico source-visible window
+        run: |
+          mkdir -p .calendar-mexico-probe
+          node scripts/timetable/run-mexico-americas-official-window.mjs \
+            --as-of=2026-09-27 \
+            --days=30 \
+            --output=.calendar-mexico-probe/mexico.json
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const data=JSON.parse(fs.readFileSync('.calendar-mexico-probe/mexico.json','utf8'));
+          console.log(JSON.stringify({
+            records:data.records.map(r=>({date:r.date,venue:r.racecourse_id,rank:r.capability_rank})),
+            diagnostics:data.diagnostics,
+            discovery:data.discovery,
+            window:data.window,
+          }));
+          if(data.diagnostics.source_errors.length||data.diagnostics.parse_failures.length) process.exitCode=1;
+          if(data.records.length===0) process.exitCode=1;
+          if(data.records.some(r=>r.first_race_time_local!==null||r.last_race_time_local!==null)) process.exitCode=1;
+          NODE
