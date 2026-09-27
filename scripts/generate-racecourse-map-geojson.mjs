@@ -108,6 +108,8 @@ const calendarMapRegressionIds = [
   'brazil--hipodromo-do-cristal',
   'brazil--hipodromo-de-cidade-jardim',
   'brazil--jockey-club-de-sorocaba',
+  // Dominican Republic (1)
+  'dominican-republic--hipodromo-v-centenario',
   // Morocco (7)
   'casablanca-anfa-racecourse',
   'meknes-racecourse',
