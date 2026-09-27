@@ -2,6 +2,11 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { discoverAnnualFixtures } from './timetable/tjk-annual-fixture-discovery.mjs';
+import {
+  TJK_STATIC_CALENDAR_URL,
+  identifyTjkMonth,
+  identifyTjkVenueCode,
+} from './timetable/tjk-static-calendar-core.mjs';
 
 const source = fs.readFileSync('scripts/timetable/run-tjk-current-best-available.mjs', 'utf8');
 assert.match(source, /try \{\s*annual = await retry\(\(\) => discoverAnnualFixtures/, 'annual discovery must be guarded and retried');
@@ -93,7 +98,7 @@ assert.equal(maxActiveFallbacks, 4, 'TJK daily fallback must use bounded concurr
 assert.ok(maxActiveFallbacks <= 4, 'TJK fallback concurrency must remain bounded');
 
 if (process.env.GITHUB_ACTIONS === 'true') {
-  const url='https://medya-cdn.tjk.org/haberftp/2025/2026takvim161225.pdf';
+  const url=TJK_STATIC_CALENDAR_URL;
   const response=await fetch(url,{signal:AbortSignal.timeout(12_000),headers:{'user-agent':'WhereHorsesRun-source-verification/1.0'}});
   assert.equal(response.ok,true,`TJK static calendar must be reachable: HTTP ${response.status}`);
   const bytes=new Uint8Array(await response.arrayBuffer());
@@ -110,8 +115,8 @@ if (process.env.GITHUB_ACTIONS === 'true') {
     if(!('str' in item)) continue;
     const value=String(item.str??'').trim();
     const point={v:value,x:Number(item.transform?.[4]??0),y:Number(item.transform?.[5]??0)};
-    if(months.has(value)) monthItems.push(point);
-    if(codes.test(value)) codeItems.push(point);
+    if(identifyTjkMonth(value)) monthItems.push({...point,month:identifyTjkMonth(value)});
+    if(identifyTjkVenueCode(value)) codeItems.push({...point,code:identifyTjkVenueCode(value)});
   }
   monthItems.sort((a,b)=>b.y-a.y||a.x-b.x);
   codeItems.sort((a,b)=>b.y-a.y||a.x-b.x);
