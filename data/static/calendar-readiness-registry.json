@@ -2819,8 +2819,28 @@
       "system_id": "finland-suomen-hippos-harness-system",
       "system_name_en": "Suomen Hippos harness calendar",
       "authority_source_key": "finland/suomen-hippos/hippos-calendar-2026",
-      "racecourse_ids": [],
-      "coverage_scope": "countrywide",
+      "racecourse_ids": [
+        "finland--vermo",
+        "finland--tampere",
+        "finland--lahti",
+        "finland--kuopio",
+        "finland--seinajoki",
+        "finland--turku",
+        "finland--oulu",
+        "finland--jyvaskyla",
+        "finland--mikkeli",
+        "finland--kaustinen",
+        "finland--kouvola",
+        "finland--pori",
+        "finland--joensuu",
+        "finland--forssa",
+        "finland--lappeenranta",
+        "finland--rovaniemi",
+        "finland--ylivieska",
+        "finland--tornio",
+        "finland--kajaani"
+      ],
+      "coverage_scope": "subset_of_authority_racecourses",
       "technical_rank": "C",
       "public_ceiling": "C",
       "confirmed_fields": {
@@ -2836,24 +2856,27 @@
       },
       "source_format": "html",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "seasonal",
-        "manual"
+        "daily",
+        "near_meeting"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when Suomen Hippos changes the national harness calendar.",
+      "checked_date": "2026-09-28",
+      "evidence_reviewed_at": "2026-09-28",
+      "revalidation_trigger": "Revalidate if the Suomen Hippos current-year calendar structure, master-track denominator, or venue labels change.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/46-finland/final-summary.json",
       "limitations": [
-        "Stable reusable race-time fields are not established."
+        "Production scope is the 19 current main tracks from the reviewed Racecourse Master denominator, not every seasonal/local 2026 venue.",
+        "Seasonal non-master tracks and Paikallisravit local/temporary meetings are diagnosed as out-of-scope.",
+        "Stable reusable first-race or per-race post times are not established; published meeting clock is context only.",
+        "PERUTTU rows are excluded from positive observations; whole-meeting negative evidence remains owned by the separate cancellation lane."
       ],
-      "notes": "Manual C-level national harness calendar decision."
+      "notes": "Automatic C-level collector reads the official Suomen Hippos current-year calendar for the reviewed 19-track main denominator."
     },
     {
       "readiness_id": "netherlands--netherlands-ndr-racing-calendar-system--ndr-koerskalender-2026",
@@ -5471,5 +5494,5 @@
       "notes": "Date-specific Bahrain Turf Club racecard navigation supplies complete per-race post times through public rank A."
     }
   ],
-  "last_updated": "2026-09-27"
+  "last_updated": "2026-09-28"
 }

@@ -1,1 +1,89 @@
-[{"schema_version":"2.0.0","country_id":"finland","slug":"finland","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-20","public_display_ceiling":"C","source_test_status":"complete","hero":{"summary_en":"Suomen Hippos confirms meeting dates and racecourses.","summary_ja":"Suomen Hipposで開催日と競馬場を確認済み。"},"overview":{"paragraphs_en":["The reviewed context is harness racing."],"paragraphs_ja":["確認済み文脈はハーネス競走。"]},"racing_types":[{"id":"harness-racing","name_en":"Harness racing","name_ja":"ハーネス競走","summary_en":"Reviewed through Suomen Hippos.","summary_ja":"Suomen Hipposで確認済み。"}],"seasonality":{"pattern":"official-source-required","summary_en":"Check the current official calendar.","summary_ja":"現行公式カレンダーを確認する。"},"schedule":{"timezone":"Europe/Helsinki","utc_offset_label":"Verify current local offset","day_patterns":["official-source-required"],"time_patterns":["meeting-date-only"],"summary_en":"Dates and venues are confirmed; race times are not.","summary_ja":"開催日と会場は確認済みだが、レース時刻は未確認。"},"surfaces":{"ids":[],"summary_en":"Not normalized.","summary_ja":"共通化しない。"},"systems":[{"id":"finland-hippos-harness-system","name_en":"Suomen Hippos calendar","name_ja":"Suomen Hipposカレンダー","summary_en":"Reviewed harness context.","summary_ja":"確認済みハーネス文脈。","organiser_source_ids":["finland-hippos-home"],"distributor_source_ids":["finland-hippos-calendar-2026"]}],"principal_racecourse_ids":[],"calendar_guidance_en":"Use the official calendar and keep output at meeting level.","calendar_guidance_ja":"公式カレンダーを使用し、表示は開催単位に保つ。","coverage_note_en":"Reusable race times are not established.","coverage_note_ja":"再利用可能なレース時刻は未確認。","revalidation":{"triggers_en":["Official calendar changes"],"triggers_ja":["公式カレンダー変更時"]},"related_glossary_ids":["racecourse","meeting","fixture","post-time"]}]
+[
+  {
+    "schema_version": "2.0.0",
+    "country_id": "finland",
+    "slug": "finland",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-09-28",
+    "public_display_ceiling": "C",
+    "source_test_status": "complete",
+    "hero": {
+      "summary_en": "Suomen Hippos is automatically covered at rank C for the reviewed 19 current main harness tracks.",
+      "summary_ja": "Suomen Hipposのレビュー済み現役主要19ハーネス競馬場をCで自動取得します。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "The production route reads the official current-year Suomen Hippos calendar for the 19 Racecourse Master main tracks. Seasonal non-master tracks and Paikallisravit local/temporary meetings remain explicitly out of scope; meeting clocks are not published as first-race times."
+      ],
+      "paragraphs_ja": [
+        "production導線はSuomen Hippos公式当年カレンダーからRacecourse Masterの主要19場を取得します。季節開催地とPaikallisravit地方・臨時開催は明示的に対象外とし、開催時刻を第1競走発走時刻として公開しません。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "harness-racing",
+        "name_en": "Harness racing",
+        "name_ja": "ハーネス競走",
+        "summary_en": "Reviewed through Suomen Hippos.",
+        "summary_ja": "Suomen Hipposで確認済み。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "official-source-required",
+      "summary_en": "Check the current official calendar.",
+      "summary_ja": "現行公式カレンダーを確認する。"
+    },
+    "schedule": {
+      "timezone": "Europe/Helsinki",
+      "utc_offset_label": "Verify current local offset",
+      "day_patterns": [
+        "official-source-required"
+      ],
+      "time_patterns": [
+        "meeting-date-only"
+      ],
+      "summary_en": "Dates and venues are confirmed; race times are not.",
+      "summary_ja": "開催日と会場は確認済みだが、レース時刻は未確認。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Not normalized.",
+      "summary_ja": "共通化しない。"
+    },
+    "systems": [
+      {
+        "id": "finland-suomen-hippos-harness-system",
+        "name_en": "Suomen Hippos calendar",
+        "name_ja": "Suomen Hipposカレンダー",
+        "summary_en": "Automatic rank-C coverage of the reviewed 19 current main harness tracks.",
+        "summary_ja": "レビュー済み現役主要19ハーネス競馬場をCで自動取得します。",
+        "organiser_source_ids": [
+          "finland-hippos-home"
+        ],
+        "distributor_source_ids": [
+          "finland-hippos-calendar-2026"
+        ]
+      }
+    ],
+    "principal_racecourse_ids": [],
+    "calendar_guidance_en": "Publish source-visible meeting date and reviewed main-track identity only. Do not infer race post times or fold seasonal/local meetings into a main-track identity.",
+    "calendar_guidance_ja": "公開済み開催日とレビュー済み主要競馬場identityのみ表示し、発走時刻を推測せず、季節・地方開催を主要競馬場identityへ混同しません。",
+    "coverage_note_en": "Production scope is the 19 reviewed main tracks. Seasonal/local meetings remain outside this route.",
+    "coverage_note_ja": "production対象はレビュー済み主要19場です。季節・地方開催はこの導線の対象外です。",
+    "revalidation": {
+      "triggers_en": [
+        "Official calendar changes"
+      ],
+      "triggers_ja": [
+        "公式カレンダー変更時"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture",
+      "post-time"
+    ]
+  }
+]

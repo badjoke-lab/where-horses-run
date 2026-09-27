@@ -886,6 +886,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "GitHub Actions follows the official HRU/Maroñas monthly calendar and parses only exact Maroñas / Las Piedras venue cells into rank C meeting-date observations. Overseas simulcast rows in the same PDF are excluded. Missing future monthly publication or fetch/parse failure never proves non-running."
+    },
+    {
+      "system_id": "finland-suomen-hippos-harness-system",
+      "country_id": "finland",
+      "authority_id": "suomen-hippos",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "hippos-calendar-2026",
+      "detail_source_id": "hippos-calendar-2026",
+      "schedule_adapter_id": "finland-hippos-calendar-v1",
+      "detail_adapter_id": "finland-hippos-calendar-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic Suomen Hippos current-year HTML calendar route for the 19 current main tracks in the Racecourse Master denominator. Seasonal non-master tracks and Paikallisravit local/temporary meetings are explicitly diagnosed as out-of-scope rather than silently published. Published meeting clock is retained only as context and is not promoted to first-race time."
     }
   ]
 }

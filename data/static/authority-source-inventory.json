@@ -400,7 +400,7 @@
       "source_status": "verified",
       "last_checked_date": "2026-09-27",
       "capability_rank": "C",
-      "adapter_candidate_status": "implemented",
+      "adapter_candidate_status": "candidate",
       "notes": "Official HRU/Maroñas monthly calendar exposes PDF grids containing local Maroñas / Las Piedras meetings alongside simulcast rows. Production adapter admits only exact local venue labels and publishes meeting date + physical venue at rank C."
     },
     {
@@ -1001,15 +1001,15 @@
       "authority_name_en": "Suomen Hippos",
       "authority_name_local": null,
       "authority_type": "national",
-      "racecourse_scope": "countrywide",
+      "racecourse_scope": "subset_of_authority_racecourses",
       "official_source_id": "hippos-calendar-2026",
-      "official_source_url": "https://www.hippos.fi/raviurheilu/ravikilpailukalenteri-2026-on-julkaistu-muutoksia-divisioonajarjestelmaan/",
+      "official_source_url": "https://heppa.hippos.fi/heppa/app?page=racing/RaceCalendarEarlierYear&service=external",
       "source_kind": "calendar",
       "source_status": "verified",
-      "last_checked_date": "2026-06-20",
+      "last_checked_date": "2026-09-28",
       "capability_rank": "C",
       "adapter_candidate_status": "candidate",
-      "notes": "Reviewed Suomen Hippos route confirms the 2026 national harness calendar. Stable reusable race-time fields are not established."
+      "notes": "Production route parses the live Suomen Hippos current-year harness calendar for the 19 reviewed main tracks. Seasonal non-master venues and Paikallisravit are explicitly out of scope in this Calendar lane."
     },
     {
       "country_id": "netherlands",
