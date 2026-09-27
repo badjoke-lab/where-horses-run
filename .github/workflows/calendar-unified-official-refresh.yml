@@ -24,6 +24,7 @@ on:
       - 'scripts/check-brazil-cidade-jardim-adapter.mjs'
       - 'scripts/check-brazil-sorocaba-adapter.mjs'
       - 'scripts/check-dominican-hvc-adapter.mjs'
+      - 'scripts/check-jamaica-caymanas-adapter.mjs'
       - 'scripts/timetable/south-africa-four-racing-core.mjs'
       - 'scripts/timetable/run-south-africa-four-racing-official-window.mjs'
       - 'scripts/timetable/panama-presidente-remon-core.mjs'
@@ -36,6 +37,8 @@ on:
       - 'scripts/timetable/run-brazil-sorocaba-official-window.mjs'
       - 'scripts/timetable/dominican-hvc-core.mjs'
       - 'scripts/timetable/run-dominican-hvc-official-window.mjs'
+      - 'scripts/timetable/jamaica-caymanas-core.mjs'
+      - 'scripts/timetable/run-jamaica-caymanas-official-window.mjs'
       - 'scripts/timetable/italy-masaf-core.mjs'
       - 'scripts/timetable/run-italy-masaf-official-window.mjs'
       - 'scripts/check-calendar-public-map-parity.mjs'
@@ -98,6 +101,7 @@ on:
       - 'scripts/check-brazil-cidade-jardim-adapter.mjs'
       - 'scripts/check-brazil-sorocaba-adapter.mjs'
       - 'scripts/check-dominican-hvc-adapter.mjs'
+      - 'scripts/check-jamaica-caymanas-adapter.mjs'
       - 'scripts/timetable/south-africa-four-racing-core.mjs'
       - 'scripts/timetable/run-south-africa-four-racing-official-window.mjs'
       - 'scripts/timetable/panama-presidente-remon-core.mjs'
@@ -110,6 +114,8 @@ on:
       - 'scripts/timetable/run-brazil-sorocaba-official-window.mjs'
       - 'scripts/timetable/dominican-hvc-core.mjs'
       - 'scripts/timetable/run-dominican-hvc-official-window.mjs'
+      - 'scripts/timetable/jamaica-caymanas-core.mjs'
+      - 'scripts/timetable/run-jamaica-caymanas-official-window.mjs'
       - 'scripts/timetable/italy-masaf-core.mjs'
       - 'scripts/timetable/run-italy-masaf-official-window.mjs'
       - 'scripts/check-calendar-public-map-parity.mjs'
@@ -190,6 +196,7 @@ jobs:
           node scripts/check-brazil-cidade-jardim-adapter.mjs
           node scripts/check-brazil-sorocaba-adapter.mjs
           node scripts/check-dominican-hvc-adapter.mjs
+          node scripts/check-jamaica-caymanas-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
@@ -363,6 +370,7 @@ jobs:
           node scripts/check-brazil-cidade-jardim-adapter.mjs
           node scripts/check-brazil-sorocaba-adapter.mjs
           node scripts/check-dominican-hvc-adapter.mjs
+          node scripts/check-jamaica-caymanas-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-hkjc-non-running-evidence.mjs
@@ -583,6 +591,9 @@ jobs:
           node scripts/timetable/run-dominican-hvc-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/dominican-hvc.json
+          node scripts/timetable/run-jamaica-caymanas-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/jamaica.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -614,7 +625,8 @@ jobs:
             --artifact=.calendar-unified/brazil-cristal.json \
             --artifact=.calendar-unified/brazil-cidade-jardim.json \
             --artifact=.calendar-unified/brazil-sorocaba.json \
-            --artifact=.calendar-unified/dominican-hvc.json
+            --artifact=.calendar-unified/dominican-hvc.json \
+            --artifact=.calendar-unified/jamaica.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -791,6 +803,12 @@ jobs:
             --authority-id=hipodromo-v-centenario \
             --racing-system-id=hvc-racing-system \
             --timezone=America/Santo_Domingo
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/jamaica.json \
+            --country-id=jamaica \
+            --authority-id=caymanas-park-svrel \
+            --racing-system-id=jamaica-reviewed-system \
+            --timezone=America/Jamaica
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
@@ -907,6 +925,9 @@ jobs:
             node scripts/timetable/run-dominican-hvc-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/dominican-hvc.json
+            node scripts/timetable/run-jamaica-caymanas-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/jamaica.json
             node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --artifact=.calendar-unified/uae.json \
@@ -936,7 +957,8 @@ jobs:
             --artifact=.calendar-unified/brazil-cristal.json \
             --artifact=.calendar-unified/brazil-cidade-jardim.json \
             --artifact=.calendar-unified/brazil-sorocaba.json \
-            --artifact=.calendar-unified/dominican-hvc.json
+            --artifact=.calendar-unified/dominican-hvc.json \
+            --artifact=.calendar-unified/jamaica.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --country-id=hong-kong \
@@ -1111,6 +1133,12 @@ jobs:
               --authority-id=hipodromo-v-centenario \
               --racing-system-id=hvc-racing-system \
               --timezone=America/Santo_Domingo
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/jamaica.json \
+              --country-id=jamaica \
+              --authority-id=caymanas-park-svrel \
+              --racing-system-id=jamaica-reviewed-system \
+              --timezone=America/Jamaica
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
             node scripts/timetable/apply-meeting-presence-dispositions.mjs \
             --artifact=.calendar-unified/hkjc.json \
