@@ -116,6 +116,28 @@ try {
   assert.equal(jra.checked, 1);
   assert.equal(jra.changed, 0, 'freshness-only change must not count as substantive');
   assert.equal(jra.promoted, 0);
+
+  writeArtifact('.calendar-unified/future-country-system.json', {
+    generated_at: '2026-09-11T00:04:00Z',
+    records: [],
+  });
+  const unregisteredRun = spawnSync(process.execPath, [
+    builder,
+    `--repo-root=${repo}`,
+    `--artifact-root=${artifacts}`,
+    '--source-run-id=124',
+    `--source-head-sha=${base}`,
+    '--run-started-at=2026-09-11T00:01:00Z',
+    '--run-completed-at=2026-09-11T00:10:00Z',
+    '--source-conclusion=success',
+    `--output=${path.join(root, 'unregistered-summary.json')}`,
+  ], { encoding: 'utf8' });
+  assert.notEqual(unregisteredRun.status, 0, 'unknown production artifact must fail the downstream audit');
+  assert.match(
+    unregisteredRun.stderr + unregisteredRun.stdout,
+    /unregistered Calendar audit artifact\(s\): future-country-system\.json/,
+  );
+
   console.log('refresh audit summary check: ok');
 } finally {
   fs.rmSync(root, { recursive: true, force: true });
