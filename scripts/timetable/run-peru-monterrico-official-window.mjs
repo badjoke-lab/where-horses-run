@@ -3,12 +3,12 @@ import path from 'node:path';
 import {
   PERU_MONTERRICO_AUTHORITY_ID,
   PERU_MONTERRICO_DATE_API_PREFIX,
-  PERU_MONTERRICO_PROGRAMME_URL,
+  PERU_MONTERRICO_REUNION_API_PREFIX,
   PERU_MONTERRICO_SOURCE_ID,
   PERU_MONTERRICO_SYSTEM_ID,
   PERU_MONTERRICO_TIMEZONE,
+  buildMonterricoApiMeetingRecord,
   buildMonterricoFallbackRecord,
-  buildMonterricoMeetingRecord,
   extractMonterricoReunionIds,
 } from './peru-monterrico-core.mjs';
 
@@ -27,13 +27,25 @@ function localDate(now=new Date()) {
   return v.year+'-'+v.month+'-'+v.day;
 }
 async function get(url,accept) {
-  const response=await fetch(url,{redirect:'follow',headers:{
-    'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)',
-    accept,
-    'accept-language':'es-PE,es;q=0.9,en;q=0.7'
-  },signal:AbortSignal.timeout(20000)});
-  if(!response.ok) throw new Error('HTTP '+response.status);
-  return {body:await response.text(),contentType:response.headers.get('content-type')??'',url:response.url||url};
+  let lastError=null;
+  for(let attempt=1;attempt<=3;attempt+=1) {
+    try {
+      const response=await fetch(url,{redirect:'follow',headers:{
+        'user-agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36',
+        accept,
+        'accept-language':'es-PE,es;q=0.9,en;q=0.7',
+        referer:'https://hipodromodemonterrico.com.pe/programa-de-entradas',
+        origin:'https://hipodromodemonterrico.com.pe',
+        'x-requested-with':'XMLHttpRequest'
+      },signal:AbortSignal.timeout(20000)});
+      if(!response.ok) throw new Error('HTTP '+response.status);
+      return {body:await response.text(),contentType:response.headers.get('content-type')??'',url:response.url||url};
+    } catch(error) {
+      lastError=error;
+      if(attempt<3) await new Promise((resolve)=>setTimeout(resolve,300*attempt));
+    }
+  }
+  throw lastError;
 }
 async function discover(date) {
   const url=PERU_MONTERRICO_DATE_API_PREFIX+date;
@@ -43,10 +55,11 @@ async function discover(date) {
   return { ids:extractMonterricoReunionIds(payload), url:response.url };
 }
 async function programme(reunionId) {
-  const url=PERU_MONTERRICO_PROGRAMME_URL+'?id_reunion='+encodeURIComponent(reunionId);
-  const response=await get(url,'text/html,application/xhtml+xml;q=0.9,*/*;q=0.5');
-  if(!/html/i.test(response.contentType) && !/<html\b/i.test(response.body)) throw new Error('unexpected_content_type:'+response.contentType);
-  return { html:response.body,url:response.url };
+  const url=PERU_MONTERRICO_REUNION_API_PREFIX+encodeURIComponent(reunionId);
+  const response=await get(url,'application/json,text/plain;q=0.9,*/*;q=0.5');
+  let payload;
+  try { payload=JSON.parse(response.body); } catch { throw new Error('invalid_json'); }
+  return { payload,url:response.url };
 }
 
 const output=arg('output');
@@ -83,7 +96,7 @@ for(let i=0;i<days;i+=1) {
   const reunionId=found.ids[0];
   try {
     const p=await programme(reunionId);
-    const record=buildMonterricoMeetingRecord({date,reunionId,programmeHtml:p.html,checkedAt:generatedAt});
+    const record=buildMonterricoApiMeetingRecord({date,reunionId,programmePayload:p.payload,checkedAt:generatedAt,sourceUrl:p.url});
     records.push(record);
     dates.push({date,status:'available',source_url:p.url,reunion_ids:found.ids,race_count:record.timetable_rows.length,capability_rank:record.capability_rank});
   } catch(error) {
@@ -91,20 +104,21 @@ for(let i=0;i<days;i+=1) {
     const pending=/complete race table/i.test(message);
     records.push(buildMonterricoFallbackRecord({date,reunionId,checkedAt:generatedAt,status:pending?'not_published':'source_error',errorCode:pending?'programme_not_published':'programme_fetch_or_parse_failed'}));
     dates.push({date,status:pending?'not_published':'source_error',reunion_ids:found.ids,error:message});
-    errors.push({date,stage:'programme_detail',source_url:PERU_MONTERRICO_PROGRAMME_URL+'?id_reunion='+reunionId,error:message});
+    errors.push({date,stage:'programme_detail',source_url:PERU_MONTERRICO_REUNION_API_PREFIX+reunionId,error:message});
   }
 }
+
 const acquisitionAttempt=successfulDateRequests===0 ? {
   attempted_at:generatedAt,
   status:'network_error',
   source_id:PERU_MONTERRICO_SOURCE_ID,
-  route_id:null,
+  route_id:'monterrico-date-api-to-reunion-api',
   error_code:errors.some(row=>/timeout|timed out|aborted/i.test(row.error))?'timeout':'fetch_error'
 } : {
   attempted_at:generatedAt,
   status:'success',
   source_id:PERU_MONTERRICO_SOURCE_ID,
-  route_id:null,
+  route_id:'monterrico-date-api-to-reunion-api',
   error_code:null
 };
 
@@ -123,11 +137,11 @@ const artifact={
   raw_body_retained:false,
   acquisition_attempt:acquisitionAttempt,
   discovery:{
-    method:'official_monterrico_date_api_plus_programme_html',
+    method:'official_monterrico_date_api_plus_reunion_api',
     schedule_source_id:PERU_MONTERRICO_SOURCE_ID,
-    schedule_source_url:PERU_MONTERRICO_PROGRAMME_URL,
+    schedule_source_url:PERU_MONTERRICO_DATE_API_PREFIX,
     detail_source_id:PERU_MONTERRICO_SOURCE_ID,
-    detail_source_url:PERU_MONTERRICO_PROGRAMME_URL,
+    detail_source_url:PERU_MONTERRICO_REUNION_API_PREFIX,
     date_requests_successful:successfulDateRequests,
     date_requests_total:days,
     rank_counts:rankCounts,
@@ -138,7 +152,7 @@ const artifact={
     end_date_exclusive:plusDays(start,days),
     days,
     coverage_claim:successfulDateRequests===0?'fetch_failed':errors.length?'partial':'source_window_complete',
-    coverage_note:'Every requested date is checked through the official Monterrico date API. Discovered reunions are resolved through the official programme page; complete rows support A, unpublished detail remains valid C, and source/parser failures remain explicit retry state.'
+    coverage_note:'Every requested date is attempted through the official Monterrico date API. Discovered reunion ids are resolved through the same official site reunion JSON API, whose carreras array supplies complete per-race times, names and distances through rank A. Transient official API failures are retried; unresolved dates remain explicit acquisition gaps rather than false no-meeting observations.'
   },
   records,
   diagnostics:{dates,source_errors:errors}
@@ -146,4 +160,4 @@ const artifact={
 const target=path.resolve(output);
 fs.mkdirSync(path.dirname(target),{recursive:true});
 fs.writeFileSync(target,JSON.stringify(artifact,null,2)+'\n');
-console.log(JSON.stringify({output,start_date:start,end_date_exclusive:plusDays(start,days),meetings_emitted:records.length,rank_counts:rankCounts,detail_status_counts:detailCounts,successful_date_requests:successfulDateRequests,source_errors:errors.length,raw_body_retained:false}));
+console.log(JSON.stringify({output,start_date:start,end_date_exclusive:plusDays(start,days),meetings_emitted:records.length,rank_counts:rankCounts,detail_status_counts:detailCounts,successful_date_requests:successfulDateRequests,source_errors:errors.length ,raw_body_retained:false}));

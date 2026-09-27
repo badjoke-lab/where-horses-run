@@ -7,7 +7,9 @@ export const SPAIN_SYSTEM_ID = 'spain-reviewed-gallop-system';
 export const SPAIN_SOURCE_ID = 'zarzuela-programme-2026';
 export const SPAIN_RACECOURSE_ID = 'spain--hipodromo-de-la-zarzuela';
 export const SPAIN_HOME_URL = 'https://www.hipodromodelazarzuela.es/carreras';
-export const SPAIN_AUTUMN_PDF_URL = 'https://www.hipodromodelazarzuela.es/sites/default/files/PROGRAMA%20OTO%C3%91O%20HZ%202026%20v6%20SN.pdf';
+export const SPAIN_AUTUMN_PDF_URL = 'https://www.hipodromodelazarzuela.es/sites/default/files/PROGRAMA%20OTON%CC%83O%20HZ%202026%20v7%20SN%20F.pdf';
+export const SPAIN_JCE_AUTUMN_PDF_URL = 'https://drive.google.com/uc?export=download&id=1R-gLBKvr19K5xprJDqmjWRKCVPkM0pcg';
+export const SPAIN_AUTUMN_PDF_FALLBACK_URL = 'https://www.hipodromodelazarzuela.es/sites/default/files/PROGRAMA%20OTO%C3%91O%20HZ%202026%20v6%20SN.pdf';
 
 const MONTHS = Object.freeze({
   septiembre: 9,
@@ -54,8 +56,12 @@ export function parseZarzuelaAutumnProgrammeText(text, { year = 2026, sourceUrl 
     throw new Error('Zarzuela official programme fingerprint missing');
   }
 
+  const marker = normalized.match(/LOS D[IÍ]AS\s+([\s\S]+?)(?:Todas las carreras|Aprobado por|CONDICIONES GENERALES)/i);
+  if (!marker) throw new Error('Zarzuela official programme race-date section not found');
+  const dateSection = marker[1];
+
   const records = [];
-  for (const match of normalized.matchAll(/([0-9,\sy]+)\s+de\s+(septiembre|octubre|noviembre)/gi)) {
+  for (const match of dateSection.matchAll(/([0-9,\sy]+)\s+de\s+(septiembre|octubre|noviembre)/gi)) {
     const month = MONTHS[match[2].toLowerCase()];
     if (!month) continue;
     const days = [...match[1].matchAll(/\d{1,2}/g)].map((item) => Number(item[0]));
@@ -90,7 +96,7 @@ export function parseZarzuelaMeetingHtml(html, { date, sourceUrl } = {}) {
   if (typeof html !== 'string' || !html.trim()) throw new Error('Zarzuela meeting HTML must be non-empty');
   const visible = zarzuelaVisibleText(html);
   if (!/Carreras de la Jornada/i.test(visible)) {
-    return { race_rows: [], status: 'not_published', parse_failures: [] };
+    return { race_rows: [], status: 'not_published', parse_failures: [], meeting_present: false };
   }
 
   const race_rows = [];
@@ -126,6 +132,7 @@ export function parseZarzuelaMeetingHtml(html, { date, sourceUrl } = {}) {
     race_rows: rows,
     status: rows.length ? (rows.every((row) => row.post_time_local) ? 'available' : 'not_published') : 'not_published',
     parse_failures,
+    meeting_present: true,
   };
 }
 
@@ -207,7 +214,7 @@ export function buildZarzuelaMeetingRecord(scheduleRow, detailRows = [], { check
   }
   record.acquisition_completion = classifyAcquisitionCompletion(
     { ...record, capability_rank },
-    { technical_capability_rank: 'A' },
+    { technical_capability_rank: 'C' },
   );
   return { ...record, capability_rank };
 }

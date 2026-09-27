@@ -132,9 +132,16 @@ for (const forbidden of ['promote-timetable', 'wrangler pages deploy']) {
   if (workflow.includes(forbidden)) fail(`Actions multi-job workflow contains forbidden command ${forbidden}.`);
 }
 
-const dailyWorkflow = readText('.github/workflows/calendar-daily-acquisition.yml');
-for (const phrase of ['COLLECTION_JOB_JSON', '--job=.calendar-collection-job.json', 'plan-calendar-due-jobs.mjs', 'run-calendar-actions-job.mjs']) {
-  if (!dailyWorkflow.includes(phrase)) fail(`Daily acquisition workflow missing ${phrase}.`);
+if (fs.existsSync(path.join(root, '.github/workflows/calendar-daily-acquisition.yml'))) {
+  fail('Legacy calendar-daily-acquisition.yml must stay retired after near/full refresh separation.');
+}
+const nearWorkflow = readText('.github/workflows/calendar-near-official-refresh.yml');
+for (const phrase of ['workflow_dispatch:', 'scope=near', 'days=3', 'run-tjk-current-best-available.mjs', 'run-peru-monterrico-official-window.mjs', 'run-france-fnch-official-window.mjs']) {
+  if (!nearWorkflow.includes(phrase)) fail(`Near official refresh workflow missing ${phrase}.`);
+}
+const fullWorkflow = readText('.github/workflows/calendar-unified-official-refresh.yml');
+for (const phrase of ['workflow_dispatch:', 'scope=full', 'days=30', 'run-tjk-current-best-available.mjs', 'run-peru-monterrico-official-window.mjs', 'run-france-fnch-official-window.mjs']) {
+  if (!fullWorkflow.includes(phrase)) fail(`Full official refresh workflow missing ${phrase}.`);
 }
 
 if (errors.length) {
@@ -151,4 +158,4 @@ console.log(`MULTI_JOB_PLANS: ${multiJobPlanCount}`);
 console.log('ZERO_JOB_STEADY_STATE: pass');
 console.log('OUTCOME_ISOLATION: pass');
 console.log('FIXED_OPERATOR_PLAN_CHOICES: 0');
-console.log('DAILY_GENERATED_JOB_DISPATCH: pass');
+console.log('NEAR_FULL_REFRESH_SPLIT: pass');

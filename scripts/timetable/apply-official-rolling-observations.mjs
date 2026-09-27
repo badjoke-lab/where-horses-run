@@ -181,7 +181,7 @@ const readinessRegistry = readinessPath ? readJson(readinessPath) : loadCalendar
 const acquisitionRegistry = loadCalendarAcquisitionRegistryV1(process.cwd());
 const canonicalById = new Map((canonical.meetings ?? []).map((row) => [row.meeting_id, row]));
 const detailsById = new Map((canonicalDetails.details ?? []).map((row) => [row.meeting_id, row]));
-const outcomes = { add: 0, update: 0, no_op: 0, protected_higher_rank: 0, normalized_stored_rank: 0, public_reprojected: 0, ignored: 0 };
+const outcomes = { add: 0, update: 0, no_op: 0, protected_higher_rank: 0, normalized_stored_rank: 0, superseded_removed: 0, public_reprojected: 0, ignored: 0 };
 const completionCounts = Object.fromEntries([
   'promoted',
   'complete_current_best_available',
@@ -191,6 +191,25 @@ const completionCounts = Object.fromEntries([
   'not_applicable',
 ].map((value) => [value, 0]));
 let changed = false;
+
+const supersededMeetingIds = Array.isArray(artifact.superseded_meeting_ids)
+  ? [...new Set(artifact.superseded_meeting_ids.filter((value) => typeof value === 'string' && value))]
+  : [];
+for (const meetingId of supersededMeetingIds) {
+  const stored = canonicalById.get(meetingId) ?? null;
+  if (!stored && !detailsById.has(meetingId)) continue;
+  const expectedCountry = artifact.country_id ?? defaults.country_id ?? null;
+  if (stored && expectedCountry && stored.country_id !== expectedCountry) {
+    throw new Error(`superseded meeting ${meetingId} belongs to ${stored.country_id}, not artifact country ${expectedCountry}`);
+  }
+  if (records.some((record) => record?.meeting_id === meetingId)) {
+    throw new Error(`superseded meeting ${meetingId} is also present in the current observation records`);
+  }
+  canonicalById.delete(meetingId);
+  detailsById.delete(meetingId);
+  changed = true;
+  outcomes.superseded_removed += 1;
+}
 
 // A rolling source may omit previously observed meetings even while their stored evidence remains valid.
 // Normalize every stored canonical row for the authority being applied, not only rows present in this artifact,
@@ -310,6 +329,7 @@ const scopedIds = new Set([
   ...(publicList.meetings ?? [])
     .filter((meeting) => targetAuthorityIds.has(meeting.authority_id))
     .map((meeting) => meeting.meeting_id),
+  ...supersededMeetingIds,
 ]);
 
 const publicProjection = reconcilePublicProjectionV1({

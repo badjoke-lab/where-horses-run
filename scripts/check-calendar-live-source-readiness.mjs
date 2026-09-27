@@ -75,13 +75,17 @@ const missingTarget = structuredClone(readinessRegistry);
 missingTarget.records = missingTarget.records.filter((row) => row.authority_source_key !== 'japan/jra/jra-programme');
 assert.throws(() => buildPublicProjectionV1({ ...inputs, readinessRegistry: missingTarget }), /no Calendar Readiness record/);
 
-// Mapping does not relax readiness eligibility, ceilings, or field permissions.
+// Mapping does not relax readiness eligibility or field permissions. Rank follows verified evidence; legacy ceilings do not downgrade it.
 const restricted = structuredClone(readinessRegistry);
 const jraReadiness = restricted.records.find((row) => row.authority_source_key === 'japan/jra/jra-programme');
 jraReadiness.public_ceiling = 'A';
 jraReadiness.confirmed_fields.race_name = false;
 const limited = buildPublicProjectionV1({ ...inputs, readinessRegistry: restricted });
-assert.equal(limited.meetingListDataset.meetings.find((row) => row.meeting_id === jra.meeting_id).effective_public_rank, 'A');
+assert.equal(
+  limited.meetingListDataset.meetings.find((row) => row.meeting_id === jra.meeting_id).effective_public_rank,
+  jra.capability_rank,
+  'legacy Readiness ceiling must not downgrade verified canonical capability',
+);
 assert(limited.meetingDetailsDataset.details.find((row) => row.meeting_id === jra.meeting_id).timetable_rows.every((row) => !('race_name' in row)));
 jraReadiness.readiness = 'blocked';
 assert(!buildPublicProjectionV1({ ...inputs, readinessRegistry: restricted }).meetingListDataset.meetings.some((row) => row.meeting_id === jra.meeting_id));
@@ -98,4 +102,4 @@ const excluded = reconcilePublicProjectionV1({ ...inputs, existingMeetingList: p
 assert(!excluded.meetingListDataset.meetings.some((row) => row.meeting_id === jra.meeting_id));
 assert(!excluded.meetingDetailsDataset.details.some((row) => row.meeting_id === jra.meeting_id));
 assert.equal(JSON.stringify({ canonicalMeetings, canonicalDetails, publicList, publicDetails }), before, 'projection must not mutate canonical or saved public inputs');
-console.log(`CALENDAR_LIVE_SOURCE_READINESS: pass canonical_meetings=${canonicalMeetings.meetings.length} aliases=${sourceAliases.aliases.length}; unknown sources fail closed; exclusions/ceilings/fields/scoped retention preserved`);
+console.log(`CALENDAR_LIVE_SOURCE_READINESS: pass canonical_meetings=${canonicalMeetings.meetings.length} aliases=${sourceAliases.aliases.length}; unknown sources fail closed; exclusions/field permissions/scoped retention preserved; legacy rank ceilings do not downgrade evidence`);

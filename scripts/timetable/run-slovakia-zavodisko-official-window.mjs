@@ -117,7 +117,7 @@ const artifact = {
     end_date_exclusive: end,
     days,
     coverage_claim: sourceErrors.length ? 'acquisition_failed_preserve_verified_state' : 'official_annual_calendar_source_visible_horizon',
-    coverage_note: 'Official Závodisko 2026 calendar supplies meeting date, venue and official first-race time. The known B+ meeting-page capability is not connected as a reusable full-calendar route, so B observations remain explicit implementation gaps rather than false terminal success. Source absence or acquisition failure never confirms non-running.',
+    coverage_note: 'Official Závodisko 2026 calendar supplies meeting date, venue and official first-race time through the currently implemented technical capability B. No stronger reusable full-calendar route is claimed. Source absence or acquisition failure never confirms non-running.',
   },
   records,
   diagnostics: {

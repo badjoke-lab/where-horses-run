@@ -148,11 +148,11 @@ assert.equal(full.meetingDetailsDataset.details.length, 1);
 const publicMeeting = full.meetingListDataset.meetings[0];
 const publicDetail = full.meetingDetailsDataset.details[0];
 assert.equal(publicMeeting.capability_rank, 'A+');
-assert.equal(publicMeeting.max_public_rank, 'A', 'max public rank must intersect policy and Readiness ceilings');
-assert.equal(publicMeeting.effective_public_rank, 'A', 'effective public rank must also respect canonical rank');
+assert.equal(publicMeeting.max_public_rank, 'A+', 'max public rank must follow verified canonical capability rather than authority ceilings');
+assert.equal(publicMeeting.effective_public_rank, 'A+', 'effective public rank must preserve verified capability when public detail structure exists');
 assert.equal(publicMeeting.detail_path, `/timetable/meetings/${meeting.meeting_id}/`);
 
-assert.equal(publicDetail.effective_public_rank, 'A');
+assert.equal(publicDetail.effective_public_rank, 'A+');
 assert.equal(publicDetail.show_race_name, true, 'A publication may expose an independently approved rich field');
 assert.equal(publicDetail.show_distance, true);
 assert.equal(publicDetail.show_surface, false, 'Readiness confirmation must independently deny an unconfirmed field');
@@ -161,6 +161,16 @@ assert.equal(publicDetail.timetable_rows[0].race_name, 'Opening');
 assert.equal(publicDetail.timetable_rows[0].distance_m, 1200);
 assert.equal('surface' in publicDetail.timetable_rows[0], false);
 assert.equal(publicDetail.timetable_rows[0].course_label, 'Outer');
+
+const structureFallback = buildPublicProjectionV1({
+  canonicalMeetings: { ...canonicalMeetings, meetings: [{ ...meeting, meeting_id: 'fixture-no-detail-2026-09-21' }] },
+  canonicalDetails: { ...canonicalDetails, details: [] },
+  policyData,
+  readinessRegistry,
+  sourceAliases,
+});
+assert.equal(structureFallback.meetingListDataset.meetings[0].max_public_rank, 'A+');
+assert.equal(structureFallback.meetingListDataset.meetings[0].effective_public_rank, 'B+', 'missing public detail structure may lower only to the strongest structurally publishable rank');
 
 assert.equal(
   full.meetingListDataset.publication_snapshot.snapshot_id,

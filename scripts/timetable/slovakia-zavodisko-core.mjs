@@ -165,7 +165,7 @@ export function buildSlovakiaMeetingRecord(row, { checkedAt } = {}) {
   const capability_rank = deriveBestAvailableRank(record, []);
   record.acquisition_completion = classifyAcquisitionCompletion(
     { ...record, capability_rank },
-    { technical_capability_rank: 'B+' },
+    { technical_capability_rank: 'B' },
   );
   return { ...record, capability_rank };
 }

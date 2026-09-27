@@ -76,22 +76,22 @@ export function resolvePublicationDecision(
   policies: readonly PublicationDisplayPolicy[] = publicationDisplayPolicies,
 ): PublicationDecision {
   const policy = findPublicationPolicy(context, policies);
-  const effectiveRank = lowerRank(capabilityRank, policy.max_public_rank);
-  const showAPlus = effectiveRank === 'A+';
+  const effectiveRank = capabilityRank;
+  const detailAvailable = effectiveRank === 'A' || effectiveRank === 'A+';
 
   return {
     policy_id: policy.id,
     capability_rank: capabilityRank,
-    max_public_rank: policy.max_public_rank,
+    max_public_rank: capabilityRank,
     effective_public_rank: effectiveRank,
     include_in_public_list:
       policy.include_in_public_list &&
       effectiveRank !== 'not_listed' &&
       effectiveRank !== 'D',
-    show_race_name: showAPlus && policy.a_plus_fields.show_race_name,
-    show_distance: showAPlus && policy.a_plus_fields.show_distance,
-    show_surface: showAPlus && policy.a_plus_fields.show_surface,
-    show_course: showAPlus && policy.a_plus_fields.show_course,
+    show_race_name: detailAvailable && policy.detail_fields.show_race_name,
+    show_distance: detailAvailable && policy.detail_fields.show_distance,
+    show_surface: detailAvailable && policy.detail_fields.show_surface,
+    show_course: detailAvailable && policy.detail_fields.show_course,
     show_live_label: policy.show_live_label,
     show_replay_label: policy.show_replay_label,
   };

@@ -297,7 +297,7 @@
       "supports_source_visible_horizon": false,
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
-      "operator_notes": "GitHub Actions scans the requested Peru-local date window through the official Monterrico date API, then evaluates each discovered reunion through the official programme page. Complete race rows support evidence-derived A; unpublished detail remains valid C with pending publication and fetch/parser failures remain valid C with explicit retry state. Coverage is limited to the reviewed Monterrico system and does not claim complete Peru-wide racing coverage."
+      "operator_notes": "GitHub Actions scans the requested Peru-local date window through the official Monterrico date API, then resolves each discovered reunion through the official Monterrico reunion JSON API at /api/general/carreras/general/programas/{id_reunion}. The carreras array supplies continuous per-race post times, race names and distances through evidence-derived A. Unpublished or unavailable detail preserves the verified C meeting identity with explicit pending/retry state. Coverage is limited to the reviewed Monterrico system."
     },
     {
       "system_id": "saudi-arabia-jcsa-system",
@@ -458,16 +458,16 @@
       "system_id": "slovakia-zavodisko-system",
       "country_id": "slovakia",
       "authority_id": "zavodisko",
-      "profile_status": "provisional",
+      "profile_status": "active",
       "primary_runner": "github_actions",
       "fallback_runner": null,
       "schedule_source_id": "zavodisko-2026-calendar",
-      "detail_source_id": null,
+      "detail_source_id": "zavodisko-2026-calendar",
       "schedule_adapter_id": "slovakia-zavodisko-calendar-b-v1",
-      "detail_adapter_id": null,
-      "technical_capability_rank": "B+",
+      "detail_adapter_id": "slovakia-zavodisko-calendar-b-v1",
+      "technical_capability_rank": "B",
       "collection_target_rank": "best_available",
-      "public_ceiling": "C",
+      "public_ceiling": "B",
       "supported_observation_ranks": [
         "C",
         "B"
@@ -477,11 +477,8 @@
       "supports_selected_meetings": false,
       "supports_source_visible_horizon": true,
       "supports_rank_upgrade_retry": false,
-      "pending_fields": [
-        "detail_source_id",
-        "detail_adapter_id"
-      ],
-      "operator_notes": "GitHub Actions reads the official Závodisko 2026 national calendar and emits meeting date, verified timetable identity and official first-race time through B. The profile remains provisional because reviewed B+ meeting-page capability is known but no reusable full-calendar detail source/adapter is connected; detail_source_id and detail_adapter_id are explicit pending fields, and current B observations remain implementation_gap rather than terminal success. Public output remains capped at C. Acquisition failure or source absence preserves stronger verified state and never confirms non-running."
+      "pending_fields": [],
+      "operator_notes": "GitHub Actions reads the official Závodisko 2026 national calendar and emits meeting date, verified timetable identity and official first-race time through B. The same reviewed calendar adapter supplies the implemented detail level; no stronger reusable full-calendar route is currently claimed. Source failure preserves stronger verified state and never confirms non-running."
     },
     {
       "system_id": "bahrain-turf-club-system",
@@ -550,7 +547,7 @@
       "detail_adapter_id": "germany-deutscher-galopp-race-table-v1",
       "technical_capability_rank": "A",
       "collection_target_rank": "best_available",
-      "public_ceiling": "C",
+      "public_ceiling": "A",
       "supported_observation_ranks": [
         "C",
         "B",
@@ -575,23 +572,20 @@
       "schedule_source_id": "zarzuela-programme-2026",
       "detail_source_id": "zarzuela-programme-2026",
       "schedule_adapter_id": "spain-zarzuela-autumn-programme-v1",
-      "detail_adapter_id": "spain-zarzuela-jornada-v1",
-      "technical_capability_rank": "A",
+      "detail_adapter_id": "spain-zarzuela-autumn-programme-v1",
+      "technical_capability_rank": "C",
       "collection_target_rank": "best_available",
       "public_ceiling": "C",
       "supported_observation_ranks": [
-        "C",
-        "B",
-        "B+",
-        "A"
+        "C"
       ],
       "supports_date_window": true,
       "supports_cross_month_window": true,
       "supports_selected_meetings": false,
       "supports_source_visible_horizon": true,
-      "supports_rank_upgrade_retry": true,
+      "supports_rank_upgrade_retry": false,
       "pending_fields": [],
-      "operator_notes": "GitHub Actions reads the official Hipódromo de la Zarzuela autumn 2026 programme PDF as the bounded meeting-date mother set, then enriches each date from the official /carreras/jornada/YYYYMMDD page when continuous per-race post times are published. Complete detail may reach A; unpublished detail remains C/pending. Public Spain output remains capped at C because wider venue/code coverage is incomplete. Source failure preserves stronger verified state and never proves non-running."
+      "operator_notes": "GitHub Actions reads the Jockey Club Español-approved Hipódromo de la Zarzuela autumn 2026 programme from the official JCE-linked Drive document. The same production route supplies and evaluates meeting identity/date through the declared technical capability C, satisfying both schedule and bounded detail-completion roles at C. The organizer jornada A-detail route is not production-connected while its TLS chain is not reliably reachable from GitHub Actions."
     },
     {
       "system_id": "italy-masaf-gallop-system",
