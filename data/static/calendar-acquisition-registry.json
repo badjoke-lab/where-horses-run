@@ -836,6 +836,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "GitHub Actions follows the official HVC Panfletos index and parses relevant monthly PDFs into rank C meeting-date observations. Missing future monthly publication or fetch/parse failure never proves non-running."
+    },
+    {
+      "system_id": "mexico-hipodromo-las-americas-system",
+      "country_id": "mexico",
+      "authority_id": "hipodromo-de-las-americas",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "hipodromo-programas-oficiales",
+      "detail_source_id": "hipodromo-programas-oficiales",
+      "schedule_adapter_id": "mexico-americas-programas-v1",
+      "detail_adapter_id": "mexico-americas-programas-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic official Programas HTML route. Publishes only source-visible meeting date plus Hipódromo de las Américas at rank C; missing future programmes are not negative evidence."
     }
   ]
 }

@@ -89,7 +89,8 @@
     "validate:brazil-jcb-reunioes": "node --check scripts/timetable/brazil-jcb-reunioes-core.mjs && node --check scripts/timetable/run-brazil-jcb-reunioes-official-window.mjs && node scripts/check-brazil-jcb-reunioes-adapter.mjs",
     "validate:brazil-cidade-jardim": "node --check scripts/timetable/brazil-cidade-jardim-core.mjs && node --check scripts/timetable/run-brazil-cidade-jardim-official-window.mjs && node scripts/check-brazil-cidade-jardim-adapter.mjs",
     "validate:brazil-sorocaba": "node --check scripts/timetable/brazil-sorocaba-core.mjs && node --check scripts/timetable/run-brazil-sorocaba-official-window.mjs && node scripts/check-brazil-sorocaba-adapter.mjs",
-    "validate:dominican-hvc": "node --check scripts/timetable/dominican-hvc-core.mjs && node --check scripts/timetable/run-dominican-hvc-official-window.mjs && node scripts/check-dominican-hvc-adapter.mjs"
+    "validate:dominican-hvc": "node --check scripts/timetable/dominican-hvc-core.mjs && node --check scripts/timetable/run-dominican-hvc-official-window.mjs && node scripts/check-dominican-hvc-adapter.mjs",
+    "validate:mexico-americas": "node --check scripts/timetable/mexico-americas-programas-core.mjs && node --check scripts/timetable/run-mexico-americas-official-window.mjs && node scripts/check-mexico-americas-adapter.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0",

@@ -345,19 +345,21 @@
       "notes": "The production route discovers reunion ids through the official date API and resolves complete timetable rows through the official reunion JSON API. The carreras array supplies post times, names and distances through A; surface/course are not fabricated."
     },
     {
-      "readiness_id": "mexico--mexico-candidate-route--hipodromo-site-candidate",
+      "readiness_id": "mexico--mexico-hipodromo-las-americas-system--hipodromo-programas-oficiales",
       "country_id": "mexico",
       "country_tracker_delivery_no": "07",
-      "system_id": "mexico-candidate-route",
-      "system_name_en": "Mexico candidate route",
-      "authority_source_key": "mexico/hipodromo-de-las-americas/hipodromo-site-candidate",
-      "racecourse_ids": [],
+      "system_id": "mexico-hipodromo-las-americas-system",
+      "system_name_en": "Hipódromo de las Américas racing system",
+      "authority_source_key": "mexico/hipodromo-de-las-americas/hipodromo-programas-oficiales",
+      "racecourse_ids": [
+        "mexico--hipodromo-de-las-americas"
+      ],
       "coverage_scope": "single_racecourse",
       "technical_rank": "C",
       "public_ceiling": "C",
       "confirmed_fields": {
-        "meeting_date": false,
-        "racecourse": false,
+        "meeting_date": true,
+        "racecourse": true,
         "first_race_time": false,
         "last_race_time": false,
         "per_race_post_times": false,
@@ -366,28 +368,29 @@
         "surface": false,
         "course": false
       },
-      "source_format": "unknown",
-      "access_mode": "unreachable",
-      "automation_mode": "blocked",
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "event_driven",
-        "manual"
+        "weekly",
+        "near_meeting"
       ],
-      "readiness": "blocked",
-      "implementation_status": "not_started",
-      "fallback": "hide_from_current_calendar",
-      "source_status": "unavailable",
-      "checked_date": "2026-06-17",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Reopen when the official candidate becomes reachable and a public programme or timetable source is verified.",
-      "blocked_reason": "Official-site reachability failed and no timetable source was confirmed.",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-09-27",
+      "evidence_reviewed_at": "2026-09-27",
+      "revalidation_trigger": "Revalidate if the official Programas page, programme-title date pattern, or operator identity changes.",
+      "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/07-mexico/final-summary.json",
       "limitations": [
-        "All reviewed official URL candidates were unreachable.",
-        "No positive meeting or race sample was obtained.",
-        "The result must not be treated as rank C coverage."
+        "Current automatic route is rank C only: published meeting date plus physical racecourse.",
+        "The Programas page is a source-visible publication horizon; an unpublished future date is not evidence of non-running.",
+        "Official opening hours are not race post times and are not retained.",
+        "Programme PDFs may support future rank upgrades, but are outside this first production route."
       ],
-      "notes": "The C values are schema-floor placeholders only; the source remains blocked and no Calendar row may be generated."
+      "notes": "The former reachability blocker is closed. On 2026-09-27 the official Programas page was reachable and exposed current 2026 official programme dates including 2026-09-27."
     },
     {
       "readiness_id": "brazil--brazil-cidade-jardim-system--cidade-jardim-programme",
@@ -5463,5 +5466,5 @@
       "notes": "Date-specific Bahrain Turf Club racecard navigation supplies complete per-race post times through public rank A."
     }
   ],
-  "last_updated": "2026-09-25"
+  "last_updated": "2026-09-27"
 }

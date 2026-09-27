@@ -5,76 +5,93 @@
     "slug": "mexico",
     "status": "reviewed",
     "page_kind": "country",
-    "last_reviewed": "2026-06-17",
-    "public_display_ceiling": "pending",
-    "source_test_status": "pending",
+    "last_reviewed": "2026-09-27",
+    "public_display_ceiling": "C",
+    "source_test_status": "complete",
     "hero": {
-      "summary_en": "Mexico remains link-first because the reviewed official route was unreachable.",
-      "summary_ja": "メキシコはレビュー対象の公式導線へ到達できなかったため、リンク中心の状態です。"
+      "summary_en": "Mexico currently publishes source-visible meeting dates for Hipódromo de las Américas from the official Programas page.",
+      "summary_ja": "メキシコは現在、Hipódromo de las Américas公式Programasページから公開済み開催日を表示します。"
     },
     "overview": {
       "paragraphs_en": [
-        "The retained route is a candidate only; no timetable payload was verified."
+        "The reviewed Calendar production scope is the single physical racecourse Hipódromo de las Américas.",
+        "The automatic route publishes official programme dates at rank C only; post times are not inferred."
       ],
       "paragraphs_ja": [
-        "保持した導線は候補であり、時刻表payloadは確認できていません。"
+        "確認済みCalendar production範囲は単一の物理競馬場Hipódromo de las Américasです。",
+        "自動取得は公式プログラム公開日をCランクで表示し、発走時刻は推測しません。"
       ]
     },
     "racing_types": [
       {
-        "id": "horse-racing-candidate",
-        "name_en": "Candidate scope",
-        "name_ja": "候補範囲",
-        "summary_en": "Current programme details are unverified.",
-        "summary_ja": "現行番組の詳細は未確認です。"
+        "id": "thoroughbred-flat",
+        "name_en": "Thoroughbred flat racing",
+        "name_ja": "サラブレッド平地競走",
+        "summary_en": "Included in the reviewed Hipódromo de las Américas scope.",
+        "summary_ja": "確認済みHipódromo de las Américas範囲に含みます。"
+      },
+      {
+        "id": "quarter-horse-racing",
+        "name_en": "Quarter Horse racing",
+        "name_ja": "クォーターホース競走",
+        "summary_en": "The physical racecourse also hosts Quarter Horse racing; this first Calendar route does not split programme dates by breed code.",
+        "summary_ja": "同競馬場ではクォーターホース競走も行われますが、初期Calendar導線ではプログラム日を品種別に分割しません。"
       }
     ],
     "seasonality": {
-      "pattern": "unresolved",
-      "summary_en": "No pattern is assigned.",
-      "summary_ja": "パターンは指定しません。"
+      "pattern": "official-programme-publication",
+      "summary_en": "Use the official Programas page as a source-visible publication horizon; do not infer non-running from an unpublished future date.",
+      "summary_ja": "公式Programasページを公開済み範囲として使用し、将来日の未公開から非開催を推測しません。"
     },
     "schedule": {
       "timezone": "America/Mexico_City",
-      "utc_offset_label": "Verify current civil-time offset",
+      "utc_offset_label": "America/Mexico_City",
       "day_patterns": [
-        "not-yet-verified"
+        "official-source-required"
       ],
       "time_patterns": [
-        "not-yet-verified"
+        "meeting-date-only"
       ],
-      "summary_en": "No dates or times are published.",
-      "summary_ja": "日付や時刻は公開しません。"
+      "summary_en": "Published official programme dates are used; opening hours and other site hours are not race post times.",
+      "summary_ja": "公開済み公式プログラム日を使用し、営業時間などを発走時刻として扱いません。"
     },
     "surfaces": {
       "ids": [],
-      "summary_en": "Unresolved.",
-      "summary_ja": "未解決です。"
+      "summary_en": "Surface details are outside the current Calendar publication scope.",
+      "summary_ja": "馬場詳細は現行Calendar公開範囲外です。"
     },
     "systems": [
       {
-        "id": "mexico-candidate-route",
-        "name_en": "Mexico candidate route",
-        "name_ja": "メキシコ候補導線",
-        "summary_en": "A future reachability test is required.",
-        "summary_ja": "今後の到達性テストが必要です。",
-        "organiser_source_ids": [],
+        "id": "mexico-hipodromo-las-americas-system",
+        "name_en": "Hipódromo de las Américas racing system",
+        "name_ja": "Hipódromo de las Américas競馬体系",
+        "summary_en": "The official Programas page supplies source-visible meeting dates for the single racecourse.",
+        "summary_ja": "公式Programasページが単一競馬場の公開済み開催日を提供します。",
+        "organiser_source_ids": [
+          "hipodromo-de-las-americas"
+        ],
         "distributor_source_ids": [
-          "mexico-hipodromo-las-americas-candidate"
+          "hipodromo-programas-oficiales"
         ]
       }
     ],
-    "principal_racecourse_ids": [],
-    "calendar_guidance_en": "Treat the route as unresolved.",
-    "calendar_guidance_ja": "導線は未解決として扱います。",
-    "coverage_note_en": "No timetable data is published.",
-    "coverage_note_ja": "時刻表データは公開しません。",
+    "principal_racecourse_ids": [
+      "mexico--hipodromo-de-las-americas"
+    ],
+    "calendar_guidance_en": "Use official Programas publication dates only. Do not infer future meetings or race post times.",
+    "calendar_guidance_ja": "公式Programasの公開日だけを使用し、将来開催や発走時刻を推測しません。",
+    "coverage_note_en": "Single-racecourse automatic rank-C production scope; source omission does not prove non-running.",
+    "coverage_note_ja": "単一競馬場の自動Cランクproduction範囲です。ソース未掲載だけでは非開催を意味しません。",
     "revalidation": {
       "triggers_en": [
-        "The candidate becomes reachable"
+        "Programas page changes",
+        "Programme-title date pattern changes",
+        "Operator identity changes"
       ],
       "triggers_ja": [
-        "候補へ到達できたとき"
+        "Programasページ変更時",
+        "プログラム名の日付形式変更時",
+        "運営主体変更時"
       ]
     },
     "related_glossary_ids": [

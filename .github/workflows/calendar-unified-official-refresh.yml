@@ -25,6 +25,7 @@ on:
       - 'scripts/check-brazil-jcb-reunioes-adapter.mjs'
       - 'scripts/check-brazil-cidade-jardim-adapter.mjs'
       - 'scripts/check-brazil-sorocaba-adapter.mjs'
+      - 'scripts/check-mexico-americas-adapter.mjs'
       - 'scripts/check-dominican-hvc-adapter.mjs'
       - 'scripts/timetable/south-africa-four-racing-core.mjs'
       - 'scripts/timetable/run-south-africa-four-racing-official-window.mjs'
@@ -36,6 +37,8 @@ on:
       - 'scripts/timetable/run-brazil-cidade-jardim-official-window.mjs'
       - 'scripts/timetable/brazil-sorocaba-core.mjs'
       - 'scripts/timetable/run-brazil-sorocaba-official-window.mjs'
+      - 'scripts/timetable/mexico-americas-programas-core.mjs'
+      - 'scripts/timetable/run-mexico-americas-official-window.mjs'
       - 'scripts/timetable/dominican-hvc-core.mjs'
       - 'scripts/timetable/run-dominican-hvc-official-window.mjs'
       - 'scripts/timetable/italy-masaf-core.mjs'
@@ -101,6 +104,7 @@ on:
       - 'scripts/check-brazil-jcb-reunioes-adapter.mjs'
       - 'scripts/check-brazil-cidade-jardim-adapter.mjs'
       - 'scripts/check-brazil-sorocaba-adapter.mjs'
+      - 'scripts/check-mexico-americas-adapter.mjs'
       - 'scripts/check-dominican-hvc-adapter.mjs'
       - 'scripts/timetable/south-africa-four-racing-core.mjs'
       - 'scripts/timetable/run-south-africa-four-racing-official-window.mjs'
@@ -112,6 +116,8 @@ on:
       - 'scripts/timetable/run-brazil-cidade-jardim-official-window.mjs'
       - 'scripts/timetable/brazil-sorocaba-core.mjs'
       - 'scripts/timetable/run-brazil-sorocaba-official-window.mjs'
+      - 'scripts/timetable/mexico-americas-programas-core.mjs'
+      - 'scripts/timetable/run-mexico-americas-official-window.mjs'
       - 'scripts/timetable/dominican-hvc-core.mjs'
       - 'scripts/timetable/run-dominican-hvc-official-window.mjs'
       - 'scripts/timetable/italy-masaf-core.mjs'
@@ -194,6 +200,7 @@ jobs:
           node scripts/check-brazil-jcb-reunioes-adapter.mjs
           node scripts/check-brazil-cidade-jardim-adapter.mjs
           node scripts/check-brazil-sorocaba-adapter.mjs
+          node scripts/check-mexico-americas-adapter.mjs
           node scripts/check-dominican-hvc-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
@@ -368,6 +375,7 @@ jobs:
           node scripts/check-brazil-jcb-reunioes-adapter.mjs
           node scripts/check-brazil-cidade-jardim-adapter.mjs
           node scripts/check-brazil-sorocaba-adapter.mjs
+          node scripts/check-mexico-americas-adapter.mjs
           node scripts/check-dominican-hvc-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
@@ -586,6 +594,9 @@ jobs:
           node scripts/timetable/run-brazil-sorocaba-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/brazil-sorocaba.json
+          node scripts/timetable/run-mexico-americas-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/mexico.json
           node scripts/timetable/run-dominican-hvc-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/dominican-hvc.json
@@ -620,6 +631,7 @@ jobs:
             --artifact=.calendar-unified/brazil-cristal.json \
             --artifact=.calendar-unified/brazil-cidade-jardim.json \
             --artifact=.calendar-unified/brazil-sorocaba.json \
+            --artifact=.calendar-unified/mexico.json \
             --artifact=.calendar-unified/dominican-hvc.json
       - name: Apply non-Japan official observations monotonically
         run: |
@@ -792,6 +804,12 @@ jobs:
             --racing-system-id=brazil-sorocaba-system \
             --timezone=America/Sao_Paulo
           node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/mexico.json \
+            --country-id=mexico \
+            --authority-id=hipodromo-de-las-americas \
+            --racing-system-id=mexico-hipodromo-las-americas-system \
+            --timezone=America/Mexico_City
+          node scripts/timetable/apply-official-rolling-observations.mjs \
             --artifact=.calendar-unified/dominican-hvc.json \
             --country-id=dominican-republic \
             --authority-id=hipodromo-v-centenario \
@@ -910,6 +928,9 @@ jobs:
             node scripts/timetable/run-brazil-sorocaba-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/brazil-sorocaba.json
+            node scripts/timetable/run-mexico-americas-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/mexico.json
             node scripts/timetable/run-dominican-hvc-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/dominican-hvc.json
@@ -942,6 +963,7 @@ jobs:
             --artifact=.calendar-unified/brazil-cristal.json \
             --artifact=.calendar-unified/brazil-cidade-jardim.json \
             --artifact=.calendar-unified/brazil-sorocaba.json \
+            --artifact=.calendar-unified/mexico.json \
             --artifact=.calendar-unified/dominican-hvc.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/hkjc.json \
@@ -1111,6 +1133,12 @@ jobs:
               --authority-id=jockey-club-de-sorocaba \
               --racing-system-id=brazil-sorocaba-system \
               --timezone=America/Sao_Paulo
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/mexico.json \
+              --country-id=mexico \
+              --authority-id=hipodromo-de-las-americas \
+              --racing-system-id=mexico-hipodromo-las-americas-system \
+              --timezone=America/Mexico_City
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/dominican-hvc.json \
               --country-id=dominican-republic \
