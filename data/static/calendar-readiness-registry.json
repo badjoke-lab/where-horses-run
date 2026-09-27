@@ -3621,7 +3621,9 @@
       "system_id": "hvc-racing-system",
       "system_name_en": "Hipódromo V Centenario racing system",
       "authority_source_key": "dominican-republic/hipodromo-v-centenario/hvc-programme-calendar",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "dominican-republic--hipodromo-v-centenario"
+      ],
       "coverage_scope": "single_racecourse",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -3638,26 +3640,27 @@
       },
       "source_format": "html",
       "access_mode": "date_route",
-      "automation_mode": "semi_automatic",
+      "automation_mode": "automatic",
       "refresh_classes": [
         "weekly",
         "near_meeting"
       ],
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "fallback": "downgrade_to_C",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-29",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when the official calendar or date-route structure changes.",
+      "checked_date": "2026-09-27",
+      "evidence_reviewed_at": "2026-09-27",
+      "revalidation_trigger": "Revalidate when the official Panfletos index, monthly PDF structure, operator identity, or source-visible publication behaviour changes.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/63-dominican-republic/source-test-v2.json",
       "limitations": [
         "The reviewed scope covers Hipódromo V Centenario only.",
-        "Detailed programme content remains outside the country calendar.",
-        "No reusable race-time fields are approved."
+        "Monthly Panfletos establish meeting date and physical racecourse at rank C only.",
+        "Race times, race conditions, distances and participant detail are not promoted by this route.",
+        "A missing future monthly Panfleto is publication-state evidence only and does not prove non-running."
       ],
-      "notes": "Official date-addressable routes support a bounded C-level prototype for meeting dates and venue."
+      "notes": "Automatic production candidate follows the official HVC Panfletos index and parses monthly official PDF race-day headings into rank C meeting observations."
     },
     {
       "readiness_id": "tunisia--sch-national-racing-system--sch-official-calendar",

@@ -201,6 +201,11 @@ assert.equal(workflow.split('--racing-system-id=brazil-sorocaba-system').length 
 assert.equal(workflow.split('--authority-id=jockey-club-de-sao-paulo').length - 1, 2, 'Brazil Cidade Jardim observations must be applied in both execution paths');
 assert.equal(workflow.split('--racing-system-id=brazil-cidade-jardim-system').length - 1, 2, 'Brazil Cidade Jardim apply path must bind its canonical racing system in both execution paths');
 assert.equal(workflow.split('--timezone=America/Sao_Paulo').length - 1, 8, 'Brazil Gávea, Cristal, Cidade Jardim and Sorocaba apply paths must bind America/Sao_Paulo in both execution paths');
+assert.equal(workflow.split('node scripts/timetable/run-dominican-hvc-official-window.mjs').length - 1, 2, 'Dominican HVC must be collected in both normal and latest-main rebuild paths');
+assert.equal(workflow.split('--artifact=.calendar-unified/dominican-hvc.json').length - 1, 4, 'Dominican HVC artifact must pass exclusion and apply layers in both execution paths');
+assert.equal(workflow.split('--authority-id=hipodromo-v-centenario').length - 1, 2, 'Dominican HVC observations must be applied in both execution paths');
+assert.equal(workflow.split('--racing-system-id=hvc-racing-system').length - 1, 2, 'Dominican HVC apply path must bind its canonical racing system in both execution paths');
+assert.equal(workflow.split('--timezone=America/Santo_Domingo').length - 1, 2, 'Dominican HVC apply paths must bind America/Santo_Domingo in both execution paths');
 assert.equal((workflow.match(/--authority-id=hipodromo-zarzuela/g) ?? []).length, 2, 'Spain Zarzuela observations must be applied in both execution paths');
 assert.equal((workflow.match(/--artifact=\.calendar-unified\/spain\.json/g) ?? []).length, 4, 'Spain artifact must pass exclusion and apply layers in both execution paths');
 assert.equal((workflow.match(/--racing-system-id=spain-reviewed-gallop-system/g) ?? []).length, 2, 'Spain apply path must bind the canonical racing system id in both execution paths');
@@ -226,3 +231,4 @@ console.log('PANAMA_PRESIDENTE_REMON_UNIFIED_REFRESH_PATHS: 2');
 console.log('BRAZIL_JCB_REUNIOES_UNIFIED_REFRESH_PATHS: 2');
 console.log('BRAZIL_CIDADE_JARDIM_UNIFIED_REFRESH_PATHS: 2');
 console.log('BRAZIL_SOROCABA_UNIFIED_REFRESH_PATHS: 2');
+console.log('DOMINICAN_HVC_UNIFIED_REFRESH_PATHS: 2');
