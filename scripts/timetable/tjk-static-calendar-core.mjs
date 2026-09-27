@@ -61,3 +61,155 @@ export const TJK_STATIC_MONTHS = Object.freeze({
 export function identifyTjkMonth(value) {
   return TJK_STATIC_MONTHS[normalizeTjkCalendarToken(value)] ?? null;
 }
+
+
+function pointFromItem(item) {
+  return {
+    text: String(item?.str ?? '').trim(),
+    x: Number(item?.transform?.[4] ?? 0),
+    y: Number(item?.transform?.[5] ?? 0),
+    width: Math.max(0, Number(item?.width ?? 0)),
+  };
+}
+
+function tokenPoints(item, matcher, mapper) {
+  const point = pointFromItem(item);
+  if (!point.text) return [];
+  const matches = [...point.text.matchAll(matcher)];
+  return matches.map((match) => {
+    const start = Number(match.index ?? 0);
+    const centerOffset = start + String(match[0]).length / 2;
+    const ratio = point.text.length ? centerOffset / point.text.length : 0;
+    return {
+      value: mapper(match[0]),
+      x: point.x + point.width * ratio,
+      y: point.y,
+      raw: point.text,
+    };
+  }).filter((row) => row.value != null);
+}
+
+function monthPanels(items) {
+  const headings = [];
+  for (const item of items) {
+    const month = identifyTjkMonth(item?.str);
+    if (!month) continue;
+    const p = pointFromItem(item);
+    headings.push({ month, x: p.x, y: p.y });
+  }
+  if (headings.length !== 12 || new Set(headings.map((row) => row.month)).size !== 12) {
+    throw new Error(`TJK static calendar month headings invalid: ${headings.length}`);
+  }
+
+  return headings
+    .sort((a, b) => a.month - b.month)
+    .map((heading) => ({
+      ...heading,
+      x_min: heading.x - 138,
+      x_max: heading.x + 138,
+      y_max: heading.y - 6,
+      y_min: heading.y - 208,
+    }));
+}
+
+function panelForPoint(panels, point) {
+  return panels.find((panel) =>
+    point.x >= panel.x_min
+    && point.x <= panel.x_max
+    && point.y >= panel.y_min
+    && point.y <= panel.y_max
+  ) ?? null;
+}
+
+export function parseTjkStaticCalendarItems(items, { year = TJK_STATIC_CALENDAR_YEAR } = {}) {
+  if (!Array.isArray(items) || items.length === 0) {
+    throw new Error('TJK static calendar text items must be non-empty');
+  }
+  const panels = monthPanels(items);
+
+  const dayPoints = [];
+  const codePoints = [];
+  for (const item of items) {
+    dayPoints.push(...tokenPoints(
+      item,
+      /\b(?:[1-9]|[12]\d|3[01])\b/g,
+      (value) => Number(value),
+    ));
+    codePoints.push(...tokenPoints(
+      item,
+      /\b(?:ADA|ANK|ANT|BUR|DYB|ELZ|İST|IST|İZM|IZM|KOC|URF)\b/giu,
+      (value) => identifyTjkVenueCode(value),
+    ));
+  }
+
+  const daysByMonth = new Map();
+  for (const point of dayPoints) {
+    const panel = panelForPoint(panels, point);
+    if (!panel) continue;
+    const date = new Date(Date.UTC(year, panel.month - 1, point.value));
+    if (
+      date.getUTCFullYear() !== year
+      || date.getUTCMonth() !== panel.month - 1
+      || date.getUTCDate() !== point.value
+    ) continue;
+    const key = panel.month;
+    const rows = daysByMonth.get(key) ?? [];
+    rows.push({ ...point, month: panel.month });
+    daysByMonth.set(key, rows);
+  }
+
+  const fixtures = [];
+  const unmatchedCodes = [];
+  for (const codePoint of codePoints) {
+    const panel = panelForPoint(panels, codePoint);
+    if (!panel) continue;
+    const candidates = (daysByMonth.get(panel.month) ?? [])
+      .map((day) => ({
+        day,
+        dx: Math.abs(day.x - codePoint.x),
+        dy: day.y - codePoint.y,
+      }))
+      .filter((row) => row.dy >= -2 && row.dy <= 28 && row.dx <= 34)
+      .sort((a, b) => (a.dy * 3 + a.dx) - (b.dy * 3 + b.dx));
+
+    const nearest = candidates[0] ?? null;
+    if (!nearest) {
+      unmatchedCodes.push({ ...codePoint, month: panel.month });
+      continue;
+    }
+
+    const venue = TJK_STATIC_CALENDAR_VENUES[codePoint.value];
+    const month = String(panel.month).padStart(2, '0');
+    const day = String(nearest.day.value).padStart(2, '0');
+    fixtures.push({
+      candidate_id: `tjk-${year}-${month}-${day}-${venue.source_venue_id}`,
+      source: 'tjk',
+      country: 'Turkey',
+      date: `${year}-${month}-${day}`,
+      racecourse: venue.label,
+      racecourse_source_id: venue.source_venue_id,
+      source_url: TJK_STATIC_CALENDAR_URL,
+      capability_rank: 'C',
+      publication_ceiling: 'A',
+      first_race_time_local: null,
+      last_race_time_local: null,
+      timetable_rows: [],
+      detail_observation: { status: 'not_published', race_count: 0, conflicts: [] },
+      provenance: {
+        discovered_from: TJK_STATIC_CALENDAR_URL,
+        discovery_method: 'official_static_annual_calendar_pdf',
+        calendar_code: codePoint.value,
+      },
+    });
+  }
+
+  const unique = new Map();
+  for (const fixture of fixtures) unique.set(fixture.candidate_id, fixture);
+  return {
+    fixtures: [...unique.values()].sort((a, b) => a.date.localeCompare(b.date) || Number(a.racecourse_source_id) - Number(b.racecourse_source_id)),
+    unmatched_codes: unmatchedCodes,
+    month_count: panels.length,
+    code_points: codePoints.length,
+    day_points: dayPoints.length,
+  };
+}
