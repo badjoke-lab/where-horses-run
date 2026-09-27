@@ -62,7 +62,7 @@ export function parseHvcPanfletosIndex(html, { baseUrl = HVC_PANFLETOS_URL } = {
 export function parseHvcPanfletoText(text, { sourceUrl = null } = {}) {
   const clean = String(text ?? '').replace(/\s+/g, ' ').trim();
   if (!/CARRERAS/i.test(clean)) throw new Error('HVC panfleto race fingerprint missing');
-  const regex = /LLAMAD(?:A|AS)\s+PARA\s+LA[S]?\s+CARRERAS(?:\s+DEL)?\s+(?:SABADO|SÁBADO|MARTES)\s+(\d{1,2})\s+DE\s+([A-ZÁÉÍÓÚÑ]+)\s+(20\d{2})/giu;
+  const regex = /LLAMAD(?:A|AS)\s+PARA\s+LA[S]?\s+CARRERAS(?:\s+DEL)?\s+(?:SABADO|SÁBADO|MARTES)\s+(\d{1,2})\s+DE\s+([A-ZÁÉÍÓÚÑ]+)\s+(?:(?:DE|DEL)\s+)?(20\d{2})/giu;
   const rows = [];
   for (const match of clean.matchAll(regex)) {
     const month = MONTHS[normalize(match[2])];
