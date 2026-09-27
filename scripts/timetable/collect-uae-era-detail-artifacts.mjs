@@ -1,6 +1,7 @@
 import {
   classifyUaeEraDetailMeeting,
   detectUaeEraConfirmedNonRunning,
+  detectUaeEraPendingPublication,
   discoverUaeEraRaceNumbers,
   parseUaeEraPublicSafeRacecardHtml,
   uaeEraDetailContractV1,
@@ -95,6 +96,60 @@ if (nonRunning.confirmed_non_running) {
   process.stdout.write(`${JSON.stringify(output, null, 2)}\n`);
   process.exit(0);
 }
+
+const pendingPublication = detectUaeEraPendingPublication(first.body, { sourceUrl: first.final_url });
+if (pendingPublication.pending_publication) {
+  const output = {
+    schema_version: 'calendar-uae-era-detail-live-evidence-v1',
+    work_id: 'WHR-CAL-UAE-ERA-DETAIL-RECOVERY',
+    implementation_unit: 'UAE-DETAIL-RECOVERY-01',
+    generated_at: checkedAt,
+    publication_status: 'not_published',
+    source: {
+      source_id: uaeEraDetailContractV1.source_id,
+      authority_id: uaeEraDetailContractV1.authority_id,
+      official_hostname: uaeEraDetailContractV1.official_hostname,
+      route_template: 'https://emiratesracing.com/racecard/{date}/{race_number}/declarations',
+      response_body_retained: false,
+    },
+    meeting: {
+      date,
+      timezone: uaeEraDetailContractV1.timezone,
+      racecourse_id: racecourseId,
+      race_count: 0,
+      meeting_complete: false,
+    },
+    classification: {
+      rank: 'C',
+      first_race_time_local: null,
+      last_race_time_local: null,
+      timetable_rows: [],
+    },
+    presence_observation: null,
+    observations: [],
+    source_errors: [],
+    publication_evidence: {
+      state: 'pending_publication',
+      evidence_phrase: pendingPublication.evidence_phrase,
+      official_source_url: first.final_url,
+      checked_at: checkedAt,
+    },
+    safety: {
+      participant_fields_retained: false,
+      betting_fields_retained: false,
+      result_fields_retained: false,
+      payout_fields_retained: false,
+      raw_html_retained: false,
+      canonical_write: false,
+      public_write: false,
+      publication_effect: 'none',
+      human_review_required: false,
+    },
+  };
+  process.stdout.write(`${JSON.stringify(output, null, 2)}\n`);
+  process.exit(0);
+}
+
 let raceNumbers = discoverUaeEraRaceNumbers(first.body, date);
 if (raceNumbers.length === 0 && expectedRaces !== null) raceNumbers = Array.from({ length: expectedRaces }, (_, index) => index + 1);
 if (raceNumbers.length === 0) throw new Error('ERA racecard page exposed no bounded race navigation');
