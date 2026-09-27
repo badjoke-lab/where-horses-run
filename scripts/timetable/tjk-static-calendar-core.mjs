@@ -89,6 +89,25 @@ function tokenPoints(item, matcher, mapper) {
   }).filter((row) => row.value != null);
 }
 
+function venueCodePoints(item) {
+  const point = pointFromItem(item);
+  if (!point.text) return [];
+  const tokens = [...point.text.matchAll(/\S+/gu)];
+  return tokens.map((match) => {
+    const code = identifyTjkVenueCode(match[0]);
+    if (!code) return null;
+    const start = Number(match.index ?? 0);
+    const centerOffset = start + String(match[0]).length / 2;
+    const ratio = point.text.length ? centerOffset / point.text.length : 0;
+    return {
+      value: code,
+      x: point.x + point.width * ratio,
+      y: point.y,
+      raw: point.text,
+    };
+  }).filter(Boolean);
+}
+
 function monthPanels(items) {
   const headings = [];
   for (const item of items) {
@@ -135,11 +154,7 @@ export function parseTjkStaticCalendarItems(items, { year = TJK_STATIC_CALENDAR_
       /\b(?:[1-9]|[12]\d|3[01])\b/g,
       (value) => Number(value),
     ));
-    codePoints.push(...tokenPoints(
-      item,
-      /\b(?:ADA|ANK|ANT|BUR|DYB|ELZ|İST|IST|İZM|IZM|KOC|URF)\b/giu,
-      (value) => identifyTjkVenueCode(value),
-    ));
+    codePoints.push(...venueCodePoints(item));
   }
 
   const daysByMonth = new Map();
