@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '17 11,19 * * *' # rolling near-3-day detail refresh
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/calendar-near-official-refresh.yml'
 
 permissions:
   contents: write
