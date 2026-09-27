@@ -66,4 +66,29 @@ assert.equal(partialFallback.fixtures[0].date, '2026-09-27');
 assert.equal(partialFallback.pages.filter((page) => page.status === 'fallback_page_failed').length, 1);
 assert.equal(partialFallback.pages.filter((page) => page.status === 'fallback_page_ok').length, 1);
 
+let activeFallbacks = 0;
+let maxActiveFallbacks = 0;
+const concurrentFallback = await discoverAnnualFixtures({
+  startDate: '2026-09-26',
+  endDateExclusive: '2026-10-04',
+  fetchImpl: async (url) => {
+    if (url.includes('/Query/Data/YillikYarisProgramiCoklu')) {
+      const error = new Error('simulated broad annual timeout');
+      error.name = 'TimeoutError';
+      throw error;
+    }
+    activeFallbacks += 1;
+    maxActiveFallbacks = Math.max(maxActiveFallbacks, activeFallbacks);
+    await new Promise((resolve) => setTimeout(resolve, 15));
+    activeFallbacks -= 1;
+    const parsed = new URL(url);
+    const date = parsed.searchParams.get('QueryParameter_Tarih_Start');
+    const href = `/TR/YarisSever/Info/Page/GunlukYarisProgrami?QueryParameter_Tarih=${encodeURIComponent(date)}&SehirAdi=Ankara&SehirId=5`;
+    return { ok: true, status: 200, text: async () => `<a href="${href}">Ankara</a>` };
+  },
+});
+assert.equal(concurrentFallback.fixtures.length, 8);
+assert.equal(maxActiveFallbacks, 4, 'TJK daily fallback must use bounded concurrency instead of 30 serial timeout windows');
+assert.ok(maxActiveFallbacks <= 4, 'TJK fallback concurrency must remain bounded');
+
 console.log('TJK_FETCH_FAILURE_RETENTION: pass');

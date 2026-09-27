@@ -44,7 +44,7 @@ function buildQueryUrl(baseUrl, startDate, endDateInclusive, pageNumber = null) 
   return url.href;
 }
 
-async function fetchHtml(url, fetchImpl, { allowNotFound = false } = {}) {
+async function fetchHtml(url, fetchImpl, { allowNotFound = false, timeoutMs = 20_000 } = {}) {
   const response = await fetchImpl(url, {
     method: 'GET',
     redirect: 'follow',
@@ -52,7 +52,7 @@ async function fetchHtml(url, fetchImpl, { allowNotFound = false } = {}) {
       accept: 'text/html,application/xhtml+xml',
       'user-agent': 'WhereHorsesRun-source-verification/1.0',
     },
-    signal: AbortSignal.timeout(20_000),
+    signal: AbortSignal.timeout(timeoutMs),
   });
   if (allowNotFound && response.status === 404) return null;
   if (!response.ok) throw new Error(`TJK annual programme fetch failed: HTTP ${response.status} ${url}`);
@@ -123,25 +123,41 @@ export async function discoverAnnualFixtures({ startDate, endDateExclusive, fetc
     pages.push({ page_number: 0, url: firstUrl, status: 'fetch_failed' });
     const cursor = new Date(`${startDate}T00:00:00Z`);
     const end = new Date(`${endDateExclusive}T00:00:00Z`);
+    const fallbackDays = [];
     while (cursor < end) {
       const day = cursor.toISOString().slice(0, 10);
-      const fallbackUrl = buildQueryUrl(ANNUAL_PAGE_URL, day, day);
-      try {
-        const fallbackHtml = await fetchHtml(fallbackUrl, fetchImpl);
-        pages.push({ page_number: null, date: day, url: fallbackUrl, status: 'fallback_page_ok' });
-        for (const fixture of extractAnnualFixtures(fallbackHtml, { startDate: day, endDateExclusive: new Date(cursor.valueOf() + 86_400_000).toISOString().slice(0, 10) })) {
-          all.set(fixture.candidate_id, fixture);
-        }
-      } catch (fallbackError) {
-        pages.push({
-          page_number: null,
-          date: day,
-          url: fallbackUrl,
-          status: 'fallback_page_failed',
-          error_code: fallbackError?.name === 'TimeoutError' ? 'timeout' : 'fetch_error',
-        });
-      }
+      const nextDay = new Date(cursor.valueOf() + 86_400_000).toISOString().slice(0, 10);
+      fallbackDays.push({ day, nextDay, url: buildQueryUrl(ANNUAL_PAGE_URL, day, day) });
       cursor.setUTCDate(cursor.getUTCDate() + 1);
+    }
+
+    const fallbackConcurrency = 4;
+    for (let offset = 0; offset < fallbackDays.length; offset += fallbackConcurrency) {
+      const batch = fallbackDays.slice(offset, offset + fallbackConcurrency);
+      const results = await Promise.all(batch.map(async ({ day, nextDay, url }) => {
+        try {
+          const fallbackHtml = await fetchHtml(url, fetchImpl, { timeoutMs: 10_000 });
+          return {
+            page: { page_number: null, date: day, url, status: 'fallback_page_ok' },
+            fixtures: extractAnnualFixtures(fallbackHtml, { startDate: day, endDateExclusive: nextDay }),
+          };
+        } catch (fallbackError) {
+          return {
+            page: {
+              page_number: null,
+              date: day,
+              url,
+              status: 'fallback_page_failed',
+              error_code: fallbackError?.name === 'TimeoutError' ? 'timeout' : 'fetch_error',
+            },
+            fixtures: [],
+          };
+        }
+      }));
+      for (const result of results) {
+        pages.push(result.page);
+        for (const fixture of result.fixtures) all.set(fixture.candidate_id, fixture);
+      }
     }
     return {
       fixtures: [...all.values()].sort((a, b) => a.date.localeCompare(b.date) || Number(a.racecourse_source_id) - Number(b.racecourse_source_id)),
