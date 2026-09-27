@@ -1,15 +1,8 @@
+import { classifyHkjcRacecardBody, hkjcPublishedRacecardSignal, hkjcRacecardNavigationNumbers } from './timetable/hkjc-racecard-body-classification.mjs';
 import assert from 'node:assert/strict';
 
 function url(date,raceNo){
   return `https://racing.hkjc.com/en-us/local/information/racecard?racedate=${date.replaceAll('-','/')}&Racecourse=ST&RaceNo=${raceNo}`;
-}
-function raceLinks(body,date){
-  const escaped=date.replaceAll('-','[\\/%-]');
-  const values=new Set();
-  for(const m of String(body??'').matchAll(/(?:RaceNo|raceno)=([0-9]{1,2})/gi)){
-    const n=Number(m[1]); if(n>=1&&n<=20) values.add(n);
-  }
-  return [...values].sort((a,b)=>a-b);
 }
 async function probe(date,raceNo){
   const target=url(date,raceNo);
@@ -25,9 +18,10 @@ async function probe(date,raceNo){
     return {
       date,race_no:raceNo,http_status:response.status,ok:response.ok,final_url:response.url,
       content_type:response.headers.get('content-type'),body_size:Buffer.byteLength(body,'utf8'),
-      race_links:raceLinks(body,date),
+      race_links:hkjcRacecardNavigationNumbers(body),
       blocked_keyword:/access\s*denied|captcha|robot|bot|forbidden|temporarily unavailable|akamai|request blocked/i.test(text),
-      published_signature:raceLinks(body,date).length>=2 && /\b\d{1,2}:\d{2}\b/.test(text) && (/\b\d{3,4}M\b/i.test(text)||/\b(?:Turf|All Weather Track|All Weather|Dirt)\b/i.test(text)),
+      published_signature:hkjcPublishedRacecardSignal(body),
+      production_classification:classifyHkjcRacecardBody(body)?.status??'usable_racecard',
       not_published:/No race card|not available|not yet available|will be available|Race Card is not available/i.test(text),
       has_1245:/\b12:45\b/.test(text),
       has_race_1:/\bRace\s*1\b/i.test(text),
@@ -46,6 +40,7 @@ if(process.env.GITHUB_ACTIONS==='true'){
   const race1=rows[0];
   assert.equal(race1.ok,true,'published 2026-09-27 Sha Tin Race 1 must be reachable from Actions');
   assert.equal(race1.published_signature,true,'published 2026-09-27 Race 1 must expose positive racecard evidence');
+  assert.equal(race1.production_classification,'usable_racecard','production classifier must accept the published 2026-09-27 racecard');
   assert.deepEqual(race1.race_links,[1,2,3,4,5,6,7,8,9,10,11],'published 2026-09-27 navigation must expose the bounded 11-race set');
   assert.equal(race1.has_race_1,true,'published 2026-09-27 Race 1 body must expose Race 1');
   assert.equal(rows[2].race_links.length,0,'Race 12 must not expose a published race navigation set');
