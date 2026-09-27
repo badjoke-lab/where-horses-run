@@ -50,20 +50,32 @@ jobs:
           output="$(mktemp)"
           trap 'rm -f "$output"' EXIT
           node scripts/timetable/run-ireland-hri-official-window.mjs \
-            --as-of=2026-09-11 \
-            --days=2 \
-            --fixture=data/fixtures/ireland-hri-fixture-list-observed-v1.txt \
+            --days=30 \
             --output="$output"
           OUTPUT="$output" node --input-type=module -e '
             import fs from "node:fs";
             const artifact = JSON.parse(fs.readFileSync(process.env.OUTPUT, "utf8"));
-            const row = artifact.records.find((record) => record.date === "2026-09-11" && record.racecourse_id === "ireland--ballinrobe");
-            if (!row) throw new Error("Ballinrobe 2026-09-11 missing from live HRI runner output");
-            if (row.capability_rank !== "A") throw new Error(`Ballinrobe live rank ${row.capability_rank} != A`);
-            if (row.detail_observation?.status !== "available") throw new Error(`Ballinrobe detail status ${row.detail_observation?.status} != available`);
-            if (row.timetable_rows?.length !== 8) throw new Error(`Ballinrobe race rows ${row.timetable_rows?.length} != 8`);
-            if (row.first_race_time_local !== "15:24" || row.last_race_time_local !== "19:10") throw new Error("Ballinrobe live first/last time mismatch");
-            console.log("IRELAND_HRI_LIVE_RUNNER: pass");
+            if (!Array.isArray(artifact.records) || artifact.records.length === 0) {
+              throw new Error("current 30-day HRI runner emitted no official fixture records");
+            }
+            const failedMonths = (artifact.diagnostics?.racecard_months ?? []).filter((row) =>
+              row.status === "source_error" || row.status === "parser_failure"
+            );
+            if (failedMonths.length) {
+              throw new Error(`current HRI racecard month acquisition failed: ${JSON.stringify(failedMonths)}`);
+            }
+            for (const row of artifact.records) {
+              const status = row.detail_observation?.status;
+              if (status === "available") {
+                if (row.capability_rank !== "A") throw new Error(`${row.meeting_id} available detail rank ${row.capability_rank} != A`);
+                if (!Array.isArray(row.timetable_rows) || row.timetable_rows.length === 0) throw new Error(`${row.meeting_id} available detail has no race rows`);
+              } else if (status === "not_published") {
+                if (row.capability_rank !== "C") throw new Error(`${row.meeting_id} pending detail rank ${row.capability_rank} != C`);
+              } else {
+                throw new Error(`${row.meeting_id} unexpected live detail status ${status}`);
+              }
+            }
+            console.log(`IRELAND_HRI_LIVE_RUNNER: pass meetings=${artifact.records.length} A=${artifact.records.filter((row) => row.capability_rank === "A").length} C=${artifact.records.filter((row) => row.capability_rank === "C").length}`);
           '
       - name: Validate Acquisition Registry resolution
         run: node scripts/check-calendar-acquisition-registry.mjs
