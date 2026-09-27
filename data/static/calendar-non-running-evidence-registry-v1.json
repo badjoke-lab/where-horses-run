@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-non-running-evidence-registry-v1",
-  "reviewed_at": "2026-09-27",
+  "reviewed_at": "2026-09-28",
   "records": [
     {
       "record_id": "japan-jra-system",
@@ -736,6 +736,27 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-09-27",
       "notes": "An unpublished future monthly PDF, absent local venue row, source omission, acquisition failure, or parser failure does not prove cancellation or postponement and must preserve stronger verified state."
+    },
+    {
+      "record_id": "finland-suomen-hippos-harness-system",
+      "country_id": "finland",
+      "system_id": "finland-suomen-hippos-harness-system",
+      "authority_id": "suomen-hippos",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Suomen Hippos positive current-year calendar evidence. PERUTTU rows are visible and excluded from positive observations, but bounded negative-evidence publication is intentionally left to the separate cancellation lane.",
+      "evidence_urls": [
+        "https://heppa.hippos.fi/heppa/app?page=racing/RaceCalendarEarlierYear&service=external"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-09-28",
+      "notes": "Calendar Expansion does not promote PERUTTU or source absence into public cancellation state. Positive meetings only are emitted; fetch/parser failure preserves stronger verified state."
     }
   ]
 }

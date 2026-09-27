@@ -1,1 +1,22 @@
-{"country":"Finland","status":"Complete at national harness calendar level","checked_date":"2026-06-20","technical_rank":"C at reviewed national calendar level","public_ceiling":"C","systems":["Suomen Hippos harness racing calendar"],"official_sources":["https://www.hippos.fi/","https://www.hippos.fi/raviurheilu/","https://www.hippos.fi/raviurheilu/ravikilpailukalenteri-2026-on-julkaistu-muutoksia-divisioonajarjestelmaan/"],"confirmed_fields":{"meeting_date":true,"racecourse":true,"first_race_time":false,"per_race_post_times":false},"decision":"Suomen Hippos confirms the official 2026 national harness calendar and race-day structure. A stable reusable national race-time route was not established in this pass, so the public ceiling is C."}
+{
+  "country": "Finland",
+  "status": "Production routed for reviewed 19-track main denominator",
+  "checked_date": "2026-09-28",
+  "technical_rank": "C",
+  "public_ceiling": "C",
+  "systems": [
+    "Suomen Hippos harness racing calendar"
+  ],
+  "official_sources": [
+    "https://heppa.hippos.fi/heppa/app?page=racing/RaceCalendarEarlierYear&service=external",
+    "https://www.hippos.fi/raviurheilu/hippoksen-hallitus-vahvisti-ravipaivakiintiot-radoittain-vuodelle-2026/"
+  ],
+  "confirmed_fields": {
+    "meeting_date": true,
+    "racecourse": true,
+    "first_race_time": false,
+    "per_race_post_times": false
+  },
+  "decision": "The official Suomen Hippos current-year HTML calendar is automatically parsed for the reviewed 19 current main tracks in the Racecourse Master denominator. Seasonal non-master tracks and Paikallisravit local/temporary meetings are explicitly out of scope rather than silently dropped. Public output remains rank C: meeting date plus physical main-track identity only.",
+  "production_route": "scripts/timetable/run-finland-hippos-official-window.mjs"
+}
