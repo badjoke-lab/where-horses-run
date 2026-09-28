@@ -1,0 +1,20 @@
+name: Hungary Kincsem live probe
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-hungary-kincsem-live-probe.yml'
+      - 'scripts/timetable/probe-hungary-kincsem-source.mjs'
+      - 'package.json'
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - name: Probe Kincsem calendar and programme sources
+        run: node scripts/timetable/probe-hungary-kincsem-source.mjs
