@@ -145,7 +145,12 @@ if(process.env.GITHUB_ACTIONS==='true'){
     const overlaps=letrot.records.filter((row)=>physical.has(row.date+'|'+row.racecourse_id));
     assert.deepEqual(overlaps.map((row)=>row.date+'|'+row.racecourse_id),[],'live FNCH route must not duplicate one physical meeting across Galop and LETROT');
     assert.ok(Array.isArray(galop.superseded_meeting_ids),'France Galop artifact must expose explicit stale duplicate cleanup ids');
-    assert.ok(galop.superseded_meeting_ids.some((id)=>id.includes('saint-malo-racecourse-2026-09-27')),'live mixed Saint-Malo meeting must supersede the stale LETROT duplicate id');
+    const activeLetrotIds=new Set(letrot.records.map((row)=>row.meeting_id));
+    assert.deepEqual(
+      galop.superseded_meeting_ids.filter((id)=>activeLetrotIds.has(id)),
+      [],
+      'superseded FNCH duplicate ids must not remain active in LETROT output',
+    );
     const liveParseFailures=[
       ...(galop.diagnostics?.parse_failures??[]).filter((row)=>row.stage==='programme_pdf').map((row)=>({...row,system:'galop'})),
       ...(letrot.diagnostics?.parse_failures??[]).filter((row)=>row.stage==='programme_pdf').map((row)=>({...row,system:'letrot'})),
