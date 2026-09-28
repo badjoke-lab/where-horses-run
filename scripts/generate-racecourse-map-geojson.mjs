@@ -105,6 +105,8 @@ const calendarMapRegressionIds = [
   'panama--hipodromo-presidente-remon',
   // Jamaica (1)
   'jamaica--caymanas-park',
+  // Denmark Klampenborg routed scope (1)
+  'denmark--klampenborg-galopbane',
   // Czech Republic national Calendar scope (9)
   'czech-republic--chuchle-arena-praha',
   'czech-republic--pardubice-racecourse',
