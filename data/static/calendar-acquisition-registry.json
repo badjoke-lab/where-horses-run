@@ -936,6 +936,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic Caymanas Park Entries route. Direct API requests from GitHub Actions currently receive the SPA shell, so the runner falls back to the official Entries page rendered with the system Chrome already present on the GitHub-hosted runner. Publishes meeting date plus the single physical racecourse at rank C only. Missing later dates/months are publication-state limits, not non-running evidence."
+    },
+    {
+      "system_id": "czech-national-calendar-system",
+      "country_id": "czech-republic",
+      "authority_id": "czech-racing-calendar",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "dostihy-calendar",
+      "detail_source_id": "dostihy-calendar",
+      "schedule_adapter_id": "czech-dostihy-national-calendar-v1",
+      "detail_adapter_id": "czech-dostihy-national-calendar-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic official Dostihy.cz national calendar route. Event detail pages provide meeting date and venue tags; nine reviewed Czech racecourse labels are mapped to physical identities. General event timing is not promoted to race post time."
     }
   ]
 }

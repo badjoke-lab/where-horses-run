@@ -1,1 +1,19 @@
-{"country":"Czech Republic","status":"Partial","checked_date":"2026-06-17","technical_rank":"C","public_ceiling":"C","official_sources":["https://www.dostihy.cz/","https://www.chuchlearena.cz/horse-racing-2026","https://www.hipodrom.cz/AJ/"],"confirmed_fields":{"meeting_date":true,"racecourse":true,"per_race_post_times":false},"decision":"Official authority and racecourse pages confirm dated 2026 meetings. A stable national per-race timetable was not confirmed, so the result remains rank C."}
+{
+  "country": "Czech Republic",
+  "status": "Production routed at calendar level",
+  "checked_date": "2026-09-28",
+  "technical_rank": "C",
+  "public_ceiling": "C",
+  "official_sources": [
+    "https://www.dostihy.cz/kalendar-akci",
+    "https://www.chuchlearena.cz/horse-racing-2026",
+    "https://www.hipodrom.cz/AJ/"
+  ],
+  "confirmed_fields": {
+    "meeting_date": true,
+    "racecourse": true,
+    "per_race_post_times": false
+  },
+  "decision": "The official Dostihy.cz national calendar is automatically followed. Event detail pages expose Datum konání plus Štítky venue labels; the reviewed nine Czech physical venues are mapped at rank C. General event timing is not published as race post time.",
+  "production_route": "scripts/timetable/run-czech-dostihy-official-window.mjs"
+}

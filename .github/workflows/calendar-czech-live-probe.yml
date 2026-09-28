@@ -1,0 +1,34 @@
+name: Czech Dostihy live probe
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-czech-live-probe.yml'
+      - 'scripts/timetable/czech-dostihy-calendar-core.mjs'
+      - 'scripts/timetable/run-czech-dostihy-official-window.mjs'
+      - 'scripts/check-czech-dostihy-adapter.mjs'
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate Czech adapter
+        run: npm run validate:czech-dostihy
+      - name: Probe live Czech 30-day window
+        run: |
+          mkdir -p .calendar-czech-probe
+          node scripts/timetable/run-czech-dostihy-official-window.mjs --as-of=2026-09-28 --days=30 --output=.calendar-czech-probe/czech.json
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const d=JSON.parse(fs.readFileSync('.calendar-czech-probe/czech.json','utf8'));
+          console.log(JSON.stringify({records:d.records.length,meetings:d.records.map(r=>({date:r.date,racecourse_id:r.racecourse_id})),diagnostics:d.diagnostics,discovery:d.discovery}));
+          if(d.diagnostics.source_errors.length||d.diagnostics.parse_failures.length||d.diagnostics.unknown_venues.length) process.exitCode=1;
+          if(d.records.length<8) process.exitCode=1;
+          if(!d.records.some(r=>r.date==='2026-09-28'&&r.racecourse_id==='czech-republic--lysa-nad-labem-racecourse')) process.exitCode=1;
+          if(!d.records.some(r=>r.date==='2026-10-25'&&r.racecourse_id==='czech-republic--chuchle-arena-praha')) process.exitCode=1;
+          if(d.records.some(r=>r.capability_rank!=='C'||r.first_race_time_local!==null||r.last_race_time_local!==null||r.timetable_rows.length)) process.exitCode=1;
+          NODE

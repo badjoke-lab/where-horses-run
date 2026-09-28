@@ -1357,7 +1357,17 @@
       "system_id": "czech-national-calendar-system",
       "system_name_en": "National racing calendar",
       "authority_source_key": "czech-republic/czech-racing-calendar/dostihy-calendar",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "czech-republic--chuchle-arena-praha",
+        "czech-republic--pardubice-racecourse",
+        "czech-republic--karlovy-vary-racecourse",
+        "czech-republic--hipodrom-most",
+        "czech-republic--slusovice-racecourse",
+        "czech-republic--lysa-nad-labem-racecourse",
+        "czech-republic--brno-dvorska-racecourse",
+        "czech-republic--kolesa-racecourse",
+        "czech-republic--netolice-racecourse"
+      ],
       "coverage_scope": "countrywide",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -1374,25 +1384,26 @@
       },
       "source_format": "html",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "monthly",
-        "manual"
+        "weekly",
+        "near_meeting"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
-      "source_status": "partial",
-      "checked_date": "2026-06-17",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when the national calendar route changes or the active venue inventory is completed.",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-09-28",
+      "evidence_reviewed_at": "2026-09-28",
+      "revalidation_trigger": "Revalidate if Dostihy.cz changes its national calendar event links, Datum konání field, Štítky venue field, or reviewed nine-venue identity mapping.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/20-czech-republic/final-summary.json",
       "limitations": [
-        "A stable national per-race timetable was not confirmed.",
-        "Complete active venue coverage remains under review."
+        "Production route publishes meeting date plus reviewed physical venue at rank C only.",
+        "General event times are not race post times and are not promoted.",
+        "The calendar is a source-visible publication horizon; absence alone is not non-running evidence."
       ],
-      "notes": "Manual confirmation can use the national official route for C-level dated meetings."
+      "notes": "Automatic production route follows the official Dostihy.cz national calendar and resolves event detail date plus venue tags for the reviewed Czech venue set."
     },
     {
       "readiness_id": "hungary--hungary-reviewed-system--kincsem-programmes",
