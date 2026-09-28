@@ -3,7 +3,9 @@ on:
   pull_request:
     paths:
       - '.github/workflows/calendar-hungary-kincsem-live-probe.yml'
-      - 'scripts/timetable/probe-hungary-kincsem-source.mjs'
+      - 'scripts/timetable/hungary-kincsem-galopp-calendar-core.mjs'
+      - 'scripts/timetable/run-hungary-kincsem-galopp-official-window.mjs'
+      - 'scripts/check-hungary-kincsem-galopp-adapter.mjs'
       - 'package.json'
 permissions:
   contents: read
@@ -16,5 +18,17 @@ jobs:
         with:
           node-version: '22'
       - run: npm install --no-audit --no-fund
-      - name: Probe Kincsem calendar and programme sources
-        run: node scripts/timetable/probe-hungary-kincsem-source.mjs
+      - name: Validate Hungary Kincsem Galopp adapter
+        run: npm run validate:hungary-kincsem-galopp
+      - name: Probe live Hungary Galopp mother schedule
+        run: |
+          mkdir -p .calendar-hungary-probe
+          node scripts/timetable/run-hungary-kincsem-galopp-official-window.mjs --as-of=2026-09-28 --days=62 --output=.calendar-hungary-probe/hungary.json
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const d=JSON.parse(fs.readFileSync('.calendar-hungary-probe/hungary.json','utf8'));
+          console.log(JSON.stringify({records:d.records.length,dates:d.records.map(r=>r.date),diagnostics:d.diagnostics,discovery:d.discovery}));
+          if(d.diagnostics.source_errors.length||d.diagnostics.parse_failures.length) process.exitCode=1;
+          if(JSON.stringify(d.records.map(r=>r.date))!==JSON.stringify(['2026-10-11','2026-10-25','2026-11-15','2026-11-22'])) process.exitCode=1;
+          if(d.records.some(r=>r.racing_type!=='thoroughbred-flat'||r.capability_rank!=='C'||r.first_race_time_local!==null||r.timetable_rows.length)) process.exitCode=1;
+          NODE
