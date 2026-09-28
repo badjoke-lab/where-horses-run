@@ -105,6 +105,16 @@ const calendarMapRegressionIds = [
   'panama--hipodromo-presidente-remon',
   // Jamaica (1)
   'jamaica--caymanas-park',
+  // Czech Republic national Calendar scope (9)
+  'czech-republic--chuchle-arena-praha',
+  'czech-republic--pardubice-racecourse',
+  'czech-republic--karlovy-vary-racecourse',
+  'czech-republic--hipodrom-most',
+  'czech-republic--slusovice-racecourse',
+  'czech-republic--lysa-nad-labem-racecourse',
+  'czech-republic--brno-dvorska-racecourse',
+  'czech-republic--kolesa-racecourse',
+  'czech-republic--netolice-racecourse',
   // Brazil current production scope (4)
   'brazil--hipodromo-da-gavea',
   'brazil--hipodromo-do-cristal',

@@ -312,13 +312,11 @@
       "tier": 20,
       "country_id": "czech-republic",
       "page_kind": "country",
-      "method_class": "active_source_driven",
+      "method_class": "active_official",
       "source_ids": [
-        "chuchle-racing-calendar",
-        "dostihy-calendar",
-        "most-racing-calendar"
+        "dostihy-calendar"
       ],
-      "primary_source_url": "https://www.chuchlearena.cz/horse-racing-2026",
+      "primary_source_url": "https://www.dostihy.cz/kalendar-akci",
       "cadence_class": "source-driven",
       "trigger_class": "meeting_or_source_window",
       "zero_policy": "emit_only_source_visible_current_meetings",

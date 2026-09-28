@@ -221,6 +221,11 @@ assert.equal(workflow.split('--artifact=.calendar-unified/jamaica.json').length 
 assert.equal(workflow.split('--authority-id=caymanas-park-svrel').length - 1, 2, 'Jamaica observations must be applied in both execution paths');
 assert.equal(workflow.split('--racing-system-id=jamaica-reviewed-system').length - 1, 2, 'Jamaica apply path must bind its canonical racing system in both execution paths');
 assert.equal(workflow.split('--timezone=America/Jamaica').length - 1, 2, 'Jamaica apply paths must bind America/Jamaica in both execution paths');
+assert.equal(workflow.split('node scripts/timetable/run-czech-dostihy-official-window.mjs').length - 1, 2, 'Czech Dostihy must be collected in both normal and latest-main rebuild paths');
+assert.equal(workflow.split('--artifact=.calendar-unified/czech.json').length - 1, 4, 'Czech artifact must pass exclusion and apply layers in both execution paths');
+assert.equal(workflow.split('--authority-id=czech-racing-calendar').length - 1, 2, 'Czech observations must be applied in both execution paths');
+assert.equal(workflow.split('--racing-system-id=czech-national-calendar-system').length - 1, 2, 'Czech apply path must bind its canonical racing system in both execution paths');
+assert.equal(workflow.split('--timezone=Europe/Prague').length - 1, 2, 'Czech apply path must bind Europe/Prague in both execution paths');
 assert.equal(workflow.split('node scripts/timetable/run-dominican-hvc-official-window.mjs').length - 1, 2, 'Dominican HVC must be collected in both normal and latest-main rebuild paths');
 assert.equal(workflow.split('--artifact=.calendar-unified/dominican-hvc.json').length - 1, 4, 'Dominican HVC artifact must pass exclusion and apply layers in both execution paths');
 assert.equal(workflow.split('--authority-id=hipodromo-v-centenario').length - 1, 2, 'Dominican HVC observations must be applied in both execution paths');
@@ -255,4 +260,5 @@ console.log('MEXICO_AMERICAS_UNIFIED_REFRESH_PATHS: 2');
 console.log('URUGUAY_HRU_UNIFIED_REFRESH_PATHS: 2');
 console.log('FINLAND_HIPPOS_UNIFIED_REFRESH_PATHS: 2');
 console.log('JAMAICA_CAYMANAS_UNIFIED_REFRESH_PATHS: 2');
+console.log('CZECH_DOSTIHY_UNIFIED_REFRESH_PATHS: 2');
 console.log('DOMINICAN_HVC_UNIFIED_REFRESH_PATHS: 2');
