@@ -1,0 +1,33 @@
+name: Denmark Klampenborg live probe
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-denmark-klampenborg-live-probe.yml'
+      - 'scripts/timetable/denmark-klampenborg-calendar-core.mjs'
+      - 'scripts/timetable/run-denmark-klampenborg-official-window.mjs'
+      - 'scripts/check-denmark-klampenborg-adapter.mjs'
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate Denmark Klampenborg adapter
+        run: npm run validate:denmark-klampenborg
+      - name: Probe live Denmark Klampenborg 40-day window
+        run: |
+          mkdir -p .calendar-denmark-probe
+          node scripts/timetable/run-denmark-klampenborg-official-window.mjs --as-of=2026-09-28 --days=40 --output=.calendar-denmark-probe/denmark.json
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const d=JSON.parse(fs.readFileSync('.calendar-denmark-probe/denmark.json','utf8'));
+          console.log(JSON.stringify({records:d.records.length,dates:d.records.map(r=>r.date),diagnostics:d.diagnostics,discovery:d.discovery}));
+          if(d.diagnostics.source_errors.length||d.diagnostics.parse_failures.length) process.exitCode=1;
+          if(d.discovery.source_visible_rows!==3) process.exitCode=1;
+          if(JSON.stringify(d.records.map(r=>r.date))!==JSON.stringify(['2026-10-10','2026-10-17','2026-10-31'])) process.exitCode=1;
+          if(d.records.some(r=>r.capability_rank!=='C'||r.first_race_time_local!==null||r.last_race_time_local!==null||r.timetable_rows.length)) process.exitCode=1;
+          NODE

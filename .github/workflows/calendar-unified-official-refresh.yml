@@ -30,6 +30,7 @@ on:
       - 'scripts/check-finland-hippos-adapter.mjs'
       - 'scripts/check-jamaica-caymanas-adapter.mjs'
       - 'scripts/check-czech-dostihy-adapter.mjs'
+      - 'scripts/check-denmark-klampenborg-adapter.mjs'
       - 'scripts/check-dominican-hvc-adapter.mjs'
       - 'scripts/timetable/south-africa-four-racing-core.mjs'
       - 'scripts/timetable/run-south-africa-four-racing-official-window.mjs'
@@ -51,6 +52,8 @@ on:
       - 'scripts/timetable/run-jamaica-caymanas-official-window.mjs'
       - 'scripts/timetable/czech-dostihy-calendar-core.mjs'
       - 'scripts/timetable/run-czech-dostihy-official-window.mjs'
+      - 'scripts/timetable/denmark-klampenborg-calendar-core.mjs'
+      - 'scripts/timetable/run-denmark-klampenborg-official-window.mjs'
       - 'scripts/timetable/dominican-hvc-core.mjs'
       - 'scripts/timetable/run-dominican-hvc-official-window.mjs'
       - 'scripts/timetable/italy-masaf-core.mjs'
@@ -123,6 +126,7 @@ on:
       - 'scripts/check-finland-hippos-adapter.mjs'
       - 'scripts/check-jamaica-caymanas-adapter.mjs'
       - 'scripts/check-czech-dostihy-adapter.mjs'
+      - 'scripts/check-denmark-klampenborg-adapter.mjs'
       - 'scripts/check-dominican-hvc-adapter.mjs'
       - 'scripts/timetable/south-africa-four-racing-core.mjs'
       - 'scripts/timetable/run-south-africa-four-racing-official-window.mjs'
@@ -144,6 +148,8 @@ on:
       - 'scripts/timetable/run-jamaica-caymanas-official-window.mjs'
       - 'scripts/timetable/czech-dostihy-calendar-core.mjs'
       - 'scripts/timetable/run-czech-dostihy-official-window.mjs'
+      - 'scripts/timetable/denmark-klampenborg-calendar-core.mjs'
+      - 'scripts/timetable/run-denmark-klampenborg-official-window.mjs'
       - 'scripts/timetable/dominican-hvc-core.mjs'
       - 'scripts/timetable/run-dominican-hvc-official-window.mjs'
       - 'scripts/timetable/italy-masaf-core.mjs'
@@ -233,6 +239,7 @@ jobs:
           node scripts/check-finland-hippos-adapter.mjs
           node scripts/check-jamaica-caymanas-adapter.mjs
           node scripts/check-czech-dostihy-adapter.mjs
+          node scripts/check-denmark-klampenborg-adapter.mjs
           node scripts/check-dominican-hvc-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
@@ -412,6 +419,7 @@ jobs:
           node scripts/check-finland-hippos-adapter.mjs
           node scripts/check-jamaica-caymanas-adapter.mjs
           node scripts/check-czech-dostihy-adapter.mjs
+          node scripts/check-denmark-klampenborg-adapter.mjs
           node scripts/check-dominican-hvc-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
@@ -645,6 +653,9 @@ jobs:
           node scripts/timetable/run-czech-dostihy-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/czech.json
+          node scripts/timetable/run-denmark-klampenborg-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/denmark.json
           node scripts/timetable/run-dominican-hvc-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/dominican-hvc.json
@@ -684,6 +695,7 @@ jobs:
             --artifact=.calendar-unified/finland.json \
             --artifact=.calendar-unified/jamaica.json \
             --artifact=.calendar-unified/czech.json \
+            --artifact=.calendar-unified/denmark.json \
             --artifact=.calendar-unified/dominican-hvc.json
       - name: Apply non-Japan official observations monotonically
         run: |
@@ -886,6 +898,12 @@ jobs:
             --racing-system-id=czech-national-calendar-system \
             --timezone=Europe/Prague
           node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/denmark.json \
+            --country-id=denmark \
+            --authority-id=klampenborg-galopbane \
+            --racing-system-id=denmark-klampenborg-system \
+            --timezone=Europe/Copenhagen
+          node scripts/timetable/apply-official-rolling-observations.mjs \
             --artifact=.calendar-unified/dominican-hvc.json \
             --country-id=dominican-republic \
             --authority-id=hipodromo-v-centenario \
@@ -1019,6 +1037,9 @@ jobs:
             node scripts/timetable/run-czech-dostihy-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/czech.json
+            node scripts/timetable/run-denmark-klampenborg-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/denmark.json
             node scripts/timetable/run-dominican-hvc-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/dominican-hvc.json
@@ -1056,6 +1077,7 @@ jobs:
             --artifact=.calendar-unified/finland.json \
             --artifact=.calendar-unified/jamaica.json \
             --artifact=.calendar-unified/czech.json \
+            --artifact=.calendar-unified/denmark.json \
             --artifact=.calendar-unified/dominican-hvc.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/hkjc.json \
@@ -1255,6 +1277,12 @@ jobs:
               --authority-id=czech-racing-calendar \
               --racing-system-id=czech-national-calendar-system \
               --timezone=Europe/Prague
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/denmark.json \
+              --country-id=denmark \
+              --authority-id=klampenborg-galopbane \
+              --racing-system-id=denmark-klampenborg-system \
+              --timezone=Europe/Copenhagen
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/dominican-hvc.json \
               --country-id=dominican-republic \

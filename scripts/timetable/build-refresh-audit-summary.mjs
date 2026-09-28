@@ -40,6 +40,7 @@ const SYSTEMS = [
   { key: 'finland', file: 'finland.json', country_id: 'finland', authority_id: 'suomen-hippos', racing_system_id: 'finland-suomen-hippos-harness-system' },
   { key: 'jamaica', file: 'jamaica.json', country_id: 'jamaica', authority_id: 'caymanas-park-svrel', racing_system_id: 'jamaica-reviewed-system' },
   { key: 'czech', file: 'czech.json', country_id: 'czech-republic', authority_id: 'czech-racing-calendar', racing_system_id: 'czech-national-calendar-system' },
+  { key: 'denmark', file: 'denmark.json', country_id: 'denmark', authority_id: 'klampenborg-galopbane', racing_system_id: 'denmark-klampenborg-system' },
   { key: 'dominican-hvc', file: 'dominican-hvc.json', country_id: 'dominican-republic', authority_id: 'hipodromo-v-centenario', racing_system_id: 'hvc-racing-system' },
 ];
 

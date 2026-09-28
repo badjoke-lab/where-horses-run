@@ -1225,7 +1225,9 @@
       "system_id": "denmark-klampenborg-system",
       "system_name_en": "Klampenborg venue system",
       "authority_source_key": "denmark/klampenborg-galopbane/klampenborg-calendar",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "denmark--klampenborg-galopbane"
+      ],
       "coverage_scope": "single_racecourse",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -1242,25 +1244,26 @@
       },
       "source_format": "html",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "monthly",
+        "weekly",
         "near_meeting"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-17",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when the Klampenborg calendar route changes or stable race times become available.",
+      "checked_date": "2026-09-28",
+      "evidence_reviewed_at": "2026-09-28",
+      "revalidation_trigger": "Revalidate if galopbane.dk/loebskalender changes its source-visible date structure, the single-venue identity changes, or the page begins exposing verified race post times.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/19-denmark/final-summary.json",
       "limitations": [
-        "General event times must not be converted into scheduled race post times.",
-        "The decision is venue-specific."
+        "Production route covers Klampenborg Galopbane only and does not claim complete Denmark-wide venue coverage.",
+        "Displayed event time is not treated as scheduled race post time.",
+        "Source-visible absence is not non-running evidence."
       ],
-      "notes": "Manual confirmation can maintain C-level Klampenborg meeting dates from the official venue route."
+      "notes": "Automatic production route reads the official Klampenborg 2026 calendar and publishes source-visible future race-day dates plus the reviewed physical venue at rank C."
     },
     {
       "readiness_id": "czech-republic--czech-chuchle-system--chuchle-racing-calendar",

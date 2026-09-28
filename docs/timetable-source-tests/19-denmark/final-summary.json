@@ -1,1 +1,18 @@
-{"country":"Denmark","status":"Partial","checked_date":"2026-06-17","technical_rank":"C","public_ceiling":"C","official_sources":["https://danskgalop.dk/","https://galopbane.dk/"],"confirmed_fields":{"meeting_date":true,"racecourse":true,"per_race_post_times":false},"decision":"Official pages confirm race days and venues. A complete race timetable was not confirmed, so the result remains rank C."}
+{
+  "country": "Denmark",
+  "status": "Production routed for Klampenborg system",
+  "checked_date": "2026-09-28",
+  "technical_rank": "C",
+  "public_ceiling": "C",
+  "official_sources": [
+    "https://danskgalop.dk/",
+    "https://galopbane.dk/loebskalender"
+  ],
+  "confirmed_fields": {
+    "meeting_date": true,
+    "racecourse": true,
+    "per_race_post_times": false
+  },
+  "decision": "The official Klampenborg Galopbane source-visible calendar is automatically routed at rank C for the single-racecourse system. On 2026-09-28 the live source exposed future meetings on 2026-10-10, 2026-10-17 and 2026-10-31. Displayed general event time is not used as race post time; complete Denmark-wide coverage remains unclaimed.",
+  "production_route": "scripts/timetable/run-denmark-klampenborg-official-window.mjs"
+}

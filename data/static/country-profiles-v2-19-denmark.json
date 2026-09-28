@@ -1,17 +1,103 @@
 [
   {
-    "schema_version":"2.0.0","country_id":"denmark","slug":"denmark","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-18","public_display_ceiling":"C","source_test_status":"partial",
-    "hero":{"summary_en":"Denmark is confirmed at race-day and venue level through official national and venue routes.","summary_ja":"デンマークは公式の全国・会場導線を通じて開催日と会場を確認済みです。"},
-    "overview":{"paragraphs_en":["Official pages confirm race days and venues, but a complete reusable race timetable was not confirmed."],"paragraphs_ja":["公式ページで開催日と会場を確認できますが、完全で再利用可能なレース時刻表は未確認です。"]},
-    "racing_types":[{"id":"thoroughbred-flat","name_en":"Thoroughbred flat racing","name_ja":"サラブレッド平地競走","summary_en":"Calendar-level meeting coverage is confirmed.","summary_ja":"カレンダーレベルの開催情報を確認済みです。"}],
-    "seasonality":{"pattern":"official-calendar-required","summary_en":"Use the current Dansk Galop and venue calendars for meeting dates.","summary_ja":"開催日はDansk Galopと各会場の現行カレンダーで確認します。"},
-    "schedule":{"timezone":"Europe/Copenhagen","utc_offset_label":"Verify current Denmark civil-time offset","day_patterns":["official-calendar-required"],"time_patterns":["not-available-at-rank-c"],"summary_en":"Public output is limited to meeting date and venue.","summary_ja":"公開表示は開催日と会場に限定します。"},
-    "surfaces":{"ids":[],"summary_en":"Surface coverage remains under review.","summary_ja":"馬場種別は調査中です。"},
-    "systems":[{"id":"denmark-dansk-galop-system","name_en":"Dansk Galop guidance system","name_ja":"Dansk Galop案内体系","summary_en":"Dansk Galop provides the reviewed national guidance route.","summary_ja":"Dansk Galopがレビュー済み全国案内導線を提供します。","organiser_source_ids":["denmark-dansk-galop-home"],"distributor_source_ids":[]},{"id":"denmark-klampenborg-system","name_en":"Klampenborg venue system","name_ja":"Klampenborg会場体系","summary_en":"Klampenborg provides a reviewed venue-specific official route.","summary_ja":"Klampenborgがレビュー済み会場別公式導線を提供します。","organiser_source_ids":["denmark-klampenborg-home"],"distributor_source_ids":[]}],
-    "principal_racecourse_ids":[],
-    "calendar_guidance_en":"Show only confirmed meeting dates and venues; do not convert general event times into race post times.","calendar_guidance_ja":"確認済み開催日と会場のみ表示し、一般イベント時刻を発走時刻へ変換しません。",
-    "coverage_note_en":"Rank C does not establish first, last, or per-race post times, and national venue coverage remains incomplete.","coverage_note_ja":"Cは第1・最終・レース別発走時刻を意味せず、全国会場網羅性も未確定です。",
-    "revalidation":{"triggers_en":["Dansk Galop route change","Venue calendar change","Stable timetable source confirmed"],"triggers_ja":["Dansk Galop導線変更時","会場カレンダー変更時","安定した時刻表source確認時"]},
-    "related_glossary_ids":["racecourse","meeting","fixture"]
+    "schema_version": "2.0.0",
+    "country_id": "denmark",
+    "slug": "denmark",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-09-28",
+    "public_display_ceiling": "C",
+    "source_test_status": "partial",
+    "hero": {
+      "summary_en": "Denmark has automatic rank-C Calendar coverage for the Klampenborg Galopbane system from the official venue calendar.",
+      "summary_ja": "デンマークではKlampenborg Galopbane体系を公式会場カレンダーからCで自動取得します。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "The production route covers Klampenborg Galopbane only. The official source-visible calendar confirms future race-day dates and the single physical venue; it does not establish complete Denmark-wide venue coverage or reliable race post times."
+      ],
+      "paragraphs_ja": [
+        "production導線はKlampenborg Galopbaneのみを対象にします。公式source-visible calendarで将来開催日と単一の物理会場を確認しますが、デンマーク全国の完全な会場網羅や信頼できる発走時刻までは主張しません。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "thoroughbred-flat",
+        "name_en": "Thoroughbred flat racing",
+        "name_ja": "サラブレッド平地競走",
+        "summary_en": "Calendar-level meeting coverage is confirmed.",
+        "summary_ja": "カレンダーレベルの開催情報を確認済みです。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "official-calendar-required",
+      "summary_en": "Use the current Dansk Galop and venue calendars for meeting dates.",
+      "summary_ja": "開催日はDansk Galopと各会場の現行カレンダーで確認します。"
+    },
+    "schedule": {
+      "timezone": "Europe/Copenhagen",
+      "utc_offset_label": "Verify current Denmark civil-time offset",
+      "day_patterns": [
+        "official-calendar-required"
+      ],
+      "time_patterns": [
+        "not-available-at-rank-c"
+      ],
+      "summary_en": "Public output is limited to meeting date and venue.",
+      "summary_ja": "公開表示は開催日と会場に限定します。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Surface coverage remains under review.",
+      "summary_ja": "馬場種別は調査中です。"
+    },
+    "systems": [
+      {
+        "id": "denmark-dansk-galop-system",
+        "name_en": "Dansk Galop guidance system",
+        "name_ja": "Dansk Galop案内体系",
+        "summary_en": "Dansk Galop provides the reviewed national guidance route.",
+        "summary_ja": "Dansk Galopがレビュー済み全国案内導線を提供します。",
+        "organiser_source_ids": [
+          "denmark-dansk-galop-home"
+        ],
+        "distributor_source_ids": []
+      },
+      {
+        "id": "denmark-klampenborg-system",
+        "name_en": "Klampenborg venue system",
+        "name_ja": "Klampenborg会場体系",
+        "summary_en": "Klampenborg provides a reviewed venue-specific official route.",
+        "summary_ja": "Klampenborgがレビュー済み会場別公式導線を提供します。",
+        "organiser_source_ids": [
+          "denmark-klampenborg-home"
+        ],
+        "distributor_source_ids": []
+      }
+    ],
+    "principal_racecourse_ids": [
+      "denmark--klampenborg-galopbane"
+    ],
+    "calendar_guidance_en": "Use the official Klampenborg source-visible calendar for this venue system. Do not convert the displayed general event time into first-race or per-race post time, and do not infer cancellation from absence.",
+    "calendar_guidance_ja": "Klampenborg体系は公式source-visible calendarを使用します。表示される一般イベント時刻を第1競走・各競走発走時刻へ変換せず、absenceから中止を推測しません。",
+    "coverage_note_en": "Automatic coverage is rank C for the Klampenborg single-racecourse system; nationwide completeness remains unclaimed.",
+    "coverage_note_ja": "自動取得はKlampenborg単一競馬場体系のCであり、全国網羅性は主張しません。",
+    "revalidation": {
+      "triggers_en": [
+        "Dansk Galop route change",
+        "Venue calendar change",
+        "Stable timetable source confirmed"
+      ],
+      "triggers_ja": [
+        "Dansk Galop導線変更時",
+        "会場カレンダー変更時",
+        "安定した時刻表source確認時"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture"
+    ]
   }
 ]
