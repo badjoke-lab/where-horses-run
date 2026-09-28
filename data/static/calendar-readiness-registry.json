@@ -1576,17 +1576,19 @@
       "country_tracker_delivery_no": "25",
       "system_id": "jamaica-reviewed-system",
       "system_name_en": "Caymanas Park",
-      "authority_source_key": "jamaica/caymanas-park-svrel/caymanas-race-cards",
-      "racecourse_ids": [],
+      "authority_source_key": "jamaica/caymanas-park-svrel/caymanas-entries",
+      "racecourse_ids": [
+        "jamaica--caymanas-park"
+      ],
       "coverage_scope": "single_racecourse",
-      "technical_rank": "A",
-      "public_ceiling": "A",
+      "technical_rank": "C",
+      "public_ceiling": "C",
       "confirmed_fields": {
         "meeting_date": true,
         "racecourse": true,
-        "first_race_time": true,
-        "last_race_time": true,
-        "per_race_post_times": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
         "race_name": false,
         "distance": false,
         "surface": false,
@@ -1594,24 +1596,28 @@
       },
       "source_format": "html",
       "access_mode": "direct",
-      "automation_mode": "semi_automatic",
+      "automation_mode": "automatic",
       "refresh_classes": [
         "weekly",
         "near_meeting"
       ],
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "fallback": "downgrade_to_C",
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-18",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when Caymanas calendar or race-card routes change.",
+      "checked_date": "2026-09-28",
+      "evidence_reviewed_at": "2026-09-28",
+      "revalidation_trigger": "Revalidate if the Caymanas Entries monthly heading/date structure, official route, browser-rendered DOM, or operator identity changes.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/25-jamaica/final-summary.json",
       "limitations": [
-        "Participant, betting, result, and full racecard fields must be ignored."
+        "Current automatic production route is rank C only: meeting date plus Caymanas Park identity.",
+        "Entries is treated as a source-visible monthly publication horizon; unlisted future dates or later months are not negative evidence.",
+        "The official Entries API currently returns the SPA shell to GitHub Actions; production therefore renders the official Entries page with system Chrome and parses the rendered DOM.",
+        "Reviewed race-card post times support a higher research ceiling, but automatic race-card parsing is outside this first production route.",
+        "Participant, betting, result and full-racecard fields remain excluded."
       ],
-      "notes": "A parser prototype may extract schedule fields only."
+      "notes": "Automatic production parses the official Caymanas Park Entries page. Live GitHub Actions probe on 2026-09-28 resolved six source-visible September dates with source errors 0 and parse failures 0 via the browser-rendered official page."
     },
     {
       "readiness_id": "trinidad-and-tobago--trinidad-and-tobago-reviewed-system--arima-programme",

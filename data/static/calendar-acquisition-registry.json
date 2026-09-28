@@ -911,6 +911,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic Suomen Hippos current-year HTML calendar route for the 19 current main tracks in the Racecourse Master denominator. Seasonal non-master tracks and Paikallisravit local/temporary meetings are explicitly diagnosed as out-of-scope rather than silently published. Published meeting clock is retained only as context and is not promoted to first-race time."
+    },
+    {
+      "system_id": "jamaica-reviewed-system",
+      "country_id": "jamaica",
+      "authority_id": "caymanas-park-svrel",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "caymanas-entries",
+      "detail_source_id": "caymanas-entries",
+      "schedule_adapter_id": "jamaica-caymanas-entries-v1",
+      "detail_adapter_id": "jamaica-caymanas-entries-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": false,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic Caymanas Park Entries route. Direct API requests from GitHub Actions currently receive the SPA shell, so the runner falls back to the official Entries page rendered with the system Chrome already present on the GitHub-hosted runner. Publishes meeting date plus the single physical racecourse at rank C only. Missing later dates/months are publication-state limits, not non-running evidence."
     }
   ]
 }
