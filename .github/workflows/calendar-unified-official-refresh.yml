@@ -28,6 +28,7 @@ on:
       - 'scripts/check-mexico-americas-adapter.mjs'
       - 'scripts/check-uruguay-hru-adapter.mjs'
       - 'scripts/check-finland-hippos-adapter.mjs'
+      - 'scripts/check-jamaica-caymanas-adapter.mjs'
       - 'scripts/check-dominican-hvc-adapter.mjs'
       - 'scripts/timetable/south-africa-four-racing-core.mjs'
       - 'scripts/timetable/run-south-africa-four-racing-official-window.mjs'
@@ -45,6 +46,8 @@ on:
       - 'scripts/timetable/run-uruguay-hru-official-window.mjs'
       - 'scripts/timetable/finland-hippos-core.mjs'
       - 'scripts/timetable/run-finland-hippos-official-window.mjs'
+      - 'scripts/timetable/jamaica-caymanas-core.mjs'
+      - 'scripts/timetable/run-jamaica-caymanas-official-window.mjs'
       - 'scripts/timetable/dominican-hvc-core.mjs'
       - 'scripts/timetable/run-dominican-hvc-official-window.mjs'
       - 'scripts/timetable/italy-masaf-core.mjs'
@@ -115,6 +118,7 @@ on:
       - 'scripts/check-mexico-americas-adapter.mjs'
       - 'scripts/check-uruguay-hru-adapter.mjs'
       - 'scripts/check-finland-hippos-adapter.mjs'
+      - 'scripts/check-jamaica-caymanas-adapter.mjs'
       - 'scripts/check-dominican-hvc-adapter.mjs'
       - 'scripts/timetable/south-africa-four-racing-core.mjs'
       - 'scripts/timetable/run-south-africa-four-racing-official-window.mjs'
@@ -132,6 +136,8 @@ on:
       - 'scripts/timetable/run-uruguay-hru-official-window.mjs'
       - 'scripts/timetable/finland-hippos-core.mjs'
       - 'scripts/timetable/run-finland-hippos-official-window.mjs'
+      - 'scripts/timetable/jamaica-caymanas-core.mjs'
+      - 'scripts/timetable/run-jamaica-caymanas-official-window.mjs'
       - 'scripts/timetable/dominican-hvc-core.mjs'
       - 'scripts/timetable/run-dominican-hvc-official-window.mjs'
       - 'scripts/timetable/italy-masaf-core.mjs'
@@ -219,6 +225,7 @@ jobs:
           node scripts/check-mexico-americas-adapter.mjs
           node scripts/check-uruguay-hru-adapter.mjs
           node scripts/check-finland-hippos-adapter.mjs
+          node scripts/check-jamaica-caymanas-adapter.mjs
           node scripts/check-dominican-hvc-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
@@ -396,6 +403,7 @@ jobs:
           node scripts/check-mexico-americas-adapter.mjs
           node scripts/check-uruguay-hru-adapter.mjs
           node scripts/check-finland-hippos-adapter.mjs
+          node scripts/check-jamaica-caymanas-adapter.mjs
           node scripts/check-dominican-hvc-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
@@ -623,6 +631,9 @@ jobs:
           node scripts/timetable/run-finland-hippos-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/finland.json
+          node scripts/timetable/run-jamaica-caymanas-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/jamaica.json
           node scripts/timetable/run-dominican-hvc-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/dominican-hvc.json
@@ -660,6 +671,7 @@ jobs:
             --artifact=.calendar-unified/mexico.json \
             --artifact=.calendar-unified/uruguay.json \
             --artifact=.calendar-unified/finland.json \
+            --artifact=.calendar-unified/jamaica.json \
             --artifact=.calendar-unified/dominican-hvc.json
       - name: Apply non-Japan official observations monotonically
         run: |
@@ -850,6 +862,12 @@ jobs:
             --racing-system-id=finland-suomen-hippos-harness-system \
             --timezone=Europe/Helsinki
           node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/jamaica.json \
+            --country-id=jamaica \
+            --authority-id=caymanas-park-svrel \
+            --racing-system-id=jamaica-reviewed-system \
+            --timezone=America/Jamaica
+          node scripts/timetable/apply-official-rolling-observations.mjs \
             --artifact=.calendar-unified/dominican-hvc.json \
             --country-id=dominican-republic \
             --authority-id=hipodromo-v-centenario \
@@ -977,6 +995,9 @@ jobs:
             node scripts/timetable/run-finland-hippos-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/finland.json
+            node scripts/timetable/run-jamaica-caymanas-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/jamaica.json
             node scripts/timetable/run-dominican-hvc-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/dominican-hvc.json
@@ -1012,6 +1033,7 @@ jobs:
             --artifact=.calendar-unified/mexico.json \
             --artifact=.calendar-unified/uruguay.json \
             --artifact=.calendar-unified/finland.json \
+            --artifact=.calendar-unified/jamaica.json \
             --artifact=.calendar-unified/dominican-hvc.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/hkjc.json \
@@ -1199,6 +1221,12 @@ jobs:
               --authority-id=suomen-hippos \
               --racing-system-id=finland-suomen-hippos-harness-system \
               --timezone=Europe/Helsinki
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/jamaica.json \
+              --country-id=jamaica \
+              --authority-id=caymanas-park-svrel \
+              --racing-system-id=jamaica-reviewed-system \
+              --timezone=America/Jamaica
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/dominican-hvc.json \
               --country-id=dominican-republic \

@@ -1,1 +1,24 @@
-{"country":"Jamaica","status":"Complete at programme level","checked_date":"2026-06-18","technical_rank":"A","public_ceiling":"A","systems":["Caymanas Park / SVREL"],"official_sources":["https://www.caymanasracing.com/","https://www.caymanasracing.com/racing-information/racing-calendar","https://www.caymanasracing.com/racing-information/race-cards"],"confirmed_fields":{"meeting_date":true,"racecourse":true,"first_race_time":true,"per_race_post_times":true},"decision":"Caymanas Park publishes a current racing calendar and official race-card route with reusable race schedule information. The public ceiling is A; participant, betting, result, and full-racecard fields are excluded."}
+{
+  "country": "Jamaica",
+  "status": "Production routed at rank C; reviewed programme ceiling remains A",
+  "checked_date": "2026-09-28",
+  "technical_rank": "A",
+  "public_ceiling": "A",
+  "systems": [
+    "Caymanas Park / SVREL"
+  ],
+  "official_sources": [
+    "https://www.caymanasracing.com/",
+    "https://www.caymanasracing.com/racing-information/entries",
+    "https://www.caymanasracing.com/racing-information/race-cards"
+  ],
+  "confirmed_fields": {
+    "meeting_date": true,
+    "racecourse": true,
+    "first_race_time": true,
+    "per_race_post_times": true
+  },
+  "decision": "Caymanas Park has reviewed A-level race-card capability, but the current automatic production route intentionally publishes only rank C meeting date plus physical venue from the official Entries page. Direct Entries API requests from GitHub Actions return the SPA shell, so the production runner renders the official Entries page with the system Chrome already available on the GitHub-hosted runner. The higher A ceiling is retained for a future automatic race-card upgrade.",
+  "production_rank": "C",
+  "production_route": "scripts/timetable/run-jamaica-caymanas-official-window.mjs"
+}

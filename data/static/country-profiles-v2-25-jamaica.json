@@ -1,1 +1,98 @@
-[{"schema_version":"2.0.0","country_id":"jamaica","slug":"jamaica","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-19","public_display_ceiling":"A","source_test_status":"complete","hero":{"summary_en":"Official race-card routes support race labels and post times; participant, betting and result fields remain excluded.","summary_ja":"公式レースカード導線はレースラベルと発走時刻に対応するが、参加者・賭け・結果項目は除外する。"},"overview":{"paragraphs_en":["Official race-card routes support race labels and post times; participant, betting and result fields remain excluded."],"paragraphs_ja":["公式レースカード導線はレースラベルと発走時刻に対応するが、参加者・賭け・結果項目は除外する。"]},"racing_types":[{"id":"horse-racing","name_en":"Horse racing","name_ja":"競馬","summary_en":"Confirmed at Caymanas Park.","summary_ja":"Caymanas Parkで確認済み。"}],"seasonality":{"pattern":"official-source-required","summary_en":"Check the current official source before use.","summary_ja":"利用前に現行の公式ソースを確認する。"},"schedule":{"timezone":"America/Jamaica","utc_offset_label":"Verify the current local UTC offset","day_patterns":["official-source-required"],"time_patterns":["race-label-and-post-time"],"summary_en":"Official race-card routes support race labels and post times; participant, betting and result fields remain excluded.","summary_ja":"公式レースカード導線はレースラベルと発走時刻に対応するが、参加者・賭け・結果項目は除外する。"},"surfaces":{"ids":[],"summary_en":"Surface details are not normalized.","summary_ja":"馬場情報は共通化しない。"},"systems":[{"id":"jamaica-reviewed-system","name_en":"Caymanas Park","name_ja":"Caymanas Park","summary_en":"Official race-card routes support race labels and post times; participant, betting and result fields remain excluded.","summary_ja":"公式レースカード導線はレースラベルと発走時刻に対応するが、参加者・賭け・結果項目は除外する。","organiser_source_ids":["jamaica-caymanas-racing-home"],"distributor_source_ids":["jamaica-caymanas-race-cards"]}],"principal_racecourse_ids":[],"calendar_guidance_en":"Follow the public display ceiling and open the official source for complete information.","calendar_guidance_ja":"公開表示上限に従い、完全な情報は公式ソースで確認する。","coverage_note_en":"The reviewed scope is not claimed to be a complete national inventory.","coverage_note_ja":"レビュー済み範囲を完全な全国一覧とは断定しない。","revalidation":{"triggers_en":["The official route changes","Coverage or institutional roles are clarified"],"triggers_ja":["公式導線変更時","網羅範囲または制度上の役割が明確になったとき"]},"related_glossary_ids":["racecourse","meeting","fixture","post-time"]}]
+[
+  {
+    "schema_version": "2.0.0",
+    "country_id": "jamaica",
+    "slug": "jamaica",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-09-28",
+    "public_display_ceiling": "A",
+    "source_test_status": "complete",
+    "hero": {
+      "summary_en": "Caymanas Park is the reviewed Jamaica production scope. The automatic route publishes current official race-day dates at rank C while the reviewed race-card route retains a higher upgrade ceiling.",
+      "summary_ja": "Jamaicaのproduction対象はCaymanas Parkです。自動導線では現行公式開催日をCで公開し、レビュー済みrace-card導線は将来の上位ランク用に保持します。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "The official Caymanas Park Entries page supplies the current source-visible monthly race-day horizon. GitHub Actions renders that official page when the direct API returns the SPA shell. Race-card post times remain a separate future upgrade path."
+      ],
+      "paragraphs_ja": [
+        "Caymanas Park公式Entriesページから現在公開されている月次開催日範囲を取得します。GitHub ActionsではAPIがSPA shellを返す場合に公式ページをレンダリングして取得します。race-card発走時刻は将来の別アップグレード対象です。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "horse-racing",
+        "name_en": "Horse racing",
+        "name_ja": "競馬",
+        "summary_en": "Confirmed at Caymanas Park.",
+        "summary_ja": "Caymanas Parkで確認済み。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "source-visible-monthly",
+      "summary_en": "Use the official Entries month as a publication horizon; do not infer non-running from an unlisted future date or later month.",
+      "summary_ja": "公式Entriesの月次公開範囲を使用し、未掲載の将来日や翌月から非開催を推測しません。"
+    },
+    "schedule": {
+      "timezone": "America/Jamaica",
+      "utc_offset_label": "UTC-5",
+      "day_patterns": [
+        "official-source-required"
+      ],
+      "time_patterns": [
+        "meeting-date-only-in-production"
+      ],
+      "summary_en": "Production currently publishes meeting dates only. Official race cards may later support post-time upgrades.",
+      "summary_ja": "現在のproductionは開催日のみを公開します。公式race cardによる時刻アップグレードは別工程です。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Surface details are not normalized.",
+      "summary_ja": "馬場情報は共通化しない。"
+    },
+    "systems": [
+      {
+        "id": "jamaica-reviewed-system",
+        "name_en": "Caymanas Park / SVREL",
+        "name_ja": "Caymanas Park / SVREL",
+        "summary_en": "SVREL publishes the reviewed Caymanas Park Entries and race-card routes.",
+        "summary_ja": "SVRELがCaymanas Parkの確認済みEntriesおよびrace-card導線を公開します。",
+        "organiser_source_ids": [
+          "jamaica-caymanas-racing-home"
+        ],
+        "distributor_source_ids": [
+          "jamaica-caymanas-entries",
+          "jamaica-caymanas-race-cards"
+        ]
+      }
+    ],
+    "principal_racecourse_ids": [
+      "jamaica--caymanas-park"
+    ],
+    "calendar_guidance_en": "Use the official Caymanas Park Entries page for current source-visible meeting dates. Keep post times and race-card detail out of the initial C route.",
+    "calendar_guidance_ja": "現行の公開済み開催日はCaymanas Park公式Entriesページを使用します。初期C導線では発走時刻・race-card詳細を含めません。",
+    "coverage_note_en": "Current production coverage is the single physical racecourse Caymanas Park.",
+    "coverage_note_ja": "現在のproduction対象は単一の物理競馬場Caymanas Parkです。",
+    "revalidation": {
+      "triggers_en": [
+        "Entries monthly structure changes",
+        "Official rendered page changes",
+        "Race-card route changes",
+        "Operator identity changes"
+      ],
+      "triggers_ja": [
+        "Entries月次構造変更時",
+        "公式レンダリングページ変更時",
+        "race-card導線変更時",
+        "運営主体変更時"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture",
+      "post-time"
+    ]
+  }
+]

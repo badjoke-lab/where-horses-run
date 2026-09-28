@@ -38,6 +38,7 @@ const SYSTEMS = [
   { key: 'mexico', file: 'mexico.json', country_id: 'mexico', authority_id: 'hipodromo-de-las-americas', racing_system_id: 'mexico-hipodromo-las-americas-system' },
   { key: 'uruguay', file: 'uruguay.json', country_id: 'uruguay', authority_id: 'hru', racing_system_id: 'uruguay-hru-system' },
   { key: 'finland', file: 'finland.json', country_id: 'finland', authority_id: 'suomen-hippos', racing_system_id: 'finland-suomen-hippos-harness-system' },
+  { key: 'jamaica', file: 'jamaica.json', country_id: 'jamaica', authority_id: 'caymanas-park-svrel', racing_system_id: 'jamaica-reviewed-system' },
   { key: 'dominican-hvc', file: 'dominican-hvc.json', country_id: 'dominican-republic', authority_id: 'hipodromo-v-centenario', racing_system_id: 'hvc-racing-system' },
 ];
 

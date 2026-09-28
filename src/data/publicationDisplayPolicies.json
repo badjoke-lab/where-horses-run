@@ -657,6 +657,26 @@
       "show_live_label": false,
       "show_replay_label": false,
       "notes": "Finland automatic Calendar route publishes official Suomen Hippos meeting date and reviewed main-track identity at rank C. Published meeting clock is not first-race time; seasonal/local out-of-scope rows are not folded into main-track identities."
+    },
+    {
+      "id": "jamaica-caymanas-reviewed-c",
+      "priority": 350,
+      "match": {
+        "authority_ids": [
+          "caymanas-park-svrel"
+        ]
+      },
+      "max_public_rank": "C",
+      "include_in_public_list": true,
+      "detail_fields": {
+        "show_race_name": false,
+        "show_distance": false,
+        "show_surface": false,
+        "show_course": false
+      },
+      "show_live_label": false,
+      "show_replay_label": false,
+      "notes": "Jamaica production route publishes source-visible Caymanas Park meeting dates only at rank C. Race-card post times and detail fields remain a separate future upgrade path."
     }
   ]
 }

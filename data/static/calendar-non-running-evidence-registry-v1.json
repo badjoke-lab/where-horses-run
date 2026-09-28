@@ -757,6 +757,27 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-09-28",
       "notes": "Calendar Expansion does not promote PERUTTU or source absence into public cancellation state. Positive meetings only are emitted; fetch/parser failure preserves stronger verified state."
+    },
+    {
+      "record_id": "jamaica-reviewed-system",
+      "country_id": "jamaica",
+      "system_id": "jamaica-reviewed-system",
+      "authority_id": "caymanas-park-svrel",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Caymanas Park positive Entries monthly race-day evidence only; no bounded whole-meeting negative-evidence route is implemented.",
+      "evidence_urls": [
+        "https://www.caymanasracing.com/racing-information/entries"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-09-28",
+      "notes": "Jamaica production uses positive Caymanas Park Entries evidence only. Unlisted future dates, later months, source omission, acquisition failure, or parser failure do not prove cancellation/postponement and must preserve stronger verified state."
     }
   ]
 }

@@ -570,14 +570,14 @@
       "authority_name_local": null,
       "authority_type": "racecourse_operator",
       "racecourse_scope": "single_racecourse",
-      "official_source_id": "caymanas-race-cards",
-      "official_source_url": "https://www.caymanasracing.com/racing-information/race-cards",
-      "source_kind": "racecard",
+      "official_source_id": "caymanas-entries",
+      "official_source_url": "https://www.caymanasracing.com/racing-information/entries",
+      "source_kind": "calendar",
       "source_status": "verified",
-      "last_checked_date": "2026-06-18",
-      "capability_rank": "A",
+      "last_checked_date": "2026-09-28",
+      "capability_rank": "C",
       "adapter_candidate_status": "candidate",
-      "notes": "Reviewed Caymanas calendar and race-card routes expose reusable race schedule fields."
+      "notes": "Official Caymanas Park Entries page exposes current source-visible monthly race-day dates. Production uses the official rendered page when the site API returns an SPA shell to GitHub Actions. Initial production route is date+venue at rank C; race-card timing remains a separate future upgrade."
     },
     {
       "country_id": "trinidad-and-tobago",
