@@ -93,7 +93,8 @@
     "validate:mexico-americas": "node --check scripts/timetable/mexico-americas-programas-core.mjs && node --check scripts/timetable/run-mexico-americas-official-window.mjs && node scripts/check-mexico-americas-adapter.mjs",
     "validate:uruguay-hru": "node --check scripts/timetable/uruguay-hru-calendar-core.mjs && node --check scripts/timetable/run-uruguay-hru-official-window.mjs && node scripts/check-uruguay-hru-adapter.mjs",
     "validate:finland-hippos": "node --check scripts/timetable/finland-hippos-core.mjs && node --check scripts/timetable/run-finland-hippos-official-window.mjs && node scripts/check-finland-hippos-adapter.mjs",
-    "validate:jamaica-caymanas": "node --check scripts/timetable/jamaica-caymanas-core.mjs && node --check scripts/timetable/run-jamaica-caymanas-official-window.mjs && node scripts/check-jamaica-caymanas-adapter.mjs"
+    "validate:jamaica-caymanas": "node --check scripts/timetable/jamaica-caymanas-core.mjs && node --check scripts/timetable/run-jamaica-caymanas-official-window.mjs && node scripts/check-jamaica-caymanas-adapter.mjs",
+    "validate:norway-ovrevoll": "node --check scripts/timetable/norway-ovrevoll-core.mjs && node --check scripts/timetable/run-norway-ovrevoll-official-window.mjs && node scripts/check-norway-ovrevoll-adapter.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0",
