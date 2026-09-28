@@ -1,0 +1,21 @@
+name: Norway DNT source probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-norway-dnt-source-probe.yml'
+      - 'scripts/probe-norway-dnt-source.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Probe official DNT 2026 calendar source
+        run: node scripts/probe-norway-dnt-source.mjs
