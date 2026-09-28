@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { execFileSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import {
   JAMAICA_AUTHORITY_ID,JAMAICA_ENTRIES_URL,JAMAICA_ENTRIES_API_URL,JAMAICA_SOURCE_ID,JAMAICA_SYSTEM_ID,JAMAICA_TIMEZONE,
-  buildJamaicaMeetingRecord,parseCaymanasEntries,parseCaymanasEntriesApi,
+  buildJamaicaMeetingRecord,parseCaymanasEntriesApi,
 } from './jamaica-caymanas-core.mjs';
 
 function arg(name,fallback=null){const p=`--${name}=`;const v=process.argv.find(x=>x.startsWith(p));return v?v.slice(p.length):fallback;}
@@ -45,16 +45,83 @@ async function getJson(url){
   return {json:JSON.parse(text),url:r.url||url,content_type:contentType};
 }
 
-function renderOfficialEntries(){
+function sleep(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
+
+async function fetchEntriesThroughBrowserSession(){
   const candidates=['/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium','/usr/bin/chromium-browser'];
   const bin=candidates.find(p=>fs.existsSync(p));
   if(!bin) throw new Error('No supported Chrome/Chromium binary found');
-  const html=execFileSync(bin,[
+  const port=9222;
+  const profile='/tmp/whr-caymanas-'+process.pid;
+  const child=spawn(bin,[
     '--headless=new','--disable-gpu','--no-sandbox','--disable-dev-shm-usage',
-    '--dump-dom','--virtual-time-budget=7000',JAMAICA_ENTRIES_URL
-  ],{encoding:'utf8',maxBuffer:20*1024*1024,timeout:30000,stdio:['ignore','pipe','pipe']});
-  if(!html||html.length<1000) throw new Error('Rendered Caymanas Entries DOM was unexpectedly short');
-  return {html,browser:bin};
+    '--disable-background-networking','--disable-component-update','--disable-sync',
+    '--no-first-run','--no-default-browser-check','--metrics-recording-only',
+    '--remote-debugging-address=127.0.0.1','--remote-debugging-port='+port,
+    '--user-data-dir='+profile,JAMAICA_ENTRIES_URL
+  ],{stdio:'ignore'});
+  try{
+    let targets=[];
+    const deadline=Date.now()+12000;
+    while(Date.now()<deadline){
+      try{
+        const r=await fetch('http://127.0.0.1:'+port+'/json/list',{signal:AbortSignal.timeout(1200)});
+        if(r.ok){
+          const list=await r.json();
+          targets=list.filter(x=>x.type==='page'&&x.webSocketDebuggerUrl);
+          if(targets.length) break;
+        }
+      }catch{}
+      await sleep(250);
+    }
+    if(!targets.length) throw new Error('Chrome DevTools page target unavailable');
+    const target=targets.find(x=>String(x.url).includes('caymanasracing.com'))??targets[0];
+    const ws=new WebSocket(target.webSocketDebuggerUrl);
+    await new Promise((resolve,reject)=>{
+      const timer=setTimeout(()=>reject(new Error('Chrome DevTools websocket timeout')),3000);
+      ws.addEventListener('open',()=>{clearTimeout(timer);resolve();},{once:true});
+      ws.addEventListener('error',()=>{clearTimeout(timer);reject(new Error('Chrome DevTools websocket error'));},{once:true});
+    });
+    let seq=0;
+    const pending=new Map();
+    ws.addEventListener('message',event=>{
+      let msg;try{msg=JSON.parse(String(event.data));}catch{return;}
+      if(msg.id&&pending.has(msg.id)){
+        const h=pending.get(msg.id);pending.delete(msg.id);
+        if(msg.error) h.reject(new Error(msg.error.message||'CDP error')); else h.resolve(msg.result);
+      }
+    });
+    const send=(method,params={})=>new Promise((resolve,reject)=>{
+      const id=++seq;pending.set(id,{resolve,reject});
+      ws.send(JSON.stringify({id,method,params}));
+      setTimeout(()=>{if(pending.delete(id)) reject(new Error('CDP '+method+' timeout'));},8000);
+    });
+    await send('Runtime.enable');
+    let result=null;
+    for(let attempt=0;attempt<24;attempt++){
+      const ready=await send('Runtime.evaluate',{
+        expression:"({axiosType:typeof window.axios,readyState:document.readyState,url:location.href})",
+        returnByValue:true
+      });
+      const state=ready?.result?.value??{};
+      if(state.axiosType==='function'||state.axiosType==='object'){
+        const evaluated=await send('Runtime.evaluate',{
+          expression:"(async()=>{try{const r=await window.axios.get('/api/site/racing-information/entries');return {ok:true,status:r.status,contentType:(r.headers&&r.headers['content-type'])||'',data:r.data};}catch(e){return {ok:false,status:(e&&e.response&&e.response.status)||0,contentType:(e&&e.response&&e.response.headers&&e.response.headers['content-type'])||'',error:String(e),data:(e&&e.response&&e.response.data)||null}}})()",
+          awaitPromise:true,returnByValue:true
+        });
+        result=evaluated?.result?.value??null;
+        if(result?.ok&&result.data&&typeof result.data==='object') break;
+      }
+      await sleep(500);
+    }
+    try{ws.close();}catch{}
+    if(!result?.ok) throw new Error('Browser axios API failed status='+String(result?.status??0)+' '+String(result?.error??'').slice(0,180));
+    if(!result.data||typeof result.data!=='object') throw new Error('Browser axios API returned non-object payload');
+    return {json:result.data,browser:bin,status:result.status,content_type:result.contentType};
+  }finally{
+    try{child.kill('SIGKILL');}catch{}
+    try{fs.rmSync(profile,{recursive:true,force:true});}catch{}
+  }
 }
 
 const output=arg('output'),days=Number(arg('days','30')),start=arg('as-of',localDate());
@@ -70,10 +137,10 @@ try{
 }catch(apiError){
   const apiMsg=String(apiError?.message??apiError);
   try{
-    const rendered=renderOfficialEntries();
-    allRows=parseCaymanasEntries(rendered.html,{sourceUrl:JAMAICA_ENTRIES_URL});
-    discoveryMethod='caymanas_entries_browser_rendered_html';
-    sourceWarnings.push({code:'caymanas_api_unavailable_browser_fallback',source_url:JAMAICA_ENTRIES_API_URL,error:apiMsg,browser:rendered.browser});
+    const browserFetched=await fetchEntriesThroughBrowserSession();
+    allRows=parseCaymanasEntriesApi(browserFetched.json,{sourceUrl:JAMAICA_ENTRIES_URL});
+    discoveryMethod='caymanas_entries_browser_session_api';
+    sourceWarnings.push({code:'caymanas_direct_api_unavailable_browser_session_fallback',source_url:JAMAICA_ENTRIES_API_URL,error:apiMsg,browser:browserFetched.browser,status:browserFetched.status,content_type:browserFetched.content_type});
   }catch(browserError){
     const browserMsg=String(browserError?.message??browserError);
     attemptStatus=/monthly fingerprint|monthly dates|API dates missing|payload/i.test(browserMsg)?'parse_error':'network_error';
