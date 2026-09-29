@@ -1,0 +1,85 @@
+name: Norway production integration probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-norway-production-integration-probe.yml'
+      - 'scripts/timetable/norway-dnt-core.mjs'
+      - 'scripts/timetable/run-norway-dnt-official-window.mjs'
+      - 'scripts/timetable/norway-ovrevoll-core.mjs'
+      - 'scripts/timetable/run-norway-ovrevoll-official-window.mjs'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/calendar-public-country-support-v1.json'
+      - 'data/static/racecourses.json'
+      - 'data/static/racecourse-locations-v1.json'
+
+permissions:
+  contents: read
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - name: Collect Norway official 30-day windows
+        run: |
+          mkdir -p .calendar-norway-integration
+          node scripts/timetable/run-norway-dnt-official-window.mjs \
+            --as-of=2026-09-29 \
+            --days=30 \
+            --output=.calendar-norway-integration/dnt.json
+          node scripts/timetable/run-norway-ovrevoll-official-window.mjs \
+            --as-of=2026-09-29 \
+            --days=30 \
+            --output=.calendar-norway-integration/ovrevoll.json
+      - name: Assert Norway collector diagnostics
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          for (const file of ['dnt.json','ovrevoll.json']) {
+            const data=JSON.parse(fs.readFileSync('.calendar-norway-integration/'+file,'utf8'));
+            const d=data.diagnostics ?? {};
+            if ((d.source_errors?.length ?? 0) || (d.parse_failures?.length ?? 0) || (d.unknown_venues?.length ?? 0)) {
+              throw new Error(file+' has collector diagnostics: '+JSON.stringify(d));
+            }
+            if (!(data.records?.length > 0)) throw new Error(file+' emitted no meetings');
+            if (data.records.some(r => r.capability_rank !== 'C')) throw new Error(file+' emitted non-C observation');
+          }
+          NODE
+      - name: Apply Norway observations monotonically
+        run: |
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-norway-integration/dnt.json \
+            --country-id=norway \
+            --authority-id=det-norske-travselskap \
+            --racing-system-id=norway-dnt-harness-system \
+            --timezone=Europe/Oslo
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-norway-integration/ovrevoll.json \
+            --country-id=norway \
+            --authority-id=ovrevoll \
+            --racing-system-id=norway-ovrevoll-gallop-system \
+            --timezone=Europe/Oslo
+      - name: Assert Norway canonical/public projection
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const canonical=JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json','utf8')).meetings ?? [];
+          const pub=JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json','utf8')).meetings ?? [];
+          const n=canonical.filter(r=>r.country_id==='norway');
+          if (!n.some(r=>r.racing_system_id==='norway-dnt-harness-system')) throw new Error('missing DNT canonical Norway meetings');
+          if (!n.some(r=>r.racing_system_id==='norway-ovrevoll-gallop-system')) throw new Error('missing Ovrevoll canonical Norway meetings');
+          if (n.some(r=>r.capability_rank!=='C')) throw new Error('Norway integration unexpectedly changed rank');
+          if (!pub.some(r=>r.country_id==='norway')) throw new Error('missing Norway public projection');
+          console.log(JSON.stringify({canonical_norway:n.length,public_norway:pub.filter(r=>r.country_id==='norway').length}));
+          NODE
+      - name: Validate map and public support contracts
+        run: |
+          node scripts/check-calendar-public-country-support.mjs
+          node scripts/check-calendar-public-map-parity.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs

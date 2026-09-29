@@ -1011,6 +1011,56 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic official Kincsem Park Galopp calendar route. Publishes Thoroughbred meeting date plus Kincsem Park physical identity at rank C. Harness and greyhound meetings are outside this automatic route. Existing reviewed A programme capability remains a separate richer/manual path and is not downgraded."
+    },
+    {
+      "system_id": "norway-dnt-harness-system",
+      "country_id": "norway",
+      "authority_id": "det-norske-travselskap",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "dnt-terminliste-2026",
+      "detail_source_id": "dnt-terminliste-2026",
+      "schedule_adapter_id": "norway-dnt-calendar-v1",
+      "detail_adapter_id": "norway-dnt-calendar-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic official DNT Løpsdagskalender route. Publishes harness meeting date and physical racecourse at rank C. Entry deadline text is not a post time; absence/fetch failure is not non-running evidence."
+    },
+    {
+      "system_id": "norway-ovrevoll-gallop-system",
+      "country_id": "norway",
+      "authority_id": "ovrevoll",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "ovrevoll-fixtures",
+      "detail_source_id": "ovrevoll-fixtures",
+      "schedule_adapter_id": "norway-ovrevoll-fixtures-v1",
+      "detail_adapter_id": "norway-ovrevoll-fixtures-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic official Øvrevoll fixture route. Publishes gallop meeting date and Øvrevoll physical identity at rank C. Published event start is context only and is not a first-race post time."
     }
   ]
 }

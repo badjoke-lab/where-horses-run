@@ -2755,7 +2755,18 @@
       "system_id": "norway-dnt-harness-system",
       "system_name_en": "Det Norske Travselskap harness calendar",
       "authority_source_key": "norway/det-norske-travselskap/dnt-terminliste-2026",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "norway--varig-orkla-arena",
+        "norway--bjerke-travbane",
+        "norway--forus-travbane",
+        "norway--klosterskogen-travbane",
+        "norway--momarken-travbane",
+        "norway--jarlsberg-travbane",
+        "norway--sorlandets-travpark",
+        "norway--biri-travbane",
+        "norway--bergen-travpark",
+        "norway--harstad-travpark"
+      ],
       "coverage_scope": "authority_wide",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -2772,24 +2783,25 @@
       },
       "source_format": "html",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "seasonal",
-        "manual"
+        "weekly",
+        "near_meeting"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
+      "checked_date": "2026-09-29",
+      "evidence_reviewed_at": "2026-09-29",
       "revalidation_trigger": "Revalidate when DNT changes the national harness calendar.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/45-norway/final-summary.json",
       "limitations": [
-        "Detailed subsystem data is not generalized into a national race-time feed."
+        "Entry deadline text is source context only and is not a race post time.",
+        "Source-visible absence or acquisition failure is not non-running evidence."
       ],
-      "notes": "Manual C-level decision for the Norwegian harness calendar."
+      "notes": "Automatic DNT Løpsdagskalender route covers the current official harness calendar at rank C."
     },
     {
       "readiness_id": "norway--norway-ovrevoll-gallop-system--ovrevoll-fixtures",
@@ -2798,7 +2810,9 @@
       "system_id": "norway-ovrevoll-gallop-system",
       "system_name_en": "Øvrevoll gallop fixtures",
       "authority_source_key": "norway/ovrevoll/ovrevoll-fixtures",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "norway--ovrevoll"
+      ],
       "coverage_scope": "single_racecourse",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -2815,24 +2829,25 @@
       },
       "source_format": "html",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "seasonal",
-        "manual"
+        "weekly",
+        "near_meeting"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
+      "checked_date": "2026-09-29",
+      "evidence_reviewed_at": "2026-09-29",
       "revalidation_trigger": "Revalidate when Øvrevoll changes its fixture route.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/45-norway/final-summary.json",
       "limitations": [
-        "Reusable race times are not established."
+        "Published general event start is not promoted to first-race time.",
+        "Source-visible absence or acquisition failure is not non-running evidence."
       ],
-      "notes": "Manual C-level decision for Øvrevoll gallop fixtures."
+      "notes": "Automatic Øvrevoll 2026 fixture route covers official gallop meeting dates at rank C."
     },
     {
       "readiness_id": "finland--finland-suomen-hippos-harness-system--hippos-calendar-2026",

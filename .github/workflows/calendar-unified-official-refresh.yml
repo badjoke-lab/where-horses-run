@@ -32,6 +32,8 @@ on:
       - 'scripts/check-czech-dostihy-adapter.mjs'
       - 'scripts/check-denmark-klampenborg-adapter.mjs'
       - 'scripts/check-hungary-kincsem-galopp-adapter.mjs'
+      - 'scripts/check-norway-dnt-adapter.mjs'
+      - 'scripts/check-norway-ovrevoll-adapter.mjs'
       - 'scripts/check-dominican-hvc-adapter.mjs'
       - 'scripts/timetable/south-africa-four-racing-core.mjs'
       - 'scripts/timetable/run-south-africa-four-racing-official-window.mjs'
@@ -57,6 +59,10 @@ on:
       - 'scripts/timetable/run-denmark-klampenborg-official-window.mjs'
       - 'scripts/timetable/hungary-kincsem-galopp-calendar-core.mjs'
       - 'scripts/timetable/run-hungary-kincsem-galopp-official-window.mjs'
+      - 'scripts/timetable/norway-dnt-core.mjs'
+      - 'scripts/timetable/run-norway-dnt-official-window.mjs'
+      - 'scripts/timetable/norway-ovrevoll-core.mjs'
+      - 'scripts/timetable/run-norway-ovrevoll-official-window.mjs'
       - 'scripts/timetable/dominican-hvc-core.mjs'
       - 'scripts/timetable/run-dominican-hvc-official-window.mjs'
       - 'scripts/timetable/italy-masaf-core.mjs'
@@ -131,6 +137,8 @@ on:
       - 'scripts/check-czech-dostihy-adapter.mjs'
       - 'scripts/check-denmark-klampenborg-adapter.mjs'
       - 'scripts/check-hungary-kincsem-galopp-adapter.mjs'
+      - 'scripts/check-norway-dnt-adapter.mjs'
+      - 'scripts/check-norway-ovrevoll-adapter.mjs'
       - 'scripts/check-dominican-hvc-adapter.mjs'
       - 'scripts/timetable/south-africa-four-racing-core.mjs'
       - 'scripts/timetable/run-south-africa-four-racing-official-window.mjs'
@@ -156,6 +164,10 @@ on:
       - 'scripts/timetable/run-denmark-klampenborg-official-window.mjs'
       - 'scripts/timetable/hungary-kincsem-galopp-calendar-core.mjs'
       - 'scripts/timetable/run-hungary-kincsem-galopp-official-window.mjs'
+      - 'scripts/timetable/norway-dnt-core.mjs'
+      - 'scripts/timetable/run-norway-dnt-official-window.mjs'
+      - 'scripts/timetable/norway-ovrevoll-core.mjs'
+      - 'scripts/timetable/run-norway-ovrevoll-official-window.mjs'
       - 'scripts/timetable/dominican-hvc-core.mjs'
       - 'scripts/timetable/run-dominican-hvc-official-window.mjs'
       - 'scripts/timetable/italy-masaf-core.mjs'
@@ -247,6 +259,8 @@ jobs:
           node scripts/check-czech-dostihy-adapter.mjs
           node scripts/check-denmark-klampenborg-adapter.mjs
           node scripts/check-hungary-kincsem-galopp-adapter.mjs
+          node scripts/check-norway-dnt-adapter.mjs
+          node scripts/check-norway-ovrevoll-adapter.mjs
           node scripts/check-dominican-hvc-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
@@ -428,6 +442,8 @@ jobs:
           node scripts/check-czech-dostihy-adapter.mjs
           node scripts/check-denmark-klampenborg-adapter.mjs
           node scripts/check-hungary-kincsem-galopp-adapter.mjs
+          node scripts/check-norway-dnt-adapter.mjs
+          node scripts/check-norway-ovrevoll-adapter.mjs
           node scripts/check-dominican-hvc-adapter.mjs
           node scripts/check-meeting-presence-contract.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
@@ -667,6 +683,12 @@ jobs:
           node scripts/timetable/run-hungary-kincsem-galopp-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/hungary.json
+          node scripts/timetable/run-norway-dnt-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/norway-dnt.json
+          node scripts/timetable/run-norway-ovrevoll-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/norway-ovrevoll.json
           node scripts/timetable/run-dominican-hvc-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/dominican-hvc.json
@@ -708,6 +730,8 @@ jobs:
             --artifact=.calendar-unified/czech.json \
             --artifact=.calendar-unified/denmark.json \
             --artifact=.calendar-unified/hungary.json \
+            --artifact=.calendar-unified/norway-dnt.json \
+            --artifact=.calendar-unified/norway-ovrevoll.json \
             --artifact=.calendar-unified/dominican-hvc.json
       - name: Apply non-Japan official observations monotonically
         run: |
@@ -922,6 +946,18 @@ jobs:
             --racing-system-id=hungary-kincsem-galopp-calendar-system \
             --timezone=Europe/Budapest
           node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/norway-dnt.json \
+            --country-id=norway \
+            --authority-id=det-norske-travselskap \
+            --racing-system-id=norway-dnt-harness-system \
+            --timezone=Europe/Oslo
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/norway-ovrevoll.json \
+            --country-id=norway \
+            --authority-id=ovrevoll \
+            --racing-system-id=norway-ovrevoll-gallop-system \
+            --timezone=Europe/Oslo
+          node scripts/timetable/apply-official-rolling-observations.mjs \
             --artifact=.calendar-unified/dominican-hvc.json \
             --country-id=dominican-republic \
             --authority-id=hipodromo-v-centenario \
@@ -1061,6 +1097,12 @@ jobs:
             node scripts/timetable/run-hungary-kincsem-galopp-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/hungary.json
+            node scripts/timetable/run-norway-dnt-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/norway-dnt.json
+            node scripts/timetable/run-norway-ovrevoll-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/norway-ovrevoll.json
             node scripts/timetable/run-dominican-hvc-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/dominican-hvc.json
@@ -1100,6 +1142,8 @@ jobs:
             --artifact=.calendar-unified/czech.json \
             --artifact=.calendar-unified/denmark.json \
             --artifact=.calendar-unified/hungary.json \
+            --artifact=.calendar-unified/norway-dnt.json \
+            --artifact=.calendar-unified/norway-ovrevoll.json \
             --artifact=.calendar-unified/dominican-hvc.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/hkjc.json \
@@ -1311,6 +1355,18 @@ jobs:
               --authority-id=kincsem-park \
               --racing-system-id=hungary-kincsem-galopp-calendar-system \
               --timezone=Europe/Budapest
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/norway-dnt.json \
+              --country-id=norway \
+              --authority-id=det-norske-travselskap \
+              --racing-system-id=norway-dnt-harness-system \
+              --timezone=Europe/Oslo
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/norway-ovrevoll.json \
+              --country-id=norway \
+              --authority-id=ovrevoll \
+              --racing-system-id=norway-ovrevoll-gallop-system \
+              --timezone=Europe/Oslo
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/dominican-hvc.json \
               --country-id=dominican-republic \
