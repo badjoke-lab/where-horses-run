@@ -39,15 +39,29 @@ export function parseCzechProfessionalCalendar(html,{sourceUrl=CZECH_PRO_CALENDA
   const text=visibleText(html);
   if(!/Term[ií]nov[aá]\s+listina\s+2026/i.test(text)) throw new Error('Czech professional calendar fingerprint missing');
   const rows=[];
-  const venues='Praha|Pardubice|Karlovy Vary|Most|Slušovice|Lysá nad Labem|Brno|Kolesa|Netolice';
-  const rx=new RegExp('(\\\\d{1,2})\\\\.(\\\\d{1,2})\\\\.(20\\\\d{2})\\\\s+\\\\S+\\\\s+(?:(\\\\d{1,2}:\\\\d{2})\\\\s+)?('+venues+')\\\\b','giu');
-  for(const m of text.matchAll(rx)){
-    const sourceVenue=m[5].trim();
-    const venue=CZECH_VENUES[normalizeVenue(sourceVenue)]??null;
-    rows.push({date:m[3]+'-'+pad(m[2])+'-'+pad(m[1]),source_venue_label:sourceVenue,venue,event_start_local:m[4]??null,source_url:sourceUrl});
+  for(const tr of html.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)){
+    const cells=[...tr[1].matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)].map(m=>visibleText(m[1])).filter(Boolean);
+    if(!cells.length) continue;
+    const dateCell=cells.find(v=>/^\d{1,2}\.\s*\d{1,2}\.\s*20\d{2}$/.test(v));
+    if(!dateCell) continue;
+    const dm=dateCell.match(/^(\d{1,2})\.\s*(\d{1,2})\.\s*(20\d{2})$/);
+    const sourceVenue=cells.find(v=>CZECH_VENUES[normalizeVenue(v)])??null;
+    if(!sourceVenue) continue;
+    const venue=CZECH_VENUES[normalizeVenue(sourceVenue)];
+    const timeCell=cells.find(v=>/^\d{1,2}:\d{2}$/.test(v))??null;
+    rows.push({date:dm[3]+'-'+pad(dm[2])+'-'+pad(dm[1]),source_venue_label:sourceVenue,venue,event_start_local:timeCell,source_url:sourceUrl});
   }
-  const out=[...new Map(rows.map(r=>[r.date+'|'+r.source_venue_label,r])).values()].sort((a,b)=>a.date.localeCompare(b.date));
-  if(!out.length) throw new Error('Czech professional calendar rows missing');
+  if(!rows.length){
+    const venues='Praha|Prague|Pardubice|Karlovy Vary|Most|Slušovice|Lysá nad Labem|Brno|Kolesa|Netolice';
+    const rx=new RegExp('(\\d{1,2})\\.\\s*(\\d{1,2})\\.\\s*(20\\d{2})[\\s\\S]{0,80}?('+venues+')\\b','giu');
+    for(const m of text.matchAll(rx)){
+      const sourceVenue=m[4].trim();
+      const venue=CZECH_VENUES[normalizeVenue(sourceVenue)]??null;
+      rows.push({date:m[3]+'-'+pad(m[2])+'-'+pad(m[1]),source_venue_label:sourceVenue,venue,event_start_local:null,source_url:sourceUrl});
+    }
+  }
+  const out=[...new Map(rows.map(r=>[r.date+'|'+r.source_venue_label,r])).values()].sort((a,b)=>a.date.localeCompare(b.date)||a.source_venue_label.localeCompare(b.source_venue_label));
+  if(!out.length) throw new Error('Czech professional calendar rows missing; visible_text_sample='+text.slice(0,1200));
   return out;
 }
 
