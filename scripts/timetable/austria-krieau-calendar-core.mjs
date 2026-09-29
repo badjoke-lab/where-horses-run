@@ -26,7 +26,7 @@ export function parseKrieauCalendarHtml(html,{sourceUrl=AUSTRIA_CALENDAR_URL}={}
   for(const m of normalized.matchAll(rx)){
     const month=MONTHS[m[2]];
     if(!month) continue;
-    rows.push({date:\`\${year}-\${month}-\${pad(m[1])}\`,racecourse_id:AUSTRIA_RACECOURSE_ID,venue_name:'Trabrennpark Krieau',event_start_local:m[3],source_url:sourceUrl});
+    rows.push({date:year+'-'+month+'-'+pad(m[1]),racecourse_id:AUSTRIA_RACECOURSE_ID,venue_name:'Trabrennpark Krieau',event_start_local:m[3],source_url:sourceUrl});
   }
   const out=[...new Map(rows.map(r=>[r.date,r])).values()].sort((a,b)=>a.date.localeCompare(b.date));
   if(!out.length) throw new Error('Krieau meeting rows missing');
@@ -44,7 +44,7 @@ export function buildAustriaKrieauMeetingRecord(row,{checkedAt}={}){
     racing_type:'harness-racing',first_race_time_local:null,last_race_time_local:null,timetable_rows:[],
     source:{source_id:AUSTRIA_SOURCE_ID,official_url:row.source_url,checked_at:checkedAt,extraction_method:'official_krieau_race_calendar_html'},
     route_id:'krieau-race-calendar',confidence:'high',review_status:'needs_review',
-    notes:\`Official Krieau race calendar confirms the meeting date and physical venue. Published general event start (\${row.event_start_local}) is context only and is not promoted to race post time. Separate reviewed race newspapers retain richer A-capability evidence.\`,
+    notes:'Official Krieau race calendar confirms the meeting date and physical venue. Published general event start ('+row.event_start_local+') is context only and is not promoted to race post time. Separate reviewed race newspapers retain richer A-capability evidence.',
     detail_observation:{status:'not_applicable',evaluated_capability_rank:'C',race_count:0,calendar_url:row.source_url},
     acquisition_attempt:{attempted_at:checkedAt,status:'success',source_id:AUSTRIA_SOURCE_ID,route_id:'krieau-race-calendar',error_code:null},
     evidence_support:{meeting_identity:e,meeting_date:e},
