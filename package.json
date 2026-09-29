@@ -96,7 +96,9 @@
     "validate:jamaica-caymanas": "node --check scripts/timetable/jamaica-caymanas-core.mjs && node --check scripts/timetable/run-jamaica-caymanas-official-window.mjs && node scripts/check-jamaica-caymanas-adapter.mjs",
     "validate:czech-dostihy": "node --check scripts/timetable/czech-dostihy-calendar-core.mjs && node --check scripts/timetable/run-czech-dostihy-official-window.mjs && node scripts/check-czech-dostihy-adapter.mjs",
     "validate:denmark-klampenborg": "node --check scripts/timetable/denmark-klampenborg-calendar-core.mjs && node --check scripts/timetable/run-denmark-klampenborg-official-window.mjs && node scripts/check-denmark-klampenborg-adapter.mjs",
-    "validate:hungary-kincsem-galopp": "node --check scripts/timetable/hungary-kincsem-galopp-calendar-core.mjs && node --check scripts/timetable/run-hungary-kincsem-galopp-official-window.mjs && node scripts/check-hungary-kincsem-galopp-adapter.mjs"
+    "validate:hungary-kincsem-galopp": "node --check scripts/timetable/hungary-kincsem-galopp-calendar-core.mjs && node --check scripts/timetable/run-hungary-kincsem-galopp-official-window.mjs && node scripts/check-hungary-kincsem-galopp-adapter.mjs",
+    "validate:norway-ovrevoll": "node --check scripts/timetable/norway-ovrevoll-core.mjs && node --check scripts/timetable/run-norway-ovrevoll-official-window.mjs && node scripts/check-norway-ovrevoll-adapter.mjs",
+    "validate:norway-dnt": "node --check scripts/timetable/norway-dnt-core.mjs && node --check scripts/timetable/run-norway-dnt-official-window.mjs && node scripts/check-norway-dnt-adapter.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0",
