@@ -8,6 +8,7 @@ export const CZECH_CALENDAR_URL='https://www.dostihy.cz/kalendar-akci';
 export const CZECH_CALENDAR_FALLBACK_URL='https://www.dostihy.cz/racing-calendar';
 export const CZECH_VENUES=Object.freeze({
   praha:{racecourse_id:'czech-republic--chuchle-arena-praha',venue_name:'Chuchle Arena Praha'},
+  prague:{racecourse_id:'czech-republic--chuchle-arena-praha',venue_name:'Chuchle Arena Praha'},
   pardubice:{racecourse_id:'czech-republic--pardubice-racecourse',venue_name:'Dostihové závodiště Pardubice'},
   'karlovy vary':{racecourse_id:'czech-republic--karlovy-vary-racecourse',venue_name:'Dostihové závodiště Karlovy Vary'},
   most:{racecourse_id:'czech-republic--hipodrom-most',venue_name:'Hipodrom Most'},
