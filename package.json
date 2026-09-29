@@ -99,7 +99,8 @@
     "validate:hungary-kincsem-galopp": "node --check scripts/timetable/hungary-kincsem-galopp-calendar-core.mjs && node --check scripts/timetable/run-hungary-kincsem-galopp-official-window.mjs && node scripts/check-hungary-kincsem-galopp-adapter.mjs",
     "validate:norway-ovrevoll": "node --check scripts/timetable/norway-ovrevoll-core.mjs && node --check scripts/timetable/run-norway-ovrevoll-official-window.mjs && node scripts/check-norway-ovrevoll-adapter.mjs",
     "validate:norway-dnt": "node --check scripts/timetable/norway-dnt-core.mjs && node --check scripts/timetable/run-norway-dnt-official-window.mjs && node scripts/check-norway-dnt-adapter.mjs",
-    "validate:austria-krieau": "node --check scripts/timetable/austria-krieau-calendar-core.mjs && node --check scripts/timetable/run-austria-krieau-official-window.mjs && node scripts/check-austria-krieau-adapter.mjs"
+    "validate:austria-krieau": "node --check scripts/timetable/austria-krieau-calendar-core.mjs && node --check scripts/timetable/run-austria-krieau-official-window.mjs && node scripts/check-austria-krieau-adapter.mjs",
+    "validate:puerto-rico-camarero": "node --check scripts/timetable/puerto-rico-camarero-core.mjs && node --check scripts/timetable/run-puerto-rico-camarero-official-window.mjs && node scripts/check-puerto-rico-camarero-adapter.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0",
