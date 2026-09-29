@@ -6,7 +6,7 @@
   "programme_state": {
     "country_target": 98,
     "countries_with_closed_decision": 98,
-    "readiness_records": 123,
+    "readiness_records": 124,
     "next_backfill_work_ids": []
   },
   "records": [
@@ -1552,7 +1552,9 @@
       "system_id": "puerto-rico-reviewed-system",
       "system_name_en": "Hipódromo Camarero",
       "authority_source_key": "puerto-rico/hipodromo-camarero/camarero-programmes",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "puerto-rico--hipodromo-camarero"
+      ],
       "coverage_scope": "single_racecourse",
       "technical_rank": "A",
       "public_ceiling": "A",
@@ -1575,18 +1577,18 @@
         "near_meeting"
       ],
       "readiness": "prototype_ready",
-      "implementation_status": "not_started",
+      "implementation_status": "manual_path_retained",
       "fallback": "downgrade_to_C",
       "source_status": "verified",
-      "checked_date": "2026-06-18",
-      "evidence_reviewed_at": "2026-06-29",
+      "checked_date": "2026-09-30",
+      "evidence_reviewed_at": "2026-09-30",
       "revalidation_trigger": "Revalidate when Camarero changes programme publication routes or document structure.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/24-puerto-rico/final-summary.json",
       "limitations": [
         "Conditions, awards, participants, betting, results, and full racecard content remain excluded."
       ],
-      "notes": "A bounded programme importer can preserve race labels and post times only."
+      "notes": "Reviewed official Camarero programmes retain A-capability race-label and post-time evidence. They are not replaced or downgraded by the automatic rank-C inscriptions route."
     },
     {
       "readiness_id": "jamaica--jamaica-reviewed-system--caymanas-race-cards",
@@ -5627,6 +5629,54 @@
         "Source-visible absence is not non-running evidence."
       ],
       "notes": "Automatic official Krieau route publishes source-visible meeting dates plus physical venue at rank C."
+    },
+    {
+      "readiness_id": "puerto-rico--puerto-rico-camarero-inscripciones-system--camarero-inscripciones",
+      "country_id": "puerto-rico",
+      "country_tracker_delivery_no": "24",
+      "system_id": "puerto-rico-camarero-inscripciones-system",
+      "system_name_en": "Hipódromo Camarero official registrations",
+      "authority_source_key": "puerto-rico/hipodromo-camarero/camarero-inscripciones",
+      "racecourse_ids": [
+        "puerto-rico--hipodromo-camarero"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-09-30",
+      "evidence_reviewed_at": "2026-09-30",
+      "revalidation_trigger": "Revalidate when Hipódromo Camarero changes the Inscripciones page structure, weekly navigation, or publication policy.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/24-puerto-rico/final-summary.json",
+      "limitations": [
+        "Official registrations are preliminary and subject to change.",
+        "Automatic route publishes meeting date plus physical venue only.",
+        "Separate reviewed official programmes retain A-capability post-time evidence.",
+        "Source-visible absence is not cancellation or non-running evidence."
+      ],
+      "notes": "Automatic current-week Camarero registration route publishes positive upcoming meeting-date evidence at rank C."
     }
   ],
   "last_updated": "2026-09-28"
