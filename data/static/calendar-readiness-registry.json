@@ -6,7 +6,7 @@
   "programme_state": {
     "country_target": 98,
     "countries_with_closed_decision": 98,
-    "readiness_records": 122,
+    "readiness_records": 123,
     "next_backfill_work_ids": []
   },
   "records": [
@@ -1505,7 +1505,9 @@
       "system_id": "austria-reviewed-system",
       "system_name_en": "Krieau",
       "authority_source_key": "austria/wiener-trabrenn-verein/krieau-race-newspapers",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "austria--trabrennpark-krieau"
+      ],
       "coverage_scope": "single_racecourse",
       "technical_rank": "A",
       "public_ceiling": "C",
@@ -1529,11 +1531,11 @@
         "near_meeting"
       ],
       "readiness": "prototype_ready",
-      "implementation_status": "not_started",
+      "implementation_status": "manual_path_retained",
       "fallback": "downgrade_to_C",
       "source_status": "partial",
-      "checked_date": "2026-06-18",
-      "evidence_reviewed_at": "2026-06-29",
+      "checked_date": "2026-09-30",
+      "evidence_reviewed_at": "2026-09-30",
       "revalidation_trigger": "Revalidate when Krieau programme routes change or wider Austrian racing coverage is reviewed.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/23-austria/final-summary.json",
@@ -1541,7 +1543,7 @@
         "Technical A applies only to the reviewed Krieau scope.",
         "Country-wide Austrian racing coverage is incomplete."
       ],
-      "notes": "Prototype treatment is venue-specific and does not raise the country public ceiling above C."
+      "notes": "Reviewed Krieau race newspapers retain A-capability race-time evidence. They are not replaced or downgraded by the automatic rank-C race-date route."
     },
     {
       "readiness_id": "puerto-rico--puerto-rico-reviewed-system--camarero-programmes",
@@ -5577,6 +5579,54 @@
         "Source-visible absence is not non-running evidence."
       ],
       "notes": "Automatic production candidate resolves the latest official 2026 Galopp Versenynaptár PDF and publishes source-visible Kincsem Park Thoroughbred meeting dates at rank C without downgrading the existing reviewed A programme capability."
+    },
+    {
+      "readiness_id": "austria--austria-krieau-calendar-system--krieau-race-calendar",
+      "country_id": "austria",
+      "country_tracker_delivery_no": "23",
+      "system_id": "austria-krieau-calendar-system",
+      "system_name_en": "Trabrennpark Krieau race calendar",
+      "authority_source_key": "austria/wiener-trabrenn-verein/krieau-race-calendar",
+      "racecourse_ids": [
+        "austria--trabrennpark-krieau"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-09-30",
+      "evidence_reviewed_at": "2026-09-30",
+      "revalidation_trigger": "Revalidate when Wiener Trabrenn-Verein changes the Renntermine page structure, removes the year calendar, or changes venue identity.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/23-austria/final-summary.json",
+      "limitations": [
+        "Automatic route covers Trabrennpark Krieau only and does not claim complete Austrian national coverage.",
+        "General published event start times are not promoted to first-race post times.",
+        "Separate reviewed race newspapers retain richer A-capability evidence.",
+        "Source-visible absence is not non-running evidence."
+      ],
+      "notes": "Automatic official Krieau route publishes source-visible meeting dates plus physical venue at rank C."
     }
   ],
   "last_updated": "2026-09-28"
