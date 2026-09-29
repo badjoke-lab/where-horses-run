@@ -34,12 +34,15 @@ export function extractCzechEventLinks(html,{sourceUrl=CZECH_CALENDAR_URL}={}){
 export function parseCzechEventDetail(html,{sourceUrl}={}){
   if(typeof html!=='string'||!html.trim()) throw new Error('Czech event detail HTML must be non-empty');
   const text=visibleText(html);
-  const d=text.match(/(?:Datum konání:|Due date:)\s*(\d{1,2})\.\s*(\d{1,2})\.\s*(20\d{2})/i);
+  const dotted=text.match(/(?:Datum konání:|Due date:)\s*(\d{1,2})\.\s*(\d{1,2})\.\s*(20\d{2})/i);
+  const slashed=text.match(/(?:Due date:)\s*(\d{1,2})\/(\d{1,2})\/(\d{2,4})/i);
+  const d=dotted??slashed;
   if(!d) throw new Error('Czech event date fingerprint missing');
+  const year=String(d[3]).length===2?'20'+d[3]:d[3];
   const v=text.match(/(?:Štítky:|Stitky:|Tags:)\s*([^#]{1,160}?)(?=\s+(?:Datum konání:|Due date:|Date:|Datum:))/i);
   if(!v) throw new Error('Czech event venue fingerprint missing');
   const sourceVenue=v[1].trim();
-  return {date:`${d[3]}-${pad(d[2])}-${pad(d[1])}`,source_venue_label:sourceVenue,venue:CZECH_VENUES[normalizeVenue(sourceVenue)]??null,source_url:sourceUrl};
+  return {date:`${year}-${pad(d[2])}-${pad(d[1])}`,source_venue_label:sourceVenue,venue:CZECH_VENUES[normalizeVenue(sourceVenue)]??null,source_url:sourceUrl};
 }
 function evidence(url,checkedAt){return {source_id:CZECH_SOURCE_ID,official_source_url:url,observed_at:checkedAt,successfully_verified_at:checkedAt,acquisition_method:'automatic'};}
 export function buildCzechMeetingRecord(row,{checkedAt}={}){
