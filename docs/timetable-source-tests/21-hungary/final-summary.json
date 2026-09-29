@@ -1,1 +1,25 @@
-{"country":"Hungary","status":"Complete at programme level","checked_date":"2026-06-18","technical_rank":"A","public_ceiling":"A","systems":["Kincsem Park thoroughbred","Kincsem Park harness"],"official_sources":["https://kincsempark.hu/","https://kincsempark.hu/versenyprogramok/","https://kincsempark.hu/wp-content/uploads/2026/02/gvn263.pdf"],"confirmed_fields":{"meeting_date":true,"racecourse":true,"first_race_time":true,"per_race_post_times":true},"decision":"Kincsem Park publishes a 2026 calendar and official programme files with race labels and post times. The reusable public ceiling remains A; participant, betting, result, and full-racecard fields are excluded."}
+{
+  "country": "Hungary",
+  "status": "Production routed for Kincsem Park Galopp calendar; reviewed programme A path retained",
+  "checked_date": "2026-09-29",
+  "technical_rank": "A",
+  "public_ceiling": "A",
+  "systems": [
+    "Kincsem Park Galopp automatic calendar",
+    "Kincsem Park reviewed programme path",
+    "Kincsem Park harness reviewed scope"
+  ],
+  "official_sources": [
+    "https://kincsempark.hu/galopp-szakma-informaciok/",
+    "https://kincsempark.hu/versenyprogramok/",
+    "https://kincsempark.hu/"
+  ],
+  "confirmed_fields": {
+    "meeting_date": true,
+    "racecourse": true,
+    "first_race_time": true,
+    "per_race_post_times": true
+  },
+  "decision": "The automatic production route resolves the latest official 2026 Galopp Versenynaptár PDF and publishes Kincsem Park Thoroughbred meeting date plus venue at rank C. Separate reviewed official programme files retain the richer A-level post-time capability. Harness and greyhound schedules are not folded into the automatic Galopp route, and nationwide completeness is not claimed.",
+  "production_route": "scripts/timetable/run-hungary-kincsem-galopp-official-window.mjs"
+}

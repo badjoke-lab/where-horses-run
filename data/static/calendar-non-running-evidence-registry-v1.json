@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-non-running-evidence-registry-v1",
-  "reviewed_at": "2026-09-28",
+  "reviewed_at": "2026-09-29",
   "records": [
     {
       "record_id": "japan-jra-system",
@@ -820,6 +820,27 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-09-28",
       "notes": "A missing future date, source omission, acquisition failure or parser failure does not independently prove cancellation/postponement and must preserve stronger verified state."
+    },
+    {
+      "record_id": "hungary-kincsem-galopp-calendar-system",
+      "country_id": "hungary",
+      "system_id": "hungary-kincsem-galopp-calendar-system",
+      "authority_id": "kincsem-park",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Positive official Kincsem Park Galopp calendar evidence only; no bounded whole-meeting cancellation/postponement evidence route is implemented.",
+      "evidence_urls": [
+        "https://kincsempark.hu/galopp-szakma-informaciok/"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-09-29",
+      "notes": "A missing future Galopp date, source omission, acquisition failure, parser failure or removed calendar link does not independently prove cancellation/postponement and must preserve stronger verified state. Harness and greyhound dates are outside this automatic route."
     }
   ]
 }

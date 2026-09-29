@@ -1,1 +1,111 @@
-[{"schema_version":"2.0.0","country_id":"hungary","slug":"hungary","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-19","public_display_ceiling":"A","source_test_status":"complete","hero":{"summary_en":"Reviewed programmes support race labels and post times; wider national coverage remains unresolved.","summary_ja":"レビュー済み番組はレースラベルと発走時刻に対応するが、全国的な網羅性は未解決。"},"overview":{"paragraphs_en":["Reviewed programmes support race labels and post times; wider national coverage remains unresolved."],"paragraphs_ja":["レビュー済み番組はレースラベルと発走時刻に対応するが、全国的な網羅性は未解決。"]},"racing_types":[{"id":"thoroughbred-flat","name_en":"Thoroughbred flat racing","name_ja":"サラブレッド平地競走","summary_en":"Confirmed at Kincsem Park.","summary_ja":"Kincsem Parkで確認済み。"},{"id":"harness-racing","name_en":"Harness racing","name_ja":"繋駕速歩競走","summary_en":"Confirmed at Kincsem Park.","summary_ja":"Kincsem Parkで確認済み。"}],"seasonality":{"pattern":"official-source-required","summary_en":"Check the current official source before use.","summary_ja":"利用前に現行の公式ソースを確認する。"},"schedule":{"timezone":"Europe/Budapest","utc_offset_label":"Verify the current local UTC offset","day_patterns":["official-source-required"],"time_patterns":["race-label-and-post-time"],"summary_en":"Reviewed programmes support race labels and post times; wider national coverage remains unresolved.","summary_ja":"レビュー済み番組はレースラベルと発走時刻に対応するが、全国的な網羅性は未解決。"},"surfaces":{"ids":[],"summary_en":"Surface details are not normalized.","summary_ja":"馬場情報は共通化しない。"},"systems":[{"id":"hungary-reviewed-system","name_en":"Kincsem Park","name_ja":"Kincsem Park","summary_en":"Reviewed programmes support race labels and post times; wider national coverage remains unresolved.","summary_ja":"レビュー済み番組はレースラベルと発走時刻に対応するが、全国的な網羅性は未解決。","organiser_source_ids":["hungary-kincsem-park-home"],"distributor_source_ids":["hungary-kincsem-park-programmes"]}],"principal_racecourse_ids":[],"calendar_guidance_en":"Follow the public display ceiling and open the official source for complete information.","calendar_guidance_ja":"公開表示上限に従い、完全な情報は公式ソースで確認する。","coverage_note_en":"The reviewed scope is not claimed to be a complete national inventory.","coverage_note_ja":"レビュー済み範囲を完全な全国一覧とは断定しない。","revalidation":{"triggers_en":["The official route changes","Coverage or institutional roles are clarified"],"triggers_ja":["公式導線変更時","網羅範囲または制度上の役割が明確になったとき"]},"related_glossary_ids":["racecourse","meeting","fixture","post-time"]}]
+[
+  {
+    "schema_version": "2.0.0",
+    "country_id": "hungary",
+    "slug": "hungary",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-09-29",
+    "public_display_ceiling": "A",
+    "source_test_status": "complete",
+    "hero": {
+      "summary_en": "Kincsem Park Galopp meeting dates are automatically routed from the official 2026 calendar at rank C; reviewed official programmes retain richer A-level post-time evidence.",
+      "summary_ja": "Kincsem ParkのGalopp開催日は公式2026カレンダーからCで自動取得し、レビュー済み公式番組は発走時刻を含むより豊富なA相当証拠として維持します。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "Production automation covers Kincsem Park Thoroughbred/Galopp meeting dates and physical venue identity. Official programme files remain a separate reviewed path for richer post-time evidence. Harness coverage is confirmed in reviewed material but is not claimed as part of the automatic Galopp route, and nationwide completeness is not claimed."
+      ],
+      "paragraphs_ja": [
+        "production自動取得はKincsem Parkのサラブレッド/Galopp開催日と物理会場identityを対象にします。公式番組ファイルは発走時刻などのより豊富な証拠を持つ別のレビュー済み導線として維持します。繋駕速歩はレビュー済み資料で確認されていますがGalopp自動導線の対象とはせず、全国網羅性も主張しません。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "thoroughbred-flat",
+        "name_en": "Thoroughbred flat racing",
+        "name_ja": "サラブレッド平地競走",
+        "summary_en": "Confirmed at Kincsem Park.",
+        "summary_ja": "Kincsem Parkで確認済み。"
+      },
+      {
+        "id": "harness-racing",
+        "name_en": "Harness racing",
+        "name_ja": "繋駕速歩競走",
+        "summary_en": "Confirmed at Kincsem Park.",
+        "summary_ja": "Kincsem Parkで確認済み。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "official-source-required",
+      "summary_en": "Check the current official source before use.",
+      "summary_ja": "利用前に現行の公式ソースを確認する。"
+    },
+    "schedule": {
+      "timezone": "Europe/Budapest",
+      "utc_offset_label": "Verify the current local UTC offset",
+      "day_patterns": [
+        "official-source-required"
+      ],
+      "time_patterns": [
+        "race-label-and-post-time"
+      ],
+      "summary_en": "Reviewed programmes support race labels and post times; wider national coverage remains unresolved.",
+      "summary_ja": "レビュー済み番組はレースラベルと発走時刻に対応するが、全国的な網羅性は未解決。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Surface details are not normalized.",
+      "summary_ja": "馬場情報は共通化しない。"
+    },
+    "systems": [
+      {
+        "id": "hungary-reviewed-system",
+        "name_en": "Kincsem Park",
+        "name_ja": "Kincsem Park",
+        "summary_en": "Reviewed programmes support race labels and post times; wider national coverage remains unresolved.",
+        "summary_ja": "レビュー済み番組はレースラベルと発走時刻に対応するが、全国的な網羅性は未解決。",
+        "organiser_source_ids": [
+          "hungary-kincsem-park-home"
+        ],
+        "distributor_source_ids": [
+          "hungary-kincsem-park-programmes"
+        ]
+      },
+      {
+        "id": "hungary-kincsem-galopp-calendar-system",
+        "name_en": "Kincsem Park Galopp calendar",
+        "name_ja": "Kincsem Park Galoppカレンダー",
+        "summary_en": "Automatic official source-visible Galopp meeting-date route at rank C.",
+        "summary_ja": "公式source-visible Galopp開催日をCで自動取得する導線です。",
+        "organiser_source_ids": [
+          "hungary-kincsem-park-home"
+        ],
+        "distributor_source_ids": []
+      }
+    ],
+    "principal_racecourse_ids": [
+      "hungary--kincsem-park"
+    ],
+    "calendar_guidance_en": "Use the automatic official Galopp calendar for Kincsem Park Thoroughbred meeting dates. Keep richer reviewed programme evidence separate; do not infer Galopp race post times from the mother calendar and do not treat harness or greyhound dates as covered by this automatic route.",
+    "calendar_guidance_ja": "Kincsem Parkのサラブレッド開催日は公式Galoppカレンダー自動取得を使用します。より豊富なレビュー済み番組証拠は別に保持し、母カレンダーからGaloppの発走時刻を推測せず、繋駕速歩やグレイハウンド開催をこの自動導線の対象とみなしません。",
+    "coverage_note_en": "Automatic production coverage is rank C for the Kincsem Park Galopp system. The country-level A ceiling is retained because separate reviewed official programme evidence supports post times; this does not imply nationwide automation.",
+    "coverage_note_ja": "production自動取得はKincsem Park Galopp体系のCです。別のレビュー済み公式番組証拠が発走時刻を支えるため国ページのA上限は維持しますが、全国自動化を意味しません。",
+    "revalidation": {
+      "triggers_en": [
+        "The official route changes",
+        "Coverage or institutional roles are clarified"
+      ],
+      "triggers_ja": [
+        "公式導線変更時",
+        "網羅範囲または制度上の役割が明確になったとき"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture",
+      "post-time"
+    ]
+  }
+]

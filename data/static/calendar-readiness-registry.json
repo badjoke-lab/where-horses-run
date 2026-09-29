@@ -6,7 +6,7 @@
   "programme_state": {
     "country_target": 98,
     "countries_with_closed_decision": 98,
-    "readiness_records": 121,
+    "readiness_records": 122,
     "next_backfill_work_ids": []
   },
   "records": [
@@ -1415,7 +1415,9 @@
       "system_id": "hungary-reviewed-system",
       "system_name_en": "Kincsem Park",
       "authority_source_key": "hungary/kincsem-park/kincsem-programmes",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "hungary--kincsem-park"
+      ],
       "coverage_scope": "single_racecourse",
       "technical_rank": "A",
       "public_ceiling": "A",
@@ -1439,11 +1441,11 @@
         "near_meeting"
       ],
       "readiness": "prototype_ready",
-      "implementation_status": "not_started",
+      "implementation_status": "manual_path_retained",
       "fallback": "downgrade_to_C",
       "source_status": "verified",
-      "checked_date": "2026-06-18",
-      "evidence_reviewed_at": "2026-06-29",
+      "checked_date": "2026-09-29",
+      "evidence_reviewed_at": "2026-09-29",
       "revalidation_trigger": "Revalidate when the Kincsem Park calendar or programme-file structure changes.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/21-hungary/final-summary.json",
@@ -1451,7 +1453,7 @@
         "Reviewed scope is Kincsem Park and is not a complete national inventory.",
         "Participant, betting, result, and complete racecard fields remain excluded."
       ],
-      "notes": "A bounded manual-import prototype can use official programme files while preserving the A public ceiling."
+      "notes": "Reviewed programme files retain the richer A-capability path for Kincsem Park. They are not replaced or downgraded by the automatic rank-C Galopp mother-calendar route."
     },
     {
       "readiness_id": "malta--malta-reviewed-system--malta-racing-calendar",
@@ -5512,6 +5514,54 @@
         "Unpublished racecards remain valid C meetings from the season mother set."
       ],
       "notes": "Date-specific Bahrain Turf Club racecard navigation supplies complete per-race post times through public rank A."
+    },
+    {
+      "readiness_id": "hungary--hungary-kincsem-galopp-calendar-system--kincsem-galopp-calendar",
+      "country_id": "hungary",
+      "country_tracker_delivery_no": "21",
+      "system_id": "hungary-kincsem-galopp-calendar-system",
+      "system_name_en": "Kincsem Park Galopp calendar",
+      "authority_source_key": "hungary/kincsem-park/kincsem-galopp-calendar",
+      "racecourse_ids": [
+        "hungary--kincsem-park"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "pdf",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-09-29",
+      "evidence_reviewed_at": "2026-09-29",
+      "revalidation_trigger": "Revalidate when Kincsem Park changes the Galopp professional-information page, the latest-calendar PDF naming/link structure, or the Galopp Versenynaptár date layout.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/21-hungary/final-summary.json",
+      "limitations": [
+        "Automatic route covers Kincsem Park Galopp / Thoroughbred meetings only.",
+        "Harness and greyhound schedules are outside this automatic route.",
+        "Calendar dates do not establish race post times; richer reviewed programme evidence remains a separate A-capability path.",
+        "Source-visible absence is not non-running evidence."
+      ],
+      "notes": "Automatic production candidate resolves the latest official 2026 Galopp Versenynaptár PDF and publishes source-visible Kincsem Park Thoroughbred meeting dates at rank C without downgrading the existing reviewed A programme capability."
     }
   ],
   "last_updated": "2026-09-28"
