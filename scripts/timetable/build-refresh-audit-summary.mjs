@@ -42,6 +42,7 @@ const SYSTEMS = [
   { key: 'czech', file: 'czech.json', country_id: 'czech-republic', authority_id: 'czech-racing-calendar', racing_system_id: 'czech-national-calendar-system' },
   { key: 'denmark', file: 'denmark.json', country_id: 'denmark', authority_id: 'klampenborg-galopbane', racing_system_id: 'denmark-klampenborg-system' },
   { key: 'dominican-hvc', file: 'dominican-hvc.json', country_id: 'dominican-republic', authority_id: 'hipodromo-v-centenario', racing_system_id: 'hvc-racing-system' },
+  { key: 'hungary', file: 'hungary.json', country_id: 'hungary', authority_id: 'kincsem-park', racing_system_id: 'hungary-kincsem-galopp-calendar-system' },
 ];
 
 const STATE_FILES = {
