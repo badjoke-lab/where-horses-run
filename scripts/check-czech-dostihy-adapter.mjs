@@ -16,6 +16,7 @@ if(process.env.GITHUB_ACTIONS==='true'){
   try{
     execFileSync(process.execPath,['scripts/timetable/run-czech-dostihy-official-window.mjs','--as-of=2026-09-29','--days=30','--output='+output],{encoding:'utf8',timeout:120000});
     const artifact=JSON.parse(fs.readFileSync(output,'utf8'));
+    console.log('CZECH_LIVE_DIAGNOSTICS: '+JSON.stringify({attempt:artifact.acquisition_attempt,discovery:artifact.discovery,diagnostics:artifact.diagnostics,record_count:(artifact.records??[]).length}));
     assert.equal(artifact.acquisition_attempt?.status,'success','Czech live route must recover through an official calendar route');
     assert.ok((artifact.records??[]).length>0,'Czech live route must recover current-window meetings');
     assert.equal(artifact.diagnostics?.source_errors?.length,0);
