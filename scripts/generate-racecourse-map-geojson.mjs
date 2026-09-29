@@ -58,6 +58,8 @@ const calendarMapRegressionIds = [
   'newbury-racecourse',
   'aintree-racecourse',
   'wincanton-racecourse',
+  // New Zealand current rolling venue (1)
+  'pukekohe-park-racecourse',
   // Slovakia (1)
   'bratislava-racecourse',
   // France Calendar rolling venues (7)
@@ -68,6 +70,9 @@ const calendarMapRegressionIds = [
   'bordeaux-racecourse',
   'cazaubon-barbotan-racecourse',
   'le-croise-laroche-racecourse',
+  'dax-racecourse',
+  'graignes-racecourse',
+  'lyon-la-soie-racecourse',
   // South Korea (4)
   'seoul-racecourse',
   'busan-gyeongnam-racecourse',
