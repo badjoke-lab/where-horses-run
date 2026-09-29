@@ -13,6 +13,8 @@ on:
       - 'scripts/timetable/**'
       - 'scripts/check-calendar-refresh-publication-boundaries.mjs'
       - 'scripts/check-calendar-public-country-support.mjs'
+      - 'scripts/check-calendar-audit-artifact-parity.mjs'
+      - 'scripts/timetable/build-refresh-audit-summary.mjs'
       - 'data/static/calendar-public-country-support-v1.json'
       - 'scripts/check-bahrain-btc-adapter.mjs'
       - 'scripts/check-sweden-svensk-galopp-adapter.mjs'
@@ -118,6 +120,8 @@ on:
       - 'scripts/timetable/**'
       - 'scripts/check-calendar-refresh-publication-boundaries.mjs'
       - 'scripts/check-calendar-public-country-support.mjs'
+      - 'scripts/check-calendar-audit-artifact-parity.mjs'
+      - 'scripts/timetable/build-refresh-audit-summary.mjs'
       - 'data/static/calendar-public-country-support-v1.json'
       - 'scripts/check-bahrain-btc-adapter.mjs'
       - 'scripts/check-sweden-svensk-galopp-adapter.mjs'
@@ -230,6 +234,7 @@ jobs:
           node scripts/check-calendar-live-source-readiness.mjs
           node scripts/check-calendar-refresh-publication-boundaries.mjs
           node scripts/check-calendar-public-country-support.mjs
+          node scripts/check-calendar-audit-artifact-parity.mjs
           node scripts/check-kra-window-bounds.mjs
           node scripts/check-kra-fetch-failure-retention.mjs
           node scripts/check-tjk-fetch-failure-retention.mjs
@@ -416,6 +421,7 @@ jobs:
           node scripts/check-calendar-live-source-readiness.mjs
           node scripts/check-calendar-refresh-publication-boundaries.mjs
           node scripts/check-calendar-public-country-support.mjs
+          node scripts/check-calendar-audit-artifact-parity.mjs
           node scripts/check-kra-window-bounds.mjs
           node scripts/check-ireland-hri-fixtures-adapter.mjs
           node scripts/check-peru-monterrico-adapter.mjs
