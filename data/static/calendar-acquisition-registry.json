@@ -986,6 +986,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic official Klampenborg Galopbane source-visible calendar route. Publishes meeting date plus the single physical racecourse at rank C; displayed general event time is not treated as race post time. This is venue-specific coverage and does not claim complete Denmark-wide racing coverage."
+    },
+    {
+      "system_id": "hungary-kincsem-galopp-calendar-system",
+      "country_id": "hungary",
+      "authority_id": "kincsem-park",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "kincsem-galopp-calendar",
+      "detail_source_id": "kincsem-galopp-calendar",
+      "schedule_adapter_id": "hungary-kincsem-galopp-calendar-v1",
+      "detail_adapter_id": "hungary-kincsem-galopp-calendar-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic official Kincsem Park Galopp calendar route. Publishes Thoroughbred meeting date plus Kincsem Park physical identity at rank C. Harness and greyhound meetings are outside this automatic route. Existing reviewed A programme capability remains a separate richer/manual path and is not downgraded."
     }
   ]
 }
