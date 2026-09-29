@@ -976,7 +976,7 @@
       "source_status": "verified",
       "last_checked_date": "2026-09-29",
       "capability_rank": "C",
-      "adapter_candidate_status": "implemented",
+      "adapter_candidate_status": "candidate",
       "notes": "Official DNT current Løpsdagskalender route is GitHub-Actions-accessible and exposes source-visible Norwegian harness meeting dates plus physical racecourse labels. Entry deadlines are context only and are not race post times."
     },
     {
@@ -992,7 +992,7 @@
       "source_status": "verified",
       "last_checked_date": "2026-09-29",
       "capability_rank": "C",
-      "adapter_candidate_status": "implemented",
+      "adapter_candidate_status": "candidate",
       "notes": "Official Øvrevoll 2026 fixture route is GitHub-Actions-accessible and confirms gallop meeting dates. Published general event start is retained as context only and is not promoted to first-race post time."
     },
     {
@@ -1954,6 +1954,22 @@
       "capability_rank": "C",
       "adapter_candidate_status": "candidate",
       "notes": "GitHub-Actions-accessible official Galopp calendar route resolves the latest 2026 Galopp Versenynaptár PDF and exposes Kincsem Park Thoroughbred meeting dates. Harness and greyhound schedules are outside this automatic route; richer reviewed programme files remain a separate A-capability path."
+    },
+    {
+      "country_id": "austria",
+      "authority_id": "wiener-trabrenn-verein",
+      "authority_name_en": "Wiener Trabrenn-Verein / Trabrennpark Krieau",
+      "authority_name_local": null,
+      "authority_type": "racecourse_operator",
+      "racecourse_scope": "single_racecourse",
+      "official_source_id": "krieau-race-calendar",
+      "official_source_url": "https://www.krieau.at/besucherinfos/renntermine",
+      "source_kind": "calendar",
+      "source_status": "verified",
+      "last_checked_date": "2026-09-30",
+      "capability_rank": "C",
+      "adapter_candidate_status": "candidate",
+      "notes": "Official Krieau 2026 race-date page exposes current meeting dates and general event start context. The automatic route publishes date plus physical venue at C only; separate reviewed race newspapers retain A-capability post-time evidence."
     }
   ]
 }

@@ -1,1 +1,24 @@
-{"country":"Austria","status":"Partial","checked_date":"2026-06-18","technical_rank":"A for Krieau; country coverage incomplete","public_ceiling":"C","systems":["Wiener Trabrenn-Verein / Trabrennpark Krieau"],"official_sources":["https://www.krieau.at/","https://www.krieau.at/besucherinfos/renntermine","https://www.krieau.at/renntage/rennzeitungen","https://www.krieau.at/renntage/uebersicht"],"confirmed_fields":{"meeting_date":true,"racecourse":true,"first_race_time":true,"per_race_post_times":true},"decision":"Krieau provides official 2026 race dates and race newspapers with detailed times, but this pass does not establish complete national coverage across Austrian racing systems. The country page remains capped at C until the wider source structure is reviewed."}
+{
+  "country": "Austria",
+  "status": "Production routed for Trabrennpark Krieau calendar; reviewed race-newspaper A path retained",
+  "checked_date": "2026-09-30",
+  "technical_rank": "A reviewed capability at Krieau; automatic production route C",
+  "public_ceiling": "C",
+  "systems": [
+    "Trabrennpark Krieau automatic race calendar",
+    "Trabrennpark Krieau reviewed race-newspaper path"
+  ],
+  "official_sources": [
+    "https://www.krieau.at/",
+    "https://www.krieau.at/besucherinfos/renntermine",
+    "https://www.krieau.at/renntage/rennzeitungen"
+  ],
+  "confirmed_fields": {
+    "meeting_date": true,
+    "racecourse": true,
+    "first_race_time": true,
+    "per_race_post_times": true
+  },
+  "decision": "The automatic production route publishes official source-visible Trabrennpark Krieau meeting dates plus physical venue at rank C. Published general event start context is not promoted to race post time. Separate reviewed race newspapers retain the richer A-capability timing evidence. Wider Austrian national coverage remains incomplete.",
+  "production_route": "scripts/timetable/run-austria-krieau-official-window.mjs"
+}
