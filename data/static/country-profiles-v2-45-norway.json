@@ -1,1 +1,113 @@
-[{"schema_version":"2.0.0","country_id":"norway","slug":"norway","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-20","public_display_ceiling":"C","source_test_status":"complete","hero":{"summary_en":"DNT and Øvrevoll confirm meeting dates and racecourses.","summary_ja":"DNTとØvrevollで開催日と競馬場を確認済み。"},"overview":{"paragraphs_en":["Harness and gallop remain separate reviewed contexts."],"paragraphs_ja":["ハーネスとギャロップを別の確認済み文脈として扱う。"]},"racing_types":[{"id":"harness-racing","name_en":"Harness racing","name_ja":"ハーネス競走","summary_en":"Reviewed through DNT.","summary_ja":"DNTで確認済み。"},{"id":"thoroughbred-flat","name_en":"Gallop racing","name_ja":"ギャロップ競走","summary_en":"Reviewed through Øvrevoll.","summary_ja":"Øvrevollで確認済み。"}],"seasonality":{"pattern":"official-source-required","summary_en":"Check current official calendars.","summary_ja":"現行公式カレンダーを確認する。"},"schedule":{"timezone":"Europe/Oslo","utc_offset_label":"Verify current local offset","day_patterns":["official-source-required"],"time_patterns":["meeting-date-only"],"summary_en":"Dates and venues are confirmed; race times are not.","summary_ja":"開催日と会場は確認済みだが、レース時刻は未確認。"},"surfaces":{"ids":[],"summary_en":"Not normalized.","summary_ja":"共通化しない。"},"systems":[{"id":"norway-dnt-harness-system","name_en":"DNT harness calendar","name_ja":"DNTハーネスカレンダー","summary_en":"Reviewed harness context.","summary_ja":"確認済みハーネス文脈。","organiser_source_ids":["norway-dnt-sportsbase"],"distributor_source_ids":["norway-dnt-calendar-2026"]},{"id":"norway-ovrevoll-gallop-system","name_en":"Øvrevoll gallop fixtures","name_ja":"Øvrevollギャロップ開催","summary_en":"Reviewed gallop context.","summary_ja":"確認済みギャロップ文脈。","organiser_source_ids":["norway-ovrevoll-fixtures"],"distributor_source_ids":[]}],"principal_racecourse_ids":[],"calendar_guidance_en":"Use both official calendars and keep the systems separate.","calendar_guidance_ja":"両方の公式カレンダーを使用し、体系を分けて扱う。","coverage_note_en":"No single national race-time feed is established.","coverage_note_ja":"単一の全国レース時刻導線は未確認。","revalidation":{"triggers_en":["Official calendars change"],"triggers_ja":["公式カレンダー変更時"]},"related_glossary_ids":["racecourse","meeting","fixture","post-time"]}]
+[
+  {
+    "schema_version": "2.0.0",
+    "country_id": "norway",
+    "slug": "norway",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-09-29",
+    "public_display_ceiling": "C",
+    "source_test_status": "complete",
+    "hero": {
+      "summary_en": "DNT harness and Øvrevoll gallop meeting dates are automatically routed from separate official calendars at rank C.",
+      "summary_ja": "DNTハーネスとØvrevollギャロップの開催日は、それぞれ別の公式カレンダーからCで自動取得します。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "Production automation keeps Norwegian harness and gallop as separate systems. DNT supplies the source-visible harness meeting dates and physical tracks; Øvrevoll supplies the gallop fixture mother set. Entry deadlines and general event start times are retained only as context and are not promoted to race post times."
+      ],
+      "paragraphs_ja": [
+        "production自動取得ではノルウェーのハーネスとギャロップを別体系として維持します。DNTはsource-visibleなハーネス開催日と物理競馬場、Øvrevollはギャロップ開催母表を提供します。登録締切時刻や一般的なイベント開始時刻は文脈としてのみ保持し、レース発走時刻には昇格させません。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "harness-racing",
+        "name_en": "Harness racing",
+        "name_ja": "ハーネス競走",
+        "summary_en": "Reviewed through DNT.",
+        "summary_ja": "DNTで確認済み。"
+      },
+      {
+        "id": "thoroughbred-flat",
+        "name_en": "Gallop racing",
+        "name_ja": "ギャロップ競走",
+        "summary_en": "Reviewed through Øvrevoll.",
+        "summary_ja": "Øvrevollで確認済み。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "official-source-required",
+      "summary_en": "Check current official calendars.",
+      "summary_ja": "現行公式カレンダーを確認する。"
+    },
+    "schedule": {
+      "timezone": "Europe/Oslo",
+      "utc_offset_label": "Verify current local offset",
+      "day_patterns": [
+        "official-source-required"
+      ],
+      "time_patterns": [
+        "meeting-date-only"
+      ],
+      "summary_en": "Dates and venues are confirmed; race times are not.",
+      "summary_ja": "開催日と会場は確認済みだが、レース時刻は未確認。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Not normalized.",
+      "summary_ja": "共通化しない。"
+    },
+    "systems": [
+      {
+        "id": "norway-dnt-harness-system",
+        "name_en": "DNT harness calendar",
+        "name_ja": "DNTハーネスカレンダー",
+        "summary_en": "Reviewed harness context.",
+        "summary_ja": "確認済みハーネス文脈。",
+        "organiser_source_ids": [
+          "norway-dnt-sportsbase"
+        ],
+        "distributor_source_ids": [
+          "norway-dnt-calendar-2026"
+        ]
+      },
+      {
+        "id": "norway-ovrevoll-gallop-system",
+        "name_en": "Øvrevoll gallop fixtures",
+        "name_ja": "Øvrevollギャロップ開催",
+        "summary_en": "Reviewed gallop context.",
+        "summary_ja": "確認済みギャロップ文脈。",
+        "organiser_source_ids": [
+          "norway-ovrevoll-fixtures"
+        ],
+        "distributor_source_ids": []
+      }
+    ],
+    "principal_racecourse_ids": [
+      "norway--ovrevoll",
+      "norway--bjerke-travbane",
+      "norway--forus-travbane",
+      "norway--jarlsberg-travbane",
+      "norway--bergen-travpark"
+    ],
+    "calendar_guidance_en": "Use the automatic DNT and Øvrevoll official routes separately. Publish meeting date and physical racecourse at C; do not infer race post times from DNT entry deadlines or Øvrevoll event-start context.",
+    "calendar_guidance_ja": "DNTとØvrevollの公式自動導線を分けて使用します。開催日と物理競馬場をCで公開し、DNTの登録締切やØvrevollのイベント開始文脈からレース発走時刻を推測しません。",
+    "coverage_note_en": "Production routing covers the reviewed DNT harness authority-wide calendar plus the single-racecourse Øvrevoll gallop fixture calendar. No richer national race-time feed is claimed.",
+    "coverage_note_ja": "production routingはレビュー済みDNTハーネスのauthority-wideカレンダーと単一競馬場Øvrevollギャロップ開催表を対象とします。より豊富な全国レース時刻導線は主張しません。",
+    "revalidation": {
+      "triggers_en": [
+        "Official calendars change"
+      ],
+      "triggers_ja": [
+        "公式カレンダー変更時"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture",
+      "post-time"
+    ]
+  }
+]
