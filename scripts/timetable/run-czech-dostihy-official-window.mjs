@@ -1,5 +1,5 @@
 import fs from 'node:fs';import path from 'node:path';import {execFileSync} from 'node:child_process';
-import {CZECH_AUTHORITY_ID,CZECH_CALENDAR_URL,CZECH_CALENDAR_FALLBACK_URL,CZECH_SOURCE_ID,CZECH_SYSTEM_ID,CZECH_TIMEZONE,buildCzechMeetingRecord,extractCzechEventLinks,parseCzechEventDetail} from './czech-dostihy-calendar-core.mjs';
+import {CZECH_AUTHORITY_ID,CZECH_PRO_CALENDAR_URL,CZECH_CALENDAR_URL,CZECH_CALENDAR_FALLBACK_URL,CZECH_SOURCE_ID,CZECH_SYSTEM_ID,CZECH_TIMEZONE,buildCzechMeetingRecord,extractCzechEventLinks,parseCzechEventDetail,parseCzechProfessionalCalendar} from './czech-dostihy-calendar-core.mjs';
 function arg(n,f=null){const p='--'+n+'=';const v=process.argv.find(x=>x.startsWith(p));return v?v.slice(p.length):f;}
 function plusDays(date,count){const d=new Date(date+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+count);return d.toISOString().slice(0,10);}
 function localDate(now=new Date()){const p=new Intl.DateTimeFormat('en-CA',{timeZone:CZECH_TIMEZONE,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now);const v=Object.fromEntries(p.filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));return v.year+'-'+v.month+'-'+v.day;}
@@ -9,9 +9,10 @@ function rankCounts(r){return Object.fromEntries(['C','B','B+','A','A+'].map(ran
 function completionCounts(r){return Object.fromEntries(['promoted','complete_current_best_available','pending_publication','retry_required','implementation_gap','not_applicable'].map(n=>[n,r.filter(x=>x.acquisition_completion?.disposition===n).length]));}
 const output=arg('output'),days=Number(arg('days','30')),start=arg('as-of',localDate());
 if(!output)throw new Error('--output=<path> is required');if(!/^\d{4}-\d{2}-\d{2}$/.test(start))throw new Error('--as-of must be YYYY-MM-DD');if(!Number.isInteger(days)||days<1||days>62)throw new Error('--days must be 1..62');
-const end=plusDays(start,days),generatedAt=new Date().toISOString(),sourceErrors=[],parseFailures=[],unknownVenues=[];let allRows=[],listUrl=CZECH_CALENDAR_URL;
+const end=plusDays(start,days),generatedAt=new Date().toISOString(),sourceErrors=[],parseFailures=[],unknownVenues=[];let allRows=[],listUrl=CZECH_PRO_CALENDAR_URL;
 let links=[];
-for(const candidateUrl of [CZECH_CALENDAR_URL,CZECH_CALENDAR_FALLBACK_URL]){
+try{const pro=await getHtml(CZECH_PRO_CALENDAR_URL);listUrl=pro.url||CZECH_PRO_CALENDAR_URL;const proRows=parseCzechProfessionalCalendar(pro.html,{sourceUrl:listUrl});for(const p of proRows){if(!p.venue){unknownVenues.push({source_url:listUrl,date:p.date,venue_label:p.source_venue_label});continue;}allRows.push({date:p.date,racecourse_id:p.venue.racecourse_id,venue_name:p.venue.venue_name,source_venue_label:p.source_venue_label,source_url:listUrl});}}catch(e){sourceErrors.push({stage:'professional_calendar_attempt',source_url:CZECH_PRO_CALENDAR_URL,error:String(e?.message??e)});}
+if(!allRows.length) for(const candidateUrl of [CZECH_CALENDAR_URL,CZECH_CALENDAR_FALLBACK_URL]){
   try{
     const list=await getHtml(candidateUrl);
     const candidateLinks=extractCzechEventLinks(list.html,{sourceUrl:list.url});
@@ -26,10 +27,8 @@ for(const candidateUrl of [CZECH_CALENDAR_URL,CZECH_CALENDAR_FALLBACK_URL]){
 if(links.length){
   for(const url of links){try{const detail=await getHtml(url,{attempts:2,timeoutMs:16000});try{const p=parseCzechEventDetail(detail.html,{sourceUrl:detail.url});if(!p.venue){unknownVenues.push({source_url:detail.url,date:p.date,venue_label:p.source_venue_label});continue;}allRows.push({date:p.date,racecourse_id:p.venue.racecourse_id,venue_name:p.venue.venue_name,source_venue_label:p.source_venue_label,source_url:detail.url});}catch(e){parseFailures.push({source_url:detail.url,error:String(e?.message??e)});}}catch(e){sourceErrors.push({stage:'event_detail',source_url:url,error:String(e?.message??e)});}}
 }
-const listRecovered=links.length>0;
-if(listRecovered) {
-  for(let i=sourceErrors.length-1;i>=0;i-=1) if(sourceErrors[i].stage==='national_calendar_attempt') sourceErrors.splice(i,1);
-}
+const listRecovered=allRows.length>0||links.length>0;
+if(listRecovered){for(let i=sourceErrors.length-1;i>=0;i-=1) if(sourceErrors[i].stage==='national_calendar_attempt'||sourceErrors[i].stage==='professional_calendar_attempt') sourceErrors.splice(i,1);}
 allRows=[...new Map(allRows.map(r=>[r.date+'|'+r.racecourse_id,r])).values()].sort((a,b)=>a.date.localeCompare(b.date)||a.racecourse_id.localeCompare(b.racecourse_id));
 const rows=allRows.filter(r=>r.date>=start&&r.date<end),records=rows.map(r=>buildCzechMeetingRecord(r,{checkedAt:generatedAt}));
 const artifact={schema_version:'czech-dostihy-official-window-candidates-v1',generated_at:generatedAt,country_id:'czech-republic',authority_id:CZECH_AUTHORITY_ID,racing_system_id:CZECH_SYSTEM_ID,timezone:CZECH_TIMEZONE,source_id:CZECH_SOURCE_ID,collection_target_rank:'best_available',raw_body_retained:false,acquisition_attempt:{attempted_at:generatedAt,status:!listRecovered?'network_error':(parseFailures.length||unknownVenues.length?'parse_error':'success'),source_id:CZECH_SOURCE_ID,route_id:'dostihy-national-calendar',error_code:!listRecovered?'czech_calendar_fetch_failed':(parseFailures.length||unknownVenues.length?'czech_calendar_parse_failed':null)},discovery:{method:'official_national_calendar_event_details',source_url:listUrl,source_visible_rows:allRows.length,rank_counts:rankCounts(records),completion_counts:completionCounts(records)},window:{start_date:start,end_date_exclusive:end,days,coverage_claim:!listRecovered||parseFailures.length||unknownVenues.length?'acquisition_failed_preserve_verified_state':'official_source_visible_horizon',coverage_note:'Official Dostihy.cz national calendar supplies source-visible meeting dates and venue tags. Missing future publication is not non-running evidence. This route publishes date plus physical venue at rank C only.'},records,diagnostics:{source_errors:sourceErrors,parse_failures:parseFailures,unknown_venues:unknownVenues,source_warnings:[]}};
