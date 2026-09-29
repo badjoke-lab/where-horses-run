@@ -1086,6 +1086,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic official Krieau race-date route. Publishes meeting date plus Trabrennpark Krieau physical identity at rank C. General event start time is context only, not a race post time. Separate reviewed race newspapers retain richer A-capability evidence."
+    },
+    {
+      "system_id": "puerto-rico-camarero-inscripciones-system",
+      "country_id": "puerto-rico",
+      "authority_id": "hipodromo-camarero",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "camarero-inscripciones",
+      "detail_source_id": "camarero-inscripciones",
+      "schedule_adapter_id": "puerto-rico-camarero-inscripciones-v1",
+      "detail_adapter_id": "puerto-rico-camarero-inscripciones-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic official Camarero Inscripciones route. Publishes source-visible upcoming race-day date plus Hipódromo Camarero physical identity at rank C. Registrations are preliminary and subject to change. Separate reviewed race programmes retain richer A-capability timing evidence."
     }
   ]
 }
