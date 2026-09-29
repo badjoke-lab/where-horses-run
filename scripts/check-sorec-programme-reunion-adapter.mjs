@@ -79,6 +79,10 @@ assert.match(coreSource, /deriveBestAvailableRank/, 'SOREC adapter must derive r
 assert.doesNotMatch(coreSource, /buildSorecRankCCandidate|rank-c-v1|capability_rank:\s*['"]C['"]/, 'SOREC adapter must not hard-code a C rank');
 assert.doesNotMatch(runnerSource, /public_rank_ceiling|capability_rank:\s*['"]C['"]/, 'SOREC runner must not impose a source-local public/rank ceiling');
 assert.match(runnerSource, /collection_target_rank:\s*['"]best_available['"]/, 'SOREC runner must target best available rank');
+assert.match(runnerSource, /acquisition_failed_preserve_verified_state/, 'SOREC runner must preserve verified state when the schedule source fails');
+assert.match(runnerSource, /status:\s*['"]network_error['"]/, 'SOREC schedule acquisition failure must be explicit');
+assert.match(runnerSource, /source_errors/, 'SOREC source failure must remain visible in the artifact diagnostics');
+assert.doesNotMatch(runnerSource, /process\.exit\(1\)/, 'SOREC source failure must not terminate the unified refresh');
 
 const unknown = html.replace('<td>Khemisset</td>', '<td>Unmapped Official Venue</td>');
 const unknownParsed = parseSorecProgrammeReunionHtml(unknown, {
