@@ -5,6 +5,7 @@ export const CZECH_AUTHORITY_ID='czech-racing-calendar';
 export const CZECH_SYSTEM_ID='czech-national-calendar-system';
 export const CZECH_SOURCE_ID='dostihy-calendar';
 export const CZECH_CALENDAR_URL='https://www.dostihy.cz/kalendar-akci';
+export const CZECH_CALENDAR_FALLBACK_URL='https://www.dostihy.cz/racing-calendar';
 export const CZECH_VENUES=Object.freeze({
   praha:{racecourse_id:'czech-republic--chuchle-arena-praha',venue_name:'Chuchle Arena Praha'},
   pardubice:{racecourse_id:'czech-republic--pardubice-racecourse',venue_name:'Dostihové závodiště Pardubice'},
@@ -26,7 +27,7 @@ export function extractCzechEventLinks(html,{sourceUrl=CZECH_CALENDAR_URL}={}){
   const out=[];
   for(const m of html.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)){
     const href=absolute(m[1],sourceUrl);
-    if(/^https:\/\/www\.dostihy\.cz\/kalendar-akci\/[a-z0-9-]+\/?$/i.test(href)) out.push(href.replace(/\/$/,''));
+    if(/^https:\/\/www\.dostihy\.cz\/(?:kalendar-akci|racing-calendar)\/[a-z0-9-]+\/?$/i.test(href)) out.push(href.replace(/\/$/,''));
   }
   return [...new Set(out)];
 }
