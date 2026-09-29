@@ -70,20 +70,60 @@ if (!Number.isInteger(days) || days < 1 || days > 62) throw new Error('--days mu
 
 const endDateExclusive = plusDays(startDate, days);
 const generatedAt = new Date().toISOString();
-const html = fixture
-  ? fs.readFileSync(path.resolve(fixture), 'utf8')
-  : await fetchHtml(SOREC_PROGRAMME_REUNION_URL, 'SOREC Programme Réunion');
-const { candidate, diagnostics } = buildSorecProgrammeCandidate({
-  html,
-  checkedAt: generatedAt,
-  startDate,
-  endDateExclusive,
-});
 
-if (diagnostics.unknown_venues.length > 0) {
+let candidate = { records: [] };
+let diagnostics = {
+  source_row_count: 0,
+  records_emitted: 0,
+  unknown_venues: [],
+  parse_failures: [],
+  source_errors: [],
+};
+let acquisitionAttempt = {
+  attempted_at: generatedAt,
+  status: 'success',
+  source_id: SOREC_SOURCE_ID,
+  route_id: 'sorec-programme-reunion-index',
+  error_code: null,
+};
+
+try {
+  const html = fixture
+    ? fs.readFileSync(path.resolve(fixture), 'utf8')
+    : await fetchHtml(SOREC_PROGRAMME_REUNION_URL, 'SOREC Programme Réunion');
+  ({ candidate, diagnostics } = buildSorecProgrammeCandidate({
+    html,
+    checkedAt: generatedAt,
+    startDate,
+    endDateExclusive,
+  }));
+} catch (error) {
+  if (fixture) throw error;
+  acquisitionAttempt = {
+    attempted_at: generatedAt,
+    status: 'network_error',
+    source_id: SOREC_SOURCE_ID,
+    route_id: 'sorec-programme-reunion-index',
+    error_code: error?.name === 'AbortError' || error?.name === 'TimeoutError' ? 'timeout' : 'fetch_error',
+  };
+  diagnostics = {
+    source_row_count: 0,
+    records_emitted: 0,
+    unknown_venues: [],
+    parse_failures: [],
+    source_errors: [{
+      stage: 'programme_reunion_index',
+      source_url: SOREC_PROGRAMME_REUNION_URL,
+      error_code: acquisitionAttempt.error_code,
+      error: error instanceof Error ? error.message : String(error),
+    }],
+  };
+}
+
+if (acquisitionAttempt.status === 'success' && diagnostics.unknown_venues.length > 0) {
   throw new Error(`SOREC unknown venue(s) in requested window: ${JSON.stringify(diagnostics.unknown_venues)}`);
 }
-if (diagnostics.parse_failures.length > 0) {
+if (acquisitionAttempt.status === 'success' && diagnostics.parse_failures.length > 0) {
   throw new Error(`SOREC parse failure(s) in requested window: ${JSON.stringify(diagnostics.parse_failures)}`);
 }
 
@@ -135,6 +175,7 @@ const artifact = {
   source_id: SOREC_SOURCE_ID,
   collection_target_rank: 'best_available',
   raw_body_retained: false,
+  acquisition_attempt: acquisitionAttempt,
   discovery: {
     method: 'official_programme_reunion_index',
     schedule_source_id: SOREC_SOURCE_ID,
@@ -149,13 +190,18 @@ const artifact = {
     start_date: startDate,
     end_date_exclusive: endDateExclusive,
     days,
-    coverage_claim: 'source_visible_partial',
-    coverage_note: 'Programme Réunion is positive evidence only. Absence is never cancellation. The separate official calendar contributes only bounded explicit REPOR postponement evidence when safely bound to one canonical meeting.',
+    coverage_claim: acquisitionAttempt.status === 'success'
+      ? 'source_visible_partial'
+      : 'acquisition_failed_preserve_verified_state',
+    coverage_note: acquisitionAttempt.status === 'success'
+      ? 'Programme Réunion is positive evidence only. Absence is never cancellation. The separate official calendar contributes only bounded explicit REPOR postponement evidence when safely bound to one canonical meeting.'
+      : 'Programme Réunion acquisition failed. No replacement schedule observations are emitted; stronger verified canonical/public state must be preserved. The separate explicit non-running source remains independently bounded.',
   },
   records: candidate.records,
   meeting_presence_records: meetingPresenceRecords,
   diagnostics: {
     ...diagnostics,
+    source_errors: diagnostics.source_errors ?? [],
     non_running: nonRunningDiagnostics,
   },
 };
@@ -177,4 +223,6 @@ console.log(JSON.stringify({
   parse_failures: diagnostics.parse_failures.length,
   collection_target_rank: artifact.collection_target_rank,
   coverage_claim: artifact.window.coverage_claim,
+  acquisition_status: artifact.acquisition_attempt.status,
+  source_errors: artifact.diagnostics.source_errors.length,
 }));
