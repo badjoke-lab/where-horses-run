@@ -1061,6 +1061,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic official Øvrevoll fixture route. Publishes gallop meeting date and Øvrevoll physical identity at rank C. Published event start is context only and is not a first-race post time."
+    },
+    {
+      "system_id": "austria-krieau-calendar-system",
+      "country_id": "austria",
+      "authority_id": "wiener-trabrenn-verein",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "krieau-race-calendar",
+      "detail_source_id": "krieau-race-calendar",
+      "schedule_adapter_id": "austria-krieau-calendar-v1",
+      "detail_adapter_id": "austria-krieau-calendar-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic official Krieau race-date route. Publishes meeting date plus Trabrennpark Krieau physical identity at rank C. General event start time is context only, not a race post time. Separate reviewed race newspapers retain richer A-capability evidence."
     }
   ]
 }
