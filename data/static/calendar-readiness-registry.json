@@ -5512,7 +5512,54 @@
         "Unpublished racecards remain valid C meetings from the season mother set."
       ],
       "notes": "Date-specific Bahrain Turf Club racecard navigation supplies complete per-race post times through public rank A."
+    },
+    {
+      "readiness_id": "hungary--hungary-kincsem-galopp-calendar-system--kincsem-galopp-calendar",
+      "country_id": "hungary",
+      "country_tracker_delivery_no": "21",
+      "system_id": "hungary-kincsem-galopp-calendar-system",
+      "system_name_en": "Kincsem Park Galopp calendar",
+      "authority_source_key": "hungary/kincsem-park/kincsem-galopp-calendar",
+      "racecourse_ids": [
+        "hungary--kincsem-park"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "pdf",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "readiness": "ready",
+      "implementation_status": "candidate_active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-09-28",
+      "evidence_reviewed_at": "2026-09-29",
+      "revalidation_trigger": "Revalidate when the Kincsem Park Galopp professional-information index or latest Galopp Versenynaptár PDF naming/layout changes.",
+      "blocked_reason": null,
+      "source_test_ref": ".github/workflows/calendar-hungary-kincsem-live-probe.yml",
+      "limitations": [
+        "Automatic production scope is the Kincsem Park Thoroughbred Galopp calendar only.",
+        "Harness and greyhound dates are outside this automatic route.",
+        "Automatic rank is C; programme post times remain a separate richer/manual source."
+      ],
+      "notes": "Automatic route follows the latest official 2026 Galopp Versenynaptár PDF and publishes meeting date plus Kincsem Park identity at rank C."
     }
   ],
-  "last_updated": "2026-09-28"
+  "last_updated": "2026-09-29"
 }
