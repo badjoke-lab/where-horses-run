@@ -4,6 +4,7 @@ export const CZECH_TIMEZONE='Europe/Prague';
 export const CZECH_AUTHORITY_ID='czech-racing-calendar';
 export const CZECH_SYSTEM_ID='czech-national-calendar-system';
 export const CZECH_SOURCE_ID='dostihy-calendar';
+export const CZECH_PRO_CALENDAR_URL='https://www.dostihyjc.cz/index.php?page=1&rok=2026&typ=act&zav=0';
 export const CZECH_CALENDAR_URL='https://www.dostihy.cz/kalendar-akci';
 export const CZECH_CALENDAR_FALLBACK_URL='https://www.dostihy.cz/racing-calendar';
 export const CZECH_VENUES=Object.freeze({
@@ -32,6 +33,24 @@ export function extractCzechEventLinks(html,{sourceUrl=CZECH_CALENDAR_URL}={}){
   }
   return [...new Set(out)];
 }
+
+export function parseCzechProfessionalCalendar(html,{sourceUrl=CZECH_PRO_CALENDAR_URL}={}){
+  if(typeof html!=='string'||!html.trim()) throw new Error('Czech professional calendar HTML must be non-empty');
+  const text=visibleText(html);
+  if(!/Term[ií]nov[aá]\s+listina\s+2026/i.test(text)) throw new Error('Czech professional calendar fingerprint missing');
+  const rows=[];
+  const venues='Praha|Pardubice|Karlovy Vary|Most|Slušovice|Lysá nad Labem|Brno|Kolesa|Netolice';
+  const rx=new RegExp('(\\\\d{1,2})\\\\.(\\\\d{1,2})\\\\.(20\\\\d{2})\\\\s+\\\\S+\\\\s+(?:(\\\\d{1,2}:\\\\d{2})\\\\s+)?('+venues+')\\\\b','giu');
+  for(const m of text.matchAll(rx)){
+    const sourceVenue=m[5].trim();
+    const venue=CZECH_VENUES[normalizeVenue(sourceVenue)]??null;
+    rows.push({date:\`\${m[3]}-\${pad(m[2])}-\${pad(m[1])}\`,source_venue_label:sourceVenue,venue,event_start_local:m[4]??null,source_url:sourceUrl});
+  }
+  const out=[...new Map(rows.map(r=>[r.date+'|'+r.source_venue_label,r])).values()].sort((a,b)=>a.date.localeCompare(b.date));
+  if(!out.length) throw new Error('Czech professional calendar rows missing');
+  return out;
+}
+
 export function parseCzechEventDetail(html,{sourceUrl}={}){
   if(typeof html!=='string'||!html.trim()) throw new Error('Czech event detail HTML must be non-empty');
   const text=visibleText(html);
