@@ -4,9 +4,12 @@ export const CZECH_TIMEZONE='Europe/Prague';
 export const CZECH_AUTHORITY_ID='czech-racing-calendar';
 export const CZECH_SYSTEM_ID='czech-national-calendar-system';
 export const CZECH_SOURCE_ID='dostihy-calendar';
+export const CZECH_PRO_CALENDAR_URL='https://dostihyjc.cz/index.php?page=1&rok=2026&typ=act&zav=0';
 export const CZECH_CALENDAR_URL='https://www.dostihy.cz/kalendar-akci';
+export const CZECH_CALENDAR_FALLBACK_URL='https://www.dostihy.cz/racing-calendar';
 export const CZECH_VENUES=Object.freeze({
   praha:{racecourse_id:'czech-republic--chuchle-arena-praha',venue_name:'Chuchle Arena Praha'},
+  prague:{racecourse_id:'czech-republic--chuchle-arena-praha',venue_name:'Chuchle Arena Praha'},
   pardubice:{racecourse_id:'czech-republic--pardubice-racecourse',venue_name:'Dostihové závodiště Pardubice'},
   'karlovy vary':{racecourse_id:'czech-republic--karlovy-vary-racecourse',venue_name:'Dostihové závodiště Karlovy Vary'},
   most:{racecourse_id:'czech-republic--hipodrom-most',venue_name:'Hipodrom Most'},
@@ -26,19 +29,54 @@ export function extractCzechEventLinks(html,{sourceUrl=CZECH_CALENDAR_URL}={}){
   const out=[];
   for(const m of html.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)){
     const href=absolute(m[1],sourceUrl);
-    if(/^https:\/\/www\.dostihy\.cz\/kalendar-akci\/[a-z0-9-]+\/?$/i.test(href)) out.push(href.replace(/\/$/,''));
+    if(/^https:\/\/www\.dostihy\.cz\/(?:kalendar-akci|racing-calendar)\/[a-z0-9-]+\/?$/i.test(href)) out.push(href.replace(/\/$/,''));
   }
   return [...new Set(out)];
 }
+
+export function parseCzechProfessionalCalendar(html,{sourceUrl=CZECH_PRO_CALENDAR_URL}={}){
+  if(typeof html!=='string'||!html.trim()) throw new Error('Czech professional calendar HTML must be non-empty');
+  const text=visibleText(html);
+  if(!/Term[ií]nov[aá]\s+listina\s+2026/i.test(text)) throw new Error('Czech professional calendar fingerprint missing');
+  const rows=[];
+  for(const tr of html.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)){
+    const cells=[...tr[1].matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)].map(m=>visibleText(m[1])).filter(Boolean);
+    if(!cells.length) continue;
+    const dateCell=cells.find(v=>/^\d{1,2}\.\s*\d{1,2}\.\s*20\d{2}$/.test(v));
+    if(!dateCell) continue;
+    const dm=dateCell.match(/^(\d{1,2})\.\s*(\d{1,2})\.\s*(20\d{2})$/);
+    const sourceVenue=cells.find(v=>CZECH_VENUES[normalizeVenue(v)])??null;
+    if(!sourceVenue) continue;
+    const venue=CZECH_VENUES[normalizeVenue(sourceVenue)];
+    const timeCell=cells.find(v=>/^\d{1,2}:\d{2}$/.test(v))??null;
+    rows.push({date:dm[3]+'-'+pad(dm[2])+'-'+pad(dm[1]),source_venue_label:sourceVenue,venue,event_start_local:timeCell,source_url:sourceUrl});
+  }
+  if(!rows.length){
+    const venues='Praha|Prague|Pardubice|Karlovy Vary|Most|Slušovice|Lysá nad Labem|Brno|Kolesa|Netolice';
+    const rx=new RegExp('(\\d{1,2})\\.\\s*(\\d{1,2})\\.\\s*(20\\d{2})[\\s\\S]{0,80}?('+venues+')\\b','giu');
+    for(const m of text.matchAll(rx)){
+      const sourceVenue=m[4].trim();
+      const venue=CZECH_VENUES[normalizeVenue(sourceVenue)]??null;
+      rows.push({date:m[3]+'-'+pad(m[2])+'-'+pad(m[1]),source_venue_label:sourceVenue,venue,event_start_local:null,source_url:sourceUrl});
+    }
+  }
+  const out=[...new Map(rows.map(r=>[r.date+'|'+r.source_venue_label,r])).values()].sort((a,b)=>a.date.localeCompare(b.date)||a.source_venue_label.localeCompare(b.source_venue_label));
+  if(!out.length) throw new Error('Czech professional calendar rows missing; visible_text_sample='+text.slice(0,1200));
+  return out;
+}
+
 export function parseCzechEventDetail(html,{sourceUrl}={}){
   if(typeof html!=='string'||!html.trim()) throw new Error('Czech event detail HTML must be non-empty');
   const text=visibleText(html);
-  const d=text.match(/(?:Datum konání:|Due date:)\s*(\d{1,2})\.\s*(\d{1,2})\.\s*(20\d{2})/i);
+  const dotted=text.match(/(?:Datum konání:|Due date:)\s*(\d{1,2})\.\s*(\d{1,2})\.\s*(20\d{2})/i);
+  const slashed=text.match(/(?:Due date:)\s*(\d{1,2})\/(\d{1,2})\/(\d{2,4})/i);
+  const d=dotted??slashed;
   if(!d) throw new Error('Czech event date fingerprint missing');
+  const year=String(d[3]).length===2?'20'+d[3]:d[3];
   const v=text.match(/(?:Štítky:|Stitky:|Tags:)\s*([^#]{1,160}?)(?=\s+(?:Datum konání:|Due date:|Date:|Datum:))/i);
   if(!v) throw new Error('Czech event venue fingerprint missing');
   const sourceVenue=v[1].trim();
-  return {date:`${d[3]}-${pad(d[2])}-${pad(d[1])}`,source_venue_label:sourceVenue,venue:CZECH_VENUES[normalizeVenue(sourceVenue)]??null,source_url:sourceUrl};
+  return {date:`${year}-${pad(d[2])}-${pad(d[1])}`,source_venue_label:sourceVenue,venue:CZECH_VENUES[normalizeVenue(sourceVenue)]??null,source_url:sourceUrl};
 }
 function evidence(url,checkedAt){return {source_id:CZECH_SOURCE_ID,official_source_url:url,observed_at:checkedAt,successfully_verified_at:checkedAt,acquisition_method:'automatic'};}
 export function buildCzechMeetingRecord(row,{checkedAt}={}){
