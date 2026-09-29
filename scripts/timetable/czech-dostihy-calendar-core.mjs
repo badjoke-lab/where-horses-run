@@ -44,7 +44,7 @@ export function parseCzechProfessionalCalendar(html,{sourceUrl=CZECH_PRO_CALENDA
   for(const m of text.matchAll(rx)){
     const sourceVenue=m[5].trim();
     const venue=CZECH_VENUES[normalizeVenue(sourceVenue)]??null;
-    rows.push({date:\`\${m[3]}-\${pad(m[2])}-\${pad(m[1])}\`,source_venue_label:sourceVenue,venue,event_start_local:m[4]??null,source_url:sourceUrl});
+    rows.push({date:m[3]+'-'+pad(m[2])+'-'+pad(m[1]),source_venue_label:sourceVenue,venue,event_start_local:m[4]??null,source_url:sourceUrl});
   }
   const out=[...new Map(rows.map(r=>[r.date+'|'+r.source_venue_label,r])).values()].sort((a,b)=>a.date.localeCompare(b.date));
   if(!out.length) throw new Error('Czech professional calendar rows missing');
