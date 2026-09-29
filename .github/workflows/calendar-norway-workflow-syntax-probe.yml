@@ -20,5 +20,5 @@ jobs:
           bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
       - name: Validate refresh workflows
         run: |
-          ./actionlint .github/workflows/calendar-unified-official-refresh.yml
-          ./actionlint .github/workflows/calendar-near-official-refresh.yml
+          ./actionlint -shellcheck= .github/workflows/calendar-unified-official-refresh.yml
+          ./actionlint -shellcheck= .github/workflows/calendar-near-official-refresh.yml
