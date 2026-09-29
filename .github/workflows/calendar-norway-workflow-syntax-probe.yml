@@ -1,0 +1,24 @@
+name: Norway workflow syntax probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-unified-official-refresh.yml'
+      - '.github/workflows/calendar-near-official-refresh.yml'
+      - '.github/workflows/calendar-norway-workflow-syntax-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install actionlint
+        run: |
+          bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+      - name: Validate refresh workflows
+        run: |
+          ./actionlint .github/workflows/calendar-unified-official-refresh.yml
+          ./actionlint .github/workflows/calendar-near-official-refresh.yml
