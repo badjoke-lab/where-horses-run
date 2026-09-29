@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import path from 'node:path';
 
 const supportPath='data/static/calendar-public-country-support-v1.json';
-const workflowPath='.github/workflows/calendar-unified-official-refresh.yml';
+const workflowsDir='.github/workflows';
 
 const support=JSON.parse(fs.readFileSync(supportPath,'utf8'));
-const workflow=fs.readFileSync(workflowPath,'utf8');
 
 assert.equal(support.schema_version,'calendar-public-country-support-v1');
 assert.ok(Array.isArray(support.countries));
@@ -18,14 +18,21 @@ for(const row of rows){
   assert.ok(typeof row.acquisition_key==='string'&&row.acquisition_key.trim(),`${row.country_id} must have acquisition_key`);
 }
 
+const workflowFiles=fs.readdirSync(workflowsDir)
+  .filter((name)=>/^calendar-.*official-refresh\.yml$/.test(name))
+  .map((name)=>path.join(workflowsDir,name));
+
 const routed=new Set(['japan']);
-for(const match of workflow.matchAll(/--country-id=([a-z0-9-]+)/g)) routed.add(match[1]);
+for(const workflowPath of workflowFiles){
+  const workflow=fs.readFileSync(workflowPath,'utf8');
+  for(const match of workflow.matchAll(/--country-id=([a-z0-9-]+)/g)) routed.add(match[1]);
+}
 
 const supported=new Set(ids);
 const missing=[...routed].filter((id)=>!supported.has(id)).sort();
 const extra=[...supported].filter((id)=>!routed.has(id)).sort();
 
 assert.deepEqual(missing,[],`production-routed countries missing from public support: ${missing.join(', ')}`);
-assert.deepEqual(extra,[],`public support countries not routed by unified refresh: ${extra.join(', ')}`);
+assert.deepEqual(extra,[],`public support countries without an official refresh route: ${extra.join(', ')}`);
 
-console.log(`CALENDAR_PUBLIC_COUNTRY_SUPPORT: pass routed=${routed.size} supported=${supported.size}`);
+console.log(`CALENDAR_PUBLIC_COUNTRY_SUPPORT: pass routed=${routed.size} supported=${supported.size} workflows=${workflowFiles.length}`);

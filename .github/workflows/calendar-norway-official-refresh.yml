@@ -1,0 +1,159 @@
+name: Norway official Calendar refresh
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: Refresh scope
+        required: true
+        default: near
+        type: choice
+        options:
+          - near
+          - full
+  schedule:
+    - cron: '17 2 * * *'
+    - cron: '47 2 * * 1'
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-norway-official-refresh.yml'
+      - 'scripts/timetable/norway-dnt-core.mjs'
+      - 'scripts/timetable/run-norway-dnt-official-window.mjs'
+      - 'scripts/timetable/norway-ovrevoll-core.mjs'
+      - 'scripts/timetable/run-norway-ovrevoll-official-window.mjs'
+      - 'scripts/check-norway-dnt-adapter.mjs'
+      - 'scripts/check-norway-ovrevoll-adapter.mjs'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/calendar-public-country-support-v1.json'
+      - 'data/static/calendar-non-running-evidence-registry-v1.json'
+      - 'data/static/racecourses.json'
+      - 'data/static/racecourse-locations-v1.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: norway-official-calendar-refresh
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - name: Validate Norway adapters
+        run: |
+          npm run validate:norway-dnt
+          npm run validate:norway-ovrevoll
+      - name: Exercise Norway 30-day production path
+        run: |
+          mkdir -p .calendar-norway
+          node scripts/timetable/run-norway-dnt-official-window.mjs \
+            --as-of=2026-09-29 \
+            --days=30 \
+            --output=.calendar-norway/dnt.json
+          node scripts/timetable/run-norway-ovrevoll-official-window.mjs \
+            --as-of=2026-09-29 \
+            --days=30 \
+            --output=.calendar-norway/ovrevoll.json
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-norway/dnt.json \
+            --country-id=norway \
+            --authority-id=det-norske-travselskap \
+            --racing-system-id=norway-dnt-harness-system \
+            --timezone=Europe/Oslo
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-norway/ovrevoll.json \
+            --country-id=norway \
+            --authority-id=ovrevoll \
+            --racing-system-id=norway-ovrevoll-gallop-system \
+            --timezone=Europe/Oslo
+          node scripts/check-calendar-public-country-support.mjs
+          node scripts/check-calendar-public-map-parity.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs
+
+  refresh:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - id: scope
+        name: Resolve refresh scope
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            scope="${{ inputs.scope }}"
+          elif [ "${{ github.event.schedule }}" = "47 2 * * 1" ]; then
+            scope="full"
+          else
+            scope="near"
+          fi
+          if [ "$scope" = "full" ]; then
+            days=30
+          else
+            days=3
+          fi
+          echo "scope=$scope" >> "$GITHUB_OUTPUT"
+          echo "days=$days" >> "$GITHUB_OUTPUT"
+      - name: Collect Norway official windows
+        run: |
+          mkdir -p .calendar-norway
+          node scripts/timetable/run-norway-dnt-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-norway/dnt.json
+          node scripts/timetable/run-norway-ovrevoll-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-norway/ovrevoll.json
+      - name: Apply Norway observations monotonically
+        run: |
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-norway/dnt.json \
+            --country-id=norway \
+            --authority-id=det-norske-travselskap \
+            --racing-system-id=norway-dnt-harness-system \
+            --timezone=Europe/Oslo
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-norway/ovrevoll.json \
+            --country-id=norway \
+            --authority-id=ovrevoll \
+            --racing-system-id=norway-ovrevoll-gallop-system \
+            --timezone=Europe/Oslo
+          node scripts/timetable/apply-reviewed-calendar-observations.mjs
+      - name: Validate Norway publication
+        run: |
+          node scripts/check-calendar-public-country-support.mjs
+          node scripts/check-calendar-public-map-parity.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs
+      - name: Persist generated Norway timetable
+        shell: bash
+        run: |
+          git fetch origin main
+          if [ "$(git rev-parse origin/main)" != "$(git rev-parse HEAD)" ]; then
+            echo "main advanced during Norway refresh; refusing to overwrite newer work"
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            data/generated/timetable/canonical/meetings.json \
+            data/generated/timetable/canonical/meeting-details.json \
+            data/generated/timetable/public/meeting-list.json \
+            data/generated/timetable/public/meeting-details.json
+          if git diff --cached --quiet; then
+            echo "No Norway timetable changes to persist"
+            exit 0
+          fi
+          git commit -m "data: refresh Norway official timetable (${{ steps.scope.outputs.scope }})"
+          git push origin HEAD:main
