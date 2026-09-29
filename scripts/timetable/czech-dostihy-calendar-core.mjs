@@ -4,7 +4,7 @@ export const CZECH_TIMEZONE='Europe/Prague';
 export const CZECH_AUTHORITY_ID='czech-racing-calendar';
 export const CZECH_SYSTEM_ID='czech-national-calendar-system';
 export const CZECH_SOURCE_ID='dostihy-calendar';
-export const CZECH_PRO_CALENDAR_URL='https://www.dostihyjc.cz/index.php?page=1&rok=2026&typ=act&zav=0';
+export const CZECH_PRO_CALENDAR_URL='https://dostihyjc.cz/index.php?page=1&rok=2026&typ=act&zav=0';
 export const CZECH_CALENDAR_URL='https://www.dostihy.cz/kalendar-akci';
 export const CZECH_CALENDAR_FALLBACK_URL='https://www.dostihy.cz/racing-calendar';
 export const CZECH_VENUES=Object.freeze({
