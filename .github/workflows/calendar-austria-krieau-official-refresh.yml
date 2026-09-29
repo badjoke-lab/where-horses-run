@@ -68,9 +68,9 @@ jobs:
       - id: scope
         shell: bash
         run: |
-          if [ "\${{ github.event_name }}" = "workflow_dispatch" ]; then
-            scope="\${{ inputs.scope }}"
-          elif [ "\${{ github.event.schedule }}" = "57 3 * * 1" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            scope="${{ inputs.scope }}"
+          elif [ "${{ github.event.schedule }}" = "57 3 * * 1" ]; then
             scope=full
           else
             scope=near
@@ -81,7 +81,7 @@ jobs:
       - name: Collect and apply Austria Krieau
         run: |
           mkdir -p .calendar-austria
-          node scripts/timetable/run-austria-krieau-official-window.mjs --days="\${{ steps.scope.outputs.days }}" --output=.calendar-austria/krieau.json
+          node scripts/timetable/run-austria-krieau-official-window.mjs --days="${{ steps.scope.outputs.days }}" --output=.calendar-austria/krieau.json
           node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-austria/krieau.json --country-id=austria --authority-id=wiener-trabrenn-verein --racing-system-id=austria-krieau-calendar-system --timezone=Europe/Vienna
           node scripts/timetable/apply-reviewed-calendar-observations.mjs
           node scripts/check-calendar-public-country-support.mjs
@@ -102,5 +102,5 @@ jobs:
             echo "No Austria timetable changes"
             exit 0
           fi
-          git commit -m "data: refresh Austria Krieau timetable (\${{ steps.scope.outputs.scope }})"
+          git commit -m "data: refresh Austria Krieau timetable (${{ steps.scope.outputs.scope }})"
           git push origin HEAD:main
