@@ -75,6 +75,18 @@ try {
     discovery: { detail_status_counts: { not_published: 0, source_error: 0 } },
     candidates: [],
   });
+  writeArtifact('.calendar-unified/hungary.json', {
+    generated_at: '2026-09-11T00:04:00Z',
+    acquisition_attempt: {
+      attempted_at: '2026-09-11T00:04:00Z',
+      status: 'success',
+      source_id: 'kincsem-galopp-calendar',
+      route_id: 'kincsem-galopp-calendar',
+      error_code: null,
+    },
+    diagnostics: { source_errors: [], parse_failures: [] },
+    records: [],
+  });
   writeArtifact('data/generated/timetable/japan-zero-based-30d-reconciliation.json', {
     checked_at: '2026-09-11T00:03:00Z', scope: 'full', complete: true, mother_set_complete: true,
     official_meeting_count: 1, source_completeness: [],
@@ -112,6 +124,8 @@ try {
   assert.equal(saudi.fetch_failed, 0);
   const tjk = summary.systems.find((row) => row.racing_system_id === 'tjk-national-racing-system');
   assert.equal(tjk.fetch_failed, 1, 'top-level TJK network_error must not disappear from the audit summary');
+  const hungary = summary.systems.find((row) => row.racing_system_id === 'hungary-kincsem-galopp-calendar-system');
+  assert.equal(hungary.status, 'audited', 'Hungary production artifact must remain registered in downstream audit');
   const jra = summary.systems.find((row) => row.acquisition_group === 'jra');
   assert.equal(jra.checked, 1);
   assert.equal(jra.changed, 0, 'freshness-only change must not count as substantive');
