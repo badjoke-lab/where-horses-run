@@ -1111,6 +1111,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic official Hrvatski Galopski Savez current-season route. Publishes Hipodrom Zagreb meeting date plus physical identity at rank C. Current-season page takes precedence over the older annual calendar. Race post times are not inferred."
+    },
+    {
+      "system_id": "serbia-belgrade-hippodrome-system",
+      "country_id": "serbia",
+      "authority_id": "belgrade-hippodrome",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "belgrade-current-season",
+      "detail_source_id": "belgrade-current-season",
+      "schedule_adapter_id": "serbia-belgrade-current-season-v1",
+      "detail_adapter_id": "serbia-belgrade-current-season-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic official Belgrade current-season route. Publishes meeting date plus Belgrade Hippodrome physical identity at rank C. Reviewed detailed season schedules remain a separate richer evidence path and are not downgraded."
     }
   ]
 }
