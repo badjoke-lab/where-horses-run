@@ -6,7 +6,7 @@
   "programme_state": {
     "country_target": 98,
     "countries_with_closed_decision": 98,
-    "readiness_records": 124,
+    "readiness_records": 125,
     "next_backfill_work_ids": []
   },
   "records": [
@@ -3144,7 +3144,9 @@
       "system_id": "serbia-belgrade-hippodrome-system",
       "system_name_en": "Belgrade Hippodrome",
       "authority_source_key": "serbia/belgrade-hippodrome/belgrade-2026-season",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "serbia--belgrade-hippodrome"
+      ],
       "coverage_scope": "single_racecourse",
       "technical_rank": "A",
       "public_ceiling": "C",
@@ -3168,11 +3170,11 @@
         "near_meeting"
       ],
       "readiness": "prototype_ready",
-      "implementation_status": "not_started",
+      "implementation_status": "manual_path_retained",
       "fallback": "downgrade_to_C",
       "source_status": "partial",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
+      "checked_date": "2026-09-30",
+      "evidence_reviewed_at": "2026-09-30",
       "revalidation_trigger": "Revalidate when Belgrade changes schedule routes or wider Serbian coverage is reviewed.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/51-serbia/final-summary.json",
@@ -3180,7 +3182,7 @@
         "The prototype scope is limited to Belgrade.",
         "Wider country coverage remains incomplete."
       ],
-      "notes": "Bounded prototype decision for detailed Belgrade schedules."
+      "notes": "Reviewed detailed Belgrade 2026 schedule remains the richer A-capability path. Automatic production uses the current-season page at rank C."
     },
     {
       "readiness_id": "slovakia--slovakia-zavodisko-system--zavodisko-2026-calendar",
@@ -5677,6 +5679,54 @@
         "Source-visible absence is not non-running evidence."
       ],
       "notes": "Automatic official current-season route publishes revised Zagreb gallop meeting dates at rank C."
+    },
+    {
+      "readiness_id": "serbia--serbia-belgrade-hippodrome-system--belgrade-current-season",
+      "country_id": "serbia",
+      "country_tracker_delivery_no": "51",
+      "system_id": "serbia-belgrade-hippodrome-system",
+      "system_name_en": "Belgrade Hippodrome current season",
+      "authority_source_key": "serbia/belgrade-hippodrome/belgrade-current-season",
+      "racecourse_ids": [
+        "serbia--belgrade-hippodrome"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-09-30",
+      "evidence_reviewed_at": "2026-09-30",
+      "revalidation_trigger": "Revalidate when Belgrade changes the current-season/season routes, venue identity, or publishes a new season.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/51-serbia/final-summary.json",
+      "limitations": [
+        "Automatic route covers Belgrade Hippodrome only.",
+        "Automatic publication is rank C even though separate reviewed detailed schedules retain richer capability.",
+        "Wider Serbian racing coverage remains incomplete.",
+        "Source-visible absence is not non-running evidence."
+      ],
+      "notes": "Automatic official current-season route publishes source-visible Belgrade meeting dates plus physical venue at rank C."
     }
   ],
   "last_updated": "2026-09-28"
