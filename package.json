@@ -100,7 +100,8 @@
     "validate:norway-ovrevoll": "node --check scripts/timetable/norway-ovrevoll-core.mjs && node --check scripts/timetable/run-norway-ovrevoll-official-window.mjs && node scripts/check-norway-ovrevoll-adapter.mjs",
     "validate:norway-dnt": "node --check scripts/timetable/norway-dnt-core.mjs && node --check scripts/timetable/run-norway-dnt-official-window.mjs && node scripts/check-norway-dnt-adapter.mjs",
     "validate:austria-krieau": "node --check scripts/timetable/austria-krieau-calendar-core.mjs && node --check scripts/timetable/run-austria-krieau-official-window.mjs && node scripts/check-austria-krieau-adapter.mjs",
-    "validate:croatia-hgs": "node --check scripts/timetable/croatia-hgs-calendar-core.mjs && node --check scripts/timetable/run-croatia-hgs-official-window.mjs && node scripts/check-croatia-hgs-adapter.mjs"
+    "validate:croatia-hgs": "node --check scripts/timetable/croatia-hgs-calendar-core.mjs && node --check scripts/timetable/run-croatia-hgs-official-window.mjs && node scripts/check-croatia-hgs-adapter.mjs",
+    "validate:serbia-belgrade": "node --check scripts/timetable/serbia-belgrade-calendar-core.mjs && node --check scripts/timetable/run-serbia-belgrade-official-window.mjs && node scripts/check-serbia-belgrade-adapter.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0",
