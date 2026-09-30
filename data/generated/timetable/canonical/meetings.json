@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-09-29T23:27:12.791Z",
+  "generated_at": "2026-09-30T08:35:59.703Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -12550,7 +12550,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-29T23:27:12.791Z",
+        "generated_at": "2026-09-30T08:35:59.703Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12579,7 +12579,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-29T23:27:12.791Z",
+        "generated_at": "2026-09-30T08:35:59.703Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12784,7 +12784,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-09-29T23:27:12.791Z",
+        "generated_at": "2026-09-30T08:35:59.703Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -30304,6 +30304,65 @@
       }
     },
     {
+      "meeting_id": "norway-norway--forus-travbane-2026-09-30",
+      "country_id": "norway",
+      "authority_id": "det-norske-travselskap",
+      "racing_system_id": "norway-dnt-harness-system",
+      "timezone": "Europe/Oslo",
+      "racecourse_id": "norway--forus-travbane",
+      "date": "2026-09-30",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "dnt-terminliste-2026",
+        "route_id": "dnt-current-calendar-html",
+        "source_status": "verified",
+        "official_source_url": "https://old.travsport.no/Sport/Terminliste/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-30",
+        "generated_at": "2026-09-30T08:35:56.313Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "dnt-terminliste-2026",
+          "official_source_url": "https://old.travsport.no/Sport/Terminliste/",
+          "observed_at": "2026-09-30T08:35:56.313Z",
+          "successfully_verified_at": "2026-09-30T08:35:56.313Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "dnt-terminliste-2026",
+          "official_source_url": "https://old.travsport.no/Sport/Terminliste/",
+          "observed_at": "2026-09-30T08:35:56.313Z",
+          "successfully_verified_at": "2026-09-30T08:35:56.313Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-09-30T08:35:56.313Z",
+        "status": "success",
+        "source_id": "dnt-terminliste-2026",
+        "route_id": "dnt-current-calendar-html",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "sorec-khemisset-racecourse-2026-09-30",
       "country_id": "morocco",
       "authority_id": "sorec",
@@ -31383,6 +31442,124 @@
         "status": "success",
         "source_id": "hrnz-raceday-calendar",
         "route_id": "hrnz-final-racing-calendar-pdf",
+        "error_code": null
+      }
+    },
+    {
+      "meeting_id": "norway-norway--klosterskogen-travbane-2026-10-01",
+      "country_id": "norway",
+      "authority_id": "det-norske-travselskap",
+      "racing_system_id": "norway-dnt-harness-system",
+      "timezone": "Europe/Oslo",
+      "racecourse_id": "norway--klosterskogen-travbane",
+      "date": "2026-10-01",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "dnt-terminliste-2026",
+        "route_id": "dnt-current-calendar-html",
+        "source_status": "verified",
+        "official_source_url": "https://old.travsport.no/Sport/Terminliste/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-30",
+        "generated_at": "2026-09-30T08:35:56.313Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "dnt-terminliste-2026",
+          "official_source_url": "https://old.travsport.no/Sport/Terminliste/",
+          "observed_at": "2026-09-30T08:35:56.313Z",
+          "successfully_verified_at": "2026-09-30T08:35:56.313Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "dnt-terminliste-2026",
+          "official_source_url": "https://old.travsport.no/Sport/Terminliste/",
+          "observed_at": "2026-09-30T08:35:56.313Z",
+          "successfully_verified_at": "2026-09-30T08:35:56.313Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-09-30T08:35:56.313Z",
+        "status": "success",
+        "source_id": "dnt-terminliste-2026",
+        "route_id": "dnt-current-calendar-html",
+        "error_code": null
+      }
+    },
+    {
+      "meeting_id": "norway-ovrevoll-2026-10-01",
+      "country_id": "norway",
+      "authority_id": "ovrevoll",
+      "racing_system_id": "norway-ovrevoll-gallop-system",
+      "timezone": "Europe/Oslo",
+      "racecourse_id": "norway--ovrevoll",
+      "date": "2026-10-01",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "ovrevoll-fixtures",
+        "route_id": "ovrevoll-2026-fixture-html",
+        "source_status": "verified",
+        "official_source_url": "https://ovrevoll.travsport.no/Galoppbanen/Terminliste-fixtures/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-30",
+        "generated_at": "2026-09-30T08:35:58.331Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "ovrevoll-fixtures",
+          "official_source_url": "https://ovrevoll.travsport.no/Galoppbanen/Terminliste-fixtures/",
+          "observed_at": "2026-09-30T08:35:58.331Z",
+          "successfully_verified_at": "2026-09-30T08:35:58.331Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "ovrevoll-fixtures",
+          "official_source_url": "https://ovrevoll.travsport.no/Galoppbanen/Terminliste-fixtures/",
+          "observed_at": "2026-09-30T08:35:58.331Z",
+          "successfully_verified_at": "2026-09-30T08:35:58.331Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-09-30T08:35:58.331Z",
+        "status": "success",
+        "source_id": "ovrevoll-fixtures",
+        "route_id": "ovrevoll-2026-fixture-html",
         "error_code": null
       }
     },
@@ -32539,6 +32716,65 @@
         "status": "pending_publication",
         "source_id": "loveracing-race-info",
         "route_id": "loveracing-meeting-overview",
+        "error_code": null
+      }
+    },
+    {
+      "meeting_id": "norway-norway--momarken-travbane-2026-10-02",
+      "country_id": "norway",
+      "authority_id": "det-norske-travselskap",
+      "racing_system_id": "norway-dnt-harness-system",
+      "timezone": "Europe/Oslo",
+      "racecourse_id": "norway--momarken-travbane",
+      "date": "2026-10-02",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "dnt-terminliste-2026",
+        "route_id": "dnt-current-calendar-html",
+        "source_status": "verified",
+        "official_source_url": "https://old.travsport.no/Sport/Terminliste/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-09-30",
+        "generated_at": "2026-09-30T08:35:56.313Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "dnt-terminliste-2026",
+          "official_source_url": "https://old.travsport.no/Sport/Terminliste/",
+          "observed_at": "2026-09-30T08:35:56.313Z",
+          "successfully_verified_at": "2026-09-30T08:35:56.313Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "dnt-terminliste-2026",
+          "official_source_url": "https://old.travsport.no/Sport/Terminliste/",
+          "observed_at": "2026-09-30T08:35:56.313Z",
+          "successfully_verified_at": "2026-09-30T08:35:56.313Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-09-30T08:35:56.313Z",
+        "status": "success",
+        "source_id": "dnt-terminliste-2026",
+        "route_id": "dnt-current-calendar-html",
         "error_code": null
       }
     },
