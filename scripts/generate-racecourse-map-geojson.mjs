@@ -80,6 +80,7 @@ const calendarMapRegressionIds = [
   'jeju-racecourse',
   // Italy MASAF rolling venues (18)
   'italy--ippodromo-san-siro',
+  'italy--ippodromo-san-rossore',
   'italy--ippodromo-di-maia',
   'italy--ippodromo-del-visarno',
   'italy--ippodromo-di-roma-capannelle',
