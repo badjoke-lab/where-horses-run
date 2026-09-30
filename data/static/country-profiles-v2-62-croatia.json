@@ -1,1 +1,94 @@
-[{"schema_version":"2.0.0","country_id":"croatia","slug":"croatia","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-29","public_display_ceiling":"C","source_test_status":"complete","hero":{"summary_en":"The reviewed Croatian gallop calendar supports manual Zagreb meeting confirmation.","summary_ja":"確認済みクロアチア平地競馬カレンダーでザグレブ開催を手動確認できる。"},"overview":{"paragraphs_en":["Hrvatski Galopski Savez publishes the reviewed official 2026 gallop calendar.","The approved scope is the Zagreb calendar and remains limited to meeting date and venue."],"paragraphs_ja":["Hrvatski Galopski Savezが確認済み公式2026年平地競馬カレンダーを公開している。","承認済み範囲はザグレブの開催日と会場に限定する。"]},"racing_types":[{"id":"thoroughbred-flat","name_en":"Flat racing","name_ja":"平地競走","summary_en":"Represented by the reviewed Croatian gallop calendar.","summary_ja":"確認済みクロアチア平地競馬カレンダーで扱う。"}],"seasonality":{"pattern":"official-source-required","summary_en":"Check the federation calendar and confirm provisional dates before use.","summary_ja":"連盟カレンダーを確認し、暫定日程は利用前に再確認する。"},"schedule":{"timezone":"Europe/Zagreb","utc_offset_label":"Verify current local offset","day_patterns":["official-source-required"],"time_patterns":["meeting-date-only"],"summary_en":"Publish meeting date and Zagreb venue only after manual confirmation.","summary_ja":"手動確認後に開催日とザグレブ会場のみを公開する。"},"surfaces":{"ids":[],"summary_en":"Not normalized.","summary_ja":"共通化しない。"},"systems":[{"id":"croatia-gallop-system","name_en":"Croatian gallop federation calendar","name_ja":"クロアチア平地競馬連盟カレンダー","summary_en":"Reviewed single-venue gallop calendar for Zagreb.","summary_ja":"ザグレブを対象とする確認済み単一会場平地競馬カレンダー。","organiser_source_ids":["croatia-hgs-calendar"],"distributor_source_ids":[]}],"principal_racecourse_ids":[],"calendar_guidance_en":"Confirm each meeting manually and retain any provisional official label until the federation confirms it.","calendar_guidance_ja":"開催ごとに手動確認し、連盟が確定するまで公式の暫定表示を維持する。","coverage_note_en":"The reviewed decision covers the Zagreb gallop system only and does not establish complete Croatian racing coverage.","coverage_note_ja":"確認済み判断はザグレブ平地競馬体系のみを対象とし、クロアチア競馬全体の網羅性は確立していない。","revalidation":{"triggers_en":["The federation calendar changes","A provisional meeting is confirmed","A new season calendar is published"],"triggers_ja":["連盟カレンダー変更時","暫定開催確定時","新シーズンカレンダー公開時"]},"related_glossary_ids":["racecourse","meeting","fixture","post-time"]}]
+[
+  {
+    "schema_version": "2.0.0",
+    "country_id": "croatia",
+    "slug": "croatia",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-09-30",
+    "public_display_ceiling": "C",
+    "source_test_status": "complete",
+    "hero": {
+      "summary_en": "Hipodrom Zagreb meeting dates are automatically routed from the official HGS current-season page at rank C, with the annual calendar retained only as an official fallback.",
+      "summary_ja": "Hipodrom Zagrebの開催日はHGS公式現行seasonページからCで自動取得し、年次カレンダーは公式fallbackとしてのみ維持します。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "Hrvatski Galopski Savez publishes both a season calendar and a current-season page. Production automation gives precedence to the current-season page because it reflects revised Zagreb dates; the annual calendar is used only if the current-season route is unavailable. The approved scope remains meeting date plus physical venue at Hipodrom Zagreb."
+      ],
+      "paragraphs_ja": [
+        "Hrvatski Galopski Savezは年次カレンダーと現行seasonページの両方を公開しています。production自動取得では改訂後のザグレブ日程を反映する現行seasonページを優先し、利用できない場合のみ年次カレンダーをfallbackとして使います。承認範囲はHipodrom Zagrebの開催日と物理会場に限定します。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "thoroughbred-flat",
+        "name_en": "Flat racing",
+        "name_ja": "平地競走",
+        "summary_en": "Represented by the reviewed Croatian gallop calendar.",
+        "summary_ja": "確認済みクロアチア平地競馬カレンダーで扱う。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "official-source-required",
+      "summary_en": "Check the federation calendar and confirm provisional dates before use.",
+      "summary_ja": "連盟カレンダーを確認し、暫定日程は利用前に再確認する。"
+    },
+    "schedule": {
+      "timezone": "Europe/Zagreb",
+      "utc_offset_label": "Verify current local offset",
+      "day_patterns": [
+        "official-source-required"
+      ],
+      "time_patterns": [
+        "meeting-date-only"
+      ],
+      "summary_en": "Publish meeting date and Zagreb venue only after manual confirmation.",
+      "summary_ja": "手動確認後に開催日とザグレブ会場のみを公開する。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Not normalized.",
+      "summary_ja": "共通化しない。"
+    },
+    "systems": [
+      {
+        "id": "croatian-gallop-system",
+        "name_en": "Croatian gallop federation calendar",
+        "name_ja": "クロアチア平地競馬連盟カレンダー",
+        "summary_en": "Automatic official current-season Zagreb gallop calendar at rank C; annual calendar retained as fallback.",
+        "summary_ja": "公式現行seasonのザグレブ平地競馬カレンダーをCで自動取得し、年次カレンダーをfallbackとして維持します。",
+        "organiser_source_ids": [
+          "croatia-hgs-current-season",
+          "croatia-hgs-calendar"
+        ],
+        "distributor_source_ids": []
+      }
+    ],
+    "principal_racecourse_ids": [
+      "croatia--hipodrom-zagreb"
+    ],
+    "calendar_guidance_en": "Use the HGS current-season page as the production primary and the annual calendar only as fallback. When dates differ, prefer the current-season page. Publish meeting date and Hipodrom Zagreb only; do not infer post times.",
+    "calendar_guidance_ja": "production primaryにはHGS現行seasonページを使い、年次カレンダーはfallbackに限定します。日付が異なる場合は現行seasonページを優先します。開催日とHipodrom Zagrebのみを公開し、発走時刻は推測しません。",
+    "coverage_note_en": "Automatic production coverage is C for the reviewed Hipodrom Zagreb gallop system only and does not establish complete Croatian racing coverage.",
+    "coverage_note_ja": "production自動取得はレビュー済みHipodrom Zagreb平地競馬体系のCのみで、クロアチア競馬全体の網羅性を意味しません。",
+    "revalidation": {
+      "triggers_en": [
+        "The federation calendar changes",
+        "A provisional meeting is confirmed",
+        "A new season calendar is published"
+      ],
+      "triggers_ja": [
+        "連盟カレンダー変更時",
+        "暫定開催確定時",
+        "新シーズンカレンダー公開時"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture",
+      "post-time"
+    ]
+  }
+]

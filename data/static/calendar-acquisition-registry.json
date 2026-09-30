@@ -1086,6 +1086,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic official Krieau race-date route. Publishes meeting date plus Trabrennpark Krieau physical identity at rank C. General event start time is context only, not a race post time. Separate reviewed race newspapers retain richer A-capability evidence."
+    },
+    {
+      "system_id": "croatian-gallop-system",
+      "country_id": "croatia",
+      "authority_id": "hrvatski-galopski-savez",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "hgs-current-season",
+      "detail_source_id": "hgs-current-season",
+      "schedule_adapter_id": "croatia-hgs-current-season-v1",
+      "detail_adapter_id": "croatia-hgs-current-season-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic official Hrvatski Galopski Savez current-season route. Publishes Hipodrom Zagreb meeting date plus physical identity at rank C. Current-season page takes precedence over the older annual calendar. Race post times are not inferred."
     }
   ]
 }
