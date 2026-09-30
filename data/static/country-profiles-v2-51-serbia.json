@@ -1,1 +1,93 @@
-[{"schema_version":"2.0.0","country_id":"serbia","slug":"serbia","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-20","public_display_ceiling":"C","source_test_status":"partial","hero":{"summary_en":"Belgrade Hippodrome confirms reviewed dates and detailed schedules.","summary_ja":"Belgrade Hippodromeで開催日と詳細日程を確認済み。"},"overview":{"paragraphs_en":["The reviewed scope is limited to the Belgrade gallop season."],"paragraphs_ja":["確認済み範囲はBelgradeのギャロップシーズンに限定される。"]},"racing_types":[{"id":"thoroughbred-flat","name_en":"Gallop racing","name_ja":"ギャロップ競走","summary_en":"Reviewed at Belgrade.","summary_ja":"Belgradeで確認済み。"}],"seasonality":{"pattern":"official-source-required","summary_en":"Check the current Belgrade season routes.","summary_ja":"現行Belgradeシーズン導線を確認する。"},"schedule":{"timezone":"Europe/Belgrade","utc_offset_label":"Verify current local offset","day_patterns":["official-source-required"],"time_patterns":["meeting-date-only"],"summary_en":"Detailed Belgrade schedules exist; country output stays at meeting level.","summary_ja":"Belgradeの詳細日程はあるが、国ページ表示は開催単位に保つ。"},"surfaces":{"ids":[],"summary_en":"Not normalized.","summary_ja":"共通化しない。"},"systems":[{"id":"serbia-belgrade-system","name_en":"Belgrade gallop season","name_ja":"Belgradeギャロップシーズン","summary_en":"Reviewed venue context.","summary_ja":"確認済み会場文脈。","organiser_source_ids":["serbia-belgrade-current-season"],"distributor_source_ids":["serbia-belgrade-season-2026"]}],"principal_racecourse_ids":[],"calendar_guidance_en":"Use Belgrade routes only for the reviewed scope.","calendar_guidance_ja":"Belgrade導線は確認済み範囲に限って使用する。","coverage_note_en":"Wider Serbian coverage is incomplete.","coverage_note_ja":"セルビア全体の網羅性は不完全。","revalidation":{"triggers_en":["Belgrade routes change","Wider coverage is confirmed"],"triggers_ja":["Belgrade導線変更時","より広い網羅性確認時"]},"related_glossary_ids":["racecourse","meeting","fixture","post-time"]}]
+[
+  {
+    "schema_version": "2.0.0",
+    "country_id": "serbia",
+    "slug": "serbia",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-09-30",
+    "public_display_ceiling": "C",
+    "source_test_status": "partial",
+    "hero": {
+      "summary_en": "Belgrade Hippodrome meeting dates are automatically routed from the official current-season page at rank C; separate reviewed detailed schedules retain richer A-capability evidence.",
+      "summary_ja": "Belgrade Hippodromeの開催日は公式現行seasonページからCで自動取得し、別のレビュー済み詳細日程はより豊富なA相当証拠として維持します。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "Production automation covers the single-racecourse Belgrade Hippodrome season. The country page remains capped at C because wider Serbian racing coverage is incomplete. Reviewed detailed schedules remain a separate richer evidence path and are not downgraded by the automatic C route."
+      ],
+      "paragraphs_ja": [
+        "production自動取得は単一競馬場Belgrade Hippodromeのシーズンを対象にします。セルビア全体の網羅性は未完成のため国ページはC上限を維持します。レビュー済み詳細日程は別のより豊富な証拠導線として保持し、自動C導線によって格下げしません。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "thoroughbred-flat",
+        "name_en": "Gallop racing",
+        "name_ja": "ギャロップ競走",
+        "summary_en": "Reviewed at Belgrade.",
+        "summary_ja": "Belgradeで確認済み。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "official-source-required",
+      "summary_en": "Check the current Belgrade season routes.",
+      "summary_ja": "現行Belgradeシーズン導線を確認する。"
+    },
+    "schedule": {
+      "timezone": "Europe/Belgrade",
+      "utc_offset_label": "Verify current local offset",
+      "day_patterns": [
+        "official-source-required"
+      ],
+      "time_patterns": [
+        "meeting-date-only"
+      ],
+      "summary_en": "Detailed Belgrade schedules exist; country output stays at meeting level.",
+      "summary_ja": "Belgradeの詳細日程はあるが、国ページ表示は開催単位に保つ。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Not normalized.",
+      "summary_ja": "共通化しない。"
+    },
+    "systems": [
+      {
+        "id": "serbia-belgrade-hippodrome-system",
+        "name_en": "Belgrade gallop season",
+        "name_ja": "Belgradeギャロップシーズン",
+        "summary_en": "Automatic official current-season meeting-date route at rank C, with reviewed detailed season schedules retained separately.",
+        "summary_ja": "公式現行season開催日をCで自動取得し、レビュー済み詳細シーズン日程は別途維持します。",
+        "organiser_source_ids": [
+          "serbia-belgrade-current-season"
+        ],
+        "distributor_source_ids": [
+          "serbia-belgrade-season-2026"
+        ]
+      }
+    ],
+    "principal_racecourse_ids": [
+      "serbia--belgrade-hippodrome"
+    ],
+    "calendar_guidance_en": "Use the automatic Belgrade current-season route for current meeting dates and physical venue identity. Keep reviewed detailed schedules separate; automatic public output remains C and wider Serbian completeness is not claimed.",
+    "calendar_guidance_ja": "現行開催日と物理会場identityにはBelgrade現行season自動導線を使用します。レビュー済み詳細日程は別に保持し、自動公開はCのままとし、セルビア全国網羅を主張しません。",
+    "coverage_note_en": "Automatic production coverage is C for Belgrade Hippodrome only. Separate reviewed schedules retain richer A-capability evidence; wider Serbian coverage remains incomplete.",
+    "coverage_note_ja": "production自動取得はBelgrade Hippodrome単一会場のCです。別のレビュー済み日程はより豊富なA相当証拠を保持しますが、セルビア全体の網羅性は未完成です。",
+    "revalidation": {
+      "triggers_en": [
+        "Belgrade routes change",
+        "Wider coverage is confirmed"
+      ],
+      "triggers_ja": [
+        "Belgrade導線変更時",
+        "より広い網羅性確認時"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture",
+      "post-time"
+    ]
+  }
+]
