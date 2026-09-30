@@ -40,6 +40,7 @@ for (const fixture of discovery.fixtures) {
   const classification = detail?.classification ?? null;
   if (detail?.presence_observation?.state === 'confirmed_non_running') meetingPresenceRecords.push(detail.presence_observation);
   const usableDetail = detail && (detail.source_errors ?? []).length === 0 && ['B', 'B+', 'A', 'A+'].includes(classification?.rank);
+  const pendingPublication = detail?.publication_status === 'not_published';
   const capabilityRank = usableDetail ? classification.rank : 'C';
   const scheduleUrl = fixture.source?.official_url ?? discovery.official_url;
   records.push({
@@ -59,7 +60,7 @@ for (const fixture of discovery.fixtures) {
         : scheduleUrl,
     },
     detail_observation: {
-      status: usableDetail ? 'available' : detail ? 'source_error' : 'not_published',
+      status: usableDetail ? 'available' : pendingPublication ? 'not_published' : detail ? 'source_error' : 'not_published',
       ...(usableDetail ? { evaluated_capability_rank: 'A' } : {}),
       race_count: usableDetail ? detail.meeting?.race_count ?? 0 : 0,
       conflicts: [],

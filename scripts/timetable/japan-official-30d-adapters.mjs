@@ -6,7 +6,7 @@ import {
   parseBaneiRaceList,
 } from './banei-detail-core.mjs';
 import { fetchBaneiOfficialProgramRows } from './banei-official-program-fallback.mjs';
-import { classifyNarZeroRaceDiscovery } from './nar-publication-signal.mjs';
+import { classifyNarNonContinuousRaceDiscovery, classifyNarZeroRaceDiscovery } from './nar-publication-signal.mjs';
 
 const JRA_VENUES = {
   '札幌': 'sapporo', '函館': 'hakodate', '福島': 'fukushima', '新潟': 'niigata', '東京': 'tokyo',
@@ -341,8 +341,10 @@ async function inspectNar(meeting) {
   const numbers = discoverNarRaceNumbers(page.body);
   if (!numbers.length) return classifyNarZeroRaceDiscovery(page.body);
   const parsed = parseNarRaceListPage(page.body);
-  if (parsed.length !== numbers.length || !numbers.every((number, index) => number === index + 1)) {
-    return { status: 'race_number_discovery_incomplete', reason: 'race_number_discovery_incomplete' };
+  const raceNumberState = classifyNarNonContinuousRaceDiscovery(page.body, numbers);
+  if (raceNumberState) return raceNumberState;
+  if (parsed.length !== numbers.length) {
+    return { status: 'race_number_discovery_incomplete', reason: 'published_programme_list_parser_incomplete' };
   }
 
   const enriched = [];

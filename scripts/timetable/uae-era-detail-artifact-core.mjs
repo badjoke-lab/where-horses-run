@@ -148,6 +148,21 @@ export function detectUaeEraConfirmedNonRunning(html, { sourceUrl }) {
   };
 }
 
+export function detectUaeEraPendingPublication(html, { sourceUrl }) {
+  const route = officialRacecardRoute(sourceUrl);
+  if (!route) throw new Error('sourceUrl must be an official emiratesracing.com racecard HTTPS route');
+  const text = uaeEraDetailText(html);
+  const loadingPlaceholder = /(?:^|\n)Loading races\.\.\.(?:\n|$)/i.test(text);
+  const hasPostTime = /(?:^|\n)\d{1,2}:\d{2}(?:\n|$)/.test(text);
+  return {
+    pending_publication: loadingPlaceholder && !hasPostTime,
+    date: route.date,
+    race_number: route.race_number,
+    source_url: sourceUrl,
+    evidence_phrase: loadingPlaceholder && !hasPostTime ? 'Loading races...' : null,
+  };
+}
+
 export function discoverUaeEraRaceNumbers(html, date) {
   if (!validDate(date)) throw new Error('date must be YYYY-MM-DD');
   const escaped = date.replace(/-/g, '\\-');

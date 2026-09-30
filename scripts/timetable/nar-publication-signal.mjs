@@ -60,3 +60,20 @@ export function classifyNarZeroRaceDiscovery(html) {
     reason: 'scheduled_pending_details',
   };
 }
+
+export function classifyNarNonContinuousRaceDiscovery(html, raceNumbers = []) {
+  const numbers = [...new Set((raceNumbers ?? []).filter((value) => Number.isInteger(value) && value >= 1 && value <= 30))].sort((a, b) => a - b);
+  if (numbers.length === 0) return classifyNarZeroRaceDiscovery(html);
+  const continuous = numbers.every((value, index) => value === index + 1);
+  if (continuous) return null;
+  if (!narRaceProgrammeLooksPublished(html)) {
+    return {
+      status: 'scheduled_pending_details',
+      reason: 'partial_race_programme_publication',
+    };
+  }
+  return {
+    status: 'race_number_discovery_incomplete',
+    reason: 'published_programme_with_non_continuous_race_numbers',
+  };
+}
