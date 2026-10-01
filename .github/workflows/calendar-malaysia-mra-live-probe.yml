@@ -1,0 +1,23 @@
+name: Malaysia MRA 2026 fixture probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-malaysia-mra-live-probe.yml'
+      - 'scripts/timetable/probe-malaysia-mra-2026-fixture.mjs'
+      - 'package.json'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - name: Probe MRA 2026 fixture
+        run: node scripts/timetable/probe-malaysia-mra-2026-fixture.mjs
