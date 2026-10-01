@@ -14,6 +14,7 @@ const MONTHS = Object.freeze({
 const VENUES = Object.freeze({
   'GREY TURF': { racecourse_id:'south-africa--hollywoodbets-greyville', venue_name:'Hollywoodbets Greyville', course_context:'turf' },
   'GREY POLY': { racecourse_id:'south-africa--hollywoodbets-greyville', venue_name:'Hollywoodbets Greyville', course_context:'poly' },
+  'GREY': { racecourse_id:'south-africa--hollywoodbets-greyville', venue_name:'Hollywoodbets Greyville', course_context:null },
   'SCOT': { racecourse_id:'south-africa--hollywoodbets-scottsville', venue_name:'Hollywoodbets Scottsville', course_context:null },
   'DURBANVILLE': { racecourse_id:'south-africa--hollywoodbets-durbanville', venue_name:'Hollywoodbets Durbanville', course_context:null },
   'KENILWORTH': { racecourse_id:'south-africa--hollywoodbets-kenilworth', venue_name:'Hollywoodbets Kenilworth', course_context:null },
