@@ -1,0 +1,26 @@
+name: Malaysia MRA live probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-malaysia-mra-live-probe.yml'
+      - 'scripts/timetable/probe-malaysia-mra-2026-fixture.mjs'
+      - 'scripts/timetable/malaysia-mra-calendar-core.mjs'
+      - 'scripts/timetable/run-malaysia-mra-official-window.mjs'
+      - 'scripts/check-malaysia-mra-adapter.mjs'
+      - 'package.json'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - name: Validate live MRA production adapter
+        run: npm run validate:malaysia-mra
