@@ -93,32 +93,34 @@ for (const testCase of invalidFixtures.policy_cases ?? []) {
   if (validateDueJobPolicyV1(changed, registry).length === 0) fail(`invalid due-job policy case unexpectedly passed: ${testCase.case_id}`);
 }
 
-const workflow = readText('.github/workflows/calendar-daily-acquisition.yml');
+const retiredDailyWorkflow = '.github/workflows/calendar-daily-acquisition.yml';
+if (fs.existsSync(path.join(root, retiredDailyWorkflow))) {
+  fail(`Superseded daily acquisition workflow unexpectedly restored: ${retiredDailyWorkflow}.`);
+}
+
+const actionsWorkflow = readText('.github/workflows/calendar-actions-multi-job.yml');
+for (const marker of [
+  'workflow_dispatch:',
+  'plan-actions-multi-job.mjs',
+  'Run independent hosted Job',
+  'actions/upload-artifact@v4',
+]) {
+  if (!actionsWorkflow.includes(marker)) fail(`Current Actions multi-job workflow missing ${marker}.`);
+}
+if (/pull-requests:\s*write/.test(actionsWorkflow)) fail('Actions multi-job workflow must not write pull requests.');
+if (/contents:\s*write/.test(actionsWorkflow)) fail('Actions multi-job workflow must remain read-only.');
+
+const unifiedWorkflow = readText('.github/workflows/calendar-unified-official-refresh.yml');
 for (const marker of [
   'schedule:',
   'workflow_dispatch:',
-  'build-calendar-live-retry-queue.mjs',
-  'build-calendar-live-planner-state.mjs',
-  'plan-calendar-due-jobs.mjs',
-  'plan-actions-multi-job.mjs',
-  'Run hosted acquisition job',
-  'actions/upload-artifact@v4',
+  'Refresh Japan official mother set and best available detail',
+  'Persist Japan official state before non-Japan collection',
+  'Persist remaining canonical and public rolling state',
 ]) {
-  if (!workflow.includes(marker)) fail(`Current daily acquisition workflow missing ${marker}.`);
+  if (!unifiedWorkflow.includes(marker)) fail(`Current unified official refresh workflow missing ${marker}.`);
 }
-if (!/^\s*-\s*cron:\s*['"][^'"\n]+['"]\s*$/m.test(workflow)) fail('Current daily acquisition workflow must define a cron schedule.');
-if (/pull-requests:\s*write/.test(workflow)) fail('Daily acquisition workflow must not write pull requests.');
-if (/contents:\s*write/.test(workflow)) {
-  for (const marker of [
-    'japan-zero-based-30d:',
-    'Persist deterministic canonical and public Japan state',
-    'data/generated/timetable/canonical/meetings.json',
-    'data/generated/timetable/canonical/meeting-details.json',
-    'data/generated/timetable/public/meeting-list.json',
-  ]) {
-    if (!workflow.includes(marker)) fail(`Repository write permission lacks deterministic Japan publication marker ${marker}.`);
-  }
-}
+if (!/^\s*-\s*cron:\s*['"][^'"\n]+['"](?:\s*#.*)?\s*$/m.test(unifiedWorkflow)) fail('Current unified official refresh must define a cron schedule.');
 
 if (errors.length) {
   console.error(`CALENDAR_DUE_JOB_PLANNER: failed (${errors.length})`);
@@ -130,5 +132,7 @@ console.log('CALENDAR_DUE_JOB_PLANNER: pass');
 console.log(`JOBS: ${plan?.collection_plan.jobs.length ?? 0}`);
 console.log('POLICY_VALIDATION: pass');
 console.log('INVALID_CASES: rejected');
-console.log('CURRENT_DAILY_ACQUISITION_WIRING: pass');
+console.log('RETIRED_DAILY_WORKFLOW_ABSENT: pass');
+console.log('CURRENT_ACTIONS_MULTI_JOB_WIRING: pass');
+console.log('CURRENT_UNIFIED_REFRESH_SCHEDULER_WIRING: pass');
 console.log('CRON_CLOCK_TIME_FIXED_BY_VALIDATOR: false');

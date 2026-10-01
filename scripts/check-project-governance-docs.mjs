@@ -6,6 +6,9 @@ const requiredFiles = [
   'START-HERE.md',
   'docs/project-roadmap.md',
   'docs/project-roadmap-2026-09-08-addendum.md',
+  'docs/project-roadmap-2026-09-09-addendum.md',
+  'docs/specs/country-racecourse-integrated-publication-2026-09-09.md',
+  'docs/runbooks/country-racecourse-publication-package.md',
   'docs/governance/document-authority.md',
   'docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md',
   'docs/specs/calendar-row-rank-live-localization-2026-09-08.md',
@@ -50,16 +53,17 @@ requirePhrases('AGENTS.md', [
   'docs/calendar/calendar-presentation-state-001-display-correction-schedule.md',
 ]);
 requirePhrases('START-HERE.md', [
-  'docs/project-roadmap-2026-09-08-addendum.md',
+  'docs/project-roadmap-2026-09-09-addendum.md',
+  'docs/specs/country-racecourse-integrated-publication-2026-09-09.md',
+  'docs/runbooks/country-racecourse-publication-package.md',
   'docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md',
   'docs/specs/calendar-row-rank-live-localization-2026-09-08.md',
-  'WHR-CAL-PRESENTATION-STATE-001',
-  'WHR-CAL-PRESENTATION-CONTEXT-001',
   'Upcoming / racing today',
   'Scheduled / 開催予定 as a current-day fallback',
 ]);
 requirePhrases('docs/governance/document-authority.md', [
-  'docs/project-roadmap-2026-09-08-addendum.md',
+  'docs/project-roadmap-2026-09-09-addendum.md',
+  'docs/specs/country-racecourse-integrated-publication-2026-09-09.md',
   'docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md',
   'Visible UI/interaction work requires actual browser output',
 ]);
@@ -97,7 +101,7 @@ requirePhrases('docs/calendar/calendar-presentation-state-001-display-correction
   'Today range contract',
   'Tomorrow and seven-day contract',
   'Calendar date-focus contract',
-  'Today Map legend excludes Scheduled',
+  'No Scheduled legend item.',
   'Completion gate for WHR-CAL-PRESENTATION-CONTEXT-001',
 ]);
 
@@ -160,7 +164,7 @@ if (errors.length) {
 console.log('PROJECT_GOVERNANCE_DOCS: pass');
 console.log(`CURRENT_REQUIRED_FILES: ${requiredFiles.length}`);
 console.log(`ACQUISITION_PROFILES: ${registry.records.length}`);
-console.log('ACTIVE_PROJECT_ADDENDUM: docs/project-roadmap-2026-09-08-addendum.md');
+console.log('ACTIVE_PROJECT_ADDENDUM: docs/project-roadmap-2026-09-09-addendum.md');
 console.log('ACTIVE_CALENDAR_PRESENTATION_SPEC: docs/specs/calendar-meeting-state-stream-and-view-2026-09-08.md');
 console.log('ACTIVE_CALENDAR_DISPLAY_CONTEXT_SPEC: docs/specs/calendar-row-rank-live-localization-2026-09-08.md');
 console.log('ACTIVE_CALENDAR_PRESENTATION_WORK: WHR-CAL-PRESENTATION-CONTEXT-001');

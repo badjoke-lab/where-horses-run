@@ -239,7 +239,8 @@ Calendar machine-readable contracts:
 - `scripts/check-jra-final-normalized-handoff.mjs`
 - `scripts/check-local-racing-pilot-foundation.mjs`
 - `scripts/check-authority-source-inventory-schema.mjs`
-- `.github/workflows/calendar-daily-acquisition.yml`
+- `.github/workflows/calendar-actions-multi-job.yml`
+- `.github/workflows/calendar-unified-official-refresh.yml`
 
 The Acquisition Control Plane machine-readable Registry, Job, Plan, Result Manifest, Review Queue, and Rank-aware Retry Queue schemas are implemented canonical artifacts. `docs/calendar/acquisition-control-plane-contract.md`, its implementation plan, the active Calendar roadmap/addendum, and the active daily-acquisition contract govern orchestration, scheduling, runner, review, and publication boundaries.
 
