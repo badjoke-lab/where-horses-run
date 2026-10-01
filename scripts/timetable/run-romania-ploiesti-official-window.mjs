@@ -18,17 +18,21 @@ const end=plusDays(start,days),generatedAt=new Date().toISOString(),sourceErrors
 let articleLinks=[],rows=[];
 try{
   const category=await getHtml(ROMANIA_CATEGORY_URL);
-  articleLinks=extractPloiestiArticleLinks(category.html).slice(0,16);
+  articleLinks=extractPloiestiArticleLinks(category.html).slice(0,8);
   if(!articleLinks.length) parseFailures.push({stage:'category_links',source_url:category.url||ROMANIA_CATEGORY_URL,error:'No current CSM Ploiesti horse-racing article links found'});
 }catch(e){sourceErrors.push({stage:'category',source_url:ROMANIA_CATEGORY_URL,error:String(e?.message??e)});}
 
-for(const url of articleLinks){
+const articleResults=await Promise.all(articleLinks.map(async(url)=>{
   try{
-    const page=await getHtml(url);
-    try{
-      rows.push(...parsePloiestiArticleHtml(page.html,{sourceUrl:page.url||url}));
-    }catch(e){parseFailures.push({stage:'article_parse',source_url:url,error:String(e?.message??e)});}
-  }catch(e){sourceWarnings.push({code:'article_fetch_failed',source_url:url,error:String(e?.message??e)});}
+    const page=await getHtml(url,{timeoutMs:12000});
+    try{return {rows:parsePloiestiArticleHtml(page.html,{sourceUrl:page.url||url}),warning:null,failure:null};}
+    catch(e){return {rows:[],warning:null,failure:{stage:'article_parse',source_url:url,error:String(e?.message??e)}};}
+  }catch(e){return {rows:[],warning:{code:'article_fetch_failed',source_url:url,error:String(e?.message??e)},failure:null};}
+}));
+for(const result of articleResults){
+  rows.push(...result.rows);
+  if(result.warning) sourceWarnings.push(result.warning);
+  if(result.failure) parseFailures.push(result.failure);
 }
 rows=[...new Map(rows.map(r=>[r.date,r])).values()].sort((a,b)=>a.date.localeCompare(b.date));
 const windowRows=rows.filter(r=>r.date>=start&&r.date<end);
