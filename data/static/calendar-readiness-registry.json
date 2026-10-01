@@ -2967,7 +2967,11 @@
       "system_id": "switzerland-galop-suisse-system",
       "system_name_en": "Galop Suisse calendar",
       "authority_source_key": "switzerland/galop-suisse/galop-suisse-calendar",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "switzerland--rossriet-maienfeld",
+        "switzerland--zurich-dielsdorf",
+        "switzerland--iena-avenches"
+      ],
       "coverage_scope": "authority_wide",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -2984,25 +2988,28 @@
       },
       "source_format": "html",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "seasonal",
-        "manual"
+        "weekly",
+        "near_meeting"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
+      "checked_date": "2026-10-01",
+      "evidence_reviewed_at": "2026-10-01",
       "revalidation_trigger": "Revalidate when Galop Suisse changes its calendar route.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/48-switzerland/final-summary.json",
       "limitations": [
         "Gallop remains separate from trot.",
-        "Race times are not established."
+        "Automatic publication is meeting date plus physical venue at C.",
+        "Galop Suisse current meetings are complemented by the official IENA current gallop event surface for Avenches.",
+        "A future source-visible venue not yet mapped must not be published until physical identity/location review is complete.",
+        "Source-visible absence is not non-running evidence."
       ],
-      "notes": "Manual C-level decision for the Swiss gallop calendar."
+      "notes": "Automatic Galop Suisse plus IENA route covers the current official source-visible horizon at rank C."
     },
     {
       "readiness_id": "switzerland--switzerland-suisse-trot-system--suisse-trot-calendar",
@@ -3011,7 +3018,11 @@
       "system_id": "switzerland-suisse-trot-system",
       "system_name_en": "Suisse Trot calendar",
       "authority_source_key": "switzerland/suisse-trot/suisse-trot-calendar",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "switzerland--rossriet-maienfeld",
+        "switzerland--iena-avenches",
+        "switzerland--zurich-dielsdorf"
+      ],
       "coverage_scope": "authority_wide",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -3028,25 +3039,28 @@
       },
       "source_format": "html",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "seasonal",
-        "manual"
+        "weekly",
+        "near_meeting"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
+      "checked_date": "2026-10-01",
+      "evidence_reviewed_at": "2026-10-01",
       "revalidation_trigger": "Revalidate when Suisse Trot changes its calendar route.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/48-switzerland/final-summary.json",
       "limitations": [
         "Trot remains separate from gallop.",
-        "Race times are not established."
+        "Automatic publication is meeting date plus physical venue at C.",
+        "Event start context is not promoted to race post time.",
+        "A future source-visible venue not yet mapped must not be published until physical identity/location review is complete.",
+        "Source-visible absence is not non-running evidence."
       ],
-      "notes": "Manual C-level decision for the Swiss trot calendar."
+      "notes": "Automatic Suisse Trot route covers the current official source-visible horizon at rank C."
     },
     {
       "readiness_id": "poland--poland-pkwk-national-plan-system--pkwk-2026-plan",
