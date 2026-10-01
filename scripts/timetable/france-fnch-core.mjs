@@ -239,6 +239,9 @@ export function parseFnchProgrammeText(text) {
   const patterns = [
     /(\d{1,2})(?:\s*(?:e|er|re|ere|eme))?\s*course\s*[-:]*\s*de\s*part\s*:\s*(\d{1,2})\s*h\.?\s*(\d{2})/gi,
     /(?:^|\n)\s*(\d{1,2})\s*(?:\n+\s*|\s{2,})(\d{1,2})\s*h\s*(\d{2})\b/gi,
+    // Current FNCH PDFs can render compact single-line race-number/time headers,
+    // e.g. "1 11H00 Ø Prix de l'Adour" or "2 14H30 Ø Prix de Yonkers".
+    /(?:^|\n)\s*(\d{1,2})\s+(\d{1,2})\s*h\.?\s*(\d{2})\b/gi,
   ];
   const byNumber = new Map();
 
