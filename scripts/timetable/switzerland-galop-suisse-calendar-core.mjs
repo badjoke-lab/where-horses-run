@@ -24,7 +24,7 @@ export function parseGalopSuisseHomepage(html,{sourceUrl=GALOP_SUISSE_URL}={}){
   const text=visibleText(html);
   if(!/Galop Suisse/i.test(text)) throw new Error('Galop Suisse fingerprint missing');
   const rows=[];
-  const rx=/(\d{2})\.(\d{2})\.(20\d{2})\s*\|\s*[A-Za-zÀ-ÿ]+\s*\|\s*([A-Za-zÀ-ÿ' -]+)/g;
+  const rx=/(\d{2})\.(\d{2})\.(20\d{2})\s*\|\s*[A-Za-zÀ-ÿ]+\s*\|\s*(Maienfeld|Zürich-Dielsdorf|Zurich-Dielsdorf|Avenches)\b/g;
   for(const m of text.matchAll(rx)){
     const label=m[4].trim();
     const venue=VENUES[norm(label)];
