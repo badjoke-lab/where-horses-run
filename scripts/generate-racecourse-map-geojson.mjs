@@ -73,6 +73,8 @@ const calendarMapRegressionIds = [
   'dax-racecourse',
   'graignes-racecourse',
   'lyon-la-soie-racecourse',
+  'fontainebleau-racecourse',
+  'beaumont-de-lomagne-racecourse',
   // South Korea (4)
   'seoul-racecourse',
   'busan-gyeongnam-racecourse',

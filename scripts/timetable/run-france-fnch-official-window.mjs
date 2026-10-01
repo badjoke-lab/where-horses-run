@@ -43,7 +43,7 @@ async function getHtml(url){
   return {html:await response.text(),url:response.url||url};
 }
 function raceHeaderCount(text){
-  return [...String(text??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').matchAll(/\b\d{1,2}\s*(?:e|er|re|ere|eme)?\s*course\s*[–—-]\s*depart\s*:/gi)].length;
+  return [...String(text??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').matchAll(/\b\d{1,2}\s*(?:e|er|re|ere|eme)?\s*course\s*[–—-]\s*de\s*part\s*:/gi)].length;
 }
 function pdfJsLayoutLines(items){
   const rows=[];
