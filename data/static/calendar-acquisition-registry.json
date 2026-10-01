@@ -1236,6 +1236,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic official PKWK 2026 national-plan route for Warszawa-Służewiec, Wrocław-Partynice and Hipodrom Sopot. Publishes meeting date plus physical racecourse at rank C. Race post times are not inferred; source absence is not non-running evidence."
+    },
+    {
+      "system_id": "romania-ploiesti-system",
+      "country_id": "romania",
+      "authority_id": "csm-ploiesti",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "ploiesti-racing-notices",
+      "detail_source_id": "ploiesti-racing-notices",
+      "schedule_adapter_id": "romania-ploiesti-notices-v1",
+      "detail_adapter_id": "romania-ploiesti-notices-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic official CSM Ploiesti notice route. Publishes meeting date plus Hipodromul Ploiesti physical identity at rank C. Publication dates are never treated as meeting dates. Separate reviewed B-capability first-race-time evidence is retained."
     }
   ]
 }
