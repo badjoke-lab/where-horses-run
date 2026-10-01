@@ -39,12 +39,13 @@ for(let i=1;i<=pdf.numPages;i++){
   const page=await pdf.getPage(i);
   const tc=await page.getTextContent();
   const items=tc.items.map(x=>({str:String(x.str??'').trim(),x:Number(x.transform?.[4]??0),y:Number(x.transform?.[5]??0),w:Number(x.width??0)}));
-  const monthByY=new Map();
+  const monthRows=new Map();
   for(const item of items){
     const month=MONTHS[item.str.toUpperCase()];
-    if(month) monthByY.set(Math.round(item.y*100)/100,month);
+    if(!month) continue;
+    const rowItems=items.filter(x=>/^\d{1,2}$/.test(x.str)&&Math.abs(x.y-item.y)<0.2);
+    monthRows.set(Number(month),rowItems);
   }
-  const dateItems=items.filter(x=>/^\d{1,2}$/.test(x.str));
   const opList=await page.getOperatorList();
   let fillColor=null;
   for(let n=0;n<opList.fnArray.length;n++){
@@ -57,18 +58,17 @@ for(let i=1;i<=pdf.numPages;i++){
     const meta=COLORS[fillColor.join(',')];
     if(!meta) continue;
     for(const rect of rectChunks(args)){
+      const month=Math.round((rect.y1-90.080002)/43.84)+1;
+      if(month<1||month>12) continue;
       const x1=rect.x1*0.75,x2=rect.x2*0.75;
-      const targetY=page.view[3]-(rect.y1*0.75);
-      const candidates=dateItems.filter(item=>{
+      const candidates=(monthRows.get(month)??[]).filter(item=>{
         const cx=item.x+(item.w/2);
-        return Math.abs(item.y-targetY)<1.1&&cx>=x1-0.5&&cx<=x2+0.5;
+        return cx>=x1-0.5&&cx<=x2+0.5;
       });
+      if(!candidates.length) diagnostics.push({code:'date_not_found',month,rect,fillColor,x1,x2});
       for(const item of candidates){
-        const yKey=[...monthByY.keys()].find(y=>Math.abs(y-item.y)<0.2);
-        const month=yKey===undefined?null:monthByY.get(yKey);
-        if(!month){diagnostics.push({code:'month_not_found',item,rect,fillColor});continue;}
         fixtures.push({
-          date:'2026-'+month+'-'+String(Number(item.str)).padStart(2,'0'),
+          date:'2026-'+String(month).padStart(2,'0')+'-'+String(Number(item.str)).padStart(2,'0'),
           club:meta.club,
           racecourse_id:meta.racecourse_id,
           color:fillColor
