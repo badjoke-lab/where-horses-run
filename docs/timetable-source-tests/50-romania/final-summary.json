@@ -1,1 +1,24 @@
-{"country":"Romania","status":"Partial","checked_date":"2026-06-20","technical_rank":"B for Ploiesti; wider coverage incomplete","public_ceiling":"C","systems":["Ploiesti Hippodrome meetings"],"official_sources":["https://www.csmploiesti.ro/hipodrom/","https://www.csmploiesti.ro/category/curse-hipodrom/"],"confirmed_fields":{"meeting_date":true,"racecourse":true,"first_race_time":true,"per_race_post_times":false},"decision":"Official Ploiesti routes confirm 2026 meeting dates and start times. Wider Romania coverage is incomplete, so the country ceiling is C."}
+{
+  "country": "Romania",
+  "status": "Production routed for Ploiesti official notices; reviewed B-level timing path retained",
+  "checked_date": "2026-10-01",
+  "technical_rank": "B reviewed capability at Ploiesti; automatic production route C",
+  "public_ceiling": "C",
+  "systems": [
+    "Ploiesti automatic official notice route",
+    "Ploiesti reviewed start-time evidence"
+  ],
+  "official_sources": [
+    "https://www.csmploiesti.ro/category/curse-hipodrom/",
+    "https://www.csmploiesti.ro/hipodrom/",
+    "https://www.csmploiesti.ro/2026/09/20/hipodromul-ploiesti-revansa-pentru-iapa-daiana-in-criteriul-jockey-club-roman/"
+  ],
+  "confirmed_fields": {
+    "meeting_date": true,
+    "racecourse": true,
+    "first_race_time": true,
+    "per_race_post_times": false
+  },
+  "decision": "The automatic production route scans recent official CSM Ploiesti horse-racing notices for explicit upcoming-meeting statements and publishes meeting date plus Hipodromul Ploiesti at rank C. Article publication dates are never promoted to meeting dates. Separate reviewed notices retain B-level first-race-time capability. Wider Romanian coverage remains incomplete.",
+  "production_route": "scripts/timetable/run-romania-ploiesti-official-window.mjs"
+}
