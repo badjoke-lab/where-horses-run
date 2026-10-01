@@ -1,1 +1,100 @@
-[{"schema_version":"2.0.0","country_id":"netherlands","slug":"netherlands","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-20","public_display_ceiling":"C","source_test_status":"complete","hero":{"summary_en":"NDR confirms reviewed meeting dates and racecourses.","summary_ja":"NDRで開催日と競馬場を確認済み。"},"overview":{"paragraphs_en":["Draf and rensport remain in the reviewed NDR context."],"paragraphs_ja":["ドラフとレンスポーツをNDRの確認済み文脈として扱う。"]},"racing_types":[{"id":"harness-racing","name_en":"Draf racing","name_ja":"ドラフ競走","summary_en":"Included in the NDR context.","summary_ja":"NDR文脈に含まれる。"},{"id":"thoroughbred-flat","name_en":"Rensport","name_ja":"レンスポーツ","summary_en":"Included in the NDR context.","summary_ja":"NDR文脈に含まれる。"}],"seasonality":{"pattern":"official-source-required","summary_en":"Check the current NDR calendar.","summary_ja":"現行NDRカレンダーを確認する。"},"schedule":{"timezone":"Europe/Amsterdam","utc_offset_label":"Verify current local offset","day_patterns":["official-source-required"],"time_patterns":["meeting-date-only"],"summary_en":"Dates and venues are confirmed; race times are not.","summary_ja":"開催日と会場は確認済みだが、レース時刻は未確認。"},"surfaces":{"ids":[],"summary_en":"Not normalized.","summary_ja":"共通化しない。"},"systems":[{"id":"netherlands-ndr-system","name_en":"NDR calendar","name_ja":"NDRカレンダー","summary_en":"Reviewed Dutch calendar context.","summary_ja":"確認済みオランダ開催文脈。","organiser_source_ids":["netherlands-ndr-home"],"distributor_source_ids":["netherlands-ndr-calendar-2026"]}],"principal_racecourse_ids":[],"calendar_guidance_en":"Use the NDR calendar and keep output at meeting level.","calendar_guidance_ja":"NDRカレンダーを使用し、表示は開催単位に保つ。","coverage_note_en":"A stable race-time route is not established.","coverage_note_ja":"安定したレース時刻導線は未確認。","revalidation":{"triggers_en":["The NDR calendar changes"],"triggers_ja":["NDRカレンダー変更時"]},"related_glossary_ids":["racecourse","meeting","fixture","post-time"]}]
+[
+  {
+    "schema_version": "2.0.0",
+    "country_id": "netherlands",
+    "slug": "netherlands",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-10-01",
+    "public_display_ceiling": "C",
+    "source_test_status": "complete",
+    "hero": {
+      "summary_en": "Current Dutch meeting dates are automatically routed from the official NDR upcoming list at rank C; the reviewed annual 2026 calendar remains a countrywide manual fallback.",
+      "summary_ja": "オランダの現行開催日はNDR公式upcoming一覧からCで自動取得し、レビュー済み2026年年次カレンダーはcountrywide manual fallbackとして維持します。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "Production automation uses the NDR current-upcoming page because it reflects the source-visible near-term schedule. Permanent tracks and temporary kortebaan street venues are represented as separate physical venue identities. The annual NDR 2026 calendar remains a reviewed fallback and race post times are not inferred."
+      ],
+      "paragraphs_ja": [
+        "production自動取得はsource-visibleな直近日程を反映するNDR current-upcomingページを使用します。常設競馬場と季節限定kortebaan街路会場は別の物理会場identityとして扱います。NDR 2026年次カレンダーはレビュー済みfallbackとして維持し、レース発走時刻は推測しません。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "harness-racing",
+        "name_en": "Draf racing",
+        "name_ja": "ドラフ競走",
+        "summary_en": "Included in the NDR context.",
+        "summary_ja": "NDR文脈に含まれる。"
+      },
+      {
+        "id": "thoroughbred-flat",
+        "name_en": "Rensport",
+        "name_ja": "レンスポーツ",
+        "summary_en": "Included in the NDR context.",
+        "summary_ja": "NDR文脈に含まれる。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "official-source-required",
+      "summary_en": "Check the current NDR calendar.",
+      "summary_ja": "現行NDRカレンダーを確認する。"
+    },
+    "schedule": {
+      "timezone": "Europe/Amsterdam",
+      "utc_offset_label": "Verify current local offset",
+      "day_patterns": [
+        "official-source-required"
+      ],
+      "time_patterns": [
+        "meeting-date-only"
+      ],
+      "summary_en": "Dates and venues are confirmed; race times are not.",
+      "summary_ja": "開催日と会場は確認済みだが、レース時刻は未確認。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Not normalized.",
+      "summary_ja": "共通化しない。"
+    },
+    "systems": [
+      {
+        "id": "netherlands-ndr-racing-calendar-system",
+        "name_en": "NDR calendar",
+        "name_ja": "NDRカレンダー",
+        "summary_en": "Automatic official NDR current-upcoming meeting-date route at rank C; annual calendar retained as fallback.",
+        "summary_ja": "NDR公式current-upcoming開催日をCで自動取得し、年次カレンダーをfallbackとして維持します。",
+        "organiser_source_ids": [
+          "netherlands-ndr-home"
+        ],
+        "distributor_source_ids": [
+          "netherlands-ndr-current-upcoming",
+          "netherlands-ndr-calendar-2026"
+        ]
+      }
+    ],
+    "principal_racecourse_ids": [
+      "netherlands--victoria-park-wolvega",
+      "netherlands--drafcentrum-alkmaar"
+    ],
+    "calendar_guidance_en": "Use the NDR current-upcoming list as the production primary. Keep the annual calendar as a reviewed fallback. Represent temporary kortebaan street courses separately from permanent racecourses, fail closed on unknown venue labels, and do not infer post times.",
+    "calendar_guidance_ja": "production primaryにはNDR current-upcoming一覧を使用し、年次カレンダーはレビュー済みfallbackとして保持します。季節限定kortebaan街路会場は常設競馬場と分離し、未知venue labelは推測せずfail closed、発走時刻も推測しません。",
+    "coverage_note_en": "Automatic production coverage is C over the current NDR source-visible horizon. The reviewed annual 2026 calendar remains the broader countrywide fallback; richer reusable race-time coverage is not claimed.",
+    "coverage_note_ja": "production自動取得はNDRの現行source-visible horizonをCで対象とします。レビュー済み2026年次カレンダーはより広いcountrywide fallbackとして維持し、再利用可能な高詳細発走時刻網羅は主張しません。",
+    "revalidation": {
+      "triggers_en": [
+        "The NDR calendar changes"
+      ],
+      "triggers_ja": [
+        "NDRカレンダー変更時"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture",
+      "post-time"
+    ]
+  }
+]
