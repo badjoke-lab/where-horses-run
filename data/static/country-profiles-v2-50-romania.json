@@ -1,1 +1,91 @@
-[{"schema_version":"2.0.0","country_id":"romania","slug":"romania","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-20","public_display_ceiling":"C","source_test_status":"partial","hero":{"summary_en":"Ploiesti confirms meeting dates and start times.","summary_ja":"Ploiesti\u3067\u958b\u50ac\u65e5\u3068\u958b\u59cb\u6642\u523b\u3092\u78ba\u8a8d\u6e08\u307f\u3002"},"overview":{"paragraphs_en":["The reviewed scope is limited to Ploiesti."],"paragraphs_ja":["\u78ba\u8a8d\u6e08\u307f\u7bc4\u56f2\u306fPloiesti\u306b\u9650\u5b9a\u3055\u308c\u308b\u3002"]},"racing_types":[{"id":"harness-racing","name_en":"Harness racing","name_ja":"\u30cf\u30fc\u30cd\u30b9\u7af6\u8d70","summary_en":"Reviewed at Ploiesti.","summary_ja":"Ploiesti\u3067\u78ba\u8a8d\u6e08\u307f\u3002"}],"seasonality":{"pattern":"official-source-required","summary_en":"Check current official notices.","summary_ja":"\u73fe\u884c\u516c\u5f0f\u544a\u77e5\u3092\u78ba\u8a8d\u3059\u308b\u3002"},"schedule":{"timezone":"Europe/Bucharest","utc_offset_label":"Verify current local offset","day_patterns":["official-source-required"],"time_patterns":["meeting-date-only"],"summary_en":"Ploiesti has dates and start times; country output stays at meeting level.","summary_ja":"Ploiesti\u3067\u306f\u65e5\u4ed8\u3068\u958b\u59cb\u6642\u523b\u3092\u78ba\u8a8d\u3067\u304d\u308b\u304c\u3001\u56fd\u30da\u30fc\u30b8\u8868\u793a\u306f\u958b\u50ac\u5358\u4f4d\u306b\u4fdd\u3064\u3002"},"surfaces":{"ids":[],"summary_en":"Not normalized.","summary_ja":"\u5171\u901a\u5316\u3057\u306a\u3044\u3002"},"systems":[{"id":"romania-ploiesti-system","name_en":"Ploiesti meetings","name_ja":"Ploiesti\u958b\u50ac","summary_en":"Reviewed venue context.","summary_ja":"\u78ba\u8a8d\u6e08\u307f\u4f1a\u5834\u6587\u8108\u3002","organiser_source_ids":["romania-ploiesti-hippodrome"],"distributor_source_ids":["romania-ploiesti-races"]}],"principal_racecourse_ids":[],"calendar_guidance_en":"Use the Ploiesti routes only for the reviewed scope.","calendar_guidance_ja":"Ploiesti\u5c0e\u7dda\u306f\u78ba\u8a8d\u6e08\u307f\u7bc4\u56f2\u306b\u9650\u3063\u3066\u4f7f\u7528\u3059\u308b\u3002","coverage_note_en":"Wider coverage is incomplete.","coverage_note_ja":"\u3088\u308a\u5e83\u3044\u7db2\u7f85\u6027\u306f\u4e0d\u5b8c\u5168\u3002","revalidation":{"triggers_en":["Official routes change"],"triggers_ja":["\u516c\u5f0f\u5c0e\u7dda\u5909\u66f4\u6642"]},"related_glossary_ids":["racecourse","meeting","fixture","post-time"]}]
+[
+  {
+    "schema_version": "2.0.0",
+    "country_id": "romania",
+    "slug": "romania",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-10-01",
+    "public_display_ceiling": "C",
+    "source_test_status": "partial",
+    "hero": {
+      "summary_en": "Hipodromul Ploiești meeting dates are automatically routed from official CSM Ploiești horse-racing notices at rank C; reviewed start-time evidence remains a separate richer B-capability path.",
+      "summary_ja": "Hipodromul Ploieștiの開催日はCSM Ploiești公式競馬告知からCで自動取得し、レビュー済み開始時刻証拠は別のより豊富なB相当導線として維持します。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "Production automation covers the single-racecourse Hipodromul Ploiești system. It scans recent official horse-racing notices for explicit upcoming-meeting statements and never treats article publication dates as meeting dates. Wider Romanian racing coverage remains incomplete."
+      ],
+      "paragraphs_ja": [
+        "production自動取得は単一競馬場Hipodromul Ploiești体系を対象にします。直近の公式競馬告知から明示的な次回開催記述だけを抽出し、記事公開日を開催日として扱いません。ルーマニア全体の網羅性は未完成です。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "harness-racing",
+        "name_en": "Harness racing",
+        "name_ja": "ハーネス競走",
+        "summary_en": "Reviewed at Ploiesti.",
+        "summary_ja": "Ploiestiで確認済み。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "official-source-required",
+      "summary_en": "Check current official notices.",
+      "summary_ja": "現行公式告知を確認する。"
+    },
+    "schedule": {
+      "timezone": "Europe/Bucharest",
+      "utc_offset_label": "Verify current local offset",
+      "day_patterns": [
+        "official-source-required"
+      ],
+      "time_patterns": [
+        "meeting-date-only"
+      ],
+      "summary_en": "Ploiesti has dates and start times; country output stays at meeting level.",
+      "summary_ja": "Ploiestiでは日付と開始時刻を確認できるが、国ページ表示は開催単位に保つ。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Not normalized.",
+      "summary_ja": "共通化しない。"
+    },
+    "systems": [
+      {
+        "id": "romania-ploiesti-system",
+        "name_en": "Ploiesti meetings",
+        "name_ja": "Ploiesti開催",
+        "summary_en": "Automatic official notice-based meeting-date route at rank C, with reviewed start-time evidence retained separately.",
+        "summary_ja": "公式告知ベースの開催日をCで自動取得し、レビュー済み開始時刻証拠は別途維持します。",
+        "organiser_source_ids": [
+          "romania-ploiesti-hippodrome"
+        ],
+        "distributor_source_ids": [
+          "romania-ploiesti-races"
+        ]
+      }
+    ],
+    "principal_racecourse_ids": [
+      "romania--hipodromul-ploiesti"
+    ],
+    "calendar_guidance_en": "Use the automatic CSM Ploiesti notice route for current meeting dates and physical venue identity. Keep reviewed first-race-time evidence separate; never infer a meeting date from article publication metadata.",
+    "calendar_guidance_ja": "現行開催日と物理会場identityにはCSM Ploiesti公式告知自動導線を使用します。レビュー済み第1競走開始時刻証拠は別に保持し、記事公開メタデータから開催日を推測しません。",
+    "coverage_note_en": "Automatic production coverage is C for Hipodromul Ploiesti only. Separate reviewed notices retain B-capability start-time evidence; wider Romanian coverage remains incomplete.",
+    "coverage_note_ja": "production自動取得はHipodromul Ploiesti単一会場のCです。別のレビュー済み告知はB相当の開始時刻証拠を保持しますが、ルーマニア全体の網羅性は未完成です。",
+    "revalidation": {
+      "triggers_en": [
+        "Official routes change"
+      ],
+      "triggers_ja": [
+        "公式導線変更時"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture",
+      "post-time"
+    ]
+  }
+]
