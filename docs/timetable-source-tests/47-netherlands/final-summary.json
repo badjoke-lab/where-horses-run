@@ -1,1 +1,24 @@
-{"country":"Netherlands","status":"Complete at reviewed national calendar level","checked_date":"2026-06-20","technical_rank":"C","public_ceiling":"C","systems":["NDR draf and rensport calendar"],"official_sources":["https://ndr.nl/","https://ndr.nl/koerskalender-2026/","https://ndr.nl/selectieproeven/"],"confirmed_fields":{"meeting_date":true,"racecourse":true,"first_race_time":false,"per_race_post_times":false},"decision":"The NDR 2026 calendar confirms reviewed Dutch meeting dates and racecourses across its draf and rensport context. One stable reusable national race-time route was not established, so the public ceiling is C."}
+{
+  "country": "Netherlands",
+  "status": "Production routed for NDR current upcoming; reviewed annual calendar fallback retained",
+  "checked_date": "2026-10-01",
+  "technical_rank": "C",
+  "public_ceiling": "C",
+  "systems": [
+    "NDR current-upcoming automatic route",
+    "NDR 2026 reviewed annual calendar fallback"
+  ],
+  "official_sources": [
+    "https://ndr.nl/",
+    "https://ndr.nl/selectieproeven/",
+    "https://ndr.nl/koerskalender-2026/"
+  ],
+  "confirmed_fields": {
+    "meeting_date": true,
+    "racecourse": true,
+    "first_race_time": false,
+    "per_race_post_times": false
+  },
+  "decision": "The automatic production route publishes official source-visible NDR meeting dates plus reviewed physical venue identities at rank C. Permanent venues and temporary kortebaan street courses remain distinct. Unknown venue labels fail closed. The annual 2026 NDR calendar remains a reviewed countrywide fallback and race post times are not inferred.",
+  "production_route": "scripts/timetable/run-netherlands-ndr-official-window.mjs"
+}
