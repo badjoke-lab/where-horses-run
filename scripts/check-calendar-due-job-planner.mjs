@@ -115,11 +115,12 @@ for (const marker of [
   'schedule:',
   'workflow_dispatch:',
   'Refresh Japan official mother set and best available detail',
-  'Persist deterministic canonical and public',
+  'Persist Japan official state before non-Japan collection',
+  'Persist remaining canonical and public rolling state',
 ]) {
   if (!unifiedWorkflow.includes(marker)) fail(`Current unified official refresh workflow missing ${marker}.`);
 }
-if (!/^\s*-\s*cron:\s*['"][^'"\n]+['"]\s*$/m.test(unifiedWorkflow)) fail('Current unified official refresh must define a cron schedule.');
+if (!/^\s*-\s*cron:\s*['"][^'"\n]+['"](?:\s*#.*)?\s*$/m.test(unifiedWorkflow)) fail('Current unified official refresh must define a cron schedule.');
 
 if (errors.length) {
   console.error(`CALENDAR_DUE_JOB_PLANNER: failed (${errors.length})`);
