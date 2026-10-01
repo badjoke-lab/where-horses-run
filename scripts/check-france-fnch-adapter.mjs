@@ -98,6 +98,21 @@ assert.deepEqual(parseFnchProgrammeText(galopProgramme),[
   {label:'Race 3',post_time_local:'17:42'},
 ]);
 
+const compactFnchProgramme=`DAX
+vendredi 2 octobre 2026
+1 11H00 Ø Prix de l'Adour
+2 11H30 Ø Prix de la Chambre d'Amour
+3 12H02 Ø Prix Château de Poyanne
+4 12H34 Ø Prix J.P. Loiseaux
+5 13H08 Ø Grand Prix de la Ville de Dax`;
+assert.deepEqual(parseFnchProgrammeText(compactFnchProgramme),[
+  {label:'Race 1',post_time_local:'11:00'},
+  {label:'Race 2',post_time_local:'11:30'},
+  {label:'Race 3',post_time_local:'12:02'},
+  {label:'Race 4',post_time_local:'12:34'},
+  {label:'Race 5',post_time_local:'13:08'},
+],'FNCH compact single-line race-number/time headers must parse exactly');
+
 const noisyProgramme=`HEADER 20 16 h 45
 1
 14H40 Prix A
