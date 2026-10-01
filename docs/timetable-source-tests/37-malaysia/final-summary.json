@@ -1,1 +1,23 @@
-{"country":"Malaysia","status":"Complete at calendar level","checked_date":"2026-06-20","technical_rank":"C","public_ceiling":"C","systems":["Malayan Racing Association fixtures"],"official_sources":["https://malayanracing.com/","https://malayanracing.com/MRA-Racing-Fixture"],"confirmed_fields":{"meeting_date":true,"racecourse":true,"first_race_time":false,"per_race_post_times":false},"decision":"The reviewed MRA fixture route confirms 2026 meeting dates and Malaysian racecourses. A stable reusable race-time route was not established, so the public ceiling is C."}
+{
+  "country": "Malaysia",
+  "status": "Production routed at national MRA fixture level",
+  "checked_date": "2026-10-01",
+  "technical_rank": "C",
+  "public_ceiling": "C",
+  "systems": [
+    "Malayan Racing Association national fixtures"
+  ],
+  "official_sources": [
+    "https://malayanracing.com/",
+    "https://malayanracing.com/MRA-Racing-Fixture",
+    "https://malayanracing.com/pdf/MRA-Racing-Fixture-2026.pdf"
+  ],
+  "confirmed_fields": {
+    "meeting_date": true,
+    "racecourse": true,
+    "first_race_time": false,
+    "per_race_post_times": false
+  },
+  "decision": "The official MRA 2026 national fixture is automatically decoded for current associated clubs Selangor Turf Club and Perak Turf Club. The parser validates the published totals exactly: Selangor 61 + Perak 29 = 90 meetings. Public output is rank C and race post times are not inferred.",
+  "production_route": "scripts/timetable/run-malaysia-mra-official-window.mjs"
+}
