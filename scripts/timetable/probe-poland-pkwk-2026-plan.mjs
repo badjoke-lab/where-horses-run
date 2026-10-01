@@ -1,15 +1,16 @@
 import {getDocument} from 'pdfjs-dist/legacy/build/pdf.mjs';
 
-const URL='https://pkwk.org/wp-content/uploads/2026/01/Warszawa-plan-gonitw-2026.pdf';
-
+const SOURCES=[
+  {id:'warszawa',venue:'Warszawa-Służewiec',url:'https://pkwk.org/wp-content/uploads/2026/01/Warszawa-plan-gonitw-2026.pdf',fingerprints:['Warszawa','Służewiec']},
+  {id:'wroclaw',venue:'Wrocław-Partynice',url:'https://pkwk.org/wp-content/uploads/2026/05/Zatwierdzone-zmiany-do-Roczny-Plan-Gonitw-Wroclaw-2026-pule-nagrod_warunki-gonitw-13052026.pdf',fingerprints:['Wrocław','Partynice']},
+  {id:'sopot',venue:'Hipodrom Sopot',url:'https://pkwk.org/wp-content/uploads/2026/06/Zatwierdzony-Plan-Gonitw-Hipodrom-Sopot-2026.pdf',fingerprints:['Sopot']}
+];
 async function fetchPdf(url){
-  const r=await fetch(url,{redirect:'follow',headers:{
-    'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)',
-    'accept':'application/pdf,*/*;q=0.8'
-  },signal:AbortSignal.timeout(30000)});
+  const r=await fetch(url,{redirect:'follow',headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)','accept':'application/pdf,*/*;q=0.8'},signal:AbortSignal.timeout(30000)});
   if(!r.ok) throw new Error('HTTP '+r.status+' '+(r.url||url));
   const bytes=new Uint8Array(await r.arrayBuffer());
-  return {bytes,url:r.url||url,status:r.status,contentType:r.headers.get('content-type')};
+  const byteLength=bytes.length;
+  return {bytes,byteLength,url:r.url||url,status:r.status,contentType:r.headers.get('content-type')};
 }
 async function extract(bytes){
   const pdf=await getDocument({data:bytes,disableWorker:true}).promise;
@@ -22,27 +23,36 @@ async function extract(bytes){
   }
   return pages;
 }
-const file=await fetchPdf(URL);
-const pages=await extract(file.bytes);
-const text=pages.map(p=>p.text).join(' ');
-const dmy=[...text.matchAll(/\b(\d{1,2})[.\-/](\d{1,2})[.\-/](20\d{2})\b/g)].map(m=>m[0]);
-const dotShort=[...text.matchAll(/\b(\d{1,2})[.](\d{1,2})[.](?:26|2026)\b/g)].map(m=>m[0]);
-const monthWords=[...text.matchAll(/\b(\d{1,2})\s+(stycznia|lutego|marca|kwietnia|maja|czerwca|lipca|sierpnia|września|wrzesnia|października|pazdziernika|listopada|grudnia)\s+(20\d{2})\b/gi)].map(m=>m[0]);
-const venues=['Warszawa','Służewiec','Sluzewiec','Wrocław','Wroclaw','Partynice','Sopot'];
-const venueHits=venues.filter(v=>text.toLowerCase().includes(v.toLowerCase()));
-const pageSummaries=pages.map(p=>({
-  page:p.page,
-  hasOctober:/paździer|pazdzier|10[.\-/]/i.test(p.text),
-  venueHits:venues.filter(v=>p.text.toLowerCase().includes(v.toLowerCase())),
-  excerpt:p.text.slice(0,1800)
-}));
-console.log(JSON.stringify({
-  status:file.status,url:file.url,content_type:file.contentType,bytes:file.bytes.length,pages:pages.length,
-  dmy_dates:[...new Set(dmy)].slice(0,160),
-  dot_short_dates:[...new Set(dotShort)].slice(0,160),
-  month_word_dates:[...new Set(monthWords)].slice(0,160),
-  venue_hits:venueHits,
-  page_summaries:pageSummaries
-},null,2));
-if(file.bytes.length<10000) process.exitCode=1;
-if(!venueHits.length) process.exitCode=1;
+function headingCandidates(pages){
+  const out=[];
+  for(const p of pages){
+    const t=p.text;
+    if(!/Dzie[nń]/i.test(t)) continue;
+    const matches=[...t.matchAll(/Dzie[nń]\s+\d+\s*[-–—]?\s*[^.]{0,120}?(?:kwietnia|maja|czerwca|lipca|sierpnia|wrze[sś]nia|pa[zźż]dziernika|listopada|grudnia)/gi)].map(m=>m[0]);
+    out.push({page:p.page,matches:matches.slice(0,8),excerpt:t.slice(0,1400)});
+  }
+  return out;
+}
+const results=[];
+let failed=false;
+for(const src of SOURCES){
+  try{
+    const file=await fetchPdf(src.url);
+    const pages=await extract(file.bytes);
+    const text=pages.map(p=>p.text).join(' ');
+    const venueHits=src.fingerprints.filter(v=>text.toLowerCase().includes(v.toLowerCase()));
+    const result={
+      id:src.id,venue:src.venue,status:file.status,url:file.url,content_type:file.contentType,bytes:file.byteLength,pages:pages.length,
+      venue_hits:venueHits,
+      headings:headingCandidates(pages),
+      october_pages:pages.filter(p=>/pa[zźż]dzier|10[.\-/]/i.test(p.text)).map(p=>({page:p.page,excerpt:p.text.slice(0,1800)}))
+    };
+    if(file.byteLength<10000||venueHits.length===0||pages.length===0) failed=true;
+    results.push(result);
+  }catch(error){
+    failed=true;
+    results.push({id:src.id,venue:src.venue,error:String(error?.message??error)});
+  }
+}
+console.log(JSON.stringify({sources:results},null,2));
+if(failed) process.exitCode=1;
