@@ -1,0 +1,25 @@
+name: Poland PKWK live probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-poland-pkwk-live-probe.yml'
+      - 'scripts/timetable/poland-pkwk-calendar-core.mjs'
+      - 'scripts/timetable/run-poland-pkwk-official-window.mjs'
+      - 'scripts/check-poland-pkwk-adapter.mjs'
+      - 'package.json'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - name: Validate live PKWK production adapter
+        run: npm run validate:poland-pkwk
