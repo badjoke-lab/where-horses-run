@@ -39,6 +39,16 @@ export function parseMtcFixturesHtml(html,{sourceUrl=MAURITIUS_FIXTURES_URL}={})
   return out;
 }
 
+export function parseMtcFixtureDetailHtml(html,{sourceUrl}={}){
+  if(typeof html!=='string'||!html.trim()) throw new Error('MTC fixture detail HTML must be non-empty');
+  const text=visibleText(html);
+  if(!/Fixtures/i.test(text)&&!/Race/i.test(text)) throw new Error('MTC fixture detail fingerprint missing');
+  const m=text.match(/(?:Saturday|Sunday)\s+(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(20\d{2})/i);
+  if(!m) throw new Error('MTC fixture detail date missing');
+  const date=parseDate(m[1],m[2],m[3]);
+  return {date,racecourse_id:MAURITIUS_RACECOURSE_ID,venue_name:'Champ de Mars',source_url:sourceUrl,evidence_kind:'fixture_detail'};
+}
+
 function evidence(url,checkedAt){return {source_id:MAURITIUS_SOURCE_ID,official_source_url:url,observed_at:checkedAt,successfully_verified_at:checkedAt,acquisition_method:'automatic'};}
 export function buildMauritiusMeetingRecord(row,{checkedAt}={}){
   const meetingId='mauritius-champ-de-mars-'+row.date;
