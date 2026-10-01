@@ -1,1 +1,93 @@
-[{"schema_version":"2.0.0","country_id":"poland","slug":"poland","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-20","public_display_ceiling":"C","source_test_status":"complete","hero":{"summary_en":"PKWK confirms the reviewed 2026 race plan and three venue contexts.","summary_ja":"PKWKの2026年競走計画と3会場の文脈を確認済み。"},"overview":{"paragraphs_en":["The reviewed plan covers Warszawa, Wrocław, and Sopot."],"paragraphs_ja":["確認済み計画はWarszawa、Wrocław、Sopotを対象とする。"]},"racing_types":[{"id":"thoroughbred-flat","name_en":"Flat racing","name_ja":"平地競走","summary_en":"Included in the reviewed PKWK plan.","summary_ja":"確認済みPKWK計画に含まれる。"}],"seasonality":{"pattern":"official-source-required","summary_en":"Check the current PKWK plan.","summary_ja":"現行PKWK計画を確認する。"},"schedule":{"timezone":"Europe/Warsaw","utc_offset_label":"Verify current local offset","day_patterns":["official-source-required"],"time_patterns":["meeting-date-only"],"summary_en":"Dates and racecourses are confirmed; race times are not.","summary_ja":"開催日と競馬場は確認済みだが、レース時刻は未確認。"},"surfaces":{"ids":[],"summary_en":"Not normalized.","summary_ja":"共通化しない。"},"systems":[{"id":"poland-pkwk-system","name_en":"PKWK race plan","name_ja":"PKWK競走計画","summary_en":"Reviewed Polish calendar context.","summary_ja":"確認済みポーランド開催文脈。","organiser_source_ids":["poland-pkwk-home"],"distributor_source_ids":["poland-pkwk-racing-2026"]}],"principal_racecourse_ids":[],"calendar_guidance_en":"Use the current PKWK plan and retain the three reviewed venue contexts.","calendar_guidance_ja":"現行PKWK計画を使用し、確認済み3会場の文脈を維持する。","coverage_note_en":"Reusable post times were not established.","coverage_note_ja":"再利用可能な発走時刻は未確認。","revalidation":{"triggers_en":["The PKWK plan changes"],"triggers_ja":["PKWK計画変更時"]},"related_glossary_ids":["racecourse","meeting","fixture","post-time"]}]
+[
+  {
+    "schema_version": "2.0.0",
+    "country_id": "poland",
+    "slug": "poland",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-10-01",
+    "public_display_ceiling": "C",
+    "source_test_status": "complete",
+    "hero": {
+      "summary_en": "PKWK's national 2026 plan is automatically routed for Warszawa-Służewiec, Wrocław-Partynice and Hipodrom Sopot at rank C.",
+      "summary_ja": "PKWKの2026年全国計画を、Warszawa-Służewiec・Wrocław-Partynice・Hipodrom Sopotの3会場についてCで自動取得します。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "Production automation combines official PKWK 2026 material across the three reviewed Polish racecourses. The national-plan route confirms meeting date and physical racecourse at rank C. Race post times are not inferred."
+      ],
+      "paragraphs_ja": [
+        "production自動取得では、確認済み3競馬場に対するPKWK公式2026資料を統合します。全国計画導線は開催日と物理競馬場をCで確認し、レース発走時刻は推測しません。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "thoroughbred-flat",
+        "name_en": "Flat racing",
+        "name_ja": "平地競走",
+        "summary_en": "Included in the reviewed PKWK plan.",
+        "summary_ja": "確認済みPKWK計画に含まれる。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "official-source-required",
+      "summary_en": "Check the current PKWK plan.",
+      "summary_ja": "現行PKWK計画を確認する。"
+    },
+    "schedule": {
+      "timezone": "Europe/Warsaw",
+      "utc_offset_label": "Verify current local offset",
+      "day_patterns": [
+        "official-source-required"
+      ],
+      "time_patterns": [
+        "meeting-date-only"
+      ],
+      "summary_en": "Dates and racecourses are confirmed; race times are not.",
+      "summary_ja": "開催日と競馬場は確認済みだが、レース時刻は未確認。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Not normalized.",
+      "summary_ja": "共通化しない。"
+    },
+    "systems": [
+      {
+        "id": "poland-pkwk-national-plan-system",
+        "name_en": "PKWK national race plan",
+        "name_ja": "PKWK全国競走計画",
+        "summary_en": "Automatic official nationwide meeting-date route for the reviewed 2026 Polish plan at rank C.",
+        "summary_ja": "確認済み2026年ポーランド全国計画をCで自動取得する公式導線です。",
+        "organiser_source_ids": [
+          "poland-pkwk-home"
+        ],
+        "distributor_source_ids": [
+          "poland-pkwk-racing-2026"
+        ]
+      }
+    ],
+    "principal_racecourse_ids": [
+      "poland--sluzewiec-warsaw",
+      "poland--wroclaw-partynice",
+      "poland--hipodrom-sopot"
+    ],
+    "calendar_guidance_en": "Use the automatic PKWK national-plan route for meeting dates and racecourse identity across Warszawa, Wrocław and Sopot. Do not infer post times from the mother plan.",
+    "calendar_guidance_ja": "Warszawa・Wrocław・Sopotの開催日と競馬場identityにはPKWK全国計画の自動導線を使用し、母計画から発走時刻を推測しません。",
+    "coverage_note_en": "Automatic production coverage is C for the reviewed PKWK national 2026 plan across all three official venue contexts.",
+    "coverage_note_ja": "production自動取得は、確認済みPKWK 2026全国計画の3公式会場すべてをCで対象とします。",
+    "revalidation": {
+      "triggers_en": [
+        "The PKWK plan changes"
+      ],
+      "triggers_ja": [
+        "PKWK計画変更時"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture",
+      "post-time"
+    ]
+  }
+]
