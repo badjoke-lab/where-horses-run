@@ -95,7 +95,7 @@ export function parseWroclawInfoHtml(html,{sourceUrl=PKWK_INFO_URL}={}){
 
 export function parseSopot2026Html(html,{sourceUrl=SOPOT_2026_URL}={}){
   const text=visibleText(html);
-  if(!/Sopot/i.test(text)||!/2026/.test(text)) throw new Error('Sopot 2026 fingerprint missing');
+  if(!/Sopo(?:t|cie|tu)/i.test(text)||!/2026/.test(text)) throw new Error('Sopot 2026 fingerprint missing');
   const dates=new Set();
   for(const m of text.matchAll(/(\d{1,2})\s*[–—-]\s*(\d{1,2})\s+lipca\s+2026/gi)){
     const start=Number(m[1]), end=Number(m[2]);
