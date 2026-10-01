@@ -3119,7 +3119,9 @@
       "system_id": "romania-ploiesti-system",
       "system_name_en": "Ploiești Hippodrome meetings",
       "authority_source_key": "romania/csm-ploiesti/ploiesti-racing-notices",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "romania--hipodromul-ploiesti"
+      ],
       "coverage_scope": "single_racecourse",
       "technical_rank": "B",
       "public_ceiling": "C",
@@ -3136,27 +3138,28 @@
       },
       "source_format": "html",
       "access_mode": "direct",
-      "automation_mode": "semi_automatic",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "seasonal",
         "weekly",
         "near_meeting"
       ],
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "fallback": "downgrade_to_C",
-      "source_status": "partial",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-10-01",
+      "evidence_reviewed_at": "2026-10-01",
       "revalidation_trigger": "Revalidate when Ploiești changes meeting notices or wider Romanian coverage is reviewed.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/50-romania/final-summary.json",
       "limitations": [
-        "The prototype scope is limited to Ploiești.",
-        "Per-race post times are not confirmed.",
-        "Wider country coverage remains incomplete."
+        "Automatic route covers Hipodromul Ploiesti only.",
+        "Automatic publication is rank C; reviewed first-race-time evidence remains a separate B-capability path.",
+        "Publication dates are never treated as meeting dates.",
+        "Wider Romanian racing coverage remains incomplete.",
+        "Source-visible absence is not non-running evidence."
       ],
-      "notes": "Bounded B-level prototype decision for Ploiești meeting starts."
+      "notes": "Automatic production publishes rank C meeting date + Hipodromul Ploiesti. Reviewed first-race-time evidence remains a separate richer B capability and is not downgraded."
     },
     {
       "readiness_id": "serbia--serbia-belgrade-hippodrome-system--belgrade-2026-season",
