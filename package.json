@@ -106,7 +106,8 @@
     "validate:switzerland-galop": "node --check scripts/timetable/switzerland-galop-suisse-calendar-core.mjs && node --check scripts/timetable/run-switzerland-galop-suisse-official-window.mjs && node scripts/check-switzerland-galop-suisse-adapter.mjs",
     "validate:netherlands-ndr": "node --check scripts/timetable/netherlands-ndr-calendar-core.mjs && node --check scripts/timetable/run-netherlands-ndr-official-window.mjs && node scripts/check-netherlands-ndr-adapter.mjs",
     "validate:poland-pkwk": "node --check scripts/timetable/poland-pkwk-calendar-core.mjs && node --check scripts/timetable/run-poland-pkwk-official-window.mjs && node scripts/check-poland-pkwk-adapter.mjs",
-    "validate:romania-ploiesti": "node --check scripts/timetable/romania-ploiesti-calendar-core.mjs && node --check scripts/timetable/run-romania-ploiesti-official-window.mjs && node scripts/check-romania-ploiesti-adapter.mjs"
+    "validate:romania-ploiesti": "node --check scripts/timetable/romania-ploiesti-calendar-core.mjs && node --check scripts/timetable/run-romania-ploiesti-official-window.mjs && node scripts/check-romania-ploiesti-adapter.mjs",
+    "validate:malaysia-mra": "node --check scripts/timetable/malaysia-mra-calendar-core.mjs && node --check scripts/timetable/run-malaysia-mra-official-window.mjs && node scripts/check-malaysia-mra-adapter.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0",
