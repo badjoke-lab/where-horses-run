@@ -1,0 +1,21 @@
+name: Belgium federation calendar live probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-belgium-federation-live-probe.yml'
+      - 'scripts/timetable/probe-belgium-federation-calendar.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Probe official Belgium federation calendar
+        run: node scripts/timetable/probe-belgium-federation-calendar.mjs
