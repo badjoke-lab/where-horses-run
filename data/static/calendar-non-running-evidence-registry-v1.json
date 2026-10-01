@@ -991,6 +991,28 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-10-01",
       "notes": "A missing date, source omission, acquisition failure, parser failure or venue omission does not independently prove cancellation/postponement and must preserve stronger verified state."
+    },
+    {
+      "record_id": "netherlands-ndr-racing-calendar-system",
+      "country_id": "netherlands",
+      "system_id": "netherlands-ndr-racing-calendar-system",
+      "authority_id": "ndr",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Positive official NDR current-upcoming evidence only in this automatic route; explicit NDR cancellation notices are handled separately and are not inferred from schedule absence.",
+      "evidence_urls": [
+        "https://ndr.nl/selectieproeven/",
+        "https://ndr.nl/koerskalender-2026/"
+      ],
+      "example_evidence_url": "https://ndr.nl/de-meeting-van-duindigt-zondag-4-oktober-komt-te-vervallen/",
+      "reviewed_at": "2026-10-01",
+      "notes": "A removed date, source omission, acquisition failure or parser failure does not independently prove cancellation/postponement. Explicit cancellation articles are negative evidence only when separately ingested."
     }
   ]
 }

@@ -1,0 +1,106 @@
+name: Netherlands NDR official Calendar refresh
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: Refresh scope
+        required: true
+        default: near
+        type: choice
+        options:
+          - near
+          - full
+  schedule:
+    - cron: '57 3 * * *'
+    - cron: '27 4 * * 1'
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-netherlands-ndr-official-refresh.yml'
+      - 'scripts/timetable/netherlands-ndr-calendar-core.mjs'
+      - 'scripts/timetable/run-netherlands-ndr-official-window.mjs'
+      - 'scripts/check-netherlands-ndr-adapter.mjs'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/calendar-public-country-support-v1.json'
+      - 'data/static/calendar-non-running-evidence-registry-v1.json'
+      - 'data/static/racecourses.json'
+      - 'data/static/racecourse-locations-v1.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: netherlands-ndr-official-calendar-refresh
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - run: npm run validate:netherlands-ndr
+      - name: Exercise Netherlands 30-day production path
+        run: |
+          mkdir -p .calendar-netherlands
+          node scripts/timetable/run-netherlands-ndr-official-window.mjs --as-of=2026-10-01 --days=30 --output=.calendar-netherlands/ndr.json
+          node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-netherlands/ndr.json --country-id=netherlands --authority-id=ndr --racing-system-id=netherlands-ndr-racing-calendar-system --timezone=Europe/Amsterdam
+          node scripts/check-calendar-public-country-support.mjs
+          node scripts/check-calendar-public-map-parity.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs
+
+  refresh:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - id: scope
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            scope="${{ inputs.scope }}"
+          elif [ "${{ github.event.schedule }}" = "27 4 * * 1" ]; then
+            scope=full
+          else
+            scope=near
+          fi
+          if [ "$scope" = full ]; then days=30; else days=3; fi
+          echo "scope=$scope" >> "$GITHUB_OUTPUT"
+          echo "days=$days" >> "$GITHUB_OUTPUT"
+      - name: Collect and apply Netherlands NDR
+        run: |
+          mkdir -p .calendar-netherlands
+          node scripts/timetable/run-netherlands-ndr-official-window.mjs --days="${{ steps.scope.outputs.days }}" --output=.calendar-netherlands/ndr.json
+          node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-netherlands/ndr.json --country-id=netherlands --authority-id=ndr --racing-system-id=netherlands-ndr-racing-calendar-system --timezone=Europe/Amsterdam
+          node scripts/timetable/apply-reviewed-calendar-observations.mjs
+          node scripts/check-calendar-public-country-support.mjs
+          node scripts/check-calendar-public-map-parity.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs
+      - name: Persist generated Netherlands timetable
+        shell: bash
+        run: |
+          git fetch origin main
+          if [ "$(git rev-parse origin/main)" != "$(git rev-parse HEAD)" ]; then
+            echo "main advanced; refusing overwrite"
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/generated/timetable/canonical/meetings.json data/generated/timetable/canonical/meeting-details.json data/generated/timetable/public/meeting-list.json data/generated/timetable/public/meeting-details.json
+          if git diff --cached --quiet; then
+            echo "No Netherlands timetable changes"
+            exit 0
+          fi
+          git commit -m "data: refresh Netherlands NDR timetable (${{ steps.scope.outputs.scope }})"
+          git push origin HEAD:main
