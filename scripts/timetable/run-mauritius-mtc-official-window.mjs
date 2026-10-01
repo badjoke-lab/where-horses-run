@@ -1,5 +1,5 @@
 import fs from 'node:fs';import path from 'node:path';import {execFileSync} from 'node:child_process';
-import {MAURITIUS_AUTHORITY_ID,MAURITIUS_FIXTURES_URL,MAURITIUS_SOURCE_ID,MAURITIUS_SYSTEM_ID,MAURITIUS_TIMEZONE,buildMauritiusMeetingRecord,parseMtcFixturesHtml} from './mauritius-mtc-calendar-core.mjs';
+import {MAURITIUS_AUTHORITY_ID,MAURITIUS_FIXTURES_URL,MAURITIUS_SOURCE_ID,MAURITIUS_SYSTEM_ID,MAURITIUS_TIMEZONE,buildMauritiusMeetingRecord,parseMtcFixtureDetailHtml,parseMtcFixturesHtml} from './mauritius-mtc-calendar-core.mjs';
 function arg(n,f=null){const p='--'+n+'=';const v=process.argv.find(x=>x.startsWith(p));return v?v.slice(p.length):f;}
 function plusDays(date,count){const d=new Date(date+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+count);return d.toISOString().slice(0,10);}
 function localDate(now=new Date()){const p=new Intl.DateTimeFormat('en-CA',{timeZone:MAURITIUS_TIMEZONE,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now);const v=Object.fromEntries(p.filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));return v.year+'-'+v.month+'-'+v.day;}
@@ -11,7 +11,23 @@ const output=arg('output'),days=Number(arg('days','30')),start=arg('as-of',local
 if(!output)throw new Error('--output=<path> is required');if(!/^\d{4}-\d{2}-\d{2}$/.test(start))throw new Error('--as-of must be YYYY-MM-DD');if(!Number.isInteger(days)||days<1||days>120)throw new Error('--days must be 1..120');
 const end=plusDays(start,days),generatedAt=new Date().toISOString(),sourceErrors=[],parseFailures=[];
 let allRows=[],sourceUrl=MAURITIUS_FIXTURES_URL;
-try{const page=await getHtml(MAURITIUS_FIXTURES_URL);sourceUrl=page.url||MAURITIUS_FIXTURES_URL;try{allRows=parseMtcFixturesHtml(page.html,{sourceUrl});}catch(e){parseFailures.push({source_url:sourceUrl,error:String(e?.message??e)});}}catch(e){sourceErrors.push({stage:'mtc_fixtures',source_url:MAURITIUS_FIXTURES_URL,error:String(e?.message??e)});}
+try{const page=await getHtml(MAURITIUS_FIXTURES_URL);sourceUrl=page.url||MAURITIUS_FIXTURES_URL;try{allRows=parseMtcFixturesHtml(page.html,{sourceUrl});}catch(e){parseFailures.push({source_url:sourceUrl,error:String(e?.message??e)});}}catch(e){
+  sourceErrors.push({stage:'mtc_fixtures',source_url:MAURITIUS_FIXTURES_URL,error:String(e?.message??e)});
+  const recovered=[];
+  for(let id=391;id<=400;id+=1){
+    const detailUrl='https://www.mtcjockeyclub.com/form-guide/fixtures/'+id+'/R1';
+    try{
+      const detail=await getHtml(detailUrl,{timeoutMs:8000});
+      try{recovered.push(parseMtcFixtureDetailHtml(detail.html,{sourceUrl:detail.url||detailUrl}));}
+      catch{}
+    }catch{}
+  }
+  if(recovered.length){
+    allRows=[...new Map(recovered.map(r=>[r.date,r])).values()].sort((a,b)=>a.date.localeCompare(b.date));
+    sourceUrl='official_fixture_detail_fallback';
+    sourceErrors.length=0;
+  }
+}
 const rows=allRows.filter(r=>r.date>=start&&r.date<end),records=rows.map(r=>buildMauritiusMeetingRecord(r,{checkedAt:generatedAt}));
 const status=sourceErrors.length?'network_error':(parseFailures.length?'parse_error':'success');
 const artifact={schema_version:'mauritius-mtc-official-window-candidates-v1',generated_at:generatedAt,country_id:'mauritius',authority_id:MAURITIUS_AUTHORITY_ID,racing_system_id:MAURITIUS_SYSTEM_ID,timezone:MAURITIUS_TIMEZONE,source_id:MAURITIUS_SOURCE_ID,collection_target_rank:'best_available',raw_body_retained:false,acquisition_attempt:{attempted_at:generatedAt,status,source_id:MAURITIUS_SOURCE_ID,route_id:'mtc-fixtures-2026',error_code:status==='network_error'?'mtc_fixtures_fetch_failed':(status==='parse_error'?'mtc_fixtures_parse_failed':null)},discovery:{method:'official_mtc_fixtures_html',source_url:sourceUrl,source_visible_rows:allRows.length,rank_counts:ranks(records),completion_counts:completions(records)},window:{start_date:start,end_date_exclusive:end,days,coverage_claim:status==='success'?'official_source_visible_horizon':'acquisition_failed_preserve_verified_state',coverage_note:'Official MTCJC Fixtures supplies source-visible Champ de Mars meeting dates. Major-race narrative dates outside the Upcoming Meetings section are ignored. Race times are not inferred and source absence is not non-running evidence.'},records,diagnostics:{source_errors:sourceErrors,parse_failures:parseFailures,unknown_venues:[],source_warnings:[]}};
