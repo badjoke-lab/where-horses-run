@@ -1211,6 +1211,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic official NDR current-upcoming route. Publishes meeting date plus mapped physical venue at rank C. Permanent tracks and temporary kortebaan street venues are distinct identities. Unknown venue labels fail closed. Annual NDR 2026 calendar remains a reviewed fallback."
+    },
+    {
+      "system_id": "poland-pkwk-national-plan-system",
+      "country_id": "poland",
+      "authority_id": "pkwk",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "pkwk-2026-plan",
+      "detail_source_id": "pkwk-2026-plan",
+      "schedule_adapter_id": "poland-pkwk-2026-plan-v1",
+      "detail_adapter_id": "poland-pkwk-2026-plan-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic official PKWK 2026 national-plan route for Warszawa-Służewiec, Wrocław-Partynice and Hipodrom Sopot. Publishes meeting date plus physical racecourse at rank C. Race post times are not inferred; source absence is not non-running evidence."
     }
   ]
 }
