@@ -196,7 +196,8 @@ if(process.env.GITHUB_ACTIONS==='true'){
             }
           }
           const pdfjsHeaders=out.filter(line=>/Course\s*[–—-]\s*Départ/i.test(line));
-          console.log('FRANCE_PARSE_TEXT:',JSON.stringify({source_url:failure.source_url,pdfjs_headers:pdfjsHeaders,raw_header_items:rawHeaderItems.slice(0,80)}));
+          const pdfjsTimeLines=out.filter(line=>/(?:\b\d{1,2}\s*[hH]\.?\s*\d{2}\b|^\s*\d{1,2}\s+\d{1,2}\s*[hH]\.?\s*\d{2}\b)/).slice(0,160);
+          console.log('FRANCE_PARSE_TEXT:',JSON.stringify({source_url:failure.source_url,pdfjs_headers:pdfjsHeaders,pdfjs_time_lines:pdfjsTimeLines,raw_header_items:rawHeaderItems.slice(0,80)}));
         }catch(error){
           console.log('FRANCE_PARSE_TEXT:',JSON.stringify({source_url:failure.source_url,error:String(error?.message??error)}));
         }
