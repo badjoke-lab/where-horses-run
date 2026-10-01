@@ -8,6 +8,7 @@ async function fetchText(){
       'accept':'text/html,application/xhtml+xml;q=0.9,*/*;q=0.5',
       'accept-language':'en-US,en;q=0.9'
     },signal:AbortSignal.timeout(20000)});
+    if(!r.ok) throw new Error('HTTP '+r.status+' '+(r.url||URL));
     const text=await r.text();
     return {method:'fetch',status:r.status,url:r.url||URL,text};
   }catch(fetchError){
