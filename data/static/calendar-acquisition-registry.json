@@ -1136,6 +1136,56 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic official Belgrade current-season route. Publishes meeting date plus Belgrade Hippodrome physical identity at rank C. Reviewed detailed season schedules remain a separate richer evidence path and are not downgraded."
+    },
+    {
+      "system_id": "switzerland-suisse-trot-system",
+      "country_id": "switzerland",
+      "authority_id": "suisse-trot",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "suisse-trot-calendar",
+      "detail_source_id": "suisse-trot-calendar",
+      "schedule_adapter_id": "switzerland-suisse-trot-calendar-v1",
+      "detail_adapter_id": "switzerland-suisse-trot-calendar-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic official Suisse Trot calendar route. Publishes source-visible trot meeting date plus physical venue at C. Event start context is not promoted to race post time."
+    },
+    {
+      "system_id": "switzerland-galop-suisse-system",
+      "country_id": "switzerland",
+      "authority_id": "galop-suisse",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "galop-suisse-calendar",
+      "detail_source_id": "galop-suisse-calendar",
+      "schedule_adapter_id": "switzerland-galop-suisse-calendar-v1",
+      "detail_adapter_id": "switzerland-galop-suisse-calendar-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic official Galop Suisse plus IENA current-event route. Publishes source-visible gallop meeting date plus physical venue at C. Event start context is not promoted to race post time."
     }
   ]
 }
