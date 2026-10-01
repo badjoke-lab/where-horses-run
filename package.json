@@ -103,7 +103,8 @@
     "validate:croatia-hgs": "node --check scripts/timetable/croatia-hgs-calendar-core.mjs && node --check scripts/timetable/run-croatia-hgs-official-window.mjs && node scripts/check-croatia-hgs-adapter.mjs",
     "validate:serbia-belgrade": "node --check scripts/timetable/serbia-belgrade-calendar-core.mjs && node --check scripts/timetable/run-serbia-belgrade-official-window.mjs && node scripts/check-serbia-belgrade-adapter.mjs",
     "validate:switzerland-suisse-trot": "node --check scripts/timetable/switzerland-suisse-trot-calendar-core.mjs && node --check scripts/timetable/run-switzerland-suisse-trot-official-window.mjs && node scripts/check-switzerland-suisse-trot-adapter.mjs",
-    "validate:switzerland-galop": "node --check scripts/timetable/switzerland-galop-suisse-calendar-core.mjs && node --check scripts/timetable/run-switzerland-galop-suisse-official-window.mjs && node scripts/check-switzerland-galop-suisse-adapter.mjs"
+    "validate:switzerland-galop": "node --check scripts/timetable/switzerland-galop-suisse-calendar-core.mjs && node --check scripts/timetable/run-switzerland-galop-suisse-official-window.mjs && node scripts/check-switzerland-galop-suisse-adapter.mjs",
+    "validate:poland-pkwk": "node --check scripts/timetable/poland-pkwk-calendar-core.mjs && node --check scripts/timetable/run-poland-pkwk-official-window.mjs && node scripts/check-poland-pkwk-adapter.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0",
