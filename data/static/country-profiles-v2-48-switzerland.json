@@ -1,1 +1,109 @@
-[{"schema_version":"2.0.0","country_id":"switzerland","slug":"switzerland","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-20","public_display_ceiling":"C","source_test_status":"complete","hero":{"summary_en":"Suisse Trot and Galop Suisse confirm meeting dates and racecourses.","summary_ja":"Suisse TrotとGalop Suisseで開催日と競馬場を確認済み。"},"overview":{"paragraphs_en":["Trot and gallop remain separate reviewed systems."],"paragraphs_ja":["トロットとギャロップを別の確認済み体系として扱う。"]},"racing_types":[{"id":"harness-racing","name_en":"Trot racing","name_ja":"トロット競走","summary_en":"Reviewed through Suisse Trot.","summary_ja":"Suisse Trotで確認済み。"},{"id":"thoroughbred-flat","name_en":"Gallop racing","name_ja":"ギャロップ競走","summary_en":"Reviewed through Galop Suisse.","summary_ja":"Galop Suisseで確認済み。"}],"seasonality":{"pattern":"official-source-required","summary_en":"Check both current official calendars.","summary_ja":"両方の現行公式カレンダーを確認する。"},"schedule":{"timezone":"Europe/Zurich","utc_offset_label":"Verify current local offset","day_patterns":["official-source-required"],"time_patterns":["meeting-date-only"],"summary_en":"Dates and venues are confirmed; one combined race-time route is not.","summary_ja":"開催日と会場は確認済みだが、統合レース時刻導線は未確認。"},"surfaces":{"ids":[],"summary_en":"Not normalized.","summary_ja":"共通化しない。"},"systems":[{"id":"switzerland-suisse-trot-system","name_en":"Suisse Trot calendar","name_ja":"Suisse Trotカレンダー","summary_en":"Reviewed trot context.","summary_ja":"確認済みトロット文脈。","organiser_source_ids":["switzerland-suisse-trot-calendar"],"distributor_source_ids":[]},{"id":"switzerland-galop-suisse-system","name_en":"Galop Suisse calendar","name_ja":"Galop Suisseカレンダー","summary_en":"Reviewed gallop context.","summary_ja":"確認済みギャロップ文脈。","organiser_source_ids":["switzerland-galop-suisse-home"],"distributor_source_ids":[]}],"principal_racecourse_ids":[],"calendar_guidance_en":"Use both official routes and keep trot and gallop separate.","calendar_guidance_ja":"両方の公式導線を使用し、トロットとギャロップを分けて扱う。","coverage_note_en":"No unified Swiss race-time route is established.","coverage_note_ja":"統一されたスイスのレース時刻導線は未確認。","revalidation":{"triggers_en":["Either official calendar changes"],"triggers_ja":["いずれかの公式カレンダー変更時"]},"related_glossary_ids":["racecourse","meeting","fixture","post-time"]}]
+[
+  {
+    "schema_version": "2.0.0",
+    "country_id": "switzerland",
+    "slug": "switzerland",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-10-01",
+    "public_display_ceiling": "C",
+    "source_test_status": "complete",
+    "hero": {
+      "summary_en": "Suisse Trot and Galop Suisse are automatically routed as separate official calendar systems at rank C.",
+      "summary_ja": "Suisse TrotとGalop Suisseを別々の公式カレンダー体系としてCで自動取得します。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "Production automation keeps Swiss trot and gallop separate. Suisse Trot supplies the current source-visible trot calendar; Galop Suisse is complemented by the official IENA current Avenches gallop surface so the current 30-day gallop horizon is not truncated. Output remains meeting date plus physical venue at rank C."
+      ],
+      "paragraphs_ja": [
+        "production自動取得ではSwissのトロットとギャロップを分離します。Suisse Trotは現行source-visibleトロットカレンダーを提供し、Galop Suisseは公式IENAのAvenches現行ギャロップ情報で補完して、現行30日ギャロップ窓の欠落を防ぎます。公開は開催日と物理会場のCに限定します。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "harness-racing",
+        "name_en": "Trot racing",
+        "name_ja": "トロット競走",
+        "summary_en": "Reviewed through Suisse Trot.",
+        "summary_ja": "Suisse Trotで確認済み。"
+      },
+      {
+        "id": "thoroughbred-flat",
+        "name_en": "Gallop racing",
+        "name_ja": "ギャロップ競走",
+        "summary_en": "Reviewed through Galop Suisse.",
+        "summary_ja": "Galop Suisseで確認済み。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "official-source-required",
+      "summary_en": "Check both current official calendars.",
+      "summary_ja": "両方の現行公式カレンダーを確認する。"
+    },
+    "schedule": {
+      "timezone": "Europe/Zurich",
+      "utc_offset_label": "Verify current local offset",
+      "day_patterns": [
+        "official-source-required"
+      ],
+      "time_patterns": [
+        "meeting-date-only"
+      ],
+      "summary_en": "Dates and venues are confirmed; one combined race-time route is not.",
+      "summary_ja": "開催日と会場は確認済みだが、統合レース時刻導線は未確認。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Not normalized.",
+      "summary_ja": "共通化しない。"
+    },
+    "systems": [
+      {
+        "id": "switzerland-suisse-trot-system",
+        "name_en": "Suisse Trot calendar",
+        "name_ja": "Suisse Trotカレンダー",
+        "summary_en": "Automatic official Suisse Trot meeting-date route at rank C.",
+        "summary_ja": "Suisse Trot公式開催日をCで自動取得する導線です。",
+        "organiser_source_ids": [
+          "switzerland-suisse-trot-calendar"
+        ],
+        "distributor_source_ids": []
+      },
+      {
+        "id": "switzerland-galop-suisse-system",
+        "name_en": "Galop Suisse calendar",
+        "name_ja": "Galop Suisseカレンダー",
+        "summary_en": "Automatic Galop Suisse current-meeting route complemented by official IENA Avenches gallop events at rank C.",
+        "summary_ja": "Galop Suisse現行開催に公式IENA Avenchesギャロップ情報を補完するCの自動導線です。",
+        "organiser_source_ids": [
+          "switzerland-galop-suisse-home"
+        ],
+        "distributor_source_ids": []
+      }
+    ],
+    "principal_racecourse_ids": [
+      "switzerland--iena-avenches",
+      "switzerland--rossriet-maienfeld",
+      "switzerland--zurich-dielsdorf"
+    ],
+    "calendar_guidance_en": "Use the two automatic official routes separately. Publish meeting date and reviewed physical venue at C only; do not infer race post times. Treat Rossriet Maienfeld as a seasonal physical racecourse and never convert source absence into cancellation evidence.",
+    "calendar_guidance_ja": "2つの公式自動導線を分けて使用します。開催日とレビュー済み物理会場のみCで公開し、レース発走時刻は推測しません。Rossriet Maienfeldは季節型物理競馬場として扱い、source absenceを中止証拠へ変換しません。",
+    "coverage_note_en": "Production routing covers the current official source-visible Suisse Trot and Galop Suisse horizons at rank C. New seasonal venues require physical identity/location review before publication.",
+    "coverage_note_ja": "production routingは現行のSuisse Trot / Galop Suisse公式source-visible horizonをCで対象にします。新しい季節会場は公開前にphysical identity/location reviewが必要です。",
+    "revalidation": {
+      "triggers_en": [
+        "Either official calendar changes"
+      ],
+      "triggers_ja": [
+        "いずれかの公式カレンダー変更時"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture",
+      "post-time"
+    ]
+  }
+]
