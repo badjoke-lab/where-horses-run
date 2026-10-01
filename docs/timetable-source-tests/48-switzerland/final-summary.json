@@ -1,1 +1,27 @@
-{"country":"Switzerland","status":"Complete at calendar level","checked_date":"2026-06-20","technical_rank":"C","public_ceiling":"C","systems":["Suisse Trot","Galop Suisse"],"official_sources":["https://suisse-trot.ch/calendrier/","https://galop-suisse.iena.ch/"],"confirmed_fields":{"meeting_date":true,"racecourse":true,"first_race_time":false,"per_race_post_times":false},"decision":"Official trot and gallop calendars confirm 2026 meeting dates and racecourses. The two systems remain separate and the country public ceiling is C."}
+{
+  "country": "Switzerland",
+  "status": "Production routed for Suisse Trot and Galop Suisse",
+  "checked_date": "2026-10-01",
+  "technical_rank": "C",
+  "public_ceiling": "C",
+  "systems": [
+    "Suisse Trot automatic calendar",
+    "Galop Suisse + IENA automatic gallop calendar"
+  ],
+  "official_sources": [
+    "https://suisse-trot.ch/calendrier/",
+    "https://galop-suisse.iena.ch/",
+    "https://www.iena.ch/"
+  ],
+  "confirmed_fields": {
+    "meeting_date": true,
+    "racecourse": true,
+    "first_race_time": false,
+    "per_race_post_times": false
+  },
+  "decision": "Two automatic official routes remain separate. Suisse Trot supplies source-visible trot dates and venues; Galop Suisse current meetings are complemented by the official IENA Avenches gallop event surface. Automatic publication remains rank C and does not infer race post times. Rossriet Maienfeld is retained as a seasonal physical racecourse.",
+  "production_routes": [
+    "scripts/timetable/run-switzerland-suisse-trot-official-window.mjs",
+    "scripts/timetable/run-switzerland-galop-suisse-official-window.mjs"
+  ]
+}
