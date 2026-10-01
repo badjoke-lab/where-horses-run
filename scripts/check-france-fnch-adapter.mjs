@@ -73,6 +73,17 @@ assert.deepEqual(parseFnchProgrammeText(spacedOrdinalProgramme),[
   {label:'Race 3',post_time_local:'15:45'},
 ],'FNCH spaced ordinal race headers must parse exactly');
 
+const splitDepartProgramme=`MARSEILLE BORÉLY
+Vendredi 2 octobre 2026
+1 ère Course – Départ : 11 h. 46 PRIX DES ACACIAS
+2 ème Course – Dé part : 12 h. 18 PRIX DES SAPONAIRES
+3 ème Course – Départ : 12 h. 50 PRIX DES PÉTUNIAS`;
+assert.deepEqual(parseFnchProgrammeText(splitDepartProgramme),[
+  {label:'Race 1',post_time_local:'11:46'},
+  {label:'Race 2',post_time_local:'12:18'},
+  {label:'Race 3',post_time_local:'12:50'},
+],'FNCH PDF extraction may split Départ as Dé part and must still preserve contiguous race rows');
+
 const galopProgramme=`TOULOUSE
 mercredi 23 septembre 2026 : 16h02
 1
@@ -134,7 +145,6 @@ if(process.env.GITHUB_ACTIONS==='true'){
   try{
     execFileSync(process.execPath,[
       'scripts/timetable/run-france-fnch-official-window.mjs',
-      '--as-of=2026-09-26',
       '--days=3',
       '--galop-output='+galopOutput,
       '--letrot-output='+letrotOutput,
