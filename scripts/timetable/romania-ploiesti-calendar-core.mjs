@@ -6,7 +6,7 @@ export const ROMANIA_AUTHORITY_ID='csm-ploiesti';
 export const ROMANIA_SYSTEM_ID='romania-ploiesti-system';
 export const ROMANIA_SOURCE_ID='ploiesti-racing-notices';
 export const ROMANIA_RACECOURSE_ID='romania--hipodromul-ploiesti';
-export const ROMANIA_CATEGORY_URL='https://www.csmploiesti.ro/category/curse-hipodrom/';
+export const ROMANIA_CATEGORY_URL='https://www.csmploiesti.ro/hipodrom/';
 
 const MONTHS=Object.freeze({
   ianuarie:'01',februarie:'02',martie:'03',aprilie:'04',mai:'05',iunie:'06',
