@@ -75,11 +75,16 @@ export function parseWarsawPlanPages(pages,{sourceUrl=WARSAW_PDF_URL}={}){
 export function parseWroclawInfoHtml(html,{sourceUrl=PKWK_INFO_URL}={}){
   const text=visibleText(html);
   if(!/Informacje wyścigowe|Informacje wyscigowe/i.test(text)) throw new Error('PKWK information-page fingerprint missing');
+  const start=text.search(/Wrocław\s+Plan Gonitw dla Wrocław-Partynice/i);
+  if(start<0) throw new Error('Wrocław section missing');
+  const tail=text.slice(start);
+  const end=tail.search(/\sSopot\s+Plan Gonitw dla Hipodrom Sopot/i);
+  const section=end>=0?tail.slice(0,end):tail;
   const dates=new Set();
-  for(const m of text.matchAll(/(\d{1,2})\s*dzie[nń]\s+wy[sś]cigowy\s*\((\d{1,2})\.(\d{1,2})\.(2026)\)/gi)){
+  for(const m of section.matchAll(/(\d{1,2})\s*dzie[nń]\s+wy[sś]cigowy\s*\((\d{1,2})\.(\d{1,2})\.(2026)\)/gi)){
     dates.add(m[4]+'-'+pad(m[3])+'-'+pad(m[2]));
   }
-  const list=text.match(/Gonitwy dodatkowe WTWK-Partynice\s*\(([^)]+)\)/i);
+  const list=section.match(/Gonitwy dodatkowe WTWK-Partynice\s*\(([^)]+)\)/i);
   if(list){
     for(const m of list[1].matchAll(/(\d{1,2})\.(\d{1,2})(?:\.(2026))?/g)) dates.add((m[3]||'2026')+'-'+pad(m[2])+'-'+pad(m[1]));
   }
