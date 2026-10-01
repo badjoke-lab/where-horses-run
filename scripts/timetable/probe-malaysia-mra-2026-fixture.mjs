@@ -60,6 +60,8 @@ for(let i=1;i<=pdf.numPages;i++){
     for(const rect of rectChunks(args)){
       const month=Math.round((rect.y1-90.080002)/43.84)+1;
       if(month<1||month>12) continue;
+      const expectedRowY=90.080002+((month-1)*43.84);
+      if(Math.abs(rect.y1-expectedRowY)>1) continue;
       const x1=rect.x1*0.75,x2=rect.x2*0.75;
       const candidates=(monthRows.get(month)??[]).filter(item=>{
         const cx=item.x+(item.w/2);
