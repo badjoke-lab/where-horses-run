@@ -1,10 +1,13 @@
-name: Poland PKWK plan live probe
+name: Poland PKWK live probe
 
 on:
   pull_request:
     paths:
       - '.github/workflows/calendar-poland-pkwk-live-probe.yml'
-      - 'scripts/timetable/probe-poland-pkwk-2026-plan.mjs'
+      - 'scripts/timetable/poland-pkwk-calendar-core.mjs'
+      - 'scripts/timetable/run-poland-pkwk-official-window.mjs'
+      - 'scripts/check-poland-pkwk-adapter.mjs'
+      - 'package.json'
 
 permissions:
   contents: read
@@ -18,5 +21,5 @@ jobs:
         with:
           node-version: '22'
       - run: npm install --no-package-lock --no-audit --no-fund
-      - name: Probe official PKWK 2026 plan PDF
-        run: node scripts/timetable/probe-poland-pkwk-2026-plan.mjs
+      - name: Validate live PKWK production adapter
+        run: npm run validate:poland-pkwk
