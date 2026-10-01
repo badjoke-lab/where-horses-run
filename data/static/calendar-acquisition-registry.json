@@ -1236,6 +1236,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic official PKWK 2026 national-plan route for Warszawa-Służewiec, Wrocław-Partynice and Hipodrom Sopot. Publishes meeting date plus physical racecourse at rank C. Race post times are not inferred; source absence is not non-running evidence."
+    },
+    {
+      "system_id": "malaysia-mra-system",
+      "country_id": "malaysia",
+      "authority_id": "mra",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "mra-fixtures",
+      "detail_source_id": "mra-fixtures",
+      "schedule_adapter_id": "malaysia-mra-2026-fixture-v1",
+      "detail_adapter_id": "malaysia-mra-2026-fixture-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic official MRA 2026 national fixture route for current MRA associated clubs Selangor Turf Club and Perak Turf Club. PDF color legend maps yellow to Selangor and green to Perak; exact fixture totals are validated 61/29/90. Publishes meeting date plus physical racecourse at rank C. Race post times are not inferred."
     }
   ]
 }
