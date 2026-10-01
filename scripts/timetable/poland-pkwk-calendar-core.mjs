@@ -60,7 +60,7 @@ export function parseWarsawPlanPages(pages,{sourceUrl=WARSAW_PDF_URL}={}){
   for(const page of pages){
     const text=String(page.text??'').replace(/\s+/g,' ').trim();
     if(!/PLAN GONITW 2026/i.test(text)) continue;
-    const m=text.match(/Dzie\S{0,3}\s+\d+\s*[-–—]\s*([A-Za-zÀ-ÿ]+),\s*(\d{1,2})\s+([A-Za-zÀ-ÿ]+)/i);
+    const m=text.match(/Dzie\S{0,3}\s+\d+\s*[-–—]\s*(\p{L}+),\s*(\d{1,2})\s+(\p{L}+)/iu);
     if(!m) continue;
     const month=MONTHS[norm(m[3])];
     if(!month) continue;
