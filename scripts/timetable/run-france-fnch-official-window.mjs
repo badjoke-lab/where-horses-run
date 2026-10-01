@@ -43,7 +43,10 @@ async function getHtml(url){
   return {html:await response.text(),url:response.url||url};
 }
 function raceHeaderCount(text){
-  return [...String(text??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').matchAll(/\b\d{1,2}\s*(?:e|er|re|ere|eme)?\s*course\s*[–—-]\s*de\s*part\s*:/gi)].length;
+  const ascii=String(text??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const explicit=[...ascii.matchAll(/\b\d{1,2}\s*(?:e|er|re|ere|eme)?\s*course\s*[–—-]\s*de\s*part\s*:/gi)].length;
+  const compact=[...ascii.matchAll(/(?:^|\n)\s*\d{1,2}\s+\d{1,2}\s*h\.?\s*\d{2}\b/gi)].length;
+  return explicit+compact;
 }
 function pdfJsLayoutLines(items){
   const rows=[];
