@@ -101,7 +101,9 @@
     "validate:norway-dnt": "node --check scripts/timetable/norway-dnt-core.mjs && node --check scripts/timetable/run-norway-dnt-official-window.mjs && node scripts/check-norway-dnt-adapter.mjs",
     "validate:austria-krieau": "node --check scripts/timetable/austria-krieau-calendar-core.mjs && node --check scripts/timetable/run-austria-krieau-official-window.mjs && node scripts/check-austria-krieau-adapter.mjs",
     "validate:croatia-hgs": "node --check scripts/timetable/croatia-hgs-calendar-core.mjs && node --check scripts/timetable/run-croatia-hgs-official-window.mjs && node scripts/check-croatia-hgs-adapter.mjs",
-    "validate:serbia-belgrade": "node --check scripts/timetable/serbia-belgrade-calendar-core.mjs && node --check scripts/timetable/run-serbia-belgrade-official-window.mjs && node scripts/check-serbia-belgrade-adapter.mjs"
+    "validate:serbia-belgrade": "node --check scripts/timetable/serbia-belgrade-calendar-core.mjs && node --check scripts/timetable/run-serbia-belgrade-official-window.mjs && node scripts/check-serbia-belgrade-adapter.mjs",
+    "validate:switzerland-suisse-trot": "node --check scripts/timetable/switzerland-suisse-trot-calendar-core.mjs && node --check scripts/timetable/run-switzerland-suisse-trot-official-window.mjs && node scripts/check-switzerland-suisse-trot-adapter.mjs",
+    "validate:switzerland-galop": "node --check scripts/timetable/switzerland-galop-suisse-calendar-core.mjs && node --check scripts/timetable/run-switzerland-galop-suisse-official-window.mjs && node scripts/check-switzerland-galop-suisse-adapter.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0",
