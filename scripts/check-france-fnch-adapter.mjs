@@ -186,7 +186,8 @@ if(process.env.GITHUB_ACTIONS==='true'){
             }
           }
           const pdfjsHeaders=out.filter(line=>/Course\s*[–—-]\s*Départ/i.test(line));
-          console.log('FRANCE_PARSE_TEXT:',JSON.stringify({source_url:failure.source_url,pdfjs_headers:pdfjsHeaders,raw_header_items:rawHeaderItems.slice(0,80)}));
+          const pdfjsCandidates=out.filter(line=>/SAPONAIRES|12\s*h|12H|^\s*2\b|Course|Départ/i.test(line)).slice(0,120);
+          console.log('FRANCE_PARSE_TEXT:',JSON.stringify({source_url:failure.source_url,pdfjs_headers:pdfjsHeaders,pdfjs_candidates:pdfjsCandidates,raw_header_items:rawHeaderItems.slice(0,100)}));
         }catch(error){
           console.log('FRANCE_PARSE_TEXT:',JSON.stringify({source_url:failure.source_url,error:String(error?.message??error)}));
         }
