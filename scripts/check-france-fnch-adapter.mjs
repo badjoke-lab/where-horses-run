@@ -134,7 +134,7 @@ if(process.env.GITHUB_ACTIONS==='true'){
   try{
     execFileSync(process.execPath,[
       'scripts/timetable/run-france-fnch-official-window.mjs',
-      '--as-of=2026-09-26',
+      '--as-of=2026-10-01',
       '--days=3',
       '--galop-output='+galopOutput,
       '--letrot-output='+letrotOutput,
