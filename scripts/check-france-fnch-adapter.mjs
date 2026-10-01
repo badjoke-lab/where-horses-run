@@ -98,6 +98,21 @@ assert.deepEqual(parseFnchProgrammeText(galopProgramme),[
   {label:'Race 3',post_time_local:'17:42'},
 ]);
 
+const compactFnchProgramme=`DAX
+vendredi 2 octobre 2026
+1 11H00 Ø Prix de l'Adour
+2 11H30 Ø Prix de la Chambre d'Amour
+3 12H02 Ø Prix Château de Poyanne
+4 12H34 Ø Prix J.P. Loiseaux
+5 13H08 Ø Grand Prix de la Ville de Dax`;
+assert.deepEqual(parseFnchProgrammeText(compactFnchProgramme),[
+  {label:'Race 1',post_time_local:'11:00'},
+  {label:'Race 2',post_time_local:'11:30'},
+  {label:'Race 3',post_time_local:'12:02'},
+  {label:'Race 4',post_time_local:'12:34'},
+  {label:'Race 5',post_time_local:'13:08'},
+],'FNCH compact single-line race-number/time headers must parse exactly');
+
 const noisyProgramme=`HEADER 20 16 h 45
 1
 14H40 Prix A
@@ -196,8 +211,7 @@ if(process.env.GITHUB_ACTIONS==='true'){
             }
           }
           const pdfjsHeaders=out.filter(line=>/Course\s*[–—-]\s*Départ/i.test(line));
-          const pdfjsTimeLines=out.filter(line=>/(?:\b\d{1,2}\s*[hH]\.?\s*\d{2}\b|^\s*\d{1,2}\s+\d{1,2}\s*[hH]\.?\s*\d{2}\b)/).slice(0,160);
-          console.log('FRANCE_PARSE_TEXT:',JSON.stringify({source_url:failure.source_url,pdfjs_headers:pdfjsHeaders,pdfjs_time_lines:pdfjsTimeLines,raw_header_items:rawHeaderItems.slice(0,80)}));
+          console.log('FRANCE_PARSE_TEXT:',JSON.stringify({source_url:failure.source_url,pdfjs_headers:pdfjsHeaders,raw_header_items:rawHeaderItems.slice(0,80)}));
         }catch(error){
           console.log('FRANCE_PARSE_TEXT:',JSON.stringify({source_url:failure.source_url,error:String(error?.message??error)}));
         }
