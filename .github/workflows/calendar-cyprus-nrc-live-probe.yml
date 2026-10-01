@@ -1,0 +1,21 @@
+name: Cyprus NRC schedule live probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-cyprus-nrc-live-probe.yml'
+      - 'scripts/timetable/probe-cyprus-nrc-schedule.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Probe Nicosia Race Club schedule
+        run: node scripts/timetable/probe-cyprus-nrc-schedule.mjs
