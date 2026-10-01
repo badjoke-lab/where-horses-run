@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-non-running-evidence-registry-v1",
-  "reviewed_at": "2026-09-30",
+  "reviewed_at": "2026-10-01",
   "records": [
     {
       "record_id": "japan-jra-system",
@@ -948,6 +948,49 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-09-30",
       "notes": "A removed date, source omission, acquisition failure or parser failure does not independently prove cancellation/postponement and must preserve stronger verified state."
+    },
+    {
+      "record_id": "switzerland-suisse-trot-system",
+      "country_id": "switzerland",
+      "system_id": "switzerland-suisse-trot-system",
+      "authority_id": "suisse-trot",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Positive official Suisse Trot calendar evidence only; no bounded whole-meeting cancellation/postponement route is implemented.",
+      "evidence_urls": [
+        "https://suisse-trot.ch/calendrier/"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-10-01",
+      "notes": "A missing date, source omission, acquisition failure, parser failure or venue omission does not independently prove cancellation/postponement and must preserve stronger verified state."
+    },
+    {
+      "record_id": "switzerland-galop-suisse-system",
+      "country_id": "switzerland",
+      "system_id": "switzerland-galop-suisse-system",
+      "authority_id": "galop-suisse",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Positive official Galop Suisse/IENA calendar evidence only; no bounded whole-meeting cancellation/postponement route is implemented.",
+      "evidence_urls": [
+        "https://galop-suisse.iena.ch/",
+        "https://www.iena.ch/"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-10-01",
+      "notes": "A missing date, source omission, acquisition failure, parser failure or venue omission does not independently prove cancellation/postponement and must preserve stronger verified state."
     }
   ]
 }
