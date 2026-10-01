@@ -2357,7 +2357,10 @@
       "system_id": "malaysia-mra-system",
       "system_name_en": "Malayan Racing Association fixtures",
       "authority_source_key": "malaysia/mra/mra-fixtures",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "malaysia--selangor-turf-club",
+        "malaysia--perak-turf-club"
+      ],
       "coverage_scope": "countrywide",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -2374,24 +2377,27 @@
       },
       "source_format": "html",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "seasonal",
-        "manual"
+        "weekly",
+        "near_meeting"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when MRA publishes a new fixture list or changes venue coverage.",
+      "checked_date": "2026-10-01",
+      "evidence_reviewed_at": "2026-10-01",
+      "revalidation_trigger": "Revalidate when MRA publishes a new annual fixture, changes associated-club membership, changes the PDF color legend, or changes the calendar geometry.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/37-malaysia/final-summary.json",
       "limitations": [
-        "Race times are not established."
+        "The official 2026 MRA national fixture covers the current MRA associated clubs Selangor Turf Club and Perak Turf Club.",
+        "Race post times are not established.",
+        "The automatic parser depends on the official PDF color legend and layout and must fail closed if fixture totals or layout invariants change.",
+        "Source-visible absence is not non-running evidence."
       ],
-      "notes": "Manual C-level decision for the reviewed MRA fixture route."
+      "notes": "Automatic MRA 2026 national route validates the official fixture total exactly: Selangor 61 + Perak 29 = 90 meetings and publishes meeting date plus physical racecourse at rank C."
     },
     {
       "readiness_id": "thailand--thailand-rbsc-system--rbsc-events",
