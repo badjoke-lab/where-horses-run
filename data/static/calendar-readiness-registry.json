@@ -3069,7 +3069,11 @@
       "system_id": "poland-pkwk-national-plan-system",
       "system_name_en": "PKWK national race plan",
       "authority_source_key": "poland/pkwk/pkwk-2026-plan",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "poland--sluzewiec-warsaw",
+        "poland--wroclaw-partynice",
+        "poland--hipodrom-sopot"
+      ],
       "coverage_scope": "countrywide",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -3086,24 +3090,27 @@
       },
       "source_format": "pdf",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "seasonal",
-        "manual"
+        "weekly",
+        "near_meeting"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
+      "checked_date": "2026-10-01",
+      "evidence_reviewed_at": "2026-10-01",
       "revalidation_trigger": "Revalidate when PKWK publishes a new national plan or changes the track schedule structure.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/49-poland/final-summary.json",
       "limitations": [
-        "Reusable race times are not established."
+        "Automatic route covers the reviewed PKWK national plan for Warszawa-Służewiec, Wrocław-Partynice and Hipodrom Sopot.",
+        "Reusable race post times are not established.",
+        "Warsaw PDF OCR day digits are normalized only when the printed weekday uniquely resolves the valid 2026 date.",
+        "Source-visible absence is not non-running evidence."
       ],
-      "notes": "Manual C-level national plan decision."
+      "notes": "Automatic official PKWK national-plan route combines the Warszawa PDF with PKWK Wrocław and Sopot 2026 material and publishes rank-C meeting date plus physical racecourse."
     },
     {
       "readiness_id": "romania--romania-ploiesti-system--ploiesti-racing-notices",
