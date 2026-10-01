@@ -237,7 +237,7 @@ export function parseFnchProgrammeText(text) {
     .replace(/[\u2010\u2011\u2013\u2014]/g, '-');
 
   const patterns = [
-    /(\d{1,2})(?:\s*(?:e|er|re|ere|eme))?\s*course\s*[-:]*\s*depart\s*:\s*(\d{1,2})\s*h\.?\s*(\d{2})/gi,
+    /(\d{1,2})(?:\s*(?:e|er|re|ere|eme))?\s*course\s*[-:]*\s*de\s*part\s*:\s*(\d{1,2})\s*h\.?\s*(\d{2})/gi,
     /(?:^|\n)\s*(\d{1,2})\s*(?:\n+\s*|\s{2,})(\d{1,2})\s*h\s*(\d{2})\b/gi,
   ];
   const byNumber = new Map();
