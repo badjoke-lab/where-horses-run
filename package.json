@@ -108,7 +108,8 @@
     "validate:poland-pkwk": "node --check scripts/timetable/poland-pkwk-calendar-core.mjs && node --check scripts/timetable/run-poland-pkwk-official-window.mjs && node scripts/check-poland-pkwk-adapter.mjs",
     "validate:romania-ploiesti": "node --check scripts/timetable/romania-ploiesti-calendar-core.mjs && node --check scripts/timetable/run-romania-ploiesti-official-window.mjs && node scripts/check-romania-ploiesti-adapter.mjs",
     "validate:malaysia-mra": "node --check scripts/timetable/malaysia-mra-calendar-core.mjs && node --check scripts/timetable/run-malaysia-mra-official-window.mjs && node scripts/check-malaysia-mra-adapter.mjs",
-    "validate:cyprus-nrc": "node --check scripts/timetable/cyprus-nrc-calendar-core.mjs && node --check scripts/timetable/run-cyprus-nrc-official-window.mjs && node scripts/check-cyprus-nrc-adapter.mjs"
+    "validate:cyprus-nrc": "node --check scripts/timetable/cyprus-nrc-calendar-core.mjs && node --check scripts/timetable/run-cyprus-nrc-official-window.mjs && node scripts/check-cyprus-nrc-adapter.mjs",
+    "validate:belgium-trotting": "node --check scripts/timetable/belgium-trotting-calendar-core.mjs && node --check scripts/timetable/run-belgium-trotting-official-window.mjs && node scripts/check-belgium-trotting-adapter.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0",
