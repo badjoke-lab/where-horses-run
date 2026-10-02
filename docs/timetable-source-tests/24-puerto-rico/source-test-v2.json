@@ -1,0 +1,97 @@
+{
+  "schema_version": "source-test-v2-v1",
+  "delivery_no": "24",
+  "country_id": "puerto-rico",
+  "country_name_en": "Puerto Rico",
+  "checked_date": "2026-10-02",
+  "evidence_reviewed_at": "2026-10-02",
+  "country_completeness": "complete",
+  "records": [
+    {
+      "readiness_id": "puerto-rico--puerto-rico-reviewed-system--camarero-programmes",
+      "system_id": "puerto-rico-reviewed-system",
+      "system_name_en": "Hipódromo Camarero reviewed programme",
+      "authority_source_key": "puerto-rico/hipodromo-camarero/camarero-programmes",
+      "racecourse_ids": [
+        "puerto-rico--hipodromo-camarero"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "A",
+      "public_ceiling": "A",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": true,
+        "last_race_time": true,
+        "per_race_post_times": true,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "mixed",
+      "access_mode": "direct",
+      "automation_mode": "manual_import",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "fallback": "downgrade_to_C",
+      "source_status": "verified",
+      "revalidation_trigger": "Revalidate when Camarero changes programme publication routes, local/simulcast document structure, or post-time labelling.",
+      "blocked_reason": null,
+      "limitations": [
+        "Programme PDFs contain both local Camarero racing and simulcast material, so post times require bounded local-race parsing before automatic A publication.",
+        "Conditions, awards, participants, betting, results and full racecard content remain excluded."
+      ],
+      "notes": "Reviewed A-capability evidence is preserved. Live GitHub Actions on 2026-10-02 fetched and parsed current official programme PDFs, but automatic production deliberately does not infer all PDF post times because simulcast races share the document."
+    },
+    {
+      "readiness_id": "puerto-rico--puerto-rico-camarero-entries-system--camarero-inscripciones",
+      "system_id": "puerto-rico-camarero-entries-system",
+      "system_name_en": "Hipódromo Camarero official entries",
+      "authority_source_key": "puerto-rico/hipodromo-camarero/camarero-inscripciones",
+      "racecourse_ids": [
+        "puerto-rico--hipodromo-camarero"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "daily",
+        "weekly",
+        "near_meeting"
+      ],
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "revalidation_trigger": "Revalidate when the Camarero Inscripciones route, Spanish date labels, week navigation or physical venue identity changes.",
+      "blocked_reason": null,
+      "limitations": [
+        "Automatic publication is limited to official entry dates plus Hipódromo Camarero physical identity at C.",
+        "Future week shells with no published entries are an unpublished source horizon, not evidence that racing will not run.",
+        "Programme post times remain behind the separate reviewed A-capability path until local Camarero races can be isolated safely from simulcast content.",
+        "Source absence is not non-running evidence."
+      ],
+      "notes": "Live GitHub Actions on 2026-10-02 fetched the current official Inscripciones page successfully and exposed forthcoming Camarero local race days for October 1-4. The automatic C route preserves the separate reviewed A programme evidence."
+    }
+  ],
+  "public_safe": true
+}
