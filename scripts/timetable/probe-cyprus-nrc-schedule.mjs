@@ -1,3 +1,4 @@
+import {getDocument} from 'pdfjs-dist/legacy/build/pdf.mjs';
 import {execFileSync} from 'node:child_process';
 
 const URL='https://www.nicosiaraceclub.com.cy/schedule.aspx';
@@ -59,12 +60,14 @@ async function probePdf(name){
   });
   if(!r.ok) throw new Error('PDF HTTP '+r.status+' '+url);
   const buf=Buffer.from(await r.arrayBuffer());
-  let text='';
-  try{
-    text=execFileSync('pdftotext',['-layout','-','-'],{input:buf,encoding:'utf8',maxBuffer:8*1024*1024});
-  }catch(e){
-    text='PDFTOTEXT_ERROR '+String(e?.message??e);
+  const doc=await getDocument({data:new Uint8Array(buf),disableWorker:true}).promise;
+  const pages=[];
+  for(let i=1;i<=doc.numPages;i++){
+    const page=await doc.getPage(i);
+    const tc=await page.getTextContent();
+    pages.push(tc.items.map(x=>x.str??'').join(' '));
   }
+  const text=pages.join('\n');
   return {
     url,
     bytes:buf.length,
