@@ -17,5 +17,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
       - name: Probe Nicosia Race Club schedule
         run: node scripts/timetable/probe-cyprus-nrc-schedule.mjs
