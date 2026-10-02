@@ -6,7 +6,7 @@
   "programme_state": {
     "country_target": 98,
     "countries_with_closed_decision": 98,
-    "readiness_records": 126,
+    "readiness_records": 127,
     "next_backfill_work_ids": []
   },
   "records": [
@@ -2493,7 +2493,9 @@
       "system_id": "mauritius-champ-de-mars-system",
       "system_name_en": "Champ de Mars racing calendar",
       "authority_source_key": "mauritius/mtc-jockey-club/mtc-calendar-2026",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "mauritius--champ-de-mars"
+      ],
       "coverage_scope": "single_racecourse",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -2516,18 +2518,18 @@
         "manual"
       ],
       "readiness": "manual_ready",
-      "implementation_status": "not_started",
+      "implementation_status": "manual_path_retained",
       "fallback": "official_link_only",
       "source_status": "verified",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
+      "checked_date": "2026-10-01",
+      "evidence_reviewed_at": "2026-10-01",
       "revalidation_trigger": "Revalidate when the organiser calendar or regulatory context changes.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/40-mauritius/final-summary.json",
       "limitations": [
         "A stable season-wide race-time route is not established."
       ],
-      "notes": "Manual C-level Champ de Mars calendar decision."
+      "notes": "Reviewed 2026 calendar article remains an official manual fallback. Production automation uses the live Fixtures page."
     },
     {
       "readiness_id": "argentina--argentina-palermo-system--palermo-schedules",
@@ -5810,6 +5812,55 @@
         "Source-visible absence is not non-running evidence."
       ],
       "notes": "Automatic production route uses the current NDR upcoming page. The reviewed annual 2026 calendar remains a manual countrywide fallback."
+    },
+    {
+      "readiness_id": "mauritius--mauritius-champ-de-mars-system--mtc-fixtures-2026",
+      "country_id": "mauritius",
+      "country_tracker_delivery_no": "40",
+      "system_id": "mauritius-champ-de-mars-system",
+      "system_name_en": "MTC Jockey Club Champ de Mars Fixtures",
+      "authority_source_key": "mauritius/mtc-jockey-club/mtc-fixtures-2026",
+      "racecourse_ids": [
+        "mauritius--champ-de-mars"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "daily",
+        "weekly",
+        "near_meeting"
+      ],
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-10-01",
+      "evidence_reviewed_at": "2026-10-01",
+      "revalidation_trigger": "Revalidate when MTCJC changes the Fixtures page structure, current season, or Champ de Mars identity.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/40-mauritius/final-summary.json",
+      "limitations": [
+        "Automatic route covers Champ de Mars only.",
+        "Race post times are not approved by this route.",
+        "Major-race narrative dates outside Upcoming Meetings are ignored.",
+        "Source-visible absence is not non-running evidence."
+      ],
+      "notes": "Automatic official Fixtures route publishes current source-visible Champ de Mars meeting dates at rank C."
     }
   ],
   "last_updated": "2026-09-28"
