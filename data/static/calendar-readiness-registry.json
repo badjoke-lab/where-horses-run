@@ -3267,7 +3267,9 @@
       "system_id": "nicosia-national-racing-system",
       "system_name_en": "Nicosia national racing system",
       "authority_source_key": "cyprus/nicosia-race-club/nrc-meetings-schedule",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "cyprus--nicosia-racecourse"
+      ],
       "coverage_scope": "countrywide",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -3284,27 +3286,28 @@
       },
       "source_format": "mixed",
       "access_mode": "direct",
-      "automation_mode": "manual_import",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "monthly",
-        "seasonal",
-        "manual"
+        "daily",
+        "weekly",
+        "near_meeting"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-29",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when Nicosia Race Club changes the monthly schedule links or publishes a new season calendar.",
+      "checked_date": "2026-10-02",
+      "evidence_reviewed_at": "2026-10-02",
+      "revalidation_trigger": "Revalidate when Nicosia Race Club changes the schedule page, monthly PDF filenames/format, venue identity, or publishes a new season calendar.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/53-cyprus/source-test-v2.json",
       "limitations": [
-        "Monthly schedule links may point to document files rather than a stable structured feed.",
-        "Race times and programme detail are not approved from this route.",
-        "Racecards, results, wagering content, and video links remain outside the public dataset."
+        "Automatic route publishes meeting date and Nicosia Racecourse physical identity only.",
+        "The monthly PDF Performance Start Time is not treated as a first-race or per-race post time.",
+        "Racecards, results, wagering content and video links remain outside this production route.",
+        "Source-visible absence is not non-running evidence."
       ],
-      "notes": "The sole authorised Cyprus organiser provides enough evidence for a countrywide C-level manual calendar decision."
+      "notes": "The sole authorised Cyprus organiser and its official statement that all races are held at Nicosia Racecourse support a countrywide C-level automatic calendar route."
     },
     {
       "readiness_id": "panama--presidente-remon-racing-system--presidente-remon-programa-oficial",
@@ -5812,5 +5815,5 @@
       "notes": "Automatic production route uses the current NDR upcoming page. The reviewed annual 2026 calendar remains a manual countrywide fallback."
     }
   ],
-  "last_updated": "2026-09-28"
+  "last_updated": "2026-10-02"
 }

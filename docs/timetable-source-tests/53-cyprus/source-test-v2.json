@@ -3,8 +3,8 @@
   "delivery_no": "53",
   "country_id": "cyprus",
   "country_name_en": "Cyprus",
-  "checked_date": "2026-06-29",
-  "evidence_reviewed_at": "2026-06-29",
+  "checked_date": "2026-10-02",
+  "evidence_reviewed_at": "2026-10-02",
   "country_completeness": "complete",
   "records": [
     {
@@ -12,27 +12,44 @@
       "system_id": "nicosia-national-racing-system",
       "system_name_en": "Nicosia national racing system",
       "authority_source_key": "cyprus/nicosia-race-club/nrc-meetings-schedule",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "cyprus--nicosia-racecourse"
+      ],
       "coverage_scope": "countrywide",
       "technical_rank": "C",
       "public_ceiling": "C",
-      "confirmed_fields": {"meeting_date": true, "racecourse": true, "first_race_time": false, "last_race_time": false, "per_race_post_times": false, "race_name": false, "distance": false, "surface": false, "course": false},
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
       "source_format": "mixed",
       "access_mode": "direct",
-      "automation_mode": "manual_import",
-      "refresh_classes": ["monthly", "seasonal", "manual"],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "daily",
+        "weekly",
+        "near_meeting"
+      ],
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "revalidation_trigger": "Revalidate when Nicosia Race Club changes the monthly schedule links or publishes a new season calendar.",
+      "revalidation_trigger": "Revalidate when Nicosia Race Club changes the schedule page, monthly PDF links/format, venue identity, or publishes a new season calendar.",
       "blocked_reason": null,
       "limitations": [
-        "Monthly schedule links may point to document files rather than a stable structured feed.",
-        "Race times and programme detail are not approved from this route.",
-        "Racecards, results, wagering content, and video links remain outside the public dataset."
+        "Automatic publication is limited to meeting date plus Nicosia Racecourse physical identity at rank C.",
+        "Performance Start Time in the monthly PDFs is not approved as a first-race or per-race post time.",
+        "Racecards, results, wagering content and video links remain outside this production route.",
+        "Source-visible absence is not non-running evidence."
       ],
-      "notes": "The sole authorised Cyprus organiser provides enough evidence for a countrywide C-level manual calendar decision."
+      "notes": "Live GitHub Actions acquisition on 2026-10-02 fetched the official schedule page and current monthly PDFs successfully. The sole authorised organiser and single physical racecourse close the countrywide denominator."
     }
   ],
   "public_safe": true
