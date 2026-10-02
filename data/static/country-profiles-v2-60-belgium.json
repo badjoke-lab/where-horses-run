@@ -1,1 +1,115 @@
-[{"schema_version":"2.0.0","country_id":"belgium","slug":"belgium","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-29","public_display_ceiling":"C","source_test_status":"complete","hero":{"summary_en":"The Belgian federation calendar confirms reviewed national meeting coverage.","summary_ja":"ベルギー連盟カレンダーで全国開催を確認済み。"},"overview":{"paragraphs_en":["The reviewed source is a national federation calendar covering multiple Belgian racecourses.","Race labels and post times are technically available, but the country public ceiling remains C."],"paragraphs_ja":["確認済みソースは複数のベルギー競馬場を扱う全国連盟カレンダー。","レース名や発走時刻は技術的に取得可能だが、国ページの公開上限はCを維持する。"]},"racing_types":[{"id":"thoroughbred-flat","name_en":"Flat racing","name_ja":"平地競走","summary_en":"Included in the reviewed federation calendar.","summary_ja":"確認済み連盟カレンダーに含まれる。"},{"id":"harness-racing","name_en":"Harness racing","name_ja":"ハーネス競走","summary_en":"Included in the reviewed federation calendar.","summary_ja":"確認済み連盟カレンダーに含まれる。"}],"seasonality":{"pattern":"official-source-required","summary_en":"Check the current federation calendar and filters.","summary_ja":"現行の連盟カレンダーと絞り込みを確認する。"},"schedule":{"timezone":"Europe/Brussels","utc_offset_label":"Verify current local offset","day_patterns":["official-source-required"],"time_patterns":["meeting-date-only"],"summary_en":"The public country page uses meeting dates and racecourses only despite higher technical capability.","summary_ja":"高い技術的取得能力があっても、国ページでは開催日と競馬場のみを使用する。"},"surfaces":{"ids":[],"summary_en":"Not normalized.","summary_ja":"共通化しない。"},"systems":[{"id":"belgium-federation-racing-system","name_en":"Belgian federation calendar","name_ja":"ベルギー連盟カレンダー","summary_en":"Reviewed national federation calendar with multiple racecourses.","summary_ja":"複数競馬場を扱う確認済み全国連盟カレンダー。","organiser_source_ids":["belgium-federation-calendar"],"distributor_source_ids":[]}],"principal_racecourse_ids":[],"calendar_guidance_en":"Publish meeting date and racecourse only; keep race-level detail behind the C-level public boundary.","calendar_guidance_ja":"開催日と競馬場のみ公開し、レース単位の詳細はCの公開境界内に留める。","coverage_note_en":"National federation coverage is reviewed, while stable racecourse IDs remain part of the separate inventory process.","coverage_note_ja":"全国連盟の網羅性は確認済みだが、安定した競馬場IDは別のインベントリ工程で扱う。","revalidation":{"triggers_en":["Federation calendar filters change","Racecourse list changes","Race-page structure changes"],"triggers_ja":["連盟カレンダー絞り込み変更時","競馬場一覧変更時","レースページ構造変更時"]},"related_glossary_ids":["racecourse","meeting","fixture","post-time"]}]
+[
+  {
+    "schema_version": "2.0.0",
+    "country_id": "belgium",
+    "slug": "belgium",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-10-02",
+    "public_display_ceiling": "C",
+    "source_test_status": "complete",
+    "hero": {
+      "summary_en": "Belgium retains reviewed countrywide A-capability federation evidence while a current official trotting programme is automatically routed at public rank C.",
+      "summary_ja": "ベルギーは全国A相当のレビュー済み連盟証拠を保持しつつ、現行公式トロット番組を公開Cで自動取得します。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "The earlier reviewed national federation calendar remains a separate countrywide A-capability evidence path and is not downgraded by automation.",
+        "Production automation uses the current federation trotting programme for source-visible Mons, Waregem and Tongeren meetings, publishing meeting date plus physical venue only at C. Race-level times are deliberately not published by this automatic route."
+      ],
+      "paragraphs_ja": [
+        "従来のレビュー済み全国連盟カレンダーは全国A相当の別証拠導線として維持し、自動化によって格下げしません。",
+        "production自動取得は現行連盟トロット番組からMons、Waregem、Tongerenのsource-visible開催を取得し、開催日と物理会場だけをCで公開します。レース別時刻はこの自動導線では意図的に公開しません。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "thoroughbred-flat",
+        "name_en": "Flat racing",
+        "name_ja": "平地競走",
+        "summary_en": "Included in the reviewed federation calendar.",
+        "summary_ja": "確認済み連盟カレンダーに含まれる。"
+      },
+      {
+        "id": "harness-racing",
+        "name_en": "Harness racing",
+        "name_ja": "ハーネス競走",
+        "summary_en": "Included in the reviewed federation calendar.",
+        "summary_ja": "確認済み連盟カレンダーに含まれる。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "official-source-required",
+      "summary_en": "Check the current federation calendar and filters.",
+      "summary_ja": "現行の連盟カレンダーと絞り込みを確認する。"
+    },
+    "schedule": {
+      "timezone": "Europe/Brussels",
+      "utc_offset_label": "Verify current local offset",
+      "day_patterns": [
+        "official-source-required"
+      ],
+      "time_patterns": [
+        "meeting-date-only"
+      ],
+      "summary_en": "The public country page uses meeting dates and racecourses only despite higher technical capability.",
+      "summary_ja": "高い技術的取得能力があっても、国ページでは開催日と競馬場のみを使用する。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Not normalized.",
+      "summary_ja": "共通化しない。"
+    },
+    "systems": [
+      {
+        "id": "belgium-federation-racing-system",
+        "name_en": "Belgian federation calendar",
+        "name_ja": "ベルギー連盟カレンダー",
+        "summary_en": "Reviewed national federation calendar with multiple racecourses.",
+        "summary_ja": "複数競馬場を扱う確認済み全国連盟カレンダー。",
+        "organiser_source_ids": [
+          "belgium-federation-calendar"
+        ],
+        "distributor_source_ids": []
+      },
+      {
+        "id": "belgian-trotting-programme-system",
+        "name_en": "Belgian federation trotting programme",
+        "name_ja": "ベルギー連盟トロット番組",
+        "summary_en": "Automatic C-level route for currently source-visible federation trotting meetings at Mons, Waregem and Tongeren.",
+        "summary_ja": "Mons、Waregem、Tongerenの現行source-visible連盟トロット開催を取得するCレベル自動導線。",
+        "organiser_source_ids": [
+          "belgium-trotting-public-races"
+        ],
+        "distributor_source_ids": []
+      }
+    ],
+    "principal_racecourse_ids": [
+      "belgium--hippodrome-de-wallonie",
+      "belgium--gaverbeekhippodroom",
+      "belgium--jeker-hippodroom"
+    ],
+    "calendar_guidance_en": "Use the automatic federation trotting programme for current source-visible meeting dates and mapped physical venues. Keep the earlier reviewed national A-capability evidence separate; do not publish race-level Tijd values from the C route and do not infer cancellation from source absence.",
+    "calendar_guidance_ja": "現行source-visible開催日と物理会場には連盟トロット番組の自動導線を使用します。従来の全国A相当レビュー証拠は別に保持し、C導線からレース別Tijdを公開せず、ソース上の欠落だけで中止を推定しません。",
+    "coverage_note_en": "Automatic production coverage is a federation trotting subset at rank C for currently mapped Mons, Waregem and Tongeren venues. Separate reviewed national federation evidence retains A-level technical capability and is not downgraded.",
+    "coverage_note_ja": "production自動取得は現在map済みのMons、Waregem、Tongerenを対象とする連盟トロットsubsetのCです。別のレビュー済み全国連盟証拠はA相当の技術能力を保持し、格下げしません。",
+    "revalidation": {
+      "triggers_en": [
+        "Federation trotting programme route or page structure changes",
+        "A new venue label appears",
+        "Reviewed national federation evidence changes"
+      ],
+      "triggers_ja": [
+        "連盟トロット番組導線またはページ構造変更時",
+        "新しい会場ラベル出現時",
+        "レビュー済み全国連盟証拠変更時"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture",
+      "post-time"
+    ]
+  }
+]

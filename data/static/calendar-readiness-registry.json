@@ -5813,6 +5813,58 @@
         "Source-visible absence is not non-running evidence."
       ],
       "notes": "Automatic production route uses the current NDR upcoming page. The reviewed annual 2026 calendar remains a manual countrywide fallback."
+    },
+    {
+      "readiness_id": "belgium--belgian-trotting-programme-system--belgium-trotting-public-races",
+      "country_id": "belgium",
+      "country_tracker_delivery_no": "60",
+      "system_id": "belgian-trotting-programme-system",
+      "system_name_en": "Belgian federation trotting programme",
+      "authority_source_key": "belgium/belgian-federation-horse-racing/belgium-trotting-public-races",
+      "racecourse_ids": [
+        "belgium--hippodrome-de-wallonie",
+        "belgium--gaverbeekhippodroom",
+        "belgium--jeker-hippodroom"
+      ],
+      "coverage_scope": "subset_of_authority_racecourses",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "daily",
+        "weekly",
+        "near_meeting"
+      ],
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-10-02",
+      "evidence_reviewed_at": "2026-10-02",
+      "revalidation_trigger": "Revalidate when the federation trotting programme route, venue labels, or page structure changes.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/60-belgium/source-test-v2.json",
+      "limitations": [
+        "Automatic production coverage is limited to the federation trotting programme and does not claim complete Belgian flat-racing automation.",
+        "Race-level Tijd values are deliberately not published by this C route; the separate reviewed national A-capability evidence remains preserved.",
+        "Minitrotter and TESTES/TESTEN rows are not promoted into public race-level observations because this route is meeting-level only.",
+        "Unknown venue labels fail closed for physical-identity review.",
+        "Source-visible absence is not non-running evidence."
+      ],
+      "notes": "Live GitHub Actions acquisition on 2026-10-02 exposed current Mons, Waregem and Tongeren meeting blocks. The automatic route publishes one C observation per date/physical venue and leaves the reviewed countrywide A evidence untouched."
     }
   ],
   "last_updated": "2026-10-02"

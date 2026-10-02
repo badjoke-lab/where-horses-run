@@ -1311,6 +1311,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic official Nicosia Race Club monthly schedule route. Publishes meeting date plus Nicosia Racecourse physical identity at rank C. Performance Start Time is deliberately not interpreted as race post time; source absence is not non-running evidence."
+    },
+    {
+      "system_id": "belgian-trotting-programme-system",
+      "country_id": "belgium",
+      "authority_id": "belgian-federation-horse-racing",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "belgium-trotting-public-races",
+      "detail_source_id": "belgium-trotting-public-races",
+      "schedule_adapter_id": "belgium-trotting-programme-v1",
+      "detail_adapter_id": "belgium-trotting-programme-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic official federation trotting programme route for source-visible Mons, Waregem and Tongeren meetings. Publishes meeting date plus physical venue at rank C. Existing reviewed countrywide A-capability evidence remains separate; source absence is not non-running evidence."
     }
   ]
 }
