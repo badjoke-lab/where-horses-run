@@ -1,6 +1,6 @@
 {
   "schema_version": "racecourse-location-supplement-evidence-v1",
-  "reviewed_at": "2026-10-01",
+  "reviewed_at": "2026-10-02",
   "entries": [
     {
       "id": "abbeville-racecourse",
@@ -1885,6 +1885,105 @@
       "address_observed": "Hippodrome de la Solle, Route D606 (Route de Melun), 77300 Fontainebleau, France",
       "coordinate_method": "Fontainebleau Tourisme racecourse point distributed through Cirkwi for Hippodrome de la Solle",
       "precision_note": "venue-level racecourse point and address; Fontainebleau Tourisme record updated September 2026"
+    },
+    {
+      "id": "agen-racecourse",
+      "coordinate_source_url": "https://mapcarta.com/W595244798",
+      "coordinate_observed": "44.17525, 0.60071",
+      "address_source_url": "https://www.destination-agen.com/hippodrome-d-agen/",
+      "address_observed": "Hippodrome d'Agen, Rue Victor Duruy, La Garenne, 47520 Le Passage, France",
+      "coordinate_method": "OpenStreetMap racecourse geometry surfaced via Mapcarta; venue identity/address cross-checked against Destination Agen and the official Hippodrome d'Agen access information",
+      "precision_note": "venue-level racecourse geometry; not a city-centroid or association-office point"
+    },
+    {
+      "id": "alencon-racecourse",
+      "coordinate_source_url": "https://mapcarta.com/fr/W225810513",
+      "coordinate_observed": "48.44067, 0.09008",
+      "address_source_url": "https://www.hippodrome-alencon.com/crbst_36.html",
+      "address_observed": "Hippodrome d'Alençon, 104 Rue d'Argentan, 61000 Alençon, France",
+      "coordinate_method": "OpenStreetMap racecourse geometry surfaced via Mapcarta; address cross-checked against the official Hippodrome d'Alençon site",
+      "precision_note": "venue-level racecourse point"
+    },
+    {
+      "id": "angouleme-racecourse",
+      "coordinate_source_url": "https://charentes.kidiklik.fr/sorties-moment/386249-dinosaures-lexpo-decouverte-angouleme.html",
+      "coordinate_observed": "45.619784712368, 0.13499336857831",
+      "address_source_url": "https://www.jds.fr/angouleme/sports/hippodrome-angouleme-hennessy-courses-hippiques-1541843_A",
+      "address_observed": "Hippodrome de la Tourette, 6 Rue de la Petite Tourette, 16400 La Couronne, France",
+      "coordinate_method": "event-location geocode for the named Hippodrome de la Tourette; address cross-checked against the 2026 Office de Tourisme du Pays d'Angoulême-supplied event listing",
+      "precision_note": "venue-level racecourse point; identity is Hennessy / Hippodrome de la Tourette at La Couronne"
+    },
+    {
+      "id": "arras-racecourse",
+      "coordinate_source_url": "https://mapcarta.com/fr/W120064414",
+      "coordinate_observed": "50.29377, 2.73712",
+      "address_source_url": "https://www.hippodrome-arras.com/",
+      "address_observed": "Hippodrome des Hauts-Blancs-Monts, 114 Avenue de l'Hippodrome, 62000 Arras, France",
+      "coordinate_method": "OpenStreetMap racecourse geometry surfaced via Mapcarta; address cross-checked against the official Hippodrome d'Arras site",
+      "precision_note": "venue-level racecourse point"
+    },
+    {
+      "id": "bihorel-les-rouen-racecourse",
+      "coordinate_source_url": "https://mapcarta.com/fr/W77218476",
+      "coordinate_observed": "49.45958, 1.11857",
+      "address_source_url": "https://www.bihorel.fr/agenda/courses-hippiques-hippodrome-des-trois-pipes/",
+      "address_observed": "Hippodrome des Trois Pipes, Rue de Verdun, 76420 Bihorel, France",
+      "coordinate_method": "OpenStreetMap geometry for the active Hippodrome de Bihorel / Trois Pipes; current physical identity cross-checked against the City of Bihorel and FNCH 2026 meeting notice",
+      "precision_note": "venue-level active Bihorel racecourse; deliberately not the closed former Hippodrome des Bruyères at Sotteville-lès-Rouen"
+    },
+    {
+      "id": "cordemais-racecourse",
+      "coordinate_source_url": "https://mapcarta.com/W32080077",
+      "coordinate_observed": "47.28364, -1.87995",
+      "address_source_url": "https://www.cordemais.fr/contacts/hippodrome-de-la-loire/",
+      "address_observed": "Hippodrome de la Loire, 4 Rue des Sports, 44360 Cordemais, France",
+      "coordinate_method": "OpenStreetMap racecourse geometry surfaced via Mapcarta; address cross-checked against the official City of Cordemais venue contact",
+      "precision_note": "venue-level racecourse point"
+    },
+    {
+      "id": "le-touquet-racecourse",
+      "coordinate_source_url": "https://www.cirkwi.com/fr/point-interet/4731970-courses-hippiques",
+      "coordinate_observed": "50.524352, 1.604389",
+      "address_source_url": "https://www.letouquet.com/agenda/courses-hippiques/",
+      "address_observed": "Hippodrome de la Canche, Avenue de la Dune aux Loups, 62520 Le Touquet-Paris-Plage, France",
+      "coordinate_method": "Pas-de-Calais Tourisme point distributed through Cirkwi for the 2026 race meetings; address cross-checked against Le Touquet-Paris-Plage tourism",
+      "precision_note": "venue-level racecourse point; tourism record updated August 2026"
+    },
+    {
+      "id": "nort-sur-erdre-racecourse",
+      "coordinate_source_url": "https://mapcarta.com/fr/W232078252",
+      "coordinate_observed": "47.42323, -1.50337",
+      "address_source_url": "https://www.guidedugalop.fr/professionnels/c_i-1_t-organisations/g_i-7_t-hippodromes-societes-des-courses/p_i-6555_t-nort-sur-erdre-soc-des-courses-de/",
+      "address_observed": "Hippodrome de Beaumont, 44390 Nort-sur-Erdre, France",
+      "coordinate_method": "OpenStreetMap racecourse geometry surfaced via Mapcarta; physical venue identity cross-checked against Guide Officiel du Galop",
+      "precision_note": "venue-level racecourse point for Hippodrome de Beaumont at Nort-sur-Erdre"
+    },
+    {
+      "id": "saint-brieuc-racecourse",
+      "coordinate_source_url": "https://verymap.net/sport/installations/I223890005/hippodrome-de-la-baie/",
+      "coordinate_observed": "48.46075, -2.71633",
+      "address_source_url": "https://www.yffiniac.bzh/decouvrir-et-explorer/tourisme/sites-touristiques-a-decouvrir/",
+      "address_observed": "Hippodrome de la Baie, Rue Saint-Laurent, 22120 Yffiniac, France",
+      "coordinate_method": "2026 French sports-facility dataset (Data ES / Ministère des Sports) as surfaced by Verymap; address cross-checked against the official Yffiniac municipal site",
+      "precision_note": "venue-level sports installation point"
+    },
+    {
+      "id": "segre-racecourse",
+      "coordinate_source_url": "https://www.cirkwi.com/fr/point-interet/463038-hippodrome-de-la-lorie",
+      "coordinate_observed": "47.678481, -0.848547",
+      "address_source_url": "https://www.cirkwi.com/fr/point-interet/463038-hippodrome-de-la-lorie",
+      "address_observed": "Hippodrome de la Lorie, La Lorie, 49500 Segré-en-Anjou Bleu, France",
+      "coordinate_method": "Pays de la Loire tourism data distributed through Cirkwi for Hippodrome de la Lorie",
+      "precision_note": "venue-level racecourse point; record updated July 2026"
+    },
+    {
+      "id": "strasbourg-racecourse",
+      "coordinate_source_url": "https://www.hippodrome-strasbourg.fr/contacts.html",
+      "coordinate_observed": "48.68542, 7.784564",
+      "address_source_url": "https://www.hippodrome-strasbourg.fr/contacts.html",
+      "address_observed": "Hippodrome de Strasbourg-Hoerdt, 97 Rue du Cheval Noir, 67720 Hoerdt, France",
+      "coordinate_method": "official Hippodrome de Strasbourg-Hoerdt contact page GPS coordinates",
+      "precision_note": "venue-level official GPS point"
     },
     {
       "id": "netherlands--victoria-park-wolvega",
