@@ -66,3 +66,18 @@ jobs:
           echo "::group::Equidrome inline script clues"
           cat /tmp/malta-probe/equidrome-trot-oct.html /tmp/malta-probe/equidrome-trot-nov.html /tmp/malta-probe/equidrome-trot-dec.html             | grep -Ei 'ajax|meeting|calendar|event|race|mon=|year|month|fetch\(|\.php|wp-json'             | sed -E 's/<[^>]+>/ /g'             | sed -E 's/[[:space:]]+/ /g'             | head -240 || true
           echo "::endgroup::"
+
+
+      - name: Inspect Malta Equidrome MRC API plugin JavaScript
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          base='https://www.maltaequidrome.com/wp-content/plugins/maltaequidrome-mrc-api'
+          for file in events.js general.js race.js meeting.js; do
+            out="/tmp/$file"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$base/$file?ver=7.1.2" || true)"
+            echo "::group::$file HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0)"
+            grep -nEi 'ajax|action|url|calendar|meeting|race|month|year|date|nonce|token|api' "$out" | head -260 || true
+            echo "::endgroup::"
+          done
