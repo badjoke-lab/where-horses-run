@@ -208,3 +208,31 @@ jobs:
           for p in pdfs: print('PDF',p)
           PY
           done
+
+
+      - name: Probe Camarero forward programme weeks
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          for semana in -1 -2 -3 -4; do
+            url="https://www.hipodromo-camarero.com/carreras/programas?semana=$semana"
+            out="/tmp/camarero-forward-$semana.html"
+            code="$(curl -L -sS -A "$UA" --retry 2 --retry-delay 2 --retry-all-errors --connect-timeout 20 --max-time 60 -o "$out" -w '%{http_code}' "$url" || true)"
+            python3 - "$semana" "$code" "$out" <<'PY'
+          import html,re,sys
+          from pathlib import Path
+          semana,code,path=sys.argv[1:]
+          raw=Path(path).read_text(errors='replace')
+          plain=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+          plain=re.sub(r'<style\b[^>]*>.*?</style>',' ',plain,flags=re.I|re.S)
+          plain=html.unescape(re.sub(r'<[^>]+>',' ',plain))
+          plain=re.sub(r'\s+',' ',plain)
+          week=re.search(r'Semana:\s*(.*?)(?:Semana anterior|Siguiente|Fecha\s*:)',plain,re.I)
+          rx=re.compile(r'Programa\s+(?:lunes|martes|miércoles|miercoles|jueves|viernes|sábado|sabado|domingo),\s*(\d{1,2})\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\s+de\s+(20\d{2})',re.I)
+          dates=[m.group(0) for m in rx.finditer(plain)]
+          pdfs=sorted(set(html.unescape(x) for x in re.findall(r'/api/public/pdf/[0-9a-f-]+\?v=\d+',raw,re.I)))
+          print(f'FORWARD semana={semana} HTTP={code} BYTES={len(raw)} RANGE={week.group(1).strip() if week else "MISSING"} PROGRAM_COUNT={len(dates)} PDF_COUNT={len(pdfs)}')
+          for d in dates: print('FORWARD_PROGRAM',d)
+          PY
+          done
