@@ -1,6 +1,6 @@
 import {execFileSync} from 'node:child_process';
 
-const URL='https://belgiumhorseracing.be/koersen/';
+const URL='https://public.trotting.be/races';
 
 function decode(v){
   return String(v??'')
@@ -69,7 +69,7 @@ for(const m of page.html.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?
   const href=decode(m[1]).trim();
   const text=textify(m[2]);
   if(!text) continue;
-  if(/koers|race|hippo|waregem|mons|ostende|oostende|tongeren|kuurne|walloni|belg/i.test(text+' '+href)){
+  if(/koers|race|hippo|waregem|mons|ostende|oostende|tongeren|kuurne|walloni|belg|course|programma/i.test(text+' '+href)){
     anchors.push({text,href});
   }
 }
@@ -81,7 +81,9 @@ console.log(JSON.stringify({
   visible_chars:visible.length,
   has_2026:/2026/.test(visible),
   date_hits:[...new Map(dateHits.map(x=>[x.match+'|'+x.context,x])).values()].slice(0,40),
-  anchor_hits:[...new Map(anchors.map(x=>[x.text+'|'+x.href,x])).values()].slice(0,60)
+  anchor_hits:[...new Map(anchors.map(x=>[x.text+'|'+x.href,x])).values()].slice(0,60),
+  venue_contexts:['Mons','Waregem','Tongeren','Kuurne'].map(name=>{const i=visible.toLowerCase().indexOf(name.toLowerCase());return {name,context:i>=0?visible.slice(Math.max(0,i-160),Math.min(visible.length,i+420)):null};}),
+  visible_prefix:visible.slice(0,6000)
 },null,2));
 
 if(!/2026/.test(visible)) process.exitCode=1;
