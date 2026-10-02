@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-10-02T10:27:08.384Z",
+  "generated_at": "2026-10-02T10:32:10.868Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -12550,7 +12550,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-02T10:27:08.384Z",
+        "generated_at": "2026-10-02T10:32:10.868Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12579,7 +12579,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-02T10:27:08.384Z",
+        "generated_at": "2026-10-02T10:32:10.868Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12784,7 +12784,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-02T10:27:08.384Z",
+        "generated_at": "2026-10-02T10:32:10.868Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -35377,6 +35377,65 @@
       }
     },
     {
+      "meeting_id": "malaysia-2026-10-03-perak",
+      "country_id": "malaysia",
+      "authority_id": "mra",
+      "racing_system_id": "malaysia-mra-system",
+      "timezone": "Asia/Kuala_Lumpur",
+      "racecourse_id": "malaysia--perak-turf-club",
+      "date": "2026-10-03",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "mra-fixtures",
+        "route_id": "mra-fixtures",
+        "source_status": "verified",
+        "official_source_url": "https://malayanracing.com/pdf/MRA-Racing-Fixture-2026.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-02",
+        "generated_at": "2026-10-02T10:32:07.710Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "mra-fixtures",
+          "official_source_url": "https://malayanracing.com/pdf/MRA-Racing-Fixture-2026.pdf",
+          "observed_at": "2026-10-02T10:32:07.710Z",
+          "successfully_verified_at": "2026-10-02T10:32:07.710Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "mra-fixtures",
+          "official_source_url": "https://malayanracing.com/pdf/MRA-Racing-Fixture-2026.pdf",
+          "observed_at": "2026-10-02T10:32:07.710Z",
+          "successfully_verified_at": "2026-10-02T10:32:07.710Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-02T10:32:07.710Z",
+        "status": "success",
+        "source_id": "mra-fixtures",
+        "route_id": "mra-fixtures",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "mexico-americas-2026-10-03",
       "country_id": "mexico",
       "authority_id": "hipodromo-de-las-americas",
@@ -37987,6 +38046,65 @@
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
         "reason": "No completion rule exists for detail status unsupported."
+      }
+    },
+    {
+      "meeting_id": "malaysia-2026-10-04-selangor",
+      "country_id": "malaysia",
+      "authority_id": "mra",
+      "racing_system_id": "malaysia-mra-system",
+      "timezone": "Asia/Kuala_Lumpur",
+      "racecourse_id": "malaysia--selangor-turf-club",
+      "date": "2026-10-04",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "mra-fixtures",
+        "route_id": "mra-fixtures",
+        "source_status": "verified",
+        "official_source_url": "https://malayanracing.com/pdf/MRA-Racing-Fixture-2026.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-02",
+        "generated_at": "2026-10-02T10:32:07.710Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "mra-fixtures",
+          "official_source_url": "https://malayanracing.com/pdf/MRA-Racing-Fixture-2026.pdf",
+          "observed_at": "2026-10-02T10:32:07.710Z",
+          "successfully_verified_at": "2026-10-02T10:32:07.710Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "mra-fixtures",
+          "official_source_url": "https://malayanracing.com/pdf/MRA-Racing-Fixture-2026.pdf",
+          "observed_at": "2026-10-02T10:32:07.710Z",
+          "successfully_verified_at": "2026-10-02T10:32:07.710Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-02T10:32:07.710Z",
+        "status": "success",
+        "source_id": "mra-fixtures",
+        "route_id": "mra-fixtures",
+        "error_code": null
       }
     },
     {
