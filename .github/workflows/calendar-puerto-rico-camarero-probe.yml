@@ -64,3 +64,56 @@ jobs:
           probe inscripciones 'https://www.hipodromo-camarero.com/carreras/inscripciones'
           probe programa-dia 'https://www.hipodromo-camarero.com/programa-de-carreras/'
           probe download-dia 'https://hipodromo-camarero.com/downloads/programa-del-dia/'
+
+
+      - name: Extract Camarero programme document targets
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45             'https://www.hipodromo-camarero.com/carreras/programas'             -o /tmp/camarero-programas.html
+
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          import html,re
+
+          raw=Path('/tmp/camarero-programas.html').read_text(errors='replace')
+
+          class P(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.stack=[]
+                  self.anchors=[]
+              def handle_starttag(self,tag,attrs):
+                  d=dict(attrs)
+                  self.stack.append((tag,d,[]))
+              def handle_data(self,data):
+                  for i in range(len(self.stack)):
+                      self.stack[i][2].append(data)
+              def handle_endtag(self,tag):
+                  for i in range(len(self.stack)-1,-1,-1):
+                      if self.stack[i][0]==tag:
+                          t,a,parts=self.stack.pop(i)
+                          if t=='a':
+                              self.anchors.append((a,' '.join(parts)))
+                          break
+          p=P(); p.feed(raw)
+          print('ANCHORS_WITH_DOWNLOAD_OR_PROGRAMME_CONTEXT')
+          for attrs,text in p.anchors:
+              txt=re.sub(r'\s+',' ',html.unescape(text)).strip()
+              blob=(txt+' '+str(attrs)).lower()
+              if any(k in blob for k in ['descargar','programa','2026','download','pdf']):
+                  print('TEXT=',txt[:300],'ATTRS=',attrs)
+
+          print('RAW_CONTEXT_AROUND_DESCARGAR')
+          for m in list(re.finditer(r'Descargar',raw,re.I))[:20]:
+              print('---')
+              print(html.unescape(raw[max(0,m.start()-1800):m.end()+500])[:3000])
+
+          print('CANDIDATE_URL_ATTRS')
+          for m in re.finditer(r'(?:href|src|data-[a-z0-9_-]+)=["\']([^"\']+)["\']',raw,re.I):
+              u=html.unescape(m.group(1))
+              if any(k in u.lower() for k in ['2026','pdf','program','archivo','file','download','document','media','uploads']):
+                  print(m.group(0)[:1200])
+          PY
