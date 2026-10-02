@@ -59,6 +59,30 @@ on:
       - 'scripts/timetable/run-hungary-kincsem-galopp-official-window.mjs'
       - 'scripts/timetable/dominican-hvc-core.mjs'
       - 'scripts/timetable/run-dominican-hvc-official-window.mjs'
+      - 'scripts/timetable/norway-dnt-core.mjs'
+      - 'scripts/timetable/run-norway-dnt-official-window.mjs'
+      - 'scripts/timetable/norway-ovrevoll-core.mjs'
+      - 'scripts/timetable/run-norway-ovrevoll-official-window.mjs'
+      - 'scripts/timetable/austria-krieau-calendar-core.mjs'
+      - 'scripts/timetable/run-austria-krieau-official-window.mjs'
+      - 'scripts/timetable/croatia-hgs-calendar-core.mjs'
+      - 'scripts/timetable/run-croatia-hgs-official-window.mjs'
+      - 'scripts/timetable/serbia-belgrade-calendar-core.mjs'
+      - 'scripts/timetable/run-serbia-belgrade-official-window.mjs'
+      - 'scripts/timetable/switzerland-suisse-trot-calendar-core.mjs'
+      - 'scripts/timetable/run-switzerland-suisse-trot-official-window.mjs'
+      - 'scripts/timetable/switzerland-galop-suisse-calendar-core.mjs'
+      - 'scripts/timetable/run-switzerland-galop-suisse-official-window.mjs'
+      - 'scripts/timetable/netherlands-ndr-calendar-core.mjs'
+      - 'scripts/timetable/run-netherlands-ndr-official-window.mjs'
+      - 'scripts/timetable/poland-pkwk-calendar-core.mjs'
+      - 'scripts/timetable/run-poland-pkwk-official-window.mjs'
+      - 'scripts/timetable/romania-ploiesti-calendar-core.mjs'
+      - 'scripts/timetable/run-romania-ploiesti-official-window.mjs'
+      - 'scripts/timetable/malaysia-mra-calendar-core.mjs'
+      - 'scripts/timetable/run-malaysia-mra-official-window.mjs'
+      - 'scripts/timetable/cyprus-nrc-calendar-core.mjs'
+      - 'scripts/timetable/run-cyprus-nrc-official-window.mjs'
       - 'scripts/timetable/italy-masaf-core.mjs'
       - 'scripts/timetable/run-italy-masaf-official-window.mjs'
       - 'scripts/check-calendar-public-map-parity.mjs'
@@ -160,6 +184,30 @@ on:
       - 'scripts/timetable/run-hungary-kincsem-galopp-official-window.mjs'
       - 'scripts/timetable/dominican-hvc-core.mjs'
       - 'scripts/timetable/run-dominican-hvc-official-window.mjs'
+      - 'scripts/timetable/norway-dnt-core.mjs'
+      - 'scripts/timetable/run-norway-dnt-official-window.mjs'
+      - 'scripts/timetable/norway-ovrevoll-core.mjs'
+      - 'scripts/timetable/run-norway-ovrevoll-official-window.mjs'
+      - 'scripts/timetable/austria-krieau-calendar-core.mjs'
+      - 'scripts/timetable/run-austria-krieau-official-window.mjs'
+      - 'scripts/timetable/croatia-hgs-calendar-core.mjs'
+      - 'scripts/timetable/run-croatia-hgs-official-window.mjs'
+      - 'scripts/timetable/serbia-belgrade-calendar-core.mjs'
+      - 'scripts/timetable/run-serbia-belgrade-official-window.mjs'
+      - 'scripts/timetable/switzerland-suisse-trot-calendar-core.mjs'
+      - 'scripts/timetable/run-switzerland-suisse-trot-official-window.mjs'
+      - 'scripts/timetable/switzerland-galop-suisse-calendar-core.mjs'
+      - 'scripts/timetable/run-switzerland-galop-suisse-official-window.mjs'
+      - 'scripts/timetable/netherlands-ndr-calendar-core.mjs'
+      - 'scripts/timetable/run-netherlands-ndr-official-window.mjs'
+      - 'scripts/timetable/poland-pkwk-calendar-core.mjs'
+      - 'scripts/timetable/run-poland-pkwk-official-window.mjs'
+      - 'scripts/timetable/romania-ploiesti-calendar-core.mjs'
+      - 'scripts/timetable/run-romania-ploiesti-official-window.mjs'
+      - 'scripts/timetable/malaysia-mra-calendar-core.mjs'
+      - 'scripts/timetable/run-malaysia-mra-official-window.mjs'
+      - 'scripts/timetable/cyprus-nrc-calendar-core.mjs'
+      - 'scripts/timetable/run-cyprus-nrc-official-window.mjs'
       - 'scripts/timetable/italy-masaf-core.mjs'
       - 'scripts/timetable/run-italy-masaf-official-window.mjs'
       - 'scripts/check-calendar-public-map-parity.mjs'
@@ -676,6 +724,42 @@ jobs:
           node scripts/timetable/run-dominican-hvc-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/dominican-hvc.json
+          node scripts/timetable/run-norway-dnt-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/norway-dnt.json
+          node scripts/timetable/run-norway-ovrevoll-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/norway-ovrevoll.json
+          node scripts/timetable/run-austria-krieau-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/austria.json
+          node scripts/timetable/run-croatia-hgs-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/croatia.json
+          node scripts/timetable/run-serbia-belgrade-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/serbia.json
+          node scripts/timetable/run-switzerland-suisse-trot-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/switzerland-trot.json
+          node scripts/timetable/run-switzerland-galop-suisse-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/switzerland-galop.json
+          node scripts/timetable/run-netherlands-ndr-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/netherlands.json
+          node scripts/timetable/run-poland-pkwk-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/poland.json
+          node scripts/timetable/run-romania-ploiesti-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/romania.json
+          node scripts/timetable/run-malaysia-mra-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/malaysia.json
+          node scripts/timetable/run-cyprus-nrc-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/cyprus.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -714,7 +798,19 @@ jobs:
             --artifact=.calendar-unified/czech.json \
             --artifact=.calendar-unified/denmark.json \
             --artifact=.calendar-unified/hungary.json \
-            --artifact=.calendar-unified/dominican-hvc.json
+            --artifact=.calendar-unified/dominican-hvc.json \
+            --artifact=.calendar-unified/norway-dnt.json \
+            --artifact=.calendar-unified/norway-ovrevoll.json \
+            --artifact=.calendar-unified/austria.json \
+            --artifact=.calendar-unified/croatia.json \
+            --artifact=.calendar-unified/serbia.json \
+            --artifact=.calendar-unified/switzerland-trot.json \
+            --artifact=.calendar-unified/switzerland-galop.json \
+            --artifact=.calendar-unified/netherlands.json \
+            --artifact=.calendar-unified/poland.json \
+            --artifact=.calendar-unified/romania.json \
+            --artifact=.calendar-unified/malaysia.json \
+            --artifact=.calendar-unified/cyprus.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -933,6 +1029,78 @@ jobs:
             --authority-id=hipodromo-v-centenario \
             --racing-system-id=hvc-racing-system \
             --timezone=America/Santo_Domingo
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/norway-dnt.json \
+            --country-id=norway \
+            --authority-id=det-norske-travselskap \
+            --racing-system-id=norway-dnt-harness-system \
+            --timezone=Europe/Oslo
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/norway-ovrevoll.json \
+            --country-id=norway \
+            --authority-id=ovrevoll \
+            --racing-system-id=norway-ovrevoll-gallop-system \
+            --timezone=Europe/Oslo
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/austria.json \
+            --country-id=austria \
+            --authority-id=wiener-trabrenn-verein \
+            --racing-system-id=austria-krieau-calendar-system \
+            --timezone=Europe/Vienna
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/croatia.json \
+            --country-id=croatia \
+            --authority-id=hrvatski-galopski-savez \
+            --racing-system-id=croatian-gallop-system \
+            --timezone=Europe/Zagreb
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/serbia.json \
+            --country-id=serbia \
+            --authority-id=belgrade-hippodrome \
+            --racing-system-id=serbia-belgrade-hippodrome-system \
+            --timezone=Europe/Belgrade
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/switzerland-trot.json \
+            --country-id=switzerland \
+            --authority-id=suisse-trot \
+            --racing-system-id=switzerland-suisse-trot-system \
+            --timezone=Europe/Zurich
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/switzerland-galop.json \
+            --country-id=switzerland \
+            --authority-id=galop-suisse \
+            --racing-system-id=switzerland-galop-suisse-system \
+            --timezone=Europe/Zurich
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/netherlands.json \
+            --country-id=netherlands \
+            --authority-id=ndr \
+            --racing-system-id=netherlands-ndr-racing-calendar-system \
+            --timezone=Europe/Amsterdam
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/poland.json \
+            --country-id=poland \
+            --authority-id=pkwk \
+            --racing-system-id=poland-pkwk-national-plan-system \
+            --timezone=Europe/Warsaw
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/romania.json \
+            --country-id=romania \
+            --authority-id=csm-ploiesti \
+            --racing-system-id=romania-ploiesti-system \
+            --timezone=Europe/Bucharest
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/malaysia.json \
+            --country-id=malaysia \
+            --authority-id=mra \
+            --racing-system-id=malaysia-mra-system \
+            --timezone=Asia/Kuala_Lumpur
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/cyprus.json \
+            --country-id=cyprus \
+            --authority-id=nicosia-race-club \
+            --racing-system-id=nicosia-national-racing-system \
+            --timezone=Europe/Nicosia
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
@@ -1070,6 +1238,42 @@ jobs:
             node scripts/timetable/run-dominican-hvc-official-window.mjs \
               --days="${{ steps.scope.outputs.days }}" \
               --output=.calendar-unified/dominican-hvc.json
+            node scripts/timetable/run-norway-dnt-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/norway-dnt.json
+            node scripts/timetable/run-norway-ovrevoll-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/norway-ovrevoll.json
+            node scripts/timetable/run-austria-krieau-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/austria.json
+            node scripts/timetable/run-croatia-hgs-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/croatia.json
+            node scripts/timetable/run-serbia-belgrade-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/serbia.json
+            node scripts/timetable/run-switzerland-suisse-trot-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/switzerland-trot.json
+            node scripts/timetable/run-switzerland-galop-suisse-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/switzerland-galop.json
+            node scripts/timetable/run-netherlands-ndr-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/netherlands.json
+            node scripts/timetable/run-poland-pkwk-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/poland.json
+            node scripts/timetable/run-romania-ploiesti-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/romania.json
+            node scripts/timetable/run-malaysia-mra-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/malaysia.json
+            node scripts/timetable/run-cyprus-nrc-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-unified/cyprus.json
             node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --artifact=.calendar-unified/uae.json \
@@ -1106,7 +1310,19 @@ jobs:
             --artifact=.calendar-unified/czech.json \
             --artifact=.calendar-unified/denmark.json \
             --artifact=.calendar-unified/hungary.json \
-            --artifact=.calendar-unified/dominican-hvc.json
+            --artifact=.calendar-unified/dominican-hvc.json \
+            --artifact=.calendar-unified/norway-dnt.json \
+            --artifact=.calendar-unified/norway-ovrevoll.json \
+            --artifact=.calendar-unified/austria.json \
+            --artifact=.calendar-unified/croatia.json \
+            --artifact=.calendar-unified/serbia.json \
+            --artifact=.calendar-unified/switzerland-trot.json \
+            --artifact=.calendar-unified/switzerland-galop.json \
+            --artifact=.calendar-unified/netherlands.json \
+            --artifact=.calendar-unified/poland.json \
+            --artifact=.calendar-unified/romania.json \
+            --artifact=.calendar-unified/malaysia.json \
+            --artifact=.calendar-unified/cyprus.json
             node scripts/timetable/apply-official-rolling-observations.mjs \
               --artifact=.calendar-unified/hkjc.json \
               --country-id=hong-kong \
@@ -1323,6 +1539,78 @@ jobs:
               --authority-id=hipodromo-v-centenario \
               --racing-system-id=hvc-racing-system \
               --timezone=America/Santo_Domingo
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/norway-dnt.json \
+              --country-id=norway \
+              --authority-id=det-norske-travselskap \
+              --racing-system-id=norway-dnt-harness-system \
+              --timezone=Europe/Oslo
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/norway-ovrevoll.json \
+              --country-id=norway \
+              --authority-id=ovrevoll \
+              --racing-system-id=norway-ovrevoll-gallop-system \
+              --timezone=Europe/Oslo
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/austria.json \
+              --country-id=austria \
+              --authority-id=wiener-trabrenn-verein \
+              --racing-system-id=austria-krieau-calendar-system \
+              --timezone=Europe/Vienna
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/croatia.json \
+              --country-id=croatia \
+              --authority-id=hrvatski-galopski-savez \
+              --racing-system-id=croatian-gallop-system \
+              --timezone=Europe/Zagreb
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/serbia.json \
+              --country-id=serbia \
+              --authority-id=belgrade-hippodrome \
+              --racing-system-id=serbia-belgrade-hippodrome-system \
+              --timezone=Europe/Belgrade
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/switzerland-trot.json \
+              --country-id=switzerland \
+              --authority-id=suisse-trot \
+              --racing-system-id=switzerland-suisse-trot-system \
+              --timezone=Europe/Zurich
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/switzerland-galop.json \
+              --country-id=switzerland \
+              --authority-id=galop-suisse \
+              --racing-system-id=switzerland-galop-suisse-system \
+              --timezone=Europe/Zurich
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/netherlands.json \
+              --country-id=netherlands \
+              --authority-id=ndr \
+              --racing-system-id=netherlands-ndr-racing-calendar-system \
+              --timezone=Europe/Amsterdam
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/poland.json \
+              --country-id=poland \
+              --authority-id=pkwk \
+              --racing-system-id=poland-pkwk-national-plan-system \
+              --timezone=Europe/Warsaw
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/romania.json \
+              --country-id=romania \
+              --authority-id=csm-ploiesti \
+              --racing-system-id=romania-ploiesti-system \
+              --timezone=Europe/Bucharest
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/malaysia.json \
+              --country-id=malaysia \
+              --authority-id=mra \
+              --racing-system-id=malaysia-mra-system \
+              --timezone=Asia/Kuala_Lumpur
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-unified/cyprus.json \
+              --country-id=cyprus \
+              --authority-id=nicosia-race-club \
+              --racing-system-id=nicosia-national-racing-system \
+              --timezone=Europe/Nicosia
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
             node scripts/timetable/apply-meeting-presence-dispositions.mjs \
             --artifact=.calendar-unified/hkjc.json \
