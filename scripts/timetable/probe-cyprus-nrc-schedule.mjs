@@ -51,7 +51,7 @@ async function fetchHtml(url){
 const page=await fetchHtml(URL);
 
 async function probePdf(name){
-  const url=new URL('html_pages/'+name,URL).href;
+  const url=new globalThis.URL('html_pages/'+name,URL).href;
   const r=await fetch(url,{
     redirect:'follow',
     headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'},
