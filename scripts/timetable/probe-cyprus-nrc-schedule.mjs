@@ -56,7 +56,10 @@ for(const m of page.html.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?
   const label=visibleText(m[2]);
   if(!href) continue;
   if(/january|february|march|april|may|june|july|august|september|october|november|december|schedule|race|meeting|pdf/i.test(label+' '+href)){
-    anchors.push({label,href});
+    const openTag=m[0].slice(0,m[0].indexOf('>')+1);
+    const onclick=(openTag.match(/onclick=[\"']([^\"']*)[\"']/i)||[])[1]??null;
+    const id=(openTag.match(/id=[\"']([^\"']*)[\"']/i)||[])[1]??null;
+    anchors.push({label,href,onclick,id,open_tag:openTag});
   }
 }
 const forms=[...page.html.matchAll(/<form\b[^>]*action=["']?([^"' >]+)?/gi)].map(m=>m[1]??'');
@@ -70,7 +73,9 @@ console.log(JSON.stringify({
   month_labels:['January','February','March','April','May','June','July','August','September','October','November','December'].filter(m=>new RegExp(m,'i').test(text)),
   anchor_hits:[...new Map(anchors.map(x=>[x.label+'|'+x.href,x])).values()].slice(0,80),
   forms:forms.slice(0,10),
-  inputs:inputs.slice(0,40)
+  inputs:inputs.slice(0,40),
+  october_context:(()=>{const i=page.html.toLowerCase().indexOf('october'); return i>=0?page.html.slice(Math.max(0,i-1200),Math.min(page.html.length,i+1800)):null;})(),
+  postback_tokens:[...page.html.matchAll(/__doPostBack\\(([^)]*)\\)/gi)].map(m=>m[1]).slice(0,80)
 },null,2));
 
 if(!/Race Meetings\s*Schedule/i.test(text)) process.exitCode=1;
