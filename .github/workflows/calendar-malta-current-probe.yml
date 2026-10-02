@@ -81,3 +81,26 @@ jobs:
             grep -nEi 'ajax|action|url|calendar|meeting|race|month|year|date|nonce|token|api' "$out" | head -260 || true
             echo "::endgroup::"
           done
+
+
+      - name: Probe direct Malta Racing Club article ids after 446
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          for id in $(seq 447 455); do
+            url="https://www.maltaracingclub.com/newsdetails.php?id=$id"
+            out="/tmp/mrc-$id.html"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+            title="$(grep -Eio '<title>[^<]+' "$out" | head -1 | sed -E 's/<title>//I' || true)"
+            datehit="$(grep -Eio '(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)[^<]{0,40}(September|October|November|December)[^<]{0,20}2026' "$out" | head -1 || true)"
+            calhit="$(grep -Eio 'Racing Calendar[^<]{0,220}|end of 2026' "$out" | head -8 | tr '\n' ' ' || true)"
+            echo "ARTICLE id=$id HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) TITLE=$title DATE=$datehit HIT=$calhit"
+            if grep -Eqi 'Racing Calendar|end of 2026' "$out"; then
+              echo "::group::ARTICLE-$id-ASSETS"
+              grep -Eo 'https?://[^"'"'"' <>]+\.(pdf|jpg|jpeg|png)(\?[^"'"'"' <>]*)?|[^"'"'"' <>]+\.(pdf|jpg|jpeg|png)(\?[^"'"'"' <>]*)?' "$out" | sort -u | head -160 || true
+              echo "-- text date candidates --"
+              grep -Eio '([0-3]?[0-9][/-][01]?[0-9][/-]2026|[0-3]?[0-9][[:space:]]+(October|November|December)[[:space:]]+2026)' "$out" | sort -u | head -120 || true
+              echo "::endgroup::"
+            fi
+          done
