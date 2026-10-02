@@ -49,6 +49,34 @@ async function fetchHtml(url){
 }
 
 const page=await fetchHtml(URL);
+
+async function probePdf(name){
+  const url=new URL('html_pages/'+name,URL).href;
+  const r=await fetch(url,{
+    redirect:'follow',
+    headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'},
+    signal:AbortSignal.timeout(20000)
+  });
+  if(!r.ok) throw new Error('PDF HTTP '+r.status+' '+url);
+  const buf=Buffer.from(await r.arrayBuffer());
+  let text='';
+  try{
+    text=execFileSync('pdftotext',['-layout','-','-'],{input:buf,encoding:'utf8',maxBuffer:8*1024*1024});
+  }catch(e){
+    text='PDFTOTEXT_ERROR '+String(e?.message??e);
+  }
+  return {
+    url,
+    bytes:buf.length,
+    prefix:visibleText(text).slice(0,5000),
+    date_tokens:[...text.matchAll(/\b(\d{1,2})[\/.\-](\d{1,2})(?:[\/.\-](20\d{2}|\d{2}))?\b/g)].map(m=>m[0]).slice(0,120)
+  };
+}
+const monthlyPdfs=[];
+for(const name of ['schedule_oct.pdf','schedule_nov.pdf','schedule_dec.pdf']){
+  monthlyPdfs.push(await probePdf(name));
+}
+
 const text=visibleText(page.html);
 const anchors=[];
 for(const m of page.html.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)){
@@ -75,7 +103,8 @@ console.log(JSON.stringify({
   forms:forms.slice(0,10),
   inputs:inputs.slice(0,40),
   october_context:(()=>{const i=page.html.toLowerCase().indexOf('october'); return i>=0?page.html.slice(Math.max(0,i-1200),Math.min(page.html.length,i+1800)):null;})(),
-  postback_tokens:[...page.html.matchAll(/__doPostBack\\(([^)]*)\\)/gi)].map(m=>m[1]).slice(0,80)
+  postback_tokens:[...page.html.matchAll(/__doPostBack\\(([^)]*)\\)/gi)].map(m=>m[1]).slice(0,80),
+  monthly_pdfs:monthlyPdfs
 },null,2));
 
 if(!/Race Meetings\s*Schedule/i.test(text)) process.exitCode=1;
