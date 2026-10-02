@@ -164,3 +164,54 @@ jobs:
               print('REST_PARSE_ERROR',repr(e))
               print(Path('/tmp/malta-page74.json').read_text(errors='replace')[:12000])
           PY
+
+
+      - name: Inspect Malta Equidrome Events calendar
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          for url in             'https://www.maltaequidrome.com/events/'             'https://www.maltaequidrome.com/events/?mon=10&y=2026'             'https://www.maltaequidrome.com/events/?mon=11&y=2026'             'https://www.maltaequidrome.com/wp-json/wp/v2/pages/33'
+          do
+            safe="$(echo "$url" | tr '/:?&=' '_')"
+            out="/tmp/$safe"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+            echo "::group::$url HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0)"
+            python3 - "$out" <<'PY'
+          import html, json, re, sys
+          from pathlib import Path
+          p=Path(sys.argv[1])
+          raw=p.read_text(errors='replace')
+          if raw.lstrip().startswith('{'):
+              try:
+                  o=json.loads(raw)
+                  raw=(o.get('content') or {}).get('rendered','') or raw
+                  print('REST_SLUG',o.get('slug'),'LINK',o.get('link'),'RENDERED_BYTES',len(raw))
+              except Exception as e:
+                  print('JSON_ERROR',repr(e))
+          print('MATCHES')
+          pats=[
+              r'href=["\'][^"\']*(?:meeting|race|event|mon=|y=)[^"\']*["\']',
+              r'data-[a-zA-Z0-9_-]+=["\'][^"\']+["\']',
+              r'(?:0?[1-9]|[12][0-9]|3[01])[-/.](?:0?[1-9]|1[0-2])[-/.]2026',
+              r'2026[-/.](?:0[1-9]|1[0-2])[-/.](?:0[1-9]|[12][0-9]|3[01])',
+              r'(?:Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)[^<]{0,100}(?:October|November|December)[^<]{0,60}2026',
+              r'(?:October|November|December)[^<]{0,100}2026',
+          ]
+          seen=set()
+          for pat in pats:
+              for m in re.finditer(pat,raw,re.I):
+                  s=html.unescape(m.group(0))
+                  if s not in seen:
+                      seen.add(s); print(s[:600])
+          plain=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+          plain=re.sub(r'<style\b[^>]*>.*?</style>',' ',plain,flags=re.I|re.S)
+          plain=html.unescape(re.sub(r'<[^>]+>',' ',plain))
+          plain=re.sub(r'\s+',' ',plain)
+          for needle in ['October 2026','November 2026','Racing','Trot','Meeting','04 October','4 October']:
+              pos=plain.lower().find(needle.lower())
+              if pos>=0:
+                  print('WINDOW',needle,plain[max(0,pos-350):pos+2200])
+          PY
+            echo "::endgroup::"
+          done
