@@ -1,0 +1,66 @@
+name: Puerto Rico Camarero current source probe
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/calendar-puerto-rico-camarero-probe.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Probe current official Camarero routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/camarero
+
+          probe() {
+            local name="$1"
+            local url="$2"
+            local out="/tmp/camarero/$name.html"
+            echo "::group::$name $url"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+            echo "HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0)"
+            if [ -s "$out" ]; then
+              python3 - "$out" <<'PY'
+          import html,re,sys
+          from pathlib import Path
+          raw=Path(sys.argv[1]).read_text(errors='replace')
+          plain=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+          plain=re.sub(r'<style\b[^>]*>.*?</style>',' ',plain,flags=re.I|re.S)
+          plain=html.unescape(re.sub(r'<[^>]+>',' ',plain))
+          plain=re.sub(r'\s+',' ',plain)
+          for needle in ['Semana:','Programa','Inscripción','octubre de 2026','septiembre de 2026','Descargar']:
+              pos=plain.lower().find(needle.lower())
+              if pos>=0:
+                  print('WINDOW',needle,plain[max(0,pos-250):pos+3000])
+          print('LINKS')
+          seen=set()
+          for m in re.finditer(r'href=["\']([^"\']+)["\']',raw,re.I):
+              u=html.unescape(m.group(1))
+              if any(k in u.lower() for k in ['pdf','program','inscrip','download','semana','week','fecha','date','wp-content/uploads']):
+                  if u not in seen:
+                      seen.add(u); print(u[:900])
+          print('FORM_FIELDS')
+          for m in re.finditer(r'<(?:form|input|select|option)\b[^>]*>',raw,re.I):
+              s=html.unescape(m.group(0))
+              if any(k in s.lower() for k in ['date','fecha','week','semana','program','inscrip','filter','name=','value=']):
+                  print(s[:1000])
+          PY
+            fi
+            echo "::endgroup::"
+          }
+
+          probe programas 'https://www.hipodromo-camarero.com/carreras/programas'
+          probe inscripciones 'https://www.hipodromo-camarero.com/carreras/inscripciones'
+          probe programa-dia 'https://www.hipodromo-camarero.com/programa-de-carreras/'
+          probe download-dia 'https://hipodromo-camarero.com/downloads/programa-del-dia/'
