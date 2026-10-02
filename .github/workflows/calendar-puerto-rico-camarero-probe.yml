@@ -117,3 +117,59 @@ jobs:
               if any(k in u.lower() for k in ['2026','pdf','program','archivo','file','download','document','media','uploads']):
                   print(m.group(0)[:1200])
           PY
+
+
+      - name: Install PDF parser
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Validate current Camarero programme PDFs
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          base='https://www.hipodromo-camarero.com'
+          declare -A urls
+          urls[2026-10-02]='/api/public/pdf/d83060a6-ff4b-4640-a4ee-dd2885bc24ee?v=1235015'
+          urls[2026-10-03]='/api/public/pdf/2a55c336-0ede-4b24-80bc-5fd2adec9b44?v=1467440'
+          urls[2026-10-04]='/api/public/pdf/36e99513-05b5-4df1-99f3-df09e46155fb?v=1316650'
+          mkdir -p /tmp/camarero-pdf
+          for date in 2026-10-02 2026-10-03 2026-10-04; do
+            out="/tmp/camarero-pdf/$date.pdf"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 60 -o "$out" -w '%{http_code}' "$base${urls[$date]}" || true)"
+            echo "PDF_FETCH date=$date HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) TYPE=$(file -b "$out" || true)"
+          done
+
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
+
+          const dates=['2026-10-02','2026-10-03','2026-10-04'];
+          for (const date of dates) {
+            const data=new Uint8Array(fs.readFileSync(`/tmp/camarero-pdf/${date}.pdf`));
+            const doc=await pdfjsLib.getDocument({data,disableWorker:true}).promise;
+            let all='';
+            for(let p=1;p<=doc.numPages;p++){
+              const page=await doc.getPage(p);
+              const tc=await page.getTextContent();
+              all += '\n' + tc.items.map(x=>x.str).join(' ');
+            }
+            const norm=all.replace(/\s+/g,' ').trim();
+            console.log(`PDF_PARSE date=${date} pages=${doc.numPages} chars=${norm.length}`);
+            console.log('HEAD',norm.slice(0,3500));
+            const patterns=[
+              /(?:HIP[ÓO]DROMO\s+CAMARERO|CAMARERO)/gi,
+              /(?:ENERO|FEBRERO|MARZO|ABRIL|MAYO|JUNIO|JULIO|AGOSTO|SEPTIEMBRE|OCTUBRE|NOVIEMBRE|DICIEMBRE)[^.;]{0,100}2026/gi,
+              /(?:PRIMERA|SEGUNDA|TERCERA|CUARTA|QUINTA|SEXTA|S[ÉE]PTIMA|OCTAVA|NOVENA|D[ÉE]CIMA|\d{1,2}(?:RA|DA|TA)?)[^.;]{0,100}CARRERA/gi,
+              /\b(?:1[0-2]|0?[1-9]):[0-5][0-9]\s*(?:A\.?M\.?|P\.?M\.?)\b/gi,
+              /\b(?:POST\s*TIME|HORA(?:\s+DE\s+SALIDA)?)[^.;]{0,100}/gi
+            ];
+            const seen=new Set();
+            for(const re of patterns){
+              for(const m of norm.matchAll(re)){
+                const start=Math.max(0,(m.index??0)-180), end=Math.min(norm.length,(m.index??0)+m[0].length+260);
+                const s=norm.slice(start,end);
+                if(!seen.has(s)){seen.add(s);console.log('MATCH',s);}
+              }
+            }
+          }
+          NODE
