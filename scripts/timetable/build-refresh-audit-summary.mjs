@@ -43,6 +43,18 @@ const SYSTEMS = [
   { key: 'denmark', file: 'denmark.json', country_id: 'denmark', authority_id: 'klampenborg-galopbane', racing_system_id: 'denmark-klampenborg-system' },
   { key: 'dominican-hvc', file: 'dominican-hvc.json', country_id: 'dominican-republic', authority_id: 'hipodromo-v-centenario', racing_system_id: 'hvc-racing-system' },
   { key: 'hungary', file: 'hungary.json', country_id: 'hungary', authority_id: 'kincsem-park', racing_system_id: 'hungary-kincsem-galopp-calendar-system' },
+  { key: 'norway-dnt', file: 'norway-dnt.json', country_id: 'norway', authority_id: 'det-norske-travselskap', racing_system_id: 'norway-dnt-harness-system' },
+  { key: 'norway-ovrevoll', file: 'norway-ovrevoll.json', country_id: 'norway', authority_id: 'ovrevoll', racing_system_id: 'norway-ovrevoll-gallop-system' },
+  { key: 'austria', file: 'austria.json', country_id: 'austria', authority_id: 'wiener-trabrenn-verein', racing_system_id: 'austria-krieau-calendar-system' },
+  { key: 'croatia', file: 'croatia.json', country_id: 'croatia', authority_id: 'hrvatski-galopski-savez', racing_system_id: 'croatian-gallop-system' },
+  { key: 'serbia', file: 'serbia.json', country_id: 'serbia', authority_id: 'belgrade-hippodrome', racing_system_id: 'serbia-belgrade-hippodrome-system' },
+  { key: 'switzerland-trot', file: 'switzerland-trot.json', country_id: 'switzerland', authority_id: 'suisse-trot', racing_system_id: 'switzerland-suisse-trot-system' },
+  { key: 'switzerland-galop', file: 'switzerland-galop.json', country_id: 'switzerland', authority_id: 'galop-suisse', racing_system_id: 'switzerland-galop-suisse-system' },
+  { key: 'netherlands', file: 'netherlands.json', country_id: 'netherlands', authority_id: 'ndr', racing_system_id: 'netherlands-ndr-racing-calendar-system' },
+  { key: 'poland', file: 'poland.json', country_id: 'poland', authority_id: 'pkwk', racing_system_id: 'poland-pkwk-national-plan-system' },
+  { key: 'romania', file: 'romania.json', country_id: 'romania', authority_id: 'csm-ploiesti', racing_system_id: 'romania-ploiesti-system' },
+  { key: 'malaysia', file: 'malaysia.json', country_id: 'malaysia', authority_id: 'mra', racing_system_id: 'malaysia-mra-system' },
+  { key: 'cyprus', file: 'cyprus.json', country_id: 'cyprus', authority_id: 'nicosia-race-club', racing_system_id: 'nicosia-national-racing-system' },
 ];
 
 const STATE_FILES = {
