@@ -85,6 +85,8 @@ on:
       - 'scripts/timetable/run-cyprus-nrc-official-window.mjs'
       - 'scripts/timetable/belgium-trotting-calendar-core.mjs'
       - 'scripts/timetable/run-belgium-trotting-official-window.mjs'
+      - 'scripts/timetable/belize-calendar-core.mjs'
+      - 'scripts/timetable/run-belize-official-window.mjs'
       - 'scripts/timetable/rebuild-unified-non-japan-on-main.sh'
       - 'scripts/timetable/italy-masaf-core.mjs'
       - 'scripts/timetable/run-italy-masaf-official-window.mjs'
@@ -213,6 +215,8 @@ on:
       - 'scripts/timetable/run-cyprus-nrc-official-window.mjs'
       - 'scripts/timetable/belgium-trotting-calendar-core.mjs'
       - 'scripts/timetable/run-belgium-trotting-official-window.mjs'
+      - 'scripts/timetable/belize-calendar-core.mjs'
+      - 'scripts/timetable/run-belize-official-window.mjs'
       - 'scripts/timetable/rebuild-unified-non-japan-on-main.sh'
       - 'scripts/timetable/italy-masaf-core.mjs'
       - 'scripts/timetable/run-italy-masaf-official-window.mjs'
@@ -769,6 +773,9 @@ jobs:
           node scripts/timetable/run-belgium-trotting-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/belgium-trotting.json
+          node scripts/timetable/run-belize-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/belize.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -820,7 +827,8 @@ jobs:
             --artifact=.calendar-unified/romania.json \
             --artifact=.calendar-unified/malaysia.json \
             --artifact=.calendar-unified/cyprus.json \
-            --artifact=.calendar-unified/belgium-trotting.json
+            --artifact=.calendar-unified/belgium-trotting.json \
+            --artifact=.calendar-unified/belize.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -1117,6 +1125,12 @@ jobs:
             --authority-id=belgian-federation-horse-racing \
             --racing-system-id=belgian-trotting-programme-system \
             --timezone=Europe/Brussels
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/belize.json \
+            --country-id=belize \
+            --authority-id=horse-racing-investments-limited \
+            --racing-system-id=national-racing-schedule \
+            --timezone=America/Belize
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
