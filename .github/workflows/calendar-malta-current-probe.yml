@@ -240,3 +240,29 @@ jobs:
             grep -Eo 'meeting\.php\?id=[0-9]+|race\.php\?id=[0-9]+|races\.php\?id=[0-9]+' "$out" | sort -u | tail -120 || true
             echo "::endgroup::"
           done
+
+
+      - name: Probe Malta Equidrome meeting mirror ids
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          for id in $(seq 987 1002); do
+            url="https://www.maltaequidrome.com/meeting/?id=$id"
+            out="/tmp/equidrome-meeting-$id.html"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+            plain="$(python3 - "$out" <<'PY'
+import html,re,sys
+raw=open(sys.argv[1],errors='replace').read()
+raw=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+raw=re.sub(r'<style\b[^>]*>.*?</style>',' ',raw,flags=re.I|re.S)
+plain=html.unescape(re.sub(r'<[^>]+>',' ',raw))
+plain=re.sub(r'\s+',' ',plain)
+print(plain[:25000])
+PY
+)"
+            title="$(grep -Eio '<title>[^<]+' "$out" | head -1 | sed -E 's/<title>//I' || true)"
+            datehit="$(printf '%s' "$plain" | grep -Eo '(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),? [0-9]{1,2}(st|nd|rd|th)? [A-Za-z]+ 2026|[0-9]{1,2}(st|nd|rd|th)? [A-Za-z]+ 2026|[0-9]{1,2}/[0-9]{1,2}/2026' | head -1 || true)"
+            racehit="$(printf '%s' "$plain" | grep -Eo '([0-9]+ races|Race [0-9]+|Time: ?[0-9:apm. -]+|Meeting ?#?[0-9]+)' | head -12 | tr '\n' ' ' || true)"
+            echo "EQUIDROME_MEETING id=$id HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) TITLE=$title DATE=$datehit DATA=$racehit"
+          done
