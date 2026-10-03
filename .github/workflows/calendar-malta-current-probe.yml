@@ -251,18 +251,9 @@ jobs:
             url="https://www.maltaequidrome.com/meeting/?id=$id"
             out="/tmp/equidrome-meeting-$id.html"
             code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
-            plain="$(python3 - "$out" <<'PY'
-import html,re,sys
-raw=open(sys.argv[1],errors='replace').read()
-raw=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
-raw=re.sub(r'<style\b[^>]*>.*?</style>',' ',raw,flags=re.I|re.S)
-plain=html.unescape(re.sub(r'<[^>]+>',' ',raw))
-plain=re.sub(r'\s+',' ',plain)
-print(plain[:25000])
-PY
-)"
             title="$(grep -Eio '<title>[^<]+' "$out" | head -1 | sed -E 's/<title>//I' || true)"
-            datehit="$(printf '%s' "$plain" | grep -Eo '(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),? [0-9]{1,2}(st|nd|rd|th)? [A-Za-z]+ 2026|[0-9]{1,2}(st|nd|rd|th)? [A-Za-z]+ 2026|[0-9]{1,2}/[0-9]{1,2}/2026' | head -1 || true)"
-            racehit="$(printf '%s' "$plain" | grep -Eo '([0-9]+ races|Race [0-9]+|Time: ?[0-9:apm. -]+|Meeting ?#?[0-9]+)' | head -12 | tr '\n' ' ' || true)"
-            echo "EQUIDROME_MEETING id=$id HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) TITLE=$title DATE=$datehit DATA=$racehit"
+            datehit="$(grep -Eio '(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),?[[:space:]]+[0-9]{1,2}(st|nd|rd|th)?[[:space:]]+[A-Za-z]+[[:space:]]+2026|[0-9]{1,2}(st|nd|rd|th)?[[:space:]]+[A-Za-z]+[[:space:]]+2026|[0-9]{1,2}/[0-9]{1,2}/2026' "$out" | head -1 || true)"
+            racehit="$(grep -Eio '([0-9]+ races|Race[[:space:]]+[0-9]+|Time:[[:space:]]*[0-9:apm. -]+|Meeting[[:space:]]*#?[0-9]+)' "$out" | head -12 | tr '\n' ' ' || true)"
+            invalid="$(grep -Eio 'Thursday, 1st January 1970|1st January 1970' "$out" | head -1 || true)"
+            echo "EQUIDROME_MEETING id=$id HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) TITLE=$title DATE=$datehit DATA=$racehit INVALID=$invalid"
           done
