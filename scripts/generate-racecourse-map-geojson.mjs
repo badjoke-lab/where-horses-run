@@ -61,6 +61,8 @@ const calendarMapRegressionIds = [
   // New Zealand current rolling venues (2)
   'pukekohe-park-racecourse',
   'central-southland-raceway',
+  'riverton-racecourse',
+  'woodville-racecourse',
   // Slovakia (1)
   'bratislava-racecourse',
   // France Calendar rolling venues (7)
@@ -70,6 +72,7 @@ const calendarMapRegressionIds = [
   'nimes-racecourse',
   'bordeaux-racecourse',
   'cazaubon-barbotan-racecourse',
+  'castera-verduzan-racecourse',
   'le-croise-laroche-racecourse',
   'dax-racecourse',
   'graignes-racecourse',
