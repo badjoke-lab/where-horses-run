@@ -31,6 +31,7 @@ assert.equal(galop.system_key,'galop');
 assert.equal(galop.racecourse_id,'toulouse-racecourse');
 assert.equal(resolveFranceRacecourseId('Vichy-Auvergne'),'vichy-racecourse');
 assert.equal(resolveFranceRacecourseId('La Teste de Buch'),'la-teste-racecourse');
+assert.equal(resolveFranceRacecourseId('De Castéra-Verduzan'),'castera-verduzan-racecourse');
 assert.equal(resolveFranceRacecourseId('Senonnes-Pouancé'),'senonnes-pouance-racecourse');
 
 const mixedHtml=`<html><body><h1>Programme des courses</h1>
