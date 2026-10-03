@@ -5,7 +5,8 @@ export const SOUTH_AFRICA_TIMEZONE = 'Africa/Johannesburg';
 export const FOUR_RACING_AUTHORITY_ID = 'four-racing';
 export const FOUR_RACING_SYSTEM_ID = 'south-africa-4racing-system';
 export const FOUR_RACING_SOURCE_ID = 'sa-horseracing-national-fixtures-2026';
-export const FOUR_RACING_FIXTURE_PDF_URL = 'https://www.sahorseracing.co.za/Programs/FX/Jan%20to%20Dec%202026.pdf';
+export const FOUR_RACING_FIXTURE_INDEX_URL = 'https://www.sahorseracing.co.za/';
+export const FOUR_RACING_FIXTURE_PDF_URL = 'https://www.sahorseracing.co.za/Programs/FX/Jan%20to%20Dec%202026%20Oct%201%20(V8).pdf';
 
 const MONTHS = Object.freeze({
   JANUARY:1,FEBRUARY:2,MARCH:3,APRIL:4,MAY:5,JUNE:6,
@@ -21,6 +22,28 @@ const VENUES = Object.freeze({
   'FAIR(T/P)': { racecourse_id:'south-africa--fairview', venue_name:'Fairview', course_context:'turf/poly' },
 });
 function pad(value){return String(value).padStart(2,'0');}
+function decodeFixtureHref(value){
+  return String(value??'')
+    .replace(/&amp;/gi,'&')
+    .replace(/&#39;|&apos;/gi,"'")
+    .replace(/&quot;/gi,'"');
+}
+export function discoverFourRacingFixturePdfUrl(html,{baseUrl=FOUR_RACING_FIXTURE_INDEX_URL}={}){
+  if(typeof html!=='string'||!html.trim()) throw new Error('SA Horse Racing fixture index HTML must be non-empty');
+  const candidates=[];
+  for(const match of html.matchAll(/<a\b[^>]*href\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s>]+))[^>]*>([\s\S]*?)<\/a>/gi)){
+    const href=decodeFixtureHref(match[1]??match[2]??match[3]??'');
+    const label=String(match[4]??'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+    if(!/Jan\s+to\s+Dec\s+2026/i.test(`${label} ${href}`)) continue;
+    if(!/\.pdf(?:$|[?#])/i.test(href)) continue;
+    let url=null;
+    try{url=new URL(href,baseUrl).toString();}catch{continue;}
+    const version=Number((`${label} ${href}`.match(/\bV(?:ersion\s*)?(\d+)\b/i)??[])[1]??0);
+    candidates.push({url,version,label});
+  }
+  candidates.sort((a,b)=>b.version-a.version||b.url.localeCompare(a.url));
+  return candidates[0]?.url??null;
+}
 function point(item){return {str:String(item?.str??'').replace(/\s+/g,' ').trim(),x:Number(item?.x??item?.transform?.[4]),y:Number(item?.y??item?.transform?.[5])};}
 function normalizedToken(value){return String(value??'').replace(/\s+/g,'').toUpperCase();}
 function monthFromItems(items){
