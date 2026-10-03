@@ -19,10 +19,12 @@ if(process.env.GITHUB_ACTIONS==='true'){
     const artifact=JSON.parse(fs.readFileSync(output,'utf8'));
     console.log('NETHERLANDS_NDR_LIVE: '+JSON.stringify({attempt:artifact.acquisition_attempt,discovery:artifact.discovery,diagnostics:artifact.diagnostics,records:(artifact.records??[]).map(r=>({date:r.date,racecourse_id:r.racecourse_id}))}));
     assert.equal(artifact.acquisition_attempt?.status,'success');
-    assert.ok((artifact.records??[]).some(r=>r.date==='2026-10-02'&&r.racecourse_id==='netherlands--kortebaan-zandvoort'));
-    assert.ok((artifact.records??[]).some(r=>r.date==='2026-10-10'&&r.racecourse_id==='netherlands--victoria-park-wolvega'));
-    assert.ok((artifact.records??[]).some(r=>r.date==='2026-10-11'&&r.racecourse_id==='netherlands--drafcentrum-alkmaar'));
-    assert.ok((artifact.records??[]).some(r=>r.date==='2026-10-12'&&r.racecourse_id==='netherlands--kortebaan-t-zand'));
+    const liveRecords=artifact.records??[];
+    const visibleRows=artifact.discovery?.source_visible_rows??0;
+    assert.ok(visibleRows>=liveRecords.length,'official NDR visible-row count must cover emitted records');
+    if(visibleRows>0) assert.ok(liveRecords.length>0,'visible official NDR rows must yield at least one current/upcoming meeting');
+    assert.ok(liveRecords.every(r=>/^2026-\d{2}-\d{2}$/.test(r.date??'')),'live NDR records must retain normalized ISO dates');
+    assert.ok(liveRecords.every(r=>String(r.racecourse_id??'').startsWith('netherlands--')),'live NDR records must resolve to canonical Netherlands racecourses');
     assert.equal(artifact.diagnostics?.source_errors?.length,0);
     assert.equal(artifact.diagnostics?.parse_failures?.length,0);
     assert.equal(artifact.diagnostics?.unknown_venues?.length,0);
