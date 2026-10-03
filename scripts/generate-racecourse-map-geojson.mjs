@@ -73,6 +73,7 @@ const calendarMapRegressionIds = [
   'bordeaux-racecourse',
   'cazaubon-barbotan-racecourse',
   'castera-verduzan-racecourse',
+  'le-mans-racecourse',
   'le-croise-laroche-racecourse',
   'dax-racecourse',
   'graignes-racecourse',
