@@ -4137,7 +4137,11 @@
       "system_id": "national-racing-schedule",
       "system_name_en": "Horse Racing Belize schedule system",
       "authority_source_key": "belize/horse-racing-investments-limited/horse-racing-belize-schedule",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "belize--peter-august-stadium-racetrack",
+        "belize--peoples-stadium",
+        "belize--castleton-race-track"
+      ],
       "coverage_scope": "authority_wide",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -4154,27 +4158,28 @@
       },
       "source_format": "html",
       "access_mode": "direct",
-      "automation_mode": "semi_automatic",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "seasonal",
-        "monthly",
-        "manual"
+        "weekly",
+        "near_meeting",
+        "seasonal"
       ],
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "fallback": "downgrade_to_C",
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-29",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when the 2026 schedule changes or a new season schedule is published.",
+      "checked_date": "2026-10-03",
+      "evidence_reviewed_at": "2026-10-03",
+      "revalidation_trigger": "Revalidate when Horse Racing Belize changes the schedule route, adds a venue label, changes the 2026 schedule, or publishes a new season schedule.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/72-belize/source-test-v2.json",
       "limitations": [
-        "The reviewed schedule lists meeting dates and venues but does not establish a stable structured feed.",
-        "Detailed programmes, participants, results, and wagering material remain excluded.",
-        "Complete authority and venue-identifier coverage requires later inventory work."
+        "Automatic production publishes meeting date and mapped physical venue only at rank C.",
+        "Detailed programmes, participants, results, wagering data and race post times remain outside this route.",
+        "The route covers the reviewed Horse Racing Belize schedule network and does not infer broader racing outside that authority context.",
+        "Source-visible absence is not non-running evidence."
       ],
-      "notes": "The official schedule supports a bounded C-level prototype for meeting dates and racecourses."
+      "notes": "GitHub Actions live acquisition on 2026-10-03 parsed the official 2026 schedule, including future meetings at Peter August Stadium, People's Stadium and Castleton Race Track."
     },
     {
       "readiness_id": "colombia--national-racing-regulatory-context--coljuegos-horse-racing-regulation",
@@ -5867,5 +5872,5 @@
       "notes": "Live GitHub Actions acquisition on 2026-10-02 exposed current Mons, Waregem and Tongeren meeting blocks. The automatic route publishes one C observation per date/physical venue and leaves the reviewed countrywide A evidence untouched."
     }
   ],
-  "last_updated": "2026-10-02"
+  "last_updated": "2026-10-03"
 }
