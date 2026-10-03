@@ -40,6 +40,7 @@ const MONTHS = Object.freeze({
 const VENUE_ID_ALIASES = Object.freeze({
   'angers-ecouflant': 'angers-racecourse',
   'la-teste-de-buch': 'la-teste-racecourse',
+  'de-castera-verduzan': 'castera-verduzan-racecourse',
   'sable-sur-sarthe': 'sable-sur-sarthe-racecourse',
   'senonnes-pouance': 'senonnes-pouance-racecourse',
   'vichy-auvergne': 'vichy-racecourse',
