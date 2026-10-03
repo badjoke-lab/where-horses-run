@@ -4,12 +4,13 @@ on:
   workflow_run:
     workflows:
       - Calendar unified official refresh
+      - Calendar near official refresh
     types:
       - completed
   workflow_dispatch:
     inputs:
       run_id:
-        description: Calendar unified official refresh run ID to audit
+        description: Calendar full or near official refresh run ID to audit
         required: true
         type: string
   pull_request:
@@ -17,6 +18,11 @@ on:
       - '.github/workflows/calendar-refresh-audit-summary.yml'
       - 'scripts/timetable/build-refresh-audit-summary.mjs'
       - 'scripts/check-refresh-audit-summary.mjs'
+      - 'scripts/check-calendar-unified-audit-coverage.mjs'
+      - '.github/workflows/calendar-unified-official-refresh.yml'
+      - '.github/workflows/calendar-near-official-refresh.yml'
+      - 'data/static/calendar-public-country-support-v1.json'
+      - 'data/static/calendar-acquisition-registry.json'
 
 permissions:
   contents: read
@@ -36,6 +42,7 @@ jobs:
           node --check scripts/timetable/build-refresh-audit-summary.mjs
           node --check scripts/check-refresh-audit-summary.mjs
           node scripts/check-refresh-audit-summary.mjs
+          node scripts/check-calendar-unified-audit-coverage.mjs
 
   audit:
     if: github.event_name == 'workflow_run' || github.event_name == 'workflow_dispatch'
