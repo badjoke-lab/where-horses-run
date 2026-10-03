@@ -80,8 +80,10 @@ assert.match(runner,/meeting_presence_records/);
 assert.match(runner,/non_running_source_status/);
 
 const workflow=fs.readFileSync('.github/workflows/calendar-unified-official-refresh.yml','utf8');
+const rebuildWorkflow=fs.readFileSync('scripts/timetable/rebuild-unified-non-japan-on-main.sh','utf8');
+const executionPaths=`${workflow}\n${rebuildWorkflow}`;
 assert.match(workflow,/node scripts\/check-united-kingdom-bha-non-running-evidence\.mjs/);
-assert.ok((workflow.match(/--artifact=\.calendar-unified\/united-kingdom\.json/g)??[]).length>=6);
+assert.ok((executionPaths.match(/--artifact=\.calendar-unified\/united-kingdom\.json/g)??[]).length>=6);
 
 console.log('UK_BHA_NON_RUNNING_EVIDENCE: pass');
 console.log('UK_BHA_PARTIAL_RACE_REJECTION: pass');
