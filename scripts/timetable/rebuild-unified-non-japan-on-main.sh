@@ -149,6 +149,9 @@ refresh_non_japan_on_main() {
   node scripts/timetable/run-belgium-trotting-official-window.mjs \
     --days="${DAYS}" \
     --output=.calendar-unified/belgium-trotting.json
+  node scripts/timetable/run-belize-official-window.mjs \
+    --days="${DAYS}" \
+    --output=.calendar-unified/belize.json
   node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --artifact=.calendar-unified/uae.json \
@@ -198,7 +201,8 @@ refresh_non_japan_on_main() {
   --artifact=.calendar-unified/romania.json \
   --artifact=.calendar-unified/malaysia.json \
   --artifact=.calendar-unified/cyprus.json \
-  --artifact=.calendar-unified/belgium-trotting.json
+  --artifact=.calendar-unified/belgium-trotting.json \
+  --artifact=.calendar-unified/belize.json
   node scripts/timetable/apply-official-rolling-observations.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --country-id=hong-kong \
@@ -493,6 +497,12 @@ refresh_non_japan_on_main() {
     --authority-id=belgian-federation-horse-racing \
     --racing-system-id=belgian-trotting-programme-system \
     --timezone=Europe/Brussels
+  node scripts/timetable/apply-official-rolling-observations.mjs \
+    --artifact=.calendar-unified/belize.json \
+    --country-id=belize \
+    --authority-id=horse-racing-investments-limited \
+    --racing-system-id=national-racing-schedule \
+    --timezone=America/Belize
   node scripts/timetable/apply-reviewed-calendar-observations.mjs
   node scripts/timetable/apply-meeting-presence-dispositions.mjs \
   --artifact=.calendar-unified/hkjc.json \

@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-non-running-evidence-registry-v1",
-  "reviewed_at": "2026-10-02",
+  "reviewed_at": "2026-10-03",
   "records": [
     {
       "record_id": "japan-jra-system",
@@ -1124,6 +1124,27 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-10-02",
       "notes": "A removed programme block, source omission, acquisition failure or parser failure does not independently prove cancellation/postponement and must preserve stronger verified state."
+    },
+    {
+      "record_id": "national-racing-schedule",
+      "country_id": "belize",
+      "system_id": "national-racing-schedule",
+      "authority_id": "horse-racing-investments-limited",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Positive official Horse Racing Belize annual schedule evidence only; no bounded whole-meeting cancellation/postponement route is implemented.",
+      "evidence_urls": [
+        "https://horseracingbelize.com/schedule/"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-10-03",
+      "notes": "A removed schedule row, source omission, acquisition failure, parser failure or annual schedule change does not independently prove cancellation/postponement and must preserve stronger verified state."
     }
   ]
 }
