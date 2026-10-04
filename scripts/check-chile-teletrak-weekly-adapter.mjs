@@ -218,9 +218,13 @@ assert.equal(unknownParsed.unknown_venues.length, 1);
 assert.throws(() => parseChileTeletrakWeeklyHtml('<html>not teletrak</html>', { referenceDate: '2026-09-09' }), /fingerprint/);
 
 const unifiedWorkflow = fs.readFileSync('.github/workflows/calendar-unified-official-refresh.yml', 'utf8');
-assert.equal((unifiedWorkflow.match(/run-chile-teletrak-official-window\.mjs/g) ?? []).length, 2, 'Chile collector must run in normal and latest-main rebuild paths');
-assert.equal((unifiedWorkflow.match(/--authority-id=teletrak-chile/g) ?? []).length, 2, 'Chile apply must run in normal and latest-main rebuild paths');
-assert.equal((unifiedWorkflow.match(/--artifact=\.calendar-unified\/chile\.json/g) ?? []).length, 6, 'Chile artifact must be excluded, applied and presence-evaluated in both paths');
+const latestMainRebuild = fs.readFileSync('scripts/timetable/rebuild-unified-non-japan-on-main.sh', 'utf8');
+assert.equal((unifiedWorkflow.match(/run-chile-teletrak-official-window\.mjs/g) ?? []).length, 1, 'Chile collector must run in the normal unified path');
+assert.equal((latestMainRebuild.match(/run-chile-teletrak-official-window\.mjs/g) ?? []).length, 1, 'Chile collector must run in the latest-main rebuild path');
+assert.equal((unifiedWorkflow.match(/--authority-id=teletrak-chile/g) ?? []).length, 1, 'Chile apply must run in the normal unified path');
+assert.equal((latestMainRebuild.match(/--authority-id=teletrak-chile/g) ?? []).length, 1, 'Chile apply must run in the latest-main rebuild path');
+assert.equal((unifiedWorkflow.match(/--artifact=\.calendar-unified\/chile\.json/g) ?? []).length, 3, 'Chile artifact must be excluded, applied and presence-evaluated in the normal path');
+assert.equal((latestMainRebuild.match(/--artifact=\.calendar-unified\/chile\.json/g) ?? []).length, 3, 'Chile artifact must be excluded, applied and presence-evaluated in the latest-main rebuild path');
 assert.doesNotMatch(unifiedWorkflow, /chile[^\n]{0,80}(?:public_rank_ceiling|capability_rank:\s*['"]C['"])/i, 'Chile unified refresh must not hard-code C');
 
 console.log('CHILE_UNIFIED_REFRESH_WIRING: pass');
