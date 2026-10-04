@@ -110,7 +110,8 @@
     "validate:malaysia-mra": "node --check scripts/timetable/malaysia-mra-calendar-core.mjs && node --check scripts/timetable/run-malaysia-mra-official-window.mjs && node scripts/check-malaysia-mra-adapter.mjs",
     "validate:cyprus-nrc": "node --check scripts/timetable/cyprus-nrc-calendar-core.mjs && node --check scripts/timetable/run-cyprus-nrc-official-window.mjs && node scripts/check-cyprus-nrc-adapter.mjs",
     "validate:belgium-trotting": "node --check scripts/timetable/belgium-trotting-calendar-core.mjs && node --check scripts/timetable/run-belgium-trotting-official-window.mjs && node scripts/check-belgium-trotting-adapter.mjs",
-    "validate:belize": "node --check scripts/timetable/belize-calendar-core.mjs && node --check scripts/timetable/run-belize-official-window.mjs && node scripts/check-belize-adapter.mjs"
+    "validate:belize": "node --check scripts/timetable/belize-calendar-core.mjs && node --check scripts/timetable/run-belize-official-window.mjs && node scripts/check-belize-adapter.mjs",
+    "validate:puerto-rico-camarero": "node --check scripts/timetable/puerto-rico-camarero-calendar-core.mjs && node --check scripts/timetable/run-puerto-rico-camarero-official-window.mjs && node scripts/check-puerto-rico-camarero-adapter.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0",
