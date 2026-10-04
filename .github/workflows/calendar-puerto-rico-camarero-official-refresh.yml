@@ -1,0 +1,49 @@
+name: Puerto Rico Camarero official Calendar refresh
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: Refresh scope
+        required: true
+        default: near
+        type: choice
+        options:
+          - near
+          - full
+  schedule:
+    - cron: '31 5 * * *'
+    - cron: '1 6 * * 1'
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-puerto-rico-camarero-official-refresh.yml'
+      - 'scripts/timetable/puerto-rico-camarero-calendar-core.mjs'
+      - 'scripts/timetable/run-puerto-rico-camarero-official-window.mjs'
+      - 'scripts/check-puerto-rico-camarero-adapter.mjs'
+      - 'data/static/authority-source-inventory.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/racecourses.json'
+      - 'data/static/racecourse-locations-v1.json'
+      - 'data/static/racecourse-location-supplement-evidence-v1.json'
+      - 'package.json'
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - run: npm run validate:puerto-rico-camarero
+      - name: Exercise Puerto Rico source-visible production path
+        run: |
+          mkdir -p .calendar-puerto-rico
+          node scripts/timetable/run-puerto-rico-camarero-official-window.mjs --days=30 --output=.calendar-puerto-rico/camarero.json
+          node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-puerto-rico/camarero.json --country-id=puerto-rico --authority-id=hipodromo-camarero --racing-system-id=puerto-rico-reviewed-system --timezone=America/Puerto_Rico
+          node scripts/check-calendar-public-map-parity.mjs
