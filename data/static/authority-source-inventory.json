@@ -618,14 +618,30 @@
       "authority_name_local": null,
       "authority_type": "racecourse_operator",
       "racecourse_scope": "single_racecourse",
+      "official_source_id": "barbados-racing-calendar",
+      "official_source_url": "https://www.barbadosturfclub.org/racing-calendar/",
+      "source_kind": "calendar",
+      "source_status": "verified",
+      "last_checked_date": "2026-10-06",
+      "capability_rank": "C",
+      "adapter_candidate_status": "candidate",
+      "notes": "Official 2026 racing calendar is directly automation-safe and exposes current Garrison Savannah meeting dates. Explicit CANCELLED labels are excluded from positive schedule candidates; absence is not cancellation evidence."
+    },
+    {
+      "country_id": "barbados",
+      "authority_id": "barbados-turf-club",
+      "authority_name_en": "Barbados Turf Club",
+      "authority_name_local": null,
+      "authority_type": "racecourse_operator",
+      "racecourse_scope": "single_racecourse",
       "official_source_id": "barbados-programmes",
       "official_source_url": "https://www.barbadosturfclub.org/provisional-official-programmes/",
       "source_kind": "programme",
       "source_status": "verified",
-      "last_checked_date": "2026-06-18",
+      "last_checked_date": "2026-10-06",
       "capability_rank": "A",
       "adapter_candidate_status": "candidate",
-      "notes": "Reviewed calendar and official programme routes support Garrison Savannah race schedules."
+      "notes": "Reviewed programme routes remain the richer A-capability detail path. Automatic meeting discovery is separated to the official racing-calendar route."
     },
     {
       "country_id": "martinique",
