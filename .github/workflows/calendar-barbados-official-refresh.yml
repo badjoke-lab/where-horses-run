@@ -1,0 +1,115 @@
+name: Barbados Turf Club official Calendar refresh
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: Refresh scope
+        required: true
+        default: near
+        type: choice
+        options:
+          - near
+          - full
+  schedule:
+    - cron: '23 4 * * *'
+    - cron: '53 4 * * 1'
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-barbados-official-refresh.yml'
+      - '.github/workflows/calendar-unified-official-refresh.yml'
+      - '.github/workflows/calendar-near-official-refresh.yml'
+      - 'scripts/timetable/barbados-calendar-core.mjs'
+      - 'scripts/timetable/run-barbados-official-window.mjs'
+      - 'scripts/check-barbados-adapter.mjs'
+      - 'scripts/timetable/rebuild-unified-non-japan-on-main.sh'
+      - 'scripts/timetable/build-refresh-audit-summary.mjs'
+      - 'data/static/authority-source-inventory.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/calendar-public-country-support-v1.json'
+      - 'data/static/calendar-non-running-evidence-registry-v1.json'
+      - 'data/static/calendar-98-tier-execution-coverage.json'
+      - 'data/static/racecourses.json'
+      - 'data/static/racecourse-locations-v1.json'
+      - 'data/static/racecourse-location-supplement-evidence-v1.json'
+      - 'package.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: barbados-turf-club-official-calendar-refresh
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - run: npm run validate:barbados
+      - name: Exercise Barbados production path
+        run: |
+          mkdir -p .calendar-barbados
+          node scripts/timetable/run-barbados-official-window.mjs --days=90 --output=.calendar-barbados/barbados.json
+          node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-barbados/barbados.json --country-id=barbados --authority-id=barbados-turf-club --racing-system-id=barbados-reviewed-system --timezone=America/Barbados
+          node scripts/check-calendar-public-country-support.mjs
+          node scripts/check-calendar-public-map-parity.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs
+          node scripts/check-calendar-unified-audit-coverage.mjs
+
+  refresh:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - id: scope
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            scope="${{ inputs.scope }}"
+          elif [ "${{ github.event.schedule }}" = "53 4 * * 1" ]; then
+            scope=full
+          else
+            scope=near
+          fi
+          if [ "$scope" = full ]; then days=90; else days=30; fi
+          echo "scope=$scope" >> "$GITHUB_OUTPUT"
+          echo "days=$days" >> "$GITHUB_OUTPUT"
+      - name: Collect and apply Barbados
+        run: |
+          mkdir -p .calendar-barbados
+          node scripts/timetable/run-barbados-official-window.mjs --days="${{ steps.scope.outputs.days }}" --output=.calendar-barbados/barbados.json
+          node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-barbados/barbados.json --country-id=barbados --authority-id=barbados-turf-club --racing-system-id=barbados-reviewed-system --timezone=America/Barbados
+          node scripts/timetable/apply-reviewed-calendar-observations.mjs
+          node scripts/check-calendar-public-country-support.mjs
+          node scripts/check-calendar-public-map-parity.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs
+      - name: Persist generated Barbados timetable
+        shell: bash
+        run: |
+          git fetch origin main
+          if [ "$(git rev-parse origin/main)" != "$(git rev-parse HEAD)" ]; then
+            echo "main advanced; refusing overwrite"
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/generated/timetable/canonical/meetings.json data/generated/timetable/canonical/meeting-details.json data/generated/timetable/public/meeting-list.json data/generated/timetable/public/meeting-details.json
+          if git diff --cached --quiet; then
+            echo "No Barbados timetable changes"
+            exit 0
+          fi
+          git commit -m "data: refresh Barbados Turf Club timetable (${{ steps.scope.outputs.scope }})"
+          git push origin HEAD:main
