@@ -54,11 +54,12 @@ export function parseGaloppCalendarPdfText(text,{sourceUrl}={}){
   if(typeof text!=='string'||!text.trim()) throw new Error('Kincsem Galopp calendar PDF text must be non-empty');
   if(!/GALOPP\s*-\s*VERSENYNAPT[AÁ]R/i.test(text.replace(/\s+/g,' '))) throw new Error('Kincsem Galopp calendar fingerprint missing');
   const rows=[];
-  const rx=/(?:^|\s)nap\s*,?\s*2\s*0\s*2\s*6\s*\.\s*([A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű]+)\s*(\d{1,2})\s*\./g;
+  const rx=/(?:^|\s)nap\s*,?\s*2\s*0\s*2\s*6\s*\.\s*([A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű]+)\s*(\d\s+\d|\d{1,2})\s*\./gi;
   for(const m of text.matchAll(rx)){
     const month=MONTHS[normalize(m[1])];
     if(!month) continue;
-    rows.push({date:'2026-'+month+'-'+String(Number(m[2])).padStart(2,'0'),racecourse_id:HUNGARY_RACECOURSE_ID,venue_name:'Kincsem Park',racing_type:'thoroughbred-flat',source_url:sourceUrl});
+    const day=Number(String(m[2]).replace(/\s+/g,''));
+    rows.push({date:'2026-'+month+'-'+String(day).padStart(2,'0'),racecourse_id:HUNGARY_RACECOURSE_ID,venue_name:'Kincsem Park',racing_type:'thoroughbred-flat',source_url:sourceUrl});
   }
   const out=[...new Map(rows.map(r=>[r.date,r])).values()].sort((a,b)=>a.date.localeCompare(b.date));
   if(!out.length) throw new Error('Kincsem Galopp meeting dates missing');
