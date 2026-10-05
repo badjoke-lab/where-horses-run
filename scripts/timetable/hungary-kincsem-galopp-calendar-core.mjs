@@ -20,7 +20,7 @@ function stripHtml(v){return decodeHtml(String(v??'').replace(/<script\b[^>]*>[\
 function normalize(v){return String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim();}
 function absolute(href,base){return new URL(decodeHtml(href),base).toString();}
 
-export function resolveLatestGaloppCalendar(html,{sourceUrl=HUNGARY_CALENDAR_INDEX_URL}={}){
+export function resolveGaloppCalendarCandidates(html,{sourceUrl=HUNGARY_CALENDAR_INDEX_URL}={}){
   if(typeof html!=='string'||!html.trim()) throw new Error('Kincsem Galopp calendar index HTML must be non-empty');
   const candidates=[];
   for(const m of html.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)){
@@ -32,8 +32,10 @@ export function resolveLatestGaloppCalendar(html,{sourceUrl=HUNGARY_CALENDAR_IND
     candidates.push({issue:Number(hit[1]),label,href});
   }
   if(!candidates.length) throw new Error('Current 2026 Galopp calendar PDF link missing');
-  candidates.sort((a,b)=>b.issue-a.issue);
-  return candidates[0];
+  return candidates.sort((a,b)=>b.issue-a.issue);
+}
+export function resolveLatestGaloppCalendar(html,options={}){
+  return resolveGaloppCalendarCandidates(html,options)[0];
 }
 
 export async function extractPdfText(bytes){
