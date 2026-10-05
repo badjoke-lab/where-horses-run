@@ -218,6 +218,7 @@ const HRNZ_FALLBACK_CLUB_VENUES = Object.freeze({
   'winton-hrc':'Central Southland Raceway',
   'rangiora-hrc':'Rangiora Raceway',
   'banks-pen-tc':'Motukarara Raceway',
+  'kaikoura-tc':'South Bay Racecourse',
 });
 
 const HRNZ_FALLBACK_DATE_VENUES = Object.freeze({
