@@ -1,8 +1,10 @@
-import assert from 'node:assert/strict';import {buildHungaryGaloppMeetingRecord,parseGaloppAnnualCalendarPdfText,parseGaloppCalendarPdfText,resolveLatestGaloppCalendar} from './timetable/hungary-kincsem-galopp-calendar-core.mjs';
+import assert from 'node:assert/strict';import {buildHungaryGaloppMeetingRecord,parseGaloppAnnualCalendarPdfText,parseGaloppCalendarPdfText,parseGaloppRacingDaysHtml,resolveLatestGaloppCalendar} from './timetable/hungary-kincsem-galopp-calendar-core.mjs';
 const idx='<a href="/a.pdf">Galopp Versenynaptár 2026/11.szám</a><a href="/b.pdf">Galopp Versenynaptár 2026/12.szám</a>';
 assert.equal(resolveLatestGaloppCalendar(idx).href,'https://kincsempark.hu/b.pdf');
 const rows=parseGaloppCalendarPdfText('GALOPP - VERSENYNAPTÁR Tizenkilencedik nap, 202 6 . október 11 . Vasárnap Huszadik nap, 2026. november 15 . Vasárnap',{sourceUrl:'https://kincsempark.hu/b.pdf'});
 assert.deepEqual(rows.map(r=>r.date),['2026-10-11','2026-11-15']);
+const liveDays=parseGaloppRacingDaysHtml('<html><body><h1>Galopp Versenynapok / Gallop Racing Days</h1><div>2026-11-22 Budapest-Kincsem Park</div><div>2026-11-15 Budapest-Kincsem Park</div><div>2026-11-08 Budapest-Kincsem Park</div><div>2026-10-25 Budapest-Kincsem Park</div><div>2026-10-18 Budapest-Kincsem Park</div><div>2026-10-11 Budapest-Kincsem Park</div></body></html>');
+assert.deepEqual(liveDays.map(x=>x.date),['2026-10-11','2026-10-18','2026-10-25','2026-11-08','2026-11-15','2026-11-22']);
 const annual=parseGaloppAnnualCalendarPdfText('GALOPP VERSENYNAPTÁR 2026 TERVEZET VERSENYNAPOK 2026 Március 29 1 Április 12 19 26 3 Május 10 17 24 31 4 Június 7 14 21 3 Július 5 1 Augusztus 2 23 2 Szeptember 6 13 20 27 4 Október 11 18 25 3 November 8 15 22 3 24');
 assert.deepEqual(annual.filter(x=>x.date>='2026-10-01').map(x=>x.date),['2026-10-11','2026-10-18','2026-10-25','2026-11-08','2026-11-15','2026-11-22']);
 const r=buildHungaryGaloppMeetingRecord(rows[0],{checkedAt:'2026-09-28T00:00:00Z'});
