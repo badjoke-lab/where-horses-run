@@ -29,6 +29,6 @@ jobs:
           const d=JSON.parse(fs.readFileSync('.calendar-hungary-probe/hungary.json','utf8'));
           console.log(JSON.stringify({records:d.records.length,dates:d.records.map(r=>r.date),diagnostics:d.diagnostics,discovery:d.discovery}));
           if(d.diagnostics.source_errors.length||d.diagnostics.parse_failures.length) process.exitCode=1;
-          if(JSON.stringify(d.records.map(r=>r.date))!==JSON.stringify(['2026-10-11','2026-10-25','2026-11-15','2026-11-22'])) process.exitCode=1;
+          if(JSON.stringify(d.records.map(r=>r.date))!==JSON.stringify(['2026-10-11','2026-10-18','2026-10-25','2026-11-08','2026-11-15','2026-11-22'])) process.exitCode=1;
           if(d.records.some(r=>r.racing_type!=='thoroughbred-flat'||r.capability_rank!=='C'||r.first_race_time_local!==null||r.timetable_rows.length)) process.exitCode=1;
           NODE
