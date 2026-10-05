@@ -111,6 +111,31 @@ jobs:
             echo "RACE_API HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) SUFFIX=$suffix"
             head -c 1800 "$out" | tr '\n' ' '; echo
           done
+      - name: Inspect QREC axios and token flow with values redacted
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          app_chunk="$(grep -Eo '/_next/static/chunks/pages/_app-[^" ]+\.js' /tmp/qrec/current.html | head -n 1 || true)"
+          [ -n "$app_chunk" ] || exit 1
+          curl -L -sS -A "$UA" --connect-timeout 10 --max-time 30 "https://qrec.gov.qa$app_chunk" -o /tmp/qrec/app-redact.js
+          python3 - /tmp/qrec/app-redact.js <<'PY'
+          import re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          def redact(s):
+              s=re.sub(r'NEXT_PUBLIC_API_KEY\|\|"[^"]+"','NEXT_PUBLIC_API_KEY||"<redacted>"',s)
+              s=re.sub(r'NEXT_PUBLIC_AUTH_GRANT_TOKEN\|\|"[^"]+"','NEXT_PUBLIC_AUTH_GRANT_TOKEN||"<redacted>"',s)
+              s=re.sub(r'(?i)(authorization.{0,40})(["\x27])[^"\x27]{20,}\2',r'\1"<redacted>"',s)
+              return s
+          needles=['3303:function','token/generate','x-api-key','api-key','apikey','Authorization','Bearer ','Basic ','interceptors.request','interceptors.response']
+          seen=set()
+          for needle in needles:
+              pos=raw.find(needle)
+              if pos>=0 and needle not in seen:
+                  seen.add(needle)
+                  print('CLIENT_CONTEXT',needle,redact(raw[max(0,pos-1800):pos+3600]))
+          PY
+
       - name: Exercise QREC frontend API contract without exposing public keys
         shell: bash
         run: |
