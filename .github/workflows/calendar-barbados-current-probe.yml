@@ -1,0 +1,51 @@
+name: Barbados Turf Club current Calendar probe
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-barbados-current-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe Barbados official calendar
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'
+          mkdir -p /tmp/barbados
+          url='https://www.barbadosturfclub.org/racing-calendar/'
+          code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o /tmp/barbados/calendar.html -w '%{http_code}' "$url" || true)"
+          echo "CALENDAR HTTP=$code BYTES=$(wc -c < /tmp/barbados/calendar.html 2>/dev/null || echo 0)"
+          python3 - /tmp/barbados/calendar.html <<'PY'
+          import html,re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          text=html.unescape(re.sub(r'<[^>]+>',' ',raw))
+          text=re.sub(r'\s+',' ',text).strip()
+          print('FINGERPRINT_2026', '2026 RACING CALENDAR' in text.upper())
+          for needle in ['SATURDAY OCTOBER 31, 2026','SATURDAY NOVEMBER 14, 2026','SATURDAY NOVEMBER 28, 2026','FRIDAY DECEMBER 4, 2026','SATURDAY 26TH DECEMBER, 2026','CANCELLED']:
+              print('MATCH',needle,needle.lower() in text.lower())
+          print('TEXT_HEAD',text[:6000])
+          PY
+      - name: Probe official venue identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'
+          url='https://www.barbadosturfclub.org/about-us/'
+          code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o /tmp/barbados/about.html -w '%{http_code}' "$url" || true)"
+          echo "ABOUT HTTP=$code BYTES=$(wc -c < /tmp/barbados/about.html 2>/dev/null || echo 0)"
+          python3 - /tmp/barbados/about.html <<'PY'
+          import html,re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          text=re.sub(r'\s+',' ',html.unescape(re.sub(r'<[^>]+>',' ',raw))).strip()
+          for needle in ['Historic Garrison Savannah','located within the Garrison Historic Area','three seasons of racing']:
+              print('ABOUT_MATCH',needle,needle.lower() in text.lower())
+          PY
