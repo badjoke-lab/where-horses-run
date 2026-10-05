@@ -40,13 +40,16 @@ export function parseBarbadosRacingCalendar(html,{sourceUrl=BARBADOS_SOURCE_URL}
   if(!/2026\s+RACING\s+CALENDAR/i.test(text)) throw new Error('Barbados 2026 racing calendar fingerprint missing');
   const rows=[];
   const rx=/(?:MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY|SUNDAY)\s+(?:([A-Z]+)\s+)?(\d{1,2})(?:ST|ND|RD|TH)?(?:\s+([A-Z]+))?,?\s+2026/gi;
-  for(const m of text.matchAll(rx)){
+  const matches=[...text.matchAll(rx)];
+  for(let index=0;index<matches.length;index+=1){
+    const m=matches[index];
     const monthName=(m[1]||m[3]||'').toLowerCase();
     const month=MONTHS[monthName];
     if(!month) continue;
     const date='2026-'+month+'-'+pad(m[2]);
-    const after=text.slice(m.index,m.index+220);
-    const cancelled=/\bCANCELLED\b/i.test(after);
+    const nextIndex=matches[index+1]?.index??text.length;
+    const section=text.slice(m.index,nextIndex);
+    const cancelled=/\bCANCELLED\b/i.test(section);
     rows.push({date,racecourse_id:BARBADOS_RACECOURSE_ID,venue_name:'Garrison Savannah',cancelled,source_url:sourceUrl});
   }
   return [...new Map(rows.map(r=>[r.date,r])).values()].sort((a,b)=>a.date.localeCompare(b.date));
