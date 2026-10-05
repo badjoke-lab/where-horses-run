@@ -111,6 +111,71 @@ jobs:
             echo "RACE_API HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) SUFFIX=$suffix"
             head -c 1800 "$out" | tr '\n' ' '; echo
           done
+      - name: Exercise QREC frontend API contract without exposing public keys
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          app_chunk="$(grep -Eo '/_next/static/chunks/pages/_app-[^" ]+\.js' /tmp/qrec/current.html | head -n 1 || true)"
+          [ -n "$app_chunk" ] || { echo 'NO_APP_CHUNK'; exit 1; }
+          curl -L -sS -A "$UA" --connect-timeout 10 --max-time 30 "https://qrec.gov.qa$app_chunk" -o /tmp/qrec/app.js
+          python3 - /tmp/qrec/app.js > /tmp/qrec/public-env.sh <<'PY'
+          import re,sys,shlex
+          raw=open(sys.argv[1],errors='replace').read()
+          patterns={
+            'BASE': r'NEXT_PUBLIC_BASE_URL\|\|"([^"]+)"',
+            'APIKEY': r'NEXT_PUBLIC_API_KEY\|\|"([^"]+)"',
+            'GRANT': r'NEXT_PUBLIC_AUTH_GRANT_TOKEN\|\|"([^"]+)"',
+          }
+          vals={}
+          for k,p in patterns.items():
+              m=re.search(p,raw)
+              if not m:
+                  raise SystemExit(f'missing {k}')
+              vals[k]=m.group(1)
+          for k,v in vals.items():
+              print(f'{k}={shlex.quote(v)}')
+          PY
+          source /tmp/qrec/public-env.sh
+          echo "API_ENV base_present=$([ -n "$BASE" ] && echo yes || echo no) api_key_present=$([ -n "$APIKEY" ] && echo yes || echo no) grant_present=$([ -n "$GRANT" ] && echo yes || echo no)"
+          endpoint="${BASE%/}/race/data?pageaction=jsonmeetings"
+          try_call () {
+            label="$1"; start="$2"; end="$3"; mode="$4"
+            out="/tmp/qrec/api-$label-$mode.json"
+            args=(-L -sS -A "$UA" --connect-timeout 10 --max-time 30 -o "$out" -w '%{http_code}')
+            case "$mode" in
+              key) args+=(-H "x-api-key: $APIKEY") ;;
+              grant) args+=(-H "Authorization: Basic $GRANT") ;;
+              both) args+=(-H "x-api-key: $APIKEY" -H "Authorization: Basic $GRANT") ;;
+            esac
+            code="$(curl "${args[@]}" "$endpoint&startdate=$start&endate=$end&lang=en" || true)"
+            bytes="$(wc -c < "$out" 2>/dev/null || echo 0)"
+            summary="$(python3 - "$out" <<'PY'
+          import json,sys
+          try:
+              obj=json.load(open(sys.argv[1]))
+          except Exception:
+              print('non_json'); raise SystemExit
+          def shape(x):
+              if isinstance(x,list): return f'list:{len(x)}'
+              if isinstance(x,dict):
+                  data=x.get('data')
+                  if isinstance(data,list): return f'data_list:{len(data)}'
+                  if isinstance(data,dict): return 'data_dict'
+                  return 'dict_keys:'+','.join(sorted(x.keys())[:12])
+              return type(x).__name__
+          print(shape(obj))
+          PY
+            )"
+            echo "QREC_API label=$label mode=$mode HTTP=$code BYTES=$bytes SHAPE=$summary"
+          }
+          for mode in none key grant both; do
+            try_call current 2026-10-05 2026-10-06 "$mode"
+          done
+          for mode in key both; do
+            try_call old 2026-01-21 2026-01-22 "$mode"
+          done
+
       - name: Probe common QREC data surfaces
         shell: bash
         run: |
