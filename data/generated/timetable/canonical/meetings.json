@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-10-05T11:32:24.725Z",
+  "generated_at": "2026-10-05T11:40:11.959Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -12550,7 +12550,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-05T11:32:24.725Z",
+        "generated_at": "2026-10-05T11:40:11.959Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12579,7 +12579,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-05T11:32:24.725Z",
+        "generated_at": "2026-10-05T11:40:11.959Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12784,7 +12784,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-05T11:32:24.725Z",
+        "generated_at": "2026-10-05T11:40:11.959Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -46909,6 +46909,65 @@
       }
     },
     {
+      "meeting_id": "netherlands-ndr-2026-10-10-victoria-park-wolvega",
+      "country_id": "netherlands",
+      "authority_id": "ndr",
+      "racing_system_id": "netherlands-ndr-racing-calendar-system",
+      "timezone": "Europe/Amsterdam",
+      "racecourse_id": "netherlands--victoria-park-wolvega",
+      "date": "2026-10-10",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "ndr-current-upcoming",
+        "route_id": "ndr-current-upcoming",
+        "source_status": "verified",
+        "official_source_url": "https://ndr.nl/selectieproeven/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-05",
+        "generated_at": "2026-10-05T11:40:09.307Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "ndr-current-upcoming",
+          "official_source_url": "https://ndr.nl/selectieproeven/",
+          "observed_at": "2026-10-05T11:40:09.307Z",
+          "successfully_verified_at": "2026-10-05T11:40:09.307Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "ndr-current-upcoming",
+          "official_source_url": "https://ndr.nl/selectieproeven/",
+          "observed_at": "2026-10-05T11:40:09.307Z",
+          "successfully_verified_at": "2026-10-05T11:40:09.307Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-05T11:40:09.307Z",
+        "status": "success",
+        "source_id": "ndr-current-upcoming",
+        "route_id": "ndr-current-upcoming",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "new-zealand-thoroughbred-ashburton-racecourse-2026-10-10",
       "country_id": "new-zealand",
       "authority_id": "new-zealand-thoroughbred-racing",
@@ -48307,6 +48366,65 @@
       }
     },
     {
+      "meeting_id": "netherlands-ndr-2026-10-11-drafcentrum-alkmaar",
+      "country_id": "netherlands",
+      "authority_id": "ndr",
+      "racing_system_id": "netherlands-ndr-racing-calendar-system",
+      "timezone": "Europe/Amsterdam",
+      "racecourse_id": "netherlands--drafcentrum-alkmaar",
+      "date": "2026-10-11",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "ndr-current-upcoming",
+        "route_id": "ndr-current-upcoming",
+        "source_status": "verified",
+        "official_source_url": "https://ndr.nl/selectieproeven/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-05",
+        "generated_at": "2026-10-05T11:40:09.307Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "ndr-current-upcoming",
+          "official_source_url": "https://ndr.nl/selectieproeven/",
+          "observed_at": "2026-10-05T11:40:09.307Z",
+          "successfully_verified_at": "2026-10-05T11:40:09.307Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "ndr-current-upcoming",
+          "official_source_url": "https://ndr.nl/selectieproeven/",
+          "observed_at": "2026-10-05T11:40:09.307Z",
+          "successfully_verified_at": "2026-10-05T11:40:09.307Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-05T11:40:09.307Z",
+        "status": "success",
+        "source_id": "ndr-current-upcoming",
+        "route_id": "ndr-current-upcoming",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "new-zealand-harness-mt-harding-racecourse-2026-10-11",
       "country_id": "new-zealand",
       "authority_id": "harness-racing-new-zealand",
@@ -49658,6 +49776,65 @@
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
         "reason": "Higher-detail evidence is not yet published or not yet available (details_pending)."
+      }
+    },
+    {
+      "meeting_id": "netherlands-ndr-2026-10-12-kortebaan-t-zand",
+      "country_id": "netherlands",
+      "authority_id": "ndr",
+      "racing_system_id": "netherlands-ndr-racing-calendar-system",
+      "timezone": "Europe/Amsterdam",
+      "racecourse_id": "netherlands--kortebaan-t-zand",
+      "date": "2026-10-12",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "ndr-current-upcoming",
+        "route_id": "ndr-current-upcoming",
+        "source_status": "verified",
+        "official_source_url": "https://ndr.nl/selectieproeven/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-05",
+        "generated_at": "2026-10-05T11:40:09.307Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "ndr-current-upcoming",
+          "official_source_url": "https://ndr.nl/selectieproeven/",
+          "observed_at": "2026-10-05T11:40:09.307Z",
+          "successfully_verified_at": "2026-10-05T11:40:09.307Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "ndr-current-upcoming",
+          "official_source_url": "https://ndr.nl/selectieproeven/",
+          "observed_at": "2026-10-05T11:40:09.307Z",
+          "successfully_verified_at": "2026-10-05T11:40:09.307Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-05T11:40:09.307Z",
+        "status": "success",
+        "source_id": "ndr-current-upcoming",
+        "route_id": "ndr-current-upcoming",
+        "error_code": null
       }
     },
     {
@@ -55800,6 +55977,65 @@
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
         "reason": "A higher-detail observation was available, but the acquisition result did not prove how far the applicable higher-detail paths were evaluated."
+      }
+    },
+    {
+      "meeting_id": "netherlands-ndr-2026-10-17-victoria-park-wolvega",
+      "country_id": "netherlands",
+      "authority_id": "ndr",
+      "racing_system_id": "netherlands-ndr-racing-calendar-system",
+      "timezone": "Europe/Amsterdam",
+      "racecourse_id": "netherlands--victoria-park-wolvega",
+      "date": "2026-10-17",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "ndr-current-upcoming",
+        "route_id": "ndr-current-upcoming",
+        "source_status": "verified",
+        "official_source_url": "https://ndr.nl/selectieproeven/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-05",
+        "generated_at": "2026-10-05T11:40:09.307Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "ndr-current-upcoming",
+          "official_source_url": "https://ndr.nl/selectieproeven/",
+          "observed_at": "2026-10-05T11:40:09.307Z",
+          "successfully_verified_at": "2026-10-05T11:40:09.307Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "ndr-current-upcoming",
+          "official_source_url": "https://ndr.nl/selectieproeven/",
+          "observed_at": "2026-10-05T11:40:09.307Z",
+          "successfully_verified_at": "2026-10-05T11:40:09.307Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-05T11:40:09.307Z",
+        "status": "success",
+        "source_id": "ndr-current-upcoming",
+        "route_id": "ndr-current-upcoming",
+        "error_code": null
       }
     },
     {
@@ -68807,6 +69043,65 @@
       }
     },
     {
+      "meeting_id": "netherlands-ndr-2026-10-27-victoria-park-wolvega",
+      "country_id": "netherlands",
+      "authority_id": "ndr",
+      "racing_system_id": "netherlands-ndr-racing-calendar-system",
+      "timezone": "Europe/Amsterdam",
+      "racecourse_id": "netherlands--victoria-park-wolvega",
+      "date": "2026-10-27",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "ndr-current-upcoming",
+        "route_id": "ndr-current-upcoming",
+        "source_status": "verified",
+        "official_source_url": "https://ndr.nl/selectieproeven/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-05",
+        "generated_at": "2026-10-05T11:40:09.307Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "ndr-current-upcoming",
+          "official_source_url": "https://ndr.nl/selectieproeven/",
+          "observed_at": "2026-10-05T11:40:09.307Z",
+          "successfully_verified_at": "2026-10-05T11:40:09.307Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "ndr-current-upcoming",
+          "official_source_url": "https://ndr.nl/selectieproeven/",
+          "observed_at": "2026-10-05T11:40:09.307Z",
+          "successfully_verified_at": "2026-10-05T11:40:09.307Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-05T11:40:09.307Z",
+        "status": "success",
+        "source_id": "ndr-current-upcoming",
+        "route_id": "ndr-current-upcoming",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "norway-norway--bjerke-travbane-2026-10-27",
       "country_id": "norway",
       "authority_id": "det-norske-travselskap",
@@ -72009,6 +72304,65 @@
       }
     },
     {
+      "meeting_id": "netherlands-ndr-2026-10-30-drafcentrum-alkmaar",
+      "country_id": "netherlands",
+      "authority_id": "ndr",
+      "racing_system_id": "netherlands-ndr-racing-calendar-system",
+      "timezone": "Europe/Amsterdam",
+      "racecourse_id": "netherlands--drafcentrum-alkmaar",
+      "date": "2026-10-30",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "ndr-current-upcoming",
+        "route_id": "ndr-current-upcoming",
+        "source_status": "verified",
+        "official_source_url": "https://ndr.nl/selectieproeven/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-05",
+        "generated_at": "2026-10-05T11:40:09.307Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "ndr-current-upcoming",
+          "official_source_url": "https://ndr.nl/selectieproeven/",
+          "observed_at": "2026-10-05T11:40:09.307Z",
+          "successfully_verified_at": "2026-10-05T11:40:09.307Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "ndr-current-upcoming",
+          "official_source_url": "https://ndr.nl/selectieproeven/",
+          "observed_at": "2026-10-05T11:40:09.307Z",
+          "successfully_verified_at": "2026-10-05T11:40:09.307Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-05T11:40:09.307Z",
+        "status": "success",
+        "source_id": "ndr-current-upcoming",
+        "route_id": "ndr-current-upcoming",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "new-zealand-harness-alexandra-park-racecourse-2026-10-30",
       "country_id": "new-zealand",
       "authority_id": "harness-racing-new-zealand",
@@ -73719,6 +74073,65 @@
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
         "reason": "Higher-detail evidence is not yet published or not yet available (details_pending)."
+      }
+    },
+    {
+      "meeting_id": "netherlands-ndr-2026-10-31-victoria-park-wolvega",
+      "country_id": "netherlands",
+      "authority_id": "ndr",
+      "racing_system_id": "netherlands-ndr-racing-calendar-system",
+      "timezone": "Europe/Amsterdam",
+      "racecourse_id": "netherlands--victoria-park-wolvega",
+      "date": "2026-10-31",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "ndr-current-upcoming",
+        "route_id": "ndr-current-upcoming",
+        "source_status": "verified",
+        "official_source_url": "https://ndr.nl/selectieproeven/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-05",
+        "generated_at": "2026-10-05T11:40:09.307Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "ndr-current-upcoming",
+          "official_source_url": "https://ndr.nl/selectieproeven/",
+          "observed_at": "2026-10-05T11:40:09.307Z",
+          "successfully_verified_at": "2026-10-05T11:40:09.307Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "ndr-current-upcoming",
+          "official_source_url": "https://ndr.nl/selectieproeven/",
+          "observed_at": "2026-10-05T11:40:09.307Z",
+          "successfully_verified_at": "2026-10-05T11:40:09.307Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-05T11:40:09.307Z",
+        "status": "success",
+        "source_id": "ndr-current-upcoming",
+        "route_id": "ndr-current-upcoming",
+        "error_code": null
       }
     },
     {
