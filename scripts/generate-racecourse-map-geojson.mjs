@@ -46,14 +46,17 @@ const calendarMapRegressionIds = [
   'ireland--tipperary',
   'ireland--tramore',
   'ireland--wexford',
-  // France Calendar current venues (5)
+  // France Calendar current venues
   'marseille-borely-racecourse',
+  'marseille-vivaux-racecourse',
   'argentan-racecourse',
   'laval-racecourse',
   'toulouse-racecourse',
   'la-teste-racecourse',
-  // United Kingdom rolling venues (5)
+  // United Kingdom rolling venues
   'cheltenham-racecourse',
+  'chelmsford-city-racecourse',
+  'lingfield-park-racecourse',
   'doncaster-racecourse',
   'newbury-racecourse',
   'aintree-racecourse',
