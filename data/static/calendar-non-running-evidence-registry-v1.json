@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-non-running-evidence-registry-v1",
-  "reviewed_at": "2026-10-03",
+  "reviewed_at": "2026-10-05",
   "records": [
     {
       "record_id": "japan-jra-system",
@@ -1145,6 +1145,28 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-10-03",
       "notes": "A removed schedule row, source omission, acquisition failure, parser failure or annual schedule change does not independently prove cancellation/postponement and must preserve stronger verified state."
+    },
+    {
+      "record_id": "puerto-rico-reviewed-system",
+      "country_id": "puerto-rico",
+      "system_id": "puerto-rico-reviewed-system",
+      "authority_id": "hipodromo-camarero",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Positive official Hipódromo Camarero inscriptions/programme evidence only; no bounded whole-meeting cancellation/postponement route is implemented.",
+      "evidence_urls": [
+        "https://www.hipodromo-camarero.com/carreras/inscripciones",
+        "https://www.hipodromo-camarero.com/carreras/programas"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-10-05",
+      "notes": "An empty future weekly shell, removed inscription/programme row, source omission, acquisition failure or parser failure does not independently prove cancellation/postponement and must preserve stronger verified state."
     }
   ]
 }

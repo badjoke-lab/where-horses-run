@@ -551,6 +551,22 @@
       "country_id": "puerto-rico",
       "authority_id": "hipodromo-camarero",
       "authority_name_en": "Hipódromo Camarero",
+      "authority_name_local": "Hipódromo Camarero",
+      "authority_type": "racecourse_operator",
+      "racecourse_scope": "single_racecourse",
+      "official_source_id": "camarero-inscripciones",
+      "official_source_url": "https://www.hipodromo-camarero.com/carreras/inscripciones",
+      "source_kind": "timetable",
+      "source_status": "verified",
+      "last_checked_date": "2026-10-04",
+      "capability_rank": "C",
+      "adapter_candidate_status": "candidate",
+      "notes": "Official Inscripciones page is automation-safe and exposes source-visible local meeting dates for Hipódromo Camarero. Automatic route uses date plus fixed physical venue only; programme-level post times remain separate."
+    },
+    {
+      "country_id": "puerto-rico",
+      "authority_id": "hipodromo-camarero",
+      "authority_name_en": "Hipódromo Camarero",
       "authority_name_local": null,
       "authority_type": "racecourse_operator",
       "racecourse_scope": "single_racecourse",
@@ -558,10 +574,10 @@
       "official_source_url": "https://www.hipodromo-camarero.com/carreras/programas",
       "source_kind": "programme",
       "source_status": "verified",
-      "last_checked_date": "2026-06-18",
+      "last_checked_date": "2026-10-04",
       "capability_rank": "A",
       "adapter_candidate_status": "candidate",
-      "notes": "Reviewed official Camarero programme routes support race labels and post times."
+      "notes": "Reviewed official Camarero programme routes remain the richer A-capability detail source. GitHub Actions revalidated current programme HTML/PDF access on 2026-10-02; automatic meeting discovery is separated to the official inscriptions route."
     },
     {
       "country_id": "jamaica",

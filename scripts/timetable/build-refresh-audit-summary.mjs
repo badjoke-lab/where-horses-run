@@ -57,6 +57,7 @@ const SYSTEMS = [
   { key: 'cyprus', file: 'cyprus.json', country_id: 'cyprus', authority_id: 'nicosia-race-club', racing_system_id: 'nicosia-national-racing-system' },
   { key: 'belgium-trotting', file: 'belgium-trotting.json', country_id: 'belgium', authority_id: 'belgian-federation-horse-racing', racing_system_id: 'belgian-trotting-programme-system' },
   { key: 'belize', file: 'belize.json', country_id: 'belize', authority_id: 'horse-racing-investments-limited', racing_system_id: 'national-racing-schedule' },
+  { key: 'puerto-rico', file: 'puerto-rico.json', country_id: 'puerto-rico', authority_id: 'hipodromo-camarero', racing_system_id: 'puerto-rico-reviewed-system' },
 ];
 
 const STATE_FILES = {

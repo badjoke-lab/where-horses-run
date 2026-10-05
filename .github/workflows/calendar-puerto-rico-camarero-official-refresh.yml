@@ -1,0 +1,115 @@
+name: Puerto Rico Camarero official Calendar refresh
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: Refresh scope
+        required: true
+        default: near
+        type: choice
+        options:
+          - near
+          - full
+  schedule:
+    - cron: '31 5 * * *'
+    - cron: '1 6 * * 1'
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-puerto-rico-camarero-official-refresh.yml'
+      - '.github/workflows/calendar-unified-official-refresh.yml'
+      - '.github/workflows/calendar-near-official-refresh.yml'
+      - 'scripts/timetable/puerto-rico-camarero-calendar-core.mjs'
+      - 'scripts/timetable/run-puerto-rico-camarero-official-window.mjs'
+      - 'scripts/check-puerto-rico-camarero-adapter.mjs'
+      - 'scripts/timetable/rebuild-unified-non-japan-on-main.sh'
+      - 'scripts/timetable/build-refresh-audit-summary.mjs'
+      - 'data/static/authority-source-inventory.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/calendar-public-country-support-v1.json'
+      - 'data/static/calendar-non-running-evidence-registry-v1.json'
+      - 'data/static/calendar-98-tier-execution-coverage.json'
+      - 'data/static/racecourses.json'
+      - 'data/static/racecourse-locations-v1.json'
+      - 'data/static/racecourse-location-supplement-evidence-v1.json'
+      - 'package.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: puerto-rico-camarero-official-calendar-refresh
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - run: npm run validate:puerto-rico-camarero
+      - name: Exercise Puerto Rico source-visible production path
+        run: |
+          mkdir -p .calendar-puerto-rico
+          node scripts/timetable/run-puerto-rico-camarero-official-window.mjs --days=30 --output=.calendar-puerto-rico/camarero.json
+          node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-puerto-rico/camarero.json --country-id=puerto-rico --authority-id=hipodromo-camarero --racing-system-id=puerto-rico-reviewed-system --timezone=America/Puerto_Rico
+          node scripts/check-calendar-public-country-support.mjs
+          node scripts/check-calendar-public-map-parity.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs
+          node scripts/check-calendar-unified-audit-coverage.mjs
+
+  refresh:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - id: scope
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            scope="${{ inputs.scope }}"
+          elif [ "${{ github.event.schedule }}" = "1 6 * * 1" ]; then
+            scope=full
+          else
+            scope=near
+          fi
+          if [ "$scope" = full ]; then days=30; else days=7; fi
+          echo "scope=$scope" >> "$GITHUB_OUTPUT"
+          echo "days=$days" >> "$GITHUB_OUTPUT"
+      - name: Collect and apply Puerto Rico Camarero
+        run: |
+          mkdir -p .calendar-puerto-rico
+          node scripts/timetable/run-puerto-rico-camarero-official-window.mjs --days="${{ steps.scope.outputs.days }}" --output=.calendar-puerto-rico/camarero.json
+          node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-puerto-rico/camarero.json --country-id=puerto-rico --authority-id=hipodromo-camarero --racing-system-id=puerto-rico-reviewed-system --timezone=America/Puerto_Rico
+          node scripts/timetable/apply-reviewed-calendar-observations.mjs
+          node scripts/check-calendar-public-country-support.mjs
+          node scripts/check-calendar-public-map-parity.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs
+      - name: Persist generated Puerto Rico timetable
+        shell: bash
+        run: |
+          git fetch origin main
+          if [ "$(git rev-parse origin/main)" != "$(git rev-parse HEAD)" ]; then
+            echo "main advanced; refusing overwrite"
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/generated/timetable/canonical/meetings.json data/generated/timetable/canonical/meeting-details.json data/generated/timetable/public/meeting-list.json data/generated/timetable/public/meeting-details.json
+          if git diff --cached --quiet; then
+            echo "No Puerto Rico timetable changes"
+            exit 0
+          fi
+          git commit -m "data: refresh Puerto Rico Camarero timetable (${{ steps.scope.outputs.scope }})"
+          git push origin HEAD:main
