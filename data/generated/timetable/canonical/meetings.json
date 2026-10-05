@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-10-05T11:40:11.959Z",
+  "generated_at": "2026-10-05T11:40:59.959Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -12550,7 +12550,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-05T11:40:11.959Z",
+        "generated_at": "2026-10-05T11:40:59.959Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12579,7 +12579,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-05T11:40:11.959Z",
+        "generated_at": "2026-10-05T11:40:59.959Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12784,7 +12784,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-05T11:40:11.959Z",
+        "generated_at": "2026-10-05T11:40:59.959Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -48788,6 +48788,124 @@
       }
     },
     {
+      "meeting_id": "switzerland-galop-2026-10-11-rossriet-maienfeld",
+      "country_id": "switzerland",
+      "authority_id": "galop-suisse",
+      "racing_system_id": "switzerland-galop-suisse-system",
+      "timezone": "Europe/Zurich",
+      "racecourse_id": "switzerland--rossriet-maienfeld",
+      "date": "2026-10-11",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "galop-suisse-calendar",
+        "route_id": "galop-suisse-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://galop-suisse.iena.ch/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-05",
+        "generated_at": "2026-10-05T11:40:54.380Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "galop-suisse-calendar",
+          "official_source_url": "https://galop-suisse.iena.ch/",
+          "observed_at": "2026-10-05T11:40:54.380Z",
+          "successfully_verified_at": "2026-10-05T11:40:54.380Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "galop-suisse-calendar",
+          "official_source_url": "https://galop-suisse.iena.ch/",
+          "observed_at": "2026-10-05T11:40:54.380Z",
+          "successfully_verified_at": "2026-10-05T11:40:54.380Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-05T11:40:54.380Z",
+        "status": "success",
+        "source_id": "galop-suisse-calendar",
+        "route_id": "galop-suisse-calendar",
+        "error_code": null
+      }
+    },
+    {
+      "meeting_id": "switzerland-trot-2026-10-11-rossriet-maienfeld",
+      "country_id": "switzerland",
+      "authority_id": "suisse-trot",
+      "racing_system_id": "switzerland-suisse-trot-system",
+      "timezone": "Europe/Zurich",
+      "racecourse_id": "switzerland--rossriet-maienfeld",
+      "date": "2026-10-11",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "suisse-trot-calendar",
+        "route_id": "suisse-trot-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://suisse-trot.ch/calendrier/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-05",
+        "generated_at": "2026-10-05T11:40:50.475Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "suisse-trot-calendar",
+          "official_source_url": "https://suisse-trot.ch/calendrier/",
+          "observed_at": "2026-10-05T11:40:50.475Z",
+          "successfully_verified_at": "2026-10-05T11:40:50.475Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "suisse-trot-calendar",
+          "official_source_url": "https://suisse-trot.ch/calendrier/",
+          "observed_at": "2026-10-05T11:40:50.475Z",
+          "successfully_verified_at": "2026-10-05T11:40:50.475Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-05T11:40:50.475Z",
+        "status": "success",
+        "source_id": "suisse-trot-calendar",
+        "route_id": "suisse-trot-calendar",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "tjk-adana-racecourse-2026-10-11",
       "country_id": "turkey",
       "authority_id": "turkiye-jokey-kulubu",
@@ -53053,6 +53171,65 @@
         "status": "success",
         "source_id": "sa-horseracing-national-fixtures-2026",
         "route_id": "sa-horseracing-national-fixtures-pdf",
+        "error_code": null
+      }
+    },
+    {
+      "meeting_id": "switzerland-trot-2026-10-15-iena-avenches",
+      "country_id": "switzerland",
+      "authority_id": "suisse-trot",
+      "racing_system_id": "switzerland-suisse-trot-system",
+      "timezone": "Europe/Zurich",
+      "racecourse_id": "switzerland--iena-avenches",
+      "date": "2026-10-15",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "suisse-trot-calendar",
+        "route_id": "suisse-trot-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://suisse-trot.ch/calendrier/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-05",
+        "generated_at": "2026-10-05T11:40:50.475Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "suisse-trot-calendar",
+          "official_source_url": "https://suisse-trot.ch/calendrier/",
+          "observed_at": "2026-10-05T11:40:50.475Z",
+          "successfully_verified_at": "2026-10-05T11:40:50.475Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "suisse-trot-calendar",
+          "official_source_url": "https://suisse-trot.ch/calendrier/",
+          "observed_at": "2026-10-05T11:40:50.475Z",
+          "successfully_verified_at": "2026-10-05T11:40:50.475Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-05T11:40:50.475Z",
+        "status": "success",
+        "source_id": "suisse-trot-calendar",
+        "route_id": "suisse-trot-calendar",
         "error_code": null
       }
     },
@@ -58043,6 +58220,65 @@
       }
     },
     {
+      "meeting_id": "switzerland-galop-2026-10-18-zurich-dielsdorf",
+      "country_id": "switzerland",
+      "authority_id": "galop-suisse",
+      "racing_system_id": "switzerland-galop-suisse-system",
+      "timezone": "Europe/Zurich",
+      "racecourse_id": "switzerland--zurich-dielsdorf",
+      "date": "2026-10-18",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "galop-suisse-calendar",
+        "route_id": "galop-suisse-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://galop-suisse.iena.ch/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-05",
+        "generated_at": "2026-10-05T11:40:54.380Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "galop-suisse-calendar",
+          "official_source_url": "https://galop-suisse.iena.ch/",
+          "observed_at": "2026-10-05T11:40:54.380Z",
+          "successfully_verified_at": "2026-10-05T11:40:54.380Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "galop-suisse-calendar",
+          "official_source_url": "https://galop-suisse.iena.ch/",
+          "observed_at": "2026-10-05T11:40:54.380Z",
+          "successfully_verified_at": "2026-10-05T11:40:54.380Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-05T11:40:54.380Z",
+        "status": "success",
+        "source_id": "galop-suisse-calendar",
+        "route_id": "galop-suisse-calendar",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "tjk-adana-racecourse-2026-10-18",
       "country_id": "turkey",
       "authority_id": "turkiye-jokey-kulubu",
@@ -59934,6 +60170,65 @@
         "status": "success",
         "source_id": "dnt-terminliste-2026",
         "route_id": "dnt-current-calendar-html",
+        "error_code": null
+      }
+    },
+    {
+      "meeting_id": "switzerland-trot-2026-10-20-iena-avenches",
+      "country_id": "switzerland",
+      "authority_id": "suisse-trot",
+      "racing_system_id": "switzerland-suisse-trot-system",
+      "timezone": "Europe/Zurich",
+      "racecourse_id": "switzerland--iena-avenches",
+      "date": "2026-10-20",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "suisse-trot-calendar",
+        "route_id": "suisse-trot-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://suisse-trot.ch/calendrier/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-05",
+        "generated_at": "2026-10-05T11:40:50.475Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "suisse-trot-calendar",
+          "official_source_url": "https://suisse-trot.ch/calendrier/",
+          "observed_at": "2026-10-05T11:40:50.475Z",
+          "successfully_verified_at": "2026-10-05T11:40:50.475Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "suisse-trot-calendar",
+          "official_source_url": "https://suisse-trot.ch/calendrier/",
+          "observed_at": "2026-10-05T11:40:50.475Z",
+          "successfully_verified_at": "2026-10-05T11:40:50.475Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-05T11:40:50.475Z",
+        "status": "success",
+        "source_id": "suisse-trot-calendar",
+        "route_id": "suisse-trot-calendar",
         "error_code": null
       }
     },
@@ -72729,6 +73024,65 @@
         "status": "success",
         "source_id": "race-coast-fixtures",
         "route_id": "race-coast-fixtures-html",
+        "error_code": null
+      }
+    },
+    {
+      "meeting_id": "switzerland-galop-2026-10-30-iena-avenches",
+      "country_id": "switzerland",
+      "authority_id": "galop-suisse",
+      "racing_system_id": "switzerland-galop-suisse-system",
+      "timezone": "Europe/Zurich",
+      "racecourse_id": "switzerland--iena-avenches",
+      "date": "2026-10-30",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "galop-suisse-calendar",
+        "route_id": "galop-suisse-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.iena.ch/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-05",
+        "generated_at": "2026-10-05T11:40:54.380Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "galop-suisse-calendar",
+          "official_source_url": "https://www.iena.ch/",
+          "observed_at": "2026-10-05T11:40:54.380Z",
+          "successfully_verified_at": "2026-10-05T11:40:54.380Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "galop-suisse-calendar",
+          "official_source_url": "https://www.iena.ch/",
+          "observed_at": "2026-10-05T11:40:54.380Z",
+          "successfully_verified_at": "2026-10-05T11:40:54.380Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-05T11:40:54.380Z",
+        "status": "success",
+        "source_id": "galop-suisse-calendar",
+        "route_id": "galop-suisse-calendar",
         "error_code": null
       }
     },
