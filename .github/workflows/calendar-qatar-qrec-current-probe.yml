@@ -15,95 +15,60 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Probe QREC current season routes
+
+      - name: Probe QREC current pages
         shell: bash
         run: |
           set -euo pipefail
           UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
           mkdir -p /tmp/qrec
-          urls=(
-            'https://qrec.gov.qa/'
-            'https://qrec.gov.qa/race-calendar'
-            'https://qrec.gov.qa/race-calendar-2026-2027'
-            'https://qrec.gov.qa/race-calendar-2026-27'
-            'https://qrec.gov.qa/race-calendar-2025-2026'
-          )
-          n=0
-          for url in "${urls[@]}"; do
-            out="/tmp/qrec/page-$n.html"
+          for item in             'current|https://qrec.gov.qa/race-calendar'             'next-long|https://qrec.gov.qa/race-calendar-2026-2027'             'next-short|https://qrec.gov.qa/race-calendar-2026-27'             'previous|https://qrec.gov.qa/race-calendar-2025-2026'; do
+            name="${item%%|*}"
+            url="${item#*|}"
+            out="/tmp/qrec/$name.html"
             code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
-            final="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o /dev/null -w '%{url_effective}' "$url" || true)"
-            echo "PAGE index=$n HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) URL=$url FINAL=$final"
-            python3 - "$out" <<'PY'
-          import html,re,sys
-          from pathlib import Path
-          p=Path(sys.argv[1])
-          raw=p.read_text(errors='replace') if p.exists() else ''
-          text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
-          text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
-          text=html.unescape(re.sub(r'<[^>]+>',' ',text))
-          text=re.sub(r'\s+',' ',text).strip()
-          for needle in ['Race Season is closed','Racing Season Program','2026-27','2026/2027','2026-2027','AL RAYYAN','AL UQDA','October 2026','November 2026']:
-              pos=text.lower().find(needle.lower())
-              if pos>=0:
-                  print('TEXT_MATCH',needle,text[max(0,pos-220):pos+900])
-          print('SCRIPT_URLS')
-          seen=set()
-          for m in re.finditer(r'<script\b[^>]*\bsrc=["\']([^"\']+)["\']',raw,re.I):
-              u=html.unescape(m.group(1))
-              if u not in seen:
-                  seen.add(u); print(u[:1000])
-          print('ENDPOINT_HINTS')
-          seen=set()
-          patterns=[
-              r'https?://[^"\'<>\s]+',
-              r'/(?:api|wp-json|graphql|race|calendar)[^"\'<>\s]{0,240}'
-          ]
-          for pat in patterns:
-              for m in re.finditer(pat,raw,re.I):
-                  s=html.unescape(m.group(0))
-                  if any(k in s.lower() for k in ['api','calendar','race','meet']):
-                      if s not in seen:
-                          seen.add(s); print(s[:1000])
-                      if len(seen)>=120: break
-              if len(seen)>=120: break
-          PY
-            n=$((n+1))
+            echo "PAGE name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) URL=$url"
+            grep -Eo 'Race Season is closed|Racing Season Program 2025-26|2026-27|2026-2027|AL RAYYAN|AL UQDA' "$out" | sort -u || true
+            grep -Eo '/_next/static/chunks/pages/race-calendar[^" ]+\.js' "$out" | sort -u || true
           done
 
-      - name: Probe discovered frontend assets for API routes
+      - name: Probe QREC calendar page chunks
         shell: bash
         run: |
           set -euo pipefail
           UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
-          python3 - <<'PY' > /tmp/qrec-assets.txt
-          import html,re
+          for page in current previous; do
+            chunk="$(grep -Eo '/_next/static/chunks/pages/race-calendar[^" ]+\.js' "/tmp/qrec/$page.html" | head -n 1 || true)"
+            [ -n "$chunk" ] || { echo "NO_CHUNK page=$page"; continue; }
+            url="https://qrec.gov.qa$chunk"
+            out="/tmp/qrec/$page.js"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+            echo "CHUNK page=$page HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) URL=$url"
+            python3 - "$out" <<'PY'
+          import re,sys
           from pathlib import Path
-          base='https://qrec.gov.qa'
-          seen=[]
-          for p in Path('/tmp/qrec').glob('page-*.html'):
-              raw=p.read_text(errors='replace')
-              for m in re.finditer(r'<script\b[^>]*\bsrc=["\']([^"\']+)["\']',raw,re.I):
-                  u=html.unescape(m.group(1))
-                  if u.startswith('/'): u=base+u
-                  if u.startswith('http') and u not in seen: seen.append(u)
-          print('\n'.join(seen[:40]))
+          raw=Path(sys.argv[1]).read_text(errors='replace')
+          seen=set()
+          for m in re.finditer(r'["\x27]([^"\x27]{4,500})["\x27]',raw):
+              s=m.group(1)
+              low=s.lower()
+              if any(k in low for k in ('api','calendar','race','meeting','meetid','season')):
+                  if s not in seen:
+                      seen.add(s)
+                      print('HINT',s[:800])
+              if len(seen)>=120:
+                  break
           PY
-          while IFS= read -r url; do
-            [ -n "$url" ] || continue
-            body="$(curl -L -sS -A "$UA" --connect-timeout 10 --max-time 30 "$url" || true)"
-            [ -n "$body" ] || continue
-            printf '%s' "$body" | grep -Eo 'https?://[^"'"'"' ]+|/[A-Za-z0-9_?=&./-]*(api|calendar|race|meet)[A-Za-z0-9_?=&./-]*' | head -n 80 | sed "s#^#ASSET_HINT $url #"
-          done < /tmp/qrec-assets.txt
+          done
 
-      - name: Probe common WordPress and Next data surfaces
+      - name: Probe common QREC data surfaces
         shell: bash
         run: |
           set -euo pipefail
           UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
-          for url in             'https://qrec.gov.qa/wp-json/'             'https://qrec.gov.qa/wp-json/wp/v2/pages?search=race%20calendar&per_page=20'             'https://qrec.gov.qa/wp-json/wp/v2/search?search=race%20calendar&per_page=20'             'https://qrec.gov.qa/api/'             'https://qrec.gov.qa/api/race-calendar'; do
+          for url in             'https://qrec.gov.qa/wp-json/'             'https://qrec.gov.qa/wp-json/wp/v2/pages?search=race%20calendar&per_page=20'             'https://qrec.gov.qa/api/'             'https://qrec.gov.qa/api/race-calendar'; do
             out='/tmp/qrec/common.out'
             code="$(curl -L -sS -A "$UA" --connect-timeout 10 --max-time 30 -o "$out" -w '%{http_code}' "$url" || true)"
             echo "COMMON HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) URL=$url"
-            head -c 2500 "$out" | tr '\n' ' '; echo
+            head -c 1200 "$out" | tr '\n' ' '; echo
           done
