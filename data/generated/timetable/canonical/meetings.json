@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-10-05T12:40:03.262Z",
+  "generated_at": "2026-10-05T12:44:29.703Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -12550,7 +12550,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-05T12:40:03.262Z",
+        "generated_at": "2026-10-05T12:44:29.703Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12579,7 +12579,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-05T12:40:03.262Z",
+        "generated_at": "2026-10-05T12:44:29.703Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12784,7 +12784,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-05T12:40:03.262Z",
+        "generated_at": "2026-10-05T12:44:29.703Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -57191,6 +57191,65 @@
         "status": "success",
         "source_id": "belgium-trotting-public-races",
         "route_id": "belgium-trotting-public-races",
+        "error_code": null
+      }
+    },
+    {
+      "meeting_id": "belize-2026-10-18-peter-august-stadium-racetrack",
+      "country_id": "belize",
+      "authority_id": "horse-racing-investments-limited",
+      "racing_system_id": "national-racing-schedule",
+      "timezone": "America/Belize",
+      "racecourse_id": "belize--peter-august-stadium-racetrack",
+      "date": "2026-10-18",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "horse-racing-belize-schedule",
+        "route_id": "belize-official-window",
+        "source_status": "verified",
+        "official_source_url": "https://horseracingbelize.com/schedule/",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-05",
+        "generated_at": "2026-10-05T12:44:29.002Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "horse-racing-belize-schedule",
+          "official_source_url": "https://horseracingbelize.com/schedule/",
+          "observed_at": "2026-10-05T12:44:29.002Z",
+          "successfully_verified_at": "2026-10-05T12:44:29.002Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "horse-racing-belize-schedule",
+          "official_source_url": "https://horseracingbelize.com/schedule/",
+          "observed_at": "2026-10-05T12:44:29.002Z",
+          "successfully_verified_at": "2026-10-05T12:44:29.002Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-05T12:44:29.002Z",
+        "status": "success",
+        "source_id": "horse-racing-belize-schedule",
+        "route_id": "belize-official-window",
         "error_code": null
       }
     },
