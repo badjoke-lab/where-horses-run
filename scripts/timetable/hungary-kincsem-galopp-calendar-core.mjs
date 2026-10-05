@@ -69,8 +69,9 @@ export function parseGaloppCalendarPdfText(text,{sourceUrl}={}){
 export function parseGaloppAnnualCalendarPdfText(text,{sourceUrl=HUNGARY_ANNUAL_CALENDAR_URL}={}){
   if(typeof text!=='string'||!text.trim()) throw new Error('Kincsem annual Galopp calendar PDF text must be non-empty');
   const normalized=text.replace(/\s+/g,' ').trim();
-  const marker=normalized.search(/VERSENYNAPOK\s+2026/i);
-  if(marker<0) throw new Error('Kincsem annual Galopp race-days fingerprint missing');
+  if(!/GALOPP\s*-?\s*VERSENYNAPT[AÁ]R/i.test(normalized)) throw new Error('Kincsem annual Galopp calendar fingerprint missing');
+  const marker=normalized.search(/M[aá]rcius\s+29(?:\s+|$)/i);
+  if(marker<0) throw new Error('Kincsem annual Galopp meeting table missing');
   const block=normalized.slice(marker);
   const monthPattern='M[aá]rcius|[AÁ]prilis|M[aá]jus|J[uú]nius|J[uú]lius|Augusztus|Szeptember|Okt[oó]ber|November';
   const rx=new RegExp('('+monthPattern+')\\s+([\\s\\S]*?)(?=(?:'+monthPattern+')\\s+|$)','gi');
