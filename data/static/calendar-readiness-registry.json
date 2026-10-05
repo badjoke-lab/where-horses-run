@@ -591,13 +591,16 @@
       "system_id": "qatar-qrec-calendar-system",
       "system_name_en": "QREC calendar system",
       "authority_source_key": "qatar/qatar-racing-and-equestrian-club/qrec-season-calendar",
-      "racecourse_ids": [],
-      "coverage_scope": "system_only",
-      "technical_rank": "A+",
+      "racecourse_ids": [
+        "qatar--al-rayyan-racecourse",
+        "qatar--al-uqda-racecourse"
+      ],
+      "coverage_scope": "multi_racecourse",
+      "technical_rank": "A",
       "public_ceiling": "A",
       "confirmed_fields": {
         "meeting_date": true,
-        "racecourse": false,
+        "racecourse": true,
         "first_race_time": true,
         "last_race_time": true,
         "per_race_post_times": true,
@@ -608,26 +611,28 @@
       },
       "source_format": "json",
       "access_mode": "api_call",
-      "automation_mode": "semi_automatic",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "seasonal",
-        "near_meeting"
+        "daily",
+        "near_meeting",
+        "seasonal"
       ],
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "fallback": "hide_from_current_calendar",
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-15",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate at publication or opening of the 2026-27 season and when venue labels become reliable.",
+      "checked_date": "2026-10-06",
+      "evidence_reviewed_at": "2026-10-06",
+      "revalidation_trigger": "Revalidate when QREC changes its public frontend API base/token contract, meeting field names, venue labels, or postTime semantics.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/10-qatar/final-summary.json",
       "limitations": [
-        "The reviewed source window ended in April 2026.",
-        "Venue identity was not consistent enough for a principal-racecourse claim.",
-        "Surface and course labels were not confirmed."
+        "The QREC meeting API may return meetings beyond the requested query dates; the runner must filter locally to the requested window.",
+        "A source postTime of 00:00 is treated as unpublished and must not be exposed as a real post time.",
+        "Surface and course labels remain unconfirmed for A+.",
+        "Unknown venue names are rejected rather than inferred."
       ],
-      "notes": "A bounded seasonal prototype can begin after next-season revalidation, with promotion blocked when venue identity is absent."
+      "notes": "Current 2026-27 QREC API already exposes Al Rayyan meetings. The runner publishes C while post times are 00:00 and upgrades only when valid source-visible times appear."
     },
     {
       "readiness_id": "oman--oman-source-led-racing-system--oman-official-news-and-club-channel",

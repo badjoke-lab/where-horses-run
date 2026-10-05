@@ -201,15 +201,15 @@
       "authority_name_en": "Qatar Racing and Equestrian Club",
       "authority_name_local": null,
       "authority_type": "national",
-      "racecourse_scope": "unknown",
+      "racecourse_scope": "all_authority_racecourses",
       "official_source_id": "qrec-season-calendar",
-      "official_source_url": "https://qrec.gov.qa/",
+      "official_source_url": "https://qrec.gov.qa/race-calendar",
       "source_kind": "calendar",
       "source_status": "verified",
-      "last_checked_date": "2026-06-15",
-      "capability_rank": "A+",
+      "last_checked_date": "2026-10-06",
+      "capability_rank": "A",
       "adapter_candidate_status": "candidate",
-      "notes": "Reviewed 2025-26 QREC data exposed complete race identity, post times, names, and distances. The source requires revalidation at the 2026-27 season opening and venue labels remain unresolved."
+      "notes": "Revalidated against the current QREC public frontend/API contract on 2026-10-06. The API already exposes 2026-27 meetings with explicit Al Rayyan venue names plus race names/distances; 00:00 postTime values are unpublished placeholders and are not treated as real post times. Automatic publication is adaptive C/B/B+/A."
     },
     {
       "country_id": "oman",

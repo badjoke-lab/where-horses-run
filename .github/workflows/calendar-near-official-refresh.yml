@@ -527,6 +527,9 @@ jobs:
           node scripts/timetable/run-puerto-rico-camarero-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/puerto-rico.json
+          node scripts/timetable/run-qatar-qrec-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/qatar.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -580,7 +583,8 @@ jobs:
             --artifact=.calendar-unified/cyprus.json \
             --artifact=.calendar-unified/belgium-trotting.json \
             --artifact=.calendar-unified/belize.json \
-            --artifact=.calendar-unified/puerto-rico.json
+            --artifact=.calendar-unified/puerto-rico.json \
+            --artifact=.calendar-unified/qatar.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -889,6 +893,12 @@ jobs:
             --authority-id=hipodromo-camarero \
             --racing-system-id=puerto-rico-reviewed-system \
             --timezone=America/Puerto_Rico
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/qatar.json \
+            --country-id=qatar \
+            --authority-id=qatar-racing-and-equestrian-club \
+            --racing-system-id=qatar-qrec-calendar-system \
+            --timezone=Asia/Qatar
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
