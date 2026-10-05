@@ -8,6 +8,7 @@ export const HUNGARY_SYSTEM_ID='hungary-kincsem-galopp-calendar-system';
 export const HUNGARY_SOURCE_ID='kincsem-galopp-calendar';
 export const HUNGARY_RACECOURSE_ID='hungary--kincsem-park';
 export const HUNGARY_CALENDAR_INDEX_URL='https://kincsempark.hu/galopp-szakma-informaciok/';
+export const HUNGARY_ANNUAL_CALENDAR_URL='https://kincsempark.hu/wp-content/uploads/2026/01/gvn261.pdf';
 
 const MONTHS=Object.freeze({
   januar:'01',februar:'02',marcius:'03',aprilis:'04',majus:'05',junius:'06',
@@ -58,6 +59,35 @@ export function parseGaloppCalendarPdfText(text,{sourceUrl}={}){
   }
   const out=[...new Map(rows.map(r=>[r.date,r])).values()].sort((a,b)=>a.date.localeCompare(b.date));
   if(!out.length) throw new Error('Kincsem Galopp meeting dates missing');
+  return out;
+}
+
+export function parseGaloppAnnualCalendarPdfText(text,{sourceUrl=HUNGARY_ANNUAL_CALENDAR_URL}={}){
+  if(typeof text!=='string'||!text.trim()) throw new Error('Kincsem annual Galopp calendar PDF text must be non-empty');
+  const normalized=text.replace(/\s+/g,' ').trim();
+  const marker=normalized.search(/VERSENYNAPOK\s+2026/i);
+  if(marker<0) throw new Error('Kincsem annual Galopp race-days fingerprint missing');
+  const block=normalized.slice(marker);
+  const monthPattern='M[aá]rcius|[AÁ]prilis|M[aá]jus|J[uú]nius|J[uú]lius|Augusztus|Szeptember|Okt[oó]ber|November';
+  const rx=new RegExp('('+monthPattern+')\\s+([\\s\\S]*?)(?=(?:'+monthPattern+')\\s+|$)','gi');
+  const rows=[];
+  for(const m of block.matchAll(rx)){
+    const month=MONTHS[normalize(m[1])];
+    if(!month) continue;
+    const nums=[...m[2].matchAll(/\b(\d{1,2})\b/g)].map(x=>Number(x[1]));
+    let days=[];
+    for(let i=nums.length-1;i>=0;i-=1){
+      const count=nums[i];
+      if(count>=0&&count<=5&&i===count){days=nums.slice(0,i);break;}
+    }
+    if(!days.length&&nums.length) days=nums.filter(n=>n>=1&&n<=31);
+    for(const day of days){
+      if(day<1||day>31) continue;
+      rows.push({date:'2026-'+month+'-'+String(day).padStart(2,'0'),racecourse_id:HUNGARY_RACECOURSE_ID,venue_name:'Kincsem Park',racing_type:'thoroughbred-flat',source_url:sourceUrl});
+    }
+  }
+  const out=[...new Map(rows.map(r=>[r.date,r])).values()].sort((a,b)=>a.date.localeCompare(b.date));
+  if(!out.length) throw new Error('Kincsem annual Galopp meeting dates missing');
   return out;
 }
 
