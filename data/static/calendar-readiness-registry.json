@@ -1546,6 +1546,55 @@
       "notes": "Reviewed Krieau race newspapers retain A-capability race-time evidence. They are not replaced or downgraded by the automatic rank-C race-date route."
     },
     {
+      "readiness_id": "puerto-rico--puerto-rico-reviewed-system--camarero-inscripciones",
+      "country_id": "puerto-rico",
+      "country_tracker_delivery_no": "24",
+      "system_id": "puerto-rico-reviewed-system",
+      "system_name_en": "Hipódromo Camarero automatic meeting discovery",
+      "authority_source_key": "puerto-rico/hipodromo-camarero/camarero-inscripciones",
+      "racecourse_ids": [
+        "puerto-rico--hipodromo-camarero"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "daily",
+        "near_meeting",
+        "weekly"
+      ],
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-10-05",
+      "evidence_reviewed_at": "2026-10-05",
+      "revalidation_trigger": "Revalidate when Camarero changes the Inscripciones route, weekly navigation semantics, or local-meeting publication structure.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/24-puerto-rico/final-summary.json",
+      "limitations": [
+        "Automatic discovery publishes source-visible local meeting date plus Hipódromo Camarero identity only at rank C.",
+        "The current source-visible horizon may be shorter than 30 days.",
+        "Programme-level first/last/per-race post times remain a separate reviewed A-capability path.",
+        "Source absence or an unpublished future week is not cancellation/non-running evidence."
+      ],
+      "notes": "The official Inscripciones page exposes current local meeting days while future weekly shells may legitimately have no entries yet."
+    },
+    {
       "readiness_id": "puerto-rico--puerto-rico-reviewed-system--camarero-programmes",
       "country_id": "puerto-rico",
       "country_tracker_delivery_no": "24",
@@ -5872,5 +5921,5 @@
       "notes": "Live GitHub Actions acquisition on 2026-10-02 exposed current Mons, Waregem and Tongeren meeting blocks. The automatic route publishes one C observation per date/physical venue and leaves the reviewed countrywide A evidence untouched."
     }
   ],
-  "last_updated": "2026-10-03"
+  "last_updated": "2026-10-05"
 }
