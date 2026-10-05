@@ -72,6 +72,37 @@ assert.deepEqual(octoberParsed.meetings.map((row) => row.meeting_id), [
   'nar-kawasaki-racecourse-2026-10-12',
 ]);
 
+const novemberPartialRows = {
+  urawa: Array.from({ length: 3 }, blank),
+  funabashi: Array.from({ length: 3 }, blank),
+  oi: Array.from({ length: 3 }, blank),
+  kawasaki: Array.from({ length: 3 }, blank),
+};
+novemberPartialRows.funabashi[1] = '<td><img alt="ナイター開催"></td>';
+const novemberPartialFixture = `<h2>11月</h2><table>
+${venueRow('浦和', novemberPartialRows.urawa)}
+${venueRow('船橋', novemberPartialRows.funabashi)}
+${venueRow('大井', novemberPartialRows.oi)}
+${venueRow('川崎', novemberPartialRows.kawasaki)}
+</table><h2>12月</h2>`;
+const novemberPartial = parseNankankeibaCalendarMonth(novemberPartialFixture, {
+  year: 2026,
+  month: 11,
+  allowedDates: ['2026-11-01', '2026-11-02', '2026-11-03'],
+  sourceUrl: 'https://www.nankankeiba.com/calendar/202610.do',
+});
+assert.equal(novemberPartial.structural_valid, true, 'partial-month windows only require cells through the requested last day');
+assert.deepEqual(novemberPartial.meetings.map((row) => row.meeting_id), [
+  'nar-funabashi-racecourse-2026-11-02',
+]);
+const novemberBeyondVisible = parseNankankeibaCalendarMonth(novemberPartialFixture, {
+  year: 2026,
+  month: 11,
+  allowedDates: ['2026-11-01', '2026-11-02', '2026-11-03', '2026-11-04'],
+  sourceUrl: 'https://www.nankankeiba.com/calendar/202610.do',
+});
+assert.equal(novemberBeyondVisible.structural_valid, false, 'requested dates beyond the visible row must still fail closed');
+
 const programmeFixture = '<table><tr><th>1日目</th><th>2日目</th><th>3日目</th><th>4日目</th><th>5日目</th></tr><tr><th>9月7日（月）</th><th>9月8日（火）</th><th>9月9日（水）</th><th>9月10日（木）</th><th>9月11日（金）</th></tr></table>';
 assert.deepEqual(parseNankankeibaProgrammeDates(programmeFixture, 2026), [
   '2026-09-07', '2026-09-08', '2026-09-09', '2026-09-10', '2026-09-11',
