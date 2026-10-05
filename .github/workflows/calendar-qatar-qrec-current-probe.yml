@@ -276,6 +276,33 @@ jobs:
           call_meetings old 2026-01-21 2026-01-22 token
           call_meetings old 2026-01-21 2026-01-22 bearer
 
+      - name: Inspect current QREC meeting metadata safely
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - /tmp/qrec/exact-current-token.json <<'PY'
+          import json,sys
+          obj=json.load(open(sys.argv[1]))
+          rows=obj.get('data',[]) if isinstance(obj,dict) else []
+          print('CURRENT_MEETINGS',len(rows))
+          allowed_meeting={'date','raceDate','meetingDate','meetingName','meetid','meetingId','venue','venueName','racecourse','racecourseName','track','trackName','location'}
+          allowed_race={'raceid','raceId','raceName','name','raceTime','time','postTime','distance','distanceM','track','trackName'}
+          for idx,row in enumerate(rows[:12]):
+              if not isinstance(row,dict): continue
+              scalars={k:v for k,v in row.items() if k in allowed_meeting and isinstance(v,(str,int,float,bool,type(None)))}
+              races=row.get('races') if isinstance(row.get('races'),list) else []
+              print('MEETING',idx,json.dumps(scalars,ensure_ascii=False,sort_keys=True),'race_count='+str(len(races)))
+              for r in races[:2]:
+                  if not isinstance(r,dict): continue
+                  rs={k:v for k,v in r.items() if k in allowed_race and isinstance(v,(str,int,float,bool,type(None)))}
+                  print('RACE_SAMPLE',json.dumps(rs,ensure_ascii=False,sort_keys=True))
+          if rows:
+              print('MEETING_KEYS',','.join(sorted(rows[0].keys())))
+              races=rows[0].get('races') if isinstance(rows[0].get('races'),list) else []
+              if races and isinstance(races[0],dict):
+                  print('RACE_KEYS',','.join(sorted(races[0].keys())))
+          PY
+
       - name: Probe common QREC data surfaces
         shell: bash
         run: |
