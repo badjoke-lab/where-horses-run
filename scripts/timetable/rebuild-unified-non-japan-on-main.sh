@@ -152,6 +152,9 @@ refresh_non_japan_on_main() {
   node scripts/timetable/run-belize-official-window.mjs \
     --days="${DAYS}" \
     --output=.calendar-unified/belize.json
+  node scripts/timetable/run-puerto-rico-camarero-official-window.mjs \
+    --days="${DAYS}" \
+    --output=.calendar-unified/puerto-rico.json
   node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --artifact=.calendar-unified/uae.json \
@@ -202,7 +205,8 @@ refresh_non_japan_on_main() {
   --artifact=.calendar-unified/malaysia.json \
   --artifact=.calendar-unified/cyprus.json \
   --artifact=.calendar-unified/belgium-trotting.json \
-  --artifact=.calendar-unified/belize.json
+  --artifact=.calendar-unified/belize.json \
+  --artifact=.calendar-unified/puerto-rico.json
   node scripts/timetable/apply-official-rolling-observations.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --country-id=hong-kong \
@@ -503,6 +507,12 @@ refresh_non_japan_on_main() {
     --authority-id=horse-racing-investments-limited \
     --racing-system-id=national-racing-schedule \
     --timezone=America/Belize
+  node scripts/timetable/apply-official-rolling-observations.mjs \
+    --artifact=.calendar-unified/puerto-rico.json \
+    --country-id=puerto-rico \
+    --authority-id=hipodromo-camarero \
+    --racing-system-id=puerto-rico-reviewed-system \
+    --timezone=America/Puerto_Rico
   node scripts/timetable/apply-reviewed-calendar-observations.mjs
   node scripts/timetable/apply-meeting-presence-dispositions.mjs \
   --artifact=.calendar-unified/hkjc.json \
