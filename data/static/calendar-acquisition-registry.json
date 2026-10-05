@@ -1386,6 +1386,34 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic official Hipódromo Camarero Inscripciones route emits source-visible local meeting dates at the fixed physical venue at rank C. Reviewed programme/PDF evidence remains a separate richer detail capability and is not inferred by the discovery runner. Empty future weekly shells and source absence are not non-running evidence."
+    },
+    {
+      "system_id": "qatar-qrec-calendar-system",
+      "country_id": "qatar",
+      "authority_id": "qatar-racing-and-equestrian-club",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "qrec-season-calendar",
+      "detail_source_id": "qrec-season-calendar",
+      "schedule_adapter_id": "qatar-qrec-public-api-v1",
+      "detail_adapter_id": "qatar-qrec-public-api-v1",
+      "technical_capability_rank": "A",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "A",
+      "supported_observation_ranks": [
+        "C",
+        "B",
+        "B+",
+        "A"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": true,
+      "pending_fields": [],
+      "operator_notes": "Automatic QREC public frontend/API route. The runner resolves Al Rayyan and Al Uqda from source-visible meeting names, filters API over-return locally to the requested window, treats 00:00 as unpublished, and upgrades C/B/B+/A only from valid source-visible post times."
     }
   ]
 }
