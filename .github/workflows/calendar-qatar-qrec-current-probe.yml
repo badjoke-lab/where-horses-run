@@ -201,6 +201,81 @@ jobs:
             try_call old 2026-01-21 2026-01-22 "$mode"
           done
 
+      - name: Exercise exact QREC public frontend token and meeting flow
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          app_chunk="$(grep -Eo '/_next/static/chunks/pages/_app-[^" ]+\.js' /tmp/qrec/current.html | head -n 1 || true)"
+          [ -n "$app_chunk" ] || exit 1
+          curl -L -sS -A "$UA" --connect-timeout 10 --max-time 30 "https://qrec.gov.qa$app_chunk" -o /tmp/qrec/app-exact.js
+          python3 - /tmp/qrec/app-exact.js > /tmp/qrec/qrec-public-env.sh <<'PY'
+          import re,sys,shlex
+          raw=open(sys.argv[1],errors='replace').read()
+          pats={
+            'BASE':r'NEXT_PUBLIC_BASE_URL\|\|"([^"]+)"',
+            'APIKEY':r'NEXT_PUBLIC_API_KEY\|\|"([^"]+)"',
+            'GRANT':r'NEXT_PUBLIC_AUTH_GRANT_TOKEN\|\|"([^"]+)"',
+          }
+          for k,p in pats.items():
+              m=re.search(p,raw)
+              if not m: raise SystemExit('missing '+k)
+              print(f'{k}={shlex.quote(m.group(1))}')
+          PY
+          source /tmp/qrec/qrec-public-env.sh
+          qbase="${BASE%/}/qrec/"
+          token_out=/tmp/qrec/token.json
+          token_code="$(curl -L -sS -A "$UA" --connect-timeout 10 --max-time 30             -H 'Content-Type: application/x-www-form-urlencoded'             -H "Authorization: Basic $GRANT"             -H "apiKey: $APIKEY"             -H 'channel: Portal'             -H 'language: en'             --data 'grant_type=client_credentials'             -o "$token_out" -w '%{http_code}' "${qbase}token/generate" || true)"
+          token_shape="$(python3 - "$token_out" <<'PY'
+          import json,sys
+          try: obj=json.load(open(sys.argv[1]))
+          except Exception: print('non_json'); raise SystemExit
+          print('dict:'+','.join(sorted(obj.keys())[:12]) if isinstance(obj,dict) else type(obj).__name__)
+          PY
+          )"
+          echo "QREC_TOKEN HTTP=$token_code SHAPE=$token_shape"
+          TOKEN="$(python3 - "$token_out" <<'PY'
+          import json,sys
+          try: obj=json.load(open(sys.argv[1]))
+          except Exception: print(''); raise SystemExit
+          print(obj.get('access_token') or obj.get('data',{}).get('access_token') or '')
+          PY
+          )"
+          echo "QREC_TOKEN_PRESENT=$([ -n "$TOKEN" ] && echo yes || echo no)"
+          call_meetings () {
+            label="$1"; start="$2"; end="$3"; authmode="$4"
+            out="/tmp/qrec/exact-$label-$authmode.json"
+            headers=(-H "apiKey: $APIKEY" -H 'channel: Portal' -H 'language: en')
+            if [ -n "$TOKEN" ]; then
+              headers+=(-H "apiToken: $TOKEN")
+              if [ "$authmode" = bearer ]; then headers+=(-H "Authorization: Bearer $TOKEN"); fi
+            fi
+            code="$(curl -L -sS -A "$UA" --connect-timeout 10 --max-time 30               "${headers[@]}"               -o "$out" -w '%{http_code}'               "${qbase}race/data?pageaction=jsonmeetings&startdate=$start&endate=$end&lang=en" || true)"
+            summary="$(python3 - "$out" <<'PY'
+          import json,sys
+          try: obj=json.load(open(sys.argv[1]))
+          except Exception: print('non_json'); raise SystemExit
+          if isinstance(obj,dict):
+              d=obj.get('data')
+              if isinstance(d,list):
+                  dates=[]
+                  for row in d[:8]:
+                      if isinstance(row,dict):
+                          dates.append(str(row.get('date') or row.get('raceDate') or row.get('meetingDate') or ''))
+                  print(f'data_list:{len(d)} dates='+'|'.join(dates))
+              else:
+                  print('dict_keys:'+','.join(sorted(obj.keys())[:12]))
+          elif isinstance(obj,list): print(f'list:{len(obj)}')
+          else: print(type(obj).__name__)
+          PY
+            )"
+            echo "QREC_EXACT label=$label auth=$authmode HTTP=$code SHAPE=$summary"
+          }
+          call_meetings current 2026-10-05 2026-10-06 token
+          call_meetings current 2026-10-05 2026-10-06 bearer
+          call_meetings old 2026-01-21 2026-01-22 token
+          call_meetings old 2026-01-21 2026-01-22 bearer
+
       - name: Probe common QREC data surfaces
         shell: bash
         run: |
