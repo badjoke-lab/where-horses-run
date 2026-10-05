@@ -61,6 +61,35 @@ jobs:
           PY
           done
 
+      - name: Locate QREC race API constants
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          grep -Eo '/_next/static/chunks/[^" ]+\.js' /tmp/qrec/current.html | sort -u > /tmp/qrec/chunks.txt || true
+          n=0
+          while IFS= read -r chunk; do
+            [ -n "$chunk" ] || continue
+            n=$((n+1))
+            out="/tmp/qrec/chunk-$n.js"
+            curl -L -sS -A "$UA" --connect-timeout 10 --max-time 30 "https://qrec.gov.qa$chunk" -o "$out" || true
+            python3 - "$out" "$chunk" <<'PY'
+          import re,sys
+          from pathlib import Path
+          raw=Path(sys.argv[1]).read_text(errors='replace')
+          name=sys.argv[2]
+          needles=['GET_RACE_MEETING_INFO','GET_RACE','RACE_MEETING','baseURL','baseUrl','api.qrec','qrec.gov.qa/api']
+          matched=False
+          for needle in needles:
+              pos=raw.find(needle)
+              if pos>=0:
+                  if not matched:
+                      print('MATCH_CHUNK',name)
+                      matched=True
+                  print('CONTEXT',needle,raw[max(0,pos-1200):pos+2200])
+          PY
+          done < /tmp/qrec/chunks.txt
+
       - name: Probe common QREC data surfaces
         shell: bash
         run: |
