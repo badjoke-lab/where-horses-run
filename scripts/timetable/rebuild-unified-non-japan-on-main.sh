@@ -155,6 +155,9 @@ refresh_non_japan_on_main() {
   node scripts/timetable/run-puerto-rico-camarero-official-window.mjs \
     --days="${DAYS}" \
     --output=.calendar-unified/puerto-rico.json
+  node scripts/timetable/run-qatar-qrec-official-window.mjs \
+    --days="${DAYS}" \
+    --output=.calendar-unified/qatar.json
   node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --artifact=.calendar-unified/uae.json \
@@ -206,7 +209,8 @@ refresh_non_japan_on_main() {
   --artifact=.calendar-unified/cyprus.json \
   --artifact=.calendar-unified/belgium-trotting.json \
   --artifact=.calendar-unified/belize.json \
-  --artifact=.calendar-unified/puerto-rico.json
+  --artifact=.calendar-unified/puerto-rico.json \
+  --artifact=.calendar-unified/qatar.json
   node scripts/timetable/apply-official-rolling-observations.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --country-id=hong-kong \
@@ -513,6 +517,12 @@ refresh_non_japan_on_main() {
     --authority-id=hipodromo-camarero \
     --racing-system-id=puerto-rico-reviewed-system \
     --timezone=America/Puerto_Rico
+  node scripts/timetable/apply-official-rolling-observations.mjs \
+    --artifact=.calendar-unified/qatar.json \
+    --country-id=qatar \
+    --authority-id=qatar-racing-and-equestrian-club \
+    --racing-system-id=qatar-qrec-calendar-system \
+    --timezone=Asia/Qatar
   node scripts/timetable/apply-reviewed-calendar-observations.mjs
   node scripts/timetable/apply-meeting-presence-dispositions.mjs \
   --artifact=.calendar-unified/hkjc.json \
