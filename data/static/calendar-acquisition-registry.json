@@ -1361,6 +1361,35 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic official Horse Racing Belize 2026 schedule route across Peter August Stadium, People's Stadium and Castleton Race Track. Publishes meeting date plus mapped physical venue at rank C only. Schedule absence or acquisition failure is not non-running evidence."
+    },
+    {
+      "system_id": "puerto-rico-reviewed-system",
+      "country_id": "puerto-rico",
+      "authority_id": "hipodromo-camarero",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "camarero-inscripciones",
+      "detail_source_id": "camarero-programmes",
+      "schedule_adapter_id": "puerto-rico-camarero-inscripciones-v1",
+      "detail_adapter_id": "puerto-rico-camarero-programmes-reviewed",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": false,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [
+        "first_race_time",
+        "last_race_time",
+        "per_race_post_times"
+      ],
+      "operator_notes": "Automatic official Hipódromo Camarero Inscripciones route emits source-visible local meeting dates at the fixed physical venue at rank C. Reviewed programme/PDF evidence remains a separate richer detail capability and is not inferred by the discovery runner. Empty future weekly shells and source absence are not non-running evidence."
     }
   ]
 }
