@@ -9,6 +9,7 @@ export const HUNGARY_SOURCE_ID='kincsem-galopp-calendar';
 export const HUNGARY_RACECOURSE_ID='hungary--kincsem-park';
 export const HUNGARY_CALENDAR_INDEX_URL='https://kincsempark.hu/galopp-szakma-informaciok/';
 export const HUNGARY_ANNUAL_CALENDAR_URL='https://kincsempark.hu/wp-content/uploads/2026/01/gvn261.pdf';
+export const HUNGARY_RACING_DAYS_URL='https://mla.kincsempark.hu/racing-days/gallop/';
 
 const MONTHS=Object.freeze({
   januar:'01',februar:'02',marcius:'03',aprilis:'04',majus:'05',junius:'06',
@@ -89,6 +90,15 @@ export function parseGaloppAnnualCalendarPdfText(text,{sourceUrl=HUNGARY_ANNUAL_
   const out=[...new Map(rows.map(r=>[r.date,r])).values()].sort((a,b)=>a.date.localeCompare(b.date));
   if(!out.length) throw new Error('Kincsem annual Galopp meeting dates missing');
   return out;
+}
+
+export function parseGaloppRacingDaysHtml(html,{sourceUrl=HUNGARY_RACING_DAYS_URL}={}){
+  if(typeof html!=='string'||!html.trim()) throw new Error('Kincsem Galopp racing-days HTML must be non-empty');
+  const text=stripHtml(html);
+  if(!/Galopp\s+Versenynapok|Gallop\s+Racing\s+Days/i.test(text)) throw new Error('Kincsem Galopp racing-days fingerprint missing');
+  const dates=[...new Set([...text.matchAll(/\b(2026-\d{2}-\d{2})\b/g)].map(m=>m[1]))].sort();
+  if(!dates.length) throw new Error('Kincsem Galopp racing-days dates missing');
+  return dates.map(date=>({date,racecourse_id:HUNGARY_RACECOURSE_ID,venue_name:'Kincsem Park',racing_type:'thoroughbred-flat',source_url:sourceUrl}));
 }
 
 function evidence(url,checkedAt){return {source_id:HUNGARY_SOURCE_ID,official_source_url:url,observed_at:checkedAt,successfully_verified_at:checkedAt,acquisition_method:'automatic'};}
