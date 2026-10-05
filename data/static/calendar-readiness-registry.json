@@ -6,7 +6,7 @@
   "programme_state": {
     "country_target": 98,
     "countries_with_closed_decision": 98,
-    "readiness_records": 128,
+    "readiness_records": 129,
     "next_backfill_work_ids": []
   },
   "records": [
@@ -1734,6 +1734,54 @@
         "Reviewed document URLs are date-specific and require rollover handling."
       ],
       "notes": "Manual programme import is the conservative initial treatment."
+    },
+    {
+      "readiness_id": "barbados--barbados-reviewed-system--barbados-racing-calendar",
+      "country_id": "barbados",
+      "country_tracker_delivery_no": "27",
+      "system_id": "barbados-reviewed-system",
+      "system_name_en": "Barbados Turf Club automatic meeting discovery",
+      "authority_source_key": "barbados/barbados-turf-club/barbados-racing-calendar",
+      "racecourse_ids": [
+        "barbados--garrison-savannah"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "daily",
+        "weekly",
+        "seasonal"
+      ],
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-10-06",
+      "evidence_reviewed_at": "2026-10-06",
+      "revalidation_trigger": "Revalidate when Barbados Turf Club changes the racing-calendar route, date markup, venue identity, or cancellation labels.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/27-barbados/final-summary.json",
+      "limitations": [
+        "Automatic discovery publishes meeting date plus fixed Garrison Savannah identity only at rank C.",
+        "Programme-level post times remain a separate reviewed A-capability path.",
+        "An explicitly CANCELLED annual-calendar date is excluded from positive schedule candidates, but absence or fetch/parser failure is never treated as cancellation evidence."
+      ],
+      "notes": "The official 2026 calendar is directly automation-safe. The schedule runner is deliberately separated from richer programme imports."
     },
     {
       "readiness_id": "barbados--barbados-reviewed-system--barbados-programmes",
