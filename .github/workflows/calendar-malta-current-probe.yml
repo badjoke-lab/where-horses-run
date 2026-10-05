@@ -1,0 +1,57 @@
+name: Malta Racing Club current Calendar probe
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-malta-current-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe current Malta Racing Club routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'
+          mkdir -p /tmp/malta
+          for item in             'home|https://maltaracingclub.com/'             'calendar|https://maltaracingclub.com/index.php/calendar.php'             'races-calendar|https://maltaracingclub.com/races.php/calendar.php'             'news|https://maltaracingclub.com/news.php?p=1'; do
+            name="${item%%|*}"; url="${item#*|}"; out="/tmp/malta/$name.html"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+            echo "PAGE name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) URL=$url"
+            python3 - "$out" <<'PY'
+          import html,re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          text=html.unescape(re.sub(r'<[^>]+>',' ',raw))
+          text=re.sub(r'\s+',' ',text)
+          for needle in ['Racing Calendar till the end of 2026','October','November','December','Meeting #','Upcoming events','No upcoming events scheduled']:
+              p=text.lower().find(needle.lower())
+              if p>=0: print('TEXT_MATCH',needle,text[max(0,p-300):p+2200])
+          for m in re.finditer(r'href=["\']([^"\']+)["\'][^>]*>(.*?)</a>',raw,re.I|re.S):
+              label=html.unescape(re.sub(r'<[^>]+>',' ',m.group(2)))
+              label=re.sub(r'\s+',' ',label).strip()
+              if 'calendar' in label.lower() or '2026' in label.lower():
+                  print('LINK',label[:180],m.group(1)[:500])
+          PY
+          done
+      - name: Discover current Malta calendar/news links
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import html,re
+          from pathlib import Path
+          for p in Path('/tmp/malta').glob('*.html'):
+              raw=p.read_text(errors='replace')
+              print('FILE',p.name)
+              for m in re.finditer(r'(?:href|src)=["\']([^"\']+)["\']',raw,re.I):
+                  u=html.unescape(m.group(1))
+                  if any(k in u.lower() for k in ('calendar','newsdetails','2026','pdf','document','upload')):
+                      print('URL',u[:900])
+          PY
