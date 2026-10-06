@@ -1,5 +1,5 @@
 import fs from 'node:fs';import path from 'node:path';
-import {HUNGARY_ANNUAL_CALENDAR_URL,HUNGARY_AUTHORITY_ID,HUNGARY_CALENDAR_INDEX_URL,HUNGARY_RACING_DAYS_URL,HUNGARY_SOURCE_ID,HUNGARY_SYSTEM_ID,HUNGARY_TIMEZONE,buildHungaryGaloppMeetingRecord,extractPdfText,parseGaloppAnnualCalendarPdfText,parseGaloppCalendarPdfText,parseGaloppRacingDaysHtml,resolveGaloppCalendarCandidates} from './hungary-kincsem-galopp-calendar-core.mjs';
+import {HUNGARY_ANNUAL_CALENDAR_URL,HUNGARY_AUTHORITY_ID,HUNGARY_CALENDAR_INDEX_URL,HUNGARY_RACING_DAYS_URL,HUNGARY_SOURCE_ID,HUNGARY_SYSTEM_ID,HUNGARY_TIMEZONE,buildHungaryGaloppMeetingRecord,extractPdfText,parseGaloppAnnualCalendarPdfText,parseGaloppAnnualHighlightedDates,parseGaloppCalendarPdfText,parseGaloppRacingDaysHtml,resolveGaloppCalendarCandidates} from './hungary-kincsem-galopp-calendar-core.mjs';
 function arg(n,f=null){const p='--'+n+'=';const v=process.argv.find(x=>x.startsWith(p));return v?v.slice(p.length):f;}
 function plusDays(date,count){const d=new Date(date+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+count);return d.toISOString().slice(0,10);}
 function localDate(now=new Date()){const p=new Intl.DateTimeFormat('en-CA',{timeZone:HUNGARY_TIMEZONE,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now);const v=Object.fromEntries(p.filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));return v.year+'-'+v.month+'-'+v.day;}
@@ -41,7 +41,7 @@ try{
       const annualBuf=await annual.arrayBuffer();
       if(annualBuf.byteLength<10000) throw new Error('Kincsem annual Galopp calendar PDF unexpectedly short');
       const annualExtracted=await extractPdfText(new Uint8Array(annualBuf));
-      const annualRows=parseGaloppAnnualCalendarPdfText(annualExtracted.text,{sourceUrl:annual.url||HUNGARY_ANNUAL_CALENDAR_URL});
+      const annualRows=parseGaloppAnnualHighlightedDates(annualExtracted.text,{sourceUrl:annual.url||HUNGARY_ANNUAL_CALENDAR_URL});
       const primaryCount=allRows.length;
       const primaryDates=new Set(allRows.map(row=>row.date));
       const recoveredMissingDates=annualRows.filter(row=>!primaryDates.has(row.date)).map(row=>row.date);
@@ -63,18 +63,7 @@ try{
       pdfPages=0;
       sourceWarnings.push({stage:'calendar_issue_candidates',failures:candidateFailures,recovered_by:'current_racing_days_html'});
     }catch(racingDaysError){
-      try{
-        const annual=await get(HUNGARY_ANNUAL_CALENDAR_URL,'application/pdf,*/*;q=0.5');
-        const annualBuf=await annual.arrayBuffer();
-        if(annualBuf.byteLength<10000) throw new Error('Kincsem annual Galopp calendar PDF unexpectedly short');
-        const extracted=await extractPdfText(new Uint8Array(annualBuf));
-        allRows=parseGaloppAnnualCalendarPdfText(extracted.text,{sourceUrl:annual.url||HUNGARY_ANNUAL_CALENDAR_URL});
-        calendarPdf={issue:1,label:'Galopp Versenynaptár 2026 annual baseline',href:annual.url||HUNGARY_ANNUAL_CALENDAR_URL};
-        pdfPages=extracted.pages;
-        sourceWarnings.push({stage:'calendar_issue_candidates',failures:candidateFailures,racing_days_error:String(racingDaysError?.message??racingDaysError),recovered_by:'annual_calendar_pdf'});
-      }catch(fallbackError){
-        parseFailures.push({candidate_failures:candidateFailures,source_url:HUNGARY_RACING_DAYS_URL,error:String(racingDaysError?.message??racingDaysError),annual_source_url:HUNGARY_ANNUAL_CALENDAR_URL,annual_error:String(fallbackError?.message??fallbackError)});
-      }
+      parseFailures.push({candidate_failures:candidateFailures,source_url:HUNGARY_RACING_DAYS_URL,error:String(racingDaysError?.message??racingDaysError),annual_source_url:HUNGARY_ANNUAL_CALENDAR_URL,annual_error:'Annual summary is retained only as a cross-check and is not sufficient as a standalone full mother schedule.'});
     }
   }
 }catch(e){sourceErrors.push({stage:'kincsem_galopp_calendar',source_url:HUNGARY_CALENDAR_INDEX_URL,error:String(e?.message??e)});}
