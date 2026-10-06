@@ -1,12 +1,17 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
-import { FOUR_RACING_AUTHORITY_ID,FOUR_RACING_FIXTURE_PDF_URL,FOUR_RACING_SOURCE_ID,FOUR_RACING_SYSTEM_ID,SOUTH_AFRICA_TIMEZONE,buildFourRacingMeetingRecord,discoverNationalFixtureVersion,parseFourRacingNationalFixturePages } from './south-africa-four-racing-core.mjs';
+import { FOUR_RACING_AUTHORITY_ID,FOUR_RACING_FIXTURE_INDEX_URL,FOUR_RACING_FIXTURE_PDF_URL,FOUR_RACING_SOURCE_ID,FOUR_RACING_SYSTEM_ID,SOUTH_AFRICA_TIMEZONE,buildFourRacingMeetingRecord,discoverFourRacingFixturePdf,discoverNationalFixtureVersion,parseFourRacingNationalFixturePages } from './south-africa-four-racing-core.mjs';
 
 function arg(name,fallback=null){const p=`--${name}=`;const v=process.argv.find(x=>x.startsWith(p));return v?v.slice(p.length):fallback;}
 function plusDays(date,count){const d=new Date(`${date}T00:00:00Z`);d.setUTCDate(d.getUTCDate()+count);return d.toISOString().slice(0,10);}
 function localDate(now=new Date()){const parts=new Intl.DateTimeFormat('en-CA',{timeZone:SOUTH_AFRICA_TIMEZONE,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now);const v=Object.fromEntries(parts.filter(p=>p.type!=='literal').map(p=>[p.type,p.value]));return `${v.year}-${v.month}-${v.day}`;}
 function write(file,value){const target=path.resolve(file);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,`${JSON.stringify(value,null,2)}\n`);}
+async function getText(url){
+ const response=await fetch(url,{redirect:'follow',headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)','accept':'text/html,application/xhtml+xml;q=0.9,*/*;q=0.5','accept-language':'en-ZA,en;q=0.9'},signal:AbortSignal.timeout(25000)});
+ if(!response.ok)throw new Error(`HTTP ${response.status}`);
+ return {url:response.url||url,text:await response.text()};
+}
 async function getPdfPages(url){
  const response=await fetch(url,{redirect:'follow',headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)','accept':'application/pdf,*/*;q=0.8','accept-language':'en-ZA,en;q=0.9'},signal:AbortSignal.timeout(25000)});
  if(!response.ok)throw new Error(`HTTP ${response.status}`);
@@ -25,11 +30,14 @@ if(!Number.isInteger(days)||days<1||days>62)throw new Error('--days must be 1..6
 const end=plusDays(start,days),generatedAt=new Date().toISOString();
 let allRows=[];let parseFailures=[];let unknownVenues=[];let sourceUrl=FOUR_RACING_FIXTURE_PDF_URL;let version=null;const sourceErrors=[];
 try{
- const pages=await getPdfPages(FOUR_RACING_FIXTURE_PDF_URL);
- version=discoverNationalFixtureVersion(pages);
+ const index=await getText(FOUR_RACING_FIXTURE_INDEX_URL);
+ const discovered=discoverFourRacingFixturePdf(index.text,{sourceUrl:index.url,year:Number(start.slice(0,4))});
+ sourceUrl=discovered.href;
+ const pages=await getPdfPages(sourceUrl);
+ version=discoverNationalFixtureVersion(pages)??{version:discovered.version||null,label:discovered.label,page_number:null};
  const parsed=parseFourRacingNationalFixturePages(pages,{year:Number(start.slice(0,4)),sourceUrl});
  allRows=parsed.records;parseFailures=parsed.parse_failures;unknownVenues=parsed.unknown_venues;
-}catch(error){sourceErrors.push({stage:'national_fixture_pdf',source_url:FOUR_RACING_FIXTURE_PDF_URL,error:String(error?.message??error)});}
+}catch(error){sourceErrors.push({stage:'national_fixture_discovery_or_pdf',source_url:sourceUrl||FOUR_RACING_FIXTURE_INDEX_URL,error:String(error?.message??error)});}
 const rows=allRows.filter(row=>row.date>=start&&row.date<end);
 const records=rows.map(row=>buildFourRacingMeetingRecord(row,{checkedAt:generatedAt}));
 const artifact={
