@@ -6,7 +6,7 @@
   "programme_state": {
     "country_target": 98,
     "countries_with_closed_decision": 98,
-    "readiness_records": 129,
+    "readiness_records": 130,
     "next_backfill_work_ids": []
   },
   "records": [
@@ -1690,6 +1690,55 @@
         "Participant, betting, result and full-racecard fields remain excluded."
       ],
       "notes": "Automatic production parses the official Caymanas Park Entries page. Live GitHub Actions probe on 2026-09-28 resolved six source-visible September dates with source errors 0 and parse failures 0 via the browser-rendered official page."
+    },
+    {
+      "readiness_id": "trinidad-and-tobago--trinidad-and-tobago-reviewed-system--arima-2026-fixture-list",
+      "country_id": "trinidad-and-tobago",
+      "country_tracker_delivery_no": "26",
+      "system_id": "trinidad-and-tobago-reviewed-system",
+      "system_name_en": "Arima Race Club automatic meeting discovery",
+      "authority_source_key": "trinidad-and-tobago/arima-race-club/arima-2026-fixture-list",
+      "racecourse_ids": [
+        "trinidad-and-tobago--santa-rosa-park"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "pdf",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "daily",
+        "weekly",
+        "seasonal"
+      ],
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-10-06",
+      "evidence_reviewed_at": "2026-10-06",
+      "revalidation_trigger": "Revalidate when Arima Race Club publishes the 2027 fixture list or changes the official Race Book fixture-list structure.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/26-trinidad-and-tobago/final-summary.json",
+      "limitations": [
+        "Automatic discovery publishes meeting date plus fixed Santa Rosa Park identity only at rank C.",
+        "Programme-level post times remain a separate reviewed A-capability path.",
+        "The automatic schedule source is the official 2026 fixture list and must be revalidated at season rollover.",
+        "Source absence, acquisition failure, parser failure, or later fixture edits are not cancellation/non-running evidence."
+      ],
+      "notes": "Official Arima Race Club 2026 fixture list provides all Race Day dates through 26 December 2026."
     },
     {
       "readiness_id": "trinidad-and-tobago--trinidad-and-tobago-reviewed-system--arima-programme",
@@ -5974,5 +6023,5 @@
       "notes": "Live GitHub Actions acquisition on 2026-10-02 exposed current Mons, Waregem and Tongeren meeting blocks. The automatic route publishes one C observation per date/physical venue and leaves the reviewed countrywide A evidence untouched."
     }
   ],
-  "last_updated": "2026-10-05"
+  "last_updated": "2026-10-06"
 }
