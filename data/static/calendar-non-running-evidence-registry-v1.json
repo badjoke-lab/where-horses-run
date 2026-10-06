@@ -1188,6 +1188,28 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-10-06",
       "notes": "QREC homepage closed-season text, 00:00 postTime placeholders, API absence, source omission, acquisition failure or parser failure do not independently prove cancellation/postponement."
+    },
+    {
+      "record_id": "barbados-reviewed-system",
+      "country_id": "barbados",
+      "system_id": "barbados-reviewed-system",
+      "authority_id": "barbados-turf-club",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Positive official Barbados Turf Club annual-calendar/programme evidence only; the schedule runner may suppress an explicit CANCELLED calendar row from positive candidates but does not publish a non-running event.",
+      "evidence_urls": [
+        "https://www.barbadosturfclub.org/racing-calendar/",
+        "https://www.barbadosturfclub.org/provisional-official-programmes/"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-10-06",
+      "notes": "Source absence, removed dates, acquisition failure, parser failure, or later calendar changes do not independently prove cancellation/postponement. Explicit annual-calendar CANCELLED text is not generalized into an automated non-running pipeline in this lane."
     }
   ]
 }
