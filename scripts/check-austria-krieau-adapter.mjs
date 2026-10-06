@@ -15,9 +15,10 @@ if(process.env.GITHUB_ACTIONS==='true'){
     const artifact=JSON.parse(fs.readFileSync(output,'utf8'));
     console.log('AUSTRIA_KRIEAU_LIVE: '+JSON.stringify({attempt:artifact.acquisition_attempt,discovery:artifact.discovery,diagnostics:artifact.diagnostics,records:(artifact.records??[]).map(r=>r.date)}));
     assert.equal(artifact.acquisition_attempt?.status,'success');
-    assert.ok((artifact.records??[]).length>=2);
-    assert.ok((artifact.records??[]).some(r=>r.date==='2026-10-04'));
-    assert.ok((artifact.records??[]).some(r=>r.date==='2026-10-25'));
+    // The live Krieau page prunes completed meetings, so do not pin assertions to past dates.
+    assert.ok((artifact.records??[]).length>=1);
+    assert.ok((artifact.records??[]).every(r=>r.date>='2026-09-30'&&r.date<'2026-10-30'));
+    assert.ok((artifact.records??[]).every(r=>r.racecourse_id==='austria--trabrennpark-krieau'));
     assert.equal(artifact.diagnostics?.source_errors?.length,0);
     assert.equal(artifact.diagnostics?.parse_failures?.length,0);
   }finally{fs.rmSync(output,{force:true});}
