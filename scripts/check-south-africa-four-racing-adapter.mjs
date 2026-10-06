@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import { validateCalendarAuthorityMetadataV1 } from './timetable/calendar-authority-metadata.mjs';
-import { buildFourRacingMeetingRecord,discoverNationalFixtureVersion,parseFourRacingNationalFixturePages,resolveFourRacingVenue } from './timetable/south-africa-four-racing-core.mjs';
+import { buildFourRacingMeetingRecord,discoverFourRacingFixturePdf,discoverNationalFixtureVersion,parseFourRacingNationalFixturePages,resolveFourRacingVenue } from './timetable/south-africa-four-racing-core.mjs';
+
+const fixtureLink=discoverFourRacingFixturePdf('<a href="/Programs/FX/Jan%20to%20Dec%202026%20Aug%2011%20%28V7%29.pdf">Jan to Dec 2026 Aug 11 (V7)</a><a href="/Programs/FX/Jan%20to%20Dec%202026%20Oct%201%20%28V8%29.pdf">Jan to Dec 2026 Oct 1 (V8)</a>');
+assert.equal(fixtureLink.version,8);
+assert.match(fixtureLink.href,/Oct%201%20%28V8%29\.pdf$/);
 
 const page={page_number:11,items:[
  {str:'October 2026',x:40,y:760},{str:'Version 7 (11 August 2026)',x:500,y:760},

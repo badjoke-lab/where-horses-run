@@ -1,5 +1,5 @@
 import fs from 'node:fs';import path from 'node:path';
-import {HUNGARY_AUTHORITY_ID,HUNGARY_CALENDAR_INDEX_URL,HUNGARY_SOURCE_ID,HUNGARY_SYSTEM_ID,HUNGARY_TIMEZONE,buildHungaryGaloppMeetingRecord,extractPdfText,parseGaloppCalendarPdfText,resolveLatestGaloppCalendar} from './hungary-kincsem-galopp-calendar-core.mjs';
+import {HUNGARY_ANNUAL_CALENDAR_URL,HUNGARY_AUTHORITY_ID,HUNGARY_CALENDAR_INDEX_URL,HUNGARY_RACING_DAYS_URL,HUNGARY_SOURCE_ID,HUNGARY_SYSTEM_ID,HUNGARY_TIMEZONE,buildHungaryGaloppMeetingRecord,extractPdfText,parseGaloppAnnualCalendarPdfText,parseGaloppAnnualHighlightedDates,parseGaloppCalendarPdfText,parseGaloppRacingDaysHtml,resolveGaloppCalendarCandidates} from './hungary-kincsem-galopp-calendar-core.mjs';
 function arg(n,f=null){const p='--'+n+'=';const v=process.argv.find(x=>x.startsWith(p));return v?v.slice(p.length):f;}
 function plusDays(date,count){const d=new Date(date+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+count);return d.toISOString().slice(0,10);}
 function localDate(now=new Date()){const p=new Intl.DateTimeFormat('en-CA',{timeZone:HUNGARY_TIMEZONE,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now);const v=Object.fromEntries(p.filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));return v.year+'-'+v.month+'-'+v.day;}
@@ -15,14 +15,57 @@ let allRows=[],calendarPdf=null,pdfPages=0,indexUrl=HUNGARY_CALENDAR_INDEX_URL;
 try{
   const index=await get(HUNGARY_CALENDAR_INDEX_URL,'text/html,application/xhtml+xml;q=0.9,*/*;q=0.5');indexUrl=index.url||HUNGARY_CALENDAR_INDEX_URL;
   const html=await index.text();
-  calendarPdf=resolveLatestGaloppCalendar(html,{sourceUrl:indexUrl});
-  const pdf=await get(calendarPdf.href,'application/pdf,*/*;q=0.5');
-  const buf=await pdf.arrayBuffer();
-  if(buf.byteLength<10000) throw new Error('Kincsem Galopp calendar PDF unexpectedly short');
-  try{
-    const extracted=await extractPdfText(new Uint8Array(buf));pdfPages=extracted.pages;
-    allRows=parseGaloppCalendarPdfText(extracted.text,{sourceUrl:pdf.url||calendarPdf.href});
-  }catch(e){parseFailures.push({source_url:pdf.url||calendarPdf.href,error:String(e?.message??e)});}
+  const candidates=resolveGaloppCalendarCandidates(html,{sourceUrl:indexUrl});
+  const candidateFailures=[];
+  for(const candidate of candidates.slice(0,4)){
+    try{
+      const pdf=await get(candidate.href,'application/pdf,*/*;q=0.5');
+      const buf=await pdf.arrayBuffer();
+      if(buf.byteLength<10000) throw new Error('Kincsem Galopp calendar PDF unexpectedly short');
+      const extracted=await extractPdfText(new Uint8Array(buf));
+      const parsed=parseGaloppCalendarPdfText(extracted.text,{sourceUrl:pdf.url||candidate.href});
+      allRows=parsed;
+      calendarPdf={...candidate,href:pdf.url||candidate.href};
+      pdfPages=extracted.pages;
+      if(candidate.issue!==candidates[0].issue){
+        sourceWarnings.push({stage:'newer_calendar_issue_not_schedule_bearing',source_url:candidates[0].href,error:candidateFailures[0]?.error??'newer issue did not expose meeting dates',recovered_by:'prior_schedule_issue_pdf',selected_issue:candidate.issue});
+      }
+      break;
+    }catch(candidateError){
+      candidateFailures.push({issue:candidate.issue,source_url:candidate.href,error:String(candidateError?.message??candidateError)});
+    }
+  }
+  if(allRows.length){
+    try{
+      const annual=await get(HUNGARY_ANNUAL_CALENDAR_URL,'application/pdf,*/*;q=0.5');
+      const annualBuf=await annual.arrayBuffer();
+      if(annualBuf.byteLength<10000) throw new Error('Kincsem annual Galopp calendar PDF unexpectedly short');
+      const annualExtracted=await extractPdfText(new Uint8Array(annualBuf));
+      const annualRows=parseGaloppAnnualHighlightedDates(annualExtracted.text,{sourceUrl:annual.url||HUNGARY_ANNUAL_CALENDAR_URL});
+      const primaryCount=allRows.length;
+      const primaryDates=new Set(allRows.map(row=>row.date));
+      const recoveredMissingDates=annualRows.filter(row=>!primaryDates.has(row.date)).map(row=>row.date);
+      const byDate=new Map(annualRows.map(row=>[row.date,row]));
+      for(const row of allRows) byDate.set(row.date,row);
+      allRows=[...byDate.values()].sort((a,b)=>a.date.localeCompare(b.date));
+      if(recoveredMissingDates.length){
+        sourceWarnings.push({stage:'annual_calendar_cross_check',source_url:annual.url||HUNGARY_ANNUAL_CALENDAR_URL,primary_issue:calendarPdf?.issue??null,primary_rows:primaryCount,merged_rows:allRows.length,recovered_missing_dates:recoveredMissingDates});
+      }
+    }catch(annualCrossCheckError){
+      sourceWarnings.push({stage:'annual_calendar_cross_check',source_url:HUNGARY_ANNUAL_CALENDAR_URL,error:String(annualCrossCheckError?.message??annualCrossCheckError),recovered_by:null});
+    }
+  }
+  if(!allRows.length){
+    try{
+      const racingDays=await get(HUNGARY_RACING_DAYS_URL,'text/html,application/xhtml+xml;q=0.9,*/*;q=0.5');
+      allRows=parseGaloppRacingDaysHtml(await racingDays.text(),{sourceUrl:racingDays.url||HUNGARY_RACING_DAYS_URL});
+      calendarPdf={issue:null,label:'Current Galopp Racing Days',href:racingDays.url||HUNGARY_RACING_DAYS_URL};
+      pdfPages=0;
+      sourceWarnings.push({stage:'calendar_issue_candidates',failures:candidateFailures,recovered_by:'current_racing_days_html'});
+    }catch(racingDaysError){
+      parseFailures.push({candidate_failures:candidateFailures,source_url:HUNGARY_RACING_DAYS_URL,error:String(racingDaysError?.message??racingDaysError),annual_source_url:HUNGARY_ANNUAL_CALENDAR_URL,annual_error:'Annual summary is retained only as a cross-check and is not sufficient as a standalone full mother schedule.'});
+    }
+  }
 }catch(e){sourceErrors.push({stage:'kincsem_galopp_calendar',source_url:HUNGARY_CALENDAR_INDEX_URL,error:String(e?.message??e)});}
 const rows=allRows.filter(r=>r.date>=start&&r.date<end),records=rows.map(r=>buildHungaryGaloppMeetingRecord(r,{checkedAt:generatedAt}));
 const artifact={schema_version:'hungary-kincsem-galopp-official-window-candidates-v1',generated_at:generatedAt,country_id:'hungary',authority_id:HUNGARY_AUTHORITY_ID,racing_system_id:HUNGARY_SYSTEM_ID,timezone:HUNGARY_TIMEZONE,source_id:HUNGARY_SOURCE_ID,collection_target_rank:'best_available',raw_body_retained:false,acquisition_attempt:{attempted_at:generatedAt,status:sourceErrors.length?'network_error':(parseFailures.length?'parse_error':'success'),source_id:HUNGARY_SOURCE_ID,route_id:'kincsem-galopp-calendar',error_code:sourceErrors.length?'kincsem_galopp_calendar_fetch_failed':(parseFailures.length?'kincsem_galopp_calendar_parse_failed':null)},discovery:{method:'official_latest_galopp_calendar_pdf',source_url:calendarPdf?.href??indexUrl,source_issue:calendarPdf?.issue??null,pdf_pages:pdfPages,source_visible_rows:allRows.length,rank_counts:ranks(records),completion_counts:completions(records)},window:{start_date:start,end_date_exclusive:end,days,coverage_claim:sourceErrors.length||parseFailures.length?'acquisition_failed_preserve_verified_state':'official_source_visible_horizon',coverage_note:'The latest official Kincsem Park Galopp calendar PDF supplies source-visible Thoroughbred meeting dates at Kincsem Park. This route does not cover Ügető harness or Agár greyhound racing. Absence is not non-running evidence.'},records,diagnostics:{source_errors:sourceErrors,parse_failures:parseFailures,unknown_venues:[],source_warnings:sourceWarnings}};

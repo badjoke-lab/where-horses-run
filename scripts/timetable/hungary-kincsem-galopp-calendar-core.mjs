@@ -8,6 +8,8 @@ export const HUNGARY_SYSTEM_ID='hungary-kincsem-galopp-calendar-system';
 export const HUNGARY_SOURCE_ID='kincsem-galopp-calendar';
 export const HUNGARY_RACECOURSE_ID='hungary--kincsem-park';
 export const HUNGARY_CALENDAR_INDEX_URL='https://kincsempark.hu/galopp-szakma-informaciok/';
+export const HUNGARY_ANNUAL_CALENDAR_URL='https://kincsempark.hu/wp-content/uploads/2026/01/gvn261.pdf';
+export const HUNGARY_RACING_DAYS_URL='https://mla.kincsempark.hu/racing-days/gallop/';
 
 const MONTHS=Object.freeze({
   januar:'01',februar:'02',marcius:'03',aprilis:'04',majus:'05',junius:'06',
@@ -18,7 +20,7 @@ function stripHtml(v){return decodeHtml(String(v??'').replace(/<script\b[^>]*>[\
 function normalize(v){return String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim();}
 function absolute(href,base){return new URL(decodeHtml(href),base).toString();}
 
-export function resolveLatestGaloppCalendar(html,{sourceUrl=HUNGARY_CALENDAR_INDEX_URL}={}){
+export function resolveGaloppCalendarCandidates(html,{sourceUrl=HUNGARY_CALENDAR_INDEX_URL}={}){
   if(typeof html!=='string'||!html.trim()) throw new Error('Kincsem Galopp calendar index HTML must be non-empty');
   const candidates=[];
   for(const m of html.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)){
@@ -30,8 +32,10 @@ export function resolveLatestGaloppCalendar(html,{sourceUrl=HUNGARY_CALENDAR_IND
     candidates.push({issue:Number(hit[1]),label,href});
   }
   if(!candidates.length) throw new Error('Current 2026 Galopp calendar PDF link missing');
-  candidates.sort((a,b)=>b.issue-a.issue);
-  return candidates[0];
+  return candidates.sort((a,b)=>b.issue-a.issue);
+}
+export function resolveLatestGaloppCalendar(html,options={}){
+  return resolveGaloppCalendarCandidates(html,options)[0];
 }
 
 export async function extractPdfText(bytes){
@@ -50,15 +54,79 @@ export function parseGaloppCalendarPdfText(text,{sourceUrl}={}){
   if(typeof text!=='string'||!text.trim()) throw new Error('Kincsem Galopp calendar PDF text must be non-empty');
   if(!/GALOPP\s*-\s*VERSENYNAPT[AÁ]R/i.test(text.replace(/\s+/g,' '))) throw new Error('Kincsem Galopp calendar fingerprint missing');
   const rows=[];
-  const rx=/(?:^|\s)nap\s*,?\s*2\s*0\s*2\s*6\s*\.\s*([A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű]+)\s*(\d{1,2})\s*\./g;
+  const rx=/(?:^|\s)nap\s*,?\s*2\s*0\s*2\s*6\s*\.\s*([A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű]+)\s*(\d\s+\d|\d{1,2})\s*\./gi;
   for(const m of text.matchAll(rx)){
     const month=MONTHS[normalize(m[1])];
     if(!month) continue;
-    rows.push({date:'2026-'+month+'-'+String(Number(m[2])).padStart(2,'0'),racecourse_id:HUNGARY_RACECOURSE_ID,venue_name:'Kincsem Park',racing_type:'thoroughbred-flat',source_url:sourceUrl});
+    const day=Number(String(m[2]).replace(/\s+/g,''));
+    rows.push({date:'2026-'+month+'-'+String(day).padStart(2,'0'),racecourse_id:HUNGARY_RACECOURSE_ID,venue_name:'Kincsem Park',racing_type:'thoroughbred-flat',source_url:sourceUrl});
+  }
+  const headingRx=/2\s*0\s*2\s*6\s*\.\s*([A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű]+)\s*(\d\s+\d|\d{1,2})\s*\.\s*Vas[aá]rnap\b/gi;
+  for(const m of text.matchAll(headingRx)){
+    const month=MONTHS[normalize(m[1])];
+    if(!month) continue;
+    const day=Number(String(m[2]).replace(/\s+/g,''));
+    rows.push({date:'2026-'+month+'-'+String(day).padStart(2,'0'),racecourse_id:HUNGARY_RACECOURSE_ID,venue_name:'Kincsem Park',racing_type:'thoroughbred-flat',source_url:sourceUrl});
   }
   const out=[...new Map(rows.map(r=>[r.date,r])).values()].sort((a,b)=>a.date.localeCompare(b.date));
   if(!out.length) throw new Error('Kincsem Galopp meeting dates missing');
   return out;
+}
+
+export function parseGaloppAnnualHighlightedDates(text,{sourceUrl=HUNGARY_ANNUAL_CALENDAR_URL}={}){
+  if(typeof text!=='string'||!text.trim()) throw new Error('Kincsem annual Galopp calendar PDF text must be non-empty');
+  const normalized=text.replace(/\s+/g,' ').trim();
+  const romanMonths=Object.freeze({I:'01',II:'02',III:'03',IV:'04',V:'05',VI:'06',VII:'07',VIII:'08',IX:'09',X:'10',XI:'11',XII:'12'});
+  const rows=[];
+  const rx=/\b([XVI](?:\s*[XVI]){0,3})\s*\.\s*(\d\s*\d|\d{1,2})\s*\.\s*vas[aá]rnap\b/gi;
+  for(const m of normalized.matchAll(rx)){
+    const month=romanMonths[String(m[1]).replace(/\s+/g,'').toUpperCase()];
+    const day=Number(String(m[2]).replace(/\s+/g,''));
+    if(!month||day<1||day>31) continue;
+    rows.push({date:'2026-'+month+'-'+String(day).padStart(2,'0'),racecourse_id:HUNGARY_RACECOURSE_ID,venue_name:'Kincsem Park',racing_type:'thoroughbred-flat',source_url:sourceUrl});
+  }
+  const out=[...new Map(rows.map(r=>[r.date,r])).values()].sort((a,b)=>a.date.localeCompare(b.date));
+  if(!out.length) throw new Error('Kincsem annual highlighted Galopp dates missing');
+  return out;
+}
+
+export function parseGaloppAnnualCalendarPdfText(text,{sourceUrl=HUNGARY_ANNUAL_CALENDAR_URL}={}){
+  if(typeof text!=='string'||!text.trim()) throw new Error('Kincsem annual Galopp calendar PDF text must be non-empty');
+  const normalized=text.replace(/\s+/g,' ').trim();
+  if(!/GALOPP\s*-?\s*VERSENYNAPT[AÁ]R/i.test(normalized)) throw new Error('Kincsem annual Galopp calendar fingerprint missing');
+  const marker=normalized.search(/M[aá]rcius\s+29(?:\s+|$)/i);
+  if(marker<0) throw new Error('Kincsem annual Galopp meeting table missing');
+  const block=normalized.slice(marker);
+  const monthPattern='M[aá]rcius|[AÁ]prilis|M[aá]jus|J[uú]nius|J[uú]lius|Augusztus|Szeptember|Okt[oó]ber|November';
+  const rx=new RegExp('('+monthPattern+')\\s+([\\s\\S]*?)(?=(?:'+monthPattern+')\\s+|$)','gi');
+  const rows=[];
+  for(const m of block.matchAll(rx)){
+    const month=MONTHS[normalize(m[1])];
+    if(!month) continue;
+    const nums=[...m[2].matchAll(/\b(\d{1,2})\b/g)].map(x=>Number(x[1]));
+    let days=[];
+    for(let i=nums.length-1;i>=0;i-=1){
+      const count=nums[i];
+      if(count>=0&&count<=5&&i===count){days=nums.slice(0,i);break;}
+    }
+    if(!days.length&&nums.length) days=nums.filter(n=>n>=1&&n<=31);
+    for(const day of days){
+      if(day<1||day>31) continue;
+      rows.push({date:'2026-'+month+'-'+String(day).padStart(2,'0'),racecourse_id:HUNGARY_RACECOURSE_ID,venue_name:'Kincsem Park',racing_type:'thoroughbred-flat',source_url:sourceUrl});
+    }
+  }
+  const out=[...new Map(rows.map(r=>[r.date,r])).values()].sort((a,b)=>a.date.localeCompare(b.date));
+  if(!out.length) throw new Error('Kincsem annual Galopp meeting dates missing');
+  return out;
+}
+
+export function parseGaloppRacingDaysHtml(html,{sourceUrl=HUNGARY_RACING_DAYS_URL}={}){
+  if(typeof html!=='string'||!html.trim()) throw new Error('Kincsem Galopp racing-days HTML must be non-empty');
+  const text=stripHtml(html);
+  if(!/Galopp\s+Versenynapok|Gallop\s+Racing\s+Days/i.test(text)) throw new Error('Kincsem Galopp racing-days fingerprint missing');
+  const dates=[...new Set([...text.matchAll(/\b(2026-\d{2}-\d{2})\b/g)].map(m=>m[1]))].sort();
+  if(!dates.length) throw new Error('Kincsem Galopp racing-days dates missing');
+  return dates.map(date=>({date,racecourse_id:HUNGARY_RACECOURSE_ID,venue_name:'Kincsem Park',racing_type:'thoroughbred-flat',source_url:sourceUrl}));
 }
 
 function evidence(url,checkedAt){return {source_id:HUNGARY_SOURCE_ID,official_source_url:url,observed_at:checkedAt,successfully_verified_at:checkedAt,acquisition_method:'automatic'};}

@@ -5,6 +5,7 @@ export const SOUTH_AFRICA_TIMEZONE = 'Africa/Johannesburg';
 export const FOUR_RACING_AUTHORITY_ID = 'four-racing';
 export const FOUR_RACING_SYSTEM_ID = 'south-africa-4racing-system';
 export const FOUR_RACING_SOURCE_ID = 'sa-horseracing-national-fixtures-2026';
+export const FOUR_RACING_FIXTURE_INDEX_URL = 'https://www.sahorseracing.co.za/';
 export const FOUR_RACING_FIXTURE_PDF_URL = 'https://www.sahorseracing.co.za/Programs/FX/Jan%20to%20Dec%202026.pdf';
 
 const MONTHS = Object.freeze({
@@ -23,6 +24,26 @@ const VENUES = Object.freeze({
 function pad(value){return String(value).padStart(2,'0');}
 function point(item){return {str:String(item?.str??'').replace(/\s+/g,' ').trim(),x:Number(item?.x??item?.transform?.[4]),y:Number(item?.y??item?.transform?.[5])};}
 function normalizedToken(value){return String(value??'').replace(/\s+/g,'').toUpperCase();}
+function decodeHtml(value){return String(value??'').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'");}
+function absoluteUrl(href,base){try{return new URL(decodeHtml(href),base).toString();}catch{return null;}}
+export function discoverFourRacingFixturePdf(html,{sourceUrl=FOUR_RACING_FIXTURE_INDEX_URL,year=2026}={}){
+  if(typeof html!=='string'||!html.trim()) throw new Error('South Africa fixture index HTML must be non-empty');
+  const candidates=[];
+  for(const match of html.matchAll(/<a\b[^>]*href\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s>]+))[^>]*>([\s\S]*?)<\/a>/gi)){
+    const href=absoluteUrl(match[1]??match[2]??match[3]??'',sourceUrl);
+    if(!href||!/\.pdf(?:$|[?#])/i.test(href)) continue;
+    const label=decodeHtml(String(match[4]??'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim());
+    let decodedHref=href;
+    try{decodedHref=decodeURIComponent(href);}catch{}
+    const visible=(label+' '+decodedHref).replace(/\s+/g,' ');
+    if(!new RegExp('Jan\\s+to\\s+Dec\\s+'+year,'i').test(visible)) continue;
+    const version=Number(visible.match(/\(V(\d+)\)/i)?.[1]??0);
+    candidates.push({href,label,version});
+  }
+  if(!candidates.length) throw new Error('Current South Africa national fixture PDF link missing');
+  candidates.sort((a,b)=>b.version-a.version||b.label.localeCompare(a.label));
+  return candidates[0];
+}
 function monthFromItems(items){
   for(const item of items){
     const m=item.str.toUpperCase().match(/^(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)\s+2026$/);

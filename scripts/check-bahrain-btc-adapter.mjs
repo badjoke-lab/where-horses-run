@@ -23,6 +23,9 @@ assert.equal(schedule.length,3);
 assert.deepEqual(schedule.map(row=>row.date),['2026-10-30','2026-11-06','2026-11-13']);
 assert.equal(schedule.some(row=>row.date==='2027-04-16'),false,'season range endpoint must not be mistaken for a meeting row');
 assert(schedule.every(row=>row.racecourse_id===BTC_RACECOURSE_ID));
+const seasonWithoutMeetingLabel=parseBtcSeasonProgrammePage(`<html><body><h1>Imported Race Programme</h1><p>2026-27 season</p><div>30 October 2026 | Maiden 1600m</div></body></html>`,{sourceUrl:seasonUrl});
+assert.deepEqual(seasonWithoutMeetingLabel.map(row=>row.date),['2026-10-30']);
+assert.throws(()=>parseBtcSeasonProgrammePage('<html><body><h1>Imported Race Programme</h1></body></html>',{sourceUrl:seasonUrl}),/meeting dates missing/);
 
 const racecardUrl='https://bahrainturfclub.com/racecard/2026-10-30/1/entries';
 const racecardHtml=`<html><head><title>Entries for race 1 on 30 October 2026</title></head><body>

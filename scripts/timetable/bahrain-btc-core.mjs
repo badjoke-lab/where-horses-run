@@ -54,7 +54,7 @@ function parseEnglishDate(day,month,year){
 export function parseBtcSeasonProgrammePage(html,{sourceUrl=BTC_SEASON_PROGRAMME_URL}={}) {
   if(typeof html!=='string'||!html.trim()) throw new Error('BTC season programme HTML must be non-empty');
   const text=btcVisibleText(html);
-  if(!/Race\s+Programme/i.test(text)||!/Race\s+Meetings/i.test(text)) {
+  if(!/(?:Imported\s+)?Race\s+Programme/i.test(text)&&!/\b20\d{2}-\d{2}\s+season\b/i.test(text)) {
     throw new Error('BTC season programme fingerprint missing');
   }
   const records=[];
@@ -68,6 +68,7 @@ export function parseBtcSeasonProgrammePage(html,{sourceUrl=BTC_SEASON_PROGRAMME
       source_url:sourceUrl,
     });
   }
+  if(!records.length) throw new Error('BTC season programme meeting dates missing');
   const byDate=new Map();
   for(const row of records) byDate.set(row.date,row);
   return [...byDate.values()].sort((a,b)=>a.date.localeCompare(b.date));
