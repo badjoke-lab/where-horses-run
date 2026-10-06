@@ -1210,6 +1210,29 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-10-06",
       "notes": "Source absence, removed dates, acquisition failure, parser failure, or later calendar changes do not independently prove cancellation/postponement. Explicit annual-calendar CANCELLED text is not generalized into an automated non-running pipeline in this lane."
+    },
+    {
+      "record_id": "trinidad-and-tobago-reviewed-system",
+      "country_id": "trinidad-and-tobago",
+      "system_id": "trinidad-and-tobago-reviewed-system",
+      "authority_id": "arima-race-club",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Positive official Arima Race Club 2026 fixture-list/programme evidence only; no bounded whole-meeting cancellation/postponement route is implemented.",
+      "evidence_urls": [
+        "https://arimaraceclub.com/wp-content/uploads/2026/04/Race-Book-Day-04.pdf",
+        "https://arimaraceclub.com/race-programme/",
+        "https://arimaraceclub.com/"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-10-06",
+      "notes": "Source absence, acquisition failure, parser failure, removed fixture rows, or website staleness do not independently prove cancellation/postponement. The homepage may contain cancellation notices, but this lane does not promote them into automated non-running state."
     }
   ]
 }
