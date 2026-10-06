@@ -57,6 +57,7 @@ jobs:
         run: |
           mkdir -p .calendar-trinidad
           node scripts/timetable/run-trinidad-arima-official-window.mjs --days=90 --output=.calendar-trinidad/trinidad.json
+          node -e "const fs=require('fs');const a=JSON.parse(fs.readFileSync('.calendar-trinidad/trinidad.json','utf8'));if(a.acquisition_attempt?.status!=='success'||(a.diagnostics?.source_errors?.length??0)!==0||(a.diagnostics?.parse_failures?.length??0)!==0||(a.records?.length??0)<1){console.error(JSON.stringify({attempt:a.acquisition_attempt,discovery:a.discovery,diagnostics:a.diagnostics,records:a.records?.length??0}));process.exit(1)}"
           node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-trinidad/trinidad.json --country-id=trinidad-and-tobago --authority-id=arima-race-club --racing-system-id=trinidad-and-tobago-reviewed-system --timezone=America/Port_of_Spain
           node scripts/check-calendar-public-country-support.mjs
           node scripts/check-calendar-public-map-parity.mjs
