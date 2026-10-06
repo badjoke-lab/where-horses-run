@@ -158,6 +158,9 @@ refresh_non_japan_on_main() {
   node scripts/timetable/run-qatar-qrec-official-window.mjs \
     --days="${DAYS}" \
     --output=.calendar-unified/qatar.json
+  node scripts/timetable/run-barbados-official-window.mjs \
+    --days="${DAYS}" \
+    --output=.calendar-unified/barbados.json
   node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --artifact=.calendar-unified/uae.json \
@@ -210,7 +213,8 @@ refresh_non_japan_on_main() {
   --artifact=.calendar-unified/belgium-trotting.json \
   --artifact=.calendar-unified/belize.json \
   --artifact=.calendar-unified/puerto-rico.json \
-  --artifact=.calendar-unified/qatar.json
+  --artifact=.calendar-unified/qatar.json \
+  --artifact=.calendar-unified/barbados.json
   node scripts/timetable/apply-official-rolling-observations.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --country-id=hong-kong \
@@ -523,6 +527,12 @@ refresh_non_japan_on_main() {
     --authority-id=qatar-racing-and-equestrian-club \
     --racing-system-id=qatar-qrec-calendar-system \
     --timezone=Asia/Qatar
+  node scripts/timetable/apply-official-rolling-observations.mjs \
+    --artifact=.calendar-unified/barbados.json \
+    --country-id=barbados \
+    --authority-id=barbados-turf-club \
+    --racing-system-id=barbados-reviewed-system \
+    --timezone=America/Barbados
   node scripts/timetable/apply-reviewed-calendar-observations.mjs
   node scripts/timetable/apply-meeting-presence-dispositions.mjs \
   --artifact=.calendar-unified/hkjc.json \
