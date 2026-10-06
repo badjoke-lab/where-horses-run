@@ -61,6 +61,13 @@ export function parseGaloppCalendarPdfText(text,{sourceUrl}={}){
     const day=Number(String(m[2]).replace(/\s+/g,''));
     rows.push({date:'2026-'+month+'-'+String(day).padStart(2,'0'),racecourse_id:HUNGARY_RACECOURSE_ID,venue_name:'Kincsem Park',racing_type:'thoroughbred-flat',source_url:sourceUrl});
   }
+  const headingRx=/2\s*0\s*2\s*6\s*\.\s*([A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű]+)\s*(\d\s+\d|\d{1,2})\s*\.\s*Vas[aá]rnap\b/gi;
+  for(const m of text.matchAll(headingRx)){
+    const month=MONTHS[normalize(m[1])];
+    if(!month) continue;
+    const day=Number(String(m[2]).replace(/\s+/g,''));
+    rows.push({date:'2026-'+month+'-'+String(day).padStart(2,'0'),racecourse_id:HUNGARY_RACECOURSE_ID,venue_name:'Kincsem Park',racing_type:'thoroughbred-flat',source_url:sourceUrl});
+  }
   const out=[...new Map(rows.map(r=>[r.date,r])).values()].sort((a,b)=>a.date.localeCompare(b.date));
   if(!out.length) throw new Error('Kincsem Galopp meeting dates missing');
   return out;
