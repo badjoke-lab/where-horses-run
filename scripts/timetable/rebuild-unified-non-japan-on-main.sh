@@ -161,6 +161,9 @@ refresh_non_japan_on_main() {
   node scripts/timetable/run-barbados-official-window.mjs \
     --days="${DAYS}" \
     --output=.calendar-unified/barbados.json
+  node scripts/timetable/run-trinidad-arima-official-window.mjs \
+    --days="${DAYS}" \
+    --output=.calendar-unified/trinidad-and-tobago.json
   node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --artifact=.calendar-unified/uae.json \
@@ -214,7 +217,8 @@ refresh_non_japan_on_main() {
   --artifact=.calendar-unified/belize.json \
   --artifact=.calendar-unified/puerto-rico.json \
   --artifact=.calendar-unified/qatar.json \
-  --artifact=.calendar-unified/barbados.json
+  --artifact=.calendar-unified/barbados.json \
+  --artifact=.calendar-unified/trinidad-and-tobago.json
   node scripts/timetable/apply-official-rolling-observations.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --country-id=hong-kong \
@@ -533,6 +537,12 @@ refresh_non_japan_on_main() {
     --authority-id=barbados-turf-club \
     --racing-system-id=barbados-reviewed-system \
     --timezone=America/Barbados
+  node scripts/timetable/apply-official-rolling-observations.mjs \
+    --artifact=.calendar-unified/trinidad-and-tobago.json \
+    --country-id=trinidad-and-tobago \
+    --authority-id=arima-race-club \
+    --racing-system-id=trinidad-and-tobago-reviewed-system \
+    --timezone=America/Port_of_Spain
   node scripts/timetable/apply-reviewed-calendar-observations.mjs
   node scripts/timetable/apply-meeting-presence-dispositions.mjs \
   --artifact=.calendar-unified/hkjc.json \
