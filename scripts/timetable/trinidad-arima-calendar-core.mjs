@@ -22,13 +22,20 @@ export function parseArimaFixtureText(text,{sourceUrl=TRINIDAD_SOURCE_URL}={}){
   if(!/TRINIDAD\s*&\s*TOBAGO\s+RACING\s+FIXTURES\s+LIST/i.test(normalized)||!/2026/.test(normalized)){
     throw new Error('Arima 2026 fixture-list fingerprint missing');
   }
+  const fixtureStart=normalized.search(/TRINIDAD\s*&\s*TOBAGO\s+RACING\s+FIXTURES\s+LIST/i);
+  const fixtureText=fixtureStart>=0?normalized.slice(fixtureStart):normalized;
   const rows=[];
-  const rx=/DATE\s+(?:MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY|SUNDAY)\s+(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)\s+(\d{1,2})(?:ST|ND|RD|TH)?\s+RACE\s+DAY\s+(\d+)/gi;
-  for(const m of normalized.matchAll(rx)){
+  // The official table has one "DATE RACE DAY" header; each row is
+  // "SATURDAY JANUARY 24TH 1". The November row currently contains the
+  // publisher typo "SATURDY", which is accepted explicitly.
+  const rx=/(?:MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY|SATURDY|SUNDAY)\s+(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)\s+(\d{1,2})(?:ST|ND|RD|TH)?\s+(\d{1,2})(?=\s|ARIMA|$)/gi;
+  for(const m of fixtureText.matchAll(rx)){
     const month=MONTHS[m[1].toLowerCase()];
+    const raceDay=Number(m[3]);
+    if(raceDay<1||raceDay>40) continue;
     rows.push({
       date:'2026-'+month+'-'+pad(m[2]),
-      race_day:Number(m[3]),
+      race_day:raceDay,
       racecourse_id:TRINIDAD_RACECOURSE_ID,
       venue_name:'Santa Rosa Park',
       source_url:sourceUrl
