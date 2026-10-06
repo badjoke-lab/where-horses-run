@@ -1414,6 +1414,31 @@
       "supports_rank_upgrade_retry": true,
       "pending_fields": [],
       "operator_notes": "Automatic QREC public frontend/API route. The runner resolves Al Rayyan and Al Uqda from source-visible meeting names, filters API over-return locally to the requested window, treats 00:00 as unpublished, and upgrades C/B/B+/A only from valid source-visible post times."
+    },
+    {
+      "system_id": "barbados-reviewed-system",
+      "country_id": "barbados",
+      "authority_id": "barbados-turf-club",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "barbados-racing-calendar",
+      "detail_source_id": "barbados-programmes",
+      "schedule_adapter_id": "barbados-racing-calendar-v1",
+      "detail_adapter_id": "barbados-programmes-reviewed",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic Barbados Turf Club annual-calendar route emits source-visible meeting dates at the fixed Garrison Savannah venue at rank C. Programme-level post times remain a separate reviewed detail capability. Explicit CANCELLED labels are not emitted as positive meetings; absence never proves non-running."
     }
   ]
 }
