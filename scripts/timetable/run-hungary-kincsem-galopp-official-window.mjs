@@ -35,6 +35,26 @@ try{
       candidateFailures.push({issue:candidate.issue,source_url:candidate.href,error:String(candidateError?.message??candidateError)});
     }
   }
+  if(allRows.length){
+    try{
+      const annual=await get(HUNGARY_ANNUAL_CALENDAR_URL,'application/pdf,*/*;q=0.5');
+      const annualBuf=await annual.arrayBuffer();
+      if(annualBuf.byteLength<10000) throw new Error('Kincsem annual Galopp calendar PDF unexpectedly short');
+      const annualExtracted=await extractPdfText(new Uint8Array(annualBuf));
+      const annualRows=parseGaloppAnnualCalendarPdfText(annualExtracted.text,{sourceUrl:annual.url||HUNGARY_ANNUAL_CALENDAR_URL});
+      const primaryCount=allRows.length;
+      const primaryDates=new Set(allRows.map(row=>row.date));
+      const recoveredMissingDates=annualRows.filter(row=>!primaryDates.has(row.date)).map(row=>row.date);
+      const byDate=new Map(annualRows.map(row=>[row.date,row]));
+      for(const row of allRows) byDate.set(row.date,row);
+      allRows=[...byDate.values()].sort((a,b)=>a.date.localeCompare(b.date));
+      if(recoveredMissingDates.length){
+        sourceWarnings.push({stage:'annual_calendar_cross_check',source_url:annual.url||HUNGARY_ANNUAL_CALENDAR_URL,primary_issue:calendarPdf?.issue??null,primary_rows:primaryCount,merged_rows:allRows.length,recovered_missing_dates:recoveredMissingDates});
+      }
+    }catch(annualCrossCheckError){
+      sourceWarnings.push({stage:'annual_calendar_cross_check',source_url:HUNGARY_ANNUAL_CALENDAR_URL,error:String(annualCrossCheckError?.message??annualCrossCheckError),recovered_by:null});
+    }
+  }
   if(!allRows.length){
     try{
       const racingDays=await get(HUNGARY_RACING_DAYS_URL,'text/html,application/xhtml+xml;q=0.9,*/*;q=0.5');
