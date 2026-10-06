@@ -113,6 +113,17 @@ assert.equal(recoveredHarness.capability_rank,'B');
 assert.equal(recoveredHarness.route_id,'hrnz-final-racing-calendar-pdf');
 assert.equal(recoveredHarness.source.extraction_method,'official_hrnz_final_racing_calendar_pdf');
 assert.equal(recoveredHarness.acquisition_completion.disposition,'complete_current_best_available');
+const kaikouraPdf=parseHrnzFinalCalendarItems([
+  {page:1,page_width:pageWidth,str:'1-Nov',x:474.36,y:763.8},
+  {page:1,page_width:pageWidth,str:'2-Nov',x:638.04,y:763.8},
+  {page:1,page_width:pageWidth,str:'Kaikoura TC(x9) 1:00pm',x:350.64,y:726.72},
+  {page:1,page_width:pageWidth,str:'Kaikoura TC(x10) 12:00pm',x:514.32,y:726.72},
+],{seasonStartYear:2026,sourceUrl:HRNZ_FINAL_CALENDAR_URL});
+assert.deepEqual(kaikouraPdf.unknown_venues,[]);
+assert.deepEqual(kaikouraPdf.records.map(row=>[row.date,row.racecourse_id,row.first_race_time_local]),[
+  ['2026-11-01','south-bay-racecourse','13:00'],
+  ['2026-11-02','south-bay-racecourse','12:00'],
+]);
 assert.equal(harness.first_race_time_local,'16:30');
 assert.equal(harness.acquisition_completion.disposition,'complete_current_best_available');
 assert.deepEqual(validateCalendarAuthorityMetadataV1({acquisition_attempt:harness.acquisition_attempt,acquisition_completion:harness.acquisition_completion,evidence_support:harness.evidence_support}),[]);
