@@ -114,7 +114,8 @@
     "validate:puerto-rico-camarero": "node --check scripts/timetable/puerto-rico-camarero-calendar-core.mjs && node --check scripts/timetable/run-puerto-rico-camarero-official-window.mjs && node scripts/check-puerto-rico-camarero-adapter.mjs",
     "validate:qatar-qrec": "node --check scripts/timetable/qatar-qrec-calendar-core.mjs && node --check scripts/timetable/run-qatar-qrec-official-window.mjs && node scripts/check-qatar-qrec-adapter.mjs",
     "validate:barbados": "node --check scripts/timetable/barbados-calendar-core.mjs && node --check scripts/timetable/run-barbados-official-window.mjs && node scripts/check-barbados-adapter.mjs",
-    "validate:trinidad-arima": "node --check scripts/timetable/trinidad-arima-calendar-core.mjs && node --check scripts/timetable/run-trinidad-arima-official-window.mjs && node scripts/check-trinidad-arima-adapter.mjs"
+    "validate:trinidad-arima": "node --check scripts/timetable/trinidad-arima-calendar-core.mjs && node --check scripts/timetable/run-trinidad-arima-official-window.mjs && node scripts/check-trinidad-arima-adapter.mjs",
+    "validate:martinique-carrere": "node --check scripts/timetable/martinique-carrere-calendar-core.mjs && node --check scripts/timetable/run-martinique-carrere-official-window.mjs && node scripts/check-martinique-carrere-adapter.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0",

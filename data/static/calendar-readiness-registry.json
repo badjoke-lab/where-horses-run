@@ -1883,7 +1883,9 @@
       "system_id": "martinique-reviewed-system",
       "system_name_en": "Carrère",
       "authority_source_key": "martinique/hippodrome-de-carrere/carrere-calendar",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "martinique--hippodrome-de-carrere"
+      ],
       "coverage_scope": "single_racecourse",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -1900,25 +1902,27 @@
       },
       "source_format": "html",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "event_driven",
-        "manual"
+        "daily",
+        "near_meeting",
+        "weekly"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
-      "source_status": "partial",
-      "checked_date": "2026-06-18",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when Carrère publishes a stable current forward calendar or race-time route.",
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-10-08",
+      "evidence_reviewed_at": "2026-10-08",
+      "revalidation_trigger": "Revalidate when the Carrere calendar year block, venue label, or official schedule URL changes.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/28-martinique/final-summary.json",
       "limitations": [
-        "The venue calendar is not consistently current enough for reusable forward extraction.",
-        "First-race and per-race times remain unconfirmed."
+        "Automatic publication uses meeting date plus fixed Carrere venue only at rank C.",
+        "The official Horaire column is not interpreted as first-race post time.",
+        "Source absence, fetch failure, parser failure, or a removed row is not cancellation/non-running evidence."
       ],
-      "notes": "Manual C-level confirmation uses current official venue evidence without automation claims."
+      "notes": "The official Carrere calendar currently exposes twelve 2026 LA MARTINIQUE meetings, including 18 October, 8 November and 6 December after the 8 October review date."
     },
     {
       "readiness_id": "united-kingdom--united-kingdom-bha-system--bha-fixtures",
@@ -6023,5 +6027,5 @@
       "notes": "Live GitHub Actions acquisition on 2026-10-02 exposed current Mons, Waregem and Tongeren meeting blocks. The automatic route publishes one C observation per date/physical venue and leaves the reviewed countrywide A evidence untouched."
     }
   ],
-  "last_updated": "2026-10-06"
+  "last_updated": "2026-10-08"
 }

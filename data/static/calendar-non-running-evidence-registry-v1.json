@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-non-running-evidence-registry-v1",
-  "reviewed_at": "2026-10-06",
+  "reviewed_at": "2026-10-08",
   "records": [
     {
       "record_id": "japan-jra-system",
@@ -1233,6 +1233,27 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-10-06",
       "notes": "Source absence, acquisition failure, parser failure, removed fixture rows, or website staleness do not independently prove cancellation/postponement. The homepage may contain cancellation notices, but this lane does not promote them into automated non-running state."
+    },
+    {
+      "record_id": "martinique-reviewed-system",
+      "country_id": "martinique",
+      "system_id": "martinique-reviewed-system",
+      "authority_id": "hippodrome-de-carrere",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Positive official Hippodrome de Martinique / Carrere annual-calendar evidence only; no bounded whole-meeting cancellation/postponement automation is implemented.",
+      "evidence_urls": [
+        "https://hippodromedecarrere.fr/index.php/calendrier/"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-10-08",
+      "notes": "Source absence, a removed calendar row, acquisition failure, parser failure, or later schedule edits do not independently prove cancellation/postponement."
     }
   ]
 }

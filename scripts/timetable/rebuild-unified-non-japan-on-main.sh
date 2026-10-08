@@ -164,6 +164,9 @@ refresh_non_japan_on_main() {
   node scripts/timetable/run-trinidad-arima-official-window.mjs \
     --days="${DAYS}" \
     --output=.calendar-unified/trinidad-and-tobago.json
+  node scripts/timetable/run-martinique-carrere-official-window.mjs \
+    --days="${DAYS}" \
+    --output=.calendar-unified/martinique.json
   node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --artifact=.calendar-unified/uae.json \
@@ -218,7 +221,8 @@ refresh_non_japan_on_main() {
   --artifact=.calendar-unified/puerto-rico.json \
   --artifact=.calendar-unified/qatar.json \
   --artifact=.calendar-unified/barbados.json \
-  --artifact=.calendar-unified/trinidad-and-tobago.json
+  --artifact=.calendar-unified/trinidad-and-tobago.json \
+  --artifact=.calendar-unified/martinique.json
   node scripts/timetable/apply-official-rolling-observations.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --country-id=hong-kong \
@@ -543,6 +547,12 @@ refresh_non_japan_on_main() {
     --authority-id=arima-race-club \
     --racing-system-id=trinidad-and-tobago-reviewed-system \
     --timezone=America/Port_of_Spain
+  node scripts/timetable/apply-official-rolling-observations.mjs \
+    --artifact=.calendar-unified/martinique.json \
+    --country-id=martinique \
+    --authority-id=hippodrome-de-carrere \
+    --racing-system-id=martinique-reviewed-system \
+    --timezone=America/Martinique
   node scripts/timetable/apply-reviewed-calendar-observations.mjs
   node scripts/timetable/apply-meeting-presence-dispositions.mjs \
   --artifact=.calendar-unified/hkjc.json \
