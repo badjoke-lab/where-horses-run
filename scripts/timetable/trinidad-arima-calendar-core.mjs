@@ -19,19 +19,20 @@ const pad=v=>String(Number(v)).padStart(2,'0');
 export function parseArimaFixtureText(text,{sourceUrl=TRINIDAD_SOURCE_URL}={}){
   if(typeof text!=='string'||!text.trim()) throw new Error('Arima fixture text must be non-empty');
   const normalized=text.replace(/\s+/g,' ').trim();
-  if(!/TRINIDAD\s*&\s*TOBAGO\s+RACING\s+FIXTURES\s+LIST/i.test(normalized)||!/2026/.test(normalized)){
-    throw new Error('Arima 2026 fixture-list fingerprint missing');
+  const tableStart=normalized.search(/DATE\s+RACE\s+DAY/i);
+  if(tableStart<0){
+    throw new Error('Arima fixture-table header missing');
   }
-  const fixtureStart=normalized.search(/TRINIDAD\s*&\s*TOBAGO\s+RACING\s+FIXTURES\s+LIST/i);
-  const fixtureText=fixtureStart>=0?normalized.slice(fixtureStart):normalized;
+  const fixtureText=normalized.slice(tableStart);
   const rows=[];
-  // The official table has one "DATE RACE DAY" header; each row is
-  // "SATURDAY JANUARY 24TH 1". The November row currently contains the
-  // publisher typo "SATURDY", which is accepted explicitly.
-  const rx=/(?:MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY|SATURDY|SUNDAY)\s+(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)\s+(\d{1,2})(?:ST|ND|RD|TH)?\s+(\d{1,2})(?=\s|ARIMA|$)/gi;
+  // pdfjs currently splits some glyph runs in the official PDF:
+  // "24 TH", race-day "1 2", and even words in the page heading.
+  // Fingerprint the stable table structure instead of the decorative heading.
+  // The November row contains the publisher typo "SATURDY".
+  const rx=/(?:MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY|SATURDY|SUNDAY)\s+(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)\s+(\d{1,2})\s*(?:ST|ND|RD|TH)?\s+(\d(?:\s*\d)?)(?=\s|ARIMA|$)/gi;
   for(const m of fixtureText.matchAll(rx)){
     const month=MONTHS[m[1].toLowerCase()];
-    const raceDay=Number(m[3]);
+    const raceDay=Number(m[3].replace(/\s+/g,''));
     if(raceDay<1||raceDay>40) continue;
     rows.push({
       date:'2026-'+month+'-'+pad(m[2]),
@@ -41,7 +42,7 @@ export function parseArimaFixtureText(text,{sourceUrl=TRINIDAD_SOURCE_URL}={}){
       source_url:sourceUrl
     });
   }
-  if(rows.length<10) throw new Error('Arima fixture list parsed fewer than 10 race days');
+  if(rows.length<10) throw new Error('Arima fixture table parsed fewer than 10 race days');
   return [...new Map(rows.map(r=>[r.date,r])).values()].sort((a,b)=>a.date.localeCompare(b.date));
 }
 
