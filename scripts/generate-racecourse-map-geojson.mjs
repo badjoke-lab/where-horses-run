@@ -95,6 +95,13 @@ const calendarMapRegressionIds = [
   'saint-brieuc-racecourse',
   'segre-racecourse',
   'strasbourg-racecourse',
+  // France venues exposed by current rolling Calendar
+  'hyeres-racecourse',
+  'la-capelle-racecourse',
+  'montauban-racecourse',
+  'moulins-racecourse',
+  'pontchateau-racecourse',
+  'reims-racecourse',
   // South Korea (4)
   'seoul-racecourse',
   'busan-gyeongnam-racecourse',
