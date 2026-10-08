@@ -104,3 +104,65 @@ jobs:
               pdftotext "$out" - 2>/dev/null | head -n 160 | tr '\n' ' ' | sed 's/[[:space:]][[:space:]]*/ /g' | sed 's/^/PDF_TEXT /'
             fi
           done < /tmp/mtc/attachment-links.txt
+
+      - name: Probe GRA and Supertote fallback
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/mauritius-fallback
+          for item in \
+            'gra|https://gra.govmu.org/gra/?page_id=1498' \
+            'gra-home|https://gra.govmu.org/gra/' \
+            'supertote|https://supertote.mu/calendar'; do
+            name="${item%%|*}"
+            url="${item#*|}"
+            out="/tmp/mauritius-fallback/$name.html"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+            echo "FALLBACK_PAGE name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) URL=$url"
+          done
+          python3 - <<'PY'
+          import html,re
+          from pathlib import Path
+          for name in ['gra','gra-home','supertote']:
+              raw=(Path('/tmp/mauritius-fallback')/(name+'.html')).read_text(errors='replace')
+              text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+              text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
+              text=html.unescape(re.sub(r'<[^>]+>',' ',text))
+              text=re.sub(r'\s+',' ',text).strip()
+              print('FALLBACK_TEXT',name,text[:7000])
+          PY
+
+      - name: Extract Supertote 2026 calendar dates
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import html,re
+          from pathlib import Path
+          raw=Path('/tmp/mauritius-fallback/supertote.html').read_text(errors='replace')
+          text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+          text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
+          text=html.unescape(re.sub(r'<[^>]+>',' ',text))
+          text=re.sub(r'\s+',' ',text).strip()
+          i=text.find('2026')
+          if i<0:
+              raise SystemExit('NO_2026_CALENDAR')
+          seg=text[i:i+7000]
+          print('SUPERTOTE_2026_SEGMENT',seg)
+          months={'April':4,'May':5,'June':6,'July':7,'August':8,'September':9,'October':10,'November':11,'December':12}
+          cur=None; out=[]
+          toks=seg.split()
+          for idx,t in enumerate(toks):
+              if t in months:
+                  cur=months[t]; continue
+              if cur and re.fullmatch(r'\d{1,2}',t):
+                  d=int(t)
+                  if 1<=d<=31:
+                      out.append(f'2026-{cur:02d}-{d:02d}')
+          out=sorted(set(out))
+          print('SUPERTOTE_DATES',len(out),','.join(out))
+          for required in ['2026-10-10','2026-10-17','2026-10-31','2026-11-07','2026-11-14','2026-11-28','2026-12-05','2026-12-06']:
+              if required not in out:
+                  raise SystemExit('MISSING '+required)
+          PY
