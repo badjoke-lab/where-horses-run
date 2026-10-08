@@ -167,6 +167,9 @@ refresh_non_japan_on_main() {
   node scripts/timetable/run-martinique-carrere-official-window.mjs \
     --days="${DAYS}" \
     --output=.calendar-unified/martinique.json
+  node scripts/timetable/run-slovenia-trotting-official-window.mjs \
+    --days="${DAYS}" \
+    --output=.calendar-unified/slovenia.json
   node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --artifact=.calendar-unified/uae.json \
@@ -549,6 +552,7 @@ refresh_non_japan_on_main() {
     --timezone=America/Port_of_Spain
   node scripts/timetable/apply-official-rolling-observations.mjs \
     --artifact=.calendar-unified/martinique.json \
+    --artifact=.calendar-unified/slovenia.json \
     --country-id=martinique \
     --authority-id=hippodrome-de-carrere \
     --racing-system-id=martinique-reviewed-system \
