@@ -539,6 +539,9 @@ jobs:
           node scripts/timetable/run-martinique-carrere-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/martinique.json
+          node scripts/timetable/run-mauritius-supertote-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/mauritius.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -596,7 +599,8 @@ jobs:
             --artifact=.calendar-unified/qatar.json \
             --artifact=.calendar-unified/barbados.json \
             --artifact=.calendar-unified/trinidad-and-tobago.json \
-            --artifact=.calendar-unified/martinique.json
+            --artifact=.calendar-unified/martinique.json \
+            --artifact=.calendar-unified/mauritius.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -929,6 +933,12 @@ jobs:
             --authority-id=hippodrome-de-carrere \
             --racing-system-id=martinique-reviewed-system \
             --timezone=America/Martinique
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/mauritius.json \
+            --country-id=mauritius \
+            --authority-id=automatic-systems-ltd-supertote \
+            --racing-system-id=mauritius-champ-de-mars-system \
+            --timezone=Indian/Mauritius
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
