@@ -1254,6 +1254,28 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-10-08",
       "notes": "Source absence, a removed calendar row, acquisition failure, parser failure, or later schedule edits do not independently prove cancellation/postponement."
+    },
+    {
+      "record_id": "mauritius-champ-de-mars-system",
+      "country_id": "mauritius",
+      "system_id": "mauritius-champ-de-mars-system",
+      "authority_id": "automatic-systems-ltd-supertote",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Positive GRA horseracing context plus licensed Supertote 2026 calendar evidence only; no bounded whole-meeting cancellation/postponement automation is implemented.",
+      "evidence_urls": [
+        "https://gra.govmu.org/gra/",
+        "https://supertote.mu/calendar"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-10-08",
+      "notes": "Source absence, calendar row removal, Cloudflare challenge at MTCJC, acquisition failure or parser failure do not independently prove cancellation/postponement."
     }
   ]
 }
