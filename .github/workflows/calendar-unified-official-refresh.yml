@@ -97,6 +97,9 @@ on:
       - 'scripts/timetable/trinidad-arima-calendar-core.mjs'
       - 'scripts/timetable/run-trinidad-arima-official-window.mjs'
       - 'scripts/check-trinidad-arima-adapter.mjs'
+      - 'scripts/timetable/martinique-carrere-calendar-core.mjs'
+      - 'scripts/timetable/run-martinique-carrere-official-window.mjs'
+      - 'scripts/check-martinique-carrere-adapter.mjs'
       - 'scripts/check-qatar-qrec-adapter.mjs'
       - 'scripts/timetable/rebuild-unified-non-japan-on-main.sh'
       - 'scripts/timetable/italy-masaf-core.mjs'
@@ -807,6 +810,9 @@ jobs:
           node scripts/timetable/run-trinidad-arima-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/trinidad-and-tobago.json
+          node scripts/timetable/run-martinique-carrere-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/martinique.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -863,7 +869,8 @@ jobs:
             --artifact=.calendar-unified/puerto-rico.json \
             --artifact=.calendar-unified/qatar.json \
             --artifact=.calendar-unified/barbados.json \
-            --artifact=.calendar-unified/trinidad-and-tobago.json
+            --artifact=.calendar-unified/trinidad-and-tobago.json \
+            --artifact=.calendar-unified/martinique.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -1190,6 +1197,12 @@ jobs:
             --authority-id=arima-race-club \
             --racing-system-id=trinidad-and-tobago-reviewed-system \
             --timezone=America/Port_of_Spain
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/martinique.json \
+            --country-id=martinique \
+            --authority-id=hippodrome-de-carrere \
+            --racing-system-id=martinique-reviewed-system \
+            --timezone=America/Martinique
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
