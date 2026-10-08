@@ -2647,8 +2647,10 @@
       "country_tracker_delivery_no": "40",
       "system_id": "mauritius-champ-de-mars-system",
       "system_name_en": "Champ de Mars racing calendar",
-      "authority_source_key": "mauritius/mtc-jockey-club/mtc-calendar-2026",
-      "racecourse_ids": [],
+      "authority_source_key": "mauritius/automatic-systems-ltd-supertote/supertote-calendar-2026",
+      "racecourse_ids": [
+        "mauritius--champ-de-mars"
+      ],
       "coverage_scope": "single_racecourse",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -2665,24 +2667,28 @@
       },
       "source_format": "html",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "seasonal",
-        "manual"
+        "daily",
+        "near_meeting",
+        "weekly"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when the organiser calendar or regulatory context changes.",
+      "checked_date": "2026-10-08",
+      "evidence_reviewed_at": "2026-10-08",
+      "revalidation_trigger": "Revalidate when the Supertote 2026 calendar, GRA horseracing context, or MTCJC access boundary changes.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/40-mauritius/final-summary.json",
       "limitations": [
-        "A stable season-wide race-time route is not established."
+        "Automatic publication uses meeting date plus fixed Champ de Mars venue only at rank C.",
+        "MTCJC direct pages currently return Cloudflare challenge / HTTP 403 from GitHub Actions and are retained as reviewed manual context.",
+        "Race post times are not inferred.",
+        "Source absence, fetch failure or parser failure is not cancellation/non-running evidence."
       ],
-      "notes": "Manual C-level Champ de Mars calendar decision."
+      "notes": "Automatic route uses the GitHub-Actions-accessible Supertote 2026 calendar after a live GRA horseracing-context check. Supertote identifies Automatic Systems Ltd as the operator and states that it is licensed under GRA jurisdiction."
     },
     {
       "readiness_id": "argentina--argentina-palermo-system--palermo-schedules",

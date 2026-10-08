@@ -167,6 +167,9 @@ refresh_non_japan_on_main() {
   node scripts/timetable/run-martinique-carrere-official-window.mjs \
     --days="${DAYS}" \
     --output=.calendar-unified/martinique.json
+  node scripts/timetable/run-mauritius-supertote-official-window.mjs \
+    --days="${DAYS}" \
+    --output=.calendar-unified/mauritius.json
   node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --artifact=.calendar-unified/uae.json \
@@ -222,7 +225,8 @@ refresh_non_japan_on_main() {
   --artifact=.calendar-unified/qatar.json \
   --artifact=.calendar-unified/barbados.json \
   --artifact=.calendar-unified/trinidad-and-tobago.json \
-  --artifact=.calendar-unified/martinique.json
+  --artifact=.calendar-unified/martinique.json \
+  --artifact=.calendar-unified/mauritius.json
   node scripts/timetable/apply-official-rolling-observations.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --country-id=hong-kong \
@@ -553,6 +557,12 @@ refresh_non_japan_on_main() {
     --authority-id=hippodrome-de-carrere \
     --racing-system-id=martinique-reviewed-system \
     --timezone=America/Martinique
+  node scripts/timetable/apply-official-rolling-observations.mjs \
+    --artifact=.calendar-unified/mauritius.json \
+    --country-id=mauritius \
+    --authority-id=automatic-systems-ltd-supertote \
+    --racing-system-id=mauritius-champ-de-mars-system \
+    --timezone=Indian/Mauritius
   node scripts/timetable/apply-reviewed-calendar-observations.mjs
   node scripts/timetable/apply-meeting-presence-dispositions.mjs \
   --artifact=.calendar-unified/hkjc.json \

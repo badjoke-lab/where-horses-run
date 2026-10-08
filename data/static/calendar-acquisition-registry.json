@@ -1489,6 +1489,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic official Carrere annual-calendar route emits source-visible meeting dates at the fixed Hippodrome de Carrere venue at rank C. Published meeting Horaire is not interpreted as first-race post time. Source absence never proves non-running."
+    },
+    {
+      "system_id": "mauritius-champ-de-mars-system",
+      "country_id": "mauritius",
+      "authority_id": "automatic-systems-ltd-supertote",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "supertote-calendar-2026",
+      "detail_source_id": "supertote-calendar-2026",
+      "schedule_adapter_id": "mauritius-supertote-calendar-v1",
+      "detail_adapter_id": "mauritius-supertote-calendar-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic route fetches the licensed Supertote 2026 Champ de Mars calendar and separately requires a live GRA horseracing-context check. MTCJC direct pages remain reviewed context but are Cloudflare-challenged from GitHub Actions. Source absence never proves non-running."
     }
   ]
 }
