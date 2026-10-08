@@ -1,0 +1,84 @@
+name: Philippines PHILRACOM current Calendar probe
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-philippines-philracom-current-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe PHILRACOM official Calendar
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/philracom
+          for item in             'calendar|https://philracom.gov.ph/racing-calendar/'             'home|https://philracom.gov.ph/'             'robots|https://philracom.gov.ph/robots.txt'; do
+            name="${item%%|*}"; url="${item#*|}"; out="/tmp/philracom/$name.out"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+            final="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o /dev/null -w '%{url_effective}' "$url" || true)"
+            echo "PHILRACOM_PAGE name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) FINAL=$final"
+          done
+
+      - name: Inspect PHILRACOM meeting structure
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - /tmp/philracom/calendar.out <<'PY'
+          import html,re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          txt=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+          txt=re.sub(r'<style\b[^>]*>.*?</style>',' ',txt,flags=re.I|re.S)
+          txt=html.unescape(re.sub(r'<[^>]+>',' ',txt))
+          txt=re.sub(r'\s+',' ',txt).strip()
+          print('TEXT_LEN',len(txt))
+          for needle in ['Racing Calendar','2026','October','November','December','Metro Turf','San Lazaro','Carmona','Batangas','Race']:
+              p=txt.lower().find(needle.lower())
+              if p>=0: print('PHILRACOM_TEXT',needle,txt[max(0,p-350):p+2800])
+          dates=[]
+          pats=[
+            r'\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:,)?\s+20\d{2}\b',
+            r'\b\d{1,2}[/-]\d{1,2}[/-]20\d{2}\b',
+            r'\b20\d{2}[/-]\d{1,2}[/-]\d{1,2}\b',
+          ]
+          for pat in pats:
+              dates.extend(m.group(0) for m in re.finditer(pat,txt,re.I))
+          print('DATE_MATCHES',len(dates))
+          for d in dates[:120]: print('DATE',d)
+          seen=set()
+          for m in re.finditer(r'href=["\']([^"\']+)["\']',raw,re.I):
+              u=html.unescape(m.group(1))
+              low=u.lower()
+              if any(k in low for k in ['calendar','race','schedule','pdf','download','2026']):
+                  if u not in seen:
+                      seen.add(u); print('LINK',u[:1000])
+          PY
+
+      - name: Inspect PHILRACOM tables and embedded data
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - /tmp/philracom/calendar.out <<'PY'
+          import html,re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          tables=re.findall(r'<table\b[^>]*>(.*?)</table>',raw,re.I|re.S)
+          print('TABLE_COUNT',len(tables))
+          for i,t in enumerate(tables[:20]):
+              x=html.unescape(re.sub(r'<[^>]+>',' ',t))
+              x=re.sub(r'\s+',' ',x).strip()
+              print('TABLE',i,x[:5000])
+          for label,pat in [
+            ('JSONLD',r'<script[^>]+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>'),
+            ('IFRAME',r'<iframe[^>]+src=["\']([^"\']+)["\']'),
+          ]:
+              for m in re.finditer(pat,raw,re.I|re.S):
+                  print(label,html.unescape(m.group(1)).strip()[:3000].replace('\n',' '))
+          PY
