@@ -1,0 +1,106 @@
+name: Mauritius MTCJC current source probe
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-mauritius-mtc-current-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Probe current official MTCJC routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/141.0.0.0 Safari/537.36'
+          mkdir -p /tmp/mtc
+          for item in \
+            'fixtures|https://www.mtcjockeyclub.com/form-guide/fixtures' \
+            'calendar-news|https://www.mtcjockeyclub.com/news/racing/other/2026-01-27/racing-calendar-2026/708211' \
+            'provisional-news|https://www.mtcjockeyclub.com/news/en/article/2026-01-16/provisional-racing-calendar-for-the-upcoming-season/707690' \
+            'first-five|https://www.mtcjockeyclub.com/news/content-en/article/2026-03-03/the-first-five-race-meetings-officially-confirmed/710248' \
+            'home|https://www.mtcjockeyclub.com/'; do
+            name="${item%%|*}"
+            url="${item#*|}"
+            out="/tmp/mtc/$name.html"
+            hdr="/tmp/mtc/$name.headers"
+            code="$(curl -L -sS -D "$hdr" -A "$UA" \
+              -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' \
+              -H 'Accept-Language: en-US,en;q=0.9,fr;q=0.7' \
+              -H 'Cache-Control: no-cache' \
+              --connect-timeout 15 --max-time 45 \
+              -o "$out" -w '%{http_code}' "$url" || true)"
+            echo "MTC_PAGE name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) FINAL=$(grep -i '^location:' "$hdr" | tail -1 | tr -d '\r' || true)"
+            grep -iE '^(server:|cf-ray:|cf-mitigated:|content-type:|location:)' "$hdr" | tail -n 12 | sed "s/^/HEADER $name /" || true
+          done
+
+      - name: Inspect accessible official news for calendar attachments
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import html,re
+          from pathlib import Path
+          for name in ['calendar-news','provisional-news','first-five','home','fixtures']:
+              p=Path('/tmp/mtc')/(name+'.html')
+              raw=p.read_text(errors='replace') if p.exists() else ''
+              text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+              text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
+              text=html.unescape(re.sub(r'<[^>]+>',' ',text))
+              text=re.sub(r'\s+',' ',text).strip()
+              print('TEXT',name,text[:5000])
+              seen=set()
+              pats=[
+                  r'href=["\']([^"\']+)["\']',
+                  r'src=["\']([^"\']+)["\']',
+                  r'content=["\']([^"\']+\.(?:pdf|jpg|jpeg|png)(?:\?[^"\']*)?)["\']'
+              ]
+              for pat in pats:
+                  for m in re.finditer(pat,raw,re.I):
+                      u=html.unescape(m.group(1))
+                      low=u.lower()
+                      if any(k in low for k in ['pdf','calendar','calend','fixture','upload','iframe','document']):
+                          if u not in seen:
+                              seen.add(u); print('LINK',name,u)
+          PY
+
+      - name: Probe discovered official attachments
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/141.0.0.0 Safari/537.36'
+          python3 - <<'PY' > /tmp/mtc/attachment-links.txt
+          import html,re
+          from pathlib import Path
+          from urllib.parse import urljoin
+          seen=[]
+          for name in ['calendar-news','provisional-news','first-five']:
+              raw=(Path('/tmp/mtc')/(name+'.html')).read_text(errors='replace')
+              for pat in [r'href=["\']([^"\']+)["\']',r'src=["\']([^"\']+)["\']']:
+                  for m in re.finditer(pat,raw,re.I):
+                      u=urljoin('https://www.mtcjockeyclub.com/',html.unescape(m.group(1)))
+                      low=u.lower()
+                      if any(k in low for k in ['.pdf','upload','calendar','calend','fixture']) and u.startswith('http'):
+                          if u not in seen: seen.append(u)
+          print('\n'.join(seen[:40]))
+          PY
+          n=0
+          while IFS= read -r url; do
+            [ -n "$url" ] || continue
+            n=$((n+1))
+            out="/tmp/mtc/attachment-$n.out"
+            hdr="/tmp/mtc/attachment-$n.headers"
+            code="$(curl -L -sS -D "$hdr" -A "$UA" --connect-timeout 10 --max-time 40 -o "$out" -w '%{http_code}' "$url" || true)"
+            echo "ATTACH index=$n HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) CTYPE=$(grep -i '^content-type:' "$hdr" | tail -1 | tr -d '\r' || true) URL=$url"
+            if file "$out" | grep -qi pdf; then
+              pdftotext "$out" - 2>/dev/null | head -n 160 | tr '\n' ' ' | sed 's/[[:space:]][[:space:]]*/ /g' | sed 's/^/PDF_TEXT /'
+            fi
+          done < /tmp/mtc/attachment-links.txt
