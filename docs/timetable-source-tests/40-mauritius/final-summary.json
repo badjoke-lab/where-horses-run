@@ -1,1 +1,26 @@
-{"country":"Mauritius","status":"Complete at calendar level","checked_date":"2026-06-20","technical_rank":"C at season-calendar level","public_ceiling":"C","systems":["Gambling Regulatory Authority oversight","MTC Jockey Club 2026 racing calendar"],"official_sources":["https://gra.govmu.org/gra/","https://gra.govmu.org/gra/?page_id=1498","https://www.mtcjockeyclub.com/news/racing/other/2026-01-27/racing-calendar-2026/708211"],"confirmed_fields":{"meeting_date":true,"racecourse":true,"first_race_time":false,"per_race_post_times":false},"decision":"Reviewed authority and organiser routes confirm the 2026 season and meeting calendar at Champ de Mars. Race-day detail exists in separate notices, but a stable reusable season-wide race-time route was not established, so the public ceiling is C."}
+{
+  "country": "Mauritius",
+  "status": "Production routed via live GRA context plus licensed Supertote 2026 calendar; MTCJC retained as reviewed manual context",
+  "checked_date": "2026-10-08",
+  "technical_rank": "C at source-visible Champ de Mars calendar level",
+  "public_ceiling": "C",
+  "systems": [
+    "Gambling Regulatory Authority horseracing oversight/context",
+    "Automatic Systems Ltd / Supertote 2026 racing calendar",
+    "MTC Jockey Club reviewed organiser calendar context"
+  ],
+  "official_sources": [
+    "https://gra.govmu.org/gra/",
+    "https://supertote.mu/calendar",
+    "https://www.mtcjockeyclub.com/form-guide/fixtures",
+    "https://www.mtcjockeyclub.com/news/racing/other/2026-01-27/racing-calendar-2026/708211"
+  ],
+  "confirmed_fields": {
+    "meeting_date": true,
+    "racecourse": true,
+    "first_race_time": false,
+    "per_race_post_times": false
+  },
+  "decision": "GitHub Actions currently receives a Cloudflare challenge / HTTP 403 on MTCJC pages. The automatic production route therefore requires a live GRA horseracing-context check and reads source-visible 2026 Champ de Mars meeting dates from Supertote, which identifies Automatic Systems Ltd as the operator and states that it is licensed under GRA jurisdiction. Publish date + fixed Champ de Mars venue only at rank C. Do not infer race post times or non-running state from source absence/failure.",
+  "production_route": "scripts/timetable/run-mauritius-supertote-official-window.mjs"
+}
