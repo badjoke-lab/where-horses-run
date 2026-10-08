@@ -9,6 +9,7 @@ on:
       - main
     paths:
       - '.github/workflows/calendar-unified-official-refresh.yml'
+      - 'scripts/check-calendar-persistence-contention.mjs'
       - 'package.json'
       - 'scripts/timetable/**'
       - 'scripts/check-calendar-refresh-publication-boundaries.mjs'
@@ -277,7 +278,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: calendar-unified-official-refresh-${{ github.event_name == 'pull_request' && 'smoke' || 'production' }}
+  group: calendar-unified-family-${{ github.event_name == 'pull_request' && 'unified-smoke' || 'production' }}
   cancel-in-progress: false
 
 jobs:
@@ -297,6 +298,7 @@ jobs:
           for file in scripts/timetable/*.mjs; do
             node --check "$file"
           done
+          node scripts/check-calendar-persistence-contention.mjs
           node scripts/check-calendar-live-source-readiness.mjs
           node scripts/check-calendar-refresh-publication-boundaries.mjs
           node scripts/check-calendar-public-country-support.mjs
@@ -1248,7 +1250,43 @@ jobs:
             git add data/generated/timetable/meeting-presence.json 2>/dev/null || true
           }
 
-          for attempt in 1 2 3; do
+          wait_for_main_quiet() {
+            local required_stable_seconds=600
+            local poll_seconds=30
+            local max_wait_seconds=1800
+            local started_at stable_since now current next
+
+            git fetch origin main
+            current="$(git rev-parse origin/main)"
+            started_at="$(date +%s)"
+            stable_since="$started_at"
+
+            while true; do
+              sleep "$poll_seconds"
+              git fetch origin main
+              next="$(git rev-parse origin/main)"
+              now="$(date +%s)"
+
+              if [[ "$next" != "$current" ]]; then
+                echo "main advanced while waiting for a quiet persistence window: $current -> $next"
+                current="$next"
+                stable_since="$now"
+              elif (( now - stable_since >= required_stable_seconds )); then
+                QUIET_MAIN="$current"
+                echo "main remained stable for ${required_stable_seconds}s at $QUIET_MAIN."
+                return 0
+              fi
+
+              if (( now - started_at >= max_wait_seconds )); then
+                QUIET_MAIN="$current"
+                echo "::warning::main did not remain stable for ${required_stable_seconds}s within ${max_wait_seconds}s; proceeding from latest $QUIET_MAIN."
+                return 0
+              fi
+            done
+          }
+
+          max_attempts=5
+          for attempt in $(seq 1 "$max_attempts"); do
             stage_remaining_state
             if git diff --cached --quiet; then
               echo "No verified timetable change to persist."
@@ -1261,30 +1299,38 @@ jobs:
 
             git fetch origin main
             remote_main="$(git rev-parse origin/main)"
-            if [[ "$parent_sha" != "$remote_main" ]]; then
-              echo "main advanced before rolling-state push; rebuilding from $remote_main (attempt $attempt/3)."
-              refresh_non_japan_on_main "$remote_main"
-              continue
+
+            if [[ "$parent_sha" == "$remote_main" ]]; then
+              if git push origin "$candidate_sha:main"; then
+                echo "Persisted rolling snapshot from latest main on attempt $attempt/$max_attempts."
+                exit 0
+              fi
+
+              git fetch origin main
+              remote_main="$(git rev-parse origin/main)"
+              if [[ "$remote_main" == "$parent_sha" ]]; then
+                echo "Rolling-state push failed even though main did not advance." >&2
+                exit 1
+              fi
+              echo "main advanced during rolling-state push to $remote_main (attempt $attempt/$max_attempts)."
+            else
+              echo "main advanced before rolling-state push to $remote_main (attempt $attempt/$max_attempts)."
             fi
 
-            if git push origin "$candidate_sha:main"; then
-              echo "Persisted rolling snapshot from latest main on attempt $attempt/3."
-              exit 0
+            if (( attempt == max_attempts )); then
+              break
             fi
 
+            wait_for_main_quiet
             git fetch origin main
             remote_main="$(git rev-parse origin/main)"
-            if [[ "$remote_main" != "$parent_sha" ]]; then
-              echo "main advanced during rolling-state push; rebuilding from $remote_main (attempt $attempt/3)."
-              refresh_non_japan_on_main "$remote_main"
-              continue
+            if [[ "$remote_main" != "$QUIET_MAIN" ]]; then
+              echo "main advanced after the quiet gate: $QUIET_MAIN -> $remote_main"
             fi
-
-            echo "Rolling-state push failed even though main did not advance." >&2
-            exit 1
+            refresh_non_japan_on_main "$remote_main"
           done
 
-          echo "Rolling-state persistence exhausted 3 bounded rebuild attempts." >&2
+          echo "Rolling-state persistence exhausted $max_attempts bounded candidate attempts." >&2
           exit 1
       - uses: actions/upload-artifact@v4
         if: always()
