@@ -941,11 +941,11 @@
       "official_source_id": "mtc-calendar-2026",
       "official_source_url": "https://www.mtcjockeyclub.com/news/racing/other/2026-01-27/racing-calendar-2026/708211",
       "source_kind": "calendar",
-      "source_status": "verified",
-      "last_checked_date": "2026-06-20",
+      "source_status": "partial",
+      "last_checked_date": "2026-10-08",
       "capability_rank": "C",
-      "adapter_candidate_status": "candidate",
-      "notes": "Reviewed MTC Jockey Club calendar confirms 2026 Champ de Mars meeting dates. Race times are not established."
+      "adapter_candidate_status": "blocked",
+      "notes": "Reviewed MTC Jockey Club calendar confirms the 2026 Champ de Mars season, but current MTCJC pages return Cloudflare challenge / HTTP 403 from GitHub Actions. Retain as reviewed manual context, not as the automatic runner source."
     },
     {
       "country_id": "argentina",
@@ -2082,6 +2082,38 @@
       "capability_rank": "C",
       "adapter_candidate_status": "candidate",
       "notes": "Automatic federation trotting programme route for currently source-visible Mons, Waregem and Tongeren meetings. Production deliberately publishes date plus physical venue only at C even though race-level Tijd is present. The older reviewed countrywide A-capability federation evidence remains separate and is not downgraded."
+    },
+    {
+      "country_id": "mauritius",
+      "authority_id": "mauritius-gra",
+      "authority_name_en": "Gambling Regulatory Authority",
+      "authority_name_local": null,
+      "authority_type": "national",
+      "racecourse_scope": "countrywide",
+      "official_source_id": "mauritius-gra-horseracing-context",
+      "official_source_url": "https://gra.govmu.org/gra/",
+      "source_kind": "official_link",
+      "source_status": "verified",
+      "last_checked_date": "2026-10-08",
+      "capability_rank": "C",
+      "adapter_candidate_status": "candidate",
+      "notes": "GitHub Actions can fetch the live GRA site and verify current horseracing regulatory context. This source is used as a regulatory-context check, not as the meeting-date inventory."
+    },
+    {
+      "country_id": "mauritius",
+      "authority_id": "automatic-systems-ltd-supertote",
+      "authority_name_en": "Automatic Systems Ltd / Supertote",
+      "authority_name_local": null,
+      "authority_type": "other",
+      "racecourse_scope": "single_racecourse",
+      "official_source_id": "supertote-calendar-2026",
+      "official_source_url": "https://supertote.mu/calendar",
+      "source_kind": "calendar",
+      "source_status": "verified",
+      "last_checked_date": "2026-10-08",
+      "capability_rank": "C",
+      "adapter_candidate_status": "candidate",
+      "notes": "Supertote states that it is operated by Automatic Systems Ltd and licensed to offer betting activities under GRA jurisdiction. Its calendar is GitHub-Actions-accessible and exposes the source-visible 2026 Champ de Mars meeting dates. Automatic publication remains rank C."
     }
   ]
 }
