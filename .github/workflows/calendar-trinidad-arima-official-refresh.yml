@@ -53,29 +53,6 @@ jobs:
           node-version: '22'
       - run: npm install --no-package-lock --no-audit --no-fund
       - run: npm run validate:trinidad-arima
-      - name: Inspect extracted Trinidad fixture text
-        shell: bash
-        run: |
-          node --input-type=module <<'NODE'
-          import {getDocument} from 'pdfjs-dist/legacy/build/pdf.mjs';
-          const url='https://arimaraceclub.com/wp-content/uploads/2026/04/Race-Book-Day-04.pdf';
-          const r=await fetch(url,{headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)'}});
-          if(!r.ok) throw new Error('HTTP '+r.status);
-          const bytes=new Uint8Array(await r.arrayBuffer());
-          const pdf=await getDocument({data:bytes,disableWorker:true}).promise;
-          let text='';
-          for(let n=1;n<=pdf.numPages;n++){
-            const page=await pdf.getPage(n);
-            const content=await page.getTextContent();
-            text+='\n'+content.items.map(x=>x.str).join(' ');
-          }
-          const normalized=text.replace(/\s+/g,' ').trim();
-          for(const needle of ['FIXTURE','RACING','ARIMA RACE CLUB','OCTOBER','NOVEMBER','DECEMBER','2026']){
-            const i=normalized.toUpperCase().indexOf(needle);
-            if(i>=0) console.log('TRINIDAD_TEXT',needle,normalized.slice(Math.max(0,i-700),i+2600));
-          }
-          NODE
-
       - name: Exercise Trinidad production path
         run: |
           mkdir -p .calendar-trinidad
