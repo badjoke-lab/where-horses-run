@@ -533,6 +533,9 @@ jobs:
           node scripts/timetable/run-barbados-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/barbados.json
+          node scripts/timetable/run-trinidad-arima-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/trinidad-and-tobago.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -588,7 +591,8 @@ jobs:
             --artifact=.calendar-unified/belize.json \
             --artifact=.calendar-unified/puerto-rico.json \
             --artifact=.calendar-unified/qatar.json \
-            --artifact=.calendar-unified/barbados.json
+            --artifact=.calendar-unified/barbados.json \
+            --artifact=.calendar-unified/trinidad-and-tobago.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -909,6 +913,12 @@ jobs:
             --authority-id=barbados-turf-club \
             --racing-system-id=barbados-reviewed-system \
             --timezone=America/Barbados
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/trinidad-and-tobago.json \
+            --country-id=trinidad-and-tobago \
+            --authority-id=arima-race-club \
+            --racing-system-id=trinidad-and-tobago-reviewed-system \
+            --timezone=America/Port_of_Spain
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions

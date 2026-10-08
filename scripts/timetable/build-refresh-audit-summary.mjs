@@ -60,6 +60,7 @@ const SYSTEMS = [
   { key: 'puerto-rico', file: 'puerto-rico.json', country_id: 'puerto-rico', authority_id: 'hipodromo-camarero', racing_system_id: 'puerto-rico-reviewed-system' },
   { key: 'qatar', file: 'qatar.json', country_id: 'qatar', authority_id: 'qatar-racing-and-equestrian-club', racing_system_id: 'qatar-qrec-calendar-system' },
   { key: 'barbados', file: 'barbados.json', country_id: 'barbados', authority_id: 'barbados-turf-club', racing_system_id: 'barbados-reviewed-system' },
+  { key: 'trinidad-and-tobago', file: 'trinidad-and-tobago.json', country_id: 'trinidad-and-tobago', authority_id: 'arima-race-club', racing_system_id: 'trinidad-and-tobago-reviewed-system' },
 ];
 
 const STATE_FILES = {
