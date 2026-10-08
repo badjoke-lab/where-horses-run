@@ -548,6 +548,9 @@ jobs:
           node scripts/timetable/run-mauritius-supertote-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/mauritius.json
+          node scripts/timetable/run-slovenia-trotting-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/slovenia.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -606,7 +609,8 @@ jobs:
             --artifact=.calendar-unified/barbados.json \
             --artifact=.calendar-unified/trinidad-and-tobago.json \
             --artifact=.calendar-unified/martinique.json \
-            --artifact=.calendar-unified/mauritius.json
+            --artifact=.calendar-unified/mauritius.json \
+            --artifact=.calendar-unified/slovenia.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -945,6 +949,12 @@ jobs:
             --authority-id=automatic-systems-ltd-supertote \
             --racing-system-id=mauritius-champ-de-mars-system \
             --timezone=Indian/Mauritius
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/slovenia.json \
+            --country-id=slovenia \
+            --authority-id=kasaska-zveza-slovenije \
+            --racing-system-id=slovenian-trotting-system \
+            --timezone=Europe/Ljubljana
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
