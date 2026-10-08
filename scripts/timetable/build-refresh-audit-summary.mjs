@@ -61,6 +61,7 @@ const SYSTEMS = [
   { key: 'qatar', file: 'qatar.json', country_id: 'qatar', authority_id: 'qatar-racing-and-equestrian-club', racing_system_id: 'qatar-qrec-calendar-system' },
   { key: 'barbados', file: 'barbados.json', country_id: 'barbados', authority_id: 'barbados-turf-club', racing_system_id: 'barbados-reviewed-system' },
   { key: 'trinidad-and-tobago', file: 'trinidad-and-tobago.json', country_id: 'trinidad-and-tobago', authority_id: 'arima-race-club', racing_system_id: 'trinidad-and-tobago-reviewed-system' },
+  { key: 'martinique', file: 'martinique.json', country_id: 'martinique', authority_id: 'hippodrome-de-carrere', racing_system_id: 'martinique-reviewed-system' },
 ];
 
 const STATE_FILES = {
