@@ -1,1 +1,96 @@
-[{"schema_version":"2.0.0","country_id":"mauritius","slug":"mauritius","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-20","public_display_ceiling":"C","source_test_status":"complete","hero":{"summary_en":"Reviewed regulator and organiser routes confirm the 2026 Champ de Mars calendar; race times are not established.","summary_ja":"確認済み規制当局・主催者導線で2026年Champ de Mars日程を確認済みだが、レース時刻は未確認。"},"overview":{"paragraphs_en":["The profile preserves the Gambling Regulatory Authority and MTC Jockey Club as separate reviewed roles."],"paragraphs_ja":["プロフィールはGambling Regulatory AuthorityとMTC Jockey Clubを別の確認済み役割として維持する。"]},"racing_types":[{"id":"thoroughbred-flat","name_en":"Thoroughbred flat racing","name_ja":"サラブレッド平地競走","summary_en":"Included in the reviewed 2026 calendar context.","summary_ja":"確認済み2026年カレンダー文脈に含まれる。"}],"seasonality":{"pattern":"official-source-required","summary_en":"Use the current regulator and organiser routes.","summary_ja":"現行の規制当局・主催者導線を確認する。"},"schedule":{"timezone":"Indian/Mauritius","utc_offset_label":"UTC+4","day_patterns":["official-source-required"],"time_patterns":["meeting-date-only"],"summary_en":"Meeting dates at the reviewed venue are confirmed; race times remain outside the reviewed scope.","summary_ja":"確認済み競馬場の開催日は確認済みだが、レース時刻は確認範囲外。"},"surfaces":{"ids":[],"summary_en":"Surface details are not normalized.","summary_ja":"馬場情報は共通化しない。"},"systems":[{"id":"mauritius-champ-de-mars-system","name_en":"Champ de Mars racing calendar","name_ja":"Champ de Mars競馬カレンダー体系","summary_en":"Reviewed organiser calendar with separate regulatory context.","summary_ja":"規制文脈を分離した確認済み主催者カレンダー。","organiser_source_ids":["mauritius-mtc-calendar"],"distributor_source_ids":["mauritius-gra-home"]}],"principal_racecourse_ids":[],"calendar_guidance_en":"Use the reviewed calendar and preserve regulator and organiser roles separately.","calendar_guidance_ja":"確認済みカレンダーを使用し、規制当局と主催者の役割を分離する。","coverage_note_en":"A stable season-wide race-time route is not established.","coverage_note_ja":"安定したシーズン全体のレース時刻導線は未確認。","revalidation":{"triggers_en":["The 2026 calendar changes","Regulator or organiser routes change"],"triggers_ja":["2026年カレンダー変更時","規制当局・主催者導線変更時"]},"related_glossary_ids":["racecourse","meeting","fixture","post-time"]}]
+[
+  {
+    "schema_version": "2.0.0",
+    "country_id": "mauritius",
+    "slug": "mauritius",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-10-08",
+    "public_display_ceiling": "C",
+    "source_test_status": "complete",
+    "hero": {
+      "summary_en": "The 2026 Champ de Mars calendar is automatically routed at rank C from licensed Supertote after a live GRA horseracing-context check; MTCJC remains reviewed manual context because its current pages challenge GitHub Actions.",
+      "summary_ja": "2026年Champ de Mars日程は、GRAの現行競馬文脈を確認したうえでlicensed SupertoteからCで自動取得します。MTCJC現行ページはGitHub Actionsをchallengeするため、レビュー済み手動文脈として維持します。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "Production automation preserves the Gambling Regulatory Authority, MTC Jockey Club, and Automatic Systems Ltd / Supertote as separate roles. GRA supplies live regulatory context, Supertote supplies the automation-safe 2026 meeting calendar, and MTCJC remains the reviewed organiser context but is not used as the GitHub Actions runner while Cloudflare challenge is active."
+      ],
+      "paragraphs_ja": [
+        "production自動取得ではGambling Regulatory Authority、MTC Jockey Club、Automatic Systems Ltd / Supertoteを別役割として維持します。GRAは現行規制文脈、Supertoteは自動取得可能な2026年開催日程、MTCJCはレビュー済み主催者文脈として扱い、Cloudflare challenge中はGitHub Actions runnerには使いません。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "thoroughbred-flat",
+        "name_en": "Thoroughbred flat racing",
+        "name_ja": "サラブレッド平地競走",
+        "summary_en": "Included in the reviewed 2026 calendar context.",
+        "summary_ja": "確認済み2026年カレンダー文脈に含まれる。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "official-source-required",
+      "summary_en": "Use the current regulator and organiser routes.",
+      "summary_ja": "現行の規制当局・主催者導線を確認する。"
+    },
+    "schedule": {
+      "timezone": "Indian/Mauritius",
+      "utc_offset_label": "UTC+4",
+      "day_patterns": [
+        "official-source-required"
+      ],
+      "time_patterns": [
+        "meeting-date-only"
+      ],
+      "summary_en": "Meeting dates at the reviewed venue are confirmed; race times remain outside the reviewed scope.",
+      "summary_ja": "確認済み競馬場の開催日は確認済みだが、レース時刻は確認範囲外。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Surface details are not normalized.",
+      "summary_ja": "馬場情報は共通化しない。"
+    },
+    "systems": [
+      {
+        "id": "mauritius-champ-de-mars-system",
+        "name_en": "Champ de Mars racing calendar",
+        "name_ja": "Champ de Mars競馬カレンダー体系",
+        "summary_en": "Champ de Mars calendar with separate regulator, organiser, and licensed totalisator-source roles.",
+        "summary_ja": "規制当局・主催者・licensed totalisator sourceの役割を分離したChamp de Marsカレンダー。",
+        "organiser_source_ids": [
+          "mauritius-mtc-calendar"
+        ],
+        "distributor_source_ids": [
+          "mauritius-gra-home",
+          "mauritius-supertote-calendar"
+        ]
+      }
+    ],
+    "principal_racecourse_ids": [
+      "mauritius--champ-de-mars"
+    ],
+    "calendar_guidance_en": "Use the GitHub-Actions-accessible Supertote 2026 calendar only after the GRA horseracing-context check passes. Publish meeting date and Champ de Mars only; do not infer post times. Retain MTCJC direct pages as reviewed manual context while Cloudflare challenge blocks automation.",
+    "calendar_guidance_ja": "GitHub Actionsから取得可能なSupertote 2026年カレンダーは、GRAの競馬文脈確認が通った場合のみ使用します。開催日とChamp de Marsのみを公開し、発走時刻は推測しません。MTCJC直ページはCloudflare challenge中、レビュー済み手動文脈として維持します。",
+    "coverage_note_en": "Automatic production coverage is C for Champ de Mars via GRA-context-checked Supertote calendar. Stable season-wide race times remain outside the approved scope.",
+    "coverage_note_ja": "production自動取得はGRA文脈確認付きSupertoteカレンダーによるChamp de MarsのCです。安定したシーズン全体の発走時刻は承認範囲外です。",
+    "revalidation": {
+      "triggers_en": [
+        "The Supertote 2026 calendar changes",
+        "GRA horseracing context changes",
+        "MTCJC Cloudflare access boundary changes"
+      ],
+      "triggers_ja": [
+        "Supertote 2026年カレンダー変更時",
+        "GRA競馬文脈変更時",
+        "MTCJC Cloudflareアクセス境界変更時"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture",
+      "post-time"
+    ]
+  }
+]
