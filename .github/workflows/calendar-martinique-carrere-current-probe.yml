@@ -1,0 +1,89 @@
+name: Martinique Carrere current Calendar probe
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-martinique-carrere-current-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Probe Carrere official pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/carrere
+          for item in             'calendar|https://hippodromedecarrere.fr/index.php/calendrier/'             'home|https://hippodromedecarrere.fr/'             'robots|https://hippodromedecarrere.fr/robots.txt'; do
+            name="${item%%|*}"
+            url="${item#*|}"
+            out="/tmp/carrere/$name.out"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+            final="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o /dev/null -w '%{url_effective}' "$url" || true)"
+            echo "CARRERE_PAGE name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) FINAL=$final"
+          done
+
+      - name: Inspect Carrere calendar structure
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - /tmp/carrere/calendar.out <<'PY'
+          import html,re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+          text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
+          text=html.unescape(re.sub(r'<[^>]+>',' ',text))
+          text=re.sub(r'\s+',' ',text).strip()
+          print('TEXT_LEN',len(text))
+          for needle in ['Calendrier','2026','octobre','novembre','décembre','Carrère','réunion','course']:
+              pos=text.lower().find(needle.lower())
+              if pos>=0:
+                  print('CARRERE_TEXT',needle,text[max(0,pos-350):pos+2200])
+          dates=[]
+          pats=[
+              r'\b(?:dimanche|samedi|vendredi|jeudi|mercredi|mardi|lundi)\s+(\d{1,2})\s+(janvier|février|fevrier|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|decembre)\s+(20\d{2})\b',
+              r'\b(\d{1,2})[\s./-]+(\d{1,2})[\s./-]+(20\d{2})\b',
+          ]
+          for pat in pats:
+              for m in re.finditer(pat,text,re.I):
+                  dates.append(m.group(0))
+          print('DATE_MATCHES',len(dates))
+          for d in dates[:80]:
+              print('DATE',d)
+          seen=set()
+          for m in re.finditer(r'href=["\']([^"\']+)["\']',raw,re.I):
+              u=html.unescape(m.group(1))
+              low=u.lower()
+              if any(k in low for k in ['calend','course','programme','program','pdf','reunion','réunion']):
+                  if u not in seen:
+                      seen.add(u); print('LINK',u)
+          PY
+
+      - name: Inspect embedded structured data and assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - /tmp/carrere/calendar.out <<'PY'
+          import re,sys,html
+          raw=open(sys.argv[1],errors='replace').read()
+          for label,pat in [
+              ('JSONLD',r'<script[^>]+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>'),
+              ('IFRAME',r'<iframe[^>]+src=["\']([^"\']+)["\']'),
+              ('SCRIPT',r'<script[^>]+src=["\']([^"\']+)["\']'),
+          ]:
+              count=0
+              for m in re.finditer(pat,raw,re.I|re.S):
+                  s=html.unescape(m.group(1)).strip()
+                  if label=='SCRIPT' and not any(k in s.lower() for k in ['calendar','event','ajax','api','js']): continue
+                  print(label,s[:1600].replace('\n',' '))
+                  count+=1
+                  if count>=80: break
+          PY
