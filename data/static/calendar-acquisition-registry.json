@@ -1489,6 +1489,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic official Carrere annual-calendar route emits source-visible meeting dates at the fixed Hippodrome de Carrere venue at rank C. Published meeting Horaire is not interpreted as first-race post time. Source absence never proves non-running."
+    },
+    {
+      "system_id": "slovenian-trotting-system",
+      "country_id": "slovenia",
+      "authority_id": "kasaska-zveza-slovenije",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "slovenian-trotting-calendar-2026",
+      "detail_source_id": "slovenian-trotting-calendar-2026",
+      "schedule_adapter_id": "slovenia-trotting-calendar-v1",
+      "detail_adapter_id": "slovenia-trotting-calendar-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic official KZS 2026 Koledar route emits current-window meeting dates only after organizer labels are mapped to independently verified physical racecourses. Unknown future organizers are rejected; race times are not inferred."
     }
   ]
 }
