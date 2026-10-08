@@ -1300,22 +1300,6 @@
       "notes": "The federation calendar aggregates Belgian racecourses and exposes meeting dates, venues, race labels, and post times; public country display remains C."
     },
     {
-      "country_id": "slovenia",
-      "authority_id": "kasaska-zveza-slovenije",
-      "authority_name_en": "Slovenian Trotting Association",
-      "authority_name_local": "Kasaška zveza Slovenije",
-      "authority_type": "national",
-      "racecourse_scope": "countrywide",
-      "official_source_id": "slovenian-trotting-home",
-      "official_source_url": "https://www.kasaska-zveza.si/",
-      "source_kind": "official_link",
-      "source_status": "partial",
-      "last_checked_date": "2026-06-29",
-      "capability_rank": "C",
-      "adapter_candidate_status": "needs_review",
-      "notes": "Official federation route is verified, but a stable current-season meeting calendar was not confirmed."
-    },
-    {
       "country_id": "croatia",
       "authority_id": "hrvatski-galopski-savez",
       "authority_name_en": "Croatian Gallop Federation",
@@ -2114,6 +2098,38 @@
       "capability_rank": "C",
       "adapter_candidate_status": "candidate",
       "notes": "Supertote states that it is operated by Automatic Systems Ltd and licensed to offer betting activities under GRA jurisdiction. Its calendar is GitHub-Actions-accessible and exposes the source-visible 2026 Champ de Mars meeting dates. Automatic publication remains rank C."
+    },
+    {
+      "country_id": "slovenia",
+      "authority_id": "kasaska-zveza-slovenije",
+      "authority_name_en": "Slovenian Trotting Association",
+      "authority_name_local": "Kasaška zveza Slovenije",
+      "authority_type": "national",
+      "racecourse_scope": "countrywide",
+      "official_source_id": "slovenian-trotting-calendar-2026",
+      "official_source_url": "https://www.kasaska-zveza.si/koledar.html",
+      "source_kind": "calendar",
+      "source_status": "verified",
+      "last_checked_date": "2026-10-08",
+      "capability_rank": "C",
+      "adapter_candidate_status": "candidate",
+      "notes": "Official 2026 Koledar is GitHub-Actions-accessible and exposes 21 meeting dates with organizer labels. Automatic current-window route maps only independently verified physical venues and rejects unknown organizers."
+    },
+    {
+      "country_id": "slovenia",
+      "authority_id": "kasaska-zveza-slovenije",
+      "authority_name_en": "Slovenian Trotting Association",
+      "authority_name_local": "Kasaška zveza Slovenije",
+      "authority_type": "national",
+      "racecourse_scope": "countrywide",
+      "official_source_id": "slovenian-trotting-home",
+      "official_source_url": "https://www.kasaska-zveza.si/",
+      "source_kind": "official_link",
+      "source_status": "partial",
+      "last_checked_date": "2026-10-08",
+      "capability_rank": "C",
+      "adapter_candidate_status": "needs_review",
+      "notes": "Federation home route remains official. Current production meeting discovery is separated to the verified 2026 Koledar route."
     }
   ]
 }
