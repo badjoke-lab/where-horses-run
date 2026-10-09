@@ -1502,10 +1502,10 @@
       "official_source_url": "https://ristunusportas.lt/paskelbtas-2026-metu-lenktyniu-kalendorius/",
       "source_kind": "calendar",
       "source_status": "verified",
-      "last_checked_date": "2026-06-29",
+      "last_checked_date": "2026-10-10",
       "capability_rank": "C",
       "adapter_candidate_status": "candidate",
-      "notes": "The official league calendar publishes 2026 trotting meeting dates and venues. Detailed programmes and participant material remain excluded."
+      "notes": "Official league 2026 calendar context remains verified. Current automation uses the same official site's Events REST API and event-description routes for source-visible meeting date and venue normalization."
     },
     {
       "country_id": "estonia",
@@ -2130,6 +2130,22 @@
       "capability_rank": "C",
       "adapter_candidate_status": "needs_review",
       "notes": "Federation home route remains official. Current production meeting discovery is separated to the verified 2026 Koledar route."
+    },
+    {
+      "country_id": "lithuania",
+      "authority_id": "trotting-horse-league",
+      "authority_name_en": "Republican League of Racing Horses",
+      "authority_name_local": "Respublikinė lenktyninių žirgų lyga",
+      "authority_type": "national",
+      "racecourse_scope": "all_authority_racecourses",
+      "official_source_id": "trotting-league-events-api",
+      "official_source_url": "https://ristunusportas.lt/wp-json/tribe/events/v1/events",
+      "source_kind": "calendar",
+      "source_status": "verified",
+      "last_checked_date": "2026-10-10",
+      "capability_rank": "C",
+      "adapter_candidate_status": "candidate",
+      "notes": "Official Ristūnų sportas Events REST API is GitHub-Actions-accessible. Event descriptions expose the physical venue when the API venue object is absent. Automatic publication remains rank C; unknown venue labels are rejected rather than guessed."
     }
   ]
 }
