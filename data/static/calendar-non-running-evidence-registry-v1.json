@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-non-running-evidence-registry-v1",
-  "reviewed_at": "2026-10-08",
+  "reviewed_at": "2026-10-09",
   "records": [
     {
       "record_id": "japan-jra-system",
@@ -1297,6 +1297,27 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-10-08",
       "notes": "A removed calendar row, source omission, acquisition failure, parser failure, or unknown organizer does not independently prove cancellation/postponement."
+    },
+    {
+      "record_id": "ngong-jck-racing-system",
+      "country_id": "kenya",
+      "system_id": "ngong-jck-racing-system",
+      "authority_id": "jockey-club-of-kenya",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Positive official Jockey Club of Kenya season-calendar evidence only; no bounded whole-meeting cancellation/postponement automation is implemented.",
+      "evidence_urls": [
+        "https://www.jockeyclub.co.ke/horse-racing/upcoming-race-dates"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-10-09",
+      "notes": "Source absence, a removed season row, acquisition failure, parser failure, or later season edits do not independently prove cancellation/postponement."
     }
   ]
 }
