@@ -216,3 +216,40 @@ jobs:
           if not rows:
               raise SystemExit('NO_OSM_RACECOURSE_OBJECT')
           PY
+
+      - name: Cross-check Sirvintos with Photon
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY' > /tmp/lith-structured/photon-queries.txt
+          for q in [
+            'Širvintų hipodromas',
+            'Žirgynas Ristūnų 6 Kalnalaukio Lithuania',
+            'Ristūnų g. 6 Kalnalaukio',
+            'Žirgynas Kalnalaukio'
+          ]:
+              print(q)
+          PY
+          n=0
+          while IFS= read -r query; do
+            n=$((n+1))
+            out="/tmp/lith-structured/photon-$n.json"
+            curl -L -sS --get --data-urlencode "q=$query" --data 'limit=8'               'https://photon.komoot.io/api/' -o "$out"
+            python3 - "$out" "$query" <<'PY'
+          import json,sys
+          obj=json.load(open(sys.argv[1]))
+          fs=obj.get('features') or []
+          print('PHOTON_QUERY',sys.argv[2],'RESULTS',len(fs))
+          for f in fs:
+              p=f.get('properties') or {}
+              print('PHOTON',json.dumps({
+                  'coordinates':(f.get('geometry') or {}).get('coordinates'),
+                  'name':p.get('name'),'street':p.get('street'),'housenumber':p.get('housenumber'),
+                  'city':p.get('city'),'district':p.get('district'),'county':p.get('county'),
+                  'postcode':p.get('postcode'),'country':p.get('country'),
+                  'osm_type':p.get('osm_type'),'osm_id':p.get('osm_id'),
+                  'type':p.get('type')
+              },ensure_ascii=False))
+          PY
+            sleep 1
+          done < /tmp/lith-structured/photon-queries.txt
