@@ -64,6 +64,7 @@ const SYSTEMS = [
   { key: 'martinique', file: 'martinique.json', country_id: 'martinique', authority_id: 'hippodrome-de-carrere', racing_system_id: 'martinique-reviewed-system' },
   { key: 'mauritius', file: 'mauritius.json', country_id: 'mauritius', authority_id: 'automatic-systems-ltd-supertote', racing_system_id: 'mauritius-champ-de-mars-system' },
   { key: 'slovenia', file: 'slovenia.json', country_id: 'slovenia', authority_id: 'kasaska-zveza-slovenije', racing_system_id: 'slovenian-trotting-system' },
+  { key: 'kenya', file: 'kenya.json', country_id: 'kenya', authority_id: 'jockey-club-of-kenya', racing_system_id: 'ngong-jck-racing-system' },
 ];
 
 const STATE_FILES = {
