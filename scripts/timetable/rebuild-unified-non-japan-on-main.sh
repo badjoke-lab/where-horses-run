@@ -624,11 +624,4 @@ stage_remaining_state() {
   git add data/generated/timetable/meeting-presence.json 2>/dev/null || true
 }
 
-git fetch origin main
-remote_main="$(git rev-parse origin/main)"
-if [[ "$(git rev-parse HEAD)" != "$remote_main" ]]; then
-  refresh_non_japan_on_main "$remote_main"
-fi
-
-
 refresh_non_japan_on_main "${1:?remote main sha required}"
