@@ -3,31 +3,54 @@
   "delivery_no": "74",
   "country_id": "lithuania",
   "country_name_en": "Lithuania",
-  "checked_date": "2026-06-29",
-  "evidence_reviewed_at": "2026-06-29",
+  "checked_date": "2026-10-10",
+  "evidence_reviewed_at": "2026-10-10",
   "country_completeness": "partial",
-  "records": [{
-    "readiness_id": "lithuania--trotting-league-system--trotting-league-2026-calendar",
-    "system_id": "trotting-league-system",
-    "system_name_en": "Lithuanian Trotting Horse League calendar",
-    "authority_source_key": "lithuania/trotting-horse-league/trotting-league-2026-calendar",
-    "racecourse_ids": [],
-    "coverage_scope": "authority_wide",
-    "technical_rank": "C",
-    "public_ceiling": "C",
-    "confirmed_fields": {"meeting_date": true, "racecourse": true, "first_race_time": false, "last_race_time": false, "per_race_post_times": false, "race_name": false, "distance": false, "surface": false, "course": false},
-    "source_format": "html",
-    "access_mode": "date_route",
-    "automation_mode": "semi_automatic",
-    "refresh_classes": ["near_meeting", "monthly", "seasonal"],
-    "readiness": "prototype_ready",
-    "implementation_status": "not_started",
-    "fallback": "downgrade_to_C",
-    "source_status": "verified",
-    "revalidation_trigger": "Revalidate when the league calendar or event-route structure changes.",
-    "blocked_reason": null,
-    "limitations": ["The reviewed source covers the league calendar and identified venues, not every possible Lithuanian racing system.", "Programmes, start protocols, results, participants, and prize information remain excluded.", "The public country layer remains limited to meeting date and racecourse."],
-    "notes": "Official event routes support a bounded C-level prototype for trotting meeting dates and venues."
-  }],
+  "records": [
+    {
+      "readiness_id": "lithuania--trotting-league-system--trotting-league-2026-calendar",
+      "system_id": "trotting-league-system",
+      "system_name_en": "Lithuanian Trotting Horse League calendar",
+      "authority_source_key": "lithuania/trotting-horse-league/trotting-league-events-api",
+      "racecourse_ids": [
+        "lithuania--sirvintos-hipodromas"
+      ],
+      "coverage_scope": "authority_wide",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "json_html",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "daily",
+        "near_meeting",
+        "weekly"
+      ],
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "revalidation_trigger": "Revalidate when the league calendar or event-route structure changes.",
+      "blocked_reason": null,
+      "limitations": [
+        "Automatic publication covers only source-visible official events whose physical venue is independently normalized.",
+        "Current production mapping includes Širvintų hipodromas; unknown future venue labels are rejected.",
+        "Source-visible start/end times are not promoted beyond rank C.",
+        "Programmes, participants, results and wagering detail remain excluded."
+      ],
+      "notes": "GitHub Actions revalidated the official Events API on 2026-10-10. Event 4347 exposes 2026-10-10 12:00–16:00; the official event description explicitly identifies Širvintų hipodromas. Production publishes date+venue only."
+    }
+  ],
   "public_safe": true
 }
