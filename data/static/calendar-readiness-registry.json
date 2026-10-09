@@ -3569,7 +3569,9 @@
       "system_id": "ngong-jck-racing-system",
       "system_name_en": "Jockey Club of Kenya / Ngong system",
       "authority_source_key": "kenya/jockey-club-of-kenya/jck-upcoming-race-dates",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "kenya--ngong-racecourse"
+      ],
       "coverage_scope": "single_racecourse",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -3586,27 +3588,28 @@
       },
       "source_format": "html",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "monthly",
-        "seasonal",
-        "manual"
+        "daily",
+        "near_meeting",
+        "weekly"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-29",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when JCK changes the upcoming-race page or rolls into a new season.",
+      "checked_date": "2026-10-09",
+      "evidence_reviewed_at": "2026-10-09",
+      "revalidation_trigger": "Revalidate when JCK changes the Upcoming Race Dates page, season heading, or Ngong venue context.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/56-kenya/source-test-v2.json",
       "limitations": [
-        "The reviewed source covers Ngong Racecourse only.",
-        "The page lists race-day dates but not reusable race times.",
-        "Named feature races remain editorial context, not timetable detail."
+        "The automatic route covers Jockey Club of Kenya meetings at Ngong Racecourse only.",
+        "Named feature races are editorial context and are not published as timetable detail.",
+        "Race post times are not inferred.",
+        "Source absence, fetch failure or parser failure is not cancellation/non-running evidence."
       ],
-      "notes": "The official seasonal date list supports a manual C-level calendar decision for the reviewed Ngong scope."
+      "notes": "The official 2026-2027 season page currently exposes 18 meeting dates, including 11 and 25 October, 8 and 22 November, and 13 December 2026."
     },
     {
       "readiness_id": "pakistan--lahore-race-club-system--lrc-events",
@@ -6041,5 +6044,5 @@
       "notes": "The official 2026 calendar has 21 meetings. From the 8 October review point the forward dates are 18 October at Ljutomer, 25 October at Šentjernej, and 14 November plus 5 December at Komenda."
     }
   ],
-  "last_updated": "2026-10-08"
+  "last_updated": "2026-10-09"
 }
