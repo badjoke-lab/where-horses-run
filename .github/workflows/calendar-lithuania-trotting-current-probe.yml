@@ -148,3 +148,28 @@ jobs:
               print('EVENT_JSONLD',html.unescape(m.group(1))[:5000].replace('\n',' '))
           PY
           done < /tmp/lith-structured/event-urls.txt
+
+      - name: Geocode official Sirvintos venue address
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='WhereHorsesRun/1.0 (+https://github.com/badjoke-lab/where-horses-run)'
+          query='Ristūnų g. 6, Kalnalaukio k., Širvintų r., Lithuania'
+          curl -L -sS -A "$UA" --get             --data-urlencode "q=$query"             --data 'format=jsonv2'             --data 'limit=5'             'https://nominatim.openstreetmap.org/search'             -o /tmp/lith-structured/geocode.json
+          python3 - /tmp/lith-structured/geocode.json <<'PY'
+          import json,sys
+          rows=json.load(open(sys.argv[1]))
+          print('GEOCODE_RESULTS',len(rows))
+          for r in rows:
+              print('GEOCODE',json.dumps({
+                  'lat':r.get('lat'),
+                  'lon':r.get('lon'),
+                  'display_name':r.get('display_name'),
+                  'osm_type':r.get('osm_type'),
+                  'osm_id':r.get('osm_id'),
+                  'type':r.get('type'),
+                  'class':r.get('class')
+              },ensure_ascii=False))
+          if not rows:
+              raise SystemExit('NO_GEOCODE_RESULT')
+          PY
