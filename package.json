@@ -118,7 +118,8 @@
     "validate:martinique-carrere": "node --check scripts/timetable/martinique-carrere-calendar-core.mjs && node --check scripts/timetable/run-martinique-carrere-official-window.mjs && node scripts/check-martinique-carrere-adapter.mjs",
     "validate:mauritius-supertote": "node --check scripts/timetable/mauritius-supertote-calendar-core.mjs && node --check scripts/timetable/run-mauritius-supertote-official-window.mjs && node scripts/check-mauritius-supertote-adapter.mjs",
     "validate:slovenia-trotting": "node --check scripts/timetable/slovenia-trotting-calendar-core.mjs && node --check scripts/timetable/run-slovenia-trotting-official-window.mjs && node scripts/check-slovenia-trotting-adapter.mjs",
-    "validate:kenya-jck": "node --check scripts/timetable/kenya-jck-calendar-core.mjs && node --check scripts/timetable/run-kenya-jck-official-window.mjs && node scripts/check-kenya-jck-adapter.mjs"
+    "validate:kenya-jck": "node --check scripts/timetable/kenya-jck-calendar-core.mjs && node --check scripts/timetable/run-kenya-jck-official-window.mjs && node scripts/check-kenya-jck-adapter.mjs",
+    "validate:lithuania-trotting": "node --check scripts/timetable/lithuania-trotting-calendar-core.mjs && node --check scripts/timetable/run-lithuania-trotting-official-window.mjs && node scripts/check-lithuania-trotting-adapter.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0",

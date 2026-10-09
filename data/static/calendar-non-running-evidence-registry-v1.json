@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-non-running-evidence-registry-v1",
-  "reviewed_at": "2026-10-09",
+  "reviewed_at": "2026-10-10",
   "records": [
     {
       "record_id": "japan-jra-system",
@@ -1318,6 +1318,28 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-10-09",
       "notes": "Source absence, a removed season row, acquisition failure, parser failure, or later season edits do not independently prove cancellation/postponement."
+    },
+    {
+      "record_id": "trotting-league-system",
+      "country_id": "lithuania",
+      "system_id": "trotting-league-system",
+      "authority_id": "trotting-horse-league",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Positive official Ristūnų sportas Events API and event-page evidence only; no bounded whole-meeting cancellation/postponement automation is implemented.",
+      "evidence_urls": [
+        "https://ristunusportas.lt/wp-json/tribe/events/v1/events",
+        "https://ristunusportas.lt/renginiai/"
+      ],
+      "example_evidence_url": "https://ristunusportas.lt/renginiai/ristunu-zirgu-lenktynes-10-10/",
+      "reviewed_at": "2026-10-10",
+      "notes": "Source absence, an unpublished future event, a removed event row, acquisition failure or parser failure does not independently prove cancellation/postponement."
     }
   ]
 }
