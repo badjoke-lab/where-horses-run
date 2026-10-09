@@ -67,6 +67,7 @@ const calendarMapRegressionIds = [
   'riverton-racecourse',
   'woodville-racecourse',
   'south-bay-racecourse',
+  'tauherenikau-racecourse',
   // Slovakia (1)
   'bratislava-racecourse',
   // France Calendar rolling venues (7)
