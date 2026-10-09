@@ -3,8 +3,8 @@
   "delivery_no": "56",
   "country_id": "kenya",
   "country_name_en": "Kenya",
-  "checked_date": "2026-06-29",
-  "evidence_reviewed_at": "2026-06-29",
+  "checked_date": "2026-10-09",
+  "evidence_reviewed_at": "2026-10-09",
   "country_completeness": "single_racecourse",
   "records": [
     {
@@ -12,7 +12,9 @@
       "system_id": "ngong-jck-racing-system",
       "system_name_en": "Jockey Club of Kenya / Ngong system",
       "authority_source_key": "kenya/jockey-club-of-kenya/jck-upcoming-race-dates",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "kenya--ngong-racecourse"
+      ],
       "coverage_scope": "single_racecourse",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -29,24 +31,25 @@
       },
       "source_format": "html",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "monthly",
-        "seasonal",
-        "manual"
+        "daily",
+        "near_meeting",
+        "weekly"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
       "revalidation_trigger": "Revalidate when JCK changes the upcoming-race page or rolls into a new season.",
       "blocked_reason": null,
       "limitations": [
-        "The reviewed source covers Ngong Racecourse only.",
-        "The page lists race-day dates but not reusable race times.",
-        "Named feature races remain editorial context, not timetable detail."
+        "The reviewed source covers Jockey Club of Kenya meetings at Ngong Racecourse only.",
+        "The page lists season meeting dates but not reusable race post times.",
+        "Named feature races remain editorial context, not timetable detail.",
+        "Source absence or acquisition failure is not cancellation/non-running evidence."
       ],
-      "notes": "The official seasonal date list supports a manual C-level calendar decision for the reviewed Ngong scope."
+      "notes": "GitHub Actions revalidated the live JCK page on 2026-10-09. The 2026-2027 season exposes 18 source-visible meeting dates from September 2026 through July 2027."
     }
   ],
   "public_safe": true
