@@ -110,6 +110,9 @@ on:
       - 'scripts/timetable/kenya-jck-calendar-core.mjs'
       - 'scripts/timetable/run-kenya-jck-official-window.mjs'
       - 'scripts/check-kenya-jck-adapter.mjs'
+      - 'scripts/timetable/lithuania-trotting-calendar-core.mjs'
+      - 'scripts/timetable/run-lithuania-trotting-official-window.mjs'
+      - 'scripts/check-lithuania-trotting-adapter.mjs'
       - 'scripts/check-qatar-qrec-adapter.mjs'
       - 'scripts/timetable/rebuild-unified-non-japan-on-main.sh'
       - 'scripts/timetable/italy-masaf-core.mjs'
@@ -833,6 +836,9 @@ jobs:
           node scripts/timetable/run-kenya-jck-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/kenya.json
+          node scripts/timetable/run-lithuania-trotting-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/lithuania.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -893,7 +899,8 @@ jobs:
             --artifact=.calendar-unified/martinique.json \
             --artifact=.calendar-unified/mauritius.json \
             --artifact=.calendar-unified/slovenia.json \
-            --artifact=.calendar-unified/kenya.json
+            --artifact=.calendar-unified/kenya.json \
+            --artifact=.calendar-unified/lithuania.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -1244,6 +1251,12 @@ jobs:
             --authority-id=jockey-club-of-kenya \
             --racing-system-id=ngong-jck-racing-system \
             --timezone=Africa/Nairobi
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/lithuania.json \
+            --country-id=lithuania \
+            --authority-id=trotting-horse-league \
+            --racing-system-id=trotting-league-system \
+            --timezone=Europe/Vilnius
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
