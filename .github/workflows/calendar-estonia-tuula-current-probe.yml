@@ -1,0 +1,94 @@
+name: Estonia Tuula current Calendar probe
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-estonia-tuula-current-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Probe Hipodroom official calendar
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/estonia
+          for item in \
+            'calendar|https://hipodroom.ee/kalender/' \
+            'home|https://hipodroom.ee/' \
+            'robots|https://hipodroom.ee/robots.txt'; do
+            name="${item%%|*}"
+            url="${item#*|}"
+            out="/tmp/estonia/$name.html"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+            final="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o /dev/null -w '%{url_effective}' "$url" || true)"
+            echo "ESTONIA_PAGE name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) FINAL=$final"
+          done
+
+      - name: Inspect Tuula calendar structure
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - /tmp/estonia/calendar.html <<'PY'
+          import html,re,sys
+          from pathlib import Path
+          raw=Path(sys.argv[1]).read_text(errors='replace')
+          text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+          text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
+          text=html.unescape(re.sub(r'<[^>]+>',' ',text))
+          text=re.sub(r'\s+',' ',text).strip()
+          print('TEXT_LEN',len(text))
+          for needle in ['2026','2027','Tuula','hipodroom','kalender','oktoober','november','detsember']:
+              p=text.lower().find(needle.lower())
+              if p>=0:
+                  print('ESTONIA_TEXT',needle,text[max(0,p-500):p+6000])
+          pats=[
+            r'\b(20\d{2})[./-](\d{1,2})[./-](\d{1,2})\b',
+            r'\b(\d{1,2})[./-](\d{1,2})[./-](20\d{2})\b',
+            r'\b(\d{1,2})\s+(jaanuar|veebruar|märts|marts|aprill|mai|juuni|juuli|august|september|oktoober|november|detsember)(?:\s+(20\d{2}))?\b'
+          ]
+          seen=[]
+          for pat in pats:
+              for m in re.finditer(pat,text,re.I):
+                  s=m.group(0)
+                  if s not in seen: seen.append(s)
+          print('DATE_MATCHES',len(seen))
+          for x in seen[:160]: print('DATE',x)
+          links=[]
+          for m in re.finditer(r'href=["\']([^"\']+)["\']',raw,re.I):
+              u=html.unescape(m.group(1))
+              low=u.lower()
+              if any(k in low for k in ['kalend','võist','voist','race','event','tuula','pdf','ical']):
+                  if u not in links: links.append(u)
+          for u in links[:160]: print('LINK',u)
+          PY
+
+      - name: Inspect structured data and APIs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - /tmp/estonia/calendar.html <<'PY'
+          import html,re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          for label,pat in [
+            ('JSONLD',r'<script[^>]+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>'),
+            ('IFRAME',r'<iframe[^>]+src=["\']([^"\']+)["\']'),
+            ('SCRIPT',r'<script[^>]+src=["\']([^"\']+)["\']')
+          ]:
+            n=0
+            for m in re.finditer(pat,raw,re.I|re.S):
+              s=html.unescape(m.group(1)).strip()
+              if label=='SCRIPT' and not any(k in s.lower() for k in ['calendar','event','api','ajax','race','kalend']): continue
+              print(label,s[:2000].replace('\n',' '))
+              n+=1
+              if n>=100: break
+          PY
