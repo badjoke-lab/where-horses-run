@@ -1564,6 +1564,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic official Jockey Club of Kenya season-calendar route emits source-visible meeting dates at fixed Ngong Racecourse at rank C. Named cups and feature races are not timetable detail, and source absence never proves non-running."
+    },
+    {
+      "system_id": "trotting-league-system",
+      "country_id": "lithuania",
+      "authority_id": "trotting-horse-league",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "trotting-league-events-api",
+      "detail_source_id": "trotting-league-events-api",
+      "schedule_adapter_id": "lithuania-trotting-events-api-v1",
+      "detail_adapter_id": "lithuania-trotting-events-api-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic official Ristūnų sportas Events API route emits source-visible meeting dates only when a physical venue is independently normalized. Current mapped venue is Širvintų hipodromas. Unknown venues are rejected; source absence never proves non-running."
     }
   ]
 }
