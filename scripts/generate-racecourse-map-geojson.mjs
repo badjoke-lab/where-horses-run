@@ -114,6 +114,7 @@ const calendarMapRegressionIds = [
   'nuille-sur-vicoin-racecourse',
   'paray-le-monial-racecourse',
   'rambouillet-racecourse',
+  'la-roche-posay-racecourse',
   // South Korea (4)
   'seoul-racecourse',
   'busan-gyeongnam-racecourse',
