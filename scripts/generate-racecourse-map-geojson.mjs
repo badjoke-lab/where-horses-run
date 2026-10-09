@@ -102,6 +102,18 @@ const calendarMapRegressionIds = [
   'moulins-racecourse',
   'pontchateau-racecourse',
   'reims-racecourse',
+  // France rolling venues exposed by current Calendar (2026-10-09)
+  'biguglia-racecourse',
+  'cavaillon-racecourse',
+  'challans-racecourse',
+  'durtal-racecourse',
+  'landivisiau-racecourse',
+  'le-pin-racecourse',
+  'lisieux-racecourse',
+  'niort-racecourse',
+  'nuille-sur-vicoin-racecourse',
+  'paray-le-monial-racecourse',
+  'rambouillet-racecourse',
   // South Korea (4)
   'seoul-racecourse',
   'busan-gyeongnam-racecourse',
