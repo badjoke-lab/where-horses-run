@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-10-09T09:06:49.318Z",
+  "generated_at": "2026-10-09T09:12:23.801Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -12550,7 +12550,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-09T09:06:49.318Z",
+        "generated_at": "2026-10-09T09:12:23.801Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12579,7 +12579,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-09T09:06:49.318Z",
+        "generated_at": "2026-10-09T09:12:23.801Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12784,7 +12784,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-09T09:06:49.318Z",
+        "generated_at": "2026-10-09T09:12:23.801Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -54783,10 +54783,10 @@
       "timezone": "Asia/Qatar",
       "racecourse_id": "qatar--al-rayyan-racecourse",
       "date": "2026-10-14",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "16:30",
+      "last_race_time_local": "20:30",
       "source_trace": {
         "source_id": "qrec-season-calendar",
         "route_id": "qrec-public-api-official-window",
@@ -54798,8 +54798,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-10-08",
-        "generated_at": "2026-10-08T15:35:53.528Z",
+        "last_checked_date": "2026-10-09",
+        "generated_at": "2026-10-09T09:12:20.559Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -54807,27 +54807,27 @@
         "meeting_identity": {
           "source_id": "qrec-season-calendar",
           "official_source_url": "https://qrec.gov.qa/race-calendar",
-          "observed_at": "2026-10-08T15:35:53.528Z",
-          "successfully_verified_at": "2026-10-08T15:35:53.528Z",
+          "observed_at": "2026-10-09T09:12:20.559Z",
+          "successfully_verified_at": "2026-10-09T09:12:20.559Z",
           "acquisition_method": "automatic"
         },
         "meeting_date": {
           "source_id": "qrec-season-calendar",
           "official_source_url": "https://qrec.gov.qa/race-calendar",
-          "observed_at": "2026-10-08T15:35:53.528Z",
-          "successfully_verified_at": "2026-10-08T15:35:53.528Z",
+          "observed_at": "2026-10-09T09:12:20.559Z",
+          "successfully_verified_at": "2026-10-09T09:12:20.559Z",
           "acquisition_method": "automatic"
         }
       },
       "acquisition_completion": {
-        "disposition": "not_applicable",
-        "observed_rank": "C",
+        "disposition": "implementation_gap",
+        "observed_rank": "A",
         "technical_capability_rank": "A",
-        "higher_rank_open": false,
-        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+        "higher_rank_open": true,
+        "reason": "No completion rule exists for detail status complete_current_best_available."
       },
       "acquisition_attempt": {
-        "attempted_at": "2026-10-08T15:35:53.528Z",
+        "attempted_at": "2026-10-09T09:12:20.559Z",
         "status": "success",
         "source_id": "qrec-season-calendar",
         "route_id": "qrec-public-api-official-window",
@@ -56000,10 +56000,10 @@
       "timezone": "Asia/Qatar",
       "racecourse_id": "qatar--al-rayyan-racecourse",
       "date": "2026-10-15",
-      "capability_rank": "C",
-      "display_status": "partial",
-      "first_race_time_local": null,
-      "last_race_time_local": null,
+      "capability_rank": "A",
+      "display_status": "displayable",
+      "first_race_time_local": "16:30",
+      "last_race_time_local": "21:05",
       "source_trace": {
         "source_id": "qrec-season-calendar",
         "route_id": "qrec-public-api-official-window",
@@ -56015,8 +56015,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-10-08",
-        "generated_at": "2026-10-08T15:35:53.528Z",
+        "last_checked_date": "2026-10-09",
+        "generated_at": "2026-10-09T09:12:20.559Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -56024,27 +56024,27 @@
         "meeting_identity": {
           "source_id": "qrec-season-calendar",
           "official_source_url": "https://qrec.gov.qa/race-calendar",
-          "observed_at": "2026-10-08T15:35:53.528Z",
-          "successfully_verified_at": "2026-10-08T15:35:53.528Z",
+          "observed_at": "2026-10-09T09:12:20.559Z",
+          "successfully_verified_at": "2026-10-09T09:12:20.559Z",
           "acquisition_method": "automatic"
         },
         "meeting_date": {
           "source_id": "qrec-season-calendar",
           "official_source_url": "https://qrec.gov.qa/race-calendar",
-          "observed_at": "2026-10-08T15:35:53.528Z",
-          "successfully_verified_at": "2026-10-08T15:35:53.528Z",
+          "observed_at": "2026-10-09T09:12:20.559Z",
+          "successfully_verified_at": "2026-10-09T09:12:20.559Z",
           "acquisition_method": "automatic"
         }
       },
       "acquisition_completion": {
-        "disposition": "not_applicable",
-        "observed_rank": "C",
+        "disposition": "implementation_gap",
+        "observed_rank": "A",
         "technical_capability_rank": "A",
-        "higher_rank_open": false,
-        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+        "higher_rank_open": true,
+        "reason": "No completion rule exists for detail status complete_current_best_available."
       },
       "acquisition_attempt": {
-        "attempted_at": "2026-10-08T15:35:53.528Z",
+        "attempted_at": "2026-10-09T09:12:20.559Z",
         "status": "success",
         "source_id": "qrec-season-calendar",
         "route_id": "qrec-public-api-official-window",
