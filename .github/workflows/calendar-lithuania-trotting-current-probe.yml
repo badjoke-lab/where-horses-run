@@ -256,3 +256,64 @@ jobs:
           PY
             sleep 1
           done < /tmp/lith-structured/photon-queries.txt
+
+      - name: Probe current Lithuania event detail
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/lith-detail
+          for item in \
+            'event|https://ristunusportas.lt/renginiai/ristunu-zirgu-lenktynes-10-10/' \
+            'api-event|https://ristunusportas.lt/wp-json/tribe/events/v1/events/4347'; do
+            name="${item%%|*}"
+            url="${item#*|}"
+            out="/tmp/lith-detail/$name.out"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+            echo "LITH_DETAIL name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) URL=$url"
+          done
+          python3 - <<'PY'
+          import html,json,re
+          from pathlib import Path
+          raw=Path('/tmp/lith-detail/event.out').read_text(errors='replace')
+          text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+          text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
+          text=html.unescape(re.sub(r'<[^>]+>',' ',text))
+          text=re.sub(r'\s+',' ',text).strip()
+          print('EVENT_TEXT',text[:9000])
+          for needle in ['Uten','Duset','Sart','hipodrom','adresas','vieta','location','10-10','12:00','16:00']:
+              p=text.lower().find(needle.lower())
+              if p>=0:
+                  print('EVENT_MATCH',needle,text[max(0,p-500):p+2600])
+          api=json.loads(Path('/tmp/lith-detail/api-event.out').read_text(errors='replace'))
+          print('EVENT_API',json.dumps(api,ensure_ascii=False)[:14000])
+          PY
+
+      - name: Probe Events API surrounding season dates
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          url='https://ristunusportas.lt/wp-json/tribe/events/v1/events?start_date=2026-01-01%2000:00:00&end_date=2026-12-31%2023:59:59&per_page=100'
+          curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 "$url" -o /tmp/lith-detail/all-2026.json
+          python3 - <<'PY'
+          import json
+          obj=json.load(open('/tmp/lith-detail/all-2026.json'))
+          events=obj.get('events') or []
+          print('ALL_2026_EVENTS',len(events),'TOTAL',obj.get('total'))
+          for e in events:
+              venue=e.get('venue') or {}
+              print('ALL_EVENT',json.dumps({
+                  'id':e.get('id'),
+                  'title':e.get('title'),
+                  'start_date':e.get('start_date'),
+                  'end_date':e.get('end_date'),
+                  'url':e.get('url'),
+                  'venue_id':e.get('venue_id'),
+                  'venue':venue.get('venue'),
+                  'address':venue.get('address'),
+                  'city':venue.get('city'),
+                  'geo_lat':venue.get('geo_lat'),
+                  'geo_lng':venue.get('geo_lng')
+              },ensure_ascii=False))
+          PY
