@@ -1539,6 +1539,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic official KZS 2026 Koledar route emits current-window meeting dates only after organizer labels are mapped to independently verified physical racecourses. Unknown future organizers are rejected; race times are not inferred."
+    },
+    {
+      "system_id": "ngong-jck-racing-system",
+      "country_id": "kenya",
+      "authority_id": "jockey-club-of-kenya",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "jck-upcoming-race-dates",
+      "detail_source_id": "jck-upcoming-race-dates",
+      "schedule_adapter_id": "kenya-jck-season-calendar-v1",
+      "detail_adapter_id": "kenya-jck-season-calendar-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic official Jockey Club of Kenya season-calendar route emits source-visible meeting dates at fixed Ngong Racecourse at rank C. Named cups and feature races are not timetable detail, and source absence never proves non-running."
     }
   ]
 }
