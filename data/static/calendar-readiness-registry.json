@@ -4402,7 +4402,9 @@
       "system_id": "tuula-trotting-system",
       "system_name_en": "Tuula Hipodroom trotting system",
       "authority_source_key": "estonia/estonian-trotting-union/hipodroom-2026-calendar-context",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "estonia--tuula-hipodroom"
+      ],
       "coverage_scope": "single_racecourse",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -4419,27 +4421,28 @@
       },
       "source_format": "html",
       "access_mode": "direct",
-      "automation_mode": "semi_automatic",
+      "automation_mode": "automatic",
       "refresh_classes": [
+        "daily",
         "near_meeting",
-        "monthly",
-        "seasonal"
+        "weekly"
       ],
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "fallback": "downgrade_to_C",
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-29",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when the Hipodroom calendar structure or Tuula venue context changes.",
+      "checked_date": "2026-10-10",
+      "evidence_reviewed_at": "2026-10-10",
+      "revalidation_trigger": "Revalidate when the Hipodroom 2026 calendar page/API, explicit no-racing wording, or Tuula venue context changes.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/75-estonia/source-test-v2.json",
       "limitations": [
-        "The reviewed scope covers Tuula Hipodroom only.",
-        "Programme PDFs, participants, results, statistics, and wagering-related detail remain excluded.",
-        "The public country layer remains limited to meeting date and racecourse."
+        "Automatic publication covers the reviewed Tuula Hipodroom trotting system only.",
+        "The explicit 26 July 2026 source row stating traavivõistluseid ei toimu is excluded from positive candidates.",
+        "Race post times are not inferred.",
+        "Source absence, fetch failure or parser failure is not cancellation/non-running evidence."
       ],
-      "notes": "Current official site activity supports a bounded C-level prototype for Tuula trotting meetings."
+      "notes": "The official 2026 page exposes 15 positive trotting meeting dates. From the 10 October review point, the next source-visible meeting is 17 October 2026 (Baby Race 2026 final)."
     },
     {
       "readiness_id": "guyana--horse-racing-authority-context--authority-act-2025",
