@@ -92,3 +92,55 @@ jobs:
               n+=1
               if n>=100: break
           PY
+
+      - name: Probe Estonia 2026 calendar page and WP API
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/estonia-2026
+          for item in \
+            'page|https://hipodroom.ee/2026-aasta-urituste-kalender/' \
+            'wp-page|https://hipodroom.ee/wp-json/wp/v2/pages?slug=2026-aasta-urituste-kalender' \
+            'wp-search|https://hipodroom.ee/wp-json/wp/v2/search?search=2026%20aasta%20urituste%20kalender&per_page=20' \
+            'events|https://hipodroom.ee/events/'; do
+            name="${item%%|*}"
+            url="${item#*|}"
+            out="/tmp/estonia-2026/$name.out"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+            echo "ESTONIA_2026 name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) URL=$url"
+          done
+
+      - name: Inspect Estonia 2026 page content
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import html,json,re
+          from pathlib import Path
+          raw=Path('/tmp/estonia-2026/page.out').read_text(errors='replace')
+          text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+          text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
+          text=html.unescape(re.sub(r'<[^>]+>',' ',text))
+          text=re.sub(r'\s+',' ',text).strip()
+          print('ESTONIA_2026_TEXT',text[:12000])
+          for needle in ['2026','Tuula','hipodroom','jaanuar','veebruar','märts','aprill','mai','juuni','juuli','august','september','oktoober','november','detsember']:
+              p=text.lower().find(needle.lower())
+              if p>=0: print('ESTONIA_2026_MATCH',needle,text[max(0,p-500):p+5000])
+          for m in re.finditer(r'(?:href|src)=["\']([^"\']+)["\']',raw,re.I):
+              u=html.unescape(m.group(1))
+              if any(k in u.lower() for k in ['2026','kalend','calendar','pdf','png','jpg','event','voist','võist']):
+                  print('ESTONIA_2026_LINK',u)
+
+          try:
+              pages=json.loads(Path('/tmp/estonia-2026/wp-page.out').read_text(errors='replace'))
+              print('WP_PAGE_COUNT',len(pages))
+              for p in pages:
+                  print('WP_PAGE',json.dumps({
+                    'id':p.get('id'),'link':p.get('link'),'date':p.get('date'),'modified':p.get('modified'),
+                    'title':(p.get('title') or {}).get('rendered'),
+                    'content':(p.get('content') or {}).get('rendered')
+                  },ensure_ascii=False)[:16000])
+          except Exception as e:
+              print('WP_PAGE_ERROR',type(e).__name__,str(e))
+          PY
