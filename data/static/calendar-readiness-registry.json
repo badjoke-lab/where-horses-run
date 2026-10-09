@@ -4352,8 +4352,10 @@
       "country_tracker_delivery_no": "74",
       "system_id": "trotting-league-system",
       "system_name_en": "Lithuanian Trotting Horse League calendar",
-      "authority_source_key": "lithuania/trotting-horse-league/trotting-league-2026-calendar",
-      "racecourse_ids": [],
+      "authority_source_key": "lithuania/trotting-horse-league/trotting-league-events-api",
+      "racecourse_ids": [
+        "lithuania--sirvintos-hipodromas"
+      ],
       "coverage_scope": "authority_wide",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -4370,27 +4372,28 @@
       },
       "source_format": "html",
       "access_mode": "date_route",
-      "automation_mode": "semi_automatic",
+      "automation_mode": "automatic",
       "refresh_classes": [
+        "daily",
         "near_meeting",
-        "monthly",
-        "seasonal"
+        "weekly"
       ],
-      "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "fallback": "downgrade_to_C",
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-06-29",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when the league calendar or event-route structure changes.",
+      "checked_date": "2026-10-10",
+      "evidence_reviewed_at": "2026-10-10",
+      "revalidation_trigger": "Revalidate when the official Events API, event-description venue wording, or physical venue mapping changes.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/74-lithuania/source-test-v2.json",
       "limitations": [
-        "The reviewed source covers the league calendar and identified venues, not every possible Lithuanian racing system.",
-        "Programmes, start protocols, results, participants, and prize information remain excluded.",
-        "The public country layer remains limited to meeting date and racecourse."
+        "Automatic publication is limited to source-visible official events whose physical venue is independently normalized.",
+        "Širvintų hipodromas is the currently mapped production venue; unknown future venue labels are rejected rather than guessed.",
+        "Source-visible event start/end times are not promoted beyond rank C.",
+        "Source absence, fetch failure or parser failure is not cancellation/non-running evidence."
       ],
-      "notes": "Official event routes support a bounded C-level prototype for trotting meeting dates and venues."
+      "notes": "The official Events API is directly accessible in GitHub Actions. On the 2026-10-10 event, the official event description confirms Širvintų hipodromas and 12:00–16:00 source-visible timing; production remains date+venue rank C."
     },
     {
       "readiness_id": "estonia--tuula-trotting-system--hipodroom-2026-calendar-context",
@@ -6044,5 +6047,5 @@
       "notes": "The official 2026 calendar has 21 meetings. From the 8 October review point the forward dates are 18 October at Ljutomer, 25 October at Šentjernej, and 14 November plus 5 December at Komenda."
     }
   ],
-  "last_updated": "2026-10-09"
+  "last_updated": "2026-10-10"
 }
