@@ -144,3 +144,38 @@ jobs:
           except Exception as e:
               print('WP_PAGE_ERROR',type(e).__name__,str(e))
           PY
+
+      - name: Geocode Tuula Hipodroom
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='WhereHorsesRun/1.0 (+https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/estonia-geo
+          python3 - <<'PY' > /tmp/estonia-geo/queries.txt
+          for q in [
+            'Tuula Hipodroom, Tuula, Harjumaa, Estonia',
+            'Tuula Küla, Harjumaa 76618, Estonia',
+            'Tuula Hipodroom, Saue vald, Estonia'
+          ]:
+              print(q)
+          PY
+          n=0
+          found=0
+          while IFS= read -r query; do
+            n=$((n+1))
+            out="/tmp/estonia-geo/$n.json"
+            curl -L -sS -A "$UA" --get               --data-urlencode "q=$query"               --data 'format=jsonv2'               --data 'limit=8'               'https://nominatim.openstreetmap.org/search'               -o "$out"
+            python3 - "$out" "$query" <<'PY'
+          import json,sys
+          rows=json.load(open(sys.argv[1]))
+          print('TUULA_GEOCODE_QUERY',sys.argv[2],'RESULTS',len(rows))
+          for r in rows:
+              print('TUULA_GEOCODE',json.dumps({
+                'lat':r.get('lat'),'lon':r.get('lon'),'display_name':r.get('display_name'),
+                'osm_type':r.get('osm_type'),'osm_id':r.get('osm_id'),'type':r.get('type'),'class':r.get('class')
+              },ensure_ascii=False))
+          PY
+            if [ "$(python3 -c 'import json,sys;print(len(json.load(open(sys.argv[1]))))' "$out")" -gt 0 ]; then found=1; fi
+            sleep 1
+          done < /tmp/estonia-geo/queries.txt
+          [ "$found" -eq 1 ] || { echo 'NO_TUULA_GEOCODE_RESULTS'; exit 1; }
