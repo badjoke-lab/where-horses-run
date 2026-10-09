@@ -176,6 +176,9 @@ refresh_non_japan_on_main() {
   node scripts/timetable/run-kenya-jck-official-window.mjs \
     --days="${DAYS}" \
     --output=.calendar-unified/kenya.json
+  node scripts/timetable/run-lithuania-trotting-official-window.mjs \
+    --days="${DAYS}" \
+    --output=.calendar-unified/lithuania.json
   node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --artifact=.calendar-unified/uae.json \
@@ -234,7 +237,8 @@ refresh_non_japan_on_main() {
   --artifact=.calendar-unified/martinique.json \
   --artifact=.calendar-unified/mauritius.json \
   --artifact=.calendar-unified/slovenia.json \
-  --artifact=.calendar-unified/kenya.json
+  --artifact=.calendar-unified/kenya.json \
+  --artifact=.calendar-unified/lithuania.json
   node scripts/timetable/apply-official-rolling-observations.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --country-id=hong-kong \
@@ -583,6 +587,12 @@ refresh_non_japan_on_main() {
     --authority-id=jockey-club-of-kenya \
     --racing-system-id=ngong-jck-racing-system \
     --timezone=Africa/Nairobi
+  node scripts/timetable/apply-official-rolling-observations.mjs \
+    --artifact=.calendar-unified/lithuania.json \
+    --country-id=lithuania \
+    --authority-id=trotting-horse-league \
+    --racing-system-id=trotting-league-system \
+    --timezone=Europe/Vilnius
   node scripts/timetable/apply-reviewed-calendar-observations.mjs
   node scripts/timetable/apply-meeting-presence-dispositions.mjs \
   --artifact=.calendar-unified/hkjc.json \
