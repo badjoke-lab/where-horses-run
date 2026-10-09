@@ -113,3 +113,38 @@ jobs:
                   'geo_lng':venue.get('geo_lng')
               },ensure_ascii=False))
           PY
+
+      - name: Inspect current official event detail
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          python3 - /tmp/lith-structured/api.out > /tmp/lith-structured/event-urls.txt <<'PY'
+          import json,sys
+          obj=json.load(open(sys.argv[1]))
+          for e in obj.get('events') or []:
+              u=e.get('url')
+              if u: print(u)
+          PY
+          n=0
+          while IFS= read -r url; do
+            [ -n "$url" ] || continue
+            n=$((n+1))
+            out="/tmp/lith-structured/event-$n.html"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+            echo "LITH_EVENT_PAGE index=$n HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) URL=$url"
+            python3 - "$out" <<'PY'
+          import html,re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+          text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
+          text=html.unescape(re.sub(r'<[^>]+>',' ',text))
+          text=re.sub(r'\s+',' ',text).strip()
+          print('EVENT_TEXT',text[:7000])
+          for needle in ['hipodrom','Uten','Duset','Sart','Rasein','Širv','Sirv','viet','Vieta','location']:
+              p=text.lower().find(needle.lower())
+              if p>=0: print('VENUE_TEXT',needle,text[max(0,p-500):p+2200])
+          for m in re.finditer(r'<script[^>]+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>',raw,re.I|re.S):
+              print('EVENT_JSONLD',html.unescape(m.group(1))[:5000].replace('\n',' '))
+          PY
+          done < /tmp/lith-structured/event-urls.txt
