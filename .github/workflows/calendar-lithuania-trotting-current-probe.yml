@@ -154,12 +154,25 @@ jobs:
         run: |
           set -euo pipefail
           UA='WhereHorsesRun/1.0 (+https://github.com/badjoke-lab/where-horses-run)'
-          query='Ristūnų g. 6, Kalnalaukio k., Širvintų r., Lithuania'
-          curl -L -sS -A "$UA" --get             --data-urlencode "q=$query"             --data 'format=jsonv2'             --data 'limit=5'             'https://nominatim.openstreetmap.org/search'             -o /tmp/lith-structured/geocode.json
-          python3 - /tmp/lith-structured/geocode.json <<'PY'
+          python3 - <<'PY' > /tmp/lith-structured/geocode-queries.txt
+          for q in [
+            'Širvintų hipodromas, Lithuania',
+            'Sirvintu hipodromas, Lithuania',
+            'Ristūnų g. 6, Širvintos, Lithuania',
+            'Kalnalaukio k., Širvintų r., Lithuania'
+          ]:
+              print(q)
+          PY
+          n=0
+          found=0
+          while IFS= read -r query; do
+            n=$((n+1))
+            out="/tmp/lith-structured/geocode-$n.json"
+            curl -L -sS -A "$UA" --get               --data-urlencode "q=$query"               --data 'format=jsonv2'               --data 'limit=5'               'https://nominatim.openstreetmap.org/search'               -o "$out"
+            python3 - "$out" "$query" <<'PY'
           import json,sys
           rows=json.load(open(sys.argv[1]))
-          print('GEOCODE_RESULTS',len(rows))
+          print('GEOCODE_QUERY',sys.argv[2],'RESULTS',len(rows))
           for r in rows:
               print('GEOCODE',json.dumps({
                   'lat':r.get('lat'),
@@ -170,6 +183,9 @@ jobs:
                   'type':r.get('type'),
                   'class':r.get('class')
               },ensure_ascii=False))
-          if not rows:
-              raise SystemExit('NO_GEOCODE_RESULT')
           PY
+            if [ "$(python3 -c 'import json,sys;print(len(json.load(open(sys.argv[1]))))' "$out")" -gt 0 ]; then found=1; fi
+            sleep 1
+          done < /tmp/lith-structured/geocode-queries.txt
+          [ "$found" -eq 1 ] || { echo 'NO_GEOCODE_RESULTS'; exit 1; }
+
