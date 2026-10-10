@@ -114,3 +114,38 @@ jobs:
               if 'news-detail' in u.lower(): print('BW_SEARCH_LINK',sys.argv[2],u)
           PY
           done
+
+      - name: Probe canonical DailyNews site search
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/botswana-canonical-search
+          n=0
+          for term in 'Kokotsha' 'horse race' 'horse racing' 'Kokotsha horse race'; do
+            n=$((n+1))
+            out="/tmp/botswana-canonical-search/$n.html"
+            url='https://dailynews.gov.bw/sitesearch'
+            code="$(curl -L -sS -A "$UA" --get \
+              --data-urlencode 'page=1' \
+              --data-urlencode "srch-term=$term" \
+              --connect-timeout 10 --max-time 45 \
+              -o "$out" -w '%{http_code}' "$url" || true)"
+            echo "BW_CANONICAL_SEARCH index=$n TERM=$term HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0)"
+            python3 - "$out" "$term" <<'PY'
+          import html,re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+          text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
+          text=html.unescape(re.sub(r'<[^>]+>',' ',text))
+          text=re.sub(r'\s+',' ',text).strip()
+          print('BW_CANONICAL_TEXT',sys.argv[2],text[:10000])
+          for m in re.finditer(r'href=["\']([^"\']+)["\']',raw,re.I):
+              u=html.unescape(m.group(1))
+              if 'news-detail' in u.lower():
+                  context=raw[max(0,m.start()-400):m.end()+600]
+                  context=html.unescape(re.sub(r'<[^>]+>',' ',context))
+                  context=re.sub(r'\s+',' ',context).strip()
+                  print('BW_CANONICAL_RESULT',u,context[:1200])
+          PY
+          done
