@@ -1,0 +1,116 @@
+name: Botswana Kokotsha current Calendar probe
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-botswana-kokotsha-current-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Probe Botswana Government DailyNews routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/botswana
+          for item in \
+            'notice|https://dailynews.gov.bw/news-detail/87105' \
+            'home|https://dailynews.gov.bw/' \
+            'robots|https://dailynews.gov.bw/robots.txt' \
+            'sitemap|https://dailynews.gov.bw/sitemap.xml'; do
+            name="${item%%|*}"
+            url="${item#*|}"
+            out="/tmp/botswana/$name.out"
+            hdr="/tmp/botswana/$name.headers"
+            code="$(curl -L -sS -D "$hdr" -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+            final="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o /dev/null -w '%{url_effective}' "$url" || true)"
+            echo "BW_PAGE name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) FINAL=$final"
+            grep -iE '^(content-type:|server:|location:)' "$hdr" | tail -n 10 | sed "s/^/HEADER $name /" || true
+          done
+
+      - name: Inspect Kokotsha notice and site links
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import html,re
+          from pathlib import Path
+          for name in ['notice','home','sitemap']:
+              p=Path('/tmp/botswana')/(name+'.out')
+              raw=p.read_text(errors='replace') if p.exists() else ''
+              text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+              text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
+              text=html.unescape(re.sub(r'<[^>]+>',' ',text))
+              text=re.sub(r'\s+',' ',text).strip()
+              print('BW_TEXT',name,text[:12000])
+              for needle in ['Kokotsha','horse race','horse racing','July 4','4 July','2026','2027','organiser','organizer','race']:
+                  pos=text.lower().find(needle.lower())
+                  if pos>=0:
+                      print('BW_MATCH',name,needle,text[max(0,pos-600):pos+5200])
+              seen=set()
+              for m in re.finditer(r'(?:href|src)=["\']([^"\']+)["\']',raw,re.I):
+                  u=html.unescape(m.group(1))
+                  low=u.lower()
+                  if any(k in low for k in ['kokotsha','horse','race','search','news-detail','sport']):
+                      if u not in seen:
+                          seen.add(u); print('BW_LINK',name,u)
+          PY
+
+      - name: Inspect structured data and search hints
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import html,re
+          raw=open('/tmp/botswana/notice.out',errors='replace').read()
+          for label,pat in [
+            ('JSONLD',r'<script[^>]+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>'),
+            ('FORM',r'<form[^>]*action=["\']([^"\']*)["\'][^>]*>(.*?)</form>'),
+            ('SCRIPT',r'<script[^>]+src=["\']([^"\']+)["\']')
+          ]:
+              n=0
+              for m in re.finditer(pat,raw,re.I|re.S):
+                  s=' | '.join(html.unescape(x or '').strip() for x in m.groups())
+                  if label=='SCRIPT' and not any(k in s.lower() for k in ['search','main','app','news','api']): continue
+                  print(label,s[:8000].replace('\n',' '))
+                  n+=1
+                  if n>=80: break
+          PY
+
+      - name: Probe likely Government DailyNews search routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/botswana-search
+          for item in \
+            'search-q|https://dailynews.gov.bw/search?q=Kokotsha' \
+            'search-keyword|https://dailynews.gov.bw/search?keyword=Kokotsha' \
+            'site-search|https://dailynews.gov.bw/?s=Kokotsha'; do
+            name="${item%%|*}"
+            url="${item#*|}"
+            out="/tmp/botswana-search/$name.out"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 10 --max-time 35 -o "$out" -w '%{http_code}' "$url" || true)"
+            echo "BW_SEARCH name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) URL=$url"
+            python3 - "$out" "$name" <<'PY'
+          import html,re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+          text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
+          text=html.unescape(re.sub(r'<[^>]+>',' ',text))
+          text=re.sub(r'\s+',' ',text).strip()
+          print('BW_SEARCH_TEXT',sys.argv[2],text[:7000])
+          for m in re.finditer(r'href=["\']([^"\']+)["\']',raw,re.I):
+              u=html.unescape(m.group(1))
+              if 'news-detail' in u.lower(): print('BW_SEARCH_LINK',sys.argv[2],u)
+          PY
+          done
