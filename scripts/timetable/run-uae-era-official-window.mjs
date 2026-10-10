@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { discoverUaeEraCurrentSeasonFixtures } from './uae-era-current-season-discovery.mjs';
+import { buildUaeEraDiscoveryFailureArtifact, discoverUaeEraCurrentSeasonFixtures } from './uae-era-current-season-discovery.mjs';
 
 function arg(name, fallback = null) {
   const inline = process.argv.find((value) => value.startsWith(`--${name}=`));
@@ -31,8 +31,28 @@ if (!output) throw new Error('--output=<path> is required');
 if (!/^\d{4}-\d{2}-\d{2}$/.test(asOf)) throw new Error('--as-of must be YYYY-MM-DD');
 if (!Number.isInteger(days) || days < 1 || days > 90) throw new Error('--days must be 1..90');
 
-const discovery = await discoverUaeEraCurrentSeasonFixtures({ startDate: asOf, days });
 const generatedAt = new Date().toISOString();
+let discovery;
+try {
+  discovery = await discoverUaeEraCurrentSeasonFixtures({ startDate: asOf, days });
+} catch (error) {
+  const artifact = buildUaeEraDiscoveryFailureArtifact({ startDate: asOf, days, generatedAt, error });
+  const absolute = path.resolve(output);
+  fs.mkdirSync(path.dirname(absolute), { recursive: true });
+  fs.writeFileSync(absolute, `${JSON.stringify(artifact, null, 2)}\n`);
+  console.log(JSON.stringify({
+    output,
+    start_date: asOf,
+    end_date_exclusive: artifact.window.end_date_exclusive,
+    official_fixture_count: 0,
+    confirmed_non_running_count: 0,
+    rank_counts: { C: 0, B: 0, 'B+': 0, A: 0, 'A+': 0 },
+    source_errors: artifact.diagnostics.source_errors.length,
+    acquisition_status: artifact.acquisition_attempt.status,
+    preserved_verified_state: true,
+  }));
+  process.exit(0);
+}
 const records = [];
 const meetingPresenceRecords = [];
 for (const fixture of discovery.fixtures) {
@@ -71,18 +91,32 @@ for (const fixture of discovery.fixtures) {
 const artifact = {
   schema_version: 'uae-era-official-window-candidates-v1',
   generated_at: generatedAt,
+  country_id: 'united-arab-emirates',
+  authority_id: 'emirates-racing-authority',
+  racing_system_id: 'uae-national-racing-system',
+  source_id: 'era-season-calendar',
   source: 'era',
   country: 'United Arab Emirates',
   timezone: 'Asia/Dubai',
+  acquisition_attempt: {
+    attempted_at: generatedAt,
+    status: 'success',
+    source_id: 'era-season-calendar',
+    route_id: 'era-current-season-calendar',
+    error_code: null,
+  },
   discovery: {
     method: 'official_current_season_calendar_plus_racecards',
     schedule_source_id: 'era-season-calendar',
     schedule_source_url: discovery.official_url,
+    fetched_url: discovery.fetched_url,
     official_fixture_count: discovery.fixtures.length,
+    route_attempts: discovery.route_attempts ?? [],
   },
-  window: { start_date: asOf, end_date_exclusive: discovery.end_date_exclusive, days },
+  window: { start_date: asOf, end_date_exclusive: discovery.end_date_exclusive, days, coverage_claim: 'official_source_visible_horizon' },
   records,
   meeting_presence_records: meetingPresenceRecords,
+  diagnostics: { source_errors: [], parse_failures: [], unknown_venues: [] },
 };
 const absolute = path.resolve(output);
 fs.mkdirSync(path.dirname(absolute), { recursive: true });

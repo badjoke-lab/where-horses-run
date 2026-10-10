@@ -1,0 +1,40 @@
+name: UAE ERA live probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-uae-era-live-probe.yml'
+      - 'scripts/timetable/uae-era-current-season-discovery.mjs'
+      - 'scripts/timetable/run-uae-era-official-window.mjs'
+      - 'scripts/check-uae-era-season-discovery.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - name: Validate UAE ERA discovery fallback contract
+        run: node scripts/check-uae-era-season-discovery.mjs
+      - name: Probe live ERA current-season calendar
+        run: |
+          node --input-type=module - <<'NODE'
+          import { discoverUaeEraCurrentSeasonFixtures } from './scripts/timetable/uae-era-current-season-discovery.mjs';
+          const d=await discoverUaeEraCurrentSeasonFixtures({startDate:'2026-10-10',days:30});
+          console.log(JSON.stringify({
+            official_url:d.official_url,
+            fetched_url:d.fetched_url,
+            fixtures:d.fixtures.length,
+            dates:d.fixtures.map(x=>x.date),
+            route_attempts:d.route_attempts,
+          }));
+          if(d.fixtures.length<1) process.exitCode=1;
+          NODE

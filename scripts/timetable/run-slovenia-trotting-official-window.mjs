@@ -11,7 +11,7 @@ function localDate(now=new Date()){const p=new Intl.DateTimeFormat('en-CA',{time
 function write(file,value){const t=path.resolve(file);fs.mkdirSync(path.dirname(t),{recursive:true});fs.writeFileSync(t,JSON.stringify(value,null,2)+'\n');}
 function ranks(records){return Object.fromEntries(['C','B','B+','A','A+'].map(rank=>[rank,records.filter(r=>r.capability_rank===rank).length]));}
 async function getHtml(url,{timeoutMs=30000}={}){
-  const r=await fetch(url,{redirect:'follow',headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)','accept':'text/html,application/xhtml+xml;q=0.9,*/*;q=0.5','accept-language':'sl,en;q=0.8'},signal:AbortSignal.timeout(timeoutMs)});
+  const r=await fetch(url,{redirect:'follow',headers:{'user-agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Safari/537.36','accept':'text/html,application/xhtml+xml;q=0.9,*/*;q=0.5','accept-language':'sl,en;q=0.8'},signal:AbortSignal.timeout(timeoutMs)});
   if(!r.ok) throw new Error('HTTP '+r.status+' '+url);
   return {html:await r.text(),url:r.url||url};
 }
