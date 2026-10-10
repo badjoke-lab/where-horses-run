@@ -245,6 +245,18 @@ export function buildJcsaFixtureRecord({date,venue,meetingNo,checkedAt,officialU
   return {...record,capability_rank:deriveBestAvailableRank(record,[])};
 }
 
+
+export function classifyJcsaWindowAcquisition({venueFetches,successfulDateRequests,venueSeasonErrors=0,racePageErrors=0}={}) {
+  const noVerifiedVenueSource=Number(venueFetches||0)===0;
+  const noDateRequestSucceeded=Number(successfulDateRequests||0)===0;
+  const hasVenueSeasonFailure=Number(venueSeasonErrors||0)>0;
+  const hasRacePageFailure=Number(racePageErrors||0)>0;
+  if(noVerifiedVenueSource || (noDateRequestSucceeded && (hasVenueSeasonFailure || hasRacePageFailure))){
+    return {status:'network_error',error_code:'fetch_error'};
+  }
+  return {status:'success',error_code:null};
+}
+
 export function resolveJcsaVenueForDate(date,seasons){
   const matches=seasons.filter(s=>date>=s.start_date&&date<=s.end_date);
   if(matches.length>1) throw new Error('JCSA date overlaps multiple venue seasons: '+date);
