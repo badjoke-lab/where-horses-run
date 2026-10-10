@@ -5146,27 +5146,27 @@
       },
       "source_format": "html",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "blocked",
       "refresh_classes": [
-        "near_meeting",
         "event_driven",
         "manual"
       ],
-      "readiness": "manual_ready",
+      "readiness": "blocked",
       "implementation_status": "not_started",
       "fallback": "official_link_only",
-      "source_status": "verified",
-      "checked_date": "2026-06-30",
-      "evidence_reviewed_at": "2026-06-30",
-      "revalidation_trigger": "Revalidate when Government DailyNews or the recognised organiser changes the July 4, 2026 event or publishes the next event notice.",
-      "blocked_reason": null,
+      "source_status": "stale",
+      "checked_date": "2026-10-10",
+      "evidence_reviewed_at": "2026-10-10",
+      "revalidation_trigger": "Revalidate when Government DailyNews, Kokotsha Horse Racing Association, or another reviewed official source publishes a new dated Kokotsha race notice.",
+      "blocked_reason": "The previously reviewed DailyNews URL no longer serves the Kokotsha race notice, and no new source-visible future meeting date was found in the official DailyNews search as of 2026-10-10.",
       "source_test_ref": "docs/timetable-source-tests/91-botswana/source-test-v2.json",
       "limitations": [
-        "The reviewed government notice covers the Kokotsha event only and does not establish nationwide recurring coverage.",
-        "Race times and programme details are not approved.",
-        "Future events require a new official notice."
+        "The prior 2026 Kokotsha notice URL is stale and now resolves to unrelated content.",
+        "The official 22 Jul 2026 article is post-event evidence and does not provide the next meeting date.",
+        "No future Calendar row may be emitted without a new source-visible dated notice.",
+        "Race times and programme details remain outside the approved scope."
       ],
-      "notes": "The government notice supports manual C-level date-and-venue confirmation for Kokotsha."
+      "notes": "Botswana remains an active runner gap. The event is recurrent/annual in official reporting, but recurrence alone is not a basis for inferring a future meeting date."
     },
     {
       "readiness_id": "costa-rica--equestrian-sport-context--icoder-protocol",
