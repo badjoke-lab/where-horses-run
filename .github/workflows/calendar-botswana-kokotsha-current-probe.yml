@@ -149,3 +149,31 @@ jobs:
                   print('BW_CANONICAL_RESULT',u,context[:1200])
           PY
           done
+
+      - name: Inspect current Kokotsha search hits
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/botswana-hits
+          for id in 92320 93197 74147 74136 50434 50299; do
+            url="https://dailynews.gov.bw/news-detail/$id"
+            out="/tmp/botswana-hits/$id.html"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 10 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+            echo "BW_HIT id=$id HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) URL=$url"
+            python3 - "$out" "$id" <<'PY'
+          import html,re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+          text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
+          text=html.unescape(re.sub(r'<[^>]+>',' ',text))
+          text=re.sub(r'\s+',' ',text).strip()
+          # Keep article head/body before related-news spillover where possible.
+          cut=text.find('Related News')
+          body=text[:cut] if cut>0 else text[:14000]
+          print('BW_HIT_TEXT',sys.argv[2],body[:14000])
+          for needle in ['Kokotsha','July','2026','2027','next year','next race','horse race','derby','Date :','Event :','Location :']:
+              p=body.lower().find(needle.lower())
+              if p>=0: print('BW_HIT_MATCH',sys.argv[2],needle,body[max(0,p-500):p+3500])
+          PY
+          done
