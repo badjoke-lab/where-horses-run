@@ -10,6 +10,7 @@ import {
   SAUDI_JCSA_RIYADH_VENUE_URL,
   buildJcsaFixtureRecord,
   buildJcsaMeetingRecord,
+  classifyJcsaWindowAcquisition,
   parseJcsaRacePage,
   parseJcsaVenueFixtures,
   parseJcsaVenueSeason,
@@ -107,11 +108,11 @@ for(let i=0;i<days;i+=1){
   }
 }
 
-const totalAttempted=successfulDateRequests+errors.filter(e=>e.stage==='race_page').length;
-const acquisitionAttempt=venueFetches===0||totalAttempted===0?{
-  attempted_at:generatedAt,status:'network_error',source_id:SAUDI_JCSA_SOURCE_ID,route_id:null,error_code:'fetch_error'
-}:{
-  attempted_at:generatedAt,status:'success',source_id:SAUDI_JCSA_SOURCE_ID,route_id:null,error_code:null
+const venueSeasonErrors=errors.filter(e=>e.stage==='venue_season').length;
+const racePageErrors=errors.filter(e=>e.stage==='race_page').length;
+const acquisitionState=classifyJcsaWindowAcquisition({venueFetches,successfulDateRequests,venueSeasonErrors,racePageErrors});
+const acquisitionAttempt={
+  attempted_at:generatedAt,status:acquisitionState.status,source_id:SAUDI_JCSA_SOURCE_ID,route_id:null,error_code:acquisitionState.error_code
 };
 const rankCounts=Object.fromEntries(['C','B','B+','A','A+'].map(rank=>[rank,records.filter(r=>r.capability_rank===rank).length]));
 const artifact={
