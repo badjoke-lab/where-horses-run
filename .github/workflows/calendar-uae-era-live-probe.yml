@@ -1,0 +1,46 @@
+name: UAE ERA live probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-uae-era-live-probe.yml'
+      - 'scripts/timetable/uae-era-current-season-discovery.mjs'
+      - 'scripts/timetable/run-uae-era-official-window.mjs'
+      - 'scripts/check-uae-era-season-discovery.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - name: Validate UAE ERA discovery fallback contract
+        run: node scripts/check-uae-era-season-discovery.mjs
+      - name: Probe live ERA current-season calendar
+        run: |
+          mkdir -p .calendar-uae-probe
+          node scripts/timetable/run-uae-era-official-window.mjs \
+            --as-of=2026-10-10 \
+            --days=30 \
+            --output=.calendar-uae-probe/uae.json
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const a=JSON.parse(fs.readFileSync('.calendar-uae-probe/uae.json','utf8'));
+          console.log(JSON.stringify({
+            attempt:a.acquisition_attempt,
+            discovery:a.discovery,
+            records:a.records?.length??0,
+            diagnostics:a.diagnostics,
+          }));
+          if(a.acquisition_attempt?.status!=='success') process.exitCode=1;
+          if((a.diagnostics?.source_errors?.length??0)!==0) process.exitCode=1;
+          if((a.records?.length??0)<1) process.exitCode=1;
+          NODE
