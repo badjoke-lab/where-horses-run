@@ -3,6 +3,7 @@ import { validateCalendarAuthorityMetadataV1 } from './timetable/calendar-author
 import {
   buildJcsaFixtureRecord,
   buildJcsaMeetingRecord,
+  classifyJcsaWindowAcquisition,
   parseJcsaRacePage,
   parseJcsaVenueFixtures,
   parseJcsaVenueSeason,
@@ -20,6 +21,10 @@ assert.equal(riyadh.end_date,'2027-04-17');
 assert.equal(resolveJcsaVenueForDate('2026-09-25',[taif,riyadh]).racecourse_id,'king-khalid-racecourse');
 assert.equal(resolveJcsaVenueForDate('2026-10-16',[taif,riyadh]).racecourse_id,'king-abdulaziz-racecourse');
 assert.equal(resolveJcsaVenueForDate('2026-10-01',[taif,riyadh]),null);
+assert.deepEqual(classifyJcsaWindowAcquisition({venueFetches:2,successfulDateRequests:0,venueSeasonErrors:0,racePageErrors:0}),{status:'success',error_code:null});
+assert.deepEqual(classifyJcsaWindowAcquisition({venueFetches:0,successfulDateRequests:0,venueSeasonErrors:2,racePageErrors:0}),{status:'network_error',error_code:'fetch_error'});
+assert.deepEqual(classifyJcsaWindowAcquisition({venueFetches:2,successfulDateRequests:0,venueSeasonErrors:0,racePageErrors:3}),{status:'network_error',error_code:'fetch_error'});
+assert.deepEqual(classifyJcsaWindowAcquisition({venueFetches:2,successfulDateRequests:1,venueSeasonErrors:0,racePageErrors:1}),{status:'success',error_code:null});
 
 const fixtures=parseJcsaVenueFixtures(taifHtml,{venueKey:'taif'});
 assert.equal(fixtures.length,2);
