@@ -125,3 +125,57 @@ jobs:
                       if len(seen)>=120: raise SystemExit
           PY
           done < /tmp/baige/scripts.txt
+
+      - name: Probe Baige 2026 stage pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/baige-stages
+          python3 - <<'PY' > /tmp/baige-stages/urls.txt
+          import html,re
+          from pathlib import Path
+          from urllib.parse import urljoin
+          seen=[]
+          for source in ['/tmp/baige/home-kz.out','/tmp/baige/sitemap.out']:
+              raw=Path(source).read_text(errors='replace')
+              for m in re.finditer(r'(?:href=["\']([^"\']+)["\']|<loc>([^<]+)</loc>)',raw,re.I):
+                  u=html.unescape(next(x for x in m.groups() if x))
+                  u=urljoin('https://baigefederation.kz/kz',u)
+                  low=u.lower()
+                  if 'baigefederation.kz' in low and ('2026' in low or any(k in low for k in ['ekibastuz','pavlodar','zaysan','aktobe','kostanay','taldykorgan','kyzylorda'])):
+                      if u not in seen: seen.append(u)
+          # Add cautious same-site guesses for city-labelled stages; 404s are evidence only.
+          for slug in ['kyzylorda-2026','taldykorgan-2026','ekibastuz-2026','pavlodar-2026','zaysan-2026','aktobe-2026','kostanay-2026','final-2026']:
+              u='https://baigefederation.kz/kz/'+slug
+              if u not in seen: seen.append(u)
+          print('\n'.join(seen[:80]))
+          PY
+          n=0
+          while IFS= read -r url; do
+            [ -n "$url" ] || continue
+            n=$((n+1))
+            out="/tmp/baige-stages/$n.html"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 10 --max-time 40 -o "$out" -w '%{http_code}' "$url" || true)"
+            echo "STAGE_PAGE index=$n HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) URL=$url"
+            if [ "$code" = "200" ]; then
+              python3 - "$out" "$url" <<'PY'
+          import html,re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+          text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
+          text=html.unescape(re.sub(r'<[^>]+>',' ',text))
+          text=re.sub(r'\s+',' ',text).strip()
+          print('STAGE_TEXT',sys.argv[2],text[:9000])
+          for needle in ['2026','ипподром','Ипподром','мекен','Мекен','өтетін','орны','Адрес','адрес','Кызылорда','Талдықорған','Екібастұз','Павлодар','Зайсан','Ақтөбе','Қостанай']:
+              p=text.lower().find(needle.lower())
+              if p>=0: print('STAGE_MATCH',needle,text[max(0,p-400):p+2600])
+          for m in re.finditer(r'<iframe[^>]+src=["\']([^"\']+)["\']',raw,re.I):
+              print('STAGE_IFRAME',html.unescape(m.group(1)))
+          for m in re.finditer(r'https?://[^"\'<> ]+',raw,re.I):
+              u=html.unescape(m.group(0))
+              if any(k in u.lower() for k in ['maps','google','2gis','yandex','geo','map']):
+                  print('STAGE_MAP_URL',u[:1500])
+          PY
+            fi
+          done < /tmp/baige-stages/urls.txt
