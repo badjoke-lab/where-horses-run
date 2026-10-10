@@ -557,6 +557,9 @@ jobs:
           node scripts/timetable/run-lithuania-trotting-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/lithuania.json
+          node scripts/timetable/run-estonia-tuula-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/estonia.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -618,7 +621,8 @@ jobs:
             --artifact=.calendar-unified/mauritius.json \
             --artifact=.calendar-unified/slovenia.json \
             --artifact=.calendar-unified/kenya.json \
-            --artifact=.calendar-unified/lithuania.json
+            --artifact=.calendar-unified/lithuania.json \
+            --artifact=.calendar-unified/estonia.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -975,6 +979,12 @@ jobs:
             --authority-id=trotting-horse-league \
             --racing-system-id=trotting-league-system \
             --timezone=Europe/Vilnius
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/estonia.json \
+            --country-id=estonia \
+            --authority-id=estonian-trotting-union \
+            --racing-system-id=tuula-trotting-system \
+            --timezone=Europe/Tallinn
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
