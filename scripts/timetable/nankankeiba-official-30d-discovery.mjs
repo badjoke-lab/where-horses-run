@@ -136,6 +136,12 @@ export function parseNankankeibaCalendarMonth(html, { year, month, allowedDates,
   const meetings = [];
   const seenVenueRows = new Set();
   const requiredDays = daysInMonth(year, month);
+  const requestedLastDay = Math.max(
+    0,
+    ...allowedDates
+      .map((date) => Number(String(date).slice(8, 10)))
+      .filter((day) => Number.isInteger(day) && day >= 1 && day <= requiredDays),
+  );
   let invalidVenueGrid = false;
   for (const rowMatch of section.matchAll(/<tr\b[^>]*>[\s\S]*?<\/tr>/gi)) {
     const rowCells = cells(rowMatch[0]);
@@ -144,7 +150,7 @@ export function parseNankankeibaCalendarMonth(html, { year, month, allowedDates,
     const venueEntry = Object.entries(SOUTH_KANTO_VENUES).find(([name]) => venueCellText === name || venueCellText.includes(name));
     if (!venueEntry) continue;
     const [, venue] = venueEntry;
-    if (seenVenueRows.has(venue.code) || rowCells.length < requiredDays + 1) invalidVenueGrid = true;
+    if (seenVenueRows.has(venue.code) || rowCells.length < requestedLastDay + 1) invalidVenueGrid = true;
     seenVenueRows.add(venue.code);
     for (let day = 1; day <= requiredDays; day += 1) {
       if (!meetingCell(rowCells[day])) continue;
