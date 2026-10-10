@@ -1589,6 +1589,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic official Ristūnų sportas Events API route emits source-visible meeting dates only when a physical venue is independently normalized. Current mapped venue is Širvintų hipodromas. Unknown venues are rejected; source absence never proves non-running."
+    },
+    {
+      "system_id": "tuula-trotting-system",
+      "country_id": "estonia",
+      "authority_id": "estonian-trotting-union",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "hipodroom-2026-calendar-context",
+      "detail_source_id": "hipodroom-2026-calendar-context",
+      "schedule_adapter_id": "estonia-tuula-2026-calendar-v1",
+      "detail_adapter_id": "estonia-tuula-2026-calendar-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Automatic official Hipodroom 2026 calendar route emits positive source-visible meeting dates at fixed Tuula Hipodroom at rank C. The explicit no-trotting-races row is excluded; source absence never proves non-running."
     }
   ]
 }
