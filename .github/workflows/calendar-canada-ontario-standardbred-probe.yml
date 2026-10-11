@@ -169,3 +169,76 @@ jobs:
               grep -Eio '.{0,220}(racedate|race.?date|views/ajax|ajax|json).{0,450}' "$out" | head -n 80 || true
             fi
           done < /tmp/canada-racedates/scripts.txt
+
+      - name: Inspect sc_races custom JavaScript and submit race-date form
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/canada-racedates
+          for js in racing.js racing_init.js; do
+            url="https://standardbredcanada.ca/modules/custom/sc_races/js/$js?v=10.6.17"
+            out="/tmp/canada-racedates/$js"
+            curl -L -sS -A "$UA" --connect-timeout 10 --max-time 30 "$url" -o "$out"
+            echo "SC_CUSTOM_JS $js BYTES=$(wc -c < "$out")"
+            grep -Ein 'racedate|racedates|ajax|url:|route|endpoint|form_id|races_form|entries_track|results_track' "$out" | head -n 160 || true
+          done
+
+          python3 - /tmp/canada-racedates/page.html <<'PY' > /tmp/canada-racedates/form-meta.txt
+          import html,re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          m=re.search(r'<form\b[^>]*action=["\']/racing/racedates["\'][^>]*>(.*?)</form>',raw,re.I|re.S)
+          if not m:
+              raise SystemExit('RACEDATES_FORM_NOT_FOUND')
+          block=m.group(0)
+          for tag in re.findall(r'<input\b[^>]*>',block,re.I):
+              name=re.search(r'name=["\']([^"\']+)["\']',tag,re.I)
+              value=re.search(r'value=["\']([^"\']*)["\']',tag,re.I)
+              typ=re.search(r'type=["\']([^"\']+)["\']',tag,re.I)
+              if name:
+                  print('META',name.group(1),value.group(1) if value else '',typ.group(1) if typ else '')
+          PY
+          cat /tmp/canada-racedates/form-meta.txt
+
+          build_id="$(awk '$2=="form_build_id"{print $3}' /tmp/canada-racedates/form-meta.txt | head -1)"
+          form_id="$(awk '$2=="form_id"{print $3}' /tmp/canada-racedates/form-meta.txt | head -1)"
+          active="$(awk '$2=="races__active_tab"{print $3}' /tmp/canada-racedates/form-meta.txt | head -1)"
+          echo "POST_META build_id=$build_id form_id=$form_id active=$active"
+
+          curl -L -sS -A "$UA" -c /tmp/canada-racedates/cookies.txt             'https://standardbredcanada.ca/racing/racedates'             -o /tmp/canada-racedates/fresh.html
+
+          python3 - /tmp/canada-racedates/fresh.html <<'PY' > /tmp/canada-racedates/post.env
+          import re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          def field(name):
+              m=re.search(r'<input\b[^>]*name=["\']'+re.escape(name)+r'["\'][^>]*value=["\']([^"\']*)["\']',raw,re.I)
+              if not m:
+                  m=re.search(r'<input\b[^>]*value=["\']([^"\']*)["\'][^>]*name=["\']'+re.escape(name)+r'["\']',raw,re.I)
+              return m.group(1) if m else ''
+          print('BUILD='+field('form_build_id'))
+          print('FORM='+field('form_id'))
+          print('ACTIVE='+field('races__active_tab'))
+          PY
+          source /tmp/canada-racedates/post.env
+
+          curl -L -sS -A "$UA" -b /tmp/canada-racedates/cookies.txt -c /tmp/canada-racedates/cookies.txt             -X POST 'https://standardbredcanada.ca/racing/racedates'             --data-urlencode "racedates_track=ALL"             --data-urlencode "racedates_month=10"             --data-urlencode "racedates_year=2026"             --data-urlencode "races__active_tab=$ACTIVE"             --data-urlencode "form_build_id=$BUILD"             --data-urlencode "form_id=$FORM"             --data-urlencode "op=Search"             -o /tmp/canada-racedates/post.html
+
+          python3 - /tmp/canada-racedates/post.html <<'PY'
+          import html,re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+          text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
+          text=html.unescape(re.sub(r'<[^>]+>',' ',text))
+          text=re.sub(r'\s+',' ',text).strip()
+          print('POST_TEXT_LEN',len(text))
+          for needle in ['Race Dates','Oct 11, 2026','Woodbine Mohawk Park','Flamboro Downs','Western Fair Raceway','Leamington Raceway']:
+              p=text.lower().find(needle.lower())
+              if p>=0:
+                  print('POST_TEXT',needle,text[max(0,p-800):p+9000])
+          # Print table rows from the race-date pane, if present.
+          for tr in re.finditer(r'<tr\b[^>]*>(.*?)</tr>',raw,re.I|re.S):
+              row=html.unescape(re.sub(r'<[^>]+>',' ',tr.group(1)))
+              row=re.sub(r'\s+',' ',row).strip()
+              if re.search(r'2026|Mohawk|Flamboro|Western Fair|Leamington|Century Mile|Charlottetown|Truro|Hippodrome',row,re.I):
+                  print('POST_ROW',row)
+          PY
