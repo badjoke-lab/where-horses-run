@@ -7,6 +7,9 @@ on:
       - 'scripts/timetable/probe-us-new-jersey-2026-source.mjs'
       - 'scripts/timetable/probe-us-new-jersey-2026-pdfs.mjs'
       - 'scripts/timetable/probe-us-new-jersey-meadowlands-turf.mjs'
+      - 'scripts/timetable/us-nj-meadowlands-turf-core.mjs'
+      - 'scripts/timetable/run-us-nj-meadowlands-turf-window.mjs'
+      - 'scripts/check-us-nj-meadowlands-turf-adapter.mjs'
   workflow_dispatch:
 
 permissions:
@@ -28,3 +31,10 @@ jobs:
         run: node scripts/timetable/probe-us-new-jersey-2026-pdfs.mjs
       - name: Cross-check Meadowlands turf dates from official operator
         run: node scripts/timetable/probe-us-new-jersey-meadowlands-turf.mjs
+      - name: Validate nine-day NJ turf C candidate contract
+        run: node scripts/check-us-nj-meadowlands-turf-adapter.mjs
+      - name: Exercise NJ turf C candidate generator (no publication)
+        run: |
+          mkdir -p .calendar-us-nj
+          node scripts/timetable/run-us-nj-meadowlands-turf-window.mjs --as-of=2026-10-12 --days=90 --output=.calendar-us-nj/nj.json
+          node --input-type=module -e "import fs from 'node:fs';const a=JSON.parse(fs.readFileSync('.calendar-us-nj/nj.json','utf8'));if(a.acquisition_attempt.status!=='success'||a.discovery.source_visible_rows!==9||a.records.length!==1||a.records[0].date!=='2026-10-16'||a.records[0].capability_rank!=='C'||a.records[0].first_race_time_local!==null||a.records[0].timetable_rows.length!==0)throw Error('NJ 2026 live nine-day evidence and October remaining date mismatch')"
