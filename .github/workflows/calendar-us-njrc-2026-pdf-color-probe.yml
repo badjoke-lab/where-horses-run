@@ -5,6 +5,8 @@ on:
     paths:
       - '.github/workflows/calendar-us-njrc-2026-pdf-color-probe.yml'
       - 'scripts/timetable/probe-us-njrc-2026-pdf-colors.py'
+      - 'scripts/timetable/us_njrc_2026_pdf_core.py'
+      - 'scripts/timetable/run-us-njrc-2026-source-facts.py'
   workflow_dispatch:
 
 permissions:
@@ -22,3 +24,21 @@ jobs:
       - run: python -m pip install --disable-pip-version-check pymupdf==1.26.5
       - name: Inspect state-issued NJRC 2026 PDF text/drawing colors
         run: python scripts/timetable/probe-us-njrc-2026-pdf-colors.py
+      - name: Validate all 60 NJRC color-coded 2026 dates (no public write)
+        run: |
+          python scripts/timetable/run-us-njrc-2026-source-facts.py --output=.calendar-us-nj/approved-dates.json
+          python - <<'PY'
+          import json
+          p=json.load(open('.calendar-us-nj/approved-dates.json'))
+          rows=p['rows']
+          counts=p['source']['per_venue_counts']
+          assert counts=={'monmouth':50,'meadowlands_turf':9,'far_hills_steeplechase':1},counts
+          assert len(rows)==60
+          assert len(set((r['category'],r['date']) for r in rows))==60
+          assert any(r['category']=='far_hills_steeplechase' and r['date']=='2026-10-17' and r['racing_type']=='steeplechase' for r in rows)
+          assert any(r['category']=='meadowlands_turf' and r['date']=='2026-10-16' and r['racing_type']=='thoroughbred-flat' for r in rows)
+          assert any(r['category']=='meadowlands_turf' and r['date']=='2026-09-26' for r in rows)
+          assert not any(r['date']=='2026-09-01' for r in rows)
+          assert p['production_calendar_changed'] is False and p['meeting_records_emitted']==0
+          print('NJRC_2026_60_DATE_VENUE_CODE_TEST: pass')
+          PY
