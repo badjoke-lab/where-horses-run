@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-non-running-evidence-registry-v1",
-  "reviewed_at": "2026-10-11",
+  "reviewed_at": "2026-10-12",
   "records": [
     {
       "record_id": "japan-jra-system",
@@ -1382,6 +1382,28 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-10-11",
       "notes": "Source absence, a removed calendar row, acquisition failure, parser failure or later schedule edits do not independently prove cancellation/postponement."
+    },
+    {
+      "record_id": "us-nj-meadowlands-thoroughbred-turf-system",
+      "country_id": "united-states",
+      "system_id": "us-nj-meadowlands-thoroughbred-turf-system",
+      "authority_id": "new-jersey-racing-commission",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Positive NJRC 2026 approval and operator event dates only; no cancellation or postponement automatic source.",
+      "evidence_urls": [
+        "https://www.njoag.gov/about/divisions-and-offices/nj-racing-commission-home/race-dates/",
+        "https://playmeadowlands.com/events/month/2026-10/"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-10-12",
+      "notes": "Approved Sep 26 date absent from operator event calendar; NOT confirmed cancelled. Source failures or edits preserve previously verified state."
     }
   ]
 }
