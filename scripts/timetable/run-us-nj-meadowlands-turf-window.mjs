@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {
   NJ_AUTHORITY_ID,NJ_EXPECTED_TURF_DATES,NJ_SOURCE_ID,NJ_SYSTEM_ID,NJ_TIMEZONE,
-  parseMeadowlandsTurfMonth,assertMeadowlandsTurfSeason,buildNjTurfCandidate
+  parseMeadowlandsTurfMonth,reviewMeadowlandsTurfSeason,buildNjTurfCandidate
 } from './us-nj-meadowlands-turf-core.mjs';
 
 const arg=(n,defaultValue)=>process.argv.find(x=>x.startsWith('--'+n+'='))?.slice(n.length+3)??defaultValue;
@@ -12,7 +12,8 @@ if(!output)throw Error('required --output=FILE');
 if(!/^\d{4}-\d{2}-\d{2}$/.test(start))throw Error('invalid --as-of');
 if(!Number.isInteger(days)||days<1||days>120)throw Error('invalid --days');
 const endDate=new Date(start+'T00:00:00Z');endDate.setUTCDate(endDate.getUTCDate()+days);const end=endDate.toISOString().slice(0,10);
-const checkedAt=new Date().toISOString(),sourceErrors=[],parseFailures=[];
+const checkedAt=new Date().toISOString(),sourceErrors=[],parseFailures=[],sourceWarnings=[];
+let seasonReview={dates:[],missing_approved_dates:[]};
 const all=[];
 for (const month of [9,10]){
   const src='https://playmeadowlands.com/events/month/2026-'+String(month).padStart(2,'0')+'/';
@@ -24,7 +25,9 @@ for (const month of [9,10]){
   } catch(e) {sourceErrors.push({month,source_url:src,error:String(e?.message??e)});}
 }
 if(!sourceErrors.length){
-  try{assertMeadowlandsTurfSeason(all);}catch(e){parseFailures.push({stage:'nine_day_season_validation',error:String(e?.message??e)});}
+  try{seasonReview=reviewMeadowlandsTurfSeason(all);
+    if(seasonReview.missing_approved_dates.length)sourceWarnings.push({code:'approved_dates_not_in_current_operator_event_index',dates:seasonReview.missing_approved_dates,note:'Missing event entries are NOT proof of cancellation or postponement'});
+  }catch(e){parseFailures.push({stage:'review_2026_operator_calendar',error:String(e?.message??e)});}
 }
 const success=sourceErrors.length===0&&parseFailures.length===0;
 const activeRows=success?all.filter(r=>r.date>=start&&r.date<end):[];
@@ -35,9 +38,9 @@ const artifact={
   timezone:NJ_TIMEZONE,source_id:NJ_SOURCE_ID,
   collection_target_rank:'best_available',raw_body_retained:false,
   acquisition_attempt:{attempted_at:checkedAt,status:sourceErrors.length?'network_error':parseFailures.length?'parse_error':'success',source_id:NJ_SOURCE_ID,route_id:'njrc-meadowlands-turf-2026',error_code:sourceErrors.length?'source_fetch_failed':parseFailures.length?'season_dates_mismatch':null},
-  discovery:{method:'meadowlands_2026_operator_event_calendar',source_visible_rows:success?NJ_EXPECTED_TURF_DATES.length:0,window_visible_rows:records.length,rank_counts:{C:records.length,'B':0,'B+':0,'A':0,'A+':0}},
+  discovery:{method:'meadowlands_2026_operator_event_calendar',source_visible_rows:success?seasonReview.dates.length:0,reviewed_regulator_approved_dates:NJ_EXPECTED_TURF_DATES.length,window_visible_rows:records.length,rank_counts:{C:records.length,'B':0,'B+':0,'A':0,'A+':0}},
   window:{start_date:start,end_date_exclusive:end,days,coverage_claim:success?'source_visible_2026_meadowlands_turf_only':'acquisition_failed_preserve_verified_state',coverage_note:'Nine source-visible Thoroughbred turf meetings at the Meadowlands; not Standardbred, not all NJ, not U.S. nationwide. Missing or failed sources are not evidence of cancelled/non-running meetings. Beyond 2026, a new reviewed season source is required.'},
-  records,diagnostics:{source_errors:sourceErrors,parse_failures:parseFailures,unknown_venues:[],source_warnings:[]}
+  records,diagnostics:{source_errors:sourceErrors,parse_failures:parseFailures,unknown_venues:[],source_warnings:sourceWarnings}
 };
 const file=path.resolve(output);fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,JSON.stringify(artifact,null,2)+'\n');
 console.log(JSON.stringify({status:artifact.acquisition_attempt.status,source_visible_rows:artifact.discovery.source_visible_rows,window_rows:records.length,dates:records.map(r=>r.date),diagnostics:artifact.diagnostics,output}));
