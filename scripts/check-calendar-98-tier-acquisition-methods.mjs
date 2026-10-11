@@ -105,4 +105,14 @@ for (const record of records) {
   }
 }
 
+// U.S. country method must never silently revert to Equibase as an automated
+// acquisition source. The discovery mother set is the state/code federation;
+// each pilot runner must independently prove exact approved live dates.
+const us = records.find((record) => record.country_id === 'united-states');
+assert(us?.discovery_model === 'state_regulator_plus_racing_code_authority', 'U.S. method must be state/code based');
+assert(!/equibase/i.test(us.primary_source_url), 'Equibase cannot be the U.S. primary automation source');
+assert(!us.source_ids.some((sourceId) => /^equibase-/i.test(sourceId)), 'Equibase cannot be in U.S. acquisition sources');
+assert(us.reference_only_sources?.includes('equibase-entries'), 'Equibase reference-only boundary must remain');
+assert(us.date_publication_rule === 'source_visible_current_year_exact_live_meeting_dates_only', 'U.S. exact-date rule must remain');
+
 console.log(`calendar 98-tier acquisition methods: ${records.length}/98 complete; ${index.shards.length} shards; tracker slugs aligned`);
