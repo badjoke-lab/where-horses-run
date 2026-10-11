@@ -209,3 +209,38 @@ jobs:
           for u in links[:30]: print('PALERMO_DAY_LINK',sys.argv[2],u)
           PY
           done < /tmp/palermo-days/urls.txt
+
+      - name: Parse Palermo future month blocks
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - /tmp/palermo-old/schedule-en.html <<'PY'
+          import html,re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          month_map={m:i+1 for i,m in enumerate(['January','February','March','April','May','June','July','August','September','October','November','December'])}
+          # Split by the visible month headers rendered by the official calendar.
+          hdr=list(re.finditer(r'(January|February|March|April|May|June|July|August|September|October|November|December)\s+2026',raw,re.I))
+          rows=[]
+          for i,h in enumerate(hdr):
+              month_name=h.group(1).title()
+              month=month_map[month_name]
+              start=h.end()
+              end=hdr[i+1].start() if i+1<len(hdr) else len(raw)
+              seg=raw[start:end]
+              for m in re.finditer(r'<a[^>]+href=["\']([^"\']*/see-day/(\d+))["\'][^>]*>\s*(\d{1,2})\s*</a>',seg,re.I|re.S):
+                  url=html.unescape(m.group(1))
+                  ident=int(m.group(2))
+                  day=int(m.group(3))
+                  rows.append((f'2026-{month:02d}-{day:02d}',ident,url))
+          # De-duplicate repeated EN/ES rendering while preserving date/id pairs.
+          seen=set()
+          for date,ident,url in sorted(rows):
+              key=(date,ident)
+              if key in seen: continue
+              seen.add(key)
+              if date>='2026-10-01':
+                  print('PALERMO_FUTURE_DATE',date,ident,url)
+          print('PALERMO_PARSED_MEETINGS',len(seen))
+          future=[x for x in seen if x[0]>='2026-10-11']
+          print('PALERMO_FUTURE_COUNT',len(future))
+          PY
