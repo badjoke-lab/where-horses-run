@@ -1,0 +1,69 @@
+name: Thailand RBSC current Calendar probe
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-thailand-rbsc-current-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Probe RBSC official event routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/rbsc
+          for item in \
+            'events|https://www.rbsc.org/events/' \
+            'home|https://www.rbsc.org/' \
+            'robots|https://www.rbsc.org/robots.txt' \
+            'sitemap|https://www.rbsc.org/wp-sitemap.xml'; do
+            name="${item%%|*}"
+            url="${item#*|}"
+            out="/tmp/rbsc/$name.out"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+            final="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o /dev/null -w '%{url_effective}' "$url" || true)"
+            echo "RBSC_PAGE name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) FINAL=$final"
+          done
+
+      - name: Inspect RBSC racing events and structured data
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import html,re,json
+          from pathlib import Path
+          for name in ['events','home','sitemap']:
+              raw=(Path('/tmp/rbsc')/(name+'.out')).read_text(errors='replace')
+              text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+              text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
+              text=html.unescape(re.sub(r'<[^>]+>',' ',text))
+              text=re.sub(r'\s+',' ',text).strip()
+              print('RBSC_TEXT',name,text[:20000])
+              for needle in ['Horse Racing','Racing','Race','October','November','December','2026','ราชกรีฑา','แข่งม้า']:
+                  p=text.lower().find(needle.lower())
+                  if p>=0:
+                      print('RBSC_MATCH',name,needle,text[max(0,p-700):p+7500])
+              links=[]
+              for pat in [r'href=["\']([^"\']+)["\']',r'<loc>(.*?)</loc>']:
+                  for m in re.finditer(pat,raw,re.I|re.S):
+                      u=html.unescape(m.group(1)).strip()
+                      low=u.lower()
+                      if any(k in low for k in ['event','race','racing','horse','calendar','2026']):
+                          if u not in links: links.append(u)
+              for u in links[:260]: print('RBSC_LINK',name,u)
+
+              for m in re.finditer(r'<script[^>]+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>',raw,re.I|re.S):
+                  s=html.unescape(m.group(1)).strip()
+                  if any(k in s.lower() for k in ['event','race','horse']):
+                      print('RBSC_JSONLD',name,s[:7000].replace('\n',' '))
+          PY
