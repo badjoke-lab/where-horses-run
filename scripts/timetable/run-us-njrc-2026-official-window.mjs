@@ -6,7 +6,9 @@ import {spawnSync} from 'node:child_process';
 // No access to privately operated racetrack websites.
 const arg=(k,def=null)=>process.argv.find(v=>v.startsWith('--'+k+'='))?.slice(k.length+3)??def;
 const outputDir=arg('output-dir'),days=Number(arg('days','30'));
-const start=arg('as-of',new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()));
+const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+const vals=Object.fromEntries(parts.filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));
+const start=arg('as-of',vals.year+'-'+vals.month+'-'+vals.day);
 if(!outputDir)throw Error('NJRC --output-dir required');
 if(!/^\d{4}-\d{2}-\d{2}$/.test(start)||!Number.isInteger(days)||days<1||days>120)throw Error('invalid NJRC window');
 const facts=path.resolve(outputDir,'_njrc-source-facts.json');
