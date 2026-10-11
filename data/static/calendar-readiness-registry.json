@@ -2560,8 +2560,10 @@
       "country_tracker_delivery_no": "38",
       "system_id": "thailand-rbsc-system",
       "system_name_en": "Royal Bangkok Sports Club racing",
-      "authority_source_key": "thailand/rbsc/rbsc-events",
-      "racecourse_ids": [],
+      "authority_source_key": "thailand/rbsc/rbsc-racing-calendar",
+      "racecourse_ids": [
+        "thailand--royal-bangkok-sports-club-racecourse"
+      ],
       "coverage_scope": "single_racecourse",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -2578,25 +2580,28 @@
       },
       "source_format": "html",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "seasonal",
-        "manual"
+        "daily",
+        "near_meeting",
+        "weekly"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
-      "source_status": "partial",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when RBSC changes its event route or wider Thai coverage is reviewed.",
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-10-11",
+      "evidence_reviewed_at": "2026-10-11",
+      "revalidation_trigger": "Revalidate when the RBSC Racing page changes its year block, venue context, or published annual schedule.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/38-thailand/final-summary.json",
       "limitations": [
-        "The decision covers the reviewed RBSC context only.",
-        "Country-wide completeness is unresolved."
+        "Production coverage is limited to the reviewed Royal Bangkok Sports Club racing system and does not claim country-wide Thai completeness.",
+        "Automatic publication uses source-visible meeting date plus the fixed RBSC racecourse only at rank C.",
+        "General racing-hours guidance is not interpreted as meeting-specific post times.",
+        "Source absence, fetch failure or parser failure is not cancellation/non-running evidence."
       ],
-      "notes": "Manual C-level decision for the reviewed RBSC calendar context."
+      "notes": "The official RBSC Racing page publishes 25 meeting dates for 2026. From 2026-10-11 the source-visible forward meetings are 25 October, 8 and 22 November, and 6 and 20 December."
     },
     {
       "readiness_id": "philippines--philippines-philracom-system--philracom-calendar",
@@ -6050,5 +6055,5 @@
       "notes": "The official 2026 calendar has 21 meetings. From the 8 October review point the forward dates are 18 October at Ljutomer, 25 October at Šentjernej, and 14 November plus 5 December at Komenda."
     }
   ],
-  "last_updated": "2026-10-10"
+  "last_updated": "2026-10-11"
 }
