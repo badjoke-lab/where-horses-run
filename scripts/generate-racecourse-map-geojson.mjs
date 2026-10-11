@@ -96,6 +96,7 @@ const calendarMapRegressionIds = [
   'saint-brieuc-racecourse',
   'segre-racecourse',
   'strasbourg-racecourse',
+  'les-sables-d-olonne-racecourse',
   // France venues exposed by current rolling Calendar
   'hyeres-racecourse',
   'la-capelle-racecourse',

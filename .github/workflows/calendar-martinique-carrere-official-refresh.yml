@@ -94,11 +94,74 @@ jobs:
       - name: Persist generated Martinique timetable
         shell: bash
         run: |
-          git fetch origin main
-          if [ "$(git rev-parse origin/main)" != "$(git rev-parse HEAD)" ]; then echo "main advanced; refusing overwrite"; exit 1; fi
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/generated/timetable/canonical/meetings.json data/generated/timetable/canonical/meeting-details.json data/generated/timetable/public/meeting-list.json data/generated/timetable/public/meeting-details.json
-          if git diff --cached --quiet; then echo "No Martinique timetable changes"; exit 0; fi
-          git commit -m "data: refresh Martinique Carrere timetable (${{ steps.scope.outputs.scope }})"
-          git push origin HEAD:main
+
+          collect_martinique_on_main() {
+            local remote_main="$1"
+            echo "Resetting to latest main $remote_main and rebuilding Martinique snapshot."
+            git reset --hard "$remote_main"
+            npm install --no-package-lock --no-audit --no-fund
+            rm -rf .calendar-martinique
+            mkdir -p .calendar-martinique
+            node scripts/timetable/run-martinique-carrere-official-window.mjs --days="${{ steps.scope.outputs.days }}" --output=.calendar-martinique/martinique.json
+            node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-martinique/martinique.json --country-id=martinique --authority-id=hippodrome-de-carrere --racing-system-id=martinique-reviewed-system --timezone=America/Martinique
+            node scripts/timetable/apply-reviewed-calendar-observations.mjs
+            node scripts/check-calendar-public-country-support.mjs
+            node scripts/check-calendar-public-map-parity.mjs
+            node scripts/check-calendar-non-running-evidence-registry.mjs
+          }
+
+          stage_martinique_state() {
+            git add \
+              data/generated/timetable/canonical/meetings.json \
+              data/generated/timetable/canonical/meeting-details.json \
+              data/generated/timetable/public/meeting-list.json \
+              data/generated/timetable/public/meeting-details.json
+          }
+
+          git fetch origin main
+          remote_main="$(git rev-parse origin/main)"
+          if [[ "$(git rev-parse HEAD)" != "$remote_main" ]]; then
+            collect_martinique_on_main "$remote_main"
+          fi
+
+          for attempt in 1 2 3; do
+            stage_martinique_state
+            if git diff --cached --quiet; then
+              echo "No Martinique timetable changes"
+              exit 0
+            fi
+
+            git commit -m "data: refresh Martinique Carrere timetable (${{ steps.scope.outputs.scope }})"
+            candidate_sha="$(git rev-parse HEAD)"
+            parent_sha="$(git rev-parse HEAD^)"
+
+            git fetch origin main
+            remote_main="$(git rev-parse origin/main)"
+            if [[ "$parent_sha" != "$remote_main" ]]; then
+              echo "main advanced before Martinique push; rebuilding from $remote_main (attempt $attempt/3)."
+              collect_martinique_on_main "$remote_main"
+              continue
+            fi
+
+            if git push origin "$candidate_sha:main"; then
+              echo "Persisted Martinique snapshot from latest main on attempt $attempt/3."
+              exit 0
+            fi
+
+            git fetch origin main
+            remote_main="$(git rev-parse origin/main)"
+            if [[ "$remote_main" != "$parent_sha" ]]; then
+              echo "main advanced during Martinique push; rebuilding from $remote_main (attempt $attempt/3)."
+              collect_martinique_on_main "$remote_main"
+              continue
+            fi
+
+            echo "Martinique push failed even though main did not advance." >&2
+            exit 1
+          done
+
+          echo "Martinique persistence exhausted 3 bounded rebuild attempts." >&2
+          exit 1
