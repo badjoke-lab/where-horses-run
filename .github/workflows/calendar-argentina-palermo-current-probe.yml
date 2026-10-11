@@ -12,77 +12,27 @@ permissions:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 4
     steps:
       - uses: actions/checkout@v4
 
-      - name: Probe official Palermo 2026 calendar sources
+      - name: Fetch official Palermo 2026 schedule
         shell: bash
         run: |
           set -euo pipefail
           UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
-          mkdir -p /tmp/palermo
-          for item in \
-            'calendar-html|https://old.palermo.com.ar/es/turf/n/calendario-2026' \
-            'schedule-html|https://old.palermo.com.ar/en/turf/racing-schedule-and-results/2026' \
-            'calendar-pdf|https://old.palermo.com.ar/assets/upload/CALENDARIO.pdf'; do
-            name="${item%%|*}"
-            url="${item#*|}"
-            out="/tmp/palermo/$name.out"
-            code="$(curl -L -sS -A "$UA" --connect-timeout 12 --max-time 35 -o "$out" -w '%{http_code}' "$url" || true)"
-            echo "PALERMO_SOURCE name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) URL=$url"
-          done
-          file /tmp/palermo/calendar-pdf.out || true
+          url='https://old.palermo.com.ar/en/turf/racing-schedule-and-results/2026'
+          out='/tmp/palermo-schedule.html'
+          code="$(curl -L -sS -A "$UA" --connect-timeout 12 --max-time 35 -o "$out" -w '%{http_code}' "$url" || true)"
+          echo "PALERMO_SCHEDULE HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) URL=$url"
+          [ "$code" = "200" ]
+          [ "$(wc -c < "$out")" -gt 50000 ]
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - run: npm install --no-package-lock --no-audit --no-fund
-
-      - name: Extract official Palermo calendar PDF
+      - name: Parse Palermo month and meeting stream
         shell: bash
         run: |
           set -euo pipefail
-          node --input-type=module <<'NODE'
-          import fs from 'node:fs';
-          import {getDocument} from 'pdfjs-dist/legacy/build/pdf.mjs';
-
-          const bytes=new Uint8Array(fs.readFileSync('/tmp/palermo/calendar-pdf.out'));
-          const pdf=await getDocument({data:bytes,disableWorker:true}).promise;
-          let raw='';
-          for(let n=1;n<=pdf.numPages;n++){
-            const page=await pdf.getPage(n);
-            const content=await page.getTextContent();
-            raw+='\n'+content.items.map(x=>x.str).join(' ');
-          }
-          const text=raw.replace(/\s+/g,' ').trim();
-          console.log('PALERMO_PDF_PAGES',pdf.numPages);
-          console.log('PALERMO_PDF_TEXT',text.slice(0,22000));
-          console.log('PALERMO_PDF_RAW_LEN',raw.length);
-          for(const needle of ['OCTUBRE','NOVIEMBRE','DICIEMBRE','Octubre','Noviembre','Diciembre']){
-            const p=text.indexOf(needle);
-            if(p>=0) console.log('PALERMO_PDF_MONTH',needle,text.slice(Math.max(0,p-500),p+6500));
-          }
-          const pats=[
-            /\b\d{1,2}[/-]\d{1,2}[/-]2026\b/gi,
-            /\b\d{1,2}\s+de\s+(?:enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\s+(?:de\s+)?2026\b/gi
-          ];
-          const seen=[];
-          for(const rx of pats){
-            for(const m of text.matchAll(rx)){
-              if(!seen.includes(m[0])) seen.push(m[0]);
-            }
-          }
-          console.log('PALERMO_PDF_EXPLICIT_DATES',seen.length);
-          for(const s of seen) console.log('PALERMO_PDF_DATE',s);
-          NODE
-
-      - name: Parse Palermo calendar marker stream
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 - /tmp/palermo/schedule-html.out <<'PY'
+          python3 - /tmp/palermo-schedule.html <<'PY'
           import html,re,sys
           raw=open(sys.argv[1],errors='replace').read()
 
@@ -121,9 +71,8 @@ jobs:
               if current_month is None:
                   continue
               day=int(m.group('day'))
-              if not 1<=day<=31:
-                  continue
-              rows.append((f'2026-{current_month:02d}-{day:02d}',int(m.group('id')),m.group('url').strip()))
+              if 1<=day<=31:
+                  rows.append((f'2026-{current_month:02d}-{day:02d}',int(m.group('id')),m.group('url').strip()))
 
           uniq={}
           for date,ident,url in rows:
