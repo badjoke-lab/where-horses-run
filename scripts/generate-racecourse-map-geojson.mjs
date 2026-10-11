@@ -61,6 +61,7 @@ const calendarMapRegressionIds = [
   'newbury-racecourse',
   'aintree-racecourse',
   'wincanton-racecourse',
+  'sandown-park-racecourse',
   // New Zealand current rolling venues (2)
   'pukekohe-park-racecourse',
   'central-southland-raceway',
