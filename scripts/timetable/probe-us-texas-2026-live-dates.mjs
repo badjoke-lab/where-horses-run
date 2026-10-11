@@ -46,6 +46,7 @@ if (bytes.length < 2000 || bytes.length > MAX_PDF_BYTES) {
 if (String.fromCharCode(...bytes.slice(0, 5)) !== '%PDF-') {
   throw new Error('TXRC linked document is not a PDF');
 }
+const pdfByteLength = bytes.length; // pdfjs may transfer/detach the underlying buffer
 const pdf = await getDocument({ data: bytes, disableWorker: true }).promise;
 if (pdf.numPages < 1 || pdf.numPages > 20) {
   throw new Error(`TXRC unexpected page count: ${pdf.numPages}`);
@@ -56,8 +57,21 @@ for (let i = 1; i <= pdf.numPages; i++) {
   texts.push(content.items.map((item) => String(item.str ?? '')).join(' '));
 }
 const allText = texts.join(' ');
+const summary = {
+  pdf_bytes: pdfByteLength,
+  pdf_pages: pdf.numPages,
+  extracted_text_characters: allText.length,
+  extracted_preview_for_diagnostics: allText.slice(0, 120),
+};
+console.log('TXRC_PDF_EXTRACTION_DIAGNOSTICS ' + JSON.stringify(summary));
+if (allText.length < 160) {
+  throw new Error('TXRC PDF has too little machine-readable text to establish actual dated race meetings; needs geometry/image or alternative source extraction, not production C');
+}
 if (!/2026/.test(allText) || !/rac(?:e|ing)/i.test(allText)) {
   throw new Error('TXRC PDF 2026 horse-racing text fingerprint missing');
+}
+if (!/(?:January|February|March|April|May|June|July|August|September|October|November|December)/i.test(allText)) {
+  throw new Error('TXRC no month/date fields confirmed; source access alone is not a racing-calendar pass');
 }
 // This read-only probe intentionally does NOT create meetings or publish extracted text.
 const venueTokens = ['Lone Star Park', 'Sam Houston', 'Retama', 'Gillespie'].filter((name) =>
@@ -68,7 +82,7 @@ console.log(JSON.stringify({
   index_url: INDEX_URL,
   pdf_url: pdfResponse.url,
   pdf_pages: pdf.numPages,
-  pdf_bytes: bytes.length,
+  pdf_bytes: pdfByteLength,
   text_characters: allText.length,
   venue_tokens_seen: venueTokens,
   meeting_records_emitted: 0,
