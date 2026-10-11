@@ -781,11 +781,11 @@
       "official_source_id": "ontario-race-dates",
       "official_source_url": "https://ontarioracing.com/news-and-results/top-racing-headlines/agco-and-olg-approve-race-dates-for-four-ontario-t",
       "source_kind": "calendar",
-      "source_status": "partial",
-      "last_checked_date": "2026-06-20",
+      "source_status": "verified",
+      "last_checked_date": "2026-10-11",
       "capability_rank": "C",
       "adapter_candidate_status": "candidate",
-      "notes": "Reviewed Ontario race-date evidence covers provincial Thoroughbred, Standardbred, and Quarter Horse contexts without proving national coverage."
+      "notes": "Ontario Racing's March 17, 2026 article is GitHub-Actions-accessible and links AGCO-approved track-specific calendars. The production route uses the linked Woodbine Mohawk Park AGCO PDF for a bounded Ontario Standardbred scope."
     },
     {
       "country_id": "canada",
@@ -2162,6 +2162,22 @@
       "capability_rank": "C",
       "adapter_candidate_status": "candidate",
       "notes": "The official RBSC Racing page is GitHub-Actions-accessible and exposes the full source-visible 2026 racing calendar. Automatic publication is bounded to meeting date plus the fixed RBSC racecourse at rank C."
+    },
+    {
+      "country_id": "canada",
+      "authority_id": "ontario-racing",
+      "authority_name_en": "Ontario Racing",
+      "authority_name_local": null,
+      "authority_type": "regional",
+      "racecourse_scope": "subset_of_authority_racecourses",
+      "official_source_id": "ontario-agco-mohawk-2026-calendar",
+      "official_source_url": "https://www.agco.ca/sites/default/files/2026-03/MOHS%20-%20Approved%202026%20Race%20Date%20Calendar_E_17%20Mar%202026.pdf",
+      "source_kind": "calendar",
+      "source_status": "verified",
+      "last_checked_date": "2026-10-11",
+      "capability_rank": "C",
+      "adapter_candidate_status": "candidate",
+      "notes": "AGCO Approved 2026 Race Date Calendar for Mohawk Park, linked from Ontario Racing's official 2026 race-date announcement. PDF geometry exposes exactly 222 approved dates, matching the printed total. Production publication is date + fixed venue only at rank C."
     }
   ]
 }
