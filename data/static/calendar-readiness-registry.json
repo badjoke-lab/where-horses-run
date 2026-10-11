@@ -2197,9 +2197,11 @@
       "country_tracker_delivery_no": "34",
       "system_id": "canada-ontario-racing-system",
       "system_name_en": "Ontario Racing",
-      "authority_source_key": "canada/ontario-racing/ontario-race-dates",
-      "racecourse_ids": [],
-      "coverage_scope": "system_only",
+      "authority_source_key": "canada/ontario-racing/ontario-agco-mohawk-2026-calendar",
+      "racecourse_ids": [
+        "canada--woodbine-mohawk-park"
+      ],
+      "coverage_scope": "single_racecourse",
       "technical_rank": "C",
       "public_ceiling": "C",
       "confirmed_fields": {
@@ -2213,27 +2215,30 @@
         "surface": false,
         "course": false
       },
-      "source_format": "html",
+      "source_format": "pdf",
       "access_mode": "direct",
-      "automation_mode": "manual_confirmation",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "seasonal",
-        "manual"
+        "daily",
+        "near_meeting",
+        "weekly"
       ],
-      "readiness": "manual_ready",
-      "implementation_status": "not_started",
-      "fallback": "official_link_only",
-      "source_status": "partial",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Revalidate when Ontario approved race-date routes change or deeper schedule evidence is reviewed.",
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-10-11",
+      "evidence_reviewed_at": "2026-10-11",
+      "revalidation_trigger": "Revalidate when AGCO publishes a revised Mohawk calendar or the 2027 calendar supersedes the approved 2026 PDF.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/34-canada/final-summary.json",
       "limitations": [
-        "This record is provincial, not countrywide.",
-        "The selected official evidence is calendar-level and does not prove reusable per-race times for every Ontario code."
+        "Production scope is Woodbine Mohawk Park only and does not establish complete Ontario or Canadian coverage.",
+        "The AGCO PDF contains general post-time guidance, but meeting-specific times are not inferred.",
+        "The approved 2026 PDF ends in December 2026; 2027 requires a separately revalidated official source.",
+        "Source absence, fetch failure or parser failure is not cancellation/non-running evidence."
       ],
-      "notes": "Ontario is completed as a provincial manual C-level decision."
+      "notes": "GitHub Actions fetched the one-page AGCO Approved 2026 Race Date Calendar on 2026-10-11. PDF geometry yields exactly 222 race dates, matching the printed total; the track location is 9430 Guelph Line, Campbellville, Ontario."
     },
     {
       "readiness_id": "canada--canada-standardbred-system--standardbred-canada-racing",
