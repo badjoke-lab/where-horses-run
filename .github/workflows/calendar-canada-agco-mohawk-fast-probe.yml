@@ -12,9 +12,13 @@ permissions:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 7
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
       - name: Fetch and inspect approved Woodbine Mohawk calendar
         shell: bash
         run: |
@@ -24,16 +28,24 @@ jobs:
           curl -L --fail -sS -A "$UA" --connect-timeout 12 --max-time 45 "$url" -o /tmp/mohawk.pdf
           echo "AGCO_PDF_BYTES=$(wc -c < /tmp/mohawk.pdf)"
           file /tmp/mohawk.pdf
-          pdftotext -layout /tmp/mohawk.pdf /tmp/mohawk.txt
-          echo "AGCO_TEXT_BEGIN"
-          sed -n '1,320p' /tmp/mohawk.txt
-          echo "AGCO_TEXT_END"
-          python3 - /tmp/mohawk.txt <<'PY'
-          import re,sys
-          text=open(sys.argv[1],errors='replace').read()
-          print('AGCO_TEXT_LEN',len(text))
-          for needle in ['Woodbine Mohawk','Approved','2026','2027','October','November','December','March']:
-              p=text.lower().find(needle.lower())
-              if p>=0:
-                  print('AGCO_CONTEXT',needle,re.sub(r'\s+',' ',text[max(0,p-500):p+9000]))
-          PY
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import {getDocument} from 'pdfjs-dist/legacy/build/pdf.mjs';
+          const bytes=new Uint8Array(fs.readFileSync('/tmp/mohawk.pdf'));
+          const pdf=await getDocument({data:bytes,disableWorker:true}).promise;
+          console.log('AGCO_PAGES',pdf.numPages);
+          for(let p=1;p<=pdf.numPages;p++){
+            const page=await pdf.getPage(p);
+            const content=await page.getTextContent();
+            const rows=content.items.map((it,i)=>({
+              i,
+              text:String(it.str??'').trim(),
+              x:Number((it.transform?.[4]??0).toFixed(2)),
+              y:Number((it.transform?.[5]??0).toFixed(2)),
+              w:Number((it.width??0).toFixed(2)),
+              h:Number((it.height??0).toFixed(2))
+            })).filter(x=>x.text);
+            console.log('AGCO_ITEMS',JSON.stringify(rows));
+            console.log('AGCO_TEXT',rows.map(x=>x.text).join(' '));
+          }
+          NODE
