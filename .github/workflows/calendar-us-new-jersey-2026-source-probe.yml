@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/calendar-us-new-jersey-2026-source-probe.yml'
       - 'scripts/timetable/probe-us-new-jersey-2026-source.mjs'
+      - 'scripts/timetable/probe-us-new-jersey-2026-pdfs.mjs'
   workflow_dispatch:
 
 permissions:
@@ -19,5 +20,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
       - name: Discover official 2026 race-date documents (no publishing)
         run: node scripts/timetable/probe-us-new-jersey-2026-source.mjs
+      - name: Inspect 2026 official NJRC PDFs (no publishing)
+        run: node scripts/timetable/probe-us-new-jersey-2026-pdfs.mjs
