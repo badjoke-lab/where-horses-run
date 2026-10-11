@@ -119,6 +119,9 @@ on:
       - 'scripts/timetable/thailand-rbsc-calendar-core.mjs'
       - 'scripts/timetable/run-thailand-rbsc-official-window.mjs'
       - 'scripts/check-thailand-rbsc-adapter.mjs'
+      - 'scripts/timetable/us-nj-meadowlands-turf-core.mjs'
+      - 'scripts/timetable/run-us-nj-meadowlands-turf-window.mjs'
+      - 'scripts/check-us-nj-meadowlands-turf-adapter.mjs'
       - 'scripts/check-qatar-qrec-adapter.mjs'
       - 'scripts/timetable/rebuild-unified-non-japan-on-main.sh'
       - 'scripts/timetable/italy-masaf-core.mjs'
@@ -851,6 +854,9 @@ jobs:
           node scripts/timetable/run-thailand-rbsc-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/thailand.json
+          node scripts/timetable/run-us-nj-meadowlands-turf-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/us-nj.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -914,7 +920,8 @@ jobs:
             --artifact=.calendar-unified/kenya.json \
             --artifact=.calendar-unified/lithuania.json \
             --artifact=.calendar-unified/estonia.json \
-            --artifact=.calendar-unified/thailand.json
+            --artifact=.calendar-unified/thailand.json \
+            --artifact=.calendar-unified/us-nj.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -1283,6 +1290,12 @@ jobs:
             --authority-id=rbsc \
             --racing-system-id=thailand-rbsc-system \
             --timezone=Asia/Bangkok
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/us-nj.json \
+            --country-id=united-states \
+            --authority-id=new-jersey-racing-commission \
+            --racing-system-id=us-nj-meadowlands-thoroughbred-turf-system \
+            --timezone=America/New_York
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
