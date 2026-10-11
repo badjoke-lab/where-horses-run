@@ -1,0 +1,23 @@
+name: Calendar US New Jersey 2026 source probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-us-new-jersey-2026-source-probe.yml'
+      - 'scripts/timetable/probe-us-new-jersey-2026-source.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  njrc-source-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Discover official 2026 race-date documents (no publishing)
+        run: node scripts/timetable/probe-us-new-jersey-2026-source.mjs
