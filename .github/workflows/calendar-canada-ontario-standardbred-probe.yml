@@ -242,3 +242,24 @@ jobs:
               if re.search(r'2026|Mohawk|Flamboro|Western Fair|Leamington|Century Mile|Charlottetown|Truro|Hippodrome',row,re.I):
                   print('POST_ROW',row)
           PY
+
+      - name: Dump Standardbred Canada racedates form mechanics
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo '--- racing.js ---'
+          cat /tmp/canada-racedates/racing.js
+          echo '--- racing_init.js ---'
+          cat /tmp/canada-racedates/racing_init.js
+          echo '--- racedates form fragment ---'
+          python3 - /tmp/canada-racedates/page.html <<'PY'
+          import re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          m=re.search(r'<form\b[^>]*action=["\']/racing/racedates["\'][^>]*>(.*?)</form>',raw,re.I|re.S)
+          if not m:
+              raise SystemExit('RACEDATES_FORM_NOT_FOUND')
+          block=m.group(0)
+          p=block.lower().find('racedates_track')
+          if p<0: p=0
+          print(block[max(0,p-4500):p+12000])
+          PY
