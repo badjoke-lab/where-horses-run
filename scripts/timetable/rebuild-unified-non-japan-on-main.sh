@@ -185,6 +185,9 @@ refresh_non_japan_on_main() {
   node scripts/timetable/run-thailand-rbsc-official-window.mjs \
     --days="${DAYS}" \
     --output=.calendar-unified/thailand.json
+  node scripts/timetable/run-us-nj-meadowlands-turf-window.mjs \
+    --days="${DAYS}" \
+    --output=.calendar-unified/us-nj.json
   node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --artifact=.calendar-unified/uae.json \
@@ -246,7 +249,8 @@ refresh_non_japan_on_main() {
   --artifact=.calendar-unified/kenya.json \
   --artifact=.calendar-unified/lithuania.json \
   --artifact=.calendar-unified/estonia.json \
-  --artifact=.calendar-unified/thailand.json
+  --artifact=.calendar-unified/thailand.json \
+  --artifact=.calendar-unified/us-nj.json
   node scripts/timetable/apply-official-rolling-observations.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --country-id=hong-kong \
@@ -613,6 +617,12 @@ refresh_non_japan_on_main() {
     --authority-id=rbsc \
     --racing-system-id=thailand-rbsc-system \
     --timezone=Asia/Bangkok
+  node scripts/timetable/apply-official-rolling-observations.mjs \
+    --artifact=.calendar-unified/us-nj.json \
+    --country-id=united-states \
+    --authority-id=new-jersey-racing-commission \
+    --racing-system-id=us-nj-meadowlands-thoroughbred-turf-system \
+    --timezone=America/New_York
   node scripts/timetable/apply-reviewed-calendar-observations.mjs
   node scripts/timetable/apply-meeting-presence-dispositions.mjs \
   --artifact=.calendar-unified/hkjc.json \
