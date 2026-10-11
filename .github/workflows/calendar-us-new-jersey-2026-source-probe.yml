@@ -6,6 +6,7 @@ on:
       - '.github/workflows/calendar-us-new-jersey-2026-source-probe.yml'
       - 'scripts/timetable/probe-us-new-jersey-2026-source.mjs'
       - 'scripts/timetable/probe-us-new-jersey-2026-pdfs.mjs'
+      - 'scripts/timetable/probe-us-new-jersey-meadowlands-turf.mjs'
   workflow_dispatch:
 
 permissions:
@@ -25,3 +26,5 @@ jobs:
         run: node scripts/timetable/probe-us-new-jersey-2026-source.mjs
       - name: Inspect 2026 official NJRC PDFs (no publishing)
         run: node scripts/timetable/probe-us-new-jersey-2026-pdfs.mjs
+      - name: Cross-check Meadowlands turf dates from official operator
+        run: node scripts/timetable/probe-us-new-jersey-meadowlands-turf.mjs
