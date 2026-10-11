@@ -1639,6 +1639,81 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic official RBSC Racing calendar route emits source-visible 2026 meeting dates at the fixed Royal Bangkok Sports Club racecourse. Scope remains RBSC-only; source absence never proves non-running."
+    },
+    {
+      "system_id": "us-nj-monmouth-thoroughbred-2026-system",
+      "country_id": "united-states",
+      "authority_id": "new-jersey-racing-commission",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "njrc-approved-2026-race-date-calendar",
+      "detail_source_id": "njrc-approved-2026-race-date-calendar",
+      "schedule_adapter_id": "us-njrc-color-coded-approved-2026-v1",
+      "detail_adapter_id": "us-njrc-color-coded-approved-2026-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "New Jersey Racing Commission state-issued 2026 approved calendar, exact date+venue+code only, rank C. Physical Monmouth Park, Thoroughbred flat; 2026 only and no national completeness claim. No private racecourse operator page ingestion. Source failure does not prove cancellation; new-year sources require explicit review."
+    },
+    {
+      "system_id": "us-nj-meadowlands-thoroughbred-turf-2026-system",
+      "country_id": "united-states",
+      "authority_id": "new-jersey-racing-commission",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "njrc-approved-2026-race-date-calendar",
+      "detail_source_id": "njrc-approved-2026-race-date-calendar",
+      "schedule_adapter_id": "us-njrc-color-coded-approved-2026-v1",
+      "detail_adapter_id": "us-njrc-color-coded-approved-2026-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "New Jersey Racing Commission state-issued 2026 approved calendar, exact date+venue+code only, rank C. Physical Meadowlands Racetrack, Thoroughbred turf; 2026 only and no national completeness claim. No private racecourse operator page ingestion. Source failure does not prove cancellation; new-year sources require explicit review."
+    },
+    {
+      "system_id": "us-nj-far-hills-steeplechase-2026-system",
+      "country_id": "united-states",
+      "authority_id": "new-jersey-racing-commission",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "njrc-approved-2026-race-date-calendar",
+      "detail_source_id": "njrc-approved-2026-race-date-calendar",
+      "schedule_adapter_id": "us-njrc-color-coded-approved-2026-v1",
+      "detail_adapter_id": "us-njrc-color-coded-approved-2026-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "New Jersey Racing Commission state-issued 2026 approved calendar, exact date+venue+code only, rank C. Physical Moorland Farm (Far Hills Race Meeting), Steeplechase; 2026 only and no national completeness claim. No private racecourse operator page ingestion. Source failure does not prove cancellation; new-year sources require explicit review."
     }
   ]
 }
