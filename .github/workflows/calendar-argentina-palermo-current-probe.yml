@@ -34,30 +34,46 @@ jobs:
           done
           file /tmp/palermo/calendar-pdf.out || true
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - run: npm install --no-package-lock --no-audit --no-fund
+
       - name: Extract official Palermo calendar PDF
         shell: bash
         run: |
           set -euo pipefail
-          pdftotext -layout /tmp/palermo/calendar-pdf.out /tmp/palermo/calendar.txt
-          python3 - /tmp/palermo/calendar.txt <<'PY'
-          import re,sys
-          raw=open(sys.argv[1],errors='replace').read()
-          text=re.sub(r'\s+',' ',raw).strip()
-          print('PALERMO_PDF_TEXT',text[:22000])
-          print('PALERMO_PDF_RAW_LEN',len(raw))
-          for needle in ['OCTUBRE','NOVIEMBRE','DICIEMBRE','Octubre','Noviembre','Diciembre']:
-              p=text.find(needle)
-              if p>=0:
-                  print('PALERMO_PDF_MONTH',needle,text[max(0,p-500):p+6500])
-          # Extract all explicit 2026 date forms if present.
-          seen=[]
-          for pat in [
-            r'\b(\d{1,2})[/-](\d{1,2})[/-](2026)\b',
-            r'\b(\d{1,2})\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\s+(?:de\s+)?2026\b'
-          ]:
-              for m in re.finditer(pat,text,re.I):
-                  s=m.group(0)
-                  if s not in seen: seen.append(s)
-          print('PALERMO_PDF_EXPLICIT_DATES',len(seen))
-          for s in seen: print('PALERMO_PDF_DATE',s)
-          PY
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import {getDocument} from 'pdfjs-dist/legacy/build/pdf.mjs';
+
+          const bytes=new Uint8Array(fs.readFileSync('/tmp/palermo/calendar-pdf.out'));
+          const pdf=await getDocument({data:bytes,disableWorker:true}).promise;
+          let raw='';
+          for(let n=1;n<=pdf.numPages;n++){
+            const page=await pdf.getPage(n);
+            const content=await page.getTextContent();
+            raw+='\n'+content.items.map(x=>x.str).join(' ');
+          }
+          const text=raw.replace(/\s+/g,' ').trim();
+          console.log('PALERMO_PDF_PAGES',pdf.numPages);
+          console.log('PALERMO_PDF_TEXT',text.slice(0,22000));
+          console.log('PALERMO_PDF_RAW_LEN',raw.length);
+          for(const needle of ['OCTUBRE','NOVIEMBRE','DICIEMBRE','Octubre','Noviembre','Diciembre']){
+            const p=text.indexOf(needle);
+            if(p>=0) console.log('PALERMO_PDF_MONTH',needle,text.slice(Math.max(0,p-500),p+6500));
+          }
+          const pats=[
+            /\b\d{1,2}[/-]\d{1,2}[/-]2026\b/gi,
+            /\b\d{1,2}\s+de\s+(?:enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\s+(?:de\s+)?2026\b/gi
+          ];
+          const seen=[];
+          for(const rx of pats){
+            for(const m of text.matchAll(rx)){
+              if(!seen.includes(m[0])) seen.push(m[0]);
+            }
+          }
+          console.log('PALERMO_PDF_EXPLICIT_DATES',seen.length);
+          for(const s of seen) console.log('PALERMO_PDF_DATE',s);
+          NODE
