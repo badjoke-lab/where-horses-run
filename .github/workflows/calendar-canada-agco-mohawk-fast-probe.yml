@@ -1,0 +1,39 @@
+name: Canada AGCO Mohawk fast probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-canada-agco-mohawk-fast-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch and inspect approved Woodbine Mohawk calendar
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          url='https://www.agco.ca/sites/default/files/2026-03/MOHS%20-%20Approved%202026%20Race%20Date%20Calendar_E_17%20Mar%202026.pdf'
+          curl -L --fail -sS -A "$UA" --connect-timeout 12 --max-time 45 "$url" -o /tmp/mohawk.pdf
+          echo "AGCO_PDF_BYTES=$(wc -c < /tmp/mohawk.pdf)"
+          file /tmp/mohawk.pdf
+          pdftotext -layout /tmp/mohawk.pdf /tmp/mohawk.txt
+          echo "AGCO_TEXT_BEGIN"
+          sed -n '1,320p' /tmp/mohawk.txt
+          echo "AGCO_TEXT_END"
+          python3 - /tmp/mohawk.txt <<'PY'
+          import re,sys
+          text=open(sys.argv[1],errors='replace').read()
+          print('AGCO_TEXT_LEN',len(text))
+          for needle in ['Woodbine Mohawk','Approved','2026','2027','October','November','December','March']:
+              p=text.lower().find(needle.lower())
+              if p>=0:
+                  print('AGCO_CONTEXT',needle,re.sub(r'\s+',' ',text[max(0,p-500):p+9000]))
+          PY
