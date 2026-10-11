@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {
  NJ_EXPECTED_TURF_DATES,NJ_RACECOURSE_ID,
- parseMeadowlandsTurfMonth,assertMeadowlandsTurfSeason,buildNjTurfCandidate
+ parseMeadowlandsTurfMonth,assertMeadowlandsTurfSeason,reviewMeadowlandsTurfSeason,buildNjTurfCandidate
 } from './timetable/us-nj-meadowlands-turf-core.mjs';
 const labels={9:'September',10:'October'};
 function sample(month){
@@ -22,5 +22,10 @@ const example=buildNjTurfCandidate(oct.at(-1),'2026-10-11T00:00:00Z');
 assert.equal(example.capability_rank,'C');assert.equal(example.first_race_time_local,null);
 assert.equal(example.racing_type,'thoroughbred-flat');assert.equal(example.timetable_rows.length,0);
 assert.throws(()=>assertMeadowlandsTurfSeason(sep));
+const partial=[...sep,...oct].filter(r=>r.date!=='2026-09-26');
+assert.deepEqual(reviewMeadowlandsTurfSeason(partial).missing_approved_dates,['2026-09-26']);
+assert.equal(reviewMeadowlandsTurfSeason(partial).dates.length,8);
+assert.ok(partial.some(r=>r.date==='2026-10-16'));
+
 assert.throws(()=>parseMeadowlandsTurfMonth('<html>Harness racing only</html>',10,'test'));
 console.log('US_NJ_MEADOWLANDS_TURF_CONTRACT: pass (nine date C boundary)');
