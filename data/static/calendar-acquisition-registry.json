@@ -1639,6 +1639,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Automatic official RBSC Racing calendar route emits source-visible 2026 meeting dates at the fixed Royal Bangkok Sports Club racecourse. Scope remains RBSC-only; source absence never proves non-running."
+    },
+    {
+      "system_id": "us-nj-meadowlands-thoroughbred-turf-system",
+      "country_id": "united-states",
+      "authority_id": "new-jersey-racing-commission",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "meadowlands-2026-turf-events",
+      "detail_source_id": "meadowlands-2026-turf-events",
+      "schedule_adapter_id": "us-nj-meadowlands-turf-2026-v1",
+      "detail_adapter_id": "us-nj-meadowlands-turf-2026-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Official 2026 Meadowlands event months provide exact Thoroughbred turf dates, bounded to one physical venue and nine reviewed regulator-approved days. Current event pages confirm 8/9; unlisted 26 Sep is a source discrepancy, not evidence of cancellation. Only source-visible dates are emitted C; no other U.S. code or venue coverage claimed."
     }
   ]
 }
