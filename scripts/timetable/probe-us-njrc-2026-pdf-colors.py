@@ -45,6 +45,17 @@ for n in numeric:
             white_months[name].append(n)
             break
 print("NJRC_WHITE_DAY_NUMBERS "+json.dumps({k:[{"day":v["n"],"x":v["rect"][0],"y":v["rect"][1]} for v in vals] for k,vals in white_months.items()}))
+pix=page.get_pixmap(matrix=fitz.Matrix(2,2),colorspace=fitz.csRGB,alpha=False)
+rgb_months={}
+for month,nums in white_months.items():
+    result=[]
+    for n in nums:
+        x=max(0,min(pix.width-1,round((n["rect"][0]-4)*2)))
+        y=max(0,min(pix.height-1,round(((n["rect"][1]+n["rect"][3])/2)*2)))
+        rgb=list(pix.pixel(x,y))[:3]
+        result.append({"day":n["n"],"rgb":rgb})
+    rgb_months[month]=result
+print("NJRC_DAY_BACKGROUNDS "+json.dumps(rgb_months))
 print("NJRC_MONMOUTH_PDF_DIAGNOSTICS "+json.dumps({
   "http_pdf_bytes":len(data),"pages":len(doc),"page_rect":[round(float(n),1) for n in page.rect],
   "numeric_count":len(numeric),"numeric_text_colors":text_counts,
