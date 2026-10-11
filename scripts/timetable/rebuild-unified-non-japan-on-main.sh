@@ -182,6 +182,9 @@ refresh_non_japan_on_main() {
   node scripts/timetable/run-estonia-tuula-official-window.mjs \
     --days="${DAYS}" \
     --output=.calendar-unified/estonia.json
+  node scripts/timetable/run-thailand-rbsc-official-window.mjs \
+    --days="${DAYS}" \
+    --output=.calendar-unified/thailand.json
   node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --artifact=.calendar-unified/uae.json \
@@ -242,7 +245,8 @@ refresh_non_japan_on_main() {
   --artifact=.calendar-unified/slovenia.json \
   --artifact=.calendar-unified/kenya.json \
   --artifact=.calendar-unified/lithuania.json \
-  --artifact=.calendar-unified/estonia.json
+  --artifact=.calendar-unified/estonia.json \
+  --artifact=.calendar-unified/thailand.json
   node scripts/timetable/apply-official-rolling-observations.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --country-id=hong-kong \
@@ -603,6 +607,12 @@ refresh_non_japan_on_main() {
     --authority-id=estonian-trotting-union \
     --racing-system-id=tuula-trotting-system \
     --timezone=Europe/Tallinn
+  node scripts/timetable/apply-official-rolling-observations.mjs \
+    --artifact=.calendar-unified/thailand.json \
+    --country-id=thailand \
+    --authority-id=rbsc \
+    --racing-system-id=thailand-rbsc-system \
+    --timezone=Asia/Bangkok
   node scripts/timetable/apply-reviewed-calendar-observations.mjs
   node scripts/timetable/apply-meeting-presence-dispositions.mjs \
   --artifact=.calendar-unified/hkjc.json \
