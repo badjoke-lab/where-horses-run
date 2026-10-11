@@ -72,17 +72,31 @@
       "page_kind": "country",
       "method_class": "active_source_driven",
       "source_ids": [
-        "equibase-entries",
-        "equibase-condition-books",
+        "arci-racing-regulatory-jurisdictions",
         "hisa-current-racetracks",
-        "arci-racing-regulatory-jurisdictions"
+        "njrc-2026-race-dates",
+        "txrc-2026-live-race-dates",
+        "nsa-2026-steeplechase-schedule"
       ],
-      "primary_source_url": "https://www.equibase.com/static/entry/index.html",
+      "primary_source_url": "https://www.arci.com/racing_regulatory_jurisdiction.php",
       "cadence_class": "source-driven",
       "trigger_class": "meeting_or_source_window",
       "zero_policy": "emit_only_source_visible_current_meetings",
       "runner_state": "candidate",
-      "method_complete": true
+      "method_complete": true,
+      "discovery_model": "state_regulator_plus_racing_code_authority",
+      "date_publication_rule": "source_visible_current_year_exact_live_meeting_dates_only",
+      "reference_only_sources": [
+        "equibase-entries",
+        "equibase-condition-books",
+        "usta-racing-database",
+        "nsa-2026-steeplechase-schedule"
+      ],
+      "pilot_jurisdictions": [
+        "new-jersey",
+        "texas"
+      ],
+      "scope_note": "ARCI/HISA/NSA are discovery and coverage references, not automatic fixture feeds. Individual regulator or independently usable code/track date routes must supply exact current live dates. NSA alone is not a production collector. Do not expand California date-block allocations, infer meetings from licences, or include separately tracked Puerto Rico tier 24. A named primary URL here is a discovery entrypoint, not a machine-access permission or production collector."
     },
     {
       "tier": 31,
