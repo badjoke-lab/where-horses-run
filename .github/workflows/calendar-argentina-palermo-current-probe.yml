@@ -244,3 +244,36 @@ jobs:
           future=[x for x in seen if x[0]>='2026-10-11']
           print('PALERMO_FUTURE_COUNT',len(future))
           PY
+
+      - name: Probe Palermo official 2026 calendar PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          url='https://old.palermo.com.ar/assets/upload/CALENDARIO.pdf'
+          out='/tmp/palermo-old/calendario.pdf'
+          code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+          echo "PALERMO_PDF HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) URL=$url"
+          file "$out" || true
+          pdftotext -layout "$out" /tmp/palermo-old/calendario.txt
+          python3 - /tmp/palermo-old/calendario.txt <<'PY'
+          import re,sys
+          text=open(sys.argv[1],errors='replace').read()
+          text=re.sub(r'\s+',' ',text).strip()
+          print('PALERMO_PDF_TEXT',text[:18000])
+          pats=[
+              r'\b(\d{1,2})[/-](\d{1,2})[/-](2026)\b',
+              r'\b(\d{1,2})\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\s+(?:de\s+)?2026\b',
+              r'\b(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\s+(\d{1,2})\b'
+          ]
+          seen=[]
+          for pat in pats:
+              for m in re.finditer(pat,text,re.I):
+                  s=m.group(0)
+                  if s not in seen: seen.append(s)
+          print('PALERMO_PDF_DATE_MATCHES',len(seen))
+          for s in seen: print('PALERMO_PDF_DATE',s)
+          for needle in ['OCTUBRE','NOVIEMBRE','DICIEMBRE','Octubre','Noviembre','Diciembre']:
+              p=text.find(needle)
+              if p>=0: print('PALERMO_PDF_MONTH',needle,text[max(0,p-500):p+5000])
+          PY
