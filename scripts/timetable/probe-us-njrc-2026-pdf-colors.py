@@ -34,6 +34,17 @@ for d in draws:
     fill_counts[str(c)]+=1
     if len(fill_samples.setdefault(str(c),[]))<12:
         fill_samples[str(c)].append({"rect":[round(float(n),1) for n in d.get("rect",[])],"items":len(d.get("items",[])),"type":d.get("type")})
+# Decode month coordinate regions before interpreting calendar cells.
+regions=[("May",5,46,243,218,327),("June",6,274,472,218,327),("July",7,498,698,218,327),("August",8,46,244,386,493),("September",9,274,473,386,493),("October",10,498,698,386,493)]
+white_months=collections.defaultdict(list)
+for n in numeric:
+    cx=(n["rect"][0]+n["rect"][2])/2;cy=(n["rect"][1]+n["rect"][3])/2
+    if n["color"]!=16777215: continue
+    for name,month,x0,x1,y0,y1 in regions:
+        if x0 <= cx <= x1 and y0 <= cy <= y1:
+            white_months[name].append(n)
+            break
+print("NJRC_WHITE_DAY_NUMBERS "+json.dumps({k:[{"day":v["n"],"x":v["rect"][0],"y":v["rect"][1]} for v in vals] for k,vals in white_months.items()}))
 print("NJRC_MONMOUTH_PDF_DIAGNOSTICS "+json.dumps({
   "http_pdf_bytes":len(data),"pages":len(doc),"page_rect":[round(float(n),1) for n in page.rect],
   "numeric_count":len(numeric),"numeric_text_colors":text_counts,
