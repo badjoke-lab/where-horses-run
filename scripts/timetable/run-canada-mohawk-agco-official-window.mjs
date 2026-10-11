@@ -25,7 +25,8 @@ async function getPdfItems(url,{timeoutMs=45000}={}){
   });
   if(!r.ok) throw new Error('HTTP '+r.status+' '+url);
   const bytes=new Uint8Array(await r.arrayBuffer());
-  if(bytes.length<10000) throw new Error('AGCO PDF body unexpectedly small: '+bytes.length);
+  const byteLength=bytes.length;
+  if(byteLength<10000) throw new Error('AGCO PDF body unexpectedly small: '+byteLength);
   const pdf=await getDocument({data:bytes,disableWorker:true}).promise;
   if(pdf.numPages!==1) throw new Error('AGCO Mohawk calendar expected 1 page, got '+pdf.numPages);
   const page=await pdf.getPage(1);
@@ -37,7 +38,7 @@ async function getPdfItems(url,{timeoutMs=45000}={}){
     width:Number(it.width??0),
     height:Number(it.height??0)
   })).filter(x=>x.text);
-  return {items,url:r.url||url,bytes:bytes.length};
+  return {items,url:r.url||url,bytes:byteLength};
 }
 
 const output=arg('output'),days=Number(arg('days','90')),start=arg('as-of',localDate());
