@@ -167,6 +167,7 @@ jobs:
           done
 
       - name: Locate RBSC racecourse OSM object
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
@@ -192,3 +193,41 @@ jobs:
           if not rows:
               raise SystemExit('no RBSC OSM object found')
           PY
+
+      - name: Cross-check RBSC with Photon
+        shell: bash
+        run: |
+          set -euo pipefail
+          found=0
+          for q in \
+            'Royal Bangkok Sports Club' \
+            'The Royal Bangkok Sports Club Bangkok' \
+            'ราชกรีฑาสโมสร'; do
+            echo "RBSC_PHOTON_QUERY $q"
+            out="/tmp/rbsc-location/photon-$(echo "$q" | sha1sum | cut -c1-8).json"
+            curl -L -sS --get --data-urlencode "q=$q" --data 'limit=10' 'https://photon.komoot.io/api/' -o "$out"
+            python3 - "$out" <<'PY'
+          import json,sys
+          obj=json.load(open(sys.argv[1]))
+          fs=obj.get('features') or []
+          print('RBSC_PHOTON_RESULTS',len(fs))
+          for f in fs:
+              p=f.get('properties') or {}
+              print('RBSC_PHOTON',json.dumps({
+                  'coordinates':(f.get('geometry') or {}).get('coordinates'),
+                  'name':p.get('name'),'street':p.get('street'),'housenumber':p.get('housenumber'),
+                  'city':p.get('city'),'district':p.get('district'),'postcode':p.get('postcode'),
+                  'country':p.get('country'),'osm_type':p.get('osm_type'),'osm_id':p.get('osm_id'),
+                  'type':p.get('type')
+              },ensure_ascii=False))
+          PY
+            if python3 - "$out" <<'PY'
+          import json,sys
+          fs=(json.load(open(sys.argv[1])).get('features') or [])
+          ok=any('royal bangkok sports club' in str((f.get('properties') or {}).get('name','')).lower() or 'ราชกรีฑา' in str((f.get('properties') or {}).get('name','')) for f in fs)
+          raise SystemExit(0 if ok else 1)
+          PY
+            then found=1; fi
+            sleep 1
+          done
+          [ "$found" -eq 1 ] || { echo 'NO_RBSC_PHOTON_POI'; exit 1; }
