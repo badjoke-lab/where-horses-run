@@ -1,0 +1,62 @@
+name: Canada Mohawk location fast probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-canada-mohawk-location-fast-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - name: Geocode AGCO Woodbine Mohawk track address
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='WhereHorsesRun/1.0 (+https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/mohawk-location
+          for query in             '9430 Guelph Line, Campbellville, Ontario, Canada'             'Woodbine Mohawk Park, Campbellville, Ontario, Canada'; do
+            echo "QUERY=$query"
+            curl -L -sS -A "$UA" --get               --data-urlencode "q=$query"               --data 'format=jsonv2'               --data 'limit=5'               'https://nominatim.openstreetmap.org/search'               -o /tmp/mohawk-location/nominatim.json
+            python3 - /tmp/mohawk-location/nominatim.json "$query" <<'PY'
+          import json,sys
+          rows=json.load(open(sys.argv[1]))
+          print('NOMINATIM',sys.argv[2],'RESULTS',len(rows))
+          for r in rows:
+              print(json.dumps({
+                'lat':r.get('lat'),'lon':r.get('lon'),
+                'display_name':r.get('display_name'),
+                'osm_type':r.get('osm_type'),'osm_id':r.get('osm_id'),
+                'class':r.get('class'),'type':r.get('type')
+              },ensure_ascii=False))
+          PY
+            sleep 1
+          done
+
+          for query in             '9430 Guelph Line Campbellville Ontario'             'Woodbine Mohawk Park Campbellville'; do
+            echo "PHOTON_QUERY=$query"
+            curl -L -sS --get --data-urlencode "q=$query" --data 'limit=8'               'https://photon.komoot.io/api/'               -o /tmp/mohawk-location/photon.json
+            python3 - /tmp/mohawk-location/photon.json "$query" <<'PY'
+          import json,sys
+          obj=json.load(open(sys.argv[1]))
+          fs=obj.get('features') or []
+          print('PHOTON',sys.argv[2],'RESULTS',len(fs))
+          for f in fs:
+              p=f.get('properties') or {}
+              print(json.dumps({
+                'coordinates':(f.get('geometry') or {}).get('coordinates'),
+                'name':p.get('name'),'street':p.get('street'),
+                'housenumber':p.get('housenumber'),'city':p.get('city'),
+                'county':p.get('county'),'state':p.get('state'),
+                'country':p.get('country'),'osm_type':p.get('osm_type'),
+                'osm_id':p.get('osm_id'),'type':p.get('type')
+              },ensure_ascii=False))
+          PY
+            sleep 1
+          done
