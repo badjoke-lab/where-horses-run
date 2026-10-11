@@ -1,6 +1,6 @@
 {
   "schema_version": "racecourse-location-supplement-evidence-v1",
-  "reviewed_at": "2026-10-11",
+  "reviewed_at": "2026-10-12",
   "entries": [
     {
       "id": "abbeville-racecourse",
@@ -2488,6 +2488,15 @@
       "address_observed": "The Royal Bangkok Sports Club, 1 Henri Dunant Street, Pathumwan Bangkok 10330, Thailand",
       "coordinate_method": "Photon/OpenStreetMap RBSC venue polygon cross-checked against the official RBSC contact address and Racing-page venue identity",
       "precision_note": "venue-level Royal Bangkok Sports Club site center used for the fixed RBSC racecourse"
+    },
+    {
+      "id": "united-states--meadowlands-racetrack",
+      "coordinate_source_url": "https://mapcarta.com/22547720",
+      "coordinate_observed": "40.81732, -74.07375",
+      "address_source_url": "https://www.nj.gov/oag/racing/tracks_addresses.html",
+      "address_observed": "Meadowlands Racetrack, 1 Racetrack Drive, East Rutherford, NJ 07073",
+      "coordinate_method": "Mapcarta geolocation cross-checked against NJ Racing Commission racecourse address",
+      "precision_note": "physical racetrack venue center"
     }
   ]
 }
