@@ -6053,6 +6053,56 @@
         "Source absence or acquisition failure is not cancellation/non-running evidence."
       ],
       "notes": "The official 2026 calendar has 21 meetings. From the 8 October review point the forward dates are 18 October at Ljutomer, 25 October at Šentjernej, and 14 November plus 5 December at Komenda."
+    },
+    {
+      "readiness_id": "united-states--us-nj-meadowlands-thoroughbred-turf-system--meadowlands-2026-turf-events",
+      "country_id": "united-states",
+      "country_tracker_delivery_no": "30",
+      "system_id": "us-nj-meadowlands-thoroughbred-turf-system",
+      "system_name_en": "New Jersey Meadowlands 2026 Thoroughbred turf",
+      "authority_source_key": "united-states/new-jersey-racing-commission/meadowlands-2026-turf-events",
+      "racecourse_ids": [
+        "united-states--meadowlands-racetrack"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "daily",
+        "near_meeting",
+        "weekly"
+      ],
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "partial",
+      "checked_date": "2026-10-12",
+      "evidence_reviewed_at": "2026-10-12",
+      "revalidation_trigger": "Revalidate on official next-year season publication, operator event changes, NJRC amendments or source access changes.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/30-united-states/final-summary.json",
+      "limitations": [
+        "One 2026 Meadowlands Thoroughbred turf meet only, not Standardbred or nationwide U.S. coverage.",
+        "Source-visible operator events show eight approved dates; 2026-09-26 absent, not confirmed cancelled.",
+        "Date and reviewed physical venue only, C.",
+        "Source missing/failed does not prove non-running.",
+        "No 2027 recurrence until new official dates verified."
+      ],
+      "notes": "GitHub Actions verified operator event dates and rank-C candidate for 2026-10-16. NJRC approved PDF prints nine Meadowlands turf days; operator calendar currently confirms eight."
     }
   ],
   "last_updated": "2026-10-11"
