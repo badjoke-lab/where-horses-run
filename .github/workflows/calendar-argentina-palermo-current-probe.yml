@@ -82,7 +82,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 - /tmp/palermo/calendar-html.out <<'PY'
+          python3 - /tmp/palermo/schedule-html.out <<'PY'
           import html,re,sys
           raw=open(sys.argv[1],errors='replace').read()
 
