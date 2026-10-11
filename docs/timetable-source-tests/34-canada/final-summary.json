@@ -1,9 +1,9 @@
 {
   "country": "Canada",
-  "status": "Partial",
+  "status": "Partial — RIGHTS_BLOCKED for new AGCO Mohawk production collector",
   "checked_date": "2026-10-11",
-  "technical_rank": "C active production for Woodbine Mohawk Park; A remains technical prototype capability for reviewed Standardbred Canada routes; country coverage incomplete",
-  "public_ceiling": "C",
+  "technical_rank": "C-capable technical prototype for Woodbine Mohawk Park; not deployed. Standardbred Canada A-capable routes are review/reference-only. Country-wide coverage incomplete.",
+  "public_ceiling": "No new Canada production publishing from PR #1323 until source-specific rights review passes (intended eventual ceiling: C)",
   "systems": [
     "Ontario Racing Thoroughbred, Standardbred, and Quarter Horse",
     "Standardbred Canada national harness information",
@@ -21,5 +21,20 @@
     "first_race_time": true,
     "per_race_post_times": true
   },
-  "decision": "Production is activated only for AGCO-approved 2026 Woodbine Mohawk Park meeting dates at rank C. The PDF exposes exactly 222 approved dates and a fixed track location. Standardbred Canada retains richer reviewed technical capability, but national multi-province and multi-code completeness is not established."
+  "decision": "RIGHTS REVIEW HOLD — not deployed, not merged. AGCO PDF yields 222 dates in the reviewed technical extraction, but the PDF's automated-access and normalized-data redistribution permissions are not established. The proposed Ontario Standardbred Woodbine Mohawk Park C-level collector must remain disabled / unmerged; Standardbred Canada must remain reference-only absent permission. No Canada-wide completeness claim.",
+  "rights_review": {
+    "status": "RIGHTS_BLOCKED",
+    "review_date": "2026-10-11",
+    "production_approved": false,
+    "automated_access_approved": false,
+    "normalized_schedule_redistribution_approved": false,
+    "agco_pdf_licence": "not verified",
+    "required_evidence": "Source-specific license or written rights-holder authorization for automated retrieval and public display of normalized date+venue records, plus attribution/access conditions; or replacement with a source having those explicit grants.",
+    "context_urls": [
+      "https://www.ontario.ca/page/open-government-licence-ontario",
+      "https://standardbredcanada.ca/content/about-entries-and-results.html",
+      "https://ontarioracing.com/news-and-results/top-racing-headlines/agco-and-olg-approve-race-dates-for-four-ontario-t"
+    ],
+    "note": "The Ontario Data Catalogue 'Horse race dates' dataset is under review; it is not proven to be the same work as the AGCO PDF and does not establish a licence."
+  }
 }
