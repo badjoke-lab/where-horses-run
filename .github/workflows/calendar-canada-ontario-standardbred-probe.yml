@@ -89,3 +89,83 @@ jobs:
               if any(k in u.lower() for k in ['race','entry','program','card','schedule','calendar']):
                   print('SC_LINK',u)
           PY
+
+      - name: Probe Standardbred Canada race-dates endpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/canada-racedates
+          url='https://standardbredcanada.ca/racing/racedates'
+          out='/tmp/canada-racedates/page.html'
+          code="$(curl -L -sS -A "$UA" --connect-timeout 12 --max-time 40 -o "$out" -w '%{http_code}' "$url" || true)"
+          echo "SC_RACEDATES_PAGE HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) URL=$url"
+          python3 - "$out" <<'PY'
+          import html,re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+          text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
+          text=html.unescape(re.sub(r'<[^>]+>',' ',text))
+          text=re.sub(r'\s+',' ',text).strip()
+          print('SC_RACEDATES_TEXT_LEN',len(text))
+          for needle in ['Race Dates','October','November','December','2026','Woodbine Mohawk Park','Flamboro Downs','Western Fair']:
+              p=text.lower().find(needle.lower())
+              if p>=0:
+                  print('SC_RACEDATES_TEXT',needle,text[max(0,p-600):p+9000])
+          for m in re.finditer(r'<form\b[^>]*>(.*?)</form>',raw,re.I|re.S):
+              block=m.group(0)
+              action=re.search(r'action=["\']([^"\']*)["\']',block,re.I)
+              method=re.search(r'method=["\']([^"\']*)["\']',block,re.I)
+              print('FORM',action.group(1) if action else '',method.group(1) if method else '')
+              for s in re.finditer(r'<select\b[^>]*name=["\']([^"\']+)["\'][^>]*>(.*?)</select>',block,re.I|re.S):
+                  name=s.group(1)
+                  opts=[]
+                  for o in re.finditer(r'<option\b[^>]*value=["\']?([^"\' >]*)["\']?[^>]*>(.*?)</option>',s.group(2),re.I|re.S):
+                      label=html.unescape(re.sub(r'<[^>]+>',' ',o.group(2)))
+                      label=re.sub(r'\s+',' ',label).strip()
+                      opts.append((o.group(1),label))
+                  print('SELECT',name,opts[:100])
+              for inp in re.finditer(r'<input\b[^>]*>',block,re.I):
+                  tag=inp.group(0)
+                  name=re.search(r'name=["\']([^"\']+)["\']',tag,re.I)
+                  value=re.search(r'value=["\']([^"\']*)["\']',tag,re.I)
+                  typ=re.search(r'type=["\']([^"\']+)["\']',tag,re.I)
+                  if name:
+                      print('INPUT',name.group(1),value.group(1) if value else '',typ.group(1) if typ else '')
+          for pat,label in [(r'<script[^>]+src=["\']([^"\']+)["\']','SCRIPT'),(r'href=["\']([^"\']+)["\']','LINK')]:
+              seen=set()
+              for m in re.finditer(pat,raw,re.I):
+                  u=html.unescape(m.group(1))
+                  lu=u.lower()
+                  if any(k in lu for k in ['race','date','ajax','json','api','entry','result','schedule']):
+                      if u not in seen:
+                          seen.add(u); print(label,u)
+          PY
+
+      - name: Inspect Standardbred Canada page scripts for race-date calls
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          python3 - /tmp/canada-racedates/page.html <<'PY' > /tmp/canada-racedates/scripts.txt
+          import html,re,sys
+          from urllib.parse import urljoin
+          raw=open(sys.argv[1],errors='replace').read()
+          seen=[]
+          for m in re.finditer(r'<script[^>]+src=["\']([^"\']+)["\']',raw,re.I):
+              u=urljoin('https://standardbredcanada.ca/',html.unescape(m.group(1)))
+              if u not in seen: seen.append(u)
+          print('\n'.join(seen))
+          PY
+          n=0
+          while IFS= read -r url; do
+            [ -n "$url" ] || continue
+            n=$((n+1))
+            out="/tmp/canada-racedates/script-$n.js"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 10 --max-time 30 -o "$out" -w '%{http_code}' "$url" || true)"
+            [ "$code" = "200" ] || continue
+            if grep -Eqi 'racedate|race.?date|ajax|drupalSettings|views/ajax|json' "$out"; then
+              echo "SCRIPT_MATCH $url"
+              grep -Eio '.{0,220}(racedate|race.?date|views/ajax|ajax|json).{0,450}' "$out" | head -n 80 || true
+            fi
+          done < /tmp/canada-racedates/scripts.txt
