@@ -117,3 +117,51 @@ jobs:
                   if any(k in s.lower() for k in ['race','racing','event']):
                       print('RBSC_RACING_JSONLD',name,s[:10000].replace('\n',' '))
           PY
+
+      - name: Confirm RBSC physical venue
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/rbsc-location
+          for item in \
+            'contact|https://www.rbsc.org/contact/' \
+            'about|https://www.rbsc.org/about/'; do
+            name="${item%%|*}"
+            url="${item#*|}"
+            out="/tmp/rbsc-location/$name.out"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+            echo "RBSC_LOCATION_PAGE name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0)"
+          done
+          python3 - <<'PY'
+          import html,re
+          from pathlib import Path
+          for name in ['contact','about']:
+              raw=(Path('/tmp/rbsc-location')/(name+'.out')).read_text(errors='replace')
+              text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+              text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
+              text=html.unescape(re.sub(r'<[^>]+>',' ',text))
+              text=re.sub(r'\s+',' ',text).strip()
+              for needle in ['Henri Dunant','Pathum Wan','Bangkok','10330','Royal Bangkok Sports Club']:
+                  p=text.lower().find(needle.lower())
+                  if p>=0:
+                      print('RBSC_LOCATION_TEXT',name,needle,text[max(0,p-700):p+3500])
+          PY
+
+      - name: Geocode RBSC official address
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='WhereHorsesRun/1.0 (+https://github.com/badjoke-lab/where-horses-run)'
+          for q in \
+            'Royal Bangkok Sports Club, Bangkok, Thailand' \
+            '1 Henri Dunant Road, Pathum Wan, Bangkok 10330, Thailand'; do
+            echo "RBSC_GEOCODE_QUERY $q"
+            curl -L -sS -A "$UA" --get \
+              --data-urlencode "q=$q" \
+              --data 'format=jsonv2' \
+              --data 'limit=5' \
+              'https://nominatim.openstreetmap.org/search' |
+            python3 -c "import json,sys; rows=json.load(sys.stdin); print('RBSC_GEOCODE_RESULTS',len(rows)); [print('RBSC_GEOCODE',json.dumps({k:r.get(k) for k in ['lat','lon','display_name','osm_type','osm_id','type','class']},ensure_ascii=False)) for r in rows]"
+            sleep 1
+          done
