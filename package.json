@@ -121,7 +121,8 @@
     "validate:kenya-jck": "node --check scripts/timetable/kenya-jck-calendar-core.mjs && node --check scripts/timetable/run-kenya-jck-official-window.mjs && node scripts/check-kenya-jck-adapter.mjs",
     "validate:lithuania-trotting": "node --check scripts/timetable/lithuania-trotting-calendar-core.mjs && node --check scripts/timetable/run-lithuania-trotting-official-window.mjs && node scripts/check-lithuania-trotting-adapter.mjs",
     "validate:estonia-tuula": "node --check scripts/timetable/estonia-tuula-calendar-core.mjs && node --check scripts/timetable/run-estonia-tuula-official-window.mjs && node scripts/check-estonia-tuula-adapter.mjs",
-    "validate:thailand-rbsc": "node --check scripts/timetable/thailand-rbsc-calendar-core.mjs && node --check scripts/timetable/run-thailand-rbsc-official-window.mjs && node scripts/check-thailand-rbsc-adapter.mjs"
+    "validate:thailand-rbsc": "node --check scripts/timetable/thailand-rbsc-calendar-core.mjs && node --check scripts/timetable/run-thailand-rbsc-official-window.mjs && node scripts/check-thailand-rbsc-adapter.mjs",
+    "validate:canada-mohawk-agco": "node --check scripts/timetable/canada-mohawk-agco-calendar-core.mjs && node --check scripts/timetable/run-canada-mohawk-agco-official-window.mjs && node scripts/check-canada-mohawk-agco-adapter.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0",
