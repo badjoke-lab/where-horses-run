@@ -72,17 +72,27 @@
       "page_kind": "country",
       "method_class": "active_source_driven",
       "source_ids": [
-        "equibase-entries",
-        "equibase-condition-books",
+        "arci-racing-regulatory-jurisdictions",
         "hisa-current-racetracks",
-        "arci-racing-regulatory-jurisdictions"
+        "meadowlands-2026-turf-events",
+        "njrc-2026-race-dates",
+        "txrc-2026-live-race-dates"
       ],
-      "primary_source_url": "https://www.equibase.com/static/entry/index.html",
+      "primary_source_url": "https://www.njoag.gov/about/divisions-and-offices/nj-racing-commission-home/race-dates/",
       "cadence_class": "source-driven",
       "trigger_class": "meeting_or_source_window",
       "zero_policy": "emit_only_source_visible_current_meetings",
       "runner_state": "candidate",
-      "method_complete": true
+      "method_complete": true,
+      "discovery_model": "state_regulator_plus_racing_code_authority",
+      "reference_only_sources": [
+        "equibase-entries",
+        "equibase-condition-books",
+        "usta-racing-database",
+        "nsa-2026-steeplechase-schedule"
+      ],
+      "date_publication_rule": "source_visible_current_year_exact_live_meeting_dates_only",
+      "production_scope_note": "NJ Meadowlands 2026 Thoroughbred turf only from operator-visible dates cross-checked against regulator-approved 2026 mother set; no nationwide coverage or Equibase automated ingestion. Sep 26 missing from events is not cancellation."
     },
     {
       "tier": 31,
