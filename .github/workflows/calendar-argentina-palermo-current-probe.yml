@@ -12,225 +12,52 @@ permissions:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 6
     steps:
       - uses: actions/checkout@v4
 
-      - name: Probe Palermo official schedule pages
+      - name: Probe official Palermo 2026 calendar sources
         shell: bash
         run: |
           set -euo pipefail
           UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
           mkdir -p /tmp/palermo
           for item in \
-            'calendar-es|https://www.palermo.com.ar/es/turf/n/calendario-2026' \
-            'schedule-en|https://www.palermo.com.ar/en/turf/racing-schedule-and-results' \
-            'home|https://www.palermo.com.ar/'; do
+            'calendar-html|https://old.palermo.com.ar/es/turf/n/calendario-2026' \
+            'schedule-html|https://old.palermo.com.ar/en/turf/racing-schedule-and-results/2026' \
+            'calendar-pdf|https://old.palermo.com.ar/assets/upload/CALENDARIO.pdf'; do
             name="${item%%|*}"
             url="${item#*|}"
-            out="/tmp/palermo/$name.html"
-            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
-            final="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o /dev/null -w '%{url_effective}' "$url" || true)"
-            echo "PALERMO_PAGE name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) FINAL=$final"
+            out="/tmp/palermo/$name.out"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 12 --max-time 35 -o "$out" -w '%{http_code}' "$url" || true)"
+            echo "PALERMO_SOURCE name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) URL=$url"
           done
+          file /tmp/palermo/calendar-pdf.out || true
 
-      - name: Inspect Palermo visible schedule text and links
+      - name: Extract official Palermo calendar PDF
         shell: bash
         run: |
           set -euo pipefail
-          python3 - <<'PY'
-          import html,re
-          from pathlib import Path
-          for name in ['calendar-es','schedule-en','home']:
-              raw=(Path('/tmp/palermo')/(name+'.html')).read_text(errors='replace')
-              text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
-              text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
-              text=html.unescape(re.sub(r'<[^>]+>',' ',text))
-              text=re.sub(r'\s+',' ',text).strip()
-              print('PALERMO_TEXT',name,text[:14000])
-              for needle in ['2026','Octubre','October','Noviembre','November','Diciembre','December','Palermo','Carreras','Racing']:
-                  p=text.lower().find(needle.lower())
-                  if p>=0:
-                      print('PALERMO_MATCH',name,needle,text[max(0,p-500):p+5200])
-              seen=[]
-              for m in re.finditer(r'href=["\']([^"\']+)["\']',raw,re.I):
-                  u=html.unescape(m.group(1))
-                  low=u.lower()
-                  if any(k in low for k in ['calendar','calend','program','schedule','result','race','turf','pdf','2026']):
-                      if u not in seen: seen.append(u)
-              for u in seen[:180]:
-                  print('PALERMO_LINK',name,u)
-          PY
-
-      - name: Inspect embedded data and endpoint hints
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          import html,re
-          from pathlib import Path
-          for name in ['calendar-es','schedule-en']:
-              raw=(Path('/tmp/palermo')/(name+'.html')).read_text(errors='replace')
-              for label,pat in [
-                  ('JSONLD',r'<script[^>]+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>'),
-                  ('IFRAME',r'<iframe[^>]+src=["\']([^"\']+)["\']'),
-                  ('SCRIPT',r'<script[^>]+src=["\']([^"\']+)["\']')
-              ]:
-                  n=0
-                  for m in re.finditer(pat,raw,re.I|re.S):
-                      s=html.unescape(m.group(1)).strip()
-                      if label=='SCRIPT' and not any(k in s.lower() for k in ['calendar','race','turf','api','ajax','js']): continue
-                      print('PALERMO_'+label,name,s[:2200].replace('\n',' '))
-                      n+=1
-                      if n>=120: break
-          PY
-
-      - name: Probe official legacy Palermo turf site
-        shell: bash
-        run: |
-          set -euo pipefail
-          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
-          mkdir -p /tmp/palermo-old
-          for item in \
-            'turf|https://old.palermo.com.ar/es/turf' \
-            'calendar-2026|https://old.palermo.com.ar/es/turf/n/calendario-2026' \
-            'schedule-en|https://old.palermo.com.ar/en/turf/racing-schedule-and-results' \
-            'calendar-root|https://old.palermo.com.ar/es/turf/calendario' \
-            'results|https://old.palermo.com.ar/es/turf/resultados'; do
-            name="${item%%|*}"
-            url="${item#*|}"
-            out="/tmp/palermo-old/$name.html"
-            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
-            final="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o /dev/null -w '%{url_effective}' "$url" || true)"
-            echo "PALERMO_OLD_PAGE name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) FINAL=$final"
-          done
-
-      - name: Inspect legacy Palermo turf routes
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          import html,re
-          from pathlib import Path
-          for name in ['turf','calendar-2026','schedule-en','calendar-root','results']:
-              raw=(Path('/tmp/palermo-old')/(name+'.html')).read_text(errors='replace')
-              text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
-              text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
-              text=html.unescape(re.sub(r'<[^>]+>',' ',text))
-              text=re.sub(r'\s+',' ',text).strip()
-              print('PALERMO_OLD_TEXT',name,text[:18000])
-              for needle in ['2026','octubre','noviembre','diciembre','programa','resultado','reunión','reunion','carrera','calendario']:
-                  p=text.lower().find(needle.lower())
-                  if p>=0:
-                      print('PALERMO_OLD_MATCH',name,needle,text[max(0,p-600):p+6500])
-              seen=[]
-              for m in re.finditer(r'href=["\']([^"\']+)["\']',raw,re.I):
-                  u=html.unescape(m.group(1))
-                  low=u.lower()
-                  if any(k in low for k in ['turf','calendar','calend','program','result','2026','carrera','reunion','reunión','pdf']):
-                      if u not in seen: seen.append(u)
-              for u in seen[:220]:
-                  print('PALERMO_OLD_LINK',name,u)
-          PY
-
-      - name: Enumerate Palermo 2026 meeting anchors
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 - /tmp/palermo-old/schedule-en.html <<'PY'
-          import html,re,sys
-          raw=open(sys.argv[1],errors='replace').read()
-          # Show compact source context for every 2026 see-day link.
-          seen=[]
-          for m in re.finditer(r'href=["\']([^"\']*/see-day/(\d+))["\']',raw,re.I):
-              url=html.unescape(m.group(1))
-              ident=m.group(2)
-              if ident in seen: continue
-              seen.append(ident)
-              a=max(0,m.start()-1200); b=min(len(raw),m.end()+1200)
-              ctx=raw[a:b]
-              txt=html.unescape(re.sub(r'<[^>]+>',' ',ctx))
-              txt=re.sub(r'\s+',' ',txt).strip()
-              print('PALERMO_MEETING_LINK',ident,url,txt[:2200])
-          print('PALERMO_MEETING_LINK_COUNT',len(seen))
-          # Surface any useful date attributes or calendar classes near the 2026 block.
-          for pat in [
-              r'data-date=["\']([^"\']+)["\']',
-              r'data-year=["\']([^"\']+)["\']',
-              r'data-month=["\']([^"\']+)["\']',
-              r'data-day=["\']([^"\']+)["\']'
-          ]:
-              vals=[]
-              for m in re.finditer(pat,raw,re.I):
-                  v=m.group(1)
-                  if v not in vals: vals.append(v)
-              print('PALERMO_ATTR',pat,vals[:200])
-          PY
-
-      - name: Parse Palermo future month blocks
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 - /tmp/palermo-old/schedule-en.html <<'PY'
-          import html,re,sys
-          raw=open(sys.argv[1],errors='replace').read()
-          month_map={m:i+1 for i,m in enumerate(['January','February','March','April','May','June','July','August','September','October','November','December'])}
-          # Split by the visible month headers rendered by the official calendar.
-          hdr=list(re.finditer(r'(January|February|March|April|May|June|July|August|September|October|November|December)\s+2026',raw,re.I))
-          rows=[]
-          for i,h in enumerate(hdr):
-              month_name=h.group(1).title()
-              month=month_map[month_name]
-              start=h.end()
-              end=hdr[i+1].start() if i+1<len(hdr) else len(raw)
-              seg=raw[start:end]
-              for m in re.finditer(r'<a[^>]+href=["\']([^"\']*/see-day/(\d+))["\'][^>]*>\s*(\d{1,2})\s*</a>',seg,re.I|re.S):
-                  url=html.unescape(m.group(1))
-                  ident=int(m.group(2))
-                  day=int(m.group(3))
-                  rows.append((f'2026-{month:02d}-{day:02d}',ident,url))
-          # De-duplicate repeated EN/ES rendering while preserving date/id pairs.
-          seen=set()
-          for date,ident,url in sorted(rows):
-              key=(date,ident)
-              if key in seen: continue
-              seen.add(key)
-              if date>='2026-10-01':
-                  print('PALERMO_FUTURE_DATE',date,ident,url)
-          print('PALERMO_PARSED_MEETINGS',len(seen))
-          future=[x for x in seen if x[0]>='2026-10-11']
-          print('PALERMO_FUTURE_COUNT',len(future))
-          PY
-
-      - name: Probe Palermo official 2026 calendar PDF
-        shell: bash
-        run: |
-          set -euo pipefail
-          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
-          url='https://old.palermo.com.ar/assets/upload/CALENDARIO.pdf'
-          out='/tmp/palermo-old/calendario.pdf'
-          code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
-          echo "PALERMO_PDF HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) URL=$url"
-          file "$out" || true
-          pdftotext -layout "$out" /tmp/palermo-old/calendario.txt
-          python3 - /tmp/palermo-old/calendario.txt <<'PY'
+          pdftotext -layout /tmp/palermo/calendar-pdf.out /tmp/palermo/calendar.txt
+          python3 - /tmp/palermo/calendar.txt <<'PY'
           import re,sys
-          text=open(sys.argv[1],errors='replace').read()
-          text=re.sub(r'\s+',' ',text).strip()
-          print('PALERMO_PDF_TEXT',text[:18000])
-          pats=[
-              r'\b(\d{1,2})[/-](\d{1,2})[/-](2026)\b',
-              r'\b(\d{1,2})\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\s+(?:de\s+)?2026\b',
-              r'\b(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\s+(\d{1,2})\b'
-          ]
+          raw=open(sys.argv[1],errors='replace').read()
+          text=re.sub(r'\s+',' ',raw).strip()
+          print('PALERMO_PDF_TEXT',text[:22000])
+          print('PALERMO_PDF_RAW_LEN',len(raw))
+          for needle in ['OCTUBRE','NOVIEMBRE','DICIEMBRE','Octubre','Noviembre','Diciembre']:
+              p=text.find(needle)
+              if p>=0:
+                  print('PALERMO_PDF_MONTH',needle,text[max(0,p-500):p+6500])
+          # Extract all explicit 2026 date forms if present.
           seen=[]
-          for pat in pats:
+          for pat in [
+            r'\b(\d{1,2})[/-](\d{1,2})[/-](2026)\b',
+            r'\b(\d{1,2})\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\s+(?:de\s+)?2026\b'
+          ]:
               for m in re.finditer(pat,text,re.I):
                   s=m.group(0)
                   if s not in seen: seen.append(s)
-          print('PALERMO_PDF_DATE_MATCHES',len(seen))
+          print('PALERMO_PDF_EXPLICIT_DATES',len(seen))
           for s in seen: print('PALERMO_PDF_DATE',s)
-          for needle in ['OCTUBRE','NOVIEMBRE','DICIEMBRE','Octubre','Noviembre','Diciembre']:
-              p=text.find(needle)
-              if p>=0: print('PALERMO_PDF_MONTH',needle,text[max(0,p-500):p+5000])
           PY
