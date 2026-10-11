@@ -1,0 +1,91 @@
+name: Canada Ontario Standardbred Calendar probe
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-canada-ontario-standardbred-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Probe reviewed Canada official routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/canada
+          for item in \
+            'ontario|https://ontarioracing.com/news-and-results/top-racing-headlines/agco-and-olg-approve-race-dates-for-four-ontario-t' \
+            'standardbred|https://standardbredcanada.ca/racing'; do
+            name="${item%%|*}"
+            url="${item#*|}"
+            out="/tmp/canada/$name.out"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 12 --max-time 40 -o "$out" -w '%{http_code}' "$url" || true)"
+            final="$(curl -L -sS -A "$UA" --connect-timeout 12 --max-time 40 -o /dev/null -w '%{url_effective}' "$url" || true)"
+            echo "CANADA_PAGE name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) FINAL=$final"
+          done
+
+      - name: Inspect Ontario Racing date evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - /tmp/canada/ontario.out <<'PY'
+          import html,re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+          text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
+          text=html.unescape(re.sub(r'<[^>]+>',' ',text))
+          text=re.sub(r'\s+',' ',text).strip()
+          print('ONTARIO_TEXT_LEN',len(text))
+          for needle in ['2026','Woodbine','Mohawk','Fort Erie','Ajax','race dates','approved']:
+              p=text.lower().find(needle.lower())
+              if p>=0:
+                  print('ONTARIO_TEXT',needle,text[max(0,p-600):p+8000])
+          pats=[
+            r'\b(20\d{2})[/-](\d{1,2})[/-](\d{1,2})\b',
+            r'\b(\d{1,2})[/-](\d{1,2})[/-](20\d{2})\b',
+            r'\b(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(20\d{2})\b',
+            r'\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2})[,]?\s+(20\d{2})\b'
+          ]
+          seen=[]
+          for pat in pats:
+              for m in re.finditer(pat,text,re.I):
+                  s=m.group(0)
+                  if s not in seen: seen.append(s)
+          print('ONTARIO_DATES',len(seen))
+          for x in seen[:180]: print('ONTARIO_DATE',x)
+          for m in re.finditer(r'href=["\']([^"\']+)["\']',raw,re.I):
+              u=html.unescape(m.group(1))
+              if any(k in u.lower() for k in ['race','date','schedule','calendar','woodbine','mohawk','fort','ajax','pdf']):
+                  print('ONTARIO_LINK',u)
+          PY
+
+      - name: Inspect Standardbred Canada racing page
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - /tmp/canada/standardbred.out <<'PY'
+          import html,re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+          text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
+          text=html.unescape(re.sub(r'<[^>]+>',' ',text))
+          text=re.sub(r'\s+',' ',text).strip()
+          print('SC_TEXT_LEN',len(text))
+          for needle in ['2026','Today','Tomorrow','Mohawk','Flamboro','Western Fair','Rideau','Race Programs','Entries']:
+              p=text.lower().find(needle.lower())
+              if p>=0:
+                  print('SC_TEXT',needle,text[max(0,p-600):p+9000])
+          for m in re.finditer(r'href=["\']([^"\']+)["\']',raw,re.I):
+              u=html.unescape(m.group(1))
+              if any(k in u.lower() for k in ['race','entry','program','card','schedule','calendar']):
+                  print('SC_LINK',u)
+          PY
