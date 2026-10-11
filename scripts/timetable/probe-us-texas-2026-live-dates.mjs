@@ -65,7 +65,23 @@ const summary = {
 };
 console.log('TXRC_PDF_EXTRACTION_DIAGNOSTICS ' + JSON.stringify(summary));
 if (allText.length < 160) {
-  throw new Error('TXRC PDF has too little machine-readable text to establish actual dated race meetings; needs geometry/image or alternative source extraction, not production C');
+  // Successful access does not imply successful parsing. This is an image-heavy PDF.
+  // The probe completes with a truthful not-ready classification; never publish C.
+  console.log(JSON.stringify({
+    probe: 'txrc-2026-live-race-dates',
+    status: 'source_reachable_image_only',
+    index_url: INDEX_URL,
+    pdf_url: pdfResponse.url,
+    pdf_pages: pdf.numPages,
+    pdf_bytes: pdfByteLength,
+    text_characters: allText.length,
+    needs_alternate_extraction: true,
+    production_calendar_ready: false,
+    meeting_records_emitted: 0,
+    raw_document_retained: false,
+    public_calendar_changed: false,
+  }, null, 2));
+  process.exit(0);
 }
 if (!/2026/.test(allText) || !/rac(?:e|ing)/i.test(allText)) {
   throw new Error('TXRC PDF 2026 horse-racing text fingerprint missing');
