@@ -54,6 +54,16 @@ export function assertMeadowlandsTurfSeason(rows) {
   return dates;
 }
 
+export function reviewMeadowlandsTurfSeason(rows) {
+  const dates=[...new Set(rows.map(r=>r.date))].sort();
+  if(dates.some(date=>!NJ_EXPECTED_TURF_DATES.includes(date)))
+    throw Error('NJ turf source contains out-of-scope dates');
+  // A regulator-approved date missing from an operator event listing is NOT cancellation.
+  // Preserve source-visible dates and surface an explicit coverage discrepancy.
+  if(dates.length<5) throw Error('NJ turf source-visible dates unexpectedly sparse');
+  return {dates,missing_approved_dates:NJ_EXPECTED_TURF_DATES.filter(date=>!dates.includes(date))};
+}
+
 export function buildNjTurfCandidate(row,checkedAt) {
   const ev={source_id:NJ_SOURCE_ID,official_source_url:row.source_url,observed_at:checkedAt,successfully_verified_at:checkedAt,acquisition_method:'automatic'};
   const candidateId='us-nj-meadowlands-turf-'+row.date;
