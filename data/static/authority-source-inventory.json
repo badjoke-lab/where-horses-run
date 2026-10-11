@@ -909,11 +909,11 @@
       "official_source_id": "rbsc-events",
       "official_source_url": "https://www.rbsc.org/events/",
       "source_kind": "calendar",
-      "source_status": "partial",
-      "last_checked_date": "2026-06-20",
+      "source_status": "verified",
+      "last_checked_date": "2026-10-11",
       "capability_rank": "C",
       "adapter_candidate_status": "candidate",
-      "notes": "Reviewed RBSC event route confirms the Bangkok racing context. Country-wide completeness and reusable race times are not claimed."
+      "notes": "RBSC event surfaces remain accessible, but production schedule discovery now uses the dedicated official Racing page."
     },
     {
       "country_id": "philippines",
@@ -2146,6 +2146,22 @@
       "capability_rank": "C",
       "adapter_candidate_status": "candidate",
       "notes": "Official Ristūnų sportas Events REST API is GitHub-Actions-accessible. Event descriptions expose the physical venue when the API venue object is absent. Automatic publication remains rank C; unknown venue labels are rejected rather than guessed."
+    },
+    {
+      "country_id": "thailand",
+      "authority_id": "rbsc",
+      "authority_name_en": "Royal Bangkok Sports Club",
+      "authority_name_local": null,
+      "authority_type": "racecourse_operator",
+      "racecourse_scope": "single_racecourse",
+      "official_source_id": "rbsc-racing-calendar",
+      "official_source_url": "https://www.rbsc.org/racing/",
+      "source_kind": "calendar",
+      "source_status": "verified",
+      "last_checked_date": "2026-10-11",
+      "capability_rank": "C",
+      "adapter_candidate_status": "candidate",
+      "notes": "The official RBSC Racing page is GitHub-Actions-accessible and exposes the full source-visible 2026 racing calendar. Automatic publication is bounded to meeting date plus the fixed RBSC racecourse at rank C."
     }
   ]
 }

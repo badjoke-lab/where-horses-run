@@ -67,6 +67,7 @@ const SYSTEMS = [
   { key: 'kenya', file: 'kenya.json', country_id: 'kenya', authority_id: 'jockey-club-of-kenya', racing_system_id: 'ngong-jck-racing-system' },
   { key: 'lithuania', file: 'lithuania.json', country_id: 'lithuania', authority_id: 'trotting-horse-league', racing_system_id: 'trotting-league-system' },
   { key: 'estonia', file: 'estonia.json', country_id: 'estonia', authority_id: 'estonian-trotting-union', racing_system_id: 'tuula-trotting-system' },
+  { key: 'thailand', file: 'thailand.json', country_id: 'thailand', authority_id: 'rbsc', racing_system_id: 'thailand-rbsc-system' },
 ];
 
 const STATE_FILES = {

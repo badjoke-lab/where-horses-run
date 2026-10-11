@@ -1,6 +1,6 @@
 {
   "schema_version": "racecourse-location-supplement-evidence-v1",
-  "reviewed_at": "2026-10-10",
+  "reviewed_at": "2026-10-11",
   "entries": [
     {
       "id": "abbeville-racecourse",
@@ -2479,6 +2479,15 @@
       "address_observed": "Sandown Park Racecourse, Portsmouth Road, Esher, Surrey KT10 9AJ",
       "coordinate_method": "reviewed OpenStreetMap-derived racecourse point cross-checked against The Jockey Club official Sandown Park address",
       "precision_note": "venue-level racecourse point"
+    },
+    {
+      "id": "thailand--royal-bangkok-sports-club-racecourse",
+      "coordinate_source_url": "https://www.openstreetmap.org/way/157522259",
+      "coordinate_observed": "13.7391539, 100.5371236",
+      "address_source_url": "https://www.rbsc.org/contact/",
+      "address_observed": "The Royal Bangkok Sports Club, 1 Henri Dunant Street, Pathumwan Bangkok 10330, Thailand",
+      "coordinate_method": "Photon/OpenStreetMap RBSC venue polygon cross-checked against the official RBSC contact address and Racing-page venue identity",
+      "precision_note": "venue-level Royal Bangkok Sports Club site center used for the fixed RBSC racecourse"
     }
   ]
 }

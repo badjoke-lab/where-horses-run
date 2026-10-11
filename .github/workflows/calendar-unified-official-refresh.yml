@@ -116,6 +116,9 @@ on:
       - 'scripts/timetable/estonia-tuula-calendar-core.mjs'
       - 'scripts/timetable/run-estonia-tuula-official-window.mjs'
       - 'scripts/check-estonia-tuula-adapter.mjs'
+      - 'scripts/timetable/thailand-rbsc-calendar-core.mjs'
+      - 'scripts/timetable/run-thailand-rbsc-official-window.mjs'
+      - 'scripts/check-thailand-rbsc-adapter.mjs'
       - 'scripts/check-qatar-qrec-adapter.mjs'
       - 'scripts/timetable/rebuild-unified-non-japan-on-main.sh'
       - 'scripts/timetable/italy-masaf-core.mjs'
@@ -845,6 +848,9 @@ jobs:
           node scripts/timetable/run-estonia-tuula-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/estonia.json
+          node scripts/timetable/run-thailand-rbsc-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/thailand.json
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -907,7 +913,8 @@ jobs:
             --artifact=.calendar-unified/slovenia.json \
             --artifact=.calendar-unified/kenya.json \
             --artifact=.calendar-unified/lithuania.json \
-            --artifact=.calendar-unified/estonia.json
+            --artifact=.calendar-unified/estonia.json \
+            --artifact=.calendar-unified/thailand.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -1270,6 +1277,12 @@ jobs:
             --authority-id=estonian-trotting-union \
             --racing-system-id=tuula-trotting-system \
             --timezone=Europe/Tallinn
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/thailand.json \
+            --country-id=thailand \
+            --authority-id=rbsc \
+            --racing-system-id=thailand-rbsc-system \
+            --timezone=Asia/Bangkok
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
