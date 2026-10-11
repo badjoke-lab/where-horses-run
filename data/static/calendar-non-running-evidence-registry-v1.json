@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-non-running-evidence-registry-v1",
-  "reviewed_at": "2026-10-11",
+  "reviewed_at": "2026-10-12",
   "records": [
     {
       "record_id": "japan-jra-system",
@@ -1382,6 +1382,69 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-10-11",
       "notes": "Source absence, a removed calendar row, acquisition failure, parser failure or later schedule edits do not independently prove cancellation/postponement."
+    },
+    {
+      "record_id": "us-nj-monmouth-thoroughbred-2026-system",
+      "country_id": "united-states",
+      "system_id": "us-nj-monmouth-thoroughbred-2026-system",
+      "authority_id": "new-jersey-racing-commission",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "NJRC positive state-approved 2026 exact calendar only. No cancellation/postponement automation.",
+      "evidence_urls": [
+        "https://www.njoag.gov/wp-content/uploads/2026/04/Monmouth-race-dates-2026.pdf"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-10-12",
+      "notes": "Approval is positive meeting-date evidence, but not proof the event could never be cancelled. Source omission or failed extraction is not non-running evidence."
+    },
+    {
+      "record_id": "us-nj-meadowlands-thoroughbred-turf-2026-system",
+      "country_id": "united-states",
+      "system_id": "us-nj-meadowlands-thoroughbred-turf-2026-system",
+      "authority_id": "new-jersey-racing-commission",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "NJRC positive state-approved 2026 exact calendar only. No cancellation/postponement automation.",
+      "evidence_urls": [
+        "https://www.njoag.gov/wp-content/uploads/2026/04/Monmouth-race-dates-2026.pdf"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-10-12",
+      "notes": "Approval is positive meeting-date evidence, but not proof the event could never be cancelled. Source omission or failed extraction is not non-running evidence."
+    },
+    {
+      "record_id": "us-nj-far-hills-steeplechase-2026-system",
+      "country_id": "united-states",
+      "system_id": "us-nj-far-hills-steeplechase-2026-system",
+      "authority_id": "new-jersey-racing-commission",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "NJRC positive state-approved 2026 exact calendar only. No cancellation/postponement automation.",
+      "evidence_urls": [
+        "https://www.njoag.gov/wp-content/uploads/2026/04/Monmouth-race-dates-2026.pdf"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-10-12",
+      "notes": "Approval is positive meeting-date evidence, but not proof the event could never be cancelled. Source omission or failed extraction is not non-running evidence."
     }
   ]
 }
