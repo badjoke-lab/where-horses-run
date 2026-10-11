@@ -167,49 +167,6 @@ jobs:
               print('PALERMO_ATTR',pat,vals[:200])
           PY
 
-      - name: Probe latest Palermo meeting pages
-        shell: bash
-        run: |
-          set -euo pipefail
-          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
-          mkdir -p /tmp/palermo-days
-          python3 - /tmp/palermo-old/schedule-en.html <<'PY' > /tmp/palermo-days/urls.txt
-          import html,re,sys
-          raw=open(sys.argv[1],errors='replace').read()
-          ids=[]
-          for m in re.finditer(r'href=["\']([^"\']*/see-day/(\d+))["\']',raw,re.I):
-              u=html.unescape(m.group(1))
-              i=int(m.group(2))
-              if (i,u) not in ids: ids.append((i,u))
-          for i,u in sorted(ids)[-24:]:
-              if u.startswith('/'): u='https://old.palermo.com.ar'+u
-              elif not u.startswith('http'): u='https://old.palermo.com.ar/'+u.lstrip('/')
-              print(u)
-          PY
-          n=0
-          while IFS= read -r url; do
-            [ -n "$url" ] || continue
-            n=$((n+1))
-            out="/tmp/palermo-days/day-$n.html"
-            code="$(curl -L -sS -A "$UA" --connect-timeout 12 --max-time 35 -o "$out" -w '%{http_code}' "$url" || true)"
-            echo "PALERMO_DAY_PAGE index=$n HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) URL=$url"
-            python3 - "$out" "$url" <<'PY'
-          import html,re,sys
-          raw=open(sys.argv[1],errors='replace').read()
-          text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
-          text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
-          text=html.unescape(re.sub(r'<[^>]+>',' ',text))
-          text=re.sub(r'\s+',' ',text).strip()
-          print('PALERMO_DAY_TEXT',sys.argv[2],text[:5000])
-          links=[]
-          for m in re.finditer(r'href=["\']([^"\']+)["\']',raw,re.I):
-              u=html.unescape(m.group(1))
-              if any(k in u.lower() for k in ['program','pdf','result']):
-                  if u not in links: links.append(u)
-          for u in links[:30]: print('PALERMO_DAY_LINK',sys.argv[2],u)
-          PY
-          done < /tmp/palermo-days/urls.txt
-
       - name: Parse Palermo future month blocks
         shell: bash
         run: |
