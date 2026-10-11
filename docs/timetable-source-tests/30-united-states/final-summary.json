@@ -1,1 +1,55 @@
-{"country":"United States","status":"Partial","checked_date":"2026-06-20","technical_rank":"A for Equibase Thoroughbred; country coverage incomplete","public_ceiling":"C","systems":["Equibase Thoroughbred racing information","State and racetrack fixture authorities"],"official_sources":["https://www.equibase.com/static/entry/index.html","https://mobile.equibase.com/html/index.html","https://www.equibase.com/about/history.cfm"],"confirmed_fields":{"meeting_date":true,"racecourse":true,"first_race_time":true,"per_race_post_times":true},"decision":"Equibase is the Thoroughbred industry's official database and exposes meeting and per-race schedule information, but this pass does not establish complete country-wide coverage across every racing code and state structure. The country page remains capped at C while the Equibase subsystem can support A-level review."}
+{
+  "country": "United States",
+  "status": "Partial — state/code federation discovered; national production runner not implemented",
+  "checked_date": "2026-10-11",
+  "technical_rank": "Equibase Thoroughbred technically A-capable but reference-only; state-level 2026 exact date routes identified for New Jersey and Texas; these routes require separate runnable acquisition tests",
+  "public_ceiling": "C for first state-specific, date+venue-only production pilots after live source verification; no US production support yet",
+  "systems": [
+    "New Jersey Racing Commission 2026 Thoroughbred/Standardbred dates (pilot)",
+    "Texas Racing Commission 2026 live race dates (pilot)",
+    "ARCI state/jurisdiction authority discovery (not feed)",
+    "HISA Thoroughbred venue discovery (not feed)",
+    "National Steeplechase Association 2026 code-specific schedule (reference; not automated feed)",
+    "Arabian/Quarter Horse/Fair circuits (separate code-level discovery)",
+    "Equibase/USTA Thoroughbred/Harness technical coverage checks (reference only)"
+  ],
+  "official_sources": [
+    "https://www.njoag.gov/about/divisions-and-offices/nj-racing-commission-home/race-dates/",
+    "https://www.txrc.texas.gov/home/racetracks",
+    "https://www.arci.com/racing_regulatory_jurisdiction.php",
+    "https://nationalsteeplechase.com/racing/",
+    "https://www.equibase.com/static/entry/index.html"
+  ],
+  "confirmed_fields": {
+    "meeting_date": true,
+    "racecourse": true,
+    "first_race_time": false,
+    "per_race_post_times": false
+  },
+  "decision": "Remove Equibase as U.S. primary automation method. ARCI/HISA/NSA are coverage/discovery inputs, not a ready machine feed. Pilot states New Jersey and Texas have current-year regulator date routes; implement a bounded exact-date/physical-venue collector from an independently usable route, confirm precise approved live days, then register/publish at C. Do not synthesize days from allocation blocks, calendars for past years, licences, or recurring patterns. Unknown code and territory coverage remains explicit. Puerto Rico is tier 24. No source is treated as prohibited merely because a separate commercial licence is absent; actual access and redistribution restrictions are evaluated by source/method, with no circumvention.",
+  "implementation": {
+    "country_runner_status": "active_runner_gap",
+    "pilot_jurisdictions": [
+      "new-jersey",
+      "texas"
+    ],
+    "first_delivery": "date+physical-racecourse only (C) on one verified venue/source; no countrywide completeness claim",
+    "reference_only": [
+      "Equibase",
+      "USTA",
+      "NSA"
+    ],
+    "do_not_operationalize": [
+      "Equibase automated access without permission",
+      "NSA automated feed without permission",
+      "California date block conversion to individual meetings"
+    ],
+    "next_validation": [
+      "source access with honest user-agent / low frequency",
+      "current-year exact published race dates and physical track identity",
+      "source-specific terms/robots and publishing method",
+      "collector deterministic tests and GitHub Actions smoke",
+      "monotonic canonical/public integration and audit"
+    ]
+  }
+}
