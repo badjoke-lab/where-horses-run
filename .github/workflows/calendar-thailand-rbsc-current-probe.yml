@@ -165,3 +165,30 @@ jobs:
             python3 -c "import json,sys; rows=json.load(sys.stdin); print('RBSC_GEOCODE_RESULTS',len(rows)); [print('RBSC_GEOCODE',json.dumps({k:r.get(k) for k in ['lat','lon','display_name','osm_type','osm_id','type','class']},ensure_ascii=False)) for r in rows]"
             sleep 1
           done
+
+      - name: Locate RBSC racecourse OSM object
+        shell: bash
+        run: |
+          set -euo pipefail
+          query='[out:json][timeout:25];(
+            nwr["name"~"Royal Bangkok Sports Club|Bangkok Sports Club|ราชกรีฑา",i](13.72,100.52,13.75,100.55);
+            nwr["sport"="horse_racing"](13.72,100.52,13.75,100.55);
+            nwr["leisure"="track"]["sport"~"horse|equestrian|horse_racing",i](13.72,100.52,13.75,100.55);
+          );out center tags;'
+          curl -L -sS --get --data-urlencode "data=$query" 'https://overpass-api.de/api/interpreter' -o /tmp/rbsc-location/overpass.json
+          python3 - /tmp/rbsc-location/overpass.json <<'PY'
+          import json,sys
+          obj=json.load(open(sys.argv[1]))
+          rows=obj.get('elements') or []
+          print('RBSC_OSM_OBJECTS',len(rows))
+          for r in rows:
+              print('RBSC_OSM_OBJECT',json.dumps({
+                  'type':r.get('type'),
+                  'id':r.get('id'),
+                  'lat':r.get('lat') or (r.get('center') or {}).get('lat'),
+                  'lon':r.get('lon') or (r.get('center') or {}).get('lon'),
+                  'tags':r.get('tags') or {}
+              },ensure_ascii=False))
+          if not rows:
+              raise SystemExit('no RBSC OSM object found')
+          PY
