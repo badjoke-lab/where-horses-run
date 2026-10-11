@@ -77,3 +77,71 @@ jobs:
           console.log('PALERMO_PDF_EXPLICIT_DATES',seen.length);
           for(const s of seen) console.log('PALERMO_PDF_DATE',s);
           NODE
+
+      - name: Parse Palermo calendar DOM order
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - /tmp/palermo/calendar-html.out <<'PY'
+          from html.parser import HTMLParser
+          from urllib.parse import urljoin
+          import re,sys
+
+          MONTHS={m.lower():i+1 for i,m in enumerate([
+            'January','February','March','April','May','June',
+            'July','August','September','October','November','December'
+          ])}
+
+          class P(HTMLParser):
+              def __init__(self):
+                  super().__init__(convert_charrefs=True)
+                  self.month=None
+                  self.year=None
+                  self.pending_href=None
+                  self.anchor_text=[]
+                  self.rows=[]
+                  self.buffer=[]
+              def handle_starttag(self,tag,attrs):
+                  if tag.lower()=='a':
+                      d=dict(attrs)
+                      self.pending_href=d.get('href')
+                      self.anchor_text=[]
+              def handle_endtag(self,tag):
+                  if tag.lower()=='a' and self.pending_href is not None:
+                      txt=' '.join(self.anchor_text)
+                      txt=re.sub(r'\s+',' ',txt).strip()
+                      href=self.pending_href
+                      m=re.search(r'/see-day/(\d+)',href or '')
+                      d=re.search(r'\b(\d{1,2})\b',txt)
+                      if self.year==2026 and self.month and m and d:
+                          day=int(d.group(1))
+                          if 1<=day<=31:
+                              self.rows.append((f'2026-{self.month:02d}-{day:02d}',int(m.group(1)),urljoin('https://old.palermo.com.ar/',href)))
+                      self.pending_href=None
+                      self.anchor_text=[]
+              def handle_data(self,data):
+                  s=re.sub(r'\s+',' ',data).strip()
+                  if not s: return
+                  mm=re.fullmatch(r'(January|February|March|April|May|June|July|August|September|October|November|December)\s+2026',s,re.I)
+                  if mm:
+                      self.month=MONTHS[mm.group(1).lower()]
+                      self.year=2026
+                  elif self.pending_href is not None:
+                      self.anchor_text.append(s)
+
+          raw=open(sys.argv[1],errors='replace').read()
+          p=P(); p.feed(raw)
+          uniq={}
+          for date,ident,url in p.rows:
+              uniq[(date,ident)]=url
+          rows=[(d,i,u) for (d,i),u in uniq.items()]
+          rows.sort()
+          print('PALERMO_DOM_MEETINGS',len(rows))
+          for d,i,u in rows:
+              if d>='2026-10-01':
+                  print('PALERMO_DOM_DATE',d,i,u)
+          future=[r for r in rows if r[0]>='2026-10-11']
+          print('PALERMO_DOM_FUTURE_COUNT',len(future))
+          for r in future:
+              print('PALERMO_DOM_FUTURE',*r)
+          PY
