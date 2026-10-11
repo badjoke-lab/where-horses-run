@@ -62,3 +62,50 @@ jobs:
                           if u not in seen: seen.append(u)
               for u in seen[:240]: print('PORDASI_LINK',name,u)
           PY
+
+      - name: Probe PORDASI pacuan calendar route
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/pordasi-detail
+          for item in \
+            'pacuan|https://pordasi.id/event/?event=pacuan' \
+            'events-sitemap|https://pordasi.id/events-sitemap.xml' \
+            'event-sitemap|https://pordasi.id/event-sitemap.xml' \
+            'wp-json|https://pordasi.id/wp-json/'; do
+            name="${item%%|*}"
+            url="${item#*|}"
+            out="/tmp/pordasi-detail/$name.out"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+            final="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o /dev/null -w '%{url_effective}' "$url" || true)"
+            echo "PORDASI_DETAIL name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) FINAL=$final"
+          done
+
+      - name: Inspect PORDASI pacuan event records
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import html,re
+          from pathlib import Path
+          for name in ['pacuan','events-sitemap','event-sitemap','wp-json']:
+              raw=(Path('/tmp/pordasi-detail')/(name+'.out')).read_text(errors='replace')
+              text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+              text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
+              text=html.unescape(re.sub(r'<[^>]+>',' ',text))
+              text=re.sub(r'\s+',' ',text).strip()
+              print('PORDASI_DETAIL_TEXT',name,text[:18000])
+              for needle in ['2026','Pacu','Pacuan','Kalender','Event','October','Oktober','November','Desember','Jawa','Jakarta','Bantul','Legok','Salatiga']:
+                  p=text.lower().find(needle.lower())
+                  if p>=0:
+                      print('PORDASI_DETAIL_MATCH',name,needle,text[max(0,p-500):p+7000])
+              seen=[]
+              for pat in [r'href=["\']([^"\']+)["\']',r'<loc>(.*?)</loc>']:
+                  for m in re.finditer(pat,raw,re.I|re.S):
+                      u=html.unescape(m.group(1)).strip()
+                      low=u.lower()
+                      if any(k in low for k in ['event','pacu','pacuan','2026','triple-crown','derby']):
+                          if u not in seen: seen.append(u)
+              for u in seen[:260]: print('PORDASI_DETAIL_LINK',name,u)
+          PY
