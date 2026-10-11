@@ -1,0 +1,111 @@
+name: Ecuador MSD current Calendar probe
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-ecuador-msd-current-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Probe official Hipodromo MSD pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/msd
+          for item in             'home|https://hipodromomsd.com/'             'robots|https://hipodromomsd.com/robots.txt'             'wpjson|https://hipodromomsd.com/wp-json/'             'sitemap|https://hipodromomsd.com/sitemap_index.xml'; do
+            name="${item%%|*}"
+            url="${item#*|}"
+            out="/tmp/msd/$name.out"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+            final="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o /dev/null -w '%{url_effective}' "$url" || true)"
+            echo "MSD_PAGE name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) FINAL=$final"
+          done
+
+      - name: Inspect official page text links and assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - /tmp/msd/home.out <<'PY'
+          import html,re,sys
+          from urllib.parse import urljoin
+          raw=open(sys.argv[1],errors='replace').read()
+          text=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+          text=re.sub(r'<style\b[^>]*>.*?</style>',' ',text,flags=re.I|re.S)
+          text=html.unescape(re.sub(r'<[^>]+>',' ',text))
+          text=re.sub(r'\s+',' ',text).strip()
+          print('TEXT_LEN',len(text))
+          for needle in ['Próxima','Proxima','carrera','calendario','programa','reunión','reunion','2026','Hipódromo','Miguel Salem Dibo']:
+              p=text.lower().find(needle.lower())
+              if p>=0:
+                  print('MSD_TEXT',needle,text[max(0,p-500):p+5000])
+          seen=set()
+          for pat,label in [(r'href=["\']([^"\']+)["\']','LINK'),(r'src=["\']([^"\']+)["\']','SRC')]:
+              for m in re.finditer(pat,raw,re.I):
+                  u=urljoin('https://hipodromomsd.com/',html.unescape(m.group(1)))
+                  low=u.lower()
+                  if any(k in low for k in ['calendar','calend','program','carrera','race','event','json','api','ajax','wp-content','js']):
+                      if u not in seen:
+                          seen.add(u); print(label,u)
+          PY
+
+      - name: Inspect WordPress REST routes if available
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - /tmp/msd/wpjson.out <<'PY'
+          import json,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          try:
+              obj=json.loads(raw)
+          except Exception as e:
+              print('WPJSON_PARSE_ERROR',type(e).__name__,str(e))
+              raise SystemExit(0)
+          routes=obj.get('routes') or {}
+          print('WPJSON_ROUTES',len(routes))
+          for k in sorted(routes):
+              lk=k.lower()
+              if any(x in lk for x in ['event','calendar','race','carrera','programme','programa','tribe']):
+                  print('WP_ROUTE',k)
+          PY
+
+      - name: Probe common WordPress content APIs
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/msd/api
+          for item in             'posts|https://hipodromomsd.com/wp-json/wp/v2/posts?per_page=50&after=2026-01-01T00:00:00'             'pages|https://hipodromomsd.com/wp-json/wp/v2/pages?per_page=50'             'tribe|https://hipodromomsd.com/wp-json/tribe/events/v1/events?start_date=2026-10-01%2000:00:00&end_date=2026-12-31%2023:59:59&per_page=50'; do
+            name="${item%%|*}"
+            url="${item#*|}"
+            out="/tmp/msd/api/$name.out"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+            echo "MSD_API name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0)"
+          done
+          python3 - <<'PY'
+          import json,re
+          from pathlib import Path
+          for name in ['posts','pages','tribe']:
+              p=Path('/tmp/msd/api')/(name+'.out')
+              raw=p.read_text(errors='replace') if p.exists() else ''
+              try: obj=json.loads(raw)
+              except Exception:
+                  print('API_TEXT',name,raw[:3000]); continue
+              rows=obj.get('events') if isinstance(obj,dict) else obj
+              if not isinstance(rows,list):
+                  print('API_OBJECT',name,str(obj)[:3000]); continue
+              print('API_ROWS',name,len(rows))
+              for r in rows[:80]:
+                  s=json.dumps(r,ensure_ascii=False)
+                  if re.search(r'carrer|hip[oó]drom|salem|program|reuni[oó]n|2026',s,re.I):
+                      print('API_MATCH',name,s[:7000])
+          PY
