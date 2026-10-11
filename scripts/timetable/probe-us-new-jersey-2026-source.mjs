@@ -1,9 +1,9 @@
 // Read-only source discovery for New Jersey's 2026 official race-date routes.
 // This probe never publishes or invents a meeting date.
-const URL = 'https://www.njoag.gov/about/divisions-and-offices/nj-racing-commission-home/race-dates/';
+const INDEX_URL = 'https://www.njoag.gov/about/divisions-and-offices/nj-racing-commission-home/race-dates/';
 const UA = 'WhereHorsesRun/1.0 (+https://github.com/badjoke-lab/where-horses-run)';
 const controller = AbortSignal.timeout(40000);
-const response = await fetch(URL, {
+const response = await fetch(INDEX_URL, {
   redirect: 'follow',
   signal: controller,
   headers: { 'user-agent': UA, accept: 'text/html' },
@@ -38,7 +38,7 @@ const regionLinks = yearStart < 0 ? [] : allLinks.filter(x =>
 const candidates = [];
 for (const link of regionLinks) {
   let target;
-  try { target = new URL(link.url, URL); } catch { continue; }
+  try { target = new URL(link.url, INDEX_URL); } catch { continue; }
   if (target.protocol !== 'https:') continue;
   if (!/(^|\.)nj\.gov$|(^|\.)njoag\.gov$/i.test(target.hostname)) continue;
   candidates.push({ venue_label: link.label, official_document_url: target.toString() });
@@ -50,7 +50,7 @@ const status = candidates.length > 0
 console.log(JSON.stringify({
   probe: 'us-new-jersey-2026-state-race-dates',
   status,
-  official_index_url: URL,
+  official_index_url: INDEX_URL,
   final_host: host,
   html_bytes: Buffer.byteLength(html),
   indexed_anchor_count: allLinks.length,
