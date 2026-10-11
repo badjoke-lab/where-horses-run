@@ -1,1 +1,95 @@
-[{"schema_version":"2.0.0","country_id":"thailand","slug":"thailand","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-20","public_display_ceiling":"C","source_test_status":"partial","hero":{"summary_en":"The reviewed RBSC calendar confirms a Bangkok racing context; wider country coverage is unresolved.","summary_ja":"確認済みRBSCカレンダーでバンコクの競馬開催を確認したが、全国網羅性は未解決。"},"overview":{"paragraphs_en":["The profile is limited to the reviewed Royal Bangkok Sports Club context."],"paragraphs_ja":["プロフィールは確認済みRoyal Bangkok Sports Club文脈に限定する。"]},"racing_types":[{"id":"thoroughbred-flat","name_en":"Thoroughbred flat racing","name_ja":"サラブレッド平地競走","summary_en":"Verified in the reviewed RBSC context.","summary_ja":"確認済みRBSC文脈で確認。"}],"seasonality":{"pattern":"official-source-required","summary_en":"Use current RBSC racing and event routes.","summary_ja":"現行RBSC競馬・イベント導線を確認する。"},"schedule":{"timezone":"Asia/Bangkok","utc_offset_label":"UTC+7","day_patterns":["official-source-required"],"time_patterns":["meeting-date-only"],"summary_en":"Meeting dates and the reviewed racecourse context are confirmed; race times are not established.","summary_ja":"開催日と確認済み競馬場文脈は確認済みだが、レース時刻は未確認。"},"surfaces":{"ids":[],"summary_en":"Surface details are not normalized.","summary_ja":"馬場情報は共通化しない。"},"systems":[{"id":"thailand-rbsc-system","name_en":"Royal Bangkok Sports Club racing","name_ja":"Royal Bangkok Sports Club競馬体系","summary_en":"Reviewed RBSC calendar context; country-wide completeness remains unresolved.","summary_ja":"確認済みRBSCカレンダー文脈。全国網羅性は未解決。","organiser_source_ids":["thailand-rbsc-racing"],"distributor_source_ids":["thailand-rbsc-events"]}],"principal_racecourse_ids":[],"calendar_guidance_en":"Use RBSC sources for the reviewed context and do not generalize them nationally.","calendar_guidance_ja":"確認済み文脈ではRBSCソースを使用し、全国へ一般化しない。","coverage_note_en":"Additional Thai organisers or venues require separate review.","coverage_note_ja":"追加のタイ主催者・競馬場は別途確認が必要。","revalidation":{"triggers_en":["RBSC routes change","Additional country coverage is reviewed"],"triggers_ja":["RBSC導線変更時","追加の全国網羅性を確認したとき"]},"related_glossary_ids":["racecourse","meeting","fixture","post-time"]}]
+[
+  {
+    "schema_version": "2.0.0",
+    "country_id": "thailand",
+    "slug": "thailand",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-10-11",
+    "public_display_ceiling": "C",
+    "source_test_status": "partial",
+    "hero": {
+      "summary_en": "The reviewed Royal Bangkok Sports Club 2026 Racing Calendar is automatically routed at rank C for the RBSC racecourse; wider Thai coverage remains unresolved.",
+      "summary_ja": "Royal Bangkok Sports Clubの公式2026競馬日程をRBSC競馬場についてCで自動取得する。タイ全国の網羅性は未解決。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "Production scope is limited to the reviewed Royal Bangkok Sports Club racing system in Bangkok.",
+        "The official RBSC Racing page is GitHub-Actions-accessible and exposes the full 2026 meeting calendar."
+      ],
+      "paragraphs_ja": [
+        "production対象はバンコクのRoyal Bangkok Sports Club競馬体系に限定する。",
+        "RBSC公式RacingページはGitHub Actionsから取得でき、2026年の全開催日程を確認できる。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "thoroughbred-flat",
+        "name_en": "Thoroughbred flat racing",
+        "name_ja": "サラブレッド平地競走",
+        "summary_en": "Verified in the reviewed RBSC context.",
+        "summary_ja": "確認済みRBSC文脈で確認。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "official-source-required",
+      "summary_en": "Use current RBSC racing and event routes.",
+      "summary_ja": "現行RBSC競馬・イベント導線を確認する。"
+    },
+    "schedule": {
+      "timezone": "Asia/Bangkok",
+      "utc_offset_label": "UTC+7",
+      "day_patterns": [
+        "official-rbsc-calendar"
+      ],
+      "time_patterns": [
+        "meeting-date-only"
+      ],
+      "summary_en": "Meeting dates and the fixed RBSC racecourse are automatically published at rank C; general racing-hours guidance is not treated as meeting-specific post time.",
+      "summary_ja": "開催日と固定RBSC競馬場をCで自動公開する。一般的な競馬時刻案内は開催固有の発走時刻として扱わない。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Surface details are not normalized.",
+      "summary_ja": "馬場情報は共通化しない。"
+    },
+    "systems": [
+      {
+        "id": "thailand-rbsc-system",
+        "name_en": "Royal Bangkok Sports Club racing",
+        "name_ja": "Royal Bangkok Sports Club競馬体系",
+        "summary_en": "Automatic single-racecourse RBSC calendar route; country-wide completeness remains unresolved.",
+        "summary_ja": "RBSC単一競馬場の自動日程取得ルート。全国網羅性は未解決。",
+        "organiser_source_ids": [
+          "rbsc-racing-calendar"
+        ],
+        "distributor_source_ids": []
+      }
+    ],
+    "principal_racecourse_ids": [
+      "thailand--royal-bangkok-sports-club-racecourse"
+    ],
+    "calendar_guidance_en": "Use the official RBSC Racing Calendar for the reviewed Bangkok system and publish meeting date plus fixed RBSC racecourse only at rank C.",
+    "calendar_guidance_ja": "確認済みバンコク体系ではRBSC公式Racing Calendarを使用し、開催日と固定RBSC競馬場のみCで公開する。",
+    "coverage_note_en": "Automatic production coverage is C for the reviewed RBSC system only; additional Thai organisers or venues require separate review.",
+    "coverage_note_ja": "自動production対象は確認済みRBSC体系のCのみ。追加のタイ主催者・競馬場は別途確認が必要。",
+    "revalidation": {
+      "triggers_en": [
+        "RBSC Racing calendar year block changes",
+        "RBSC venue context changes",
+        "Additional country coverage is reviewed"
+      ],
+      "triggers_ja": [
+        "RBSC Racingカレンダー年次ブロック変更時",
+        "RBSC会場文脈変更時",
+        "追加の全国網羅性を確認したとき"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture",
+      "post-time"
+    ]
+  }
+]
