@@ -1,1 +1,124 @@
-[{"schema_version":"2.0.0","country_id":"united-states","slug":"united-states","status":"reviewed","page_kind":"country","last_reviewed":"2026-06-20","public_display_ceiling":"C","source_test_status":"partial","hero":{"summary_en":"Equibase supports detailed Thoroughbred schedules, but complete national multi-code coverage is unresolved.","summary_ja":"Equibaseは詳細なサラブレッド日程に対応するが、全国の複数競馬体系の網羅性は未解決。"},"overview":{"paragraphs_en":["The reviewed profile covers the Equibase Thoroughbred subsystem only and does not claim complete United States horse-racing coverage."],"paragraphs_ja":["確認済みプロフィールはEquibaseのサラブレッド体系のみを扱い、米国競馬全体の完全網羅を主張しない。"]},"racing_types":[{"id":"thoroughbred-flat","name_en":"Thoroughbred flat racing","name_ja":"サラブレッド平地競走","summary_en":"Verified through Equibase.","summary_ja":"Equibaseで確認済み。"}],"seasonality":{"pattern":"official-source-required","summary_en":"Meeting schedules vary by racetrack and state; check the current official source.","summary_ja":"開催日程は競馬場・州により異なるため、現行の公式ソースを確認する。"},"schedule":{"timezone":"multiple-timezones","utc_offset_label":"Verify the meeting timezone","day_patterns":["official-source-required"],"time_patterns":["meeting-date-only"],"summary_en":"The subsystem supports race times, but the country page remains at meeting-date level until wider coverage is reviewed.","summary_ja":"部分体系ではレース時刻に対応するが、広範な網羅性確認までは国ページを開催日レベルに保つ。"},"surfaces":{"ids":[],"summary_en":"Surface details are not normalized.","summary_ja":"馬場情報は共通化しない。"},"systems":[{"id":"united-states-equibase-thoroughbred","name_en":"Equibase Thoroughbred system","name_ja":"Equibaseサラブレッド体系","summary_en":"Reviewed official Thoroughbred database and schedule routes; other codes remain outside the confirmed national scope.","summary_ja":"公式サラブレッドデータベースと日程導線を確認済み。他体系は全国確認範囲外。","organiser_source_ids":["united-states-equibase-home"],"distributor_source_ids":["united-states-equibase-entries"]}],"principal_racecourse_ids":[],"calendar_guidance_en":"Use Equibase for the reviewed Thoroughbred subsystem and do not generalize it to all United States racing.","calendar_guidance_ja":"確認済みサラブレッド体系はEquibaseで確認し、米国競馬全体へ一般化しない。","coverage_note_en":"Quarter Horse, Standardbred, state-regulated, and other racing contexts require separate review.","coverage_note_ja":"クォーターホース、スタンダードブレッド、州別その他の競馬体系は別途確認が必要。","revalidation":{"triggers_en":["Equibase routes change","Additional racing codes and state structures are reviewed"],"triggers_ja":["Equibase導線変更時","追加競馬体系・州構造を確認したとき"]},"related_glossary_ids":["racecourse","meeting","fixture","post-time"]}]
+[
+  {
+    "schema_version": "2.0.0",
+    "country_id": "united-states",
+    "slug": "united-states",
+    "status": "reviewed",
+    "page_kind": "country",
+    "last_reviewed": "2026-10-12",
+    "public_display_ceiling": "C",
+    "source_test_status": "partial",
+    "hero": {
+      "summary_en": "Limited New Jersey 2026 approved-date Calendar: Monmouth Park Thoroughbred, Meadowlands Thoroughbred turf and Far Hills steeplechase. The United States nationwide multi-code Calendar remains incomplete.",
+      "summary_ja": "米国はNew Jersey州の2026年承認日程のみ部分対応。Monmouth平地、Meadowlands芝平地、Far Hills障害を含むが、全米・全体系の網羅には至っていない。"
+    },
+    "overview": {
+      "paragraphs_en": [
+        "A 2026 New Jersey Racing Commission state-issued calendar provides precisely 50 Monmouth Park Thoroughbred, 9 Meadowlands Thoroughbred turf and 1 Far Hills steeplechase dates; date/venue/code only, rank C. These approved dates can change and do not alone prove whether a meeting ultimately ran.",
+        "No Equibase automated feed or racetrack operator website scraping is used. Other states and racing codes, including Standardbred, Quarter Horse and Arabian, are not covered by this one-regulator route."
+      ],
+      "paragraphs_ja": [
+        "NJ州競馬委員会公表の2026年承認日程はMonmouth平地50日、Meadowlands芝9日、Far Hills障害1日の計60日。C級の日付・会場・体系のみで、承認後の中止や変更可能性は別途扱う。",
+        "Equibaseの自動取得や競馬場運営サイトの自動収集は行わない。この州政府資料だけでは、他州やStandardbred、Quarter Horse、Arabianなどは未対応。"
+      ]
+    },
+    "racing_types": [
+      {
+        "id": "thoroughbred-flat",
+        "name_en": "Thoroughbred flat racing",
+        "name_ja": "サラブレッド平地競走",
+        "summary_en": "New Jersey state-issued 2026 Monmouth and Meadowlands turf dates only.",
+        "summary_ja": "NJ州政府が公表した2026年Monmouth・Meadowlands芝開催日のみ。"
+      },
+      {
+        "id": "steeplechase",
+        "name_en": "Steeplechase racing",
+        "name_ja": "障害競走",
+        "summary_en": "One 2026 NJRC-approved Far Hills date.",
+        "summary_ja": "2026年NJ州承認Far Hillsの1開催日。"
+      }
+    ],
+    "seasonality": {
+      "pattern": "official-source-required",
+      "summary_en": "Meeting schedules vary by racetrack and state; check the current official source.",
+      "summary_ja": "開催日程は競馬場・州により異なるため、現行の公式ソースを確認する。"
+    },
+    "schedule": {
+      "timezone": "multiple-timezones",
+      "utc_offset_label": "Verify the meeting timezone",
+      "day_patterns": [
+        "official-source-required"
+      ],
+      "time_patterns": [
+        "meeting-date-only"
+      ],
+      "summary_en": "The subsystem supports race times, but the country page remains at meeting-date level until wider coverage is reviewed.",
+      "summary_ja": "部分体系ではレース時刻に対応するが、広範な網羅性確認までは国ページを開催日レベルに保つ。"
+    },
+    "surfaces": {
+      "ids": [],
+      "summary_en": "Surface details are not normalized.",
+      "summary_ja": "馬場情報は共通化しない。"
+    },
+    "systems": [
+      {
+        "id": "us-nj-monmouth-thoroughbred-2026-system",
+        "name_en": "Monmouth Park Thoroughbred 2026",
+        "name_ja": "Monmouth Park サラブレッド2026",
+        "summary_en": "NJRC 2026 approved calendar, 50 dates, C only.",
+        "summary_ja": "NJ州承認2026年50開催日、C級のみ。",
+        "organiser_source_ids": [
+          "njrc-approved-2026-race-date-calendar"
+        ],
+        "distributor_source_ids": []
+      },
+      {
+        "id": "us-nj-meadowlands-thoroughbred-turf-2026-system",
+        "name_en": "Meadowlands Thoroughbred turf 2026",
+        "name_ja": "Meadowlands芝競走2026",
+        "summary_en": "NJRC 2026 approved calendar, 9 dates, separate from Standardbred.",
+        "summary_ja": "NJ州承認2026年9開催日。繋駕速歩とは別体系。",
+        "organiser_source_ids": [
+          "njrc-approved-2026-race-date-calendar"
+        ],
+        "distributor_source_ids": []
+      },
+      {
+        "id": "us-nj-far-hills-steeplechase-2026-system",
+        "name_en": "Far Hills Steeplechase 2026",
+        "name_ja": "Far Hills障害競走2026",
+        "summary_en": "NJRC 2026 approved calendar, 1 date, C only.",
+        "summary_ja": "NJ州承認2026年1開催日、C級のみ。",
+        "organiser_source_ids": [
+          "njrc-approved-2026-race-date-calendar"
+        ],
+        "distributor_source_ids": []
+      }
+    ],
+    "principal_racecourse_ids": [
+      "united-states--monmouth-park",
+      "united-states--meadowlands-racetrack",
+      "united-states--far-hills-moorland-farm"
+    ],
+    "calendar_guidance_en": "Only 2026 NJRC-approved day+physical venue+code facts; no national coverage or Equibase auto import. Approval is not confirmation against subsequent non-running. No future year inferred.",
+    "calendar_guidance_ja": "2026年NJ州承認の日付・物理競馬場・競馬体系だけを取得。全国対応でもEquibase自動取得でもない。承認後の中止判断は別証拠とし、2027年の予定は推測しない。",
+    "coverage_note_en": "Partial: three New Jersey 2026 racing systems only. Other states, harness, Quarter Horse, Arabian and national steeplechase expansion remain open. Puerto Rico is a separate target.",
+    "coverage_note_ja": "部分対応：New Jersey州2026年3体系のみ。他州、繋駕速歩、クォーターホース、アラビアン、障害全体は未網羅。Puerto Ricoは別target。",
+    "revalidation": {
+      "triggers_en": [
+        "Equibase routes change",
+        "Additional racing codes and state structures are reviewed"
+      ],
+      "triggers_ja": [
+        "Equibase導線変更時",
+        "追加競馬体系・州構造を確認したとき"
+      ]
+    },
+    "related_glossary_ids": [
+      "racecourse",
+      "meeting",
+      "fixture",
+      "post-time"
+    ]
+  }
+]
