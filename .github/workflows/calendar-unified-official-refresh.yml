@@ -855,7 +855,7 @@ jobs:
           node scripts/timetable/run-thailand-rbsc-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/thailand.json
-          python3 -m pip install --disable-pip-version-check --break-system-packages -q pymupdf==1.26.5
+          python3 -c 'import fitz' 2>/dev/null || python3 -m pip install --disable-pip-version-check --break-system-packages -q pymupdf==1.26.5 || echo 'NJRC source parser dependency unavailable; only this source will yield failure diagnostics' >&2
           node scripts/timetable/run-us-njrc-2026-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output-dir=.calendar-unified/us-njrc
