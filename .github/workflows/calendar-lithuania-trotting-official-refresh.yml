@@ -57,7 +57,7 @@ jobs:
         run: |
           mkdir -p .calendar-lithuania
           node scripts/timetable/run-lithuania-trotting-official-window.mjs --days=90 --output=.calendar-lithuania/lithuania.json
-          node -e "const fs=require('fs');const a=JSON.parse(fs.readFileSync('.calendar-lithuania/lithuania.json','utf8'));if(a.acquisition_attempt?.status!=='success'||(a.diagnostics?.source_errors?.length??0)!==0||(a.diagnostics?.parse_failures?.length??0)!==0||(a.records?.length??0)<1){console.error(JSON.stringify({attempt:a.acquisition_attempt,discovery:a.discovery,diagnostics:a.diagnostics,records:a.records?.length??0}));process.exit(1)}"
+          node -e "const fs=require('fs');const a=JSON.parse(fs.readFileSync('.calendar-lithuania/lithuania.json','utf8'));const records=Array.isArray(a.records)?a.records:[];const visible=a.discovery?.source_visible_rows;if(a.acquisition_attempt?.status!=='success'||(a.diagnostics?.source_errors?.length??0)!==0||(a.diagnostics?.parse_failures?.length??0)!==0||(a.diagnostics?.unknown_venues?.length??0)!==0||!Number.isInteger(visible)||visible<records.length){console.error(JSON.stringify({attempt:a.acquisition_attempt,discovery:a.discovery,diagnostics:a.diagnostics,records:records.length}));process.exit(1)};console.log(JSON.stringify({lithuania_smoke:'pass',source_visible_rows:visible,records:records.length,zero_window_valid:records.length===0}))"
           node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-lithuania/lithuania.json --country-id=lithuania --authority-id=trotting-horse-league --racing-system-id=trotting-league-system --timezone=Europe/Vilnius
           node scripts/check-calendar-public-country-support.mjs
           node scripts/check-calendar-public-map-parity.mjs
