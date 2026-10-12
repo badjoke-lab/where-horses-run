@@ -1,0 +1,51 @@
+name: Calendar Canada AGCO Mohawk production smoke
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-canada-agco-2026-production-smoke.yml'
+      - '.github/workflows/calendar-unified-official-refresh.yml'
+      - '.github/workflows/calendar-near-official-refresh.yml'
+      - 'scripts/timetable/canada-mohawk-agco-calendar-core.mjs'
+      - 'scripts/timetable/run-canada-mohawk-agco-official-window.mjs'
+      - 'scripts/check-canada-mohawk-agco-adapter.mjs'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/calendar-98-tier-execution-coverage.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  canada-mohawk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - name: Validate Canada source and parser
+        run: npm run validate:canada-mohawk-agco
+      - name: Acquire actual 2026 AGCO PDF and rank-C facts
+        run: |
+          mkdir -p .calendar-canada
+          node scripts/timetable/run-canada-mohawk-agco-official-window.mjs --as-of=2026-10-12 --days=90 --output=.calendar-canada/canada.json
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          const a=JSON.parse(fs.readFileSync('.calendar-canada/canada.json','utf8'));
+          if(a.acquisition_attempt.status!=='success'||a.discovery.source_visible_rows!==222||(a.records?.length??0)<1)throw Error('AGCO 2026 source not ready: '+JSON.stringify(a.diagnostics));
+          if(a.records.some(x=>x.country_id!=='canada'||x.capability_rank!=='C'||x.first_race_time_local!==null||x.timetable_rows.length!==0))throw Error('AGCO Calendar C publication boundary');
+          console.log('CANADA_AGCO_SOURCE_ACTUAL 222 approved 2026 dates; forward '+a.records.length);
+          JS
+      - name: Integrate AGCO into canonical and public, check all-country contracts
+        run: |
+          node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-canada/canada.json --country-id=canada --authority-id=ontario-racing --racing-system-id=canada-ontario-racing-system --timezone=America/Toronto
+          node scripts/check-calendar-public-country-support.mjs
+          node scripts/check-calendar-public-map-parity.mjs
+          node scripts/check-calendar-98-tier-execution-coverage.mjs
+          node scripts/check-calendar-98-tier-acquisition-methods.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs
+          node scripts/check-calendar-unified-audit-coverage.mjs
