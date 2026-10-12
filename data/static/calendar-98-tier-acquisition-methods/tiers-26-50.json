@@ -72,17 +72,24 @@
       "page_kind": "country",
       "method_class": "active_source_driven",
       "source_ids": [
-        "equibase-entries",
-        "equibase-condition-books",
-        "hisa-current-racetracks",
-        "arci-racing-regulatory-jurisdictions"
+        "njrc-approved-2026-race-date-calendar",
+        "arci-racing-regulatory-jurisdictions",
+        "hisa-current-racetracks"
       ],
-      "primary_source_url": "https://www.equibase.com/static/entry/index.html",
+      "primary_source_url": "https://www.njoag.gov/wp-content/uploads/2026/04/Monmouth-race-dates-2026.pdf",
       "cadence_class": "source-driven",
       "trigger_class": "meeting_or_source_window",
       "zero_policy": "emit_only_source_visible_current_meetings",
-      "runner_state": "candidate",
-      "method_complete": true
+      "runner_state": "active",
+      "method_complete": true,
+      "discovery_model": "state_regulator_plus_racing_code_authority",
+      "date_publication_rule": "source_visible_current_year_exact_live_meeting_dates_only",
+      "reference_only_sources": [
+        "equibase-entries",
+        "equibase-condition-books",
+        "usta-racing-database"
+      ],
+      "production_scope_note": "NJRC state published 2026 race-date PDF: 50 Monmouth Thoroughbred, 9 Meadowlands turf Thoroughbred, 1 Far Hills steeplechase. Other states and U.S. racing codes not automatically covered. No Equibase or operator-site automated ingestion."
     },
     {
       "tier": 31,
