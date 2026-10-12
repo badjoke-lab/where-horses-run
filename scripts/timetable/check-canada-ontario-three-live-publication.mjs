@@ -20,7 +20,7 @@ try{
  const file=await fetchText(origin,'application/json');
  const json=JSON.parse(file.body),rows=Array.isArray(json.meetings)?json.meetings:[];
  const ontario=sourceSystems.map(s=>{
-   const matched=rows.filter(m=>m.country_id==='canada'&&m.racing_system_id===s.system_id&&m.racecourse_id===s.venue_id);
+   const matched=rows.filter(m=>m.country_id==='canada'&&m.racecourse_id===s.venue_id&&String(m.meeting_id).startsWith('canada-agco-'+s.key+'-2026-'));
    return {key:s.key,system_id:s.system_id,venue_id:s.venue_id,published_count:matched.length,
      future_dates:matched.filter(m=>m.date>='2026-10-12').map(m=>m.date).sort().slice(0,55),
      example_ids:matched.map(m=>m.meeting_id).slice(0,4)};
@@ -30,7 +30,7 @@ try{
    const x=await fetchText(url,'text/html');
    diagnostics.deployed.push({lang,http:x.http,html_size:x.body.length,by_source:sourceSystems.map(s=>{
      const token='canada-agco-'+s.key+'-';
-     const ids=[...new Set([...x.body.matchAll(new RegExp(token+'2026-\\\\d{2}-\\\\d{2}','g'))].map(m=>m[0]))].slice(0,12);
+     const ids=[...new Set([...x.body.matchAll(/data-meeting-id="(canada-agco-(?:woodbine_thoroughbred|fort_erie_thoroughbred|ajax_quarter_horse)-2026-\d{2}-\d{2})"/g)].map(m=>m[1]))].filter(id=>id.startsWith(token)).slice(0,12);
      const pos=x.body.indexOf(token);
      return {key:s.key,id_visible:pos>=0,meeting_ids:ids,html_snippet:pos>=0?x.body.slice(Math.max(0,pos-90),pos+125):null};
    })});
