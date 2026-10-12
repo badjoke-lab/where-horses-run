@@ -1,0 +1,23 @@
+name: Calendar US NJRC main and production publication probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-us-njrc-live-publication-probe.yml'
+      - 'scripts/timetable/check-us-njrc-live-publication.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect-production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify main public JSON and both deployed Calendar languages
+        run: node scripts/timetable/check-us-njrc-live-publication.mjs
