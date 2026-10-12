@@ -16,6 +16,7 @@ for(const [name,url] of sources){
   try {
     const r=await fetch(url,{redirect:'follow',headers:{'user-agent':UA,accept:'text/html,text/plain;q=0.9'},signal:AbortSignal.timeout(18000)});
     if(!allowed.has(new URL(r.url).hostname)) throw Error('Unexpected redirect host');
+    if(!r.ok){results.push({name,http:r.status,final_host:new URL(r.url).hostname,status:'source_blocked_not_ready'});console.log('MALTA_SOURCE_BLOCKED '+JSON.stringify(results.at(-1)));continue;}
     const body=await r.text();
     if(body.length>2_000_000) throw Error('Unexpected large page');
     const links=[...body.matchAll(/\bhref\s*=\s*["']([^"']+)["']/gi)].map(m=>m[1].replaceAll('&amp;','&'));
@@ -27,4 +28,4 @@ for(const [name,url] of sources){
     results.push(item);console.log('MALTA_SOURCE '+JSON.stringify(item));
   }catch(e){const item={name,error:String(e?.message??e)};results.push(item);console.log('MALTA_SOURCE '+JSON.stringify(item));}
 }
-console.log('MALTA_PROBE_RESULT '+JSON.stringify({scope:'malta-2026-current-official-fixtures',probe_only:true,publication_changed:false,results}));
+console.log('MALTA_PROBE_RESULT '+JSON.stringify({scope:'malta-2026-current-official-fixtures',probe_only:true,publication_changed:false,source_reachable:results.some(x=>x.http===200&&x.name==='calendar'),production_ready:false,results}));
