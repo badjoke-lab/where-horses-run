@@ -45,7 +45,14 @@ for(const src of sources){
     const okYear=/2026/.test(text),okDate=/Race Dates/i.test(text);
     const monthCount=Object.fromEntries(Object.entries(monthDays).map(([m,a])=>[m,[...new Set(a)].length]));
     const geometryTotal=Object.values(monthCount).reduce((a,b)=>a+b,0);
-    observed.push({geometry_total_source_visible:geometryTotal,month_counts:monthCount,geometry_matches_printed_total:geometryTotal===src.count,code:src.code,venue:src.venue,racing_type:src.kind,expected_2026_dates:src.count,source_reachable:true,pdf_bytes:size,pages:pdf.numPages,text_chars:text.length,text_items:items,has_2026_calendar_heading:okYear&&okDate,expected_total_number_visible:new RegExp('\\b'+src.count+'\\b').test(text),body_retained:false,production_ready:false});
+    const fullDates=Object.entries(monthDays).flatMap(([month,days])=>[...new Set(days)].map(day=>{
+      const d=new Date(Date.UTC(2026,Number(month)-1,day));
+      if(d.getUTCMonth()!==Number(month)-1||d.getUTCDate()!==day)throw Error('invalid approved day '+month+'/'+day);
+      return '2026-'+month+'-'+String(day).padStart(2,'0');
+    })).sort();
+    if(fullDates.length!==geometryTotal||new Set(fullDates).size!==fullDates.length)throw Error('date mismatch or duplicate');
+    const forward=fullDates.filter(d=>d>='2026-10-12');
+    observed.push({geometry_total_source_visible:geometryTotal,month_counts:monthCount,geometry_matches_printed_total:geometryTotal===src.count,forward_date_count:forward.length,forward_dates:forward,code:src.code,venue:src.venue,racing_type:src.kind,expected_2026_dates:src.count,source_reachable:true,pdf_bytes:size,pages:pdf.numPages,text_chars:text.length,text_items:items,has_2026_calendar_heading:okYear&&okDate,expected_total_number_visible:new RegExp('\\b'+src.count+'\\b').test(text),body_retained:false,production_ready:false});
   }catch(e){observed.push({code:src.code,source_reachable:false,error:String(e?.message??e),production_ready:false});}
 }
 console.log('ONTARIO_THREE_AGCO_2026_PROBES '+JSON.stringify({checked_at:new Date().toISOString(),observed,meetings_emitted:0,public_calendar_changed:false}));
