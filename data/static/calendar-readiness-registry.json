@@ -6,7 +6,7 @@
   "programme_state": {
     "country_target": 98,
     "countries_with_closed_decision": 98,
-    "readiness_records": 133,
+    "readiness_records": 136,
     "next_backfill_work_ids": []
   },
   "records": [
@@ -6205,7 +6205,154 @@
         "Each new season requires its own approved source and parser validation."
       ],
       "notes": "NJRC state-issued PDF geometry and cell highlights count 50+9+1 dates; implemented source-specific bounded C records."
+    },
+    {
+      "readiness_id": "canada--canada-ontario-woodbine-thoroughbred-system--ontario-agco-woodbine-thoroughbred-2026-calendar",
+      "country_id": "canada",
+      "country_tracker_delivery_no": "34",
+      "system_id": "canada-ontario-woodbine-thoroughbred-system",
+      "system_name_en": "Ontario AGCO 2026 Woodbine Racetrack (thoroughbred-flat)",
+      "authority_source_key": "canada/ontario-racing/ontario-agco-woodbine-thoroughbred-2026-calendar",
+      "racecourse_ids": [
+        "canada--woodbine-racetrack"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "pdf",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "daily",
+        "near_meeting",
+        "weekly"
+      ],
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-10-12",
+      "evidence_reviewed_at": "2026-10-12",
+      "revalidation_trigger": "2026 regulator amendments, source access changes or publication of the next approved racing season",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/34-canada/final-summary.json",
+      "limitations": [
+        "Only Woodbine Racetrack thoroughbred-flat 2026; no national Canada completeness.",
+        "Source contains approved dates, not proof of each completed meeting or per-race times.",
+        "Source failure or absence does not establish cancellation.",
+        "No 2027 dates inferred."
+      ],
+      "notes": "Official 2026 AGCO calendar, exact PDF geometry 128 approved date cells proved in GitHub Actions #1335; primary source ontario-agco-woodbine-thoroughbred-2026-calendar."
+    },
+    {
+      "readiness_id": "canada--canada-ontario-fort-erie-thoroughbred-system--ontario-agco-fort-erie-thoroughbred-2026-calendar",
+      "country_id": "canada",
+      "country_tracker_delivery_no": "34",
+      "system_id": "canada-ontario-fort-erie-thoroughbred-system",
+      "system_name_en": "Ontario AGCO 2026 Fort Erie Race Track (thoroughbred-flat)",
+      "authority_source_key": "canada/ontario-racing/ontario-agco-fort-erie-thoroughbred-2026-calendar",
+      "racecourse_ids": [
+        "canada--fort-erie-race-track"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "pdf",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "daily",
+        "near_meeting",
+        "weekly"
+      ],
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-10-12",
+      "evidence_reviewed_at": "2026-10-12",
+      "revalidation_trigger": "2026 regulator amendments, source access changes or publication of the next approved racing season",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/34-canada/final-summary.json",
+      "limitations": [
+        "Only Fort Erie Race Track thoroughbred-flat 2026; no national Canada completeness.",
+        "Source contains approved dates, not proof of each completed meeting or per-race times.",
+        "Source failure or absence does not establish cancellation.",
+        "No 2027 dates inferred."
+      ],
+      "notes": "Official 2026 AGCO calendar, exact PDF geometry 34 approved date cells proved in GitHub Actions #1335; primary source ontario-agco-fort-erie-thoroughbred-2026-calendar."
+    },
+    {
+      "readiness_id": "canada--canada-ontario-ajax-quarter-horse-system--ontario-agco-ajax-quarter-horse-2026-calendar",
+      "country_id": "canada",
+      "country_tracker_delivery_no": "34",
+      "system_id": "canada-ontario-ajax-quarter-horse-system",
+      "system_name_en": "Ontario AGCO 2026 Ajax Downs (quarter-horse)",
+      "authority_source_key": "canada/ontario-racing/ontario-agco-ajax-quarter-horse-2026-calendar",
+      "racecourse_ids": [
+        "canada--ajax-downs"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "pdf",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "daily",
+        "near_meeting",
+        "weekly"
+      ],
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-10-12",
+      "evidence_reviewed_at": "2026-10-12",
+      "revalidation_trigger": "2026 regulator amendments, source access changes or publication of the next approved racing season",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/34-canada/final-summary.json",
+      "limitations": [
+        "Only Ajax Downs quarter-horse 2026; no national Canada completeness.",
+        "Source contains approved dates, not proof of each completed meeting or per-race times.",
+        "Source failure or absence does not establish cancellation.",
+        "No 2027 dates inferred."
+      ],
+      "notes": "Official 2026 AGCO calendar, exact PDF geometry 22 approved date cells proved in GitHub Actions #1335; primary source ontario-agco-ajax-quarter-horse-2026-calendar."
     }
   ],
-  "last_updated": "2026-10-11"
+  "last_updated": "2026-10-12"
 }
