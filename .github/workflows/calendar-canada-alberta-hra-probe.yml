@@ -1,0 +1,22 @@
+name: Canada Alberta HRA 2026 fixture source probe
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-canada-alberta-hra-probe.yml'
+      - 'scripts/timetable/probe-canada-alberta-hra.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  source-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node scripts/timetable/probe-canada-alberta-hra.mjs
