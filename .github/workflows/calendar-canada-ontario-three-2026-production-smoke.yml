@@ -6,6 +6,7 @@ on:
       - '.github/workflows/calendar-canada-ontario-three-2026-production-smoke.yml'
       - 'scripts/timetable/canada-ontario-three-agco-2026-core.mjs'
       - 'scripts/timetable/run-canada-ontario-three-agco-2026-window.mjs'
+      - 'scripts/timetable/check-canada-ontario-three-live-publication.mjs'
       - 'data/static/calendar-acquisition-registry.json'
       - 'data/static/calendar-readiness-registry.json'
       - 'data/static/racecourses.json'
@@ -57,3 +58,6 @@ jobs:
           node scripts/check-calendar-non-running-evidence-registry.mjs
           node scripts/check-calendar-public-map-parity.mjs
           node scripts/check-calendar-unified-audit-coverage.mjs
+      - name: Inspect actual main and bilingual site publication (independent of PR smoke)
+        if: always()
+        run: node scripts/timetable/check-canada-ontario-three-live-publication.mjs
