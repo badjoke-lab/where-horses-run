@@ -652,404 +652,404 @@ jobs:
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/hkjc.json \
-            --country-id=hong-kong \
-            --authority-id=hkjc \
-            --racing-system-id=hong-kong-hkjc-system \
-            --timezone=Asia/Hong_Kong
+          --artifact=.calendar-unified/hkjc.json \
+          --country-id=hong-kong \
+          --authority-id=hkjc \
+          --racing-system-id=hong-kong-hkjc-system \
+          --timezone=Asia/Hong_Kong
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/uae.json \
-            --country-id=united-arab-emirates \
-            --authority-id=emirates-racing-authority \
-            --racing-system-id=uae-national-racing-system \
-            --timezone=Asia/Dubai
+          --artifact=.calendar-unified/uae.json \
+          --country-id=united-arab-emirates \
+          --authority-id=emirates-racing-authority \
+          --racing-system-id=uae-national-racing-system \
+          --timezone=Asia/Dubai
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/kra.json \
-            --country-id=south-korea \
-            --authority-id=korea-racing-authority \
-            --racing-system-id=kra-national-racing-system \
-            --timezone=Asia/Seoul
+          --artifact=.calendar-unified/kra.json \
+          --country-id=south-korea \
+          --authority-id=korea-racing-authority \
+          --racing-system-id=kra-national-racing-system \
+          --timezone=Asia/Seoul
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/tjk.json \
-            --country-id=turkey \
-            --authority-id=turkiye-jokey-kulubu \
-            --racing-system-id=tjk-national-racing-system \
-            --timezone=Europe/Istanbul
+          --artifact=.calendar-unified/tjk.json \
+          --country-id=turkey \
+          --authority-id=turkiye-jokey-kulubu \
+          --racing-system-id=tjk-national-racing-system \
+          --timezone=Europe/Istanbul
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/sorec.json \
-            --country-id=morocco \
-            --authority-id=sorec \
-            --racing-system-id=sorec-racing-information-system \
-            --timezone=Africa/Casablanca
+          --artifact=.calendar-unified/sorec.json \
+          --country-id=morocco \
+          --authority-id=sorec \
+          --racing-system-id=sorec-racing-information-system \
+          --timezone=Africa/Casablanca
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/chile.json \
-            --country-id=chile \
-            --authority-id=teletrak-chile \
-            --racing-system-id=chile-teletrak-racing-system \
-            --timezone=America/Santiago
+          --artifact=.calendar-unified/chile.json \
+          --country-id=chile \
+          --authority-id=teletrak-chile \
+          --racing-system-id=chile-teletrak-racing-system \
+          --timezone=America/Santiago
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/ireland.json \
-            --country-id=ireland \
-            --authority-id=horse-racing-ireland \
-            --racing-system-id=ireland-hri-racing-system \
-            --timezone=Europe/Dublin
+          --artifact=.calendar-unified/ireland.json \
+          --country-id=ireland \
+          --authority-id=horse-racing-ireland \
+          --racing-system-id=ireland-hri-racing-system \
+          --timezone=Europe/Dublin
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/peru.json \
-            --country-id=peru \
-            --authority-id=hipodromo-de-monterrico \
-            --racing-system-id=peru-monterrico-programme-system \
-            --timezone=America/Lima
+          --artifact=.calendar-unified/peru.json \
+          --country-id=peru \
+          --authority-id=hipodromo-de-monterrico \
+          --racing-system-id=peru-monterrico-programme-system \
+          --timezone=America/Lima
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/saudi-arabia.json \
-            --country-id=saudi-arabia \
-            --authority-id=jockey-club-of-saudi-arabia \
-            --racing-system-id=saudi-arabia-jcsa-system \
-            --timezone=Asia/Riyadh
+          --artifact=.calendar-unified/saudi-arabia.json \
+          --country-id=saudi-arabia \
+          --authority-id=jockey-club-of-saudi-arabia \
+          --racing-system-id=saudi-arabia-jcsa-system \
+          --timezone=Asia/Riyadh
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/france-galop.json \
-            --country-id=france \
-            --authority-id=france-galop \
-            --racing-system-id=france-france-galop-system \
-            --timezone=Europe/Paris
+          --artifact=.calendar-unified/france-galop.json \
+          --country-id=france \
+          --authority-id=france-galop \
+          --racing-system-id=france-france-galop-system \
+          --timezone=Europe/Paris
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/france-letrot.json \
-            --country-id=france \
-            --authority-id=letrot \
-            --racing-system-id=france-letrot-system \
-            --timezone=Europe/Paris
+          --artifact=.calendar-unified/france-letrot.json \
+          --country-id=france \
+          --authority-id=letrot \
+          --racing-system-id=france-letrot-system \
+          --timezone=Europe/Paris
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/new-zealand-thoroughbred.json \
-            --country-id=new-zealand \
-            --authority-id=new-zealand-thoroughbred-racing \
-            --racing-system-id=new-zealand-thoroughbred-system \
-            --timezone=Pacific/Auckland
+          --artifact=.calendar-unified/new-zealand-thoroughbred.json \
+          --country-id=new-zealand \
+          --authority-id=new-zealand-thoroughbred-racing \
+          --racing-system-id=new-zealand-thoroughbred-system \
+          --timezone=Pacific/Auckland
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/new-zealand-harness.json \
-            --country-id=new-zealand \
-            --authority-id=harness-racing-new-zealand \
-            --racing-system-id=new-zealand-harness-system \
-            --timezone=Pacific/Auckland
+          --artifact=.calendar-unified/new-zealand-harness.json \
+          --country-id=new-zealand \
+          --authority-id=harness-racing-new-zealand \
+          --racing-system-id=new-zealand-harness-system \
+          --timezone=Pacific/Auckland
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/united-kingdom.json \
-            --country-id=united-kingdom \
-            --authority-id=british-horseracing-authority \
-            --racing-system-id=united-kingdom-bha-system \
-            --timezone=Europe/London
+          --artifact=.calendar-unified/united-kingdom.json \
+          --country-id=united-kingdom \
+          --authority-id=british-horseracing-authority \
+          --racing-system-id=united-kingdom-bha-system \
+          --timezone=Europe/London
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/slovakia.json \
-            --country-id=slovakia \
-            --authority-id=zavodisko \
-            --racing-system-id=slovakia-zavodisko-system \
-            --timezone=Europe/Bratislava
+          --artifact=.calendar-unified/slovakia.json \
+          --country-id=slovakia \
+          --authority-id=zavodisko \
+          --racing-system-id=slovakia-zavodisko-system \
+          --timezone=Europe/Bratislava
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/bahrain.json \
-            --country-id=bahrain \
-            --authority-id=bahrain-turf-club \
-            --racing-system-id=bahrain-turf-club-system \
-            --timezone=Asia/Bahrain
+          --artifact=.calendar-unified/bahrain.json \
+          --country-id=bahrain \
+          --authority-id=bahrain-turf-club \
+          --racing-system-id=bahrain-turf-club-system \
+          --timezone=Asia/Bahrain
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/sweden.json \
-            --country-id=sweden \
-            --authority-id=svensk-galopp \
-            --racing-system-id=sweden-svensk-galopp-system \
-            --timezone=Europe/Stockholm
+          --artifact=.calendar-unified/sweden.json \
+          --country-id=sweden \
+          --authority-id=svensk-galopp \
+          --racing-system-id=sweden-svensk-galopp-system \
+          --timezone=Europe/Stockholm
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/germany.json \
-            --country-id=germany \
-            --authority-id=deutscher-galopp \
-            --racing-system-id=germany-deutscher-galopp-system \
-            --timezone=Europe/Berlin
+          --artifact=.calendar-unified/germany.json \
+          --country-id=germany \
+          --authority-id=deutscher-galopp \
+          --racing-system-id=germany-deutscher-galopp-system \
+          --timezone=Europe/Berlin
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/spain.json \
-            --country-id=spain \
-            --authority-id=hipodromo-zarzuela \
-            --racing-system-id=spain-reviewed-gallop-system \
-            --timezone=Europe/Madrid
+          --artifact=.calendar-unified/spain.json \
+          --country-id=spain \
+          --authority-id=hipodromo-zarzuela \
+          --racing-system-id=spain-reviewed-gallop-system \
+          --timezone=Europe/Madrid
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/italy-gallop.json \
-            --country-id=italy \
-            --authority-id=masaf \
-            --racing-system-id=italy-masaf-gallop-system \
-            --timezone=Europe/Rome
+          --artifact=.calendar-unified/italy-gallop.json \
+          --country-id=italy \
+          --authority-id=masaf \
+          --racing-system-id=italy-masaf-gallop-system \
+          --timezone=Europe/Rome
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/italy-trot.json \
-            --country-id=italy \
-            --authority-id=masaf \
-            --racing-system-id=italy-masaf-trot-system \
-            --timezone=Europe/Rome
+          --artifact=.calendar-unified/italy-trot.json \
+          --country-id=italy \
+          --authority-id=masaf \
+          --racing-system-id=italy-masaf-trot-system \
+          --timezone=Europe/Rome
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/south-africa-race-coast.json \
-            --country-id=south-africa \
-            --authority-id=race-coast \
-            --racing-system-id=south-africa-race-coast-system \
-            --timezone=Africa/Johannesburg
+          --artifact=.calendar-unified/south-africa-race-coast.json \
+          --country-id=south-africa \
+          --authority-id=race-coast \
+          --racing-system-id=south-africa-race-coast-system \
+          --timezone=Africa/Johannesburg
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/south-africa-four-racing.json \
-            --country-id=south-africa \
-            --authority-id=four-racing \
-            --racing-system-id=south-africa-4racing-system \
-            --timezone=Africa/Johannesburg
+          --artifact=.calendar-unified/south-africa-four-racing.json \
+          --country-id=south-africa \
+          --authority-id=four-racing \
+          --racing-system-id=south-africa-4racing-system \
+          --timezone=Africa/Johannesburg
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/panama.json \
-            --country-id=panama \
-            --authority-id=hipica-de-panama \
-            --racing-system-id=presidente-remon-racing-system \
-            --timezone=America/Panama
+          --artifact=.calendar-unified/panama.json \
+          --country-id=panama \
+          --authority-id=hipica-de-panama \
+          --racing-system-id=presidente-remon-racing-system \
+          --timezone=America/Panama
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/brazil-gavea.json \
-            --country-id=brazil \
-            --authority-id=jockey-club-brasileiro \
-            --racing-system-id=brazil-gavea-system \
-            --timezone=America/Sao_Paulo
+          --artifact=.calendar-unified/brazil-gavea.json \
+          --country-id=brazil \
+          --authority-id=jockey-club-brasileiro \
+          --racing-system-id=brazil-gavea-system \
+          --timezone=America/Sao_Paulo
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/brazil-cristal.json \
-            --country-id=brazil \
-            --authority-id=jockey-club-do-rio-grande-do-sul \
-            --racing-system-id=brazil-cristal-system \
-            --timezone=America/Sao_Paulo
+          --artifact=.calendar-unified/brazil-cristal.json \
+          --country-id=brazil \
+          --authority-id=jockey-club-do-rio-grande-do-sul \
+          --racing-system-id=brazil-cristal-system \
+          --timezone=America/Sao_Paulo
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/brazil-cidade-jardim.json \
-            --country-id=brazil \
-            --authority-id=jockey-club-de-sao-paulo \
-            --racing-system-id=brazil-cidade-jardim-system \
-            --timezone=America/Sao_Paulo
+          --artifact=.calendar-unified/brazil-cidade-jardim.json \
+          --country-id=brazil \
+          --authority-id=jockey-club-de-sao-paulo \
+          --racing-system-id=brazil-cidade-jardim-system \
+          --timezone=America/Sao_Paulo
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/brazil-sorocaba.json \
-            --country-id=brazil \
-            --authority-id=jockey-club-de-sorocaba \
-            --racing-system-id=brazil-sorocaba-system \
-            --timezone=America/Sao_Paulo
+          --artifact=.calendar-unified/brazil-sorocaba.json \
+          --country-id=brazil \
+          --authority-id=jockey-club-de-sorocaba \
+          --racing-system-id=brazil-sorocaba-system \
+          --timezone=America/Sao_Paulo
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/mexico.json \
-            --country-id=mexico \
-            --authority-id=hipodromo-de-las-americas \
-            --racing-system-id=mexico-hipodromo-las-americas-system \
-            --timezone=America/Mexico_City
+          --artifact=.calendar-unified/mexico.json \
+          --country-id=mexico \
+          --authority-id=hipodromo-de-las-americas \
+          --racing-system-id=mexico-hipodromo-las-americas-system \
+          --timezone=America/Mexico_City
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/uruguay.json \
-            --country-id=uruguay \
-            --authority-id=hru \
-            --racing-system-id=uruguay-hru-system \
-            --timezone=America/Montevideo
+          --artifact=.calendar-unified/uruguay.json \
+          --country-id=uruguay \
+          --authority-id=hru \
+          --racing-system-id=uruguay-hru-system \
+          --timezone=America/Montevideo
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/finland.json \
-            --country-id=finland \
-            --authority-id=suomen-hippos \
-            --racing-system-id=finland-suomen-hippos-harness-system \
-            --timezone=Europe/Helsinki
+          --artifact=.calendar-unified/finland.json \
+          --country-id=finland \
+          --authority-id=suomen-hippos \
+          --racing-system-id=finland-suomen-hippos-harness-system \
+          --timezone=Europe/Helsinki
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/jamaica.json \
-            --country-id=jamaica \
-            --authority-id=caymanas-park-svrel \
-            --racing-system-id=jamaica-reviewed-system \
-            --timezone=America/Jamaica
+          --artifact=.calendar-unified/jamaica.json \
+          --country-id=jamaica \
+          --authority-id=caymanas-park-svrel \
+          --racing-system-id=jamaica-reviewed-system \
+          --timezone=America/Jamaica
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/czech.json \
-            --country-id=czech-republic \
-            --authority-id=czech-racing-calendar \
-            --racing-system-id=czech-national-calendar-system \
-            --timezone=Europe/Prague
+          --artifact=.calendar-unified/czech.json \
+          --country-id=czech-republic \
+          --authority-id=czech-racing-calendar \
+          --racing-system-id=czech-national-calendar-system \
+          --timezone=Europe/Prague
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/denmark.json \
-            --country-id=denmark \
-            --authority-id=klampenborg-galopbane \
-            --racing-system-id=denmark-klampenborg-system \
-            --timezone=Europe/Copenhagen
+          --artifact=.calendar-unified/denmark.json \
+          --country-id=denmark \
+          --authority-id=klampenborg-galopbane \
+          --racing-system-id=denmark-klampenborg-system \
+          --timezone=Europe/Copenhagen
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/hungary.json \
-            --country-id=hungary \
-            --authority-id=kincsem-park \
-            --racing-system-id=hungary-kincsem-galopp-calendar-system \
-            --timezone=Europe/Budapest
+          --artifact=.calendar-unified/hungary.json \
+          --country-id=hungary \
+          --authority-id=kincsem-park \
+          --racing-system-id=hungary-kincsem-galopp-calendar-system \
+          --timezone=Europe/Budapest
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/dominican-hvc.json \
-            --country-id=dominican-republic \
-            --authority-id=hipodromo-v-centenario \
-            --racing-system-id=hvc-racing-system \
-            --timezone=America/Santo_Domingo
+          --artifact=.calendar-unified/dominican-hvc.json \
+          --country-id=dominican-republic \
+          --authority-id=hipodromo-v-centenario \
+          --racing-system-id=hvc-racing-system \
+          --timezone=America/Santo_Domingo
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/norway-dnt.json \
-            --country-id=norway \
-            --authority-id=det-norske-travselskap \
-            --racing-system-id=norway-dnt-harness-system \
-            --timezone=Europe/Oslo
+          --artifact=.calendar-unified/norway-dnt.json \
+          --country-id=norway \
+          --authority-id=det-norske-travselskap \
+          --racing-system-id=norway-dnt-harness-system \
+          --timezone=Europe/Oslo
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/norway-ovrevoll.json \
-            --country-id=norway \
-            --authority-id=ovrevoll \
-            --racing-system-id=norway-ovrevoll-gallop-system \
-            --timezone=Europe/Oslo
+          --artifact=.calendar-unified/norway-ovrevoll.json \
+          --country-id=norway \
+          --authority-id=ovrevoll \
+          --racing-system-id=norway-ovrevoll-gallop-system \
+          --timezone=Europe/Oslo
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/austria.json \
-            --country-id=austria \
-            --authority-id=wiener-trabrenn-verein \
-            --racing-system-id=austria-krieau-calendar-system \
-            --timezone=Europe/Vienna
+          --artifact=.calendar-unified/austria.json \
+          --country-id=austria \
+          --authority-id=wiener-trabrenn-verein \
+          --racing-system-id=austria-krieau-calendar-system \
+          --timezone=Europe/Vienna
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/croatia.json \
-            --country-id=croatia \
-            --authority-id=hrvatski-galopski-savez \
-            --racing-system-id=croatian-gallop-system \
-            --timezone=Europe/Zagreb
+          --artifact=.calendar-unified/croatia.json \
+          --country-id=croatia \
+          --authority-id=hrvatski-galopski-savez \
+          --racing-system-id=croatian-gallop-system \
+          --timezone=Europe/Zagreb
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/serbia.json \
-            --country-id=serbia \
-            --authority-id=belgrade-hippodrome \
-            --racing-system-id=serbia-belgrade-hippodrome-system \
-            --timezone=Europe/Belgrade
+          --artifact=.calendar-unified/serbia.json \
+          --country-id=serbia \
+          --authority-id=belgrade-hippodrome \
+          --racing-system-id=serbia-belgrade-hippodrome-system \
+          --timezone=Europe/Belgrade
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/switzerland-trot.json \
-            --country-id=switzerland \
-            --authority-id=suisse-trot \
-            --racing-system-id=switzerland-suisse-trot-system \
-            --timezone=Europe/Zurich
+          --artifact=.calendar-unified/switzerland-trot.json \
+          --country-id=switzerland \
+          --authority-id=suisse-trot \
+          --racing-system-id=switzerland-suisse-trot-system \
+          --timezone=Europe/Zurich
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/switzerland-galop.json \
-            --country-id=switzerland \
-            --authority-id=galop-suisse \
-            --racing-system-id=switzerland-galop-suisse-system \
-            --timezone=Europe/Zurich
+          --artifact=.calendar-unified/switzerland-galop.json \
+          --country-id=switzerland \
+          --authority-id=galop-suisse \
+          --racing-system-id=switzerland-galop-suisse-system \
+          --timezone=Europe/Zurich
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/netherlands.json \
-            --country-id=netherlands \
-            --authority-id=ndr \
-            --racing-system-id=netherlands-ndr-racing-calendar-system \
-            --timezone=Europe/Amsterdam
+          --artifact=.calendar-unified/netherlands.json \
+          --country-id=netherlands \
+          --authority-id=ndr \
+          --racing-system-id=netherlands-ndr-racing-calendar-system \
+          --timezone=Europe/Amsterdam
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/poland.json \
-            --country-id=poland \
-            --authority-id=pkwk \
-            --racing-system-id=poland-pkwk-national-plan-system \
-            --timezone=Europe/Warsaw
+          --artifact=.calendar-unified/poland.json \
+          --country-id=poland \
+          --authority-id=pkwk \
+          --racing-system-id=poland-pkwk-national-plan-system \
+          --timezone=Europe/Warsaw
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/romania.json \
-            --country-id=romania \
-            --authority-id=csm-ploiesti \
-            --racing-system-id=romania-ploiesti-system \
-            --timezone=Europe/Bucharest
+          --artifact=.calendar-unified/romania.json \
+          --country-id=romania \
+          --authority-id=csm-ploiesti \
+          --racing-system-id=romania-ploiesti-system \
+          --timezone=Europe/Bucharest
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/malaysia.json \
-            --country-id=malaysia \
-            --authority-id=mra \
-            --racing-system-id=malaysia-mra-system \
-            --timezone=Asia/Kuala_Lumpur
+          --artifact=.calendar-unified/malaysia.json \
+          --country-id=malaysia \
+          --authority-id=mra \
+          --racing-system-id=malaysia-mra-system \
+          --timezone=Asia/Kuala_Lumpur
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/cyprus.json \
-            --country-id=cyprus \
-            --authority-id=nicosia-race-club \
-            --racing-system-id=nicosia-national-racing-system \
-            --timezone=Europe/Nicosia
+          --artifact=.calendar-unified/cyprus.json \
+          --country-id=cyprus \
+          --authority-id=nicosia-race-club \
+          --racing-system-id=nicosia-national-racing-system \
+          --timezone=Europe/Nicosia
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/belgium-trotting.json \
-            --country-id=belgium \
-            --authority-id=belgian-federation-horse-racing \
-            --racing-system-id=belgian-trotting-programme-system \
-            --timezone=Europe/Brussels
+          --artifact=.calendar-unified/belgium-trotting.json \
+          --country-id=belgium \
+          --authority-id=belgian-federation-horse-racing \
+          --racing-system-id=belgian-trotting-programme-system \
+          --timezone=Europe/Brussels
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/belize.json \
-            --country-id=belize \
-            --authority-id=horse-racing-investments-limited \
-            --racing-system-id=national-racing-schedule \
-            --timezone=America/Belize
+          --artifact=.calendar-unified/belize.json \
+          --country-id=belize \
+          --authority-id=horse-racing-investments-limited \
+          --racing-system-id=national-racing-schedule \
+          --timezone=America/Belize
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/puerto-rico.json \
-            --country-id=puerto-rico \
-            --authority-id=hipodromo-camarero \
-            --racing-system-id=puerto-rico-reviewed-system \
-            --timezone=America/Puerto_Rico
+          --artifact=.calendar-unified/puerto-rico.json \
+          --country-id=puerto-rico \
+          --authority-id=hipodromo-camarero \
+          --racing-system-id=puerto-rico-reviewed-system \
+          --timezone=America/Puerto_Rico
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/qatar.json \
-            --country-id=qatar \
-            --authority-id=qatar-racing-and-equestrian-club \
-            --racing-system-id=qatar-qrec-calendar-system \
-            --timezone=Asia/Qatar
+          --artifact=.calendar-unified/qatar.json \
+          --country-id=qatar \
+          --authority-id=qatar-racing-and-equestrian-club \
+          --racing-system-id=qatar-qrec-calendar-system \
+          --timezone=Asia/Qatar
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/barbados.json \
-            --country-id=barbados \
-            --authority-id=barbados-turf-club \
-            --racing-system-id=barbados-reviewed-system \
-            --timezone=America/Barbados
+          --artifact=.calendar-unified/barbados.json \
+          --country-id=barbados \
+          --authority-id=barbados-turf-club \
+          --racing-system-id=barbados-reviewed-system \
+          --timezone=America/Barbados
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/trinidad-and-tobago.json \
-            --country-id=trinidad-and-tobago \
-            --authority-id=arima-race-club \
-            --racing-system-id=trinidad-and-tobago-reviewed-system \
-            --timezone=America/Port_of_Spain
+          --artifact=.calendar-unified/trinidad-and-tobago.json \
+          --country-id=trinidad-and-tobago \
+          --authority-id=arima-race-club \
+          --racing-system-id=trinidad-and-tobago-reviewed-system \
+          --timezone=America/Port_of_Spain
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/martinique.json \
-            --country-id=martinique \
-            --authority-id=hippodrome-de-carrere \
-            --racing-system-id=martinique-reviewed-system \
-            --timezone=America/Martinique
+          --artifact=.calendar-unified/martinique.json \
+          --country-id=martinique \
+          --authority-id=hippodrome-de-carrere \
+          --racing-system-id=martinique-reviewed-system \
+          --timezone=America/Martinique
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/mauritius.json \
-            --country-id=mauritius \
-            --authority-id=automatic-systems-ltd-supertote \
-            --racing-system-id=mauritius-champ-de-mars-system \
-            --timezone=Indian/Mauritius
+          --artifact=.calendar-unified/mauritius.json \
+          --country-id=mauritius \
+          --authority-id=automatic-systems-ltd-supertote \
+          --racing-system-id=mauritius-champ-de-mars-system \
+          --timezone=Indian/Mauritius
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/slovenia.json \
-            --country-id=slovenia \
-            --authority-id=kasaska-zveza-slovenije \
-            --racing-system-id=slovenian-trotting-system \
-            --timezone=Europe/Ljubljana
+          --artifact=.calendar-unified/slovenia.json \
+          --country-id=slovenia \
+          --authority-id=kasaska-zveza-slovenije \
+          --racing-system-id=slovenian-trotting-system \
+          --timezone=Europe/Ljubljana
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/kenya.json \
-            --country-id=kenya \
-            --authority-id=jockey-club-of-kenya \
-            --racing-system-id=ngong-jck-racing-system \
-            --timezone=Africa/Nairobi
+          --artifact=.calendar-unified/kenya.json \
+          --country-id=kenya \
+          --authority-id=jockey-club-of-kenya \
+          --racing-system-id=ngong-jck-racing-system \
+          --timezone=Africa/Nairobi
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/lithuania.json \
-            --country-id=lithuania \
-            --authority-id=trotting-horse-league \
-            --racing-system-id=trotting-league-system \
-            --timezone=Europe/Vilnius
+          --artifact=.calendar-unified/lithuania.json \
+          --country-id=lithuania \
+          --authority-id=trotting-horse-league \
+          --racing-system-id=trotting-league-system \
+          --timezone=Europe/Vilnius
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/estonia.json \
-            --country-id=estonia \
-            --authority-id=estonian-trotting-union \
-            --racing-system-id=tuula-trotting-system \
-            --timezone=Europe/Tallinn
+          --artifact=.calendar-unified/estonia.json \
+          --country-id=estonia \
+          --authority-id=estonian-trotting-union \
+          --racing-system-id=tuula-trotting-system \
+          --timezone=Europe/Tallinn
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/thailand.json \
-            --country-id=thailand \
-            --authority-id=rbsc \
-            --racing-system-id=thailand-rbsc-system \
-            --timezone=Asia/Bangkok
+          --artifact=.calendar-unified/thailand.json \
+          --country-id=thailand \
+          --authority-id=rbsc \
+          --racing-system-id=thailand-rbsc-system \
+          --timezone=Asia/Bangkok
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/canada.json \
-            --country-id=canada \
-            --authority-id=ontario-racing \
-            --racing-system-id=canada-ontario-racing-system \
-            --timezone=America/Toronto
+          --artifact=.calendar-unified/canada.json \
+          --country-id=canada \
+          --authority-id=ontario-racing \
+          --racing-system-id=canada-ontario-racing-system \
+          --timezone=America/Toronto
           bash scripts/timetable/apply-canada-ontario-three-agco.sh
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/canada-alberta-century-mile.json \
-            --country-id=canada \
-            --authority-id=horse-racing-alberta \
-            --racing-system-id=canada-alberta-century-mile-standardbred-system \
-            --timezone=America/Edmonton
+          --artifact=.calendar-unified/canada-alberta-century-mile.json \
+          --country-id=canada \
+          --authority-id=horse-racing-alberta \
+          --racing-system-id=canada-alberta-century-mile-standardbred-system \
+          --timezone=America/Edmonton
 
 
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/us-njrc/monmouth.json \
-            --country-id=united-states \
-            --authority-id=new-jersey-racing-commission \
-            --racing-system-id=us-nj-monmouth-thoroughbred-2026-system \
-            --timezone=America/New_York
+          --artifact=.calendar-unified/us-njrc/monmouth.json \
+          --country-id=united-states \
+          --authority-id=new-jersey-racing-commission \
+          --racing-system-id=us-nj-monmouth-thoroughbred-2026-system \
+          --timezone=America/New_York
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/us-njrc/meadowlands_turf.json \
-            --country-id=united-states \
-            --authority-id=new-jersey-racing-commission \
-            --racing-system-id=us-nj-meadowlands-thoroughbred-turf-2026-system \
-            --timezone=America/New_York
+          --artifact=.calendar-unified/us-njrc/meadowlands_turf.json \
+          --country-id=united-states \
+          --authority-id=new-jersey-racing-commission \
+          --racing-system-id=us-nj-meadowlands-thoroughbred-turf-2026-system \
+          --timezone=America/New_York
           node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/us-njrc/far_hills_steeplechase.json \
-            --country-id=united-states \
-            --authority-id=new-jersey-racing-commission \
-            --racing-system-id=us-nj-far-hills-steeplechase-2026-system \
-            --timezone=America/New_York
+          --artifact=.calendar-unified/us-njrc/far_hills_steeplechase.json \
+          --country-id=united-states \
+          --authority-id=new-jersey-racing-commission \
+          --racing-system-id=us-nj-far-hills-steeplechase-2026-system \
+          --timezone=America/New_York
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
