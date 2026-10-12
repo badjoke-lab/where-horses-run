@@ -636,24 +636,9 @@ refresh_non_japan_on_main() {
     --authority-id=ontario-racing \
     --racing-system-id=canada-ontario-racing-system \
     --timezone=America/Toronto
-  node scripts/timetable/apply-official-rolling-observations.mjs \
-    --artifact=.calendar-unified/canada-ontario/woodbine_thoroughbred.json \
-    --country-id=canada \
-    --authority-id=ontario-racing \
-    --racing-system-id=canada-ontario-woodbine-thoroughbred-system \
-    --timezone=America/Toronto
-  node scripts/timetable/apply-official-rolling-observations.mjs \
-    --artifact=.calendar-unified/canada-ontario/fort_erie_thoroughbred.json \
-    --country-id=canada \
-    --authority-id=ontario-racing \
-    --racing-system-id=canada-ontario-fort-erie-thoroughbred-system \
-    --timezone=America/Toronto
-  node scripts/timetable/apply-official-rolling-observations.mjs \
-    --artifact=.calendar-unified/canada-ontario/ajax_quarter_horse.json \
-    --country-id=canada \
-    --authority-id=ontario-racing \
-    --racing-system-id=canada-ontario-ajax-quarter-horse-system \
-    --timezone=America/Toronto
+  bash scripts/timetable/apply-canada-ontario-three-agco.sh
+
+
   node scripts/timetable/apply-official-rolling-observations.mjs \
     --artifact=.calendar-unified/us-njrc/monmouth.json \
     --country-id=united-states \
