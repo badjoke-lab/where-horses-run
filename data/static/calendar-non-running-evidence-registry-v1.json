@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-non-running-evidence-registry-v1",
-  "reviewed_at": "2026-10-12",
+  "reviewed_at": "2026-10-13",
   "records": [
     {
       "record_id": "japan-jra-system",
@@ -1530,6 +1530,27 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-10-12",
       "notes": "A source absence or failed fetch is not evidence that an approved race day was cancelled. Non-running status needs independent evidence."
+    },
+    {
+      "record_id": "canada-alberta-century-mile-standardbred-system",
+      "country_id": "canada",
+      "system_id": "canada-alberta-century-mile-standardbred-system",
+      "authority_id": "horse-racing-alberta",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "HRA official 2026 Century Mile Standardbred positive date calendar only; no cancellation monitoring on this route.",
+      "evidence_urls": [
+        "https://www.thehorses.com/racetracks/race-calendar"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-10-13",
+      "notes": "HRA source absence and failures preserve last verified Calendar state; must not imply cancellation, postponement, or completed race."
     }
   ]
 }
