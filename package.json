@@ -121,7 +121,8 @@
     "validate:kenya-jck": "node --check scripts/timetable/kenya-jck-calendar-core.mjs && node --check scripts/timetable/run-kenya-jck-official-window.mjs && node scripts/check-kenya-jck-adapter.mjs",
     "validate:lithuania-trotting": "node --check scripts/timetable/lithuania-trotting-calendar-core.mjs && node --check scripts/timetable/run-lithuania-trotting-official-window.mjs && node scripts/check-lithuania-trotting-adapter.mjs",
     "validate:estonia-tuula": "node --check scripts/timetable/estonia-tuula-calendar-core.mjs && node --check scripts/timetable/run-estonia-tuula-official-window.mjs && node scripts/check-estonia-tuula-adapter.mjs",
-    "validate:thailand-rbsc": "node --check scripts/timetable/thailand-rbsc-calendar-core.mjs && node --check scripts/timetable/run-thailand-rbsc-official-window.mjs && node scripts/check-thailand-rbsc-adapter.mjs"
+    "validate:thailand-rbsc": "node --check scripts/timetable/thailand-rbsc-calendar-core.mjs && node --check scripts/timetable/run-thailand-rbsc-official-window.mjs && node scripts/check-thailand-rbsc-adapter.mjs",
+    "validate:us-njrc-2026": "node --check scripts/timetable/build-us-njrc-2026-calendar-candidates.mjs && node --check scripts/timetable/run-us-njrc-2026-official-window.mjs && python3 -m py_compile scripts/timetable/us_njrc_2026_pdf_core.py scripts/timetable/run-us-njrc-2026-source-facts.py"
   },
   "dependencies": {
     "astro": "^6.0.0",
