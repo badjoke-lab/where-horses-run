@@ -136,24 +136,36 @@ jobs:
           node scripts/check-calendar-public-country-support.mjs
           node scripts/check-calendar-public-map-parity.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
-      - name: Persist generated Norway timetable
+      - name: Persist generated Norway official timetable (latest-main safe)
         shell: bash
         run: |
-          git fetch origin main
-          if [ "$(git rev-parse origin/main)" != "$(git rev-parse HEAD)" ]; then
-            echo "main advanced during Norway refresh; refusing to overwrite newer work"
-            exit 1
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add \
-            data/generated/timetable/canonical/meetings.json \
-            data/generated/timetable/canonical/meeting-details.json \
-            data/generated/timetable/public/meeting-list.json \
-            data/generated/timetable/public/meeting-details.json
-          if git diff --cached --quiet; then
-            echo "No Norway timetable changes to persist"
-            exit 0
-          fi
-          git commit -m "data: refresh Norway official timetable (${{ steps.scope.outputs.scope }})"
-          git push origin HEAD:main
+          set -euo pipefail
+          recollect_on_main() {
+            npm install --no-package-lock --no-audit --no-fund
+            rm -rf .calendar-norway
+            mkdir -p .calendar-norway
+            node scripts/timetable/run-norway-dnt-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-norway/dnt.json
+            node scripts/timetable/run-norway-ovrevoll-official-window.mjs \
+              --days="${{ steps.scope.outputs.days }}" \
+              --output=.calendar-norway/ovrevoll.json
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-norway/dnt.json \
+              --country-id=norway \
+              --authority-id=det-norske-travselskap \
+              --racing-system-id=norway-dnt-harness-system \
+              --timezone=Europe/Oslo
+            node scripts/timetable/apply-official-rolling-observations.mjs \
+              --artifact=.calendar-norway/ovrevoll.json \
+              --country-id=norway \
+              --authority-id=ovrevoll \
+              --racing-system-id=norway-ovrevoll-gallop-system \
+              --timezone=Europe/Oslo
+            node scripts/timetable/apply-reviewed-calendar-observations.mjs
+            node scripts/check-calendar-public-country-support.mjs
+            node scripts/check-calendar-public-map-parity.mjs
+            node scripts/check-calendar-non-running-evidence-registry.mjs
+          }
+          source scripts/timetable/persist-country-on-main.sh
+          persist_country_on_main 'Norway official' '${{ steps.scope.outputs.scope }}' recollect_on_main

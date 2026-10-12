@@ -45,6 +45,8 @@ jobs:
           node-version: '22'
       - run: npm install --no-package-lock --no-audit --no-fund
       - run: npm run validate:belgium-trotting
+      - name: Exercise country persistence against concurrent main
+        run: bash scripts/test-calendar-country-persist-retry.sh
       - name: Exercise Belgium 30-day production path
         run: |
           mkdir -p .calendar-belgium
@@ -87,20 +89,20 @@ jobs:
           node scripts/check-calendar-public-country-support.mjs
           node scripts/check-calendar-public-map-parity.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
-      - name: Persist generated Belgium timetable
+      - name: Persist generated Belgium trotting timetable (latest-main safe)
         shell: bash
         run: |
-          git fetch origin main
-          if [ "$(git rev-parse origin/main)" != "$(git rev-parse HEAD)" ]; then
-            echo "main advanced; refusing overwrite"
-            exit 1
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/generated/timetable/canonical/meetings.json data/generated/timetable/canonical/meeting-details.json data/generated/timetable/public/meeting-list.json data/generated/timetable/public/meeting-details.json
-          if git diff --cached --quiet; then
-            echo "No Belgium timetable changes"
-            exit 0
-          fi
-          git commit -m "data: refresh Belgium trotting timetable (${{ steps.scope.outputs.scope }})"
-          git push origin HEAD:main
+          set -euo pipefail
+          recollect_on_main() {
+            npm install --no-package-lock --no-audit --no-fund
+            rm -rf .calendar-belgium
+            mkdir -p .calendar-belgium
+            node scripts/timetable/run-belgium-trotting-official-window.mjs --days="${{ steps.scope.outputs.days }}" --output=.calendar-belgium/trotting.json
+            node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-belgium/trotting.json --country-id=belgium --authority-id=belgian-federation-horse-racing --racing-system-id=belgian-trotting-programme-system --timezone=Europe/Brussels
+            node scripts/timetable/apply-reviewed-calendar-observations.mjs
+            node scripts/check-calendar-public-country-support.mjs
+            node scripts/check-calendar-public-map-parity.mjs
+            node scripts/check-calendar-non-running-evidence-registry.mjs
+          }
+          source scripts/timetable/persist-country-on-main.sh
+          persist_country_on_main 'Belgium trotting' '${{ steps.scope.outputs.scope }}' recollect_on_main
