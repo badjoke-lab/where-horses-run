@@ -93,20 +93,20 @@ jobs:
           node scripts/check-calendar-public-country-support.mjs
           node scripts/check-calendar-public-map-parity.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
-      - name: Persist generated Belize timetable
+      - name: Persist generated Belize timetable (latest-main safe)
         shell: bash
         run: |
-          git fetch origin main
-          if [ "$(git rev-parse origin/main)" != "$(git rev-parse HEAD)" ]; then
-            echo "main advanced; refusing overwrite"
-            exit 1
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/generated/timetable/canonical/meetings.json data/generated/timetable/canonical/meeting-details.json data/generated/timetable/public/meeting-list.json data/generated/timetable/public/meeting-details.json
-          if git diff --cached --quiet; then
-            echo "No Belize timetable changes"
-            exit 0
-          fi
-          git commit -m "data: refresh Belize timetable (${{ steps.scope.outputs.scope }})"
-          git push origin HEAD:main
+          set -euo pipefail
+          recollect_on_main() {
+            npm install --no-package-lock --no-audit --no-fund
+            rm -rf .calendar-belize
+            mkdir -p .calendar-belize
+            node scripts/timetable/run-belize-official-window.mjs --days="${{ steps.scope.outputs.days }}" --output=.calendar-belize/belize.json
+            node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-belize/belize.json --country-id=belize --authority-id=horse-racing-investments-limited --racing-system-id=national-racing-schedule --timezone=America/Belize
+            node scripts/timetable/apply-reviewed-calendar-observations.mjs
+            node scripts/check-calendar-public-country-support.mjs
+            node scripts/check-calendar-public-map-parity.mjs
+            node scripts/check-calendar-non-running-evidence-registry.mjs
+          }
+          source scripts/timetable/persist-country-on-main.sh
+          persist_country_on_main 'Belize' '${{ steps.scope.outputs.scope }}' recollect_on_main
