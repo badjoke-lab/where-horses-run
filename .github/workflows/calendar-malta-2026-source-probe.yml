@@ -1,0 +1,23 @@
+name: Malta 2026 official Calendar source probe
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-malta-2026-source-probe.yml'
+      - 'scripts/timetable/probe-malta-calendar-2026.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  malta-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Probe current Malta Racing Club sources without publication
+        run: node scripts/timetable/probe-malta-calendar-2026.mjs
