@@ -1,10 +1,19 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import { validateCalendarAuthorityMetadataV1 } from './timetable/calendar-authority-metadata.mjs';
 import {
   parseNztrRpgLandingPage,parseNztrRpgProgrammeText,parseLoveracingIndex,parseLoveracingMeetingPage,
   HRNZ_FINAL_CALENDAR_URL,parseHrnzIndex,parseHrnzMonthPage,parseHrnzProgrammePage,parseHrnzFinalCalendarItems,resolveNewZealandRacecourseId,
   buildNztrFixtureRecord,buildLoveracingDetailedRecord,buildHrnzRecord,
 } from './timetable/new-zealand-official-core.mjs';
+
+const runnerSource=fs.readFileSync(new URL('./timetable/run-new-zealand-official-window.mjs',import.meta.url),'utf8');
+const pdfPrimaryIndex=runnerSource.indexOf('const layout=await getPdfLayout(HRNZ_FINAL_CALENDAR_URL)');
+const infohorseFallbackIndex=runnerSource.indexOf('const index=await getHtml(HRNZ_INDEX_URL)');
+assert.ok(pdfPrimaryIndex>=0,'HRNZ Final Racing Calendar PDF primary route missing');
+assert.ok(infohorseFallbackIndex>pdfPrimaryIndex,'Infohorse must remain after the HRNZ PDF primary route');
+assert.match(runnerSource,/status:hrnzScheduleAcquired\?'success':'network_error'/);
+assert.match(runnerSource,/fallback_source_url:HRNZ_INDEX_URL/);
 
 const rpgLanding=`<html><body><h1>Racing Programme Guide</h1><div>Latest Issue (Full Programmes)</div><a href="/sites/nztrindustry/files/2026-08/Programming%20A4%2025%20Aug.pdf">CLICK HERE</a></body></html>`;
 const landing=parseNztrRpgLandingPage(rpgLanding,{sourceUrl:'https://nztr.co.nz/racing-programme-guide'});
