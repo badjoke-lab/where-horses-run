@@ -68,6 +68,9 @@ const SYSTEMS = [
   { key: 'lithuania', file: 'lithuania.json', country_id: 'lithuania', authority_id: 'trotting-horse-league', racing_system_id: 'trotting-league-system' },
   { key: 'estonia', file: 'estonia.json', country_id: 'estonia', authority_id: 'estonian-trotting-union', racing_system_id: 'tuula-trotting-system' },
   { key: 'thailand', file: 'thailand.json', country_id: 'thailand', authority_id: 'rbsc', racing_system_id: 'thailand-rbsc-system' },
+  { key: 'us-nj-monmouth', file: 'us-njrc/monmouth.json', country_id: 'united-states', authority_id: 'new-jersey-racing-commission', racing_system_id: 'us-nj-monmouth-thoroughbred-2026-system' },
+  { key: 'us-nj-meadowlands', file: 'us-njrc/meadowlands_turf.json', country_id: 'united-states', authority_id: 'new-jersey-racing-commission', racing_system_id: 'us-nj-meadowlands-thoroughbred-turf-2026-system' },
+  { key: 'us-nj-far-hills', file: 'us-njrc/far_hills_steeplechase.json', country_id: 'united-states', authority_id: 'new-jersey-racing-commission', racing_system_id: 'us-nj-far-hills-steeplechase-2026-system' },
 ];
 
 const STATE_FILES = {
