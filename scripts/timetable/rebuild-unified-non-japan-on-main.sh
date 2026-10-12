@@ -191,6 +191,9 @@ refresh_non_japan_on_main() {
   node scripts/timetable/run-canada-ontario-three-agco-2026-window.mjs \
     --days="${DAYS}" \
     --output-dir=.calendar-unified/canada-ontario
+  node scripts/timetable/run-canada-alberta-hra-official-window.mjs \
+    --days="${DAYS}" \
+    --output=.calendar-unified/canada-alberta-century-mile.json
   python3 -c 'import fitz' 2>/dev/null || python3 -m pip install --disable-pip-version-check --break-system-packages -q pymupdf==1.26.5 || echo 'NJRC source parser dependency unavailable; only this source will yield failure diagnostics' >&2
   node scripts/timetable/run-us-njrc-2026-official-window.mjs \
     --days="${DAYS}" \
@@ -261,6 +264,7 @@ refresh_non_japan_on_main() {
   --artifact=.calendar-unified/canada-ontario/woodbine_thoroughbred.json \
   --artifact=.calendar-unified/canada-ontario/fort_erie_thoroughbred.json \
   --artifact=.calendar-unified/canada-ontario/ajax_quarter_horse.json \
+  --artifact=.calendar-unified/canada-alberta-century-mile.json \
   --artifact=.calendar-unified/us-njrc/monmouth.json \
   --artifact=.calendar-unified/us-njrc/meadowlands_turf.json \
   --artifact=.calendar-unified/us-njrc/far_hills_steeplechase.json
@@ -637,6 +641,12 @@ refresh_non_japan_on_main() {
     --racing-system-id=canada-ontario-racing-system \
     --timezone=America/Toronto
   bash scripts/timetable/apply-canada-ontario-three-agco.sh
+  node scripts/timetable/apply-official-rolling-observations.mjs \
+    --artifact=.calendar-unified/canada-alberta-century-mile.json \
+    --country-id=canada \
+    --authority-id=horse-racing-alberta \
+    --racing-system-id=canada-alberta-century-mile-standardbred-system \
+    --timezone=America/Edmonton
 
 
   node scripts/timetable/apply-official-rolling-observations.mjs \

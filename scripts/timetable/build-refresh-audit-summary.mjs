@@ -72,6 +72,7 @@ const SYSTEMS = [
   { key: 'canada-woodbine_thoroughbred', file: 'canada-ontario/woodbine_thoroughbred.json', country_id: 'canada', authority_id: 'ontario-racing', racing_system_id: 'canada-ontario-woodbine-thoroughbred-system' },
   { key: 'canada-fort_erie_thoroughbred', file: 'canada-ontario/fort_erie_thoroughbred.json', country_id: 'canada', authority_id: 'ontario-racing', racing_system_id: 'canada-ontario-fort-erie-thoroughbred-system' },
   { key: 'canada-ajax_quarter_horse', file: 'canada-ontario/ajax_quarter_horse.json', country_id: 'canada', authority_id: 'ontario-racing', racing_system_id: 'canada-ontario-ajax-quarter-horse-system' },
+  { key: 'canada-alberta-century-mile', file: 'canada-alberta-century-mile.json', country_id: 'canada', authority_id: 'horse-racing-alberta', racing_system_id: 'canada-alberta-century-mile-standardbred-system' },
   { key: 'us-nj-monmouth', file: 'us-njrc/monmouth.json', country_id: 'united-states', authority_id: 'new-jersey-racing-commission', racing_system_id: 'us-nj-monmouth-thoroughbred-2026-system' },
   { key: 'us-nj-meadowlands', file: 'us-njrc/meadowlands_turf.json', country_id: 'united-states', authority_id: 'new-jersey-racing-commission', racing_system_id: 'us-nj-meadowlands-thoroughbred-turf-2026-system' },
   { key: 'us-nj-far-hills', file: 'us-njrc/far_hills_steeplechase.json', country_id: 'united-states', authority_id: 'new-jersey-racing-commission', racing_system_id: 'us-nj-far-hills-steeplechase-2026-system' },
