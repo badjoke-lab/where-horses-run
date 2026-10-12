@@ -118,6 +118,10 @@ on:
       - 'scripts/check-estonia-tuula-adapter.mjs'
       - 'scripts/timetable/thailand-rbsc-calendar-core.mjs'
       - 'scripts/timetable/run-thailand-rbsc-official-window.mjs'
+      - 'scripts/timetable/us_njrc_2026_pdf_core.py'
+      - 'scripts/timetable/run-us-njrc-2026-source-facts.py'
+      - 'scripts/timetable/build-us-njrc-2026-calendar-candidates.mjs'
+      - 'scripts/timetable/run-us-njrc-2026-official-window.mjs'
       - 'scripts/check-thailand-rbsc-adapter.mjs'
       - 'scripts/check-qatar-qrec-adapter.mjs'
       - 'scripts/timetable/rebuild-unified-non-japan-on-main.sh'
@@ -851,6 +855,10 @@ jobs:
           node scripts/timetable/run-thailand-rbsc-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/thailand.json
+          python3 -m pip install --disable-pip-version-check --break-system-packages -q pymupdf==1.26.5
+          node scripts/timetable/run-us-njrc-2026-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output-dir=.calendar-unified/us-njrc
       - name: Enforce reviewed Calendar exclusions
         run: |
           node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
@@ -914,7 +922,10 @@ jobs:
             --artifact=.calendar-unified/kenya.json \
             --artifact=.calendar-unified/lithuania.json \
             --artifact=.calendar-unified/estonia.json \
-            --artifact=.calendar-unified/thailand.json
+            --artifact=.calendar-unified/thailand.json \
+            --artifact=.calendar-unified/us-njrc/monmouth.json \
+            --artifact=.calendar-unified/us-njrc/meadowlands_turf.json \
+            --artifact=.calendar-unified/us-njrc/far_hills_steeplechase.json
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
@@ -1283,6 +1294,24 @@ jobs:
             --authority-id=rbsc \
             --racing-system-id=thailand-rbsc-system \
             --timezone=Asia/Bangkok
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/us-njrc/monmouth.json \
+            --country-id=united-states \
+            --authority-id=new-jersey-racing-commission \
+            --racing-system-id=us-nj-monmouth-thoroughbred-2026-system \
+            --timezone=America/New_York
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/us-njrc/meadowlands_turf.json \
+            --country-id=united-states \
+            --authority-id=new-jersey-racing-commission \
+            --racing-system-id=us-nj-meadowlands-thoroughbred-turf-2026-system \
+            --timezone=America/New_York
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/us-njrc/far_hills_steeplechase.json \
+            --country-id=united-states \
+            --authority-id=new-jersey-racing-commission \
+            --racing-system-id=us-nj-far-hills-steeplechase-2026-system \
+            --timezone=America/New_York
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
