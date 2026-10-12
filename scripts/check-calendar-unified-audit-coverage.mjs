@@ -20,7 +20,16 @@ const requiredSystems=(registry.records??[])
   .filter((row)=>supportedCountries.has(row.country_id));
 
 function workflowSystems(text){
-  return new Set([...text.matchAll(/--racing-system-id=([a-z0-9-]+)/g)].map((match)=>match[1]));
+  const ids=new Set([...text.matchAll(/--racing-system-id=([a-z0-9-]+)/g)].map(match=>match[1]));
+  // Real source-controlled Ontario apply script keeps GitHub Actions below its run-block limit.
+  const scriptPath='scripts/timetable/apply-canada-ontario-three-agco.sh';
+  if(text.includes('bash '+scriptPath)){
+    const shell=fs.readFileSync(scriptPath,'utf8');
+    assert.match(shell,/apply-official-rolling-observations\.mjs/);
+    assert.match(shell,/--racing-system-id/);
+    for(const match of shell.matchAll(/"(?:[a-z0-9_]+):(canada-[a-z0-9-]+)"/g))ids.add(match[1]);
+  }
+  return ids;
 }
 function auditedSystems(text){
   return new Set([...text.matchAll(/racing_system_id:\s*'([^']+)'/g)].map((match)=>match[1]));

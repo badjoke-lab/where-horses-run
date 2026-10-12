@@ -1,0 +1,58 @@
+name: Calendar Canada Ontario AGCO three tracks smoke
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-canada-ontario-three-agco-production-smoke.yml'
+      - '.github/workflows/calendar-unified-official-refresh.yml'
+      - '.github/workflows/calendar-near-official-refresh.yml'
+      - 'scripts/timetable/canada-ontario-three-agco-2026-core.mjs'
+      - 'scripts/timetable/run-canada-ontario-three-agco-2026-window.mjs'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/calendar-98-tier-execution-coverage.json'
+      - 'data/static/racecourses.json'
+      - 'data/static/racecourse-locations-v1.json'
+      - 'data/static/calendar-98-tier-acquisition-methods/tiers-26-50.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-three-sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - name: Validate collector syntax
+        run: npm run validate:canada-ontario-three-agco
+      - name: Parse 128, 34 and 22 2026 AGCO-approved dates
+        run: |
+          mkdir -p .calendar-ontario-three
+          node scripts/timetable/run-canada-ontario-three-agco-2026-window.mjs --as-of=2026-10-12 --days=90 --output-dir=.calendar-ontario-three
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          const expected={woodbine_thoroughbred:[128,36,'thoroughbred-flat'],fort_erie_thoroughbred:[34,4,'thoroughbred-flat'],ajax_quarter_horse:[22,2,'quarter-horse']};
+          for(const [key,[total,forward,code]] of Object.entries(expected)){
+            const a=JSON.parse(fs.readFileSync('.calendar-ontario-three/'+key+'.json','utf8'));
+            if(a.acquisition_attempt.status!=='success'||a.discovery.source_visible_rows!==total||a.records.length!==forward)throw Error('wrong source counts for '+key+JSON.stringify(a.diagnostics));
+            if(a.records.some(m=>m.capability_rank!=='C'||m.racing_type!==code||m.first_race_time_local!==null||m.timetable_rows.length!==0))throw Error('Ontario C rank/code boundary '+key);
+          }
+          console.log('ONTARIO_THREE_REAL_PDF_2026_PASS: 128/34/22 approved; 36/4/2 forward candidates');
+          JS
+      - name: Apply to canonical and public projections (PR checkout only)
+        run: |
+          node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-ontario-three/woodbine_thoroughbred.json --country-id=canada --authority-id=ontario-racing --racing-system-id=canada-ontario-woodbine-thoroughbred-system --timezone=America/Toronto
+          node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-ontario-three/fort_erie_thoroughbred.json --country-id=canada --authority-id=ontario-racing --racing-system-id=canada-ontario-fort-erie-thoroughbred-system --timezone=America/Toronto
+          node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-ontario-three/ajax_quarter_horse.json --country-id=canada --authority-id=ontario-racing --racing-system-id=canada-ontario-ajax-quarter-horse-system --timezone=America/Toronto
+          node scripts/check-calendar-public-country-support.mjs
+          node scripts/check-calendar-public-map-parity.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs
+          node scripts/check-calendar-98-tier-execution-coverage.mjs
+          node scripts/check-calendar-98-tier-acquisition-methods.mjs
+          node scripts/check-calendar-unified-audit-coverage.mjs
