@@ -1,0 +1,59 @@
+name: Calendar US New Jersey NJRC production smoke
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-us-njrc-2026-production-smoke.yml'
+      - '.github/workflows/calendar-unified-official-refresh.yml'
+      - '.github/workflows/calendar-near-official-refresh.yml'
+      - 'scripts/timetable/*njrc*'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/calendar-98-tier-execution-coverage.json'
+      - 'data/static/racecourses.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  njrc-canonical-public:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python -m pip install --disable-pip-version-check pymupdf==1.26.5
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - name: Validate state PDF extraction and C candidate transforms
+        run: |
+          npm run validate:us-njrc-2026
+          mkdir -p .calendar-us-njrc
+          node scripts/timetable/run-us-njrc-2026-official-window.mjs --as-of=2026-10-12 --days=90 --output-dir=.calendar-us-njrc
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          const r=Object.fromEntries(['monmouth','meadowlands_turf','far_hills_steeplechase'].map(n=>[n,JSON.parse(fs.readFileSync('.calendar-us-njrc/'+n+'.json','utf8'))]));
+          for(const item of Object.values(r))if(item.acquisition_attempt.status!=='success')throw Error('NJRC source unavailable');
+          const expected={monmouth:[50,0],meadowlands_turf:[9,1],far_hills_steeplechase:[1,1]};
+          for(const [k,v] of Object.entries(expected)){if(r[k].discovery.source_visible_rows!==v[0]||r[k].records.length!==v[1])throw Error('NJRC group count '+k)}
+          if(r.meadowlands_turf.records[0].date!=='2026-10-16'||r.far_hills_steeplechase.records[0].date!=='2026-10-17')throw Error('NJRC forward dates wrong');
+          console.log('NJRC_SOURCE_ROWS_PASS 50/9/1; forward 0/1/1');
+          JS
+      - name: Apply all three C systems to canonical and public (PR checkout only)
+        run: |
+          node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-us-njrc/monmouth.json --country-id=united-states --authority-id=new-jersey-racing-commission --racing-system-id=us-nj-monmouth-thoroughbred-2026-system --timezone=America/New_York
+          node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-us-njrc/meadowlands_turf.json --country-id=united-states --authority-id=new-jersey-racing-commission --racing-system-id=us-nj-meadowlands-thoroughbred-turf-2026-system --timezone=America/New_York
+          node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-us-njrc/far_hills_steeplechase.json --country-id=united-states --authority-id=new-jersey-racing-commission --racing-system-id=us-nj-far-hills-steeplechase-2026-system --timezone=America/New_York
+      - name: Validate all-country regression contracts
+        run: |
+          node scripts/check-calendar-public-country-support.mjs
+          node scripts/check-calendar-public-map-parity.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs
+          node scripts/check-calendar-98-tier-execution-coverage.mjs
+          node scripts/check-calendar-unified-audit-coverage.mjs
+          node scripts/check-calendar-acquisition-registry.mjs

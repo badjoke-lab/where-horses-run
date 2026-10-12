@@ -6,7 +6,7 @@
   "programme_state": {
     "country_target": 98,
     "countries_with_closed_decision": 98,
-    "readiness_records": 130,
+    "readiness_records": 133,
     "next_backfill_work_ids": []
   },
   "records": [
@@ -6053,6 +6053,153 @@
         "Source absence or acquisition failure is not cancellation/non-running evidence."
       ],
       "notes": "The official 2026 calendar has 21 meetings. From the 8 October review point the forward dates are 18 October at Ljutomer, 25 October at Šentjernej, and 14 November plus 5 December at Komenda."
+    },
+    {
+      "readiness_id": "united-states--us-nj-monmouth-thoroughbred-2026-system--njrc-approved-2026-race-date-calendar",
+      "country_id": "united-states",
+      "country_tracker_delivery_no": "30",
+      "system_id": "us-nj-monmouth-thoroughbred-2026-system",
+      "system_name_en": "New Jersey 2026 Monmouth Park Thoroughbred flat",
+      "authority_source_key": "united-states/new-jersey-racing-commission/njrc-approved-2026-race-date-calendar",
+      "racecourse_ids": [
+        "united-states--monmouth-park"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "pdf",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-10-12",
+      "evidence_reviewed_at": "2026-10-12",
+      "revalidation_trigger": "New or amended 2026 NJRC state approved calendar, 2027 date publication or source-specific terms/access change.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/30-united-states/final-summary.json",
+      "limitations": [
+        "Only 2026 NJRC approved date+venue and racing code, no exact race post times.",
+        "Not national U.S. or all code coverage.",
+        "Operator racecourse websites are not used for automated collection.",
+        "Approved date is not a guarantee of actual running, and source failures do not prove cancellation.",
+        "Each new season requires its own approved source and parser validation."
+      ],
+      "notes": "NJRC state-issued PDF geometry and cell highlights count 50+9+1 dates; implemented source-specific bounded C records."
+    },
+    {
+      "readiness_id": "united-states--us-nj-meadowlands-thoroughbred-turf-2026-system--njrc-approved-2026-race-date-calendar",
+      "country_id": "united-states",
+      "country_tracker_delivery_no": "30",
+      "system_id": "us-nj-meadowlands-thoroughbred-turf-2026-system",
+      "system_name_en": "New Jersey 2026 Meadowlands Racetrack Thoroughbred turf",
+      "authority_source_key": "united-states/new-jersey-racing-commission/njrc-approved-2026-race-date-calendar",
+      "racecourse_ids": [
+        "united-states--meadowlands-racetrack"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "pdf",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-10-12",
+      "evidence_reviewed_at": "2026-10-12",
+      "revalidation_trigger": "New or amended 2026 NJRC state approved calendar, 2027 date publication or source-specific terms/access change.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/30-united-states/final-summary.json",
+      "limitations": [
+        "Only 2026 NJRC approved date+venue and racing code, no exact race post times.",
+        "Not national U.S. or all code coverage.",
+        "Operator racecourse websites are not used for automated collection.",
+        "Approved date is not a guarantee of actual running, and source failures do not prove cancellation.",
+        "Each new season requires its own approved source and parser validation."
+      ],
+      "notes": "NJRC state-issued PDF geometry and cell highlights count 50+9+1 dates; implemented source-specific bounded C records."
+    },
+    {
+      "readiness_id": "united-states--us-nj-far-hills-steeplechase-2026-system--njrc-approved-2026-race-date-calendar",
+      "country_id": "united-states",
+      "country_tracker_delivery_no": "30",
+      "system_id": "us-nj-far-hills-steeplechase-2026-system",
+      "system_name_en": "New Jersey 2026 Moorland Farm (Far Hills Race Meeting) Steeplechase",
+      "authority_source_key": "united-states/new-jersey-racing-commission/njrc-approved-2026-race-date-calendar",
+      "racecourse_ids": [
+        "united-states--far-hills-moorland-farm"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "pdf",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "weekly",
+        "near_meeting"
+      ],
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-10-12",
+      "evidence_reviewed_at": "2026-10-12",
+      "revalidation_trigger": "New or amended 2026 NJRC state approved calendar, 2027 date publication or source-specific terms/access change.",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/30-united-states/final-summary.json",
+      "limitations": [
+        "Only 2026 NJRC approved date+venue and racing code, no exact race post times.",
+        "Not national U.S. or all code coverage.",
+        "Operator racecourse websites are not used for automated collection.",
+        "Approved date is not a guarantee of actual running, and source failures do not prove cancellation.",
+        "Each new season requires its own approved source and parser validation."
+      ],
+      "notes": "NJRC state-issued PDF geometry and cell highlights count 50+9+1 dates; implemented source-specific bounded C records."
     }
   ],
   "last_updated": "2026-10-11"

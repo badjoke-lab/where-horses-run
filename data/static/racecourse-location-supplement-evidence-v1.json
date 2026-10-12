@@ -1,6 +1,6 @@
 {
   "schema_version": "racecourse-location-supplement-evidence-v1",
-  "reviewed_at": "2026-10-11",
+  "reviewed_at": "2026-10-12",
   "entries": [
     {
       "id": "abbeville-racecourse",
@@ -2488,6 +2488,33 @@
       "address_observed": "The Royal Bangkok Sports Club, 1 Henri Dunant Street, Pathumwan Bangkok 10330, Thailand",
       "coordinate_method": "Photon/OpenStreetMap RBSC venue polygon cross-checked against the official RBSC contact address and Racing-page venue identity",
       "precision_note": "venue-level Royal Bangkok Sports Club site center used for the fixed RBSC racecourse"
+    },
+    {
+      "id": "united-states--monmouth-park",
+      "coordinate_source_url": "https://mapcarta.com/29133796",
+      "coordinate_observed": "40.30975, -74.01423",
+      "address_source_url": "https://www.nj.gov/oag/racing/tracks_addresses.html",
+      "address_observed": "175 Oceanport Avenue, Oceanport, NJ 07757, USA",
+      "coordinate_method": "Published geolocation cross-checked with official racing authority or race meeting address",
+      "precision_note": "Monmouth Park Racecourse precise OSM race track"
+    },
+    {
+      "id": "united-states--meadowlands-racetrack",
+      "coordinate_source_url": "https://mapcarta.com/22547720",
+      "coordinate_observed": "40.81732, -74.07375",
+      "address_source_url": "https://www.nj.gov/oag/racing/tracks_addresses.html",
+      "address_observed": "1 Racetrack Drive, East Rutherford, NJ 07073, USA",
+      "coordinate_method": "Published geolocation cross-checked with official racing authority or race meeting address",
+      "precision_note": "Physical venue for flat and harness meets"
+    },
+    {
+      "id": "united-states--far-hills-moorland-farm",
+      "coordinate_source_url": "https://kiwix.drnathanhutchins.com/content/wikipedia_en_all_maxi_2026-02/Far_Hills_Races",
+      "coordinate_observed": "40.691631, -74.628454",
+      "address_source_url": "https://farhillsrace.org/contact-us/",
+      "address_observed": "50 Route 202, Far Hills, NJ 07931, USA",
+      "coordinate_method": "Published geographic point for Far Hills Races (40.691631,-74.628454) cross-checked against the official race organizer's Moorland Farm identity and 50 Route 202 physical address and entrance directions.",
+      "precision_note": "Reviewed approximate event-venue point at Moorland Farm; not a surveyed track centerline or individual gate. Organizer confirms the race grounds and physical address."
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-public-country-support-v1",
-  "reviewed_at": "2026-10-11",
+  "reviewed_at": "2026-10-12",
   "basis": "Countries currently wired into the production Calendar unified official refresh on main. Japan uses the official mother-set path; non-Japan countries use official rolling-window collectors and monotonic public observation application.",
   "source_ref": ".github/workflows/calendar-unified-official-refresh.yml",
   "countries": [
@@ -268,6 +268,11 @@
       "country_id": "thailand",
       "calendar_supported": true,
       "acquisition_key": "rbsc-racing-calendar-official-window"
+    },
+    {
+      "country_id": "united-states",
+      "calendar_supported": true,
+      "acquisition_key": "njrc-approved-2026-official-window"
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": "calendar-98-tier-execution-coverage-v1",
   "work_id": "WHR-CALENDAR-98-TIER-EXECUTION-COVERAGE",
-  "as_of": "2026-10-11",
+  "as_of": "2026-10-12",
   "method_contract_ref": "data/static/calendar-98-tier-acquisition-methods/index.json",
   "execution_registry_ref": "data/static/calendar-acquisition-registry.json",
   "unified_refresh_ref": ".github/workflows/calendar-unified-official-refresh.yml",
@@ -13,9 +13,9 @@
   },
   "counts": {
     "tier_total": 98,
-    "registry_profile_total": 64,
-    "registry_routed_tiers": 53,
-    "active_runner_gap_tiers": 18,
+    "registry_profile_total": 67,
+    "registry_routed_tiers": 54,
+    "active_runner_gap_tiers": 17,
     "status_only_tiers": 20,
     "no_runner_required_tiers": 7
   },
@@ -72,12 +72,12 @@
     "kenya",
     "lithuania",
     "estonia",
-    "thailand"
+    "thailand",
+    "united-states"
   ],
   "active_runner_gap_country_ids": [
     "zimbabwe",
     "malta",
-    "united-states",
     "australia",
     "canada",
     "india",
@@ -126,7 +126,7 @@
     "greece"
   ],
   "policy_notes": {
-    "united-states": "Do not treat Equibase web pages as an automation path. Equibase web automation remains blocked without authorization; U.S. runner work must descend through automation-safe official regulator/operator sources.",
+    "united-states": "Equibase web automation is blocked without authorization. 2026 NJRC state-issued approved calendar date/venue facts are separate and feed only Monmouth Thoroughbred, Meadowlands Thoroughbred turf, and Far Hills steeplechase, as partial coverage. No private racecourse site automation.",
     "status_only": "A status-only tier returning no current dated official trigger is a valid zero state, not a failed active collector."
   }
 }
