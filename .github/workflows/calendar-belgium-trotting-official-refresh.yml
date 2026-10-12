@@ -45,6 +45,8 @@ jobs:
           node-version: '22'
       - run: npm install --no-package-lock --no-audit --no-fund
       - run: npm run validate:belgium-trotting
+      - name: Exercise country persistence against concurrent main
+        run: bash scripts/test-calendar-country-persist-retry.sh
       - name: Exercise Belgium 30-day production path
         run: |
           mkdir -p .calendar-belgium
