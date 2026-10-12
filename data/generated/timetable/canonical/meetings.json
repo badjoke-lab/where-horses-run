@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-10-12T14:35:37.013Z",
+  "generated_at": "2026-10-12T16:41:03.865Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -12550,7 +12550,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-12T14:35:37.013Z",
+        "generated_at": "2026-10-12T16:41:03.865Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12579,7 +12579,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-12T14:35:37.013Z",
+        "generated_at": "2026-10-12T16:41:03.865Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12784,7 +12784,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-12T14:35:37.013Z",
+        "generated_at": "2026-10-12T16:41:03.865Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -55650,8 +55650,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -55701,8 +55701,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -55752,8 +55752,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -55803,8 +55803,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -55854,8 +55854,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -56945,8 +56945,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -56996,8 +56996,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -57047,8 +57047,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -57105,11 +57105,11 @@
       },
       "notes": "Deterministic public-safe timetable fields reconciled from the official source.",
       "acquisition_completion": {
-        "disposition": "complete_current_best_available",
-        "observed_rank": "A+",
+        "disposition": "implementation_gap",
+        "observed_rank": "A",
         "technical_capability_rank": "A+",
-        "higher_rank_open": false,
-        "reason": "The current acquisition cycle completed without a pending/retry condition and no higher timetable rank exists."
+        "higher_rank_open": true,
+        "reason": "A higher-detail observation was available, but the acquisition result did not prove how far the applicable higher-detail paths were evaluated."
       }
     },
     {
@@ -58146,8 +58146,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -58248,8 +58248,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -58299,8 +58299,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -59768,8 +59768,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -59870,8 +59870,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -60593,8 +60593,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:12:27.619Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -61873,8 +61873,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -61918,8 +61918,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -61963,8 +61963,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -62255,8 +62255,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -63057,8 +63057,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:12:27.619Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -64062,8 +64062,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -64107,8 +64107,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -64152,8 +64152,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -64546,8 +64546,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -65439,8 +65439,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:12:27.619Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -72697,8 +72697,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -72742,8 +72742,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -72787,8 +72787,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -74722,8 +74722,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -74767,8 +74767,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -74812,8 +74812,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -83320,8 +83320,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -83365,8 +83365,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -85043,8 +85043,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -85088,8 +85088,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -93103,8 +93103,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -93148,8 +93148,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -93193,8 +93193,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -94775,8 +94775,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -94820,8 +94820,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -94865,8 +94865,8 @@
         ]
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:57:53.189Z",
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
         "stale_after_date": null,
         "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
       },
@@ -97353,6 +97353,210 @@
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
         "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      }
+    },
+    {
+      "meeting_id": "nar-kawasaki-racecourse-2026-11-11",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "kawasaki-racecourse",
+      "date": "2026-11-11",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "nar-monthly-schedule-racelist",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F11%2F11",
+        "source_label": "地方競馬全国協会",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F11%2F11"
+          },
+          {
+            "source_id": "nankankeiba-south-kanto-calendar",
+            "role": "mother_set",
+            "source_label": "南関東4競馬場",
+            "official_source_url": "https://www.nankankeiba.com/calendar/202610.do"
+          }
+        ]
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
+        "stale_after_date": null,
+        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+      },
+      "notes": "Deterministic public-safe timetable fields reconciled from the official source.",
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (details_pending)."
+      }
+    },
+    {
+      "meeting_id": "nar-monbetsu-racecourse-2026-11-11",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "monbetsu-racecourse",
+      "date": "2026-11-11",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "nar-monthly-schedule-racelist",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=36&k_raceDate=2026%2F11%2F11",
+        "source_label": "地方競馬全国協会",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=36&k_raceDate=2026%2F11%2F11"
+          },
+          {
+            "source_id": "hokkaido-keiba-official-calendar",
+            "role": "mother_set",
+            "source_label": "ホッカイドウ競馬",
+            "official_source_url": "https://www.hokkaidokeiba.net/kaisai/nittei.php?p_ym=202611"
+          }
+        ]
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
+        "stale_after_date": null,
+        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+      },
+      "notes": "Deterministic public-safe timetable fields reconciled from the official source.",
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (details_pending)."
+      }
+    },
+    {
+      "meeting_id": "nar-nagoya-racecourse-2026-11-11",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "nagoya-racecourse",
+      "date": "2026-11-11",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "nar-monthly-schedule-racelist",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F11%2F11",
+        "source_label": "地方競馬全国協会",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F11%2F11"
+          },
+          {
+            "source_id": "tokai-region-joint-official-calendar",
+            "role": "mother_set",
+            "source_label": "東海地区競馬開催日程 / 笠松けいば開催日程",
+            "official_source_url": "https://www.kasamatsu-keiba.com/schedule/2026/11"
+          }
+        ]
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
+        "stale_after_date": null,
+        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+      },
+      "notes": "Deterministic public-safe timetable fields reconciled from the official source.",
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (details_pending)."
+      }
+    },
+    {
+      "meeting_id": "nar-sonoda-racecourse-2026-11-11",
+      "country_id": "japan",
+      "authority_id": "nar-local-government-racing",
+      "racing_system_id": "japan-nar-system",
+      "racecourse_id": "sonoda-racecourse",
+      "date": "2026-11-11",
+      "timezone": "Asia/Tokyo",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "nar-monthly-schedule-racelist",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=27&k_raceDate=2026%2F11%2F11",
+        "source_label": "地方競馬全国協会",
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/run-japan-zero-based-30d.mjs",
+        "source_observations": [
+          {
+            "source_id": "nar-monthly-schedule-racelist",
+            "role": "mother_set",
+            "source_label": "地方競馬全国協会",
+            "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=27&k_raceDate=2026%2F11%2F11"
+          },
+          {
+            "source_id": "hyogo-urban-keiba-official-calendar",
+            "role": "mother_set",
+            "source_label": "兵庫県競馬組合",
+            "official_source_url": "https://www.sonoda-himeji.jp/schedule/2026/11"
+          }
+        ]
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-12T16:35:25.800Z",
+        "stale_after_date": null,
+        "freshness_note": "Deterministically reconciled from the official Japan 30-day acquisition run."
+      },
+      "notes": "Deterministic public-safe timetable fields reconciled from the official source.",
+      "acquisition_completion": {
+        "disposition": "pending_publication",
+        "observed_rank": "C",
+        "technical_capability_rank": "A+",
+        "higher_rank_open": true,
+        "reason": "Higher-detail evidence is not yet published or not yet available (details_pending)."
       }
     },
     {
