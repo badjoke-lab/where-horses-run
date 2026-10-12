@@ -5,10 +5,12 @@ on:
     paths:
       - '.github/workflows/calendar-canada-agco-live-publication-probe.yml'
       - 'scripts/timetable/check-canada-agco-live-publication.mjs'
+      - 'scripts/timetable/diagnose-calendar-production-actions.mjs'
   workflow_dispatch:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   check-site:
@@ -21,3 +23,8 @@ jobs:
           node-version: '22'
       - name: Check current main public data and actual bilingual deployed Calendar
         run: node scripts/timetable/check-canada-agco-live-publication.mjs
+      - name: Diagnose actual main refresh workflow runs after publication check
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/timetable/diagnose-calendar-production-actions.mjs
