@@ -153,15 +153,19 @@
       "page_kind": "country",
       "method_class": "active_source_driven",
       "source_ids": [
-        "ontario-race-dates",
-        "standardbred-canada-racing"
+        "ontario-agco-mohawk-2026-calendar",
+        "ontario-race-dates"
       ],
-      "primary_source_url": "https://ontarioracing.com/news-and-results/top-racing-headlines/agco-and-olg-approve-race-dates-for-four-ontario-t",
+      "primary_source_url": "https://www.agco.ca/sites/default/files/2026-03/MOHS%20-%20Approved%202026%20Race%20Date%20Calendar_E_17%20Mar%202026.pdf",
       "cadence_class": "source-driven",
       "trigger_class": "meeting_or_source_window",
       "zero_policy": "emit_only_source_visible_current_meetings",
       "runner_state": "candidate",
-      "method_complete": true
+      "method_complete": true,
+      "production_scope_note": "Ontario / Woodbine Mohawk Park Standardbred 2026 only: AGCO state regulator approved calendar, 222 source-visible dates; C date and physical venue only, not national Canada or Ontario all-venue coverage. Other sources discovery/reference only.",
+      "reference_only_sources": [
+        "standardbred-canada-racing"
+      ]
     },
     {
       "tier": 35,
