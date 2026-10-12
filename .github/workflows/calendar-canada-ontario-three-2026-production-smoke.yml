@@ -7,6 +7,7 @@ on:
       - 'scripts/timetable/canada-ontario-three-agco-2026-core.mjs'
       - 'scripts/timetable/run-canada-ontario-three-agco-2026-window.mjs'
       - 'scripts/timetable/check-canada-ontario-three-live-publication.mjs'
+      - 'scripts/timetable/diagnose-calendar-ontario-main-actions.mjs'
       - 'data/static/calendar-acquisition-registry.json'
       - 'data/static/calendar-readiness-registry.json'
       - 'data/static/racecourses.json'
@@ -15,6 +16,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   three-track-integration:
@@ -61,3 +63,8 @@ jobs:
       - name: Inspect actual main and bilingual site publication (independent of PR smoke)
         if: always()
         run: node scripts/timetable/check-canada-ontario-three-live-publication.mjs
+      - name: Examine current main unified/near refresh runs when publication mismatches
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/timetable/diagnose-calendar-ontario-main-actions.mjs
