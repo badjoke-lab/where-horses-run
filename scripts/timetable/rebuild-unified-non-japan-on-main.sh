@@ -185,6 +185,10 @@ refresh_non_japan_on_main() {
   node scripts/timetable/run-thailand-rbsc-official-window.mjs \
     --days="${DAYS}" \
     --output=.calendar-unified/thailand.json
+  python3 -m pip install --disable-pip-version-check --break-system-packages -q pymupdf==1.26.5
+  node scripts/timetable/run-us-njrc-2026-official-window.mjs \
+    --days="${DAYS}" \
+    --output-dir=.calendar-unified/us-njrc
   node scripts/timetable/enforce-reviewed-calendar-exclusions.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --artifact=.calendar-unified/uae.json \
@@ -246,7 +250,10 @@ refresh_non_japan_on_main() {
   --artifact=.calendar-unified/kenya.json \
   --artifact=.calendar-unified/lithuania.json \
   --artifact=.calendar-unified/estonia.json \
-  --artifact=.calendar-unified/thailand.json
+  --artifact=.calendar-unified/thailand.json \
+  --artifact=.calendar-unified/us-njrc/monmouth.json \
+  --artifact=.calendar-unified/us-njrc/meadowlands_turf.json \
+  --artifact=.calendar-unified/us-njrc/far_hills_steeplechase.json
   node scripts/timetable/apply-official-rolling-observations.mjs \
     --artifact=.calendar-unified/hkjc.json \
     --country-id=hong-kong \
@@ -613,6 +620,24 @@ refresh_non_japan_on_main() {
     --authority-id=rbsc \
     --racing-system-id=thailand-rbsc-system \
     --timezone=Asia/Bangkok
+  node scripts/timetable/apply-official-rolling-observations.mjs \
+    --artifact=.calendar-unified/us-njrc/monmouth.json \
+    --country-id=united-states \
+    --authority-id=new-jersey-racing-commission \
+    --racing-system-id=us-nj-monmouth-thoroughbred-2026-system \
+    --timezone=America/New_York
+  node scripts/timetable/apply-official-rolling-observations.mjs \
+    --artifact=.calendar-unified/us-njrc/meadowlands_turf.json \
+    --country-id=united-states \
+    --authority-id=new-jersey-racing-commission \
+    --racing-system-id=us-nj-meadowlands-thoroughbred-turf-2026-system \
+    --timezone=America/New_York
+  node scripts/timetable/apply-official-rolling-observations.mjs \
+    --artifact=.calendar-unified/us-njrc/far_hills_steeplechase.json \
+    --country-id=united-states \
+    --authority-id=new-jersey-racing-commission \
+    --racing-system-id=us-nj-far-hills-steeplechase-2026-system \
+    --timezone=America/New_York
   node scripts/timetable/apply-reviewed-calendar-observations.mjs
   node scripts/timetable/apply-meeting-presence-dispositions.mjs \
   --artifact=.calendar-unified/hkjc.json \
