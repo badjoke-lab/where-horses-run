@@ -30,7 +30,9 @@ try{
    const x=await fetchText(url,'text/html');
    diagnostics.deployed.push({lang,http:x.http,html_size:x.body.length,by_source:sourceSystems.map(s=>{
      const token='canada-agco-'+s.key+'-';
-     return {key:s.key,id_visible:x.body.includes(token)};
+     const ids=[...new Set([...x.body.matchAll(new RegExp(token+'2026-\\\\d{2}-\\\\d{2}','g'))].map(m=>m[0]))].slice(0,12);
+     const pos=x.body.indexOf(token);
+     return {key:s.key,id_visible:pos>=0,meeting_ids:ids,html_snippet:pos>=0?x.body.slice(Math.max(0,pos-90),pos+125):null};
    })});
  }
  diagnostics.overall=ontario.every(x=>x.published_count>0)&&diagnostics.deployed.every(x=>x.by_source.every(y=>y.id_visible))?'published':'not_yet_confirmed';
