@@ -17,6 +17,8 @@ for(const s of sources){
   const r=await fetch(s.url,{redirect:'follow',headers:{'user-agent':userAgent,'accept':'text/html,application/json'},signal:AbortSignal.timeout(26000)});
   if(!r.ok)throw Error('HTTP '+r.status);
   const body=await r.text();if(body.length>19000000)throw Error('HTML/JSON body too large');
+  const responseMeta={etag:r.headers.get('etag'),age:r.headers.get('age'),last_modified:r.headers.get('last-modified'),cache_control:r.headers.get('cache-control'),cf_cache_status:r.headers.get('cf-cache-status'),server:r.headers.get('server')};
+  if(s.id==='english-argentina'||s.id==='japanese-argentina')console.log('DEPLOYED_CALENDAR_HEADER '+JSON.stringify({id:s.id,meta:responseMeta,production_data_marker_present:body.includes('2026-10-13T05:48:36.710Z')}));
   if(s.id==='raw-main-json'){
    const j=JSON.parse(body),a=j.meetings??[];
    const match=targets.map(t=>({id:t.id,date:t.date,found:a.some(x=>x.meeting_id===t.meeting&&x.country_id===t.country&&x.racecourse_id===t.venue&&x.date===t.date)}));
