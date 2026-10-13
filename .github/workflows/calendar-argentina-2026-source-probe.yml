@@ -22,3 +22,14 @@ jobs:
       - run: npm install --no-package-lock --no-audit --no-fund
       - name: Inspect official 2026 calendar and source access only
         run: node scripts/timetable/probe-argentina-2026-official-sources.mjs
+      - name: Extract live La Plata approved C meetings (non-publishing)
+        run: |
+          node scripts/timetable/run-argentina-la-plata-2026-official-window.mjs --as-of=2026-10-13 --days=30 --output=/tmp/arg-la-plata.json
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          const a=JSON.parse(fs.readFileSync('/tmp/arg-la-plata.json','utf8'));
+          if(a.acquisition_attempt.status!=='success'||a.discovery.source_visible_rows!==121||a.records.length!==12)throw Error('Argentina La Plata source failed '+JSON.stringify(a.diagnostics));
+          if(a.records.some(m=>m.capability_rank!=='C'||m.racing_type!=='thoroughbred-flat'||m.first_race_time_local!==null||m.timetable_rows.length))throw Error('Argentina code/rank boundary');
+          if(new Set(a.records.map(m=>m.date)).size!==12)throw Error('duplicate dates');
+          console.log('ARGENTINA_LA_PLATA_2026_REAL_PDF_C_PASS annual=121 window=12');
+          JS
