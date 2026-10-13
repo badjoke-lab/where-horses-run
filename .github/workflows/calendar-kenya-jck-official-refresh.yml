@@ -11,6 +11,16 @@ on:
         options:
           - near
           - full
+  # On a Kenya collector/workflow production change, verify and publish the full
+  # official season window immediately instead of waiting for the weekly job.
+  # Generated-data commits do not match these paths and cannot trigger a loop.
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/calendar-kenya-jck-official-refresh.yml'
+      - 'scripts/timetable/kenya-jck-calendar-core.mjs'
+      - 'scripts/timetable/run-kenya-jck-official-window.mjs'
+      - 'scripts/check-kenya-jck-full-projection.mjs'
   schedule:
     - cron: '53 4 * * *'
     - cron: '23 5 * * 1'
@@ -22,6 +32,7 @@ on:
       - 'scripts/timetable/kenya-jck-calendar-core.mjs'
       - 'scripts/timetable/run-kenya-jck-official-window.mjs'
       - 'scripts/check-kenya-jck-adapter.mjs'
+      - 'scripts/check-kenya-jck-full-projection.mjs'
       - 'scripts/timetable/rebuild-unified-non-japan-on-main.sh'
       - 'scripts/timetable/build-refresh-audit-summary.mjs'
       - 'data/static/authority-source-inventory.json'
@@ -59,6 +70,7 @@ jobs:
           node scripts/timetable/run-kenya-jck-official-window.mjs --days=180 --output=.calendar-kenya/kenya.json
           node -e "const fs=require('fs');const a=JSON.parse(fs.readFileSync('.calendar-kenya/kenya.json','utf8'));if(a.acquisition_attempt?.status!=='success'||(a.diagnostics?.source_errors?.length??0)!==0||(a.diagnostics?.parse_failures?.length??0)!==0||(a.records?.length??0)<1){console.error(JSON.stringify({attempt:a.acquisition_attempt,discovery:a.discovery,diagnostics:a.diagnostics,records:a.records?.length??0}));process.exit(1)}"
           node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-kenya/kenya.json --country-id=kenya --authority-id=jockey-club-of-kenya --racing-system-id=ngong-jck-racing-system --timezone=Africa/Nairobi
+          node scripts/check-kenya-jck-full-projection.mjs
           node scripts/check-calendar-public-country-support.mjs
           node scripts/check-calendar-public-map-parity.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
@@ -78,7 +90,7 @@ jobs:
       - id: scope
         shell: bash
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then scope="${{ inputs.scope }}"; elif [ "${{ github.event.schedule }}" = "23 5 * * 1" ]; then scope=full; else scope=near; fi
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then scope="${{ inputs.scope }}"; elif [ "${{ github.event_name }}" = "push" ] || [ "${{ github.event.schedule }}" = "23 5 * * 1" ]; then scope=full; else scope=near; fi
           if [ "$scope" = full ]; then days=180; else days=30; fi
           echo "scope=$scope" >> "$GITHUB_OUTPUT"
           echo "days=$days" >> "$GITHUB_OUTPUT"
@@ -88,6 +100,7 @@ jobs:
           node scripts/timetable/run-kenya-jck-official-window.mjs --days="${{ steps.scope.outputs.days }}" --output=.calendar-kenya/kenya.json
           node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-kenya/kenya.json --country-id=kenya --authority-id=jockey-club-of-kenya --racing-system-id=ngong-jck-racing-system --timezone=Africa/Nairobi
           node scripts/timetable/apply-reviewed-calendar-observations.mjs
+          if [ "${{ steps.scope.outputs.scope }}" = full ]; then node scripts/check-kenya-jck-full-projection.mjs; fi
           node scripts/check-calendar-public-country-support.mjs
           node scripts/check-calendar-public-map-parity.mjs
           node scripts/check-calendar-non-running-evidence-registry.mjs
@@ -102,6 +115,7 @@ jobs:
             node scripts/timetable/run-kenya-jck-official-window.mjs --days="${{ steps.scope.outputs.days }}" --output=.calendar-kenya/kenya.json
             node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-kenya/kenya.json --country-id=kenya --authority-id=jockey-club-of-kenya --racing-system-id=ngong-jck-racing-system --timezone=Africa/Nairobi
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
+            if [ "${{ steps.scope.outputs.scope }}" = full ]; then node scripts/check-kenya-jck-full-projection.mjs; fi
             node scripts/check-calendar-public-country-support.mjs
             node scripts/check-calendar-public-map-parity.mjs
             node scripts/check-calendar-non-running-evidence-registry.mjs
