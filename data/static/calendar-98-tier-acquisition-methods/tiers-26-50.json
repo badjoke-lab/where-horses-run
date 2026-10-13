@@ -272,14 +272,16 @@
       "page_kind": "country",
       "method_class": "active_source_driven",
       "source_ids": [
-        "palermo-schedules"
+        "palermo-schedules",
+        "la-plata-2026-official-resolution-calendar"
       ],
-      "primary_source_url": "https://www.palermo.com.ar/en/turf/racing-schedule-and-results",
+      "primary_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
       "cadence_class": "source-driven",
       "trigger_class": "meeting_or_source_window",
       "zero_policy": "emit_only_source_visible_current_meetings",
       "runner_state": "candidate",
-      "method_complete": true
+      "method_complete": true,
+      "production_scope_note": "C-grade production collector for Hipódromo de La Plata Thoroughbred-flat 2026 approved 121 dates under Resolution 1024 only. Palermo is still a separately evaluated candidate, not merged into current production scope; Argentina remains partial."
     },
     {
       "tier": 42,
