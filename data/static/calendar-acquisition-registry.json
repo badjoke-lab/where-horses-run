@@ -1839,6 +1839,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "HRA public current 2026 calendar: Century Mile Standardbred day-cell meetings only, rank C at one physical Alberta venue. No CD Thoroughbred/Quarter Horse or Lethbridge source inference; source failure/absence is not cancellation."
+    },
+    {
+      "system_id": "argentina-la-plata-thoroughbred-system",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "la-plata-2026-official-resolution-calendar",
+      "detail_source_id": "la-plata-2026-official-resolution-calendar",
+      "schedule_adapter_id": "argentina-la-plata-2026-approved-pdf-v1",
+      "detail_adapter_id": "argentina-la-plata-2026-approved-pdf-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "2026 La Plata Racing Commission Resolution 1024 supports 121 approved dates at the single physical La Plata thoroughbred-flat venue. Public C only. No Argentina nationwide claim, no post times, original PDF reproduction or 2027 inferred dates. Acquisition failure preserves verified meetings; it is not cancellation."
     }
   ]
 }

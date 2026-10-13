@@ -1,0 +1,30 @@
+{
+  "schema_version": "calendar-source-test-summary-v1",
+  "country_id": "argentina",
+  "province": "Buenos Aires",
+  "source_id": "la-plata-2026-official-resolution-calendar",
+  "source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+  "authority_id": "hipodromo-la-plata",
+  "racing_system_id": "argentina-la-plata-thoroughbred-system",
+  "racecourse_id": "argentina--hipodromo-de-la-plata",
+  "source_checked_date": "2026-10-13",
+  "official_resolution": "Racing Commission Resolution 1024, 27 November 2025, La Plata 2026 approved calendar",
+  "source_test_workflow_url": "https://github.com/badjoke-lab/where-horses-run/actions/runs/38351239770",
+  "approved_date_count_derived_from_resolution": 121,
+  "parsed_months": 12,
+  "source_status": "HTTP 200 on GitHub Actions runner; 4-page PDF parsed",
+  "expected_window": {
+    "start": "2026-10-13",
+    "end_exclusive": "2026-11-12",
+    "days": 30,
+    "meeting_date_count": 12
+  },
+  "normalized_rank": "C",
+  "rights_publication_scope": "Only independently normalized approved date facts, physical venue and racing system are emitted; original text, PDF, images, racecard and other details are not republished.",
+  "limitations": [
+    "Only one physical La Plata Thoroughbred racecourse; Argentina remains partial.",
+    "Resolution-approved date is not verified completed racing, cancellation or first post time.",
+    "No 2027 schedule extrapolation. Calendar changes require source-specific revalidation.",
+    "Source access and copyright notice do not amount to affirmative downstream redistribution license."
+  ]
+}

@@ -6,7 +6,7 @@
   "programme_state": {
     "country_target": 98,
     "countries_with_closed_decision": 98,
-    "readiness_records": 137,
+    "readiness_records": 138,
     "next_backfill_work_ids": []
   },
   "records": [
@@ -6401,6 +6401,55 @@
         "2027 and other seasons are not extrapolated."
       ],
       "notes": "GitHub Actions HRA current 2026 public calendar HTML parsed 20 October+November Century Mile day-cells, 9 unique dates in 2026-10-13 through 2026-11-11 window."
+    },
+    {
+      "readiness_id": "argentina--argentina-la-plata-thoroughbred-system--la-plata-2026-official-resolution-calendar",
+      "country_id": "argentina",
+      "country_tracker_delivery_no": "41",
+      "system_id": "argentina-la-plata-thoroughbred-system",
+      "system_name_en": "Hipódromo de La Plata 2026 Thoroughbred-flat",
+      "authority_source_key": "argentina/hipodromo-la-plata/la-plata-2026-official-resolution-calendar",
+      "racecourse_ids": [
+        "argentina--hipodromo-de-la-plata"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "pdf",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "daily",
+        "near_meeting",
+        "weekly"
+      ],
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-10-13",
+      "evidence_reviewed_at": "2026-10-13",
+      "revalidation_trigger": "La Plata published amendment, 2027 schedule or change to document availability / access / rights conditions",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/41-argentina/la-plata-2026-approved-source.json",
+      "limitations": [
+        "Source covers only La Plata Thoroughbred-flat approved 2026 racing dates; Argentina remains partial.",
+        "2026 racing commission approval is schedule evidence, not proof of racing completed without cancellations.",
+        "No race-specific first-post time or programme fields are derived from resolution.",
+        "2027 requires separately released, independently verified official schedule."
+      ],
+      "notes": "GitHub Actions parsed four-page Racing Commission 2026 Resolution 1024: 121 source-approved year dates across 12 months and 12 dates in the 2026-10-13 rolling 30-day test."
     }
   ],
   "last_updated": "2026-10-13"
