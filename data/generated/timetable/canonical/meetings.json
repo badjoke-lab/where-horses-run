@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-10-13T05:46:05.687Z",
+  "generated_at": "2026-10-13T05:48:36.710Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -12550,7 +12550,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-13T05:46:05.687Z",
+        "generated_at": "2026-10-13T05:48:36.710Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12579,7 +12579,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-13T05:46:05.687Z",
+        "generated_at": "2026-10-13T05:48:36.710Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12784,7 +12784,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-13T05:46:05.687Z",
+        "generated_at": "2026-10-13T05:48:36.710Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -54755,6 +54755,65 @@
       }
     },
     {
+      "meeting_id": "argentina-la-plata-2026-2026-10-13",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-10-13",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "bha-hereford-racecourse-2026-10-13",
       "country_id": "united-kingdom",
       "authority_id": "british-horseracing-authority",
@@ -57559,6 +57618,65 @@
         "generated_at": "2026-10-08T05:42:23.053Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
+      }
+    },
+    {
+      "meeting_id": "argentina-la-plata-2026-2026-10-15",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-10-15",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
       }
     },
     {
@@ -66634,6 +66752,65 @@
       }
     },
     {
+      "meeting_id": "argentina-la-plata-2026-2026-10-20",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-10-20",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "bha-exeter-racecourse-2026-10-20",
       "country_id": "united-kingdom",
       "authority_id": "british-horseracing-authority",
@@ -68996,6 +69173,65 @@
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
         "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      }
+    },
+    {
+      "meeting_id": "argentina-la-plata-2026-2026-10-22",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-10-22",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
       }
     },
     {
@@ -71873,6 +72109,65 @@
       }
     },
     {
+      "meeting_id": "argentina-la-plata-2026-2026-10-24",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-10-24",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "banei-obihiro-racecourse-2026-10-24",
       "country_id": "japan",
       "authority_id": "banei-tokachi",
@@ -73906,6 +74201,65 @@
         "status": "success",
         "source_id": "hru-calendar",
         "route_id": "hru-monthly-calendar-pdf",
+        "error_code": null
+      }
+    },
+    {
+      "meeting_id": "argentina-la-plata-2026-2026-10-25",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-10-25",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
         "error_code": null
       }
     },
@@ -77317,6 +77671,65 @@
       }
     },
     {
+      "meeting_id": "argentina-la-plata-2026-2026-10-27",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-10-27",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "bha-bangor-on-dee-racecourse-2026-10-27",
       "country_id": "united-kingdom",
       "authority_id": "british-horseracing-authority",
@@ -80659,6 +81072,65 @@
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
         "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      }
+    },
+    {
+      "meeting_id": "argentina-la-plata-2026-2026-10-30",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-10-30",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
       }
     },
     {
@@ -87285,6 +87757,65 @@
       }
     },
     {
+      "meeting_id": "argentina-la-plata-2026-2026-11-03",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-11-03",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "belgium-trotting-2026-11-03-hippodrome-de-wallonie",
       "country_id": "belgium",
       "authority_id": "belgian-federation-horse-racing",
@@ -89647,6 +90178,65 @@
         "technical_capability_rank": "A+",
         "higher_rank_open": true,
         "reason": "Higher-detail evidence is not yet published or not yet available (not_published)."
+      }
+    },
+    {
+      "meeting_id": "argentina-la-plata-2026-2026-11-05",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-11-05",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
       }
     },
     {
@@ -94552,6 +95142,65 @@
       }
     },
     {
+      "meeting_id": "argentina-la-plata-2026-2026-11-08",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-11-08",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "austria-krieau-2026-11-08",
       "country_id": "austria",
       "authority_id": "wiener-trabrenn-verein",
@@ -97042,6 +97691,65 @@
       }
     },
     {
+      "meeting_id": "argentina-la-plata-2026-2026-11-10",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-11-10",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "bha-huntingdon-racecourse-2026-11-10",
       "country_id": "united-kingdom",
       "authority_id": "british-horseracing-authority",
@@ -98187,6 +98895,65 @@
       }
     },
     {
+      "meeting_id": "argentina-la-plata-2026-2026-11-12",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-11-12",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "mauritius-champ-de-mars-2026-11-14",
       "country_id": "mauritius",
       "authority_id": "automatic-systems-ltd-supertote",
@@ -98364,6 +99131,124 @@
       }
     },
     {
+      "meeting_id": "argentina-la-plata-2026-2026-11-17",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-11-17",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
+      }
+    },
+    {
+      "meeting_id": "argentina-la-plata-2026-2026-11-19",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-11-19",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "kenya-ngong-2026-11-22",
       "country_id": "kenya",
       "authority_id": "jockey-club-of-kenya",
@@ -98482,6 +99367,124 @@
       }
     },
     {
+      "meeting_id": "argentina-la-plata-2026-2026-11-24",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-11-24",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
+      }
+    },
+    {
+      "meeting_id": "argentina-la-plata-2026-2026-11-26",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-11-26",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "mauritius-champ-de-mars-2026-11-28",
       "country_id": "mauritius",
       "authority_id": "automatic-systems-ltd-supertote",
@@ -98537,6 +99540,242 @@
         "status": "success",
         "source_id": "supertote-calendar-2026",
         "route_id": "supertote-calendar-2026-official-window",
+        "error_code": null
+      }
+    },
+    {
+      "meeting_id": "argentina-la-plata-2026-2026-11-29",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-11-29",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
+      }
+    },
+    {
+      "meeting_id": "argentina-la-plata-2026-2026-12-01",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-12-01",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
+      }
+    },
+    {
+      "meeting_id": "argentina-la-plata-2026-2026-12-03",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-12-03",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
+      }
+    },
+    {
+      "meeting_id": "argentina-la-plata-2026-2026-12-05",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-12-05",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
         "error_code": null
       }
     },
@@ -98895,6 +100134,124 @@
       }
     },
     {
+      "meeting_id": "argentina-la-plata-2026-2026-12-08",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-12-08",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
+      }
+    },
+    {
+      "meeting_id": "argentina-la-plata-2026-2026-12-10",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-12-10",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "kenya-ngong-2026-12-13",
       "country_id": "kenya",
       "authority_id": "jockey-club-of-kenya",
@@ -98950,6 +100307,124 @@
         "status": "success",
         "source_id": "jck-upcoming-race-dates",
         "route_id": "jck-upcoming-race-dates-official-window",
+        "error_code": null
+      }
+    },
+    {
+      "meeting_id": "argentina-la-plata-2026-2026-12-15",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-12-15",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
+      }
+    },
+    {
+      "meeting_id": "argentina-la-plata-2026-2026-12-17",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-12-17",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
         "error_code": null
       }
     },
@@ -99013,6 +100488,65 @@
       }
     },
     {
+      "meeting_id": "argentina-la-plata-2026-2026-12-22",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-12-22",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "trinidad-and-tobago-santa-rosa-park-2026-12-26",
       "country_id": "trinidad-and-tobago",
       "authority_id": "arima-race-club",
@@ -99068,6 +100602,65 @@
         "status": "success",
         "source_id": "arima-2026-fixture-list",
         "route_id": "arima-2026-fixture-list-official-window",
+        "error_code": null
+      }
+    },
+    {
+      "meeting_id": "argentina-la-plata-2026-2026-12-29",
+      "country_id": "argentina",
+      "authority_id": "hipodromo-la-plata",
+      "racing_system_id": "argentina-la-plata-thoroughbred-system",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "racecourse_id": "argentina--hipodromo-de-la-plata",
+      "date": "2026-12-29",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
+        "source_status": "verified",
+        "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-13",
+        "generated_at": "2026-10-13T05:48:34.413Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "la-plata-2026-official-resolution-calendar",
+          "official_source_url": "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf",
+          "observed_at": "2026-10-13T05:48:34.413Z",
+          "successfully_verified_at": "2026-10-13T05:48:34.413Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-13T05:48:34.413Z",
+        "status": "success",
+        "source_id": "la-plata-2026-official-resolution-calendar",
+        "route_id": "argentina-la-plata-2026-approved-calendar",
         "error_code": null
       }
     },
