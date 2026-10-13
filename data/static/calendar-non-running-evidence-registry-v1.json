@@ -1551,6 +1551,27 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-10-13",
       "notes": "HRA source absence and failures preserve last verified Calendar state; must not imply cancellation, postponement, or completed race."
+    },
+    {
+      "record_id": "argentina-la-plata-thoroughbred-system",
+      "country_id": "argentina",
+      "system_id": "argentina-la-plata-thoroughbred-system",
+      "authority_id": "hipodromo-la-plata",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "La Plata Racing Commission 2026 Resolution 1024 approved positive meeting date evidence only; no cancellation/replacement automations.",
+      "evidence_urls": [
+        "https://www.hipodromolaplata.gba.gov.ar/hplp/ih_carreraspdf/10_resoluciones/2025-11-27_resolucion.pdf"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-10-13",
+      "notes": "Resolution-approved dates do not establish race completion. Missing source, 403 or parser failure never implies cancellation or postponement and preserves last verified records."
     }
   ]
 }
