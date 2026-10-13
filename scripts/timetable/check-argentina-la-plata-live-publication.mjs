@@ -21,6 +21,8 @@ for(const s of sources){
    const j=JSON.parse(body),a=j.meetings??[];
    const match=targets.map(t=>({id:t.id,date:t.date,found:a.some(x=>x.meeting_id===t.meeting&&x.country_id===t.country&&x.racecourse_id===t.venue&&x.date===t.date)}));
    const argentina=a.filter(x=>x.country_id==='argentina'),canada=a.filter(x=>x.country_id==='canada');
+   const allLaPlata=argentina.filter(x=>x.racecourse_id==='argentina--hipodromo-de-la-plata');
+   if(allLaPlata.length!==new Set(allLaPlata.map(x=>x.meeting_id)).size)throw Error('La Plata duplicates in deployed public data');
    observed.push({id:s.id,http:r.status,generated_at:j.generated_at,total:a.length,argentina:argentina.length,canada:canada.length,targets:match});
   }else observed.push({id:s.id,http:r.status,bytes:body.length,meeting_id_present:body.includes(s.meeting)});
  }catch(e){observed.push({id:s.id,error:String(e?.message??e)});}
