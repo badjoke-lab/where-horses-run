@@ -1,0 +1,136 @@
+name: Argentina La Plata official Calendar refresh
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: Refresh scope
+        required: true
+        default: near
+        type: choice
+        options: [near, full]
+  # Publish the first Argentina source as soon as this runner merges.
+  # Generated-data commits are excluded, so no update loop is created.
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/calendar-argentina-la-plata-official-refresh.yml'
+      - 'scripts/timetable/argentina-la-plata-2026-core.mjs'
+      - 'scripts/timetable/run-argentina-la-plata-2026-official-window.mjs'
+      - 'scripts/check-argentina-la-plata-2026-adapter.mjs'
+  schedule:
+    - cron: '41 3 * * *'
+    - cron: '11 4 * * 1'
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-argentina-la-plata-official-refresh.yml'
+      - '.github/workflows/calendar-unified-official-refresh.yml'
+      - '.github/workflows/calendar-near-official-refresh.yml'
+      - 'scripts/timetable/argentina-la-plata-2026-core.mjs'
+      - 'scripts/timetable/run-argentina-la-plata-2026-official-window.mjs'
+      - 'scripts/check-argentina-la-plata-2026-adapter.mjs'
+      - 'scripts/timetable/persist-country-on-main.sh'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/calendar-public-country-support-v1.json'
+      - 'data/static/calendar-non-running-evidence-registry-v1.json'
+      - 'data/static/calendar-98-tier-execution-coverage.json'
+      - 'data/static/racecourses.json'
+      - 'data/static/racecourse-locations-v1.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: argentina-la-plata-2026-official-calendar-refresh
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - run: npm run validate:argentina-la-plata-2026
+      - name: Prove standalone source and projected public meetings
+        run: |
+          set -euo pipefail
+          mkdir -p .calendar-argentina
+          node scripts/timetable/run-argentina-la-plata-2026-official-window.mjs --as-of=2026-10-13 --days=30 --output=.calendar-argentina/la-plata.json
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          const x=JSON.parse(fs.readFileSync('.calendar-argentina/la-plata.json','utf8'));
+          if(x.acquisition_attempt.status!=='success'||x.discovery.source_visible_rows!==121||x.records.length!==12)throw Error('Argentina standalone source not ready '+JSON.stringify(x.diagnostics));
+          JS
+          node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-argentina/la-plata.json --country-id=argentina --authority-id=hipodromo-la-plata --racing-system-id=argentina-la-plata-thoroughbred-system --timezone=America/Argentina/Buenos_Aires
+          node scripts/check-calendar-public-country-support.mjs
+          node scripts/check-calendar-public-map-parity.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs
+          node scripts/check-calendar-unified-audit-coverage.mjs
+
+  refresh:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - id: scope
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            scope="${{ inputs.scope }}"
+          elif [ "${{ github.event_name }}" = "push" ] || [ "${{ github.event.schedule }}" = "11 4 * * 1" ]; then
+            scope=full
+          else
+            scope=near
+          fi
+          if [ "$scope" = full ]; then days=90; else days=30; fi
+          echo "scope=$scope" >> "$GITHUB_OUTPUT"
+          echo "days=$days" >> "$GITHUB_OUTPUT"
+      - name: Collect and apply only Argentina La Plata
+        run: |
+          mkdir -p .calendar-argentina
+          node scripts/timetable/run-argentina-la-plata-2026-official-window.mjs --days="${{ steps.scope.outputs.days }}" --output=.calendar-argentina/la-plata.json
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          const x=JSON.parse(fs.readFileSync('.calendar-argentina/la-plata.json','utf8'));
+          if(x.acquisition_attempt.status!=='success'||x.discovery.source_visible_rows!==121)throw Error('Argentina source failed; preserve verified production state');
+          JS
+          node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-argentina/la-plata.json --country-id=argentina --authority-id=hipodromo-la-plata --racing-system-id=argentina-la-plata-thoroughbred-system --timezone=America/Argentina/Buenos_Aires
+          node scripts/timetable/apply-reviewed-calendar-observations.mjs
+          node scripts/check-calendar-public-country-support.mjs
+          node scripts/check-calendar-public-map-parity.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs
+      - name: Persist Argentina-only projected data against latest main
+        shell: bash
+        run: |
+          set -euo pipefail
+          recollect_on_main() {
+            npm install --no-package-lock --no-audit --no-fund
+            rm -rf .calendar-argentina
+            mkdir -p .calendar-argentina
+            node scripts/timetable/run-argentina-la-plata-2026-official-window.mjs --days="${{ steps.scope.outputs.days }}" --output=.calendar-argentina/la-plata.json
+            node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          const x=JSON.parse(fs.readFileSync('.calendar-argentina/la-plata.json','utf8'));
+          if(x.acquisition_attempt.status!=='success'||x.discovery.source_visible_rows!==121)throw Error('Argentina source failed during latest-main retry');
+          JS
+            node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-argentina/la-plata.json --country-id=argentina --authority-id=hipodromo-la-plata --racing-system-id=argentina-la-plata-thoroughbred-system --timezone=America/Argentina/Buenos_Aires
+            node scripts/timetable/apply-reviewed-calendar-observations.mjs
+            node scripts/check-calendar-public-country-support.mjs
+            node scripts/check-calendar-public-map-parity.mjs
+            node scripts/check-calendar-non-running-evidence-registry.mjs
+          }
+          source scripts/timetable/persist-country-on-main.sh
+          persist_country_on_main 'Argentina La Plata' '${{ steps.scope.outputs.scope }}' recollect_on_main
