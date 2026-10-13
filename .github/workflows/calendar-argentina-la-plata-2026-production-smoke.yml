@@ -1,0 +1,63 @@
+name: Calendar Argentina La Plata 2026 production smoke
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-argentina-la-plata-2026-production-smoke.yml'
+      - '.github/workflows/calendar-unified-official-refresh.yml'
+      - '.github/workflows/calendar-near-official-refresh.yml'
+      - 'scripts/timetable/argentina-la-plata-2026-core.mjs'
+      - 'scripts/timetable/run-argentina-la-plata-2026-official-window.mjs'
+      - 'scripts/check-argentina-la-plata-2026-adapter.mjs'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-98-tier-execution-coverage.json'
+      - 'data/static/calendar-readiness-registry.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  la-plata-2026:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - name: Verify deterministic scope and parser
+        run: npm run validate:argentina-la-plata-2026
+      - name: Fetch live official La Plata 2026 Resolution 1024
+        run: |
+          set -euo pipefail
+          mkdir -p .calendar-argentina
+          asof="$(TZ=America/Argentina/Buenos_Aires date +%F)"
+          node scripts/timetable/run-argentina-la-plata-2026-official-window.mjs --as-of="$asof" --days=30 --output=.calendar-argentina/la-plata.json
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          const a=JSON.parse(fs.readFileSync('.calendar-argentina/la-plata.json','utf8'));
+          if(a.acquisition_attempt.status!=='success')throw Error('La Plata 2026 PDF source unavailable: '+JSON.stringify(a.diagnostics));
+          if(a.discovery.source_visible_rows!==121||Object.keys(a.discovery.month_counts).length!==12)throw Error('2026 resolution annual day count/fingerprint mismatched');
+          if(a.records.some(x=>x.capability_rank!=='C'||x.country_id!=='argentina'||x.racing_type!=='thoroughbred-flat'||x.racecourse_id!=='argentina--hipodromo-de-la-plata'||x.first_race_time_local!==null||x.timetable_rows.length!==0))throw Error('La Plata C venue/code contract');
+          if(new Set(a.records.map(x=>x.date)).size!==a.records.length)throw Error('La Plata date duplication');
+          if(a.raw_body_retained!==false)throw Error('No source PDF allowed in artifacts');
+          console.log('ARGENTINA_LA_PLATA_2026_SOURCE_PASS',a.discovery.source_visible_rows,'window',a.records.length);
+          JS
+      - name: Verify canonical and public application (PR checkout only)
+        run: |
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-argentina/la-plata.json \
+            --country-id=argentina \
+            --authority-id=hipodromo-la-plata \
+            --racing-system-id=argentina-la-plata-thoroughbred-system \
+            --timezone=America/Argentina/Buenos_Aires
+          node scripts/check-calendar-public-country-support.mjs
+          node scripts/check-calendar-public-map-parity.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs
+          node scripts/check-calendar-98-tier-execution-coverage.mjs
+          node scripts/check-calendar-98-tier-acquisition-methods.mjs
+          node scripts/check-calendar-unified-audit-coverage.mjs
+      - name: Check bilingual site build
+        run: npm run build
