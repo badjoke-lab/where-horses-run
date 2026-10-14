@@ -1,0 +1,23 @@
+name: Australia Victoria 2026/27 official Calendar probe
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-australia-victoria-source-probe.yml'
+      - 'scripts/timetable/probe-australia-victoria-2026-27.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  victoria-official:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check access and independently published 2026-27 Victorian race date facts
+        run: node scripts/timetable/probe-australia-victoria-2026-27.mjs
