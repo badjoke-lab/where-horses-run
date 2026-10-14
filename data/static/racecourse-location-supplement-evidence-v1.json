@@ -1,6 +1,6 @@
 {
   "schema_version": "racecourse-location-supplement-evidence-v1",
-  "reviewed_at": "2026-10-13",
+  "reviewed_at": "2026-10-14",
   "entries": [
     {
       "id": "abbeville-racecourse",
@@ -2569,6 +2569,33 @@
       "address_observed": "Av. 44 y 115, La Plata, Buenos Aires, Argentina",
       "coordinate_method": "OpenStreetMap physical venue footprint independently checked against the official racecourse's street intersection.",
       "precision_note": "Approximate physical racecourse venue center, not a racecourse geometry survey or gate."
+    },
+    {
+      "id": "chartres-racecourse",
+      "coordinate_source_url": "https://tofromfrance.com/en/lieu/hippodrome-de-chartres",
+      "coordinate_observed": "48.45176, 1.50987",
+      "address_source_url": "https://www.hippodrome-chartres.com/turfistes-parieurs/plan-dacces/",
+      "address_observed": "6 rue du Médecin Général Beyne, 28000 Chartres, France",
+      "coordinate_method": "Coordinates from a venue-specific listing cross-checked against the venue operator's geographic address and the Hippodrome de Chartres footprint.",
+      "precision_note": "Approximate physical venue point, not a surveyed gate or track centreline."
+    },
+    {
+      "id": "finland--rovaniemi",
+      "coordinate_source_url": "https://mapcarta.com/39288546",
+      "coordinate_observed": "66.51217, 25.60236",
+      "address_source_url": "https://rovaniemenravirata.fi/",
+      "address_observed": "Mäntyvaarantie 161, 96100 Rovaniemi, Finland",
+      "coordinate_method": "OSM mapped Mäntyvaara Race Track footprint cross-checked with the official Rovaniemen ravirata street address and track identity.",
+      "precision_note": "Approximate physical Mäntyvaara venue center; Rovaniemi is the Calendar meeting's track identity."
+    },
+    {
+      "id": "taunton-racecourse",
+      "coordinate_source_url": "https://www.geograph.org.uk/photo/7292862",
+      "coordinate_observed": "50.99002, -3.08464",
+      "address_source_url": "https://tauntonracecourse.co.uk/contact-us/directions/",
+      "address_observed": "Taunton Racecourse, Orchard Portman, Taunton, Somerset TA3 7BL, United Kingdom",
+      "coordinate_method": "Georeferenced physical racecourse image location (10m precision) cross-checked with the racecourse operator's Orchard Portman address and Somerset location.",
+      "precision_note": "Approximate point inside physical racecourse property, not exact track alignment."
     }
   ]
 }
