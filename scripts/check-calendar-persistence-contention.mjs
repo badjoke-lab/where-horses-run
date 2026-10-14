@@ -32,7 +32,7 @@ assert.ok(countryWorkflows.length > 0, 'standalone country refresh workflows mis
 for (const name of countryWorkflows) {
   const path = '.github/workflows/' + name;
   const text = fs.readFileSync(path, 'utf8');
-  assert.match(text, /Persist generated/, name + ': persistence step missing');
+  assert.match(text, /^\s*-\s*name:\s*Persist\b.+/m, name + ': named persistence step missing');
   assert.match(text, /node scripts\/check-calendar-public-map-parity\.mjs/, name + ': map parity validator missing');
   if (text.includes('persist_country_on_main')) {
     assert.match(text, /source scripts\/timetable\/persist-country-on-main\.sh/, name + ': persistence helper not sourced');
