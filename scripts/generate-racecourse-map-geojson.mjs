@@ -118,6 +118,10 @@ const calendarMapRegressionIds = [
   'paray-le-monial-racecourse',
   'rambouillet-racecourse',
   'la-roche-posay-racecourse',
+  // Rolling Calendar geolocation regressions (2026-10-14)
+  'chartres-racecourse',
+  'finland--rovaniemi',
+  'taunton-racecourse',
   // South Korea (4)
   'seoul-racecourse',
   'busan-gyeongnam-racecourse',
