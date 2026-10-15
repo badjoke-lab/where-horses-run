@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-non-running-evidence-registry-v1",
-  "reviewed_at": "2026-10-13",
+  "reviewed_at": "2026-10-15",
   "records": [
     {
       "record_id": "japan-jra-system",
@@ -1572,6 +1572,27 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-10-13",
       "notes": "Resolution-approved dates do not establish race completion. Missing source, 403 or parser failure never implies cancellation or postponement and preserves last verified records."
+    },
+    {
+      "record_id": "australia-victoria-flemington-thoroughbred-system",
+      "country_id": "australia",
+      "system_id": "australia-victoria-flemington-thoroughbred-system",
+      "authority_id": "racing-victoria",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Racing Victoria 2026-27 approved positive Flemington meeting dates only; no non-running / postponement automation.",
+      "evidence_urls": [
+        "https://www.racingvictoria.com.au/news/2026/04/30/track-enhancements-and-strategic-initiatives-shape-2026-27-victorian-race-dates"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-10-15",
+      "notes": "The 21 scheduled 2026-27 Flemington dates are approved dates only; missing source/403/parser failure does not establish cancellation or postponement."
     }
   ]
 }

@@ -1,0 +1,42 @@
+name: Australia Victoria Flemington 2026-27 Calendar production smoke
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-australia-victoria-flemington-2026-27-smoke.yml'
+      - 'scripts/timetable/australia-victoria-flemington-2026-27-core.mjs'
+      - 'scripts/timetable/run-australia-victoria-flemington-2026-27-official-window.mjs'
+      - 'scripts/check-australia-victoria-flemington-2026-27-adapter.mjs'
+      - 'data/static/calendar-acquisition-registry.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  flemington-official:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - name: Check 2026-27 approved calendar parser and C-grade boundaries
+        run: npm run validate:australia-victoria-flemington-2026-27
+      - name: Fetch real Racing Victoria officially published approved fixture PDF
+        run: |
+          mkdir -p .calendar-australia
+          node scripts/timetable/run-australia-victoria-flemington-2026-27-official-window.mjs --as-of=2026-10-15 --days=30 --output=.calendar-australia/flemington.json
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          const a=JSON.parse(fs.readFileSync('.calendar-australia/flemington.json','utf8'));
+          if(a.acquisition_attempt.status!=='success'||a.discovery.season_approved_flemington_dates!==21)throw Error('Official RV approved season 21-day source extraction failed: '+JSON.stringify(a.diagnostics));
+          const dates=a.records.map(x=>x.date);
+          const expected=['2026-10-24','2026-10-31','2026-11-03','2026-11-05','2026-11-07'];
+          if(JSON.stringify(dates)!==JSON.stringify(expected))throw Error('Wrong current 30-day Flemington fixture set: '+JSON.stringify(dates));
+          if(a.records.some(x=>x.capability_rank!=='C'||x.racing_system_id!=='australia-victoria-flemington-thoroughbred-system'||x.racecourse_id!=='australia--flemington-racecourse'||x.first_race_time_local!==null||x.timetable_rows.length))throw Error('Australia venue/grade scope violation');
+          if(a.raw_body_retained!==false)throw Error('Source PDF must not be retained');
+          console.log('AUSTRALIA_VICTORIA_FLEMINGTON_REAL_PDF_PASS: season=21,window=5');
+          JS
