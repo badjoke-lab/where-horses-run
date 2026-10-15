@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/calendar-australia-victoria-source-probe.yml'
       - 'scripts/timetable/probe-australia-victoria-2026-27.mjs'
+      - 'scripts/timetable/probe-australia-victoria-approved-pdf-2026-27.mjs'
 
 permissions:
   contents: read
@@ -19,5 +20,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
       - name: Check access and independently published 2026-27 Victorian race date facts
         run: node scripts/timetable/probe-australia-victoria-2026-27.mjs
+      - name: Check approved statewide fixture PDF for Flemington only
+        run: node scripts/timetable/probe-australia-victoria-approved-pdf-2026-27.mjs
