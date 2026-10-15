@@ -1864,6 +1864,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "2026 La Plata Racing Commission Resolution 1024 supports 121 approved dates at the single physical La Plata thoroughbred-flat venue. Public C only. No Argentina nationwide claim, no post times, original PDF reproduction or 2027 inferred dates. Acquisition failure preserves verified meetings; it is not cancellation."
+    },
+    {
+      "system_id": "australia-victoria-flemington-thoroughbred-system",
+      "country_id": "australia",
+      "authority_id": "racing-victoria",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "racing-victoria-flemington-2026-27-approved-race-dates",
+      "detail_source_id": "racing-victoria-flemington-2026-27-approved-race-dates",
+      "schedule_adapter_id": "australia-victoria-flemington-2026-27-approved-pdf-v1",
+      "detail_adapter_id": "australia-victoria-flemington-2026-27-approved-pdf-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Racing Victoria's publicly released 2026-27 final season schedule (528 Victorian races meetings) has 21 approved Flemington Thoroughbred dates. Single racecourse/one code only, normalized date and physical venue facts, grade C, no original PDF / racebook / times or 2027-28 inference. Do not use Racing Australia aggregator nor VRC-restricted page as input. Failed fetch preserves verified state, not cancellation."
     }
   ]
 }
