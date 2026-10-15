@@ -197,6 +197,9 @@ refresh_non_japan_on_main() {
   node scripts/timetable/run-argentina-la-plata-2026-official-window.mjs \
     --days="${DAYS}" \
     --output=.calendar-unified/argentina-la-plata.json
+  node scripts/timetable/run-australia-victoria-flemington-2026-27-official-window.mjs \
+    --days="${DAYS}" \
+    --output=.calendar-unified/australia-victoria-flemington.json
   python3 -c 'import fitz' 2>/dev/null || python3 -m pip install --disable-pip-version-check --break-system-packages -q pymupdf==1.26.5 || echo 'NJRC source parser dependency unavailable; only this source will yield failure diagnostics' >&2
   node scripts/timetable/run-us-njrc-2026-official-window.mjs \
     --days="${DAYS}" \
@@ -269,6 +272,7 @@ refresh_non_japan_on_main() {
   --artifact=.calendar-unified/canada-ontario/ajax_quarter_horse.json \
   --artifact=.calendar-unified/canada-alberta-century-mile.json \
   --artifact=.calendar-unified/argentina-la-plata.json \
+  --artifact=.calendar-unified/australia-victoria-flemington.json \
   --artifact=.calendar-unified/us-njrc/monmouth.json \
   --artifact=.calendar-unified/us-njrc/meadowlands_turf.json \
   --artifact=.calendar-unified/us-njrc/far_hills_steeplechase.json
@@ -658,6 +662,13 @@ refresh_non_japan_on_main() {
     --authority-id=hipodromo-la-plata \
     --racing-system-id=argentina-la-plata-thoroughbred-system \
     --timezone=America/Argentina/Buenos_Aires
+
+  node scripts/timetable/apply-official-rolling-observations.mjs \
+    --artifact=.calendar-unified/australia-victoria-flemington.json \
+    --country-id=australia \
+    --authority-id=racing-victoria \
+    --racing-system-id=australia-victoria-flemington-thoroughbred-system \
+    --timezone=Australia/Melbourne
 
 
   node scripts/timetable/apply-official-rolling-observations.mjs \
