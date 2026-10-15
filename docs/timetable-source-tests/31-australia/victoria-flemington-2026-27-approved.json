@@ -1,0 +1,39 @@
+{
+  "schema_version": "calendar-source-test-summary-v1",
+  "country_id": "australia",
+  "state": "Victoria",
+  "source_id": "racing-victoria-flemington-2026-27-approved-race-dates",
+  "source_url": "https://www.racingvictoria.com.au/news/2026/04/30/track-enhancements-and-strategic-initiatives-shape-2026-27-victorian-race-dates",
+  "linked_pdf_url": "https://dxp-cdn.racing.com/api/public/content/Victorian_Race_Dates_2026-27_FINAL-%28EMBARGOED%29-8668576.pdf?v=073e67fe",
+  "authority_id": "racing-victoria",
+  "racing_system_id": "australia-victoria-flemington-thoroughbred-system",
+  "racecourse_id": "australia--flemington-racecourse",
+  "source_checked_date": "2026-10-15",
+  "source_publication_date": "2026-04-30",
+  "source_test_run": "https://github.com/badjoke-lab/where-horses-run/actions/runs/38754498373",
+  "season": "2026-08-01/2027-07-31",
+  "season_statewide_meetings_reported": 528,
+  "approved_flemington_day_count_derived_from_published_fixture": 21,
+  "extraction_method": "pdfjs text tokens - DATE DAY Flemington venue only - source PDF not persisted",
+  "expected_window": {
+    "start": "2026-10-15",
+    "end_exclusive": "2026-11-14",
+    "days": 30,
+    "approved_flemington_dates": [
+      "2026-10-24",
+      "2026-10-31",
+      "2026-11-03",
+      "2026-11-05",
+      "2026-11-07"
+    ]
+  },
+  "normalized_rank": "C",
+  "publication_scope": "Normalized date/venue/racing-code facts only; no VRC site/content, Racing Australia aggregate, first post time, original fixture PDF, maps, racecard or copyright expression is reproduced.",
+  "rights_decision_note": "Source-specific narrow factual field processing, no blanket rights clearance. VRC copyright notice limits its website content; VRC is not ingested. RV source copyrights and permitted automated/factual use remain subject to scoped assessment. Source is not licensed for bulk raw republication here.",
+  "limitations": [
+    "Only physical Flemington racecourse and 2026–27 Thoroughbred-flat, not all Australia/Victoria or other racing codes.",
+    "Approved fixture date does not itself prove that a meeting ran or was not cancelled.",
+    "HTTP200/source PDF text parse does not establish a licence for republishing source material.",
+    "2027–28 season requires a separate officially published calendar; no interpolation."
+  ]
+}
