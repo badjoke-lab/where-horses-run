@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {parseFlemingtonApprovedSeason2026_27,buildFlemingtonCMeeting,AU_VIC_VENUE,AU_VIC_SYSTEM} from './timetable/australia-victoria-flemington-2026-27-core.mjs';
+const dates=['2026-08-01','2026-09-12','2026-10-03','2026-10-24','2026-10-31','2026-11-03','2026-11-05','2026-11-07','2026-12-31','2027-01-09','2027-01-16','2027-02-13','2027-02-27','2027-03-06','2027-03-27','2027-04-25','2027-05-15','2027-06-05','2027-06-19','2027-07-03','2027-07-17'];
+const dow=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+let tokens=dates.map(s=>{let d=new Date(s+'T00:00:00Z');return [s.slice(8)+'-'+months[d.getUTCMonth()]+'-'+s.slice(2,4),dow[d.getUTCDay()],'Flemington','Day','A Flemington fixture'];}).flat();
+const pages=Array.from({length:14},(_,i)=>i===0?tokens:[]);
+const rows=parseFlemingtonApprovedSeason2026_27(pages);
+assert.equal(rows.length,21);assert.deepEqual(rows.map(r=>r.date),dates);
+assert.ok(rows.every(x=>x.racecourse_id===AU_VIC_VENUE));
+const active=rows.filter(x=>x.date>='2026-10-15'&&x.date<'2026-11-14');
+assert.deepEqual(active.map(x=>x.date),['2026-10-24','2026-10-31','2026-11-03','2026-11-05','2026-11-07']);
+const m=buildFlemingtonCMeeting(active[0],{checkedAt:'2026-10-15T00:00:00Z'});
+assert.equal(m.racing_system_id,AU_VIC_SYSTEM);assert.equal(m.capability_rank,'C');assert.equal(m.first_race_time_local,null);assert.deepEqual(m.timetable_rows,[]);
+assert.throws(()=>parseFlemingtonApprovedSeason2026_27(pages.map((x,i)=>i===0?x.slice(0,-5):x)),/denominator|fixture/);
+assert.throws(()=>parseFlemingtonApprovedSeason2026_27(Array.from({length:14},(_,i)=>i===0?[...tokens,...tokens.slice(0,5)]:[])),/denominator|duplicate/);
+console.log('AU_VICTORIA_FLEMINGTON_PARSER_PASS: 21 source-approved season days, 5 Oct/Nov 30-day dates, C only');
