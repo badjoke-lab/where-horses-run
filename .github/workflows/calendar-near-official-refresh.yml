@@ -265,14 +265,6 @@ jobs:
           node scripts/timetable/run-japan-zero-based-30d.mjs \
             --execution-date="${{ steps.scope.outputs.japan_date }}" \
             --scope="${{ steps.scope.outputs.scope }}"
-      - name: Apply Australia Victoria Flemington approved C dates
-        run: |
-          node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/australia-victoria-flemington.json \
-            --country-id=australia \
-            --authority-id=racing-victoria \
-            --racing-system-id=australia-victoria-flemington-thoroughbred-system \
-            --timezone=Australia/Melbourne
       - name: Re-apply frozen reviewed Calendar observations after Japan
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions after Japan
@@ -1075,6 +1067,14 @@ jobs:
           --authority-id=new-jersey-racing-commission \
           --racing-system-id=us-nj-far-hills-steeplechase-2026-system \
           --timezone=America/New_York
+      - name: Apply Australia Victoria Flemington approved C dates
+        run: |
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/australia-victoria-flemington.json \
+            --country-id=australia \
+            --authority-id=racing-victoria \
+            --racing-system-id=australia-victoria-flemington-thoroughbred-system \
+            --timezone=Australia/Melbourne
       - name: Re-apply frozen reviewed Calendar observations
         run: node scripts/timetable/apply-reviewed-calendar-observations.mjs
       - name: Apply explicit meeting presence dispositions
