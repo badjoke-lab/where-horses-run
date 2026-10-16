@@ -1,6 +1,6 @@
 {
   "schema_version": "japan-zero-based-30d-reconciliation-v1",
-  "checked_at": "2026-10-16T15:23:26.208Z",
+  "checked_at": "2026-10-16T22:06:05.924Z",
   "range": {
     "start": "2026-10-17",
     "end_exclusive": "2026-10-20",
@@ -13,9 +13,9 @@
   "official_counts": {
     "jra": 6,
     "nar-standard": 10,
-    "banei": 0
+    "banei": 3
   },
-  "official_meeting_count": 16,
+  "official_meeting_count": 19,
   "reconciliations": [
     {
       "meeting_id": "jra-kyoto-racecourse-2026-10-17",
@@ -332,26 +332,58 @@
           "official_source_url": "https://www.nankankeiba.com/bangumi/20261807.do"
         }
       ]
-    }
-  ],
-  "stale_audit": [
+    },
     {
       "meeting_id": "banei-obihiro-racecourse-2026-10-17",
-      "date": "2026-10-17",
-      "audit": "canonical_public_only_not_deleted"
+      "acquisition_group": "banei",
+      "outcome": "no_op",
+      "official_rank": "A+",
+      "public_rank": "A+",
+      "acquisition_completion": "complete_current_best_available",
+      "source_observations": [
+        {
+          "source_id": "banei-official-monthly-schedule-nar-detail",
+          "role": "mother_set",
+          "source_label": "ばんえい十勝",
+          "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1790780400"
+        }
+      ]
     },
     {
       "meeting_id": "banei-obihiro-racecourse-2026-10-18",
-      "date": "2026-10-18",
-      "audit": "canonical_public_only_not_deleted"
+      "acquisition_group": "banei",
+      "outcome": "no_op",
+      "official_rank": "A+",
+      "public_rank": "A+",
+      "acquisition_completion": "complete_current_best_available",
+      "source_observations": [
+        {
+          "source_id": "banei-official-monthly-schedule-nar-detail",
+          "role": "mother_set",
+          "source_label": "ばんえい十勝",
+          "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1790780400"
+        }
+      ]
     },
     {
       "meeting_id": "banei-obihiro-racecourse-2026-10-19",
-      "date": "2026-10-19",
-      "audit": "canonical_public_only_not_deleted"
+      "acquisition_group": "banei",
+      "outcome": "no_op",
+      "official_rank": "A",
+      "public_rank": "A",
+      "acquisition_completion": "implementation_gap",
+      "source_observations": [
+        {
+          "source_id": "banei-official-monthly-schedule-nar-detail",
+          "role": "mother_set",
+          "source_label": "ばんえい十勝",
+          "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1790780400"
+        }
+      ]
     }
   ],
-  "complete": false,
+  "stale_audit": [],
+  "complete": true,
   "public_rank_lower_than_official": 0,
   "scope": "near",
   "requested_days": 3,
@@ -410,8 +442,8 @@
         "https://www.jra.go.jp/keiba/calendar2026/2026/10/1018.html"
       ],
       "failures": [],
-      "fetch_started_at": "2026-10-16T15:23:26.208Z",
-      "fetch_ended_at": "2026-10-16T15:23:28.599Z"
+      "fetch_started_at": "2026-10-16T22:06:05.924Z",
+      "fetch_ended_at": "2026-10-16T22:06:08.622Z"
     },
     {
       "source_id": "nar-monthly-convene-info",
@@ -425,8 +457,8 @@
           "2026-10-19"
         ]
       },
-      "fetch_started_at": "2026-10-16T15:23:28.599Z",
-      "fetch_ended_at": "2026-10-16T15:23:29.779Z",
+      "fetch_started_at": "2026-10-16T22:06:08.623Z",
+      "fetch_ended_at": "2026-10-16T22:06:09.587Z",
       "result": "complete",
       "completeness": "complete",
       "parsed_meeting_count": 10,
@@ -451,24 +483,19 @@
           "2026-10-19"
         ]
       },
-      "fetch_started_at": "2026-10-16T15:23:46.474Z",
-      "fetch_ended_at": "2026-10-16T15:23:47.401Z",
-      "result": "failed",
-      "completeness": "failed",
-      "parsed_meeting_count": 0,
+      "fetch_started_at": "2026-10-16T22:06:30.333Z",
+      "fetch_ended_at": "2026-10-16T22:06:32.300Z",
+      "result": "complete",
+      "completeness": "complete",
+      "parsed_meeting_count": 3,
       "parsed_detail_count": 0,
       "pending_count": 0,
-      "failure_count": 1,
-      "source_visible_horizon": null,
+      "failure_count": 0,
+      "source_visible_horizon": "2026-10-19",
       "source_urls": [
         "https://www.banei-keiba.or.jp/race_schedule.php"
       ],
-      "failures": [
-        {
-          "source_url": "https://www.banei-keiba.or.jp/race_schedule.php",
-          "reason": "HTTP 500: https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1790780400"
-        }
-      ]
+      "failures": []
     },
     {
       "source_id": "nankankeiba-south-kanto-calendar",
@@ -495,8 +522,8 @@
       ],
       "failures": [],
       "supplemental_failures": [],
-      "fetch_started_at": "2026-10-16T15:23:29.780Z",
-      "fetch_ended_at": "2026-10-16T15:23:31.197Z"
+      "fetch_started_at": "2026-10-16T22:06:09.587Z",
+      "fetch_ended_at": "2026-10-16T22:06:11.453Z"
     },
     {
       "source_id": "iwatekeiba-official-calendar",
@@ -521,8 +548,8 @@
         "https://www.iwatekeiba.or.jp/calendar/2026_10"
       ],
       "failures": [],
-      "fetch_started_at": "2026-10-16T15:23:31.197Z",
-      "fetch_ended_at": "2026-10-16T15:23:32.469Z"
+      "fetch_started_at": "2026-10-16T22:06:11.453Z",
+      "fetch_ended_at": "2026-10-16T22:06:13.029Z"
     },
     {
       "source_id": "hyogo-urban-keiba-official-calendar",
@@ -547,8 +574,8 @@
         "https://www.sonoda-himeji.jp/schedule/2026/10"
       ],
       "failures": [],
-      "fetch_started_at": "2026-10-16T15:23:32.469Z",
-      "fetch_ended_at": "2026-10-16T15:23:33.166Z"
+      "fetch_started_at": "2026-10-16T22:06:13.029Z",
+      "fetch_ended_at": "2026-10-16T22:06:13.855Z"
     },
     {
       "source_id": "tokai-region-joint-official-calendar",
@@ -580,8 +607,8 @@
         "end": "2027-03-31"
       },
       "failures": [],
-      "fetch_started_at": "2026-10-16T15:23:33.166Z",
-      "fetch_ended_at": "2026-10-16T15:23:34.737Z"
+      "fetch_started_at": "2026-10-16T22:06:13.855Z",
+      "fetch_ended_at": "2026-10-16T22:06:15.933Z"
     },
     {
       "source_id": "hokkaido-keiba-official-calendar",
@@ -608,8 +635,8 @@
       "requested_month_count": 1,
       "successful_month_count": 1,
       "failures": [],
-      "fetch_started_at": "2026-10-16T15:23:34.737Z",
-      "fetch_ended_at": "2026-10-16T15:23:40.503Z"
+      "fetch_started_at": "2026-10-16T22:06:15.933Z",
+      "fetch_ended_at": "2026-10-16T22:06:22.037Z"
     },
     {
       "source_id": "kanazawa-keiba-official-calendar",
@@ -679,8 +706,8 @@
         }
       ],
       "failures": [],
-      "fetch_started_at": "2026-10-16T15:23:40.503Z",
-      "fetch_ended_at": "2026-10-16T15:23:43.423Z"
+      "fetch_started_at": "2026-10-16T22:06:22.037Z",
+      "fetch_ended_at": "2026-10-16T22:06:26.162Z"
     },
     {
       "source_id": "kochi-keiba-official-calendar",
@@ -724,8 +751,8 @@
       "published_plan_as_of": "2026-02-26",
       "schedule_status": "official_published_plan_subject_to_change",
       "failures": [],
-      "fetch_started_at": "2026-10-16T15:23:43.423Z",
-      "fetch_ended_at": "2026-10-16T15:23:44.594Z"
+      "fetch_started_at": "2026-10-16T22:06:26.162Z",
+      "fetch_ended_at": "2026-10-16T22:06:27.771Z"
     },
     {
       "source_id": "saga-keiba-official-calendar",
@@ -892,22 +919,20 @@
       },
       "schedule_status": "annual_official_plan_plus_published_monthly_positive_union",
       "failures": [],
-      "fetch_started_at": "2026-10-16T15:23:44.594Z",
-      "fetch_ended_at": "2026-10-16T15:23:46.474Z"
+      "fetch_started_at": "2026-10-16T22:06:27.771Z",
+      "fetch_ended_at": "2026-10-16T22:06:30.332Z"
     }
   ],
-  "mother_set_complete": false,
+  "mother_set_complete": true,
   "mother_set_completeness_assessment": {
-    "complete": false,
+    "complete": true,
     "missing_source_ids": [],
-    "incomplete_source_ids": [
-      "banei-official-schedule"
-    ]
+    "incomplete_source_ids": []
   },
   "absence_reconciliation_mode": "per_family",
   "absence_reconciliation_families": {
     "jra": true,
-    "banei": false,
+    "banei": true,
     "south_kanto": true,
     "iwate": true,
     "hyogo": true,
@@ -921,9 +946,5 @@
   "absence_reconciliation_applied": true,
   "removed_invalid_aliases": [],
   "removed_stale_public": [],
-  "preserved_stale_public": [
-    "banei-obihiro-racecourse-2026-10-17",
-    "banei-obihiro-racecourse-2026-10-18",
-    "banei-obihiro-racecourse-2026-10-19"
-  ]
+  "preserved_stale_public": []
 }
