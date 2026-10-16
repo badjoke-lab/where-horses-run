@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-timetable-v0",
-  "generated_at": "2026-10-16T09:18:58.122Z",
+  "generated_at": "2026-10-16T09:19:10.111Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -12550,7 +12550,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-16T09:18:58.122Z",
+        "generated_at": "2026-10-16T09:19:10.111Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12579,7 +12579,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-16T09:18:58.122Z",
+        "generated_at": "2026-10-16T09:19:10.111Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -12784,7 +12784,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-16T09:18:58.122Z",
+        "generated_at": "2026-10-16T09:19:10.111Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       }
@@ -65777,6 +65777,65 @@
       }
     },
     {
+      "meeting_id": "mauritius-champ-de-mars-2026-10-18",
+      "country_id": "mauritius",
+      "authority_id": "automatic-systems-ltd-supertote",
+      "racing_system_id": "mauritius-champ-de-mars-system",
+      "timezone": "Indian/Mauritius",
+      "racecourse_id": "mauritius--champ-de-mars",
+      "date": "2026-10-18",
+      "capability_rank": "C",
+      "display_status": "partial",
+      "first_race_time_local": null,
+      "last_race_time_local": null,
+      "source_trace": {
+        "source_id": "supertote-calendar-2026",
+        "route_id": "supertote-calendar-2026-official-window",
+        "source_status": "verified",
+        "official_source_url": "https://supertote.mu/calendar",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-16",
+        "generated_at": "2026-10-16T09:19:04.489Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "supertote-calendar-2026",
+          "official_source_url": "https://supertote.mu/calendar",
+          "observed_at": "2026-10-16T09:19:04.489Z",
+          "successfully_verified_at": "2026-10-16T09:19:04.489Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "supertote-calendar-2026",
+          "official_source_url": "https://supertote.mu/calendar",
+          "observed_at": "2026-10-16T09:19:04.489Z",
+          "successfully_verified_at": "2026-10-16T09:19:04.489Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "acquisition_completion": {
+        "disposition": "not_applicable",
+        "observed_rank": "C",
+        "technical_capability_rank": "C",
+        "higher_rank_open": false,
+        "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
+      },
+      "acquisition_attempt": {
+        "attempted_at": "2026-10-16T09:19:04.489Z",
+        "status": "success",
+        "source_id": "supertote-calendar-2026",
+        "route_id": "supertote-calendar-2026-official-window",
+        "error_code": null
+      }
+    },
+    {
       "meeting_id": "mexico-americas-2026-10-18",
       "country_id": "mexico",
       "authority_id": "hipodromo-de-las-americas",
@@ -85998,8 +86057,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-10-15",
-        "generated_at": "2026-10-15T09:44:54.776Z",
+        "last_checked_date": "2026-10-16",
+        "generated_at": "2026-10-16T09:19:04.489Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -86007,15 +86066,15 @@
         "meeting_identity": {
           "source_id": "supertote-calendar-2026",
           "official_source_url": "https://supertote.mu/calendar",
-          "observed_at": "2026-10-15T09:44:54.776Z",
-          "successfully_verified_at": "2026-10-15T09:44:54.776Z",
+          "observed_at": "2026-10-16T09:19:04.489Z",
+          "successfully_verified_at": "2026-10-16T09:19:04.489Z",
           "acquisition_method": "automatic"
         },
         "meeting_date": {
           "source_id": "supertote-calendar-2026",
           "official_source_url": "https://supertote.mu/calendar",
-          "observed_at": "2026-10-15T09:44:54.776Z",
-          "successfully_verified_at": "2026-10-15T09:44:54.776Z",
+          "observed_at": "2026-10-16T09:19:04.489Z",
+          "successfully_verified_at": "2026-10-16T09:19:04.489Z",
           "acquisition_method": "automatic"
         }
       },
@@ -86027,7 +86086,7 @@
         "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
       },
       "acquisition_attempt": {
-        "attempted_at": "2026-10-15T09:44:54.776Z",
+        "attempted_at": "2026-10-16T09:19:04.489Z",
         "status": "success",
         "source_id": "supertote-calendar-2026",
         "route_id": "supertote-calendar-2026-official-window",
@@ -96062,8 +96121,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-10-15",
-        "generated_at": "2026-10-15T09:44:54.776Z",
+        "last_checked_date": "2026-10-16",
+        "generated_at": "2026-10-16T09:19:04.489Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -96071,15 +96130,15 @@
         "meeting_identity": {
           "source_id": "supertote-calendar-2026",
           "official_source_url": "https://supertote.mu/calendar",
-          "observed_at": "2026-10-15T09:44:54.776Z",
-          "successfully_verified_at": "2026-10-15T09:44:54.776Z",
+          "observed_at": "2026-10-16T09:19:04.489Z",
+          "successfully_verified_at": "2026-10-16T09:19:04.489Z",
           "acquisition_method": "automatic"
         },
         "meeting_date": {
           "source_id": "supertote-calendar-2026",
           "official_source_url": "https://supertote.mu/calendar",
-          "observed_at": "2026-10-15T09:44:54.776Z",
-          "successfully_verified_at": "2026-10-15T09:44:54.776Z",
+          "observed_at": "2026-10-16T09:19:04.489Z",
+          "successfully_verified_at": "2026-10-16T09:19:04.489Z",
           "acquisition_method": "automatic"
         }
       },
@@ -96091,7 +96150,7 @@
         "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
       },
       "acquisition_attempt": {
-        "attempted_at": "2026-10-15T09:44:54.776Z",
+        "attempted_at": "2026-10-16T09:19:04.489Z",
         "status": "success",
         "source_id": "supertote-calendar-2026",
         "route_id": "supertote-calendar-2026-official-window",
@@ -104255,8 +104314,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-10-12",
-        "generated_at": "2026-10-12T13:09:51.070Z",
+        "last_checked_date": "2026-10-16",
+        "generated_at": "2026-10-16T09:19:04.489Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -104264,15 +104323,15 @@
         "meeting_identity": {
           "source_id": "supertote-calendar-2026",
           "official_source_url": "https://supertote.mu/calendar",
-          "observed_at": "2026-10-12T13:09:51.070Z",
-          "successfully_verified_at": "2026-10-12T13:09:51.070Z",
+          "observed_at": "2026-10-16T09:19:04.489Z",
+          "successfully_verified_at": "2026-10-16T09:19:04.489Z",
           "acquisition_method": "automatic"
         },
         "meeting_date": {
           "source_id": "supertote-calendar-2026",
           "official_source_url": "https://supertote.mu/calendar",
-          "observed_at": "2026-10-12T13:09:51.070Z",
-          "successfully_verified_at": "2026-10-12T13:09:51.070Z",
+          "observed_at": "2026-10-16T09:19:04.489Z",
+          "successfully_verified_at": "2026-10-16T09:19:04.489Z",
           "acquisition_method": "automatic"
         }
       },
@@ -104284,7 +104343,7 @@
         "reason": "The registered higher-detail route was explicitly not applicable to this meeting."
       },
       "acquisition_attempt": {
-        "attempted_at": "2026-10-12T13:09:51.070Z",
+        "attempted_at": "2026-10-16T09:19:04.489Z",
         "status": "success",
         "source_id": "supertote-calendar-2026",
         "route_id": "supertote-calendar-2026-official-window",
