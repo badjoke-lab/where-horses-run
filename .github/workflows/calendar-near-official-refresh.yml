@@ -659,14 +659,6 @@ jobs:
             --artifact=.calendar-unified/us-njrc/monmouth.json \
             --artifact=.calendar-unified/us-njrc/meadowlands_turf.json \
             --artifact=.calendar-unified/us-njrc/far_hills_steeplechase.json
-      - name: Apply Australia Victoria Flemington approved C dates
-        run: |
-          node scripts/timetable/apply-official-rolling-observations.mjs \
-            --artifact=.calendar-unified/australia-victoria-flemington.json \
-            --country-id=australia \
-            --authority-id=racing-victoria \
-            --racing-system-id=australia-victoria-flemington-thoroughbred-system \
-            --timezone=Australia/Melbourne
       - name: Apply non-Japan official observations monotonically
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \

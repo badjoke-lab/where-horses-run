@@ -20,8 +20,8 @@ for (const [label, path, smokeGroup] of workflows) {
   const nonJapanApply = text.indexOf('      - name: Apply non-Japan official observations monotonically');
   assert.ok(
     flemingtonCollect >= 0 && exclusions > flemingtonCollect
-      && flemingtonApply > exclusions && nonJapanApply > flemingtonApply,
-    label + ': Flemington collection/exclusions must precede its one official apply step',
+      && nonJapanApply > exclusions && flemingtonApply > nonJapanApply,
+    label + ': Flemington collection/exclusions must precede non-Japan then its one official apply step',
   );
   assert.equal(
     text.split('      - name: Apply Australia Victoria Flemington approved C dates').length - 1,
