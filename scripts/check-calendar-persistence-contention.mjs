@@ -9,6 +9,25 @@ const workflows = [
 for (const [label, path, smokeGroup] of workflows) {
   const text = fs.readFileSync(path, 'utf8');
   assert.match(text, /stage_remaining_state\(\)\s*\{/, label + ': stage_remaining_state helper missing');
+  // Regression: an official artifact must be collected and screened before
+  // its apply step. Flemington previously ran during the Japan phase and
+  // failed every unified/near production refresh with ENOENT.
+  const flemingtonCollect = text.indexOf(
+    'node scripts/timetable/run-australia-victoria-flemington-2026-27-official-window.mjs',
+  );
+  const exclusions = text.indexOf('      - name: Enforce reviewed Calendar exclusions');
+  const flemingtonApply = text.indexOf('      - name: Apply Australia Victoria Flemington approved C dates');
+  const nonJapanApply = text.indexOf('      - name: Apply non-Japan official observations monotonically');
+  assert.ok(
+    flemingtonCollect >= 0 && exclusions > flemingtonCollect
+      && flemingtonApply > exclusions && nonJapanApply > flemingtonApply,
+    label + ': Flemington collection/exclusions must precede its one official apply step',
+  );
+  assert.equal(
+    text.split('      - name: Apply Australia Victoria Flemington approved C dates').length - 1,
+    1, label + ': Flemington apply step must occur exactly once',
+  );
+
   assert.match(text, /wait_for_main_quiet\(\)\s*\{/, label + ': wait_for_main_quiet helper missing');
   assert.match(text, /required_stable_seconds=600/, label + ': 10-minute main quiet gate missing');
   assert.match(text, /max_wait_seconds=1800/, label + ': bounded quiet wait missing');
