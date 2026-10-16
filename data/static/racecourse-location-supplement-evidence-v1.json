@@ -1,6 +1,6 @@
 {
   "schema_version": "racecourse-location-supplement-evidence-v1",
-  "reviewed_at": "2026-10-15",
+  "reviewed_at": "2026-10-16",
   "entries": [
     {
       "id": "abbeville-racecourse",
@@ -2605,6 +2605,96 @@
       "address_observed": "448 Epsom Road, Flemington VIC 3031, Australia",
       "coordinate_method": "OpenStreetMap physical racecourse footprint center, address independently confirmed by City of Melbourne.",
       "precision_note": "Approximate whole-venue map pin, not a specific entrance or a GPS track-survey measurement."
+    },
+    {
+      "id": "angers-racecourse",
+      "coordinate_source_url": "https://hippodrome-angers.fr/infos-pratiques.html",
+      "coordinate_observed": "47.496748, -0.505811",
+      "address_source_url": "https://hippodrome-angers.fr/infos-pratiques.html",
+      "address_observed": "Hippodrome d'Éventard, Chemin de la Chabolais, Écouflant, 49000, France",
+      "coordinate_method": "Official Angers-Écouflant Hippodrome access page explicitly publishes venue GPS coordinates 47.496748, -0.505811.",
+      "precision_note": "Reviewed approximate point for the physical racing venue; not claimed as surveyed track or entrance coordinates."
+    },
+    {
+      "id": "castelsarrasin-racecourse",
+      "coordinate_source_url": "https://mapcarta.com/W342541206",
+      "coordinate_observed": "44.05934, 1.09547",
+      "address_source_url": "https://www.ville-castelsarrasin.fr/culture-et-loisirs/associations-/-loisirs/sport",
+      "address_observed": "Hippodrome de Marchès, Castelsarrasin, 82100 Tarn-et-Garonne, France",
+      "coordinate_method": "OpenStreetMap physical Hippodrome de Marchès footprint, independently cross-checked against the Castelsarrasin town authority identifying the same active racing venue.",
+      "precision_note": "Reviewed approximate point for the physical racing venue; not claimed as surveyed track or entrance coordinates."
+    },
+    {
+      "id": "de-bordeaux-le-bouscat-racecourse",
+      "coordinate_source_url": "https://mapcarta.com/W22977565",
+      "coordinate_observed": "44.87113, -0.62546",
+      "address_source_url": "https://www.guide-bordeaux-gironde.com/fr/tourisme/se-divertir/pleine-nature/equitation/le-bouscat-67/hippodrome-bordeaux-le-bouscat-4591.html",
+      "address_observed": "Hippodrome de Bordeaux-Le Bouscat, 8 Avenue de l'Hippodrome, 33110 Le Bouscat, France",
+      "coordinate_method": "OpenStreetMap racecourse footprint reviewed against venue address and separate location-specific GPS listing.",
+      "precision_note": "Reviewed approximate point for the physical racing venue; not claimed as surveyed track or entrance coordinates."
+    },
+    {
+      "id": "de-castelsarrasin-racecourse",
+      "coordinate_source_url": "https://mapcarta.com/W342541206",
+      "coordinate_observed": "44.05934, 1.09547",
+      "address_source_url": "https://www.ville-castelsarrasin.fr/culture-et-loisirs/associations-/-loisirs/sport",
+      "address_observed": "Hippodrome de Marchès, Castelsarrasin, 82100 Tarn-et-Garonne, France",
+      "coordinate_method": "France Galop / LeTROT calendar alias of physical Hippodrome de Marchès at Castelsarrasin. Same venue coordinate intentionally used for the independently emitted alias.",
+      "precision_note": "Reviewed approximate point for the physical racing venue; not claimed as surveyed track or entrance coordinates."
+    },
+    {
+      "id": "divonne-les-bains-racecourse",
+      "coordinate_source_url": "https://mapcarta.com/W103927869",
+      "coordinate_observed": "46.35046, 6.15354",
+      "address_source_url": "https://www.ffgolf.org/parcours-detours/guide-des-golfs/golf-de-l-hippodrome",
+      "address_observed": "Hippodrome de Divonne-les-Bains, Route du Lac, 01220 Divonne-les-Bains, France",
+      "coordinate_method": "OSM specifically mapped Hippodrome de Divonne-les-Bains sports-venue footprint; nearby track-side golf venue identifies Route du Lac.",
+      "precision_note": "Reviewed approximate point for the physical racing venue; not claimed as surveyed track or entrance coordinates."
+    },
+    {
+      "id": "machecoul-racecourse",
+      "coordinate_source_url": "https://mapcarta.com/W1134818600",
+      "coordinate_observed": "46.99655, -1.83723",
+      "address_source_url": "https://www.verymap.net/sport/installations/I440870010/hippodrome-des-chaumes/",
+      "address_observed": "Hippodrome des Chaumes, Route de Bouin, 44270 Machecoul-Saint-Même, France",
+      "coordinate_method": "OSM horse-racing venue polygon verified against French Ministry of Sports listing for the Hippodrome des Chaumes racecourse and Route de Bouin locality.",
+      "precision_note": "Reviewed approximate point for the physical racing venue; not claimed as surveyed track or entrance coordinates."
+    },
+    {
+      "id": "maure-de-bretagne-racecourse",
+      "coordinate_source_url": "https://www.cirkwi.com/fr/point-interet/4235065-hippodrome-de-maure-de-bretagne",
+      "coordinate_observed": "47.8889198, -2.0205313",
+      "address_source_url": "https://www.cirkwi.com/fr/point-interet/4235065-hippodrome-de-maure-de-bretagne",
+      "address_observed": "Hippodrome de Maure-de-Bretagne, 110 Les Bruyères, 35330 Val d'Anast, France",
+      "coordinate_method": "Venue-specific tourism syndicate listing with explicitly published GPS, venue description and current 2026 horse-racing dates.",
+      "precision_note": "Reviewed approximate point for the physical racing venue; not claimed as surveyed track or entrance coordinates."
+    },
+    {
+      "id": "saumur-racecourse",
+      "coordinate_source_url": "https://www.hippodromedesaumur.fr/infos-pratiques/",
+      "coordinate_observed": "47.249338, -0.166623",
+      "address_source_url": "https://www.hippodromedesaumur.fr/infos-pratiques/",
+      "address_observed": "Hippodrome de Saumur, Verrie, 49400 Saumur, France",
+      "coordinate_method": "Racecourse operator explicitly publishes GPS 47.249338, -0.166623. Not silently replaced by separate regional tourism centroid north in Verrie.",
+      "precision_note": "Reviewed approximate point for the physical racing venue; not claimed as surveyed track or entrance coordinates."
+    },
+    {
+      "id": "tarbes-racecourse",
+      "coordinate_source_url": "https://www.cartes-2-france.com/sport/E001I652510009/hippodrome-de-laloubere-a-laloubere.php",
+      "coordinate_observed": "43.20303, 0.06603",
+      "address_source_url": "https://www.cartes-2-france.com/sport/E001I652510009/hippodrome-de-laloubere-a-laloubere.php",
+      "address_observed": "Hippodrome de Laloubère, 2 Rue du Grand Vert, 65310 Laloubère, France",
+      "coordinate_method": "French national sports facility inventory listing for Hippodrome de Laloubère (Data ES E001I652510009); racecourse linked to Tarbes calendar name, not the adjacent aerodrome.",
+      "precision_note": "Reviewed approximate point for the physical racing venue; not claimed as surveyed track or entrance coordinates."
+    },
+    {
+      "id": "windsor-racecourse",
+      "coordinate_source_url": "https://mapcarta.com/29103316",
+      "coordinate_observed": "51.4905, -0.6313",
+      "address_source_url": "https://www.windsor-racecourse.co.uk/raceday-experience/racecourse-map",
+      "address_observed": "Royal Windsor Racecourse, Maidenhead Road, Windsor, Berkshire SL4 5JJ, United Kingdom",
+      "coordinate_method": "GeoNames/Wikidata mapped physical Windsor Racecourse venue, cross-checked with racecourse operator's official Maidenhead Road venue address.",
+      "precision_note": "Reviewed approximate point for the physical racing venue; not claimed as surveyed track or entrance coordinates."
     }
   ]
 }
