@@ -1,0 +1,25 @@
+name: Calendar Australia Flemington refresh-order contract
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-unified-official-refresh.yml'
+      - '.github/workflows/calendar-near-official-refresh.yml'
+      - '.github/workflows/calendar-australia-flemington-order-contract.yml'
+      - 'scripts/check-calendar-australia-refresh-order.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node scripts/check-calendar-australia-refresh-order.mjs
+      - run: node scripts/check-calendar-unified-audit-coverage.mjs
