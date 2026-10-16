@@ -118,6 +118,17 @@ const calendarMapRegressionIds = [
   'paray-le-monial-racecourse',
   'rambouillet-racecourse',
   'la-roche-posay-racecourse',
+  // Official FR/UK rolling venues confirmed 2026-10-16; guard even after date rolls out
+  'angers-racecourse',
+  'castelsarrasin-racecourse',
+  'de-bordeaux-le-bouscat-racecourse',
+  'de-castelsarrasin-racecourse',
+  'divonne-les-bains-racecourse',
+  'machecoul-racecourse',
+  'maure-de-bretagne-racecourse',
+  'saumur-racecourse',
+  'tarbes-racecourse',
+  'windsor-racecourse',
   // Rolling Calendar geolocation regressions (2026-10-14)
   'chartres-racecourse',
   'finland--rovaniemi',
