@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-non-running-evidence-registry-v1",
-  "reviewed_at": "2026-10-15",
+  "reviewed_at": "2026-10-17",
   "records": [
     {
       "record_id": "japan-jra-system",
@@ -1593,6 +1593,27 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-10-15",
       "notes": "The 21 scheduled 2026-27 Flemington dates are approved dates only; missing source/403/parser failure does not establish cancellation or postponement."
+    },
+    {
+      "record_id": "australia-nsw-atc-thoroughbred-system",
+      "country_id": "australia",
+      "system_id": "australia-nsw-atc-thoroughbred-system",
+      "authority_id": "australian-turf-club",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Australian Turf Club 2026-27 positively approved venue dates only; no independent cancellation or postponement integration.",
+      "evidence_urls": [
+        "https://cdn.australianturfclub.com.au/app/uploads/2026/07/2026-27-Australian-Turf-Club-Fixture-Card.pdf"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-10-17",
+      "notes": "Source-visible approved ATC racing date facts only. Publication/absence/fetch failures cannot establish an actual meeting occurred or was cancelled; always preserve verified state."
     }
   ]
 }
