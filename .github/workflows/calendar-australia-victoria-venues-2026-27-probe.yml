@@ -5,6 +5,8 @@ on:
     paths:
       - '.github/workflows/calendar-australia-victoria-venues-2026-27-probe.yml'
       - 'scripts/timetable/probe-australia-victoria-venues-2026-27.mjs'
+      - 'scripts/timetable/australia-victoria-mrc-2026-27-core.mjs'
+      - 'scripts/timetable/run-australia-victoria-mrc-2026-27-official-window.mjs'
   workflow_dispatch:
 
 permissions:
@@ -21,3 +23,5 @@ jobs:
           node-version: '22'
       - run: npm install --no-package-lock --no-audit --no-fund
       - run: node scripts/timetable/probe-australia-victoria-venues-2026-27.mjs
+      - run: node scripts/timetable/run-australia-victoria-mrc-2026-27-official-window.mjs --as-of=2026-10-17 --days=30 --output=/tmp/vic-mrc.json
+      - run: node --input-type=module -e "import fs from 'node:fs';const a=JSON.parse(fs.readFileSync('/tmp/vic-mrc.json','utf8'));if(a.acquisition_attempt.status!=='success'||a.discovery.approved_mrc_season_rows!==78||a.discovery.physical_venues.length!==3)throw Error(JSON.stringify(a.diagnostics));console.log('RV_MRC_PARSED_PASS',a.records.length,JSON.stringify(a.discovery.venue_breakdown))"
