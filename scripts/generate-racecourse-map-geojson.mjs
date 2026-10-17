@@ -131,6 +131,7 @@ const calendarMapRegressionIds = [
   'windsor-racecourse',
   // Rolling Calendar geolocation regressions (2026-10-14)
   'chartres-racecourse',
+  'cherbourg-racecourse',
   'finland--rovaniemi',
   'taunton-racecourse',
   // South Korea (4)
