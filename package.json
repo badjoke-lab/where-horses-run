@@ -127,7 +127,8 @@
     "validate:canada-ontario-three-agco": "node --check scripts/timetable/canada-ontario-three-agco-2026-core.mjs && node --check scripts/timetable/run-canada-ontario-three-agco-2026-window.mjs",
     "validate:canada-alberta-hra": "node --check scripts/timetable/canada-alberta-hra-2026-core.mjs && node --check scripts/timetable/run-canada-alberta-hra-official-window.mjs && node scripts/check-canada-alberta-hra-adapter.mjs",
     "validate:argentina-la-plata-2026": "node --check scripts/timetable/argentina-la-plata-2026-core.mjs && node --check scripts/timetable/run-argentina-la-plata-2026-official-window.mjs && node scripts/check-argentina-la-plata-2026-adapter.mjs",
-    "validate:australia-victoria-flemington-2026-27": "node --check scripts/timetable/australia-victoria-flemington-2026-27-core.mjs && node --check scripts/timetable/run-australia-victoria-flemington-2026-27-official-window.mjs && node scripts/check-australia-victoria-flemington-2026-27-adapter.mjs"
+    "validate:australia-victoria-flemington-2026-27": "node --check scripts/timetable/australia-victoria-flemington-2026-27-core.mjs && node --check scripts/timetable/run-australia-victoria-flemington-2026-27-official-window.mjs && node scripts/check-australia-victoria-flemington-2026-27-adapter.mjs",
+    "validate:australia-nsw-atc-2026-27": "node --check scripts/timetable/australia-nsw-atc-2026-27-core.mjs && node --check scripts/timetable/run-australia-nsw-atc-2026-27-official-window.mjs && node scripts/check-australia-nsw-atc-2026-27-adapter.mjs"
   },
   "dependencies": {
     "astro": "^6.0.0",
