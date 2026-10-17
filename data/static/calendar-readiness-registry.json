@@ -6,7 +6,7 @@
   "programme_state": {
     "country_target": 98,
     "countries_with_closed_decision": 98,
-    "readiness_records": 139,
+    "readiness_records": 140,
     "next_backfill_work_ids": []
   },
   "records": [
@@ -6499,7 +6499,60 @@
         "2027-28 requires an independently published official timetable; do not extrapolate."
       ],
       "notes": "Racing Victoria's released final 2026-27 date PDF is 14 pages, contains 21 Flemington fixture dates, and has five Flemington fixtures in 2026-10-15 through 2026-11-13."
+    },
+    {
+      "readiness_id": "australia--australia-nsw-atc-thoroughbred-system--australian-turf-club-2026-27-official-fixture-card",
+      "country_id": "australia",
+      "country_tracker_delivery_no": "31",
+      "system_id": "australia-nsw-atc-thoroughbred-system",
+      "system_name_en": "Australian Turf Club NSW 2026–27 Thoroughbred-flat (four venues)",
+      "authority_source_key": "australia/australian-turf-club/australian-turf-club-2026-27-official-fixture-card",
+      "racecourse_ids": [
+        "australia--royal-randwick-racecourse",
+        "australia--rosehill-gardens-racecourse",
+        "australia--canterbury-park-racecourse",
+        "australia--warwick-farm-racecourse"
+      ],
+      "coverage_scope": "multi_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "pdf",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "daily",
+        "near_meeting",
+        "weekly"
+      ],
+      "readiness": "ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
+      "checked_date": "2026-10-17",
+      "evidence_reviewed_at": "2026-10-17",
+      "revalidation_trigger": "Racing NSW or Australian Turf Club date/venue amendment, 2027-28 season, source/access/rights change",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/31-australia/nsw-atc-2026-27-approved.json",
+      "limitations": [
+        "Partial Australia: only Australian Turf Club 2026-27 Thoroughbred racing dates at four physical Sydney venues, not other NSW operators, codes or Australia-wide.",
+        "107 ATC source-published racing dates; 2 separate provincial races in ATC fixture are excluded.",
+        "Kensington course is at physical Royal Randwick and never counted as a fifth physical venue.",
+        "Fixture is subject to Racing NSW changes; no real-world completion or cancellation proof.",
+        "No first race time, racebook data, source PDF redistribution or 2027-28 inference."
+      ],
+      "notes": "Live Actions 2026-10-17: official ATC 2-page 5,078,966-byte 2026-27 PDF yielded 109 2026-27 source dated entries, 107 scoped ATC venues, 4 physical racecourses, 9 dates from 2026-10-17 to 2026-11-15."
     }
   ],
-  "last_updated": "2026-10-15"
+  "last_updated": "2026-10-17"
 }
