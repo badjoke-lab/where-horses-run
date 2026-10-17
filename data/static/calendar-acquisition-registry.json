@@ -1889,6 +1889,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Racing Victoria's publicly released 2026-27 final season schedule (528 Victorian races meetings) has 21 approved Flemington Thoroughbred dates. Single racecourse/one code only, normalized date and physical venue facts, grade C, no original PDF / racebook / times or 2027-28 inference. Do not use Racing Australia aggregator nor VRC-restricted page as input. Failed fetch preserves verified state, not cancellation."
+    },
+    {
+      "system_id": "australia-nsw-atc-thoroughbred-system",
+      "country_id": "australia",
+      "authority_id": "australian-turf-club",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "australian-turf-club-2026-27-official-fixture-card",
+      "detail_source_id": "australian-turf-club-2026-27-official-fixture-card",
+      "schedule_adapter_id": "australia-nsw-atc-2026-27-official-fixture-pdf-v1",
+      "detail_adapter_id": "australia-nsw-atc-2026-27-official-fixture-pdf-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Australian Turf Club official 2026-27 approved PDF supplies 107 dated ATC racing fixtures, 4 normalized physical venues (Kensington course within Randwick). One ATC Thoroughbred source, grade C date/venue only; two provincial race days explicitly excluded. 2027-28 unverified. Public factual subset only, no original fixture PDF/racebook, no Racing Australia aggregate. ATC web event page HTTP 429 on Actions; approved PDF served directly by ATC CDN HTTP 200 without bypass. Failure preserves last known good, not cancellation."
     }
   ]
 }
