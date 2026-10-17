@@ -1,0 +1,47 @@
+{
+  "schema_version": "calendar-source-test-summary-v1",
+  "country_id": "australia",
+  "region": "New South Wales",
+  "source_id": "australian-turf-club-2026-27-official-fixture-card",
+  "authority_id": "australian-turf-club",
+  "racing_system_id": "australia-nsw-atc-thoroughbred-system",
+  "source_url": "https://cdn.australianturfclub.com.au/app/uploads/2026/07/2026-27-Australian-Turf-Club-Fixture-Card.pdf",
+  "source_release_url": "https://www.australianturfclub.com.au/races/",
+  "source_checked_date": "2026-10-17",
+  "live_action_probe": "https://github.com/badjoke-lab/where-horses-run/actions/runs/39036349908",
+  "source_access": {
+    "atc_races_html_http": 429,
+    "atc_cdn_official_fixture_http": 200,
+    "atc_robots_http": 200,
+    "robots_review_note": "Robots.txt disallows WP admin/login and does not list the ATC 2026-27 fixture PDF path; absence of a robots prohibition is not a redistribution license",
+    "pdf_page_count": 2,
+    "pdf_bytes": 5078966
+  },
+  "calendar_scope": {
+    "source_dated_rows": 109,
+    "normalized_atc_physical_site_rows": 107,
+    "excluded_provincial_rows": 2,
+    "source_months": 12,
+    "physical_venues": [
+      "Royal Randwick",
+      "Rosehill Gardens",
+      "Canterbury Park",
+      "Warwick Farm"
+    ],
+    "course_same_site_note": "Kensington is explicitly listed as located at Royal Randwick and normalized to Royal Randwick physical site",
+    "source_window": {
+      "start_date": "2026-10-17",
+      "end_date_exclusive": "2026-11-16",
+      "meetings": 9
+    }
+  },
+  "capability_rank": "C",
+  "data_rights_handling": "Only individual normalized source-visible current approved fixture dates and physical venue facts; no source PDF, design/layout, original fixture body, race names, images, or race-level data republished. Source access is not treated as affirmative licensed wholesale data reuse. Any broader data extract or site content reuse requires a separate rights decision.",
+  "limitations": [
+    "The 2026-27 schedule is subject to Racing NSW changes and cannot establish actual running, cancellation or postponement.",
+    "No first post time can be derived from official ATC date/venue card.",
+    "ATC-runner scope is not New South Wales statewide or all-Australia completeness.",
+    "The two provincial venue entries are excluded from ATC production records.",
+    "The 2027-28 season needs an independently published schedule; never infer fixture dates."
+  ]
+}
