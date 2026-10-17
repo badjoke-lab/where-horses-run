@@ -1,0 +1,23 @@
+name: Calendar Australia NSW ATC 2026-27 official fixture probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-australia-nsw-atc-2026-27-probe.yml'
+      - 'scripts/timetable/probe-australia-nsw-atc-2026-27.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  atc-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - run: node scripts/timetable/probe-australia-nsw-atc-2026-27.mjs
