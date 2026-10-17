@@ -1,6 +1,6 @@
 {
   "schema_version": "racecourse-location-supplement-evidence-v1",
-  "reviewed_at": "2026-10-16",
+  "reviewed_at": "2026-10-17",
   "entries": [
     {
       "id": "abbeville-racecourse",
@@ -2695,6 +2695,24 @@
       "address_observed": "Royal Windsor Racecourse, Maidenhead Road, Windsor, Berkshire SL4 5JJ, United Kingdom",
       "coordinate_method": "GeoNames/Wikidata mapped physical Windsor Racecourse venue, cross-checked with racecourse operator's official Maidenhead Road venue address.",
       "precision_note": "Reviewed approximate point for the physical racing venue; not claimed as surveyed track or entrance coordinates."
+    },
+    {
+      "id": "cherbourg-racecourse",
+      "coordinate_source_url": "https://fr-fr.trails-viewer.com/trail-f9cs8/1-R4C-2026-trail-10km/",
+      "coordinate_observed": "49.60508, -1.60204",
+      "address_source_url": "https://www.hippodrome-laglacerie.com/contact-hippodrome-la-glacerie-societe-des-courses-restaurant-gastronomique-panoramique-cherbourg-manche-2/",
+      "address_observed": "200 rue de l'Hippodrome, 50470 Cherbourg-en-Cotentin (La Glacerie), France",
+      "coordinate_method": "Published 2026 route start point explicitly named Hippodrome de La Glacerie cross-checked with the venue operator's published address",
+      "precision_note": "Racecourse entrance/edge point near the official Cherbourg (La Glacerie) venue; not surveyed track centroid."
+    },
+    {
+      "id": "waipukurau-racecourse",
+      "coordinate_source_url": "https://www.epa.govt.nz/assets/FileAPI/proposal/NSP000028/Hearings-Week-04/a117ba5ef7/15-Christopher-Keenan-Summary-of-Evidence-Table-1-and-Table-2.pdf",
+      "coordinate_observed": "NZTM2000 EPSG:2193 1902078.863E, 5565593.186N -> WGS84 -40.00584087, 176.53880042",
+      "address_source_url": "https://loveracing.nz/RaceInfo/Clubs-And-Courses/16/62/Course.aspx",
+      "address_observed": "Waipukurau Racecourse, Racecourse Road, Waipukurau, Hawke's Bay, New Zealand; government land records: 218 Racecourse Road",
+      "coordinate_method": "NZ government EPA water consent Table 2, page 8 (PDF page index 7), record WP030717T, explicitly identifies Waipukurau Jockey Club Inc at Racecourse Road and bore 2704 NZTM2000 coordinate. Transformed EPSG:2193 to WGS84 with standard CRS conversion. Matched physical venue identity and address to NZTR official course page and Central Hawke's Bay District Council planning evidence.",
+      "precision_note": "Verified Jockey Club on-site bore/property point; not claimed as grandstand, gate, or track centroid. Independent land/site coordinate, used as venue-level pin."
     }
   ]
 }
