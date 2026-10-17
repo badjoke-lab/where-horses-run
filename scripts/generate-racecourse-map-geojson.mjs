@@ -130,6 +130,9 @@ const calendarMapRegressionIds = [
   'tarbes-racecourse',
   'windsor-racecourse',
   // Rolling Calendar geolocation regressions (2026-10-14)
+  // New venue IDs exposed by France/NZ rolling refreshes (2026-10-17)
+  'cherbourg-racecourse',
+  'waipukurau-racecourse',
   'chartres-racecourse',
   'finland--rovaniemi',
   'taunton-racecourse',
