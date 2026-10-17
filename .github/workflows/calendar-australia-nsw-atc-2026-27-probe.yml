@@ -5,6 +5,8 @@ on:
     paths:
       - '.github/workflows/calendar-australia-nsw-atc-2026-27-probe.yml'
       - 'scripts/timetable/probe-australia-nsw-atc-2026-27.mjs'
+      - 'scripts/timetable/australia-nsw-atc-2026-27-core.mjs'
+      - 'scripts/timetable/run-australia-nsw-atc-2026-27-official-window.mjs'
   workflow_dispatch:
 
 permissions:
@@ -21,3 +23,5 @@ jobs:
           node-version: '22'
       - run: npm install --no-package-lock --no-audit --no-fund
       - run: node scripts/timetable/probe-australia-nsw-atc-2026-27.mjs
+      - run: node scripts/timetable/run-australia-nsw-atc-2026-27-official-window.mjs --as-of=2026-10-17 --days=30 --output=/tmp/atc-nsw.json
+      - run: node --input-type=module -e "import fs from 'node:fs';const a=JSON.parse(fs.readFileSync('/tmp/atc-nsw.json','utf8'));if(a.acquisition_attempt.status!=='success')throw Error(JSON.stringify(a.diagnostics));console.log('ATC_NSW_PARSED_PASS',a.discovery.approved_atc_dates,a.records.length,JSON.stringify(a.discovery.source_month_counts))"
