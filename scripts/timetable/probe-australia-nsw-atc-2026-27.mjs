@@ -9,7 +9,7 @@ for(const [name,url,allow] of [['atc-calendar',home,['www.australianturfclub.com
  if(!r.ok){console.log('ATC_PROBE '+JSON.stringify({name,http:r.status}));continue}
  if(!allow.includes(new URL(r.url).hostname))throw Error('Unreviewed redirect host');
  if(name==='atc-fixture-pdf'){
-  const data=new Uint8Array(await r.arrayBuffer());if(data.length>2500000||new TextDecoder().decode(data.slice(0,5))!=='%PDF-')throw Error('PDF guard');
+  const data=new Uint8Array(await r.arrayBuffer());if(data.length>15000000||new TextDecoder().decode(data.slice(0,5))!=='%PDF-')throw Error('PDF guard bytes='+data.length+' content-type='+r.headers.get('content-type')+' head='+new TextDecoder().decode(data.slice(0,15)).replace(/[^a-zA-Z0-9\x20-\x7e]/g,'.'));
   const doc=await getDocument({data,disableWorker:true}).promise;
   const pages=[];for(let i=1;i<=doc.numPages;i++){const t=await(await doc.getPage(i)).getTextContent();pages.push(t.items.map(x=>String(x.str??'')));}
   const first=pages[0];const txt=first.join(' | ');
