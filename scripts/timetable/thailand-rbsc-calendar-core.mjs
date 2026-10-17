@@ -35,6 +35,42 @@ const pad=v=>String(Number(v)).padStart(2,'0');
 export function parseRbscRacingCalendarPage(html,{sourceUrl=THAILAND_SOURCE_URL}={}){
   if(typeof html!=='string'||!html.trim()) throw new Error('RBSC racing HTML must be non-empty');
   const text=visibleText(html);
+  // RBSC replaced the full-year "RACING CALENDAR 2026" block with a
+  // rolling "UPCOMING RACE DAYS" list on its official racing page.
+  // Parse only dated month sections before FEATURE RACES/CONTACT; do not
+  // interpret general racing hours, feature-race notices, or race cards as
+  // additional meeting observations.
+  const upcomingStart=text.search(/\bUPCOMING\s+RACE\s+DAYS\b/i);
+  if(upcomingStart>=0){
+    const tail=text.slice(upcomingStart);
+    const boundary=tail.search(/\b(?:FEATURE\s+RACES|CONTACT|RACE\s+CARD)\b/i);
+    if(boundary<0) throw new Error('RBSC upcoming race-days end boundary missing');
+    const block=tail.slice(0,boundary);
+    const monthRx=/\b(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)\s+(20\d{2})\s*[-–—:]?/gi;
+    const sections=[...block.matchAll(monthRx)];
+    if(!sections.length) throw new Error('RBSC upcoming race-days month/year sections missing');
+    const rows=[];
+    for(let i=0;i<sections.length;i++){
+      const entry=sections[i];
+      const year=Number(entry[2]);
+      const month=MONTHS[entry[1].toLowerCase()];
+      const section=block.slice(entry.index+entry[0].length,sections[i+1]?.index??block.length);
+      const days=[...section.matchAll(/\b(?:MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY|SUNDAY)\s*,?\s*(\d{1,2})\b|(?:&|,)\s*(\d{1,2})\b/gi)];
+      for(const hit of days){
+        const day=Number(hit[1]??hit[2]);
+        if(day<1||day>31) continue;
+        const date=year+'-'+month+'-'+pad(day);
+        if(new Date(Date.UTC(year,Number(month)-1,day)).toISOString().slice(0,10)!==date) continue;
+        rows.push({
+          date,racecourse_id:THAILAND_RACECOURSE_ID,
+          venue_name:'The Royal Bangkok Sports Club Racecourse',source_url:sourceUrl,
+        });
+      }
+    }
+    const out=[...new Map(rows.map(row=>[row.date,row])).values()].sort((a,b)=>a.date.localeCompare(b.date));
+    if(!out.length) throw new Error('RBSC upcoming race-days block contains no parseable meeting dates');
+    return out;
+  }
   const start=text.search(/RACING\s+CALENDAR\s+2026/i);
   if(start<0) throw new Error('RBSC 2026 racing-calendar fingerprint missing');
   const tail=text.slice(start);
