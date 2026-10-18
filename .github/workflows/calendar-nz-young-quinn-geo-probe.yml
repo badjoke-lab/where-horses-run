@@ -1,0 +1,42 @@
+name: Temporary Young Quinn racecourse geolocation probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-nz-young-quinn-geo-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Query bounded, read-only OSM place records
+        shell: python
+        run: |
+          import json, time, urllib.parse, urllib.request
+          queries = [
+              'Young Quinn Raceway, Wyndham, Southland, New Zealand',
+              'Wyndham Racecourse, Wyndham, Southland, New Zealand',
+              'Wyndham Golf Club, Wyndham, Southland, New Zealand'
+          ]
+          for i, q in enumerate(queries):
+              if i: time.sleep(1.5)
+              params = urllib.parse.urlencode({'q': q, 'format': 'jsonv2', 'limit': '3', 'countrycodes': 'nz', 'addressdetails': '1'})
+              req = urllib.request.Request(
+                  'https://nominatim.openstreetmap.org/search?' + params,
+                  headers={'User-Agent': 'WhereHorsesRun/1.0 (+https://whr.badjoke-lab.com/)', 'Accept': 'application/json'})
+              try:
+                  with urllib.request.urlopen(req, timeout=12) as response:
+                      data = json.loads(response.read(16000))
+                  observations = [{'lat': r.get('lat'), 'lon': r.get('lon'), 'name': r.get('name'),
+                                   'display_name': r.get('display_name'), 'osm_type': r.get('osm_type'),
+                                   'osm_id': r.get('osm_id'), 'category': r.get('category'),
+                                   'type': r.get('type')} for r in data[:3]]
+                  print(json.dumps({'query': q, 'observations': observations}, ensure_ascii=False))
+              except Exception as exc:
+                  print(json.dumps({'query': q, 'error': str(exc)}, ensure_ascii=False))
