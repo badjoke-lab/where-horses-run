@@ -1,6 +1,6 @@
 {
   "schema_version": "racecourse-location-supplement-evidence-v1",
-  "reviewed_at": "2026-10-17",
+  "reviewed_at": "2026-10-18",
   "entries": [
     {
       "id": "abbeville-racecourse",
@@ -2713,6 +2713,15 @@
       "address_observed": "Waipukurau Racecourse, Racecourse Road, Waipukurau, Hawke's Bay, New Zealand; government land records: 218 Racecourse Road",
       "coordinate_method": "NZ government EPA water consent Table 2, page 8 (PDF page index 7), record WP030717T, explicitly identifies Waipukurau Jockey Club Inc at Racecourse Road and bore 2704 NZTM2000 coordinate. Transformed EPSG:2193 to WGS84 with standard CRS conversion. Matched physical venue identity and address to NZTR official course page and Central Hawke's Bay District Council planning evidence.",
       "precision_note": "Verified Jockey Club on-site bore/property point; not claimed as grandstand, gate, or track centroid. Independent land/site coordinate, used as venue-level pin."
+    },
+    {
+      "id": "young-quinn-raceway",
+      "coordinate_source_url": "https://www.openstreetmap.org/relation/13337299",
+      "coordinate_observed": "Nominatim OSM relation 13337299; leisure=track; named Young Quinn Raceway; -46.3199695, 168.8508065",
+      "address_source_url": "https://southernharness.co.nz/tracks/young-quinn-raceway-wyndham",
+      "address_observed": "Wyndham Racecourse is home to Wyndham Harness Racing Club; first-party HRNZ 15 Nov 2026 programme explicitly names Young Quinn Raceway, Wyndham. Nominatim relation is addressed Memorial Drive, Wyndham, Southland 9831, NZ.",
+      "coordinate_method": "One-time read-only OSM Nominatim exact-name and NZ-country-filtered lookup run in GitHub Actions #39110729438 on 2026-10-18. Returned named raceway relation 13337299 with leisure=track and coordinates (-46.3199695, 168.8508065). Distinct golf-course way 83596572 was observed at (-46.3201259, 168.8518842). Cross-checked physical venue identity with Southern Harness Racing official operator and HRNZ 2026-11-15 programme (https://infohorse.hrnz.co.nz/datahrs/programmes/2026111553pg-01.htm). OpenStreetMap contributors, ODbL.",
+      "precision_note": "Mapped raceway/track relation point; not represented as surveyed grandstand or gate. Not a Wyndham town-centre point, golf club, club office, or the Southern Harness Racing Invercargill contact address."
     }
   ]
 }
