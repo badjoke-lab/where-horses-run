@@ -23,6 +23,7 @@ const MONTHS = Object.freeze({
 });
 
 const VENUE_ALIASES = Object.freeze({
+  'young-quinn-raceway':'young-quinn-raceway',
   'arawa-park':'arawa-park-racecourse',
   'ascot-park':'ascot-park-racecourse',
   'ashburton':'ashburton-racecourse',
