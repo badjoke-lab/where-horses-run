@@ -133,6 +133,8 @@ const calendarMapRegressionIds = [
   // New venue IDs exposed by France/NZ rolling refreshes (2026-10-17)
   'cherbourg-racecourse',
   'waipukurau-racecourse',
+  // New Zealand Harness physical venue (HRNZ Nov 15 Wyndham HRC)
+  'young-quinn-raceway',
   'chartres-racecourse',
   'finland--rovaniemi',
   'taunton-racecourse',

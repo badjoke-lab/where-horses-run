@@ -102,6 +102,22 @@ assert.deepEqual(
   ],
 );
 
+// Wyndham HRC operates at multiple sites; only the 15 November 2026 HRNZ
+// programme identifies Young Quinn Raceway. The 1 October fixture remains Gore.
+const wyndham2026=parseHrnzFinalCalendarItems([
+  {page:1,page_width:pageWidth,str:'1-Oct',x:474.36,y:763.8},
+  {page:1,page_width:pageWidth,str:'Wyndham HRC(x10) 2:00pm',x:350.64,y:726.72},
+  {page:2,page_width:pageWidth,str:'15-Nov',x:474.36,y:763.8},
+  {page:2,page_width:pageWidth,str:'Wyndham HRC(x10) 12:00pm',x:350.64,y:726.72},
+],{seasonStartYear:2026,sourceUrl:HRNZ_FINAL_CALENDAR_URL});
+assert.deepEqual(wyndham2026.unknown_venues,[]);
+assert.deepEqual(wyndham2026.records.map(row=>[
+  row.date,row.racecourse_id,row.first_race_time_local
+]),[
+  ['2026-10-01','gore-raceway','14:00'],
+  ['2026-11-15','young-quinn-raceway','12:00'],
+]);
+
 const checkedAt='2026-09-23T00:00:00Z';
 const fixture=buildNztrFixtureRecord(schedule[0],{checkedAt,programmeUrl:landing.programme_url});
 assert.equal(fixture.capability_rank,'C');
