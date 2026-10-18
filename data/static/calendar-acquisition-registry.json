@@ -1889,6 +1889,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Racing Victoria's publicly released 2026-27 final season schedule (528 Victorian races meetings) has 21 approved Flemington Thoroughbred dates. Single racecourse/one code only, normalized date and physical venue facts, grade C, no original PDF / racebook / times or 2027-28 inference. Do not use Racing Australia aggregator nor VRC-restricted page as input. Failed fetch preserves verified state, not cancellation."
+    },
+    {
+      "system_id": "australia-victoria-mrc-thoroughbred-system",
+      "country_id": "australia",
+      "authority_id": "racing-victoria",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "racing-victoria-mrc-2026-27-approved-race-dates",
+      "detail_source_id": "racing-victoria-mrc-2026-27-approved-race-dates",
+      "schedule_adapter_id": "australia-victoria-mrc-2026-27-approved-pdf-v1",
+      "detail_adapter_id": "australia-victoria-mrc-2026-27-approved-pdf-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Racing Victoria official 2026-27 approved source has 78 venue/date fixture lines: Caulfield 19 and Caulfield Heath 14 at the same physical venue, Sandown 28, Mornington 17. Three physical racecourses, C-only, no post time/race details/actual-running extrapolation. Independent from MRC, ATC and Racing Australia access rights; fetch failure preserves last verified state."
     }
   ]
 }

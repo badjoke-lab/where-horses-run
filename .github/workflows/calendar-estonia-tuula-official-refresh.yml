@@ -57,7 +57,7 @@ jobs:
         run: |
           mkdir -p .calendar-estonia
           node scripts/timetable/run-estonia-tuula-official-window.mjs --days=90 --output=.calendar-estonia/estonia.json
-          node -e "const fs=require('fs');const a=JSON.parse(fs.readFileSync('.calendar-estonia/estonia.json','utf8'));if(a.acquisition_attempt?.status!=='success'||(a.diagnostics?.source_errors?.length??0)!==0||(a.diagnostics?.parse_failures?.length??0)!==0||(a.records?.length??0)<1){console.error(JSON.stringify({attempt:a.acquisition_attempt,discovery:a.discovery,diagnostics:a.diagnostics,records:a.records?.length??0}));process.exit(1)}"
+          node -e "const fs=require('fs');const a=JSON.parse(fs.readFileSync('.calendar-estonia/estonia.json','utf8'));if(a.acquisition_attempt?.status!=='success'||(a.diagnostics?.source_errors?.length??0)!==0||(a.diagnostics?.parse_failures?.length??0)!==0||(a.discovery?.source_visible_rows??0)<1||(a.discovery?.positive_rows??0)<1){console.error(JSON.stringify({attempt:a.acquisition_attempt,discovery:a.discovery,diagnostics:a.diagnostics,records:a.records?.length??0}));process.exit(1)}"
           node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-estonia/estonia.json --country-id=estonia --authority-id=estonian-trotting-union --racing-system-id=tuula-trotting-system --timezone=Europe/Tallinn
           node scripts/check-calendar-public-country-support.mjs
           node scripts/check-calendar-public-map-parity.mjs
