@@ -23,6 +23,7 @@ const MONTHS = Object.freeze({
 });
 
 const VENUE_ALIASES = Object.freeze({
+  'young-quinn-raceway':'young-quinn-raceway',
   'arawa-park':'arawa-park-racecourse',
   'ascot-park':'ascot-park-racecourse',
   'ashburton':'ashburton-racecourse',
@@ -223,6 +224,9 @@ const HRNZ_FALLBACK_CLUB_VENUES = Object.freeze({
 
 const HRNZ_FALLBACK_DATE_VENUES = Object.freeze({
   '2026-10-01/wyndham-hrc':'Gore Raceway',
+  // 15 Nov 2026: HRNZ's date-specific tentative programme names Young Quinn Raceway.
+  // Do not map Wyndham HRC globally: its 1 Oct 2026 meeting is at Gore Raceway.
+  '2026-11-15/wyndham-hrc':'Young Quinn Raceway',
   '2026-10-11/akaroa-tc':'Mt Harding Racecourse',
 });
 
