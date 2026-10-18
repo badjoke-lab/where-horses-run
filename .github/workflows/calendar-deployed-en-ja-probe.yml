@@ -1,0 +1,64 @@
+name: One-time WHR deployed EN/JA Calendar probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-deployed-en-ja-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Bounded read-only probe of deployed Cloudflare pages and JSON candidates
+        shell: python
+        run: |
+          import json, re, urllib.request, urllib.error
+          root='https://whr.badjoke-lab.com'
+          paths=[
+            '/calendar/?date=2026-10-25',
+            '/ja/calendar/?date=2026-10-25',
+            '/data/meeting-list.json',
+            '/data/timetable/meeting-list.json',
+            '/data/calendar/meeting-list.json',
+            '/data/timetable/public/meeting-list.json',
+            '/data/generated/timetable/public/meeting-list.json',
+          ]
+          results=[]
+          for path in paths:
+            req=urllib.request.Request(root+path,headers={
+              'User-Agent':'WhereHorsesRun-verification/1.0 (+https://whr.badjoke-lab.com/)',
+              'Accept':'text/html,application/json;q=0.9,*/*;q=0.2'
+            })
+            try:
+              with urllib.request.urlopen(req,timeout=18) as r:
+                body=r.read(4000000)
+                status=r.status
+                url=r.url
+                ct=r.headers.get('Content-Type','')
+              s=body.decode('utf-8',errors='replace')
+              o={'path':path,'status':status,'content_type':ct,'bytes':len(body),
+                 'final_url':url,'thailand_marker':('thailand-rbsc-2026-10-25' in s),
+                 'young_quinn_marker':('young-quinn-raceway' in s),
+                 'astro_marker':('astro' in s.lower()),
+                 'calendar_label':('calendar' in s.lower())}
+              if 'json' in ct.lower() and len(body)<4000000:
+                try:
+                  j=json.loads(s)
+                  rows=j.get('meetings',[]) if isinstance(j,dict) else []
+                  o.update({'schema_version':j.get('schema_version') if isinstance(j,dict) else None,
+                            'generated_at':j.get('generated_at') if isinstance(j,dict) else None,
+                            'count':len(rows),
+                            'thailand_2026_10_25':any(x.get('meeting_id')=='thailand-rbsc-2026-10-25' for x in rows),
+                            'young_quinn_2026_11_15':any(x.get('racecourse_id')=='young-quinn-raceway' and x.get('date')=='2026-11-15' for x in rows)})
+                except Exception as e: o['json_parse_error']=str(e)[:200]
+              results.append(o)
+            except Exception as e:
+              results.append({'path':path,'error':str(e)[:220]})
+          print('DEPLOYED_CALENDAR_READ_ONLY_PROBE='+json.dumps(results,ensure_ascii=False))
+          html=results[:2]
+          if not all(x.get('status')==200 and x.get('bytes',0)>500 for x in html):
+            raise SystemExit('Either bilingual deployed Calendar page is unavailable or unexpectedly short')
