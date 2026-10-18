@@ -223,6 +223,7 @@ const HRNZ_FALLBACK_CLUB_VENUES = Object.freeze({
 
 const HRNZ_FALLBACK_DATE_VENUES = Object.freeze({
   '2026-10-01/wyndham-hrc':'Gore Raceway',
+  // 15 Nov 2026: HRNZ's date-specific tentative programme names Young Quinn Raceway.\n  // Do not map Wyndham HRC globally: its 1 Oct 2026 meeting is at Gore Raceway.\n  '2026-11-15/wyndham-hrc':'Young Quinn Raceway',
   '2026-10-11/akaroa-tc':'Mt Harding Racecourse',
 });
 
