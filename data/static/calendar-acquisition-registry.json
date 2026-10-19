@@ -1914,6 +1914,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Racing Victoria official 2026-27 approved source has 78 venue/date fixture lines: Caulfield 19 and Caulfield Heath 14 at the same physical venue, Sandown 28, Mornington 17. Three physical racecourses, C-only, no post time/race details/actual-running extrapolation. Independent from MRC, ATC and Racing Australia access rights; fetch failure preserves last verified state."
+    },
+    {
+      "system_id": "ecuador-chc-2026-selected-classic-fixtures-system",
+      "country_id": "ecuador",
+      "authority_id": "confederacion-hipica-del-caribe",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "chc-ecuador-2026-classic-date-facts",
+      "detail_source_id": "chc-ecuador-2026-classic-date-facts",
+      "schedule_adapter_id": "ecuador-chc-2026-selected-classics-pdf-v1",
+      "detail_adapter_id": "ecuador-chc-2026-selected-classics-pdf-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "DRAFT ONLY: CHC first-party 2026 classic calendar lists 10 selected date facts at Miguel Salem Dibo (2 future as of 2026-10-20); no regular weekly/nationwide racing denominator or post times. Low-volume normal official PDF, no source content redistribution. Source-specific rights E2 review required before merge; no production implied by registered candidate on this draft PR."
     }
   ]
 }
