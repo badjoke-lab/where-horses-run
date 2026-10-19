@@ -1,0 +1,52 @@
+name: One-time HRNZ Nov 15 production gap probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-nz-hrnz-20261020-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  hrnz-readonly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install repo dependencies without lockfile changes
+        run: npm install --no-package-lock --no-audit --no-fund
+      - name: Verify parser and inspect official HRNZ fixture only
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/check-new-zealand-official-adapter.mjs
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
+          import {HRNZ_FINAL_CALENDAR_URL,parseHrnzFinalCalendarItems} from './scripts/timetable/new-zealand-official-core.mjs';
+          const res=await fetch(HRNZ_FINAL_CALENDAR_URL,{headers:{'User-Agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)','Accept':'application/pdf,*/*;q=0.8'},signal:AbortSignal.timeout(45000)});
+          if(!res.ok)throw new Error('Official HRNZ PDF HTTP '+res.status);
+          const bytes=new Uint8Array(await res.arrayBuffer());
+          if(String.fromCharCode(...bytes.slice(0,4))!=='%PDF')throw new Error('Official HRNZ source is not PDF');
+          const pdf=await getDocument({data:bytes,disableWorker:true}).promise;
+          const items=[];
+          for(let page=1;page<=pdf.numPages;page++){
+            const p=await pdf.getPage(page), content=await p.getTextContent();
+            const page_width=Number(p.view?.[2]??0)-Number(p.view?.[0]??0);
+            for(const x of content.items){
+              if(!('str' in x)||!x.str.trim())continue;
+              items.push({page,page_width,str:x.str,x:Number(x.transform?.[4]),y:Number(x.transform?.[5])});
+            }
+          }
+          const parsed=parseHrnzFinalCalendarItems(items,{seasonStartYear:2026,sourceUrl:HRNZ_FINAL_CALENDAR_URL});
+          const official=parsed.records.filter(x=>x.date==='2026-11-15').map(x=>({date:x.date,club:x.club_label,venue:x.venue_label,physical_id:x.racecourse_id,first_time:x.first_race_time_local}));
+          const unknown=parsed.unknown_venues.filter(x=>x.date==='2026-11-15').map(x=>({date:x.date,club:x.club_label}));
+          const publicData=JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json','utf8'));
+          const canonicalData=JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json','utf8'));
+          const select=(rows)=>rows.filter(x=>x.date==='2026-11-15'&&x.country_id==='new-zealand').map(x=>({id:x.meeting_id,racecourse_id:x.racecourse_id,system:x.racing_system_id})).slice(0,20);
+          console.log('HRNZ_NOV15_AUDIT='+JSON.stringify({official_source:'HRNZ Final Calendar PDF',source_pdf_pages:pdf.numPages,parsed_total:parsed.records.length,parsed_unknown_total:parsed.unknown_venues.length,nov15_official:official,nov15_unknown:unknown,public_generated_at:publicData.generated_at,public_nz_nov15:select(publicData.meetings||[]),canonical_nz_nov15:select(canonicalData.meetings||[]),has_young_in_canonical:(canonicalData.meetings||[]).some(x=>x.date==='2026-11-15'&&x.racecourse_id==='young-quinn-raceway')}));
+          NODE
