@@ -135,6 +135,9 @@ const calendarMapRegressionIds = [
   'waipukurau-racecourse',
   // New Zealand Harness physical venue (HRNZ Nov 15 Wyndham HRC)
   'young-quinn-raceway',
+  // Confirmed missing-site failures in live full refresh #39226968157 (2026-10-19)
+  'antalya-racecourse',
+  'pau-racecourse',
   'chartres-racecourse',
   'finland--rovaniemi',
   'taunton-racecourse',
