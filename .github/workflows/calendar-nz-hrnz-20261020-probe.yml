@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   hrnz-readonly:
@@ -71,3 +72,13 @@ jobs:
           console.log('HRNZ_AFTER_APPLY='+JSON.stringify({canonical:check(c.meetings||[]),public:check(p.meetings||[]),total_canonical:c.meetings?.length,total_public:p.meetings?.length}));
           NODE
           npm run validate:calendar-public-map-parity
+      - name: Inspect current full and near Actions statuses without modifying workflows
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for name in calendar-unified-official-refresh.yml calendar-near-official-refresh.yml; do
+            echo "ACTIONS_WORKFLOW=$name"
+            gh api "/repos/${GITHUB_REPOSITORY}/actions/workflows/$name/runs?per_page=20" --jq '.workflow_runs[] | {id, name, event, status, conclusion, run_started_at, created_at, head_sha, html_url}' || echo "ACTIONS_METADATA_UNAVAILABLE=$name"
+          done
