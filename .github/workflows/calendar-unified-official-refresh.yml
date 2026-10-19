@@ -126,6 +126,9 @@ on:
       - 'scripts/timetable/run-canada-alberta-hra-official-window.mjs'
       - 'scripts/timetable/argentina-la-plata-2026-core.mjs'
       - 'scripts/timetable/run-argentina-la-plata-2026-official-window.mjs'
+      - 'scripts/timetable/ecuador-chc-2026-core.mjs'
+      - 'scripts/timetable/run-ecuador-chc-2026-official-window.mjs'
+      - 'scripts/check-ecuador-chc-2026-adapter.mjs'
       - 'scripts/timetable/australia-victoria-flemington-2026-27-core.mjs'
       - 'scripts/timetable/run-australia-victoria-flemington-2026-27-official-window.mjs'
       - 'scripts/timetable/australia-victoria-mrc-2026-27-core.mjs'
@@ -341,6 +344,7 @@ jobs:
           node scripts/check-calendar-refresh-publication-boundaries.mjs
           node scripts/check-canada-alberta-hra-adapter.mjs
           node scripts/check-argentina-la-plata-2026-adapter.mjs
+          node scripts/check-ecuador-chc-2026-adapter.mjs
           node scripts/check-australia-victoria-flemington-2026-27-adapter.mjs
           node scripts/check-calendar-public-country-support.mjs
           node scripts/check-kra-window-bounds.mjs
@@ -886,6 +890,7 @@ jobs:
           node scripts/timetable/run-argentina-la-plata-2026-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/argentina-la-plata.json
+          node scripts/timetable/run-ecuador-chc-2026-official-window.mjs --days="${{ steps.scope.outputs.days }}" --output=.calendar-unified/ecuador-chc.json
           node scripts/timetable/run-australia-victoria-flemington-2026-27-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/australia-victoria-flemington.json
@@ -966,6 +971,7 @@ jobs:
             --artifact=.calendar-unified/canada-ontario/ajax_quarter_horse.json \
           --artifact=.calendar-unified/canada-alberta-century-mile.json \
           --artifact=.calendar-unified/argentina-la-plata.json \
+          --artifact=.calendar-unified/ecuador-chc.json \
           --artifact=.calendar-unified/australia-victoria-flemington.json \
           --artifact=.calendar-unified/australia-victoria-mrc.json \
             --artifact=.calendar-unified/us-njrc/monmouth.json \
@@ -1379,6 +1385,14 @@ jobs:
           --authority-id=new-jersey-racing-commission \
           --racing-system-id=us-nj-far-hills-steeplechase-2026-system \
           --timezone=America/New_York
+      - name: Apply Ecuador CHC selected 2026 classic C date facts
+        run: |
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/ecuador-chc.json \
+            --country-id=ecuador \
+            --authority-id=confederacion-hipica-del-caribe \
+            --racing-system-id=ecuador-chc-2026-selected-classic-fixtures-system \
+            --timezone=America/Guayaquil
       - name: Apply Australia Victoria MRC approved C dates
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
