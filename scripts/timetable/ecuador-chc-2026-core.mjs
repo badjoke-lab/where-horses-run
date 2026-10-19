@@ -19,7 +19,7 @@ export function parseChcEcuador2026(pages,{sourceUrl=ECU_CHC_SOURCE_URL}={}){
  const rows=[];
  for(const page of pages){
   if(!Array.isArray(page))throw Error('CHC 2026 tokens absent');
-  const t=page.map(x=>String(x??'').trim());
+  const t=page.map(x=>String(x??'').trim()).filter(Boolean);
   for(let i=0;i<t.length;i++){
    if(t[i]!=='ECU')continue;
    if(t[i+1]!=='Miguel Salem D.')throw Error('Unexpected Ecuador venue in CHC source');
@@ -33,7 +33,7 @@ export function parseChcEcuador2026(pages,{sourceUrl=ECU_CHC_SOURCE_URL}={}){
  }
  rows.sort((a,b)=>a.date.localeCompare(b.date));
  const dates=rows.map(x=>x.date);
- if(dates.length!==10||dates.some((x,i)=>dates.indexOf(x)!==i)||dates.some(x=>!fingerprint.has(x))||dates.some(x=>!fingerprint.has(x)))throw Error('CHC Ecuador selected 2026 classic fixture denominator or date fingerprint drift');
+ if(dates.length!==10||dates.some((x,i)=>dates.indexOf(x)!==i)||dates.some(x=>!fingerprint.has(x)))throw Error('CHC Ecuador selected 2026 classic fixture denominator or date fingerprint drift');
  return rows;
 }
 export function buildChcEcuadorCMeeting(row,{checkedAt}={}){
