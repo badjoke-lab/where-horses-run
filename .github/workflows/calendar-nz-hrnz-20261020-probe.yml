@@ -50,3 +50,24 @@ jobs:
           const select=(rows)=>rows.filter(x=>x.date==='2026-11-15'&&x.country_id==='new-zealand').map(x=>({id:x.meeting_id,racecourse_id:x.racecourse_id,system:x.racing_system_id})).slice(0,20);
           console.log('HRNZ_NOV15_AUDIT='+JSON.stringify({official_source:'HRNZ Final Calendar PDF',source_pdf_pages:pdf.numPages,parsed_total:parsed.records.length,parsed_unknown_total:parsed.unknown_venues.length,nov15_official:official,nov15_unknown:unknown,public_generated_at:publicData.generated_at,public_nz_nov15:select(publicData.meetings||[]),canonical_nz_nov15:select(canonicalData.meetings||[]),has_young_in_canonical:(canonicalData.meetings||[]).some(x=>x.date==='2026-11-15'&&x.racecourse_id==='young-quinn-raceway')}));
           NODE
+      - name: Replay official NZ runner and apply HRNZ in isolated checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .calendar-diagnostic
+          node scripts/timetable/run-new-zealand-official-window.mjs --as-of=2026-10-20 --days=30 --thoroughbred-output=.calendar-diagnostic/nztr.json --harness-output=.calendar-diagnostic/hrnz.json
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const a=JSON.parse(fs.readFileSync('.calendar-diagnostic/hrnz.json','utf8'));
+          const rows=a.records.filter(x=>x.date==='2026-11-15');
+          console.log('HRNZ_CANDIDATE_REPLAY='+JSON.stringify({status:a.acquisition_attempt?.status,route:a.acquisition_attempt?.route_id,window:a.window,record_count:a.records.length,nov15:rows.map(x=>({id:x.meeting_id,venue:x.racecourse_id,rank:x.capability_rank,first:x.first_race_time_local})),unknown_for_date:(a.diagnostics?.unknown_venues||[]).filter(x=>x.date==='2026-11-15'),source_error_count:a.diagnostics?.source_errors?.length}));
+          NODE
+          node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-diagnostic/hrnz.json --country-id=new-zealand --authority-id=harness-racing-new-zealand --racing-system-id=new-zealand-harness-system --timezone=Pacific/Auckland
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const c=JSON.parse(fs.readFileSync('data/generated/timetable/canonical/meetings.json','utf8'));
+          const p=JSON.parse(fs.readFileSync('data/generated/timetable/public/meeting-list.json','utf8'));
+          const check=rows=>rows.filter(x=>x.country_id==='new-zealand'&&x.date==='2026-11-15'&&x.racecourse_id==='young-quinn-raceway').map(x=>({id:x.meeting_id,rank:x.capability_rank,venue:x.racecourse_id}));
+          console.log('HRNZ_AFTER_APPLY='+JSON.stringify({canonical:check(c.meetings||[]),public:check(p.meetings||[]),total_canonical:c.meetings?.length,total_public:p.meetings?.length}));
+          NODE
+          npm run validate:calendar-public-map-parity
