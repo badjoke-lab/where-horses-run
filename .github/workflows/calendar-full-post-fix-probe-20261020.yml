@@ -1,0 +1,42 @@
+name: One-time Calendar full post-map-fix read-only check
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-full-post-fix-probe-20261020.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  read-only-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Read current real production run statuses
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in calendar-unified-official-refresh.yml calendar-near-official-refresh.yml; do
+            echo "PRODUCTION_ACTIONS=$name"
+            gh api "/repos/${GITHUB_REPOSITORY}/actions/workflows/$name/runs?per_page=14" --jq '.workflow_runs[] | {id, event, status, conclusion, created_at, run_started_at, head_sha, html_url}' || echo "ACTION_METADATA_ACCESS_UNAVAILABLE=$name"
+          done
+      - name: Read published EN JA Calendar pages without changing production
+        shell: python
+        run: |
+          import json, urllib.request
+          target='new-zealand-harness-young-quinn-raceway-2026-11-15'
+          for p in ['/calendar/?date=2026-11-15','/ja/calendar/?date=2026-11-15']:
+            try:
+              req=urllib.request.Request('https://whr.badjoke-lab.com'+p,headers={'User-Agent':'WhereHorsesRun-verification/1.0','Accept':'text/html'})
+              with urllib.request.urlopen(req,timeout=18) as r:
+                raw=r.read(5000000)
+                status=r.status
+                ct=r.headers.get('content-type','')
+              html=raw.decode('utf8','replace')
+              print('DEPLOYED_NOV15='+json.dumps({'path':p,'http_status':status,'content_type':ct,'bytes_scanned':len(raw),'has_young_quinn_meeting_id':target in html,'has_antalya_id':'antalya-racecourse' in html,'has_pau_id':'pau-racecourse' in html}))
+            except Exception as e:
+              print('DEPLOYED_NOV15='+json.dumps({'path':p,'error':str(e)[:180]}))
