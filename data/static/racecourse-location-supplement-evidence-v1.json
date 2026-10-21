@@ -1,6 +1,6 @@
 {
   "schema_version": "racecourse-location-supplement-evidence-v1",
-  "reviewed_at": "2026-10-20",
+  "reviewed_at": "2026-10-21",
   "entries": [
     {
       "id": "abbeville-racecourse",
@@ -2749,6 +2749,24 @@
       "address_observed": "320 Racecourse Road, Mornington VIC 3931, Australia",
       "coordinate_method": "OpenStreetMap/Mapcarta physical racecourse map feature center; address confirmed with Melbourne Racing Club official listing.",
       "precision_note": "Approximate whole physical venue map pin, not precise entrance; Caulfield Heath shares Caulfield physical racecourse."
+    },
+    {
+      "id": "antalya-racecourse",
+      "coordinate_source_url": "https://atoloji.com/hipodromlar/antalya-hipodromu",
+      "coordinate_observed": "37.0710, 30.5916 (venue position listed for Antalya Hipodromu); independent locality coordinate 37.07080078125, 30.591602325439 on https://local.turkeyturism.com/en/turkiye-jokey-kulubu-antalya-hipodromu-90-444-0-855.html",
+      "address_source_url": "https://www.tjk.org/TR/Kurumsal/Static/Page/Hipodromlar",
+      "address_observed": "TJK official 'Antalya Hipodromu': Yağca Mah. Atatürk Cad. No:941 Döşemealtı/Antalya",
+      "coordinate_method": "Independently published racecourse-specific latitude/longitude from Antalya Hipodromu venue guide, cross-checked against another racecourse-specific listing and TJK official physical racecourse name/address. Not the Döşemealtı municipality center.",
+      "precision_note": "Approximate physical racecourse site point, not a surveyed track centroid, starting gate or grandstand; verify exact gate separately if required."
+    },
+    {
+      "id": "pau-racecourse",
+      "coordinate_source_url": "https://www.cirkwi.com/fr/point-interet/2105273-hippodrome-du-pont-long",
+      "coordinate_observed": "43.3341997, -0.3741343 (Pau city-attributed Hippodrome du Pont-Long location point)",
+      "address_source_url": "https://www.hippodrome-pau.com/contact/",
+      "address_observed": "Racecourse operator lists 462 Boulevard du Cami Salié, 64000 Pau, France; also confirmed by https://www.pau.fr/hippodrome-du-pont-long",
+      "coordinate_method": "Pau municipality-attributed racecourse location point on published place listing, cross-checked with racecourse operator contact address and Pau municipal listing. The track/venue is Hippodrome du Pont-Long, not a different Pau sports complex.",
+      "precision_note": "Site-level racecourse location, not asserted as entrance, surveyed racing-surface centroid or grandstand."
     },
     {
       "id": "ecuador--hipodromo-miguel-salem-dibo",
