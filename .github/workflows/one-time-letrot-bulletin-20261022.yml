@@ -1,0 +1,49 @@
+name: One-time LETROT bulletin diagnostics 2026-10-22
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/one-time-letrot-bulletin-20261022.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Inspect existing full-refresh bulletin statuses (no scraping)
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p audit
+          gh run download 39292862845 --repo "$GITHUB_REPOSITORY" --name calendar-unified-official-refresh-39292862845 --dir audit
+          python3 - <<'PY'
+          import json,pathlib
+          for name in ('france-letrot.json','france-galop.json'):
+            p=next((p for p in pathlib.Path('audit').rglob(name) if p.is_file()),None)
+            if p is None: print('LETROT_AUDIT='+json.dumps({'file':name,'error':'not found'}));continue
+            d=json.loads(p.read_text())
+            n=d.get('diagnostics',{}).get('non_running') or {}
+            out={'file':name,'status':n.get('status'),'source_url':n.get('source_url'),
+                'bulletin_count':n.get('bulletin_count'),'candidate_article_count':n.get('candidate_article_count'),
+                'accepted_evidence_count':n.get('accepted_evidence_count'),
+                'confirmed_non_running_count':n.get('confirmed_non_running_count'),
+                'bulletins':n.get('bulletin_results',[])[:12],
+                'articles':n.get('article_results',[])[:10]}
+            print('LETROT_AUDIT='+json.dumps(out,ensure_ascii=False)[:10000])
+          PY
+      - name: List recent official production run outcomes
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for wf in calendar-unified-official-refresh.yml calendar-near-official-refresh.yml; do
+            echo "CALENDAR_WORKFLOW=$wf"
+            gh api "/repos/${GITHUB_REPOSITORY}/actions/workflows/$wf/runs?per_page=12" --jq '.workflow_runs[] | {id,event,status,conclusion,created_at,run_started_at,head_sha}' || true
+          done
