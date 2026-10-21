@@ -1,0 +1,60 @@
+name: One-time Calendar individual source diagnostic
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/one-time-calendar-individual-diagnostic-20261021.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  source-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Read only successful full-refresh artifact
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p diagnostic
+          gh run download 39292862845 --repo "$GITHUB_REPOSITORY" --name calendar-unified-official-refresh-39292862845 --dir diagnostic
+          python3 - <<'PY'
+          import json, pathlib
+          names=('jamaica.json','france-letrot.json','sorec.json','brazil-cidade-jardim.json','uruguay.json','dominican-hvc.json')
+          files=list(pathlib.Path('diagnostic').rglob('*.json'))
+          print('ARTIFACT_JSON_FILES='+str(len(files)))
+          for name in names:
+            paths=[p for p in files if p.name==name]
+            if not paths:
+              print('SOURCE_DIAGNOSTIC='+json.dumps({'artifact':name,'error':'not found'}))
+              continue
+            j=json.loads(paths[0].read_text())
+            diag=j.get('diagnostics',{})
+            data={'artifact':name,'acquisition_status':j.get('acquisition_attempt',{}).get('status'),
+                  'source_id':j.get('source_id'),'records':len(j.get('records',[])),
+                  'source_errors':diag.get('source_errors',[])[:4],
+                  'parse_failures':diag.get('parse_failures',[])[:4],
+                  'source_warnings':diag.get('source_warnings',[])[:4],
+                  'non_running':diag.get('non_running')}
+            if isinstance(data['non_running'],dict):
+              sub=data['non_running']
+              data['non_running']={'status':sub.get('status'),'article_results':sub.get('article_results',[])[:8]}
+            print('SOURCE_DIAGNOSTIC='+json.dumps(data,ensure_ascii=False,default=str)[:5500])
+          PY
+      - name: Verify deployed map features by actual Feature.id
+        shell: python
+        run: |
+          import json, urllib.request
+          req=urllib.request.Request('https://whr.badjoke-lab.com/data/racecourse-locations-v1.geojson',
+            headers={'User-Agent':'WhereHorsesRun-verification/1.0'})
+          with urllib.request.urlopen(req,timeout=25) as r:
+            d=json.load(r)
+          sites=('young-quinn-raceway','antalya-racecourse','pau-racecourse')
+          found={f.get('id'):f.get('geometry',{}).get('coordinates') for f in d.get('features',[]) if f.get('id') in sites}
+          print('DEPLOYED_VERIFIED_SITE_GEOJSON='+json.dumps({'sites':found,'count':len(d.get('features',[]))}))
+          if len(found)!=3:
+            raise SystemExit('Missing verified first-party physical venue map location')
