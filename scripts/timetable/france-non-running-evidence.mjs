@@ -237,6 +237,32 @@ export function letrotBulletinUrlsForWindow(startDate, endDateExclusive) {
   }
   return urls;
 }
+// 404 for a current/future SETF weekly bulletin is an observed document
+// availability gap, not evidence that a scheduled race meeting did not run.
+// Historical missing bulletins still surface as acquisition source errors.
+// This changes diagnostics only; it never generates non-running dispositions.
+export function classifyLetrotBulletinFetchError(sourceUrl, error, { checkedAt } = {}) {
+  assertLetrotBulletinUrl(sourceUrl);
+  const message = String(error?.message ?? error);
+  const parsed = new URL(sourceUrl);
+  const year = Number(parsed.searchParams.get('annee'));
+  const week = Number(parsed.searchParams.get('semaine'));
+  const currentDate = checkedAt ?? new Date().toISOString().slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(currentDate)) throw new Error('LeTROT checkedAt must be YYYY-MM-DD');
+  const currentWeek = isoWeekParts(currentDate);
+  const currentOrFuture = Number.isInteger(year) && Number.isInteger(week)
+    && week >= 1 && week <= 53
+    && (year > currentWeek.year || (year === currentWeek.year && week >= currentWeek.week));
+  if (message === 'HTTP 404' && currentOrFuture) {
+    return {
+      status: 'bulletin_unavailable_404',
+      error: message,
+      availability_note: 'Current/future weekly bulletin not accessible at check time; neither non-running nor publication delay is confirmed.',
+    };
+  }
+  return { status: 'source_error', error: message };
+}
+
 function precedingLetrotVenue(normalized, index) {
   const context = normalized.slice(Math.max(0, index - 9000), index);
   const pattern = /\b\d{1,3}\s+([a-z][a-z' -]{2,70})\s+\(([a-z][a-z' -]{2,70})\)\s+pole regional\b/gi;
