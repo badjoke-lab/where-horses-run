@@ -1,0 +1,51 @@
+name: One-time deployed Calendar bilingual audit 2026-10-21
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/one-time-calendar-deployed-audit-20261021.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Check first-party EN JA published HTML and physical map GeoJSON
+        shell: python
+        run: |
+          import json, urllib.request, urllib.error
+          root='https://whr.badjoke-lab.com'
+          young='new-zealand-harness-young-quinn-raceway-2026-11-15'
+          thai='thailand-rbsc-2026-10-25'
+          paths=[
+            '/calendar/?date=2026-11-15',
+            '/ja/calendar/?date=2026-11-15',
+            '/calendar/?date=2026-10-25',
+            '/ja/calendar/?date=2026-10-25',
+            '/data/racecourse-locations-v1.geojson'
+          ]
+          for path in paths:
+            row={'path':path}
+            try:
+              req=urllib.request.Request(root+path,headers={'User-Agent':'WhereHorsesRun-production-verification/1.0 (+https://whr.badjoke-lab.com/)','Accept':'application/json,text/html'})
+              with urllib.request.urlopen(req,timeout=22) as response:
+                data=response.read(6000000)
+                row.update({'status':response.status,'content_type':response.headers.get('Content-Type',''),'bytes':len(data)})
+              decoded=data.decode('utf-8','replace')
+              row['young_meeting_id']=young in decoded
+              row['thailand_meeting_id']=thai in decoded
+              if 'geojson' in path and 'json' in row['content_type']:
+                j=json.loads(decoded)
+                feats=j.get('features',[])
+                found=[f for f in feats if f.get('properties',{}).get('id') in ('young-quinn-raceway','antalya-racecourse','pau-racecourse')]
+                row['feature_count']=len(feats)
+                row['confirmed_features']=[{'id':f.get('properties',{}).get('id'),'coordinates':f.get('geometry',{}).get('coordinates')} for f in found]
+              if 'calendar' in path and row['status']!=200:
+                row['error']='calendar http status not 200'
+            except Exception as e:
+              row['error']=str(e)[:220]
+            print('DEPLOYED_AUDIT='+json.dumps(row,ensure_ascii=False,sort_keys=True))
+          print('READ_ONLY_NO_PUBLICATION_WRITE=true')
