@@ -55,7 +55,7 @@ for(const {id,path} of [{id:'landing',path:'/'},{id:'fixture_list',path:'/races'
     const hasUpcoming=/upcoming\s+meetings|upcoming\s+racing|next\s+meeting/i.test(plain);
     const dates=[...new Set((plain.match(/\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)(?:day)?\s+\d{1,2}\s+(?:Oct|Nov|Dec)(?:ober|ember)?\s+2026\b/gi)||[]))].slice(0,12);
     // Some frameworks serialize date-only values rather than visible English labels.
-    const isoDates=[...new Set((html.match(/\\b2026[-/](?:10|11|12)[-/]\\d{2}\\b/g)||[]))].slice(0,20);
+    const isoDates=[...new Set((html.match(/\b2026[-/](?:10|11|12)[-/]\d{2}\b/g)||[]))].slice(0,20);
     const legalPaths=[...new Set([...html.matchAll(/href\s*=\s*["']([^"']{1,200})["']/gi)]
       .map(x=>x[1]).filter(x=>/terms|legal|privacy|conditions/i.test(x)).slice(0,12))];
     out(id,{status:'readable',http:r.status,has2026,hasVenue,hasUpcoming,
@@ -79,9 +79,9 @@ if(disallow.some(p=>legalPath.startsWith(p))){
       out('terms',{status:'oversize',rights_state:policy});
     }else{
       const html=(await r.text()).slice(0,250000);
-      const txt=html.replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi,' ')
-        .replace(/<style\\b[^>]*>[\\s\\S]*?<\\/style>/gi,' ')
-        .replace(/<[^>]+>/g,' ').replace(/\\s+/g,' ').toLowerCase();
+      const txt=html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ')
+        .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ')
+        .replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').toLowerCase();
       out('terms',{status:'readable',http:r.status,
         restriction_signals:{
           automated: /automated|bot|robot|scrap(?:e|ing)|crawl(?:ing)?|data mining/.test(txt),
