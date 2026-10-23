@@ -16,9 +16,14 @@ if(process.env.GITHUB_EVENT_NAME==='pull_request'){
     const artifact=JSON.parse(fs.readFileSync(output,'utf8'));
     console.log('SWITZERLAND_SUISS_TROT_LIVE: '+JSON.stringify({attempt:artifact.acquisition_attempt,discovery:artifact.discovery,diagnostics:artifact.diagnostics,records:(artifact.records??[]).map(r=>[r.date,r.racecourse_id])}));
     assert.equal(artifact.acquisition_attempt?.status,'success');
-    // Suisse Trot removes completed meetings from the live calendar; validate the current rolling result instead.
-    assert.ok((artifact.records??[]).length>=1);
-    assert.ok((artifact.records??[]).every(r=>r.date>='2026-10-01'&&r.date<'2026-10-31'));
+    // Suisse Trot removes completed meetings from the live calendar. An
+    // otherwise successful source can legitimately have zero races in this
+    // fixed Oct 1-30 validation window after the last posted race has passed.
+    // A live empty window must not imply cancellation or fail the adapter.
+    assert.ok(Array.isArray(artifact.records),'live run must emit records[]');
+    assert.ok(Number.isInteger(artifact.discovery?.source_visible_rows),'source row count must be reported');
+    assert.ok(artifact.discovery.source_visible_rows>=artifact.records.length,'window results cannot exceed source rows');
+    assert.ok(artifact.records.every(r=>r.date>='2026-10-01'&&r.date<'2026-10-31'));
     assert.ok((artifact.records??[]).every(r=>[
       'switzerland--rossriet-maienfeld',
       'switzerland--iena-avenches',
