@@ -54,12 +54,43 @@ for(const {id,path} of [{id:'landing',path:'/'},{id:'fixture_list',path:'/races'
     const hasVenue=/malta\s+equidrome/i.test(plain);
     const hasUpcoming=/upcoming\s+meetings|upcoming\s+racing|next\s+meeting/i.test(plain);
     const dates=[...new Set((plain.match(/\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)(?:day)?\s+\d{1,2}\s+(?:Oct|Nov|Dec)(?:ober|ember)?\s+2026\b/gi)||[]))].slice(0,12);
+    // Some frameworks serialize date-only values rather than visible English labels.
+    const isoDates=[...new Set((html.match(/\\b2026[-/](?:10|11|12)[-/]\\d{2}\\b/g)||[]))].slice(0,20);
     const legalPaths=[...new Set([...html.matchAll(/href\s*=\s*["']([^"']{1,200})["']/gi)]
       .map(x=>x[1]).filter(x=>/terms|legal|privacy|conditions/i.test(x)).slice(0,12))];
     out(id,{status:'readable',http:r.status,has2026,hasVenue,hasUpcoming,
-      dated_fixture_hints:dates,legal_link_hints:legalPaths,
+      dated_fixture_hints:dates,iso_date_hints:isoDates,legal_link_hints:legalPaths,
       source_class:'independent_third_party_not_verified_official',
       rights_state:policy,no_production_candidate:true});
   }catch(e){out(id,{status:'fetch_failed',reason:String(e?.message||e).slice(0,90),rights_state:policy})}
+}
+// The same source links to these first-party legal pages. Check only their
+// existence and restriction signals; never log the copyrighted terms text.
+const legalPath='/terms-of-use';
+if(disallow.some(p=>legalPath.startsWith(p))){
+  out('terms',{status:'robots_disallow',rights_state:policy});
+}else{
+  try{
+    const r=await get(legalPath);
+    const ct=(r.headers.get('content-type')||'').toLowerCase();
+    if(!r.ok||!ct.includes('text/html')){
+      out('terms',{status:'http_'+r.status,rights_state:policy});
+    }else if(Number(r.headers.get('content-length')||0)>250000){
+      out('terms',{status:'oversize',rights_state:policy});
+    }else{
+      const html=(await r.text()).slice(0,250000);
+      const txt=html.replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi,' ')
+        .replace(/<style\\b[^>]*>[\\s\\S]*?<\\/style>/gi,' ')
+        .replace(/<[^>]+>/g,' ').replace(/\\s+/g,' ').toLowerCase();
+      out('terms',{status:'readable',http:r.status,
+        restriction_signals:{
+          automated: /automated|bot|robot|scrap(?:e|ing)|crawl(?:ing)?|data mining/.test(txt),
+          redistribution: /redistribut|republish|reproduc|copying|duplicate/.test(txt),
+          commercial: /commercial|business purpose|for profit/.test(txt),
+          copyright: /copyright|intellectual property|all rights reserved/.test(txt)
+        },
+        assessment:'human_scope_review_required',rights_state:policy});
+    }
+  }catch(e){out('terms',{status:'fetch_failed',reason:String(e?.message||e).slice(0,90),rights_state:policy});}
 }
 console.log('MALTA_INDEPENDENT_DISCOVERY_END source_discovery_only_no_raw_source_or_racecard_storage_no_production');
