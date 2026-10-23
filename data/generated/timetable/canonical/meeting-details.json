@@ -1,6 +1,6 @@
 {
   "schema_version": "canonical-meeting-details-v0",
-  "generated_at": "2026-10-23T15:46:35.033Z",
+  "generated_at": "2026-10-23T15:51:31.926Z",
   "input_sources": [
     "data/candidates/banei-current-window-a-plus-approved.json",
     "data/candidates/banei-current-window-c-schedule-approved.json",
@@ -25378,7 +25378,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-23T15:46:35.033Z",
+        "generated_at": "2026-10-23T15:51:31.926Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
@@ -25482,7 +25482,7 @@
       },
       "freshness": {
         "last_checked_date": "2026-09-10",
-        "generated_at": "2026-10-23T15:46:35.033Z",
+        "generated_at": "2026-10-23T15:51:31.926Z",
         "stale_after_date": null,
         "freshness_note": "Restored from a frozen human-reviewed official timetable observation; last_checked_date is the review date."
       },
@@ -79880,6 +79880,106 @@
       "summary_note": "Current official rolling-window race programme observation."
     },
     {
+      "meeting_id": "chile-club-hipico-de-santiago-racecourse-2026-10-23",
+      "country_id": "chile",
+      "authority_id": "teletrak-chile",
+      "racecourse_id": "club-hipico-de-santiago-racecourse",
+      "date": "2026-10-23",
+      "timezone": "America/Santiago",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "chile-teletrak-weekly-programme",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.clubhipico.cl/carreras/volante/?fecha=2026-10-23",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:47:56.304Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "13:00"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "13:27"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "13:54"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "14:24"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "14:51"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "15:18"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "15:48"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "16:18"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "16:48"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "17:18"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "17:48"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "18:18"
+        },
+        {
+          "label": "Race 13",
+          "post_time_local": "18:50"
+        },
+        {
+          "label": "Race 14",
+          "post_time_local": "19:22"
+        },
+        {
+          "label": "Race 15",
+          "post_time_local": "19:53"
+        },
+        {
+          "label": "Race 16",
+          "post_time_local": "20:26"
+        },
+        {
+          "label": "Race 17",
+          "post_time_local": "20:58"
+        },
+        {
+          "label": "Race 18",
+          "post_time_local": "21:30"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
       "meeting_id": "france-letrot-strasbourg-racecourse-2026-10-23",
       "country_id": "france",
       "authority_id": "letrot",
@@ -79898,8 +79998,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-10-21",
-        "generated_at": "2026-10-21T16:00:25.066Z",
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:13.973Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -79907,29 +80007,29 @@
         "meeting_identity": {
           "source_id": "fnch-national-calendar-directory",
           "official_source_url": "https://www.fnch.fr/federation-est/programme",
-          "observed_at": "2026-10-21T16:00:25.066Z",
-          "successfully_verified_at": "2026-10-21T16:00:25.066Z",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
           "acquisition_method": "automatic"
         },
         "meeting_date": {
           "source_id": "fnch-national-calendar-directory",
           "official_source_url": "https://www.fnch.fr/federation-est/programme",
-          "observed_at": "2026-10-21T16:00:25.066Z",
-          "successfully_verified_at": "2026-10-21T16:00:25.066Z",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
           "acquisition_method": "automatic"
         },
         "race_times": {
           "source_id": "fnch-national-calendar-directory",
           "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20261023_Hippodrome%20Strasbourg.pdf",
-          "observed_at": "2026-10-21T16:00:25.066Z",
-          "successfully_verified_at": "2026-10-21T16:00:25.066Z",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
           "acquisition_method": "automatic"
         },
         "timetable": {
           "source_id": "fnch-national-calendar-directory",
           "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20261023_Hippodrome%20Strasbourg.pdf",
-          "observed_at": "2026-10-21T16:00:25.066Z",
-          "successfully_verified_at": "2026-10-21T16:00:25.066Z",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
           "acquisition_method": "automatic"
         }
       },
@@ -79988,8 +80088,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-10-21",
-        "generated_at": "2026-10-21T16:00:15.143Z",
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:02.861Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -80051,8 +80151,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-10-21",
-        "generated_at": "2026-10-21T16:00:15.143Z",
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:02.861Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -80985,26 +81085,408 @@
       "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
     },
     {
-      "meeting_id": "germany-deutscher-galopp-munchen-2026-10-24",
-      "country_id": "germany",
-      "authority_id": "deutscher-galopp",
-      "racecourse_id": "germany--munchen",
+      "meeting_id": "chile-hipodromo-chile-2026-10-24",
+      "country_id": "chile",
+      "authority_id": "teletrak-chile",
+      "racecourse_id": "hipodromo-chile",
       "date": "2026-10-24",
-      "timezone": "Europe/Berlin",
-      "capability_rank": "C",
+      "timezone": "America/Santiago",
+      "capability_rank": "A",
       "source_trace": {
-        "source_id": "deutscher-galopp-calendar",
-        "route_id": "deutscher-galopp-annual-calendar-pdf",
+        "source_id": "chile-teletrak-weekly-programme",
+        "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.deutscher-galopp.de/gr-wAssets/docs/renntermine2026.pdf",
+        "official_source_url": "https://storage.elturf.com/pdf_volantes/pdf_hch/102137.pdf",
         "source_label": null,
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-10-20",
-        "generated_at": "2026-10-20T10:29:31.991Z",
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:47:56.304Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "12:30"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "12:55"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "13:20"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "13:46"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "14:11"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "14:36"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "15:02"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "15:27"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "15:50"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "16:18"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "16:44"
+        },
+        {
+          "label": "Race 12",
+          "post_time_local": "17:10"
+        },
+        {
+          "label": "Race 13",
+          "post_time_local": "17:38"
+        },
+        {
+          "label": "Race 14",
+          "post_time_local": "18:04"
+        },
+        {
+          "label": "Race 15",
+          "post_time_local": "18:31"
+        },
+        {
+          "label": "Race 16",
+          "post_time_local": "19:01"
+        },
+        {
+          "label": "Race 17",
+          "post_time_local": "19:30"
+        },
+        {
+          "label": "Race 18",
+          "post_time_local": "19:58"
+        },
+        {
+          "label": "Race 19",
+          "post_time_local": "20:30"
+        },
+        {
+          "label": "Race 20",
+          "post_time_local": "21:00"
+        },
+        {
+          "label": "Race 21",
+          "post_time_local": "21:30"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "france-letrot-chateaubriant-racecourse-2026-10-24",
+      "country_id": "france",
+      "authority_id": "letrot",
+      "racecourse_id": "chateaubriant-racecourse",
+      "date": "2026-10-24",
+      "timezone": "Europe/Paris",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20261024_Hippodrome%20Ch%C3%A2teaubriant.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:13.973Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-ouest/programme-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-ouest/programme-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20261024_Hippodrome%20Ch%C3%A2teaubriant.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20261024_Hippodrome%20Ch%C3%A2teaubriant.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "13:00"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "13:30"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "14:00"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "14:30"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "15:00"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "15:30"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "16:00"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "16:30"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "17:00"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "france-letrot-grenade-sur-garonne-racecourse-2026-10-24",
+      "country_id": "france",
+      "authority_id": "letrot",
+      "racecourse_id": "grenade-sur-garonne-racecourse",
+      "date": "2026-10-24",
+      "timezone": "Europe/Paris",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/sites/default/files/programs/20261024_Grenade%20sur%20Garonne%20%28V2%29.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:13.973Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-sud-ouest/programme-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-sud-ouest/programme-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs/20261024_Grenade%20sur%20Garonne%20%28V2%29.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs/20261024_Grenade%20sur%20Garonne%20%28V2%29.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "14:00"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:30"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "15:00"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "15:30"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "16:00"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "16:30"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "17:00"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "france-letrot-salon-de-provence-racecourse-2026-10-24",
+      "country_id": "france",
+      "authority_id": "letrot",
+      "racecourse_id": "salon-de-provence-racecourse",
+      "date": "2026-10-24",
+      "timezone": "Europe/Paris",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/sites/default/files/programs/20261024_SALON-DE-PROVENCE_TROT.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:13.973Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-sud-est/programmes-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-sud-est/programmes-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs/20261024_SALON-DE-PROVENCE_TROT.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs/20261024_SALON-DE-PROVENCE_TROT.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "11:30"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "12:02"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "12:34"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "13:06"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "13:38"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "14:15"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "14:50"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "15:32"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "germany-deutscher-galopp-munchen-2026-10-24",
+      "country_id": "germany",
+      "authority_id": "deutscher-galopp",
+      "racecourse_id": "germany--munchen",
+      "date": "2026-10-24",
+      "timezone": "Europe/Berlin",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "deutscher-galopp-calendar",
+        "route_id": "deutscher-galopp-calendar-table",
+        "source_status": "verified",
+        "official_source_url": "https://www.deutscher-galopp.de/gr/renntage/rennkalender.php?art=&jahr=2026&land=8&ort=&laengevon=&laengebis=&von=23.+Oktober+2026&von_submit=2026%2F10%2F23&bis=25.+Oktober+2026&bis_submit=2026%2F10%2F25",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:47.628Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -81012,66 +81494,80 @@
         "meeting_identity": {
           "source_id": "deutscher-galopp-calendar",
           "official_source_url": "https://www.deutscher-galopp.de/gr-wAssets/docs/renntermine2026.pdf",
-          "observed_at": "2026-10-20T10:29:31.991Z",
-          "successfully_verified_at": "2026-10-20T10:29:31.991Z",
+          "observed_at": "2026-10-23T15:48:47.628Z",
+          "successfully_verified_at": "2026-10-23T15:48:47.628Z",
           "acquisition_method": "automatic"
         },
         "meeting_date": {
           "source_id": "deutscher-galopp-calendar",
           "official_source_url": "https://www.deutscher-galopp.de/gr-wAssets/docs/renntermine2026.pdf",
-          "observed_at": "2026-10-20T10:29:31.991Z",
-          "successfully_verified_at": "2026-10-20T10:29:31.991Z",
+          "observed_at": "2026-10-23T15:48:47.628Z",
+          "successfully_verified_at": "2026-10-23T15:48:47.628Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "deutscher-galopp-calendar",
+          "official_source_url": "https://www.deutscher-galopp.de/gr/renntage/rennkalender.php?art=&jahr=2026&land=8&ort=&laengevon=&laengebis=&von=23.+Oktober+2026&von_submit=2026%2F10%2F23&bis=25.+Oktober+2026&bis_submit=2026%2F10%2F25",
+          "observed_at": "2026-10-23T15:48:47.628Z",
+          "successfully_verified_at": "2026-10-23T15:48:47.628Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "deutscher-galopp-calendar",
+          "official_source_url": "https://www.deutscher-galopp.de/gr/renntage/rennkalender.php?art=&jahr=2026&land=8&ort=&laengevon=&laengebis=&von=23.+Oktober+2026&von_submit=2026%2F10%2F23&bis=25.+Oktober+2026&bis_submit=2026%2F10%2F25",
+          "observed_at": "2026-10-23T15:48:47.628Z",
+          "successfully_verified_at": "2026-10-23T15:48:47.628Z",
           "acquisition_method": "automatic"
         }
       },
       "timetable_rows": [
         {
           "label": "Race 1",
-          "post_time_local": null,
-          "race_name": "Großer Münchner Herbst-Preis",
-          "distance_m": 1300
+          "post_time_local": "13:30",
+          "race_name": "Isfahan-Cup",
+          "distance_m": 1400
         },
         {
           "label": "Race 2",
-          "post_time_local": null,
-          "race_name": "2. Rennen",
+          "post_time_local": "14:00",
+          "race_name": "Preis der Abendzeitung - V7-Wette mit 25.000 € Poolgarantie - V7/1",
           "distance_m": 2000
         },
         {
           "label": "Race 3",
-          "post_time_local": null,
-          "race_name": "3. Rennen",
-          "distance_m": 1400
+          "post_time_local": "14:30",
+          "race_name": "Preis vom Schloss Tüssling / Finale zum Bayerischen Amateurchampionat - V7/2",
+          "distance_m": 1300
         },
         {
           "label": "Race 4",
-          "post_time_local": null,
-          "race_name": "4. Rennen",
+          "post_time_local": "15:00",
+          "race_name": "Meine VR-Raiffeisenbank-Preis - V7/3",
           "distance_m": 2800
         },
         {
           "label": "Race 5",
-          "post_time_local": null,
-          "race_name": "5. Rennen",
-          "distance_m": 1600
+          "post_time_local": "15:30",
+          "race_name": "Rubaiyat - Großer Münchner Herbst-Preis - V4-Wette mit 10.000 € Poolgarantie - V4/1 - V7/4",
+          "distance_m": 1300
         },
         {
           "label": "Race 6",
-          "post_time_local": null,
-          "race_name": "6. Rennen",
-          "distance_m": 2400
-        },
-        {
-          "label": "Race 7",
-          "post_time_local": null,
-          "race_name": "7. Rennen - Fegentri World Championship for Lady Riders",
+          "post_time_local": "16:00",
+          "race_name": "Preis der Carl v. Rohrer-Vermögensverwaltung - Fegentri World Championship- V4/2 - V7/5",
           "distance_m": 1500
         },
         {
+          "label": "Race 7",
+          "post_time_local": "16:30",
+          "race_name": "Automobilforum Kuttendreier - Rennen - V4/3 - V7/6",
+          "distance_m": 2400
+        },
+        {
           "label": "Race 8",
-          "post_time_local": null,
-          "race_name": "8. Rennen",
-          "distance_m": 1300
+          "post_time_local": "17:00",
+          "race_name": "Auktionshaus-Nusser-Preis - V4/4 - V7/7",
+          "distance_m": 1600
         }
       ],
       "summary_note": "Current official rolling-window race programme observation."
@@ -81563,8 +82059,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-10-21",
-        "generated_at": "2026-10-21T15:59:40.892Z",
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:47:29.903Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -81633,8 +82129,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-10-21",
-        "generated_at": "2026-10-21T15:59:40.892Z",
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:47:29.903Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -82039,8 +82535,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-10-21",
-        "generated_at": "2026-10-21T16:00:39.944Z",
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:32.128Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -82048,29 +82544,29 @@
         "meeting_identity": {
           "source_id": "nztr-racing-programme-guide",
           "official_source_url": "https://nztr.co.nz/sites/nztrindustry/files/2026-08/Programming%20A4%2025%20Aug.pdf",
-          "observed_at": "2026-10-21T16:00:39.944Z",
-          "successfully_verified_at": "2026-10-21T16:00:39.944Z",
+          "observed_at": "2026-10-23T15:48:32.128Z",
+          "successfully_verified_at": "2026-10-23T15:48:32.128Z",
           "acquisition_method": "automatic"
         },
         "meeting_date": {
           "source_id": "nztr-racing-programme-guide",
           "official_source_url": "https://nztr.co.nz/sites/nztrindustry/files/2026-08/Programming%20A4%2025%20Aug.pdf",
-          "observed_at": "2026-10-21T16:00:39.944Z",
-          "successfully_verified_at": "2026-10-21T16:00:39.944Z",
+          "observed_at": "2026-10-23T15:48:32.128Z",
+          "successfully_verified_at": "2026-10-23T15:48:32.128Z",
           "acquisition_method": "automatic"
         },
         "race_times": {
           "source_id": "loveracing-race-info",
           "official_source_url": "https://loveracing.nz/RaceInfo/55973/Meeting-Overview.aspx",
-          "observed_at": "2026-10-21T16:00:39.944Z",
-          "successfully_verified_at": "2026-10-21T16:00:39.944Z",
+          "observed_at": "2026-10-23T15:48:32.128Z",
+          "successfully_verified_at": "2026-10-23T15:48:32.128Z",
           "acquisition_method": "automatic"
         },
         "timetable": {
           "source_id": "loveracing-race-info",
           "official_source_url": "https://loveracing.nz/RaceInfo/55973/Meeting-Overview.aspx",
-          "observed_at": "2026-10-21T16:00:39.944Z",
-          "successfully_verified_at": "2026-10-21T16:00:39.944Z",
+          "observed_at": "2026-10-23T15:48:32.128Z",
+          "successfully_verified_at": "2026-10-23T15:48:32.128Z",
           "acquisition_method": "automatic"
         }
       },
@@ -82129,8 +82625,8 @@
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-10-21",
-        "generated_at": "2026-10-21T16:00:39.944Z",
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:32.128Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -82138,29 +82634,29 @@
         "meeting_identity": {
           "source_id": "nztr-racing-programme-guide",
           "official_source_url": "https://nztr.co.nz/sites/nztrindustry/files/2026-08/Programming%20A4%2025%20Aug.pdf",
-          "observed_at": "2026-10-21T16:00:39.944Z",
-          "successfully_verified_at": "2026-10-21T16:00:39.944Z",
+          "observed_at": "2026-10-23T15:48:32.128Z",
+          "successfully_verified_at": "2026-10-23T15:48:32.128Z",
           "acquisition_method": "automatic"
         },
         "meeting_date": {
           "source_id": "nztr-racing-programme-guide",
           "official_source_url": "https://nztr.co.nz/sites/nztrindustry/files/2026-08/Programming%20A4%2025%20Aug.pdf",
-          "observed_at": "2026-10-21T16:00:39.944Z",
-          "successfully_verified_at": "2026-10-21T16:00:39.944Z",
+          "observed_at": "2026-10-23T15:48:32.128Z",
+          "successfully_verified_at": "2026-10-23T15:48:32.128Z",
           "acquisition_method": "automatic"
         },
         "race_times": {
           "source_id": "loveracing-race-info",
           "official_source_url": "https://loveracing.nz/RaceInfo/55974/Meeting-Overview.aspx",
-          "observed_at": "2026-10-21T16:00:39.944Z",
-          "successfully_verified_at": "2026-10-21T16:00:39.944Z",
+          "observed_at": "2026-10-23T15:48:32.128Z",
+          "successfully_verified_at": "2026-10-23T15:48:32.128Z",
           "acquisition_method": "automatic"
         },
         "timetable": {
           "source_id": "loveracing-race-info",
           "official_source_url": "https://loveracing.nz/RaceInfo/55974/Meeting-Overview.aspx",
-          "observed_at": "2026-10-21T16:00:39.944Z",
-          "successfully_verified_at": "2026-10-21T16:00:39.944Z",
+          "observed_at": "2026-10-23T15:48:32.128Z",
+          "successfully_verified_at": "2026-10-23T15:48:32.128Z",
           "acquisition_method": "automatic"
         }
       },
@@ -82204,6 +82700,138 @@
         {
           "label": "Race 10",
           "post_time_local": "17:09"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "peru-monterrico-racecourse-2026-10-24",
+      "country_id": "peru",
+      "authority_id": "hipodromo-de-monterrico",
+      "racecourse_id": "monterrico-racecourse",
+      "date": "2026-10-24",
+      "timezone": "America/Lima",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "monterrico-upcoming-programmes",
+        "route_id": "monterrico-date-api-to-reunion-api",
+        "source_status": "verified",
+        "official_source_url": "https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/105525",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:04.792Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "monterrico-upcoming-programmes",
+          "official_source_url": "https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/105525",
+          "observed_at": "2026-10-23T15:48:04.792Z",
+          "successfully_verified_at": "2026-10-23T15:48:04.792Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "monterrico-upcoming-programmes",
+          "official_source_url": "https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/105525",
+          "observed_at": "2026-10-23T15:48:04.792Z",
+          "successfully_verified_at": "2026-10-23T15:48:04.792Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "monterrico-upcoming-programmes",
+          "official_source_url": "https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/105525",
+          "observed_at": "2026-10-23T15:48:04.792Z",
+          "successfully_verified_at": "2026-10-23T15:48:04.792Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "monterrico-upcoming-programmes",
+          "official_source_url": "https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/105525",
+          "observed_at": "2026-10-23T15:48:04.792Z",
+          "successfully_verified_at": "2026-10-23T15:48:04.792Z",
+          "acquisition_method": "automatic"
+        },
+        "race_names": {
+          "source_id": "monterrico-upcoming-programmes",
+          "official_source_url": "https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/105525",
+          "observed_at": "2026-10-23T15:48:04.792Z",
+          "successfully_verified_at": "2026-10-23T15:48:04.792Z",
+          "acquisition_method": "automatic"
+        },
+        "distances": {
+          "source_id": "monterrico-upcoming-programmes",
+          "official_source_url": "https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/105525",
+          "observed_at": "2026-10-23T15:48:04.792Z",
+          "successfully_verified_at": "2026-10-23T15:48:04.792Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "13:30",
+          "race_name": "Handicap",
+          "distance_m": 1000
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:00",
+          "race_name": "Condicional",
+          "distance_m": 1400
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "14:25",
+          "race_name": "Handicap",
+          "distance_m": 1000
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "14:50",
+          "race_name": "Condicional",
+          "distance_m": 1300
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "15:15",
+          "race_name": "Handicap",
+          "distance_m": 1600
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "15:40",
+          "race_name": "Jockey Club De Arequipa",
+          "distance_m": 1700
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "16:10",
+          "race_name": "Handicap",
+          "distance_m": 1000
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "16:35",
+          "race_name": "Handicap",
+          "distance_m": 1300
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "17:00",
+          "race_name": "Condicional",
+          "distance_m": 1000
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "17:30",
+          "race_name": "Handicap",
+          "distance_m": 1000
         }
       ],
       "summary_note": "Current official rolling-window race programme observation."
@@ -82365,26 +82993,900 @@
       "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
     },
     {
-      "meeting_id": "germany-deutscher-galopp-hannover-2026-10-25",
-      "country_id": "germany",
-      "authority_id": "deutscher-galopp",
-      "racecourse_id": "germany--hannover",
+      "meeting_id": "era-sharjah-racecourse-2026-10-25",
+      "country_id": "united-arab-emirates",
+      "authority_id": "emirates-racing-authority",
+      "racecourse_id": "sharjah-racecourse",
       "date": "2026-10-25",
-      "timezone": "Europe/Berlin",
-      "capability_rank": "C",
+      "timezone": "Asia/Dubai",
+      "capability_rank": "A",
       "source_trace": {
-        "source_id": "deutscher-galopp-calendar",
-        "route_id": "deutscher-galopp-annual-calendar-pdf",
+        "source_id": "era-racecard-public-timetable",
+        "route_id": null,
         "source_status": "verified",
-        "official_source_url": "https://www.deutscher-galopp.de/gr-wAssets/docs/renntermine2026.pdf",
+        "official_source_url": "https://emiratesracing.com/racecard/2026-10-25/1/declarations",
         "source_label": null,
         "extraction_method": "adapter",
         "source_snapshot_path": null,
         "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
       },
       "freshness": {
-        "last_checked_date": "2026-10-20",
-        "generated_at": "2026-10-20T10:29:31.991Z",
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:47:12.659Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "14:30"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "15:00"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "15:30"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "16:00"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "16:30"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "17:00"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "france-galop-agen-racecourse-2026-10-25",
+      "country_id": "france",
+      "authority_id": "france-galop",
+      "racecourse_id": "agen-racecourse",
+      "date": "2026-10-25",
+      "timezone": "Europe/Paris",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/sites/default/files/programs/20261025_Agen.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:13.973Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-sud-ouest/programme-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-sud-ouest/programme-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs/20261025_Agen.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs/20261025_Agen.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "13:40"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:10"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "14:40"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "15:10"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "15:40"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "16:10"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "16:40"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "france-letrot-chartres-racecourse-2026-10-25",
+      "country_id": "france",
+      "authority_id": "letrot",
+      "racecourse_id": "chartres-racecourse",
+      "date": "2026-10-25",
+      "timezone": "Europe/Paris",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20261025_Hippodrome%20Chartres.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:13.973Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-ile-de-france-haute-normandie/programme-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-ile-de-france-haute-normandie/programme-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20261025_Hippodrome%20Chartres.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20261025_Hippodrome%20Chartres.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "13:30"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:00"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "14:30"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "15:00"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "15:30"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "16:00"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "16:40"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "17:10"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "france-letrot-chatelaillon-la-rochelle-racecourse-2026-10-25",
+      "country_id": "france",
+      "authority_id": "letrot",
+      "racecourse_id": "chatelaillon-la-rochelle-racecourse",
+      "date": "2026-10-25",
+      "timezone": "Europe/Paris",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/sites/default/files/programs/20261025_Chatelaillon%20%28BIS%29.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:13.973Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-sud-ouest/programme-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-sud-ouest/programme-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs/20261025_Chatelaillon%20%28BIS%29.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs/20261025_Chatelaillon%20%28BIS%29.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "14:00"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:30"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "15:00"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "15:30"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "16:00"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "16:30"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "17:00"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "france-letrot-la-capelle-racecourse-2026-10-25",
+      "country_id": "france",
+      "authority_id": "letrot",
+      "racecourse_id": "la-capelle-racecourse",
+      "date": "2026-10-25",
+      "timezone": "Europe/Paris",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20261025_Hippodrome%20La%20Capelle.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:13.973Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-nord/programme-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-nord/programme-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20261025_Hippodrome%20La%20Capelle.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20261025_Hippodrome%20La%20Capelle.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "13:05"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "13:35"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "14:05"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "14:35"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "15:05"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "15:35"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "16:05"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "16:35"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "17:05"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "france-letrot-le-mont-st-michel-racecourse-2026-10-25",
+      "country_id": "france",
+      "authority_id": "letrot",
+      "racecourse_id": "le-mont-st-michel-racecourse",
+      "date": "2026-10-25",
+      "timezone": "Europe/Paris",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20261025_Hippodrome%20Le%20Mont-St-Michel.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:13.973Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-basse-normandie/programme-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-basse-normandie/programme-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20261025_Hippodrome%20Le%20Mont-St-Michel.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20261025_Hippodrome%20Le%20Mont-St-Michel.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "12:30"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "13:00"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "13:30"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "14:00"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "14:30"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "15:00"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "15:30"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "16:00"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "16:30"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "17:00"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "france-letrot-montauban-racecourse-2026-10-25",
+      "country_id": "france",
+      "authority_id": "letrot",
+      "racecourse_id": "montauban-racecourse",
+      "date": "2026-10-25",
+      "timezone": "Europe/Paris",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/sites/default/files/programs/20261025_Montauban.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:13.973Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-sud-ouest/programme-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-sud-ouest/programme-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs/20261025_Montauban.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs/20261025_Montauban.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "13:30"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:00"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "14:30"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "15:00"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "15:30"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "16:00"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "16:30"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "17:00"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "france-letrot-nantes-racecourse-2026-10-25",
+      "country_id": "france",
+      "authority_id": "letrot",
+      "racecourse_id": "nantes-racecourse",
+      "date": "2026-10-25",
+      "timezone": "Europe/Paris",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20261025_Hippodrome%20Nantes.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:13.973Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-ouest/programme-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-ouest/programme-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20261025_Hippodrome%20Nantes.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20261025_Hippodrome%20Nantes.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "12:15"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "12:45"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "13:15"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "13:45"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "14:15"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "14:45"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "15:15"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "15:45"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "16:15"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "france-letrot-saint-galmier-racecourse-2026-10-25",
+      "country_id": "france",
+      "authority_id": "letrot",
+      "racecourse_id": "saint-galmier-racecourse",
+      "date": "2026-10-25",
+      "timezone": "Europe/Paris",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20261025_Hippodrome%20Saint-Galmier.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:13.973Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-centre-est/programme-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-centre-est/programme-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20261025_Hippodrome%20Saint-Galmier.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs-fede/20261025_Hippodrome%20Saint-Galmier.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "14:00"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:30"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "15:00"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "15:30"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "16:00"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "16:30"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "17:00"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "17:30"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "18:00"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "france-letrot-salon-de-provence-racecourse-2026-10-25",
+      "country_id": "france",
+      "authority_id": "letrot",
+      "racecourse_id": "salon-de-provence-racecourse",
+      "date": "2026-10-25",
+      "timezone": "Europe/Paris",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "fnch-national-calendar-directory",
+        "route_id": "fnch-regional-programme-pdf",
+        "source_status": "verified",
+        "official_source_url": "https://www.fnch.fr/sites/default/files/programs/20261025_SALON-DE-PROVENCE_TROT.pdf",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:13.973Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-sud-est/programmes-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/federation-sud-est/programmes-des-courses",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs/20261025_SALON-DE-PROVENCE_TROT.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "fnch-national-calendar-directory",
+          "official_source_url": "https://www.fnch.fr/sites/default/files/programs/20261025_SALON-DE-PROVENCE_TROT.pdf",
+          "observed_at": "2026-10-23T15:48:13.973Z",
+          "successfully_verified_at": "2026-10-23T15:48:13.973Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "10:54"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "11:24"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "11:56"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "12:28"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "13:05"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "13:35"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "14:05"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "14:35"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "germany-deutscher-galopp-hannover-2026-10-25",
+      "country_id": "germany",
+      "authority_id": "deutscher-galopp",
+      "racecourse_id": "germany--hannover",
+      "date": "2026-10-25",
+      "timezone": "Europe/Berlin",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "deutscher-galopp-calendar",
+        "route_id": "deutscher-galopp-calendar-table",
+        "source_status": "verified",
+        "official_source_url": "https://www.deutscher-galopp.de/gr/renntage/rennkalender.php?art=&jahr=2026&land=8&ort=&laengevon=&laengebis=&von=23.+Oktober+2026&von_submit=2026%2F10%2F23&bis=25.+Oktober+2026&bis_submit=2026%2F10%2F25",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:47.628Z",
         "stale_after_date": null,
         "freshness_note": "Upserted from a verified official rolling-window observation."
       },
@@ -82392,72 +83894,338 @@
         "meeting_identity": {
           "source_id": "deutscher-galopp-calendar",
           "official_source_url": "https://www.deutscher-galopp.de/gr-wAssets/docs/renntermine2026.pdf",
-          "observed_at": "2026-10-20T10:29:31.991Z",
-          "successfully_verified_at": "2026-10-20T10:29:31.991Z",
+          "observed_at": "2026-10-23T15:48:47.628Z",
+          "successfully_verified_at": "2026-10-23T15:48:47.628Z",
           "acquisition_method": "automatic"
         },
         "meeting_date": {
           "source_id": "deutscher-galopp-calendar",
           "official_source_url": "https://www.deutscher-galopp.de/gr-wAssets/docs/renntermine2026.pdf",
-          "observed_at": "2026-10-20T10:29:31.991Z",
-          "successfully_verified_at": "2026-10-20T10:29:31.991Z",
+          "observed_at": "2026-10-23T15:48:47.628Z",
+          "successfully_verified_at": "2026-10-23T15:48:47.628Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "deutscher-galopp-calendar",
+          "official_source_url": "https://www.deutscher-galopp.de/gr/renntage/rennkalender.php?art=&jahr=2026&land=8&ort=&laengevon=&laengebis=&von=23.+Oktober+2026&von_submit=2026%2F10%2F23&bis=25.+Oktober+2026&bis_submit=2026%2F10%2F25",
+          "observed_at": "2026-10-23T15:48:47.628Z",
+          "successfully_verified_at": "2026-10-23T15:48:47.628Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "deutscher-galopp-calendar",
+          "official_source_url": "https://www.deutscher-galopp.de/gr/renntage/rennkalender.php?art=&jahr=2026&land=8&ort=&laengevon=&laengebis=&von=23.+Oktober+2026&von_submit=2026%2F10%2F23&bis=25.+Oktober+2026&bis_submit=2026%2F10%2F25",
+          "observed_at": "2026-10-23T15:48:47.628Z",
+          "successfully_verified_at": "2026-10-23T15:48:47.628Z",
           "acquisition_method": "automatic"
         }
       },
       "timetable_rows": [
         {
           "label": "Race 1",
-          "post_time_local": null,
-          "race_name": "Herbst-Stutenpreis",
-          "distance_m": 2200
+          "post_time_local": "10:39",
+          "race_name": "Alson Trophy",
+          "distance_m": 1600
         },
         {
           "label": "Race 2",
-          "post_time_local": null,
-          "race_name": "Youngster Fillies Cup",
+          "post_time_local": "11:09",
+          "race_name": "ARQANA Youngster Fillies Cup",
           "distance_m": 1400
         },
         {
           "label": "Race 3",
-          "post_time_local": null,
-          "race_name": "Youngster Steher Cup",
+          "post_time_local": "11:40",
+          "race_name": "Starkmacherin der Region - Youngster Steher Cup",
           "distance_m": 2000
         },
         {
           "label": "Race 4",
-          "post_time_local": null,
-          "race_name": "4. Rennen",
-          "distance_m": 1600
+          "post_time_local": "12:12",
+          "race_name": "SHADWELL STALLIONS Herbst-Stutenpreis - Viererwette mit 10.000 € Poolgarantie",
+          "distance_m": 2200
         },
         {
           "label": "Race 5",
-          "post_time_local": null,
-          "race_name": "5. Rennen",
-          "distance_m": 1600
+          "post_time_local": "12:50",
+          "race_name": "Sea The Moon-Preis",
+          "distance_m": 2200
         },
         {
           "label": "Race 6",
-          "post_time_local": null,
-          "race_name": "6. Rennen",
-          "distance_m": 2000
+          "post_time_local": "13:20",
+          "race_name": "Torquator Tasso Cup",
+          "distance_m": 1600
         },
         {
           "label": "Race 7",
-          "post_time_local": null,
-          "race_name": "7. Rennen",
+          "post_time_local": "14:00",
+          "race_name": "The Coolmore Gleneagles-Trophy - Viererwette mit 10.000 € Poolgarantie",
           "distance_m": 1750
         },
         {
           "label": "Race 8",
-          "post_time_local": null,
-          "race_name": "8. Rennen",
+          "post_time_local": "14:30",
+          "race_name": "Preis der Mehl-Mülhens-Stiftung",
           "distance_m": 2000
         },
         {
           "label": "Race 9",
-          "post_time_local": null,
-          "race_name": "9. Rennen",
-          "distance_m": 2200
+          "post_time_local": "15:00",
+          "race_name": "Darley Cup",
+          "distance_m": 2000
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "hkjc-sha-tin-racecourse-2026-10-25",
+      "country_id": "hong-kong",
+      "authority_id": "hkjc",
+      "racecourse_id": "sha-tin-racecourse",
+      "date": "2026-10-25",
+      "timezone": "Asia/Hong_Kong",
+      "capability_rank": "A+",
+      "source_trace": {
+        "source_id": "hkjc-racecard-public-timetable",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://racing.hkjc.com/en-us/local/information/racecard?racedate=2026/10/25&Racecourse=ST&RaceNo=1",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:47:00.628Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "12:40",
+          "race_name": "LUKFOOK JEWELLERY RHAPSODY ON THE LUO RIVER GODDESS COLLECTION HANDICAP",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "A Course"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "13:10",
+          "race_name": "LUKFOOK JEWELLERY WEDDING COLLECTION HANDICAP",
+          "distance_m": 1400,
+          "surface": "Turf",
+          "course_label": "A Course"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "13:40",
+          "race_name": "LUKFOOK JEWELLERY LOVE IS BEAUTY COLLECTION HANDICAP",
+          "distance_m": 1600,
+          "surface": "Turf",
+          "course_label": "A Course"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "14:15",
+          "race_name": "LUKFOOK JEWELLERY MISS HONG KONG LOVE YOURSELF COLLECTION HANDICAP",
+          "distance_m": 2000,
+          "surface": "Turf",
+          "course_label": "A Course"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "15:05",
+          "race_name": "LUKFOOK JEWELLERY DIABLING SHIMMERING GOLD COLLECTION HANDICAP",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "A Course"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "15:35",
+          "race_name": "LUKFOOK JEWELLERY NIGHT BANQUET IN TANG PALACE COLLECTION HANDICAP",
+          "distance_m": 1000,
+          "surface": "Turf",
+          "course_label": "A Course"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "16:05",
+          "race_name": "THE LUKFOOK JEWELLERY PREMIER BOWL (HANDICAP)",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "A Course"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "16:40",
+          "race_name": "LUKFOOK JEWELLERY HEIRLOOM FORTUNE COLLECTION HANDICAP",
+          "distance_m": 1400,
+          "surface": "Turf",
+          "course_label": "A Course"
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "17:10",
+          "race_name": "LUKFOOK JOAILLERIE HANDICAP",
+          "distance_m": 1600,
+          "surface": "Turf",
+          "course_label": "A Course"
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "17:45",
+          "race_name": "LUKFOOK JEWELLERY LONGMEN VAJRA COLLECTION HANDICAP",
+          "distance_m": 1200,
+          "surface": "Turf",
+          "course_label": "A Course"
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "18:20",
+          "race_name": "LUKFOOK JEWELLERY BELOVED COLLECTION HANDICAP",
+          "distance_m": 1400,
+          "surface": "Turf",
+          "course_label": "A Course"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "ireland-ireland--galway-2026-10-25",
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "racecourse_id": "ireland--galway",
+      "date": "2026-10-25",
+      "timezone": "Europe/Dublin",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "hri-racecards-month",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.hri.ie/racecards",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:02.861Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "12:32",
+          "race_name": "The Gerry Coyne Memorial Irish EBF Beginners Steeplechase"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "13:07",
+          "race_name": "The COLM QUINN BMW Handicap Steeplechase"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "13:42",
+          "race_name": "The Brasserie On The Corner Handicap Steeplechase"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "14:17",
+          "race_name": "The COLM QUINN BMW Mares Maiden Hurdle"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "14:50",
+          "race_name": "The Medical Technology Ireland Expo Galway Handicap Hurdle"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "15:20",
+          "race_name": "The Supermac`s Rated Novice Hurdle"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "15:56",
+          "race_name": "The Glenlo Abbey Hotel & Estate Maiden Hurdle"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "16:30",
+          "race_name": "The Tom Dempsey Flooring 4-Y-O Fillies (Pro/Am) Flat Race"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "ireland-ireland--wexford-2026-10-25",
+      "country_id": "ireland",
+      "authority_id": "horse-racing-ireland",
+      "racecourse_id": "ireland--wexford",
+      "date": "2026-10-25",
+      "timezone": "Europe/Dublin",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "hri-racecards-month",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://www.hri.ie/racecards",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:02.861Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "12:50",
+          "race_name": "The William Hill Challenge Series Irish EBF Beginners Steeplechase"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "13:25",
+          "race_name": "The Jim And Kay Whitty Memorial Handicap Steeplechase"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "14:00",
+          "race_name": "The Irish Stallion Farms EBF Academy Hurdle"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "14:35",
+          "race_name": "The William Hill Challenge Series Maiden Hurdle"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "15:07",
+          "race_name": "The Download The Tote App Handicap Hurdle"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "15:40",
+          "race_name": "The Bet With Tote On Racing & Sports Maiden Hurdle"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "16:10",
+          "race_name": "The Irish Stallion Farms EBF Mares Hurdle"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "16:40",
+          "race_name": "The Irish Stallion Farms EBF Mares (Pro/Am) Flat Race"
         }
       ],
       "summary_note": "Current official rolling-window race programme observation."
@@ -82929,6 +84697,100 @@
         }
       ],
       "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
+    },
+    {
+      "meeting_id": "kra-seoul-racecourse-2026-10-25",
+      "country_id": "south-korea",
+      "authority_id": "korea-racing-authority",
+      "racecourse_id": "seoul-racecourse",
+      "date": "2026-10-25",
+      "timezone": "Asia/Seoul",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "kra-today-race",
+        "route_id": null,
+        "source_status": "verified",
+        "official_source_url": "https://race.kra.co.kr/thisweekrace/ThisWeekBaljuTime.do",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:47:29.903Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "10:35",
+          "race_name": "1 서울 국6등급 성별오픈 연령오픈 별정A R0~0 1 서울 국6등급",
+          "distance_m": 1400
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "11:00",
+          "race_name": "2 서울 국6등급 성별오픈 연령오픈 별정A R0~0 2 서울 국6등급",
+          "distance_m": 1400
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "11:25",
+          "race_name": "3 서울 국5등급 성별오픈 연령오픈 핸디캡 R1~35 3 서울 국5등급",
+          "distance_m": 1300
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "12:05",
+          "race_name": "4 서울 혼3등급 성별오픈 연령오픈 핸디캡 R1~65 4 서울 혼3등급",
+          "distance_m": 1400
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "13:10",
+          "race_name": "5 서울 국5등급 암 연령오픈 핸디캡 R1~35 5 서울 국5등급",
+          "distance_m": 1400
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "14:00",
+          "race_name": "6 서울 국5등급 성별오픈 연령오픈 핸디캡 R1~35 6 서울 국5등급",
+          "distance_m": 1200
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "14:50",
+          "race_name": "7 서울 국4등급 성별오픈 연령오픈 핸디캡 R1~50 7 서울 국4등급",
+          "distance_m": 1700
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "15:40",
+          "race_name": "8 서울 혼4등급 성별오픈 연령오픈 핸디캡 R0~50 8 서울 혼4등급",
+          "distance_m": 1800
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "16:55",
+          "race_name": "9 서울 2등급 성별오픈 연령오픈 국산마한정 핸디캡 R1~80 9 서울 2등급",
+          "distance_m": 2000
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "17:25",
+          "race_name": "10 서울 혼4등급 성별오픈 연령오픈 핸디캡 R0~50 10 서울 혼4등급",
+          "distance_m": 1200
+        },
+        {
+          "label": "Race 11",
+          "post_time_local": "17:55",
+          "race_name": "11 서울 혼3등급 성별오픈 연령오픈 핸디캡 R1~65 11 서울 혼3등급",
+          "distance_m": 1400
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
     },
     {
       "meeting_id": "nar-kanazawa-racecourse-2026-10-25",
@@ -83511,6 +85373,228 @@
         }
       ],
       "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
+    },
+    {
+      "meeting_id": "new-zealand-thoroughbred-trentham-racecourse-2026-10-25",
+      "country_id": "new-zealand",
+      "authority_id": "new-zealand-thoroughbred-racing",
+      "racecourse_id": "trentham-racecourse",
+      "date": "2026-10-25",
+      "timezone": "Pacific/Auckland",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "loveracing-race-info",
+        "route_id": "loveracing-meeting-overview",
+        "source_status": "verified",
+        "official_source_url": "https://loveracing.nz/RaceInfo/55975/Meeting-Overview.aspx",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:32.128Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "nztr-racing-programme-guide",
+          "official_source_url": "https://nztr.co.nz/sites/nztrindustry/files/2026-08/Programming%20A4%2025%20Aug.pdf",
+          "observed_at": "2026-10-23T15:48:32.128Z",
+          "successfully_verified_at": "2026-10-23T15:48:32.128Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "nztr-racing-programme-guide",
+          "official_source_url": "https://nztr.co.nz/sites/nztrindustry/files/2026-08/Programming%20A4%2025%20Aug.pdf",
+          "observed_at": "2026-10-23T15:48:32.128Z",
+          "successfully_verified_at": "2026-10-23T15:48:32.128Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "loveracing-race-info",
+          "official_source_url": "https://loveracing.nz/RaceInfo/55975/Meeting-Overview.aspx",
+          "observed_at": "2026-10-23T15:48:32.128Z",
+          "successfully_verified_at": "2026-10-23T15:48:32.128Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "loveracing-race-info",
+          "official_source_url": "https://loveracing.nz/RaceInfo/55975/Meeting-Overview.aspx",
+          "observed_at": "2026-10-23T15:48:32.128Z",
+          "successfully_verified_at": "2026-10-23T15:48:32.128Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "12:59"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "13:32"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "14:05"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "14:40"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "15:15"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "15:50"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "16:26"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "16:59"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
+    },
+    {
+      "meeting_id": "peru-monterrico-racecourse-2026-10-25",
+      "country_id": "peru",
+      "authority_id": "hipodromo-de-monterrico",
+      "racecourse_id": "monterrico-racecourse",
+      "date": "2026-10-25",
+      "timezone": "America/Lima",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "monterrico-upcoming-programmes",
+        "route_id": "monterrico-date-api-to-reunion-api",
+        "source_status": "verified",
+        "official_source_url": "https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/105526",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:04.792Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "monterrico-upcoming-programmes",
+          "official_source_url": "https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/105526",
+          "observed_at": "2026-10-23T15:48:04.792Z",
+          "successfully_verified_at": "2026-10-23T15:48:04.792Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "monterrico-upcoming-programmes",
+          "official_source_url": "https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/105526",
+          "observed_at": "2026-10-23T15:48:04.792Z",
+          "successfully_verified_at": "2026-10-23T15:48:04.792Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "monterrico-upcoming-programmes",
+          "official_source_url": "https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/105526",
+          "observed_at": "2026-10-23T15:48:04.792Z",
+          "successfully_verified_at": "2026-10-23T15:48:04.792Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "monterrico-upcoming-programmes",
+          "official_source_url": "https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/105526",
+          "observed_at": "2026-10-23T15:48:04.792Z",
+          "successfully_verified_at": "2026-10-23T15:48:04.792Z",
+          "acquisition_method": "automatic"
+        },
+        "race_names": {
+          "source_id": "monterrico-upcoming-programmes",
+          "official_source_url": "https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/105526",
+          "observed_at": "2026-10-23T15:48:04.792Z",
+          "successfully_verified_at": "2026-10-23T15:48:04.792Z",
+          "acquisition_method": "automatic"
+        },
+        "distances": {
+          "source_id": "monterrico-upcoming-programmes",
+          "official_source_url": "https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/105526",
+          "observed_at": "2026-10-23T15:48:04.792Z",
+          "successfully_verified_at": "2026-10-23T15:48:04.792Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "12:00",
+          "race_name": "Handicap",
+          "distance_m": 1600
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "14:00",
+          "race_name": "Condicional",
+          "distance_m": 1800
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "14:25",
+          "race_name": "Handicap",
+          "distance_m": 1800
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "14:50",
+          "race_name": "Handicap",
+          "distance_m": 1000
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "15:15",
+          "race_name": "Condicional",
+          "distance_m": 1200
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "15:40",
+          "race_name": "Mariano Ignacio Prado",
+          "distance_m": 2000
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "16:10",
+          "race_name": "Handicap",
+          "distance_m": 1000
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "16:35",
+          "race_name": "Condicional",
+          "distance_m": 1000
+        },
+        {
+          "label": "Race 9",
+          "post_time_local": "17:00",
+          "race_name": "Condicional",
+          "distance_m": 1300
+        },
+        {
+          "label": "Race 10",
+          "post_time_local": "17:30",
+          "race_name": "Handicap",
+          "distance_m": 1000
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
     },
     {
       "meeting_id": "banei-obihiro-racecourse-2026-10-26",
@@ -84147,6 +86231,96 @@
         }
       ],
       "summary_note": "Deterministic public-safe race programme fields reconciled from the official source."
+    },
+    {
+      "meeting_id": "new-zealand-thoroughbred-te-rapa-racecourse-2026-10-26",
+      "country_id": "new-zealand",
+      "authority_id": "new-zealand-thoroughbred-racing",
+      "racecourse_id": "te-rapa-racecourse",
+      "date": "2026-10-26",
+      "timezone": "Pacific/Auckland",
+      "capability_rank": "A",
+      "source_trace": {
+        "source_id": "loveracing-race-info",
+        "route_id": "loveracing-meeting-overview",
+        "source_status": "verified",
+        "official_source_url": "https://loveracing.nz/RaceInfo/55976/Meeting-Overview.aspx",
+        "source_label": null,
+        "extraction_method": "adapter",
+        "source_snapshot_path": null,
+        "normalized_from_path": "scripts/timetable/apply-official-rolling-observations.mjs"
+      },
+      "freshness": {
+        "last_checked_date": "2026-10-23",
+        "generated_at": "2026-10-23T15:48:32.128Z",
+        "stale_after_date": null,
+        "freshness_note": "Upserted from a verified official rolling-window observation."
+      },
+      "evidence_support": {
+        "meeting_identity": {
+          "source_id": "nztr-racing-programme-guide",
+          "official_source_url": "https://nztr.co.nz/sites/nztrindustry/files/2026-08/Programming%20A4%2025%20Aug.pdf",
+          "observed_at": "2026-10-23T15:48:32.128Z",
+          "successfully_verified_at": "2026-10-23T15:48:32.128Z",
+          "acquisition_method": "automatic"
+        },
+        "meeting_date": {
+          "source_id": "nztr-racing-programme-guide",
+          "official_source_url": "https://nztr.co.nz/sites/nztrindustry/files/2026-08/Programming%20A4%2025%20Aug.pdf",
+          "observed_at": "2026-10-23T15:48:32.128Z",
+          "successfully_verified_at": "2026-10-23T15:48:32.128Z",
+          "acquisition_method": "automatic"
+        },
+        "race_times": {
+          "source_id": "loveracing-race-info",
+          "official_source_url": "https://loveracing.nz/RaceInfo/55976/Meeting-Overview.aspx",
+          "observed_at": "2026-10-23T15:48:32.128Z",
+          "successfully_verified_at": "2026-10-23T15:48:32.128Z",
+          "acquisition_method": "automatic"
+        },
+        "timetable": {
+          "source_id": "loveracing-race-info",
+          "official_source_url": "https://loveracing.nz/RaceInfo/55976/Meeting-Overview.aspx",
+          "observed_at": "2026-10-23T15:48:32.128Z",
+          "successfully_verified_at": "2026-10-23T15:48:32.128Z",
+          "acquisition_method": "automatic"
+        }
+      },
+      "timetable_rows": [
+        {
+          "label": "Race 1",
+          "post_time_local": "12:48"
+        },
+        {
+          "label": "Race 2",
+          "post_time_local": "13:22"
+        },
+        {
+          "label": "Race 3",
+          "post_time_local": "13:55"
+        },
+        {
+          "label": "Race 4",
+          "post_time_local": "14:30"
+        },
+        {
+          "label": "Race 5",
+          "post_time_local": "15:05"
+        },
+        {
+          "label": "Race 6",
+          "post_time_local": "15:43"
+        },
+        {
+          "label": "Race 7",
+          "post_time_local": "16:18"
+        },
+        {
+          "label": "Race 8",
+          "post_time_local": "16:53"
+        }
+      ],
+      "summary_note": "Current official rolling-window race programme observation."
     },
     {
       "meeting_id": "nar-oi-racecourse-2026-10-27",
