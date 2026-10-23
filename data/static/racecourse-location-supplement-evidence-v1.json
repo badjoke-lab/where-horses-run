@@ -1,6 +1,6 @@
 {
   "schema_version": "racecourse-location-supplement-evidence-v1",
-  "reviewed_at": "2026-10-20",
+  "reviewed_at": "2026-10-23",
   "entries": [
     {
       "id": "abbeville-racecourse",
@@ -2767,6 +2767,60 @@
       "address_observed": "Racecourse operator lists 462 Boulevard du Cami Salié, 64000 Pau, France; also confirmed by https://www.pau.fr/hippodrome-du-pont-long",
       "coordinate_method": "Pau municipality-attributed racecourse location point on published place listing, cross-checked with racecourse operator contact address and Pau municipal listing. The track/venue is Hippodrome du Pont-Long, not a different Pau sports complex.",
       "precision_note": "Site-level racecourse location, not asserted as entrance, surveyed racing-surface centroid or grandstand."
+    },
+    {
+      "id": "chateaubriant-racecourse",
+      "coordinate_source_url": "https://www.cirkwi.com/fr/point-interet/461801-hippodrome-de-la-metairie-neuve",
+      "coordinate_observed": "47.7384556, -1.3905157",
+      "address_source_url": "https://www.hippodrome-chateaubriant.fr/contact",
+      "address_observed": "Hippodrome de la Métairie Neuve, La Métairie Neuve, 44110 Châteaubriant, France",
+      "coordinate_method": "Pays de la Loire tourism-linked named Hippodrome de la Métairie Neuve POI cross-checked with the operator's physical venue address",
+      "precision_note": "racecourse venue POI, not surveyed centreline"
+    },
+    {
+      "id": "chatelaillon-la-rochelle-racecourse",
+      "coordinate_source_url": "https://www.nouvelle-aquitaine-tourisme.com/fr/sit/poi/2129210/hippodrome-chatelaillon-plage/94587",
+      "coordinate_observed": "46.075776, -1.079599",
+      "address_source_url": "https://www.nouvelle-aquitaine-tourisme.com/fr/sit/poi/2129210/hippodrome-chatelaillon-plage/94587",
+      "address_observed": "Hippodrome de Châtelaillon-Plage, 9 rue des Sulkys, 17340 Châtelaillon-Plage, France",
+      "coordinate_method": "Châtelaillon-Plage tourism office named racecourse POI with street address and paired decimal coordinates",
+      "precision_note": "tourism-office venue POI, not surveyed centreline"
+    },
+    {
+      "id": "grenade-sur-garonne-racecourse",
+      "coordinate_source_url": "https://tourisme.hautstolosans.fr/fr/diffusio/equipements-de-loisirs/hippodrome-de-marianne-grenade_TFOLOIMID031V50B4Z6",
+      "coordinate_observed": "43.7509, 1.27297",
+      "address_source_url": "https://hippodromegrenade.com/contact/",
+      "address_observed": "Hippodrome de Marianne, Route de Montaigut, 31330 Grenade, France",
+      "coordinate_method": "Hauts Tolosans official tourism POI expressly names Hippodrome de Marianne and provides coordinates; racecourse contact corroborates venue",
+      "precision_note": "racecourse tourism POI; not surveyed track centreline"
+    },
+    {
+      "id": "le-mont-st-michel-racecourse",
+      "coordinate_source_url": "https://www.cirkwi.com/fr/point-interet/2741911-hippodrome-maurice-jan-pontorson",
+      "coordinate_observed": "48.5839, -1.51404",
+      "address_source_url": "https://www.montsaintmichel.net/hippodrome-du-mont-saint-michel/",
+      "address_observed": "Hippodrome Maurice-Jan, Moidrey, Pontorson, Normandy, France",
+      "coordinate_method": "Municipal Pontorson-provided named Hippodrome Maurice-Jan POI with coordinates, cross-checked with Mont-Saint-Michel venue identification",
+      "precision_note": "venue POI, not surveyed centreline"
+    },
+    {
+      "id": "meslay-du-maine-racecourse",
+      "coordinate_source_url": "https://mapcarta.com/fr/W729206936",
+      "coordinate_observed": "47.95006, -0.53323",
+      "address_source_url": "https://www.guidedugalop.fr/professionnels/c_i-1_t-organisations/g_i-7_t-hippodromes-societes-des-courses/p_i-6535_t-meslay-du-maine-soc-des-courses-de/",
+      "address_observed": "Hippodrome de la Bretonnière, Meslay-du-Maine, Mayenne, France",
+      "coordinate_method": "Explicitly named Hippodrome de la Bretonnière sports-centre OSM way point cross-checked with the racing society; not the broader commune centroid",
+      "precision_note": "named venue mapping; alternate national-sports-index point differs approximately one kilometre, so site-center precision remains provisional"
+    },
+    {
+      "id": "saint-galmier-racecourse",
+      "coordinate_source_url": "https://mapcarta.com/W177432810",
+      "coordinate_observed": "45.59906, 4.29719",
+      "address_source_url": "https://hippodrome-saint-galmier.fr/contact",
+      "address_observed": "Hippodrome Joseph Desjoyaux, 52 route de Cuzieu, 42330 Saint-Galmier, France",
+      "coordinate_method": "Explicitly named Hippodrome Joseph Desjoyaux OSM venue mapping cross-checked against racecourse operator street address",
+      "precision_note": "named venue point, not surveyed centreline"
     }
   ]
 }
