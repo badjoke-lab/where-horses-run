@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fetchSorecHtml } from './sorec-http-fetch.mjs';
 import {
   SOREC_PROGRAMME_REUNION_URL,
   SOREC_SOURCE_ID,
@@ -32,24 +33,6 @@ function plusDays(date, count) {
   const value = new Date(`${date}T00:00:00Z`);
   value.setUTCDate(value.getUTCDate() + count);
   return value.toISOString().slice(0, 10);
-}
-
-async function fetchHtml(url, label) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 20_000);
-  try {
-    const response = await fetch(url, {
-      headers: {
-        'user-agent': 'WhereHorsesRun/1.0 (+https://whr.badjoke-lab.com/)',
-        accept: 'text/html,application/xhtml+xml',
-      },
-      signal: controller.signal,
-    });
-    if (!response.ok) throw new Error(`${label} returned HTTP ${response.status}`);
-    return await response.text();
-  } finally {
-    clearTimeout(timer);
-  }
 }
 
 function canonicalMeetings(file) {
@@ -87,16 +70,11 @@ let acquisitionAttempt = {
   error_code: null,
 };
 
+let programmeHtml = null;
 try {
-  const html = fixture
+  programmeHtml = fixture
     ? fs.readFileSync(path.resolve(fixture), 'utf8')
-    : await fetchHtml(SOREC_PROGRAMME_REUNION_URL, 'SOREC Programme Réunion');
-  ({ candidate, diagnostics } = buildSorecProgrammeCandidate({
-    html,
-    checkedAt: generatedAt,
-    startDate,
-    endDateExclusive,
-  }));
+    : await fetchSorecHtml(SOREC_PROGRAMME_REUNION_URL, 'SOREC Programme Réunion');
 } catch (error) {
   if (fixture) throw error;
   acquisitionAttempt = {
@@ -120,6 +98,17 @@ try {
   };
 }
 
+// Parse separately: an unexpected HTML schema must not be mislabeled as a
+// network outage. Existing venue/parser fail-closed guards remain unchanged.
+if (programmeHtml !== null) {
+  ({ candidate, diagnostics } = buildSorecProgrammeCandidate({
+    html: programmeHtml,
+    checkedAt: generatedAt,
+    startDate,
+    endDateExclusive,
+  }));
+}
+
 if (acquisitionAttempt.status === 'success' && diagnostics.unknown_venues.length > 0) {
   throw new Error(`SOREC unknown venue(s) in requested window: ${JSON.stringify(diagnostics.unknown_venues)}`);
 }
@@ -136,7 +125,7 @@ let nonRunningDiagnostics = {
 try {
   const nonRunningHtml = nonRunningFixture
     ? fs.readFileSync(path.resolve(nonRunningFixture), 'utf8')
-    : await fetchHtml(SOREC_NON_RUNNING_CALENDAR_URL, 'SOREC status-bearing calendar');
+    : await fetchSorecHtml(SOREC_NON_RUNNING_CALENDAR_URL, 'SOREC status-bearing calendar');
   const nonRunning = buildSorecConfirmedNonRunningRecords({
     html: nonRunningHtml,
     canonicalMeetings: canonicalMeetings(canonicalPath),
