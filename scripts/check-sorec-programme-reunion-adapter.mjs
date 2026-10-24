@@ -9,6 +9,40 @@ import {
 } from './timetable/sorec-programme-reunion-core.mjs';
 import { deriveBestAvailableRank } from './timetable/best-available-rank.mjs';
 
+
+import { fetchSorecHtml, mayRetrySorecFetch } from './timetable/sorec-http-fetch.mjs';
+
+const response = (status, body = '') => ({ok: status >= 200 && status < 300,status,text: async () => body});
+assert.equal(mayRetrySorecFetch({httpStatus:503}),true);
+for(const status of [403,404,429]) assert.equal(mayRetrySorecFetch({httpStatus:status}),false);
+
+let requests=0;const waits=[];
+const transient=await fetchSorecHtml(SOREC_PROGRAMME_REUNION_URL,'SOREC test',{
+  request:async () => {requests++;return response(requests===1?503:200,'<h1>Programme Réunion</h1>');},
+  sleep:async ms=>{waits.push(ms);},
+  timeoutMs:1000,
+});
+assert.equal(transient,'<h1>Programme Réunion</h1>');
+assert.equal(requests,2);
+assert.deepEqual(waits,[1200]);
+
+for(const code of [403,404,429]){
+  let attempts=0;
+  await assert.rejects(fetchSorecHtml(SOREC_PROGRAMME_REUNION_URL,'SOREC test',{
+    request:async()=>{attempts++;return response(code);},
+    sleep:async()=>{throw Error('must not retry forbidden/limited sources');},
+    timeoutMs:1000,
+  }), new RegExp('HTTP '+code));
+  assert.equal(attempts,1, `HTTP ${code} must not be retried`);
+}
+requests=0;
+await assert.rejects(fetchSorecHtml(SOREC_PROGRAMME_REUNION_URL,'SOREC test',{
+  request:async()=>{requests++;return response(503);},
+  sleep:async()=>{},
+  timeoutMs:1000,
+}), /HTTP 503/);
+assert.equal(requests,2, 'persistent 503 must stop after one retry');
+
 const fixturePath = 'data/fixtures/sorec-programme-reunion-observed-table-v1.html';
 const html = fs.readFileSync(fixturePath, 'utf8');
 
