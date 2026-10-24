@@ -27,12 +27,18 @@ function collectLinks(html,base){
 }
 function probePrint(id,data){console.log('MALTA_SOURCE '+JSON.stringify({source:id,...data}));}
 let robotsText='';
+let accessDenied=false;
 for(const t of targets){
+ if(accessDenied){probePrint(t.id,{status:'skipped_after_first_party_access_denial'});continue;}
  try{
   const response=await fetch(t.url,{headers,signal:AbortSignal.timeout(18000),redirect:'follow'});
   const u=new URL(response.url);
   if(!roots.has(u.hostname)){probePrint(t.id,{status:'redirect_unreviewed',http:response.status});continue}
-  if(!response.ok){probePrint(t.id,{status:'not_accessible',http:response.status});continue}
+  if(!response.ok){
+    probePrint(t.id,{status:'not_accessible',http:response.status});
+    if([401,403,429].includes(response.status))accessDenied=true;
+    continue;
+  }
   const size=Number(response.headers.get('content-length')||0);
   if(size>1250000){probePrint(t.id,{status:'source_too_large'});continue}
   const type=(response.headers.get('content-type')||'').toLowerCase();
