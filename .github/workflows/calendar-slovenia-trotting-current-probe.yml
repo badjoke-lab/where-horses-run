@@ -1,0 +1,68 @@
+name: Slovenia trotting current Calendar probe
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-slovenia-trotting-current-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe Slovenian Trotting Association pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA='Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://github.com/badjoke-lab/where-horses-run)'
+          mkdir -p /tmp/slovenia
+          for item in             'calendar|https://www.kasaska-zveza.si/koledar.html'             'home|https://www.kasaska-zveza.si/'             'robots|https://www.kasaska-zveza.si/robots.txt'; do
+            name="${item%%|*}"; url="${item#*|}"; out="/tmp/slovenia/$name.out"
+            code="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o "$out" -w '%{http_code}' "$url" || true)"
+            final="$(curl -L -sS -A "$UA" --connect-timeout 15 --max-time 45 -o /dev/null -w '%{url_effective}' "$url" || true)"
+            echo "SLOVENIA_PAGE name=$name HTTP=$code BYTES=$(wc -c < "$out" 2>/dev/null || echo 0) FINAL=$final"
+          done
+
+      - name: Inspect current Slovenian calendar
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - /tmp/slovenia/calendar.out <<'PY'
+          import html,re,sys
+          raw=open(sys.argv[1],errors='replace').read()
+          txt=re.sub(r'<script\b[^>]*>.*?</script>',' ',raw,flags=re.I|re.S)
+          txt=re.sub(r'<style\b[^>]*>.*?</style>',' ',txt,flags=re.I|re.S)
+          txt=html.unescape(re.sub(r'<[^>]+>',' ',txt))
+          txt=re.sub(r'\s+',' ',txt).strip()
+          print('TEXT_LEN',len(txt))
+          for needle in ['Koledar','2026','oktober','november','december','Ljubljana','Ljutomer','Komenda','Šentjernej','Sentjernej','Krško','Krsko']:
+              p=txt.lower().find(needle.lower())
+              if p>=0: print('SLOVENIA_TEXT',needle,txt[max(0,p-400):p+3200])
+          dates=[]
+          pats=[
+            r'\b\d{1,2}\.\s*\d{1,2}\.\s*2026\b',
+            r'\b\d{1,2}[/-]\d{1,2}[/-]2026\b',
+            r'\b(?:januar|februar|marec|april|maj|junij|julij|avgust|september|oktober|november|december)\s+\d{1,2}[^0-9]{0,10}2026\b'
+          ]
+          for pat in pats:
+              dates.extend(m.group(0) for m in re.finditer(pat,txt,re.I))
+          print('DATE_MATCHES',len(dates))
+          for d in dates[:120]: print('DATE',d)
+          tables=re.findall(r'<table\b[^>]*>(.*?)</table>',raw,re.I|re.S)
+          print('TABLE_COUNT',len(tables))
+          for i,t in enumerate(tables[:20]):
+              x=html.unescape(re.sub(r'<[^>]+>',' ',t))
+              x=re.sub(r'\s+',' ',x).strip()
+              print('TABLE',i,x[:6000])
+          seen=set()
+          for m in re.finditer(r'href=["\']([^"\']+)["\']',raw,re.I):
+              u=html.unescape(m.group(1))
+              if any(k in u.lower() for k in ['koledar','2026','pdf','dirke','rezultati','program']):
+                  if u not in seen:
+                      seen.add(u); print('LINK',u[:1000])
+          PY
