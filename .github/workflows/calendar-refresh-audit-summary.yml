@@ -45,7 +45,7 @@ jobs:
           node scripts/check-calendar-unified-audit-coverage.mjs
 
   audit:
-    if: github.event_name == 'workflow_run' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.event != 'pull_request')
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:

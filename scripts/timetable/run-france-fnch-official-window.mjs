@@ -20,6 +20,7 @@ import {
   FRANCE_GALOP_NON_RUNNING_SOURCE_ID,
   FRANCE_LETROT_NON_RUNNING_SOURCE_ID,
   bindFranceNonRunningEvidence,
+  classifyLetrotBulletinFetchError,
   discoverFranceGalopNonRunningArticles,
   letrotBulletinUrlsForWindow,
   parseFranceGalopNonRunningArticle,
@@ -217,12 +218,12 @@ for(const sourceUrl of letrotBulletinUrlsForWindow(start,end)){
     letrotEvidence.push(...parsed.evidence);
     letrotBulletinResults.push({source_url:sourceUrl,status:'success',...parsed.diagnostics});
   }catch(error){
-    letrotBulletinResults.push({source_url:sourceUrl,status:'source_error',error:String(error?.message??error)});
+    letrotBulletinResults.push({source_url:sourceUrl,...classifyLetrotBulletinFetchError(sourceUrl,error,{checkedAt:localDate()})});
   }
 }
 const letrotStatus=letrotBulletinResults.length===0
   ?'source_error'
-  :(letrotBulletinResults.some(row=>row.status==='source_error')?'partial_success':'success');
+  :(letrotBulletinResults.some(row=>row.status!=='success')?'partial_success':'success');
 const letrotBound=bindFranceNonRunningEvidence({evidence:letrotEvidence,canonicalMeetings:canonicalRows,checkedAt:generatedAt});
 const letrotNonRunning={
   status:letrotStatus,

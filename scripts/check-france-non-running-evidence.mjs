@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import {
   FRANCE_GALOP_NON_RUNNING_ARCHIVE_URL,
   bindFranceNonRunningEvidence,
+  classifyLetrotBulletinFetchError,
   discoverFranceGalopNonRunningArticles,
   letrotBulletinUrlsForWindow,
   parseFranceGalopNonRunningArticle,
@@ -83,6 +84,17 @@ const raceOnly = parseLetrotNonRunningBulletin(raceOnlyBulletin, {
   sourceUrl: 'https://pro.letrot.com/siteletrotws-LMeiJS3SZYjkmC1qpyBvHCsYjfwGkj/publication?annee=2026&semaine=3&type=BULLETIN',
 });
 assert.deepEqual(raceOnly.evidence, []);
+
+// A live 404 from a current/future SETF bulletin is an availability gap,
+// never explicit proof of cancellation, whereas old weeks remain source errors.
+const makeBulletinUrl = (week) => `https://pro.letrot.com/siteletrotws-LMeiJS3SZYjkmC1qpyBvHCsYjfwGkj/publication?annee=2026&semaine=${week}&type=BULLETIN`;
+const currentMissing=classifyLetrotBulletinFetchError(makeBulletinUrl(43),new Error('HTTP 404'),{checkedAt:'2026-10-19'});
+assert.equal(currentMissing.status,'bulletin_unavailable_404');
+assert.match(currentMissing.availability_note,/neither non-running nor publication delay is confirmed/);
+assert.equal(classifyLetrotBulletinFetchError(makeBulletinUrl(44),new Error('HTTP 404'),{checkedAt:'2026-10-19'}).status,'bulletin_unavailable_404');
+assert.equal(classifyLetrotBulletinFetchError(makeBulletinUrl(42),new Error('HTTP 404'),{checkedAt:'2026-10-19'}).status,'source_error');
+assert.equal(classifyLetrotBulletinFetchError(makeBulletinUrl(44),new Error('HTTP 403'),{checkedAt:'2026-10-19'}).status,'source_error');
+assert.throws(()=>classifyLetrotBulletinFetchError('https://example.com/publication?type=BULLETIN',new Error('HTTP 404'),{checkedAt:'2026-10-19'}),/official pro\.letrot\.com/);
 
 const urls = letrotBulletinUrlsForWindow('2026-09-23', '2026-10-23');
 assert(urls.length >= 2);

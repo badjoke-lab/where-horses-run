@@ -1,6 +1,6 @@
 {
   "schema_version": "racecourse-location-supplement-evidence-v1",
-  "reviewed_at": "2026-10-21",
+  "reviewed_at": "2026-10-24",
   "entries": [
     {
       "id": "abbeville-racecourse",
@@ -1244,6 +1244,16 @@
       "address_observed": "Hippodrome de Langolvas, Morlaix, Finistère, France"
     },
     {
+      "id": "motukarara-raceway",
+      "coordinate_source_url": "https://thecommunity.co.nz/venues/inter-discover-motukarara-raceway-grass-track-racing-in-canterbury/",
+      "coordinate_observed": "7HCJ+MH (full OLC 4V8J7HCJ+MH; approximate point -43.7283125, 172.5814375)",
+      "address_source_url": "https://racingintegrityboard.org.nz/event/motukarara-harness",
+      "address_observed": "Motukarara Racecourse, 43 Duck Pond Road, Motukarara, Canterbury 7672, New Zealand",
+      "coordinate_method": "Decode venue-specific 7HCJ+MH Plus Code supplied by a named Motukarara Raceway venue directory; independently cross-check racecourse identity and physical address against New Zealand Racing Integrity Board and Banks Peninsula Trotting Club. One-time venue point, not surveyed racecourse centroid.",
+      "secondary_source_url": "https://banks-peninsula-tc.co.nz/",
+      "precision_note": "Approximate venue POI from third-party named raceway listing; not an official survey or guaranteed track-centre point. Do not substitute the Motukarara hamlet coordinates."
+    },
+    {
       "id": "mt-harding-racecourse",
       "coordinate_source_url": "https://thetrots.nz/venues",
       "coordinate_observed": "-43.622, 171.6445",
@@ -1636,6 +1646,16 @@
       "coordinate_source_url": "https://mapcarta.com/W490364320",
       "coordinate_observed": "44.40755, 0.76123",
       "address_observed": "Hippodrome de Sangruère, Villeneuve-sur-Lot, Lot-et-Garonne, France"
+    },
+    {
+      "id": "vire-racecourse",
+      "coordinate_source_url": "https://mapcarta.com/W740956091",
+      "coordinate_observed": "48.85048, -0.90000 (OpenStreetMap way 740956091, Hippodrome Robert-Auvray, sport=horse_racing)",
+      "address_source_url": "https://www.paysdevire-normandie-tourisme.fr/loisirs-et-activites/agenda/courses-hippiques-de-trot-a-lhippodrome-de-vire/courses-hippiques-de-trot-a-lhippodrome-de-vire-2025-05-08/",
+      "address_observed": "Hippodrome Robert Auvray, Rue de l'Hippodrome, 14500 Vire Normandie, France",
+      "coordinate_method": "Named Hippodrome Robert-Auvray / hippodrome de Vire OpenStreetMap racecourse polygon centroid, cross-checked with the operator's official Vire Normandie racecourse site and the Pays de Vire tourism office physical venue address.",
+      "secondary_source_url": "https://hippodrome-vire-normandie.fr/",
+      "precision_note": "Venue polygon mapped for horse racing, not a surveyed race track centreline; OSM-derived approximate venue point."
     },
     {
       "id": "warwick-racecourse",
@@ -2767,6 +2787,70 @@
       "address_observed": "Racecourse operator lists 462 Boulevard du Cami Salié, 64000 Pau, France; also confirmed by https://www.pau.fr/hippodrome-du-pont-long",
       "coordinate_method": "Pau municipality-attributed racecourse location point on published place listing, cross-checked with racecourse operator contact address and Pau municipal listing. The track/venue is Hippodrome du Pont-Long, not a different Pau sports complex.",
       "precision_note": "Site-level racecourse location, not asserted as entrance, surveyed racing-surface centroid or grandstand."
+    },
+    {
+      "id": "chateaubriant-racecourse",
+      "coordinate_source_url": "https://www.cirkwi.com/fr/point-interet/461801-hippodrome-de-la-metairie-neuve",
+      "coordinate_observed": "47.7384556, -1.3905157",
+      "address_source_url": "https://www.hippodrome-chateaubriant.fr/contact",
+      "address_observed": "Hippodrome de la Métairie Neuve, La Métairie Neuve, 44110 Châteaubriant, France",
+      "coordinate_method": "Pays de la Loire tourism-linked named Hippodrome de la Métairie Neuve POI cross-checked with the operator's physical venue address",
+      "precision_note": "racecourse venue POI, not surveyed centreline"
+    },
+    {
+      "id": "chatelaillon-la-rochelle-racecourse",
+      "coordinate_source_url": "https://www.nouvelle-aquitaine-tourisme.com/fr/sit/poi/2129210/hippodrome-chatelaillon-plage/94587",
+      "coordinate_observed": "46.075776, -1.079599",
+      "address_source_url": "https://www.nouvelle-aquitaine-tourisme.com/fr/sit/poi/2129210/hippodrome-chatelaillon-plage/94587",
+      "address_observed": "Hippodrome de Châtelaillon-Plage, 9 rue des Sulkys, 17340 Châtelaillon-Plage, France",
+      "coordinate_method": "Châtelaillon-Plage tourism office named racecourse POI with street address and paired decimal coordinates",
+      "precision_note": "tourism-office venue POI, not surveyed centreline"
+    },
+    {
+      "id": "grenade-sur-garonne-racecourse",
+      "coordinate_source_url": "https://tourisme.hautstolosans.fr/fr/diffusio/equipements-de-loisirs/hippodrome-de-marianne-grenade_TFOLOIMID031V50B4Z6",
+      "coordinate_observed": "43.7509, 1.27297",
+      "address_source_url": "https://hippodromegrenade.com/contact/",
+      "address_observed": "Hippodrome de Marianne, Route de Montaigut, 31330 Grenade, France",
+      "coordinate_method": "Hauts Tolosans official tourism POI expressly names Hippodrome de Marianne and provides coordinates; racecourse contact corroborates venue",
+      "precision_note": "racecourse tourism POI; not surveyed track centreline"
+    },
+    {
+      "id": "le-mont-st-michel-racecourse",
+      "coordinate_source_url": "https://www.cirkwi.com/fr/point-interet/2741911-hippodrome-maurice-jan-pontorson",
+      "coordinate_observed": "48.5839, -1.51404",
+      "address_source_url": "https://www.montsaintmichel.net/hippodrome-du-mont-saint-michel/",
+      "address_observed": "Hippodrome Maurice-Jan, Moidrey, Pontorson, Normandy, France",
+      "coordinate_method": "Municipal Pontorson-provided named Hippodrome Maurice-Jan POI with coordinates, cross-checked with Mont-Saint-Michel venue identification",
+      "precision_note": "venue POI, not surveyed centreline"
+    },
+    {
+      "id": "meslay-du-maine-racecourse",
+      "coordinate_source_url": "https://mapcarta.com/fr/W729206936",
+      "coordinate_observed": "47.95006, -0.53323",
+      "address_source_url": "https://www.guidedugalop.fr/professionnels/c_i-1_t-organisations/g_i-7_t-hippodromes-societes-des-courses/p_i-6535_t-meslay-du-maine-soc-des-courses-de/",
+      "address_observed": "Hippodrome de la Bretonnière, Meslay-du-Maine, Mayenne, France",
+      "coordinate_method": "Explicitly named Hippodrome de la Bretonnière sports-centre OSM way point cross-checked with the racing society; not the broader commune centroid",
+      "precision_note": "named venue mapping; alternate national-sports-index point differs approximately one kilometre, so site-center precision remains provisional"
+    },
+    {
+      "id": "saint-galmier-racecourse",
+      "coordinate_source_url": "https://mapcarta.com/W177432810",
+      "coordinate_observed": "45.59906, 4.29719",
+      "address_source_url": "https://hippodrome-saint-galmier.fr/contact",
+      "address_observed": "Hippodrome Joseph Desjoyaux, 52 route de Cuzieu, 42330 Saint-Galmier, France",
+      "coordinate_method": "Explicitly named Hippodrome Joseph Desjoyaux OSM venue mapping cross-checked against racecourse operator street address",
+      "precision_note": "named venue point, not surveyed centreline"
+    },
+    {
+      "id": "rangiora-raceway",
+      "coordinate_source_url": "https://www.google.com/maps/search/?api=1&query=Rangiora%20Racecourse&query_place_id=ChIJyWBYvMyUMW0R_JJ-qlW-Af4",
+      "coordinate_observed": "-43.294262, 172.562996",
+      "address_source_url": "https://www.rangioraharness.com/contact",
+      "address_observed": "Rangiora Racecourse, 312 Lehmans Road, Fernside 7440, New Zealand",
+      "coordinate_method": "One-time named Rangiora Racecourse public place identifier ChIJyWBYvMyUMW0R_JJ-qlW-Af4 resolved to S2 point (-43.294262, 172.562996). This is a racecourse-specific map POI, not the nearby Rangiora Airfield, municipality centre or 337 Lehmans Rd holiday park. Cross-check exact racecourse address against Rangiora Harness Racing Club and NZ Racing Integrity Board, and racetrack site against Waimakariri District Council site plans / LINZ aerial mapping; no repeated geocoding collection.",
+      "secondary_source_url": "https://www.waimakariri.govt.nz/__data/assets/pdf_file/0021/161166/05a.-Appendix-A-to-Evidence-of-Vikramjit-Singh-Graphic-Attachment.pdf",
+      "precision_note": "Approximate venue-level public place POI, not surveyed racing surface centreline, gate or start; Google venue marker can differ from geometric track centroid. Independent official address 312 Lehmans Road; LINZ Waimakariri orthophoto available under CC BY 4.0 at https://data.linz.govt.nz/layer/119174-waimakariri-025m-rural-aerial-photos-2024/. A temporary one-point research lookup does not imply a general Google Maps data reuse license."
     },
     {
       "id": "ecuador--hipodromo-miguel-salem-dibo",
