@@ -6,7 +6,7 @@
   "programme_state": {
     "country_target": 98,
     "countries_with_closed_decision": 98,
-    "readiness_records": 140,
+    "readiness_records": 141,
     "next_backfill_work_ids": []
   },
   "records": [
@@ -6550,6 +6550,55 @@
         "No MRC, ATC or Racing Australia website collector is authorized by this source."
       ],
       "notes": "GitHub Actions live PDF run #39037515193 succeeded; separate official stream/provider availability audit remains pending."
+    },
+    {
+      "readiness_id": "ecuador--ecuador-chc-2026-selected-classic-fixtures-system--chc-ecuador-2026-classic-date-facts",
+      "country_id": "ecuador",
+      "country_tracker_delivery_no": "58",
+      "system_id": "ecuador-chc-2026-selected-classic-fixtures-system",
+      "system_name_en": "Ecuador Miguel Salem Dibo — CHC 2026 selected classic date facts",
+      "authority_source_key": "ecuador/confederacion-hipica-del-caribe/chc-ecuador-2026-classic-date-facts",
+      "racecourse_ids": [
+        "ecuador--hipodromo-miguel-salem-dibo"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "pdf",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "daily",
+        "near_meeting",
+        "weekly"
+      ],
+      "readiness": "prototype_ready",
+      "implementation_status": "not_started",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "partial",
+      "checked_date": "2026-10-20",
+      "evidence_reviewed_at": "2026-10-20",
+      "revalidation_trigger": "CHC calendar amendment, source rights conditions, 2027 publication or mismatch vs racecourse organizer current data",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/58-ecuador/chc-2026-selected-classic-source.json",
+      "limitations": [
+        "CHC official 2026 featured classics only; 10 selected dates is not the country's complete meeting calendar.",
+        "Date and physical venue facts C only; no first post, racing results, race list or actual attendance.",
+        "Source access and rights E2 review outstanding; candidate must not be merged until rights and publication scope reconciled.",
+        "No 2027, normal Sunday meetings, or repeated-weekly calendar inference."
+      ],
+      "notes": "5-page CHC source parsed in Actions #39292965029 with 10 ECU labels including 2026-11-08 and 2026-12-27."
     }
   ],
   "last_updated": "2026-10-15"

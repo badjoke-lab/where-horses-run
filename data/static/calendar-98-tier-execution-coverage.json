@@ -1,7 +1,7 @@
 {
   "schema_version": "calendar-98-tier-execution-coverage-v1",
   "work_id": "WHR-CALENDAR-98-TIER-EXECUTION-COVERAGE",
-  "as_of": "2026-10-18",
+  "as_of": "2026-10-20",
   "method_contract_ref": "data/static/calendar-98-tier-acquisition-methods/index.json",
   "execution_registry_ref": "data/static/calendar-acquisition-registry.json",
   "unified_refresh_ref": ".github/workflows/calendar-unified-official-refresh.yml",
@@ -13,9 +13,9 @@
   },
   "counts": {
     "tier_total": 98,
-    "registry_profile_total": 75,
-    "registry_routed_tiers": 57,
-    "active_runner_gap_tiers": 14,
+    "registry_profile_total": 76,
+    "registry_routed_tiers": 58,
+    "active_runner_gap_tiers": 13,
     "status_only_tiers": 20,
     "no_runner_required_tiers": 7
   },
@@ -76,14 +76,14 @@
     "united-states",
     "canada",
     "argentina",
-    "australia"
+    "australia",
+    "ecuador"
   ],
   "active_runner_gap_country_ids": [
     "zimbabwe",
     "malta",
     "india",
     "philippines",
-    "ecuador",
     "venezuela",
     "indonesia",
     "russia",
@@ -127,6 +127,7 @@
   ],
   "policy_notes": {
     "united-states": "Equibase web automation is blocked without authorization. 2026 NJRC state-issued approved calendar date/venue facts are separate and feed only Monmouth Thoroughbred, Meadowlands Thoroughbred turf, and Far Hills steeplechase, as partial coverage. No private racecourse site automation.",
-    "status_only": "A status-only tier returning no current dated official trigger is a valid zero state, not a failed active collector."
+    "status_only": "A status-only tier returning no current dated official trigger is a valid zero state, not a failed active collector.",
+    "ecuador": "DRAFT branch only until source-level rights review. CHC first-party selected 2026 classic dates at one site, not weekly/full Ecuador programme; C venue/date only."
   }
 }

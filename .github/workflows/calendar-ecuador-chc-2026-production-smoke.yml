@@ -1,0 +1,39 @@
+name: Calendar Ecuador CHC 2026 selected-classic C collector smoke
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-ecuador-chc-2026-production-smoke.yml'
+      - 'scripts/timetable/ecuador-chc-2026-core.mjs'
+      - 'scripts/timetable/run-ecuador-chc-2026-official-window.mjs'
+      - 'scripts/check-ecuador-chc-2026-adapter.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bounded-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - run: node scripts/check-ecuador-chc-2026-adapter.mjs
+      - name: Fetch live official CHC PDF and test bounded date-only candidates
+        run: |
+          node scripts/timetable/run-ecuador-chc-2026-official-window.mjs --as-of=2026-10-20 --days=90 --output=/tmp/ecuador-chc.json
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import fs from 'node:fs';
+          const a=JSON.parse(fs.readFileSync('/tmp/ecuador-chc.json','utf8'));
+          assert.equal(a.acquisition_attempt.status,'success',JSON.stringify(a.diagnostics));
+          assert.equal(a.discovery.source_visible_rows,10);
+          assert.deepEqual(a.records.map(x=>x.date),['2026-11-08','2026-12-27']);
+          assert.ok(a.records.every(x=>x.country_id==='ecuador'&&x.capability_rank==='C'&&x.first_race_time_local===null&&x.timetable_rows.length===0));
+          assert.equal(a.raw_body_retained,false);
+          console.log('ECU_CHC_LIVE_SOURCE_PASS',a.records.map(x=>x.date));
+          JS

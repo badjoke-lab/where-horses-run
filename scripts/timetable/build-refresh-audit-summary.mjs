@@ -74,6 +74,7 @@ const SYSTEMS = [
   { key: 'canada-ajax_quarter_horse', file: 'canada-ontario/ajax_quarter_horse.json', country_id: 'canada', authority_id: 'ontario-racing', racing_system_id: 'canada-ontario-ajax-quarter-horse-system' },
   { key: 'canada-alberta-century-mile', file: 'canada-alberta-century-mile.json', country_id: 'canada', authority_id: 'horse-racing-alberta', racing_system_id: 'canada-alberta-century-mile-standardbred-system' },
   { key: 'argentina-la-plata', file: 'argentina-la-plata.json', country_id: 'argentina', authority_id: 'hipodromo-la-plata', racing_system_id: 'argentina-la-plata-thoroughbred-system' },
+  { key: 'ecuador-chc', file: 'ecuador-chc.json', country_id: 'ecuador', authority_id: 'confederacion-hipica-del-caribe', racing_system_id: 'ecuador-chc-2026-selected-classic-fixtures-system' },
   { key: 'australia-victoria-flemington', file: 'australia-victoria-flemington.json', country_id: 'australia', authority_id: 'racing-victoria', racing_system_id: 'australia-victoria-flemington-thoroughbred-system' },
   { key: 'australia-victoria-mrc', file: 'australia-victoria-mrc.json', country_id: 'australia', authority_id: 'racing-victoria', racing_system_id: 'australia-victoria-mrc-thoroughbred-system' },
   { key: 'us-nj-monmouth', file: 'us-njrc/monmouth.json', country_id: 'united-states', authority_id: 'new-jersey-racing-commission', racing_system_id: 'us-nj-monmouth-thoroughbred-2026-system' },
