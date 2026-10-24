@@ -1,0 +1,36 @@
+name: Calendar Ecuador CHC 2026 official classic calendar probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-ecuador-chc-2026-source-probe.yml'
+      - 'scripts/timetable/probe-ecuador-chc-2026-classic.mjs'
+      - 'scripts/timetable/probe-ecuador-chc-legal-signals-2026.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  official-chc:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - run: node --check scripts/timetable/probe-ecuador-chc-2026-classic.mjs
+      - run: node scripts/timetable/probe-ecuador-chc-2026-classic.mjs
+
+  official-access-terms:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check scripts/timetable/probe-ecuador-chc-legal-signals-2026.mjs
+      - run: node scripts/timetable/probe-ecuador-chc-legal-signals-2026.mjs
