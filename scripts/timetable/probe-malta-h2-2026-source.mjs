@@ -13,6 +13,7 @@ const targets = [
   {id:'robots',url:'https://www.maltaracingclub.com/robots.txt'},
   {id:'news_current',url:'https://www.maltaracingclub.com/news.php?p=1'},
   {id:'calendar',url:'https://www.maltaracingclub.com/calendar.php'},
+  {id:'official_races_index',url:'https://www.maltaracingclub.com/races.php'},
   {id:'calendar_legacy',url:'https://maltaracingclub.com/index.php/calendar.php'},
 ];
 function collectLinks(html,base){
@@ -49,6 +50,21 @@ for(const t of targets){
   const newsPhrase=/racing\s+calend(?:a|ar)r?\s+till\s+the\s+end\s+of\s+2026/i.test(text);
   const dates=[...new Set([...(text.match(/\b(?:\d{1,2}\s+(?:October|November|December)\s+2026|2026[-/]\d{1,2}[-/]\d{1,2})\b/gi)||[])])].slice(0,40);
   const links=collectLinks(body,response.url);
+  if(t.id==='official_races_index'){
+    // The public season/races list may give dated venue meetings while the
+    // news and calendar routes do not. Do not infer a year from month/day
+    // alone; do not issue historical/dynamic parameter requests.
+    const meetingCount=[...text.matchAll(/Meeting\s*#\s*\d+/gi)].length;
+    const season2026=/\b2026\b/.test(text) || /<option[^>]*value\s*=\s*["']?2026/i.test(body);
+    const visibleMeetingDates=[...new Set((text.match(/\b(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),?\s*\d{1,2}(?:st|nd|rd|th)?\s+(?:October|November|December)\b/gi)||[]))].slice(0,35);
+    const q4DateCount=visibleMeetingDates.length;
+    probePrint(t.id,{status:'readable',http:response.status,season_2026_explicit:season2026,
+      listed_meeting_markers:meetingCount,q4_date_hints:q4DateCount,
+      q4_date_samples:visibleMeetingDates.slice(0,10),
+      result_class:season2026&&meetingCount&&q4DateCount?'official_partial_fixture_candidate_needs_rights_review':meetingCount?'dated_year_or_q4_not_qualified':'no_structured_meetings_detected',
+      rights_state:'REVIEW_REQUIRED',no_production_observations:true});
+    continue;
+  }
   probePrint(t.id,{status:'readable',http:response.status,bytes:body.length,
     q4_2026_announcement:newsPhrase,dates_seen:dates,
     official_internal_link_hints:links,
