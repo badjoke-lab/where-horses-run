@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import { validateCalendarAuthorityMetadataV1 } from './timetable/calendar-authority-metadata.mjs';
 import {
   PANAMA_RACECOURSE_ID,
+  PANAMA_ALL_EVENTS_CALENDAR_URL,
+  mergePanamaProgrammeRows,
   buildPanamaMeetingRecord,
   parsePanamaProgrammePage,
 } from './timetable/panama-presidente-remon-core.mjs';
@@ -22,6 +25,29 @@ assert.deepEqual(rows.map((row) => [row.date, row.racecourse_id]), [
   ['2026-09-26', PANAMA_RACECOURSE_ID],
   ['2026-09-27', PANAMA_RACECOURSE_ID],
 ]);
+
+// Real-world regression: the Oct 24 Programa Oficial article was miscoded
+// into the operator's SimulCasting category and omitted from the narrower
+// Programa Oficial calendar even though it appeared in the general calendar.
+// The older-year and provisional titles must not promote to a 2026 fixture.
+const generalHtml = `<html><body>
+<h1>Calendario de eventos</h1>
+<a href="/index.php/evento/programa-oficial-sabado-24-de-octubre-de-2026/">Programa Oficial Sabado 24 de octubre de 2026</a>
+<p>Categoria del Evento: SimulCasting; octubre 24 @ 08:00 - 17:00</p>
+<a>Programa Oficial Domingo 25 de octubre de 2025</a>
+<a>Provisional Domingo 25 de octubre de 2026</a>
+<a>PESOS SABADO 24 OCTUBRE 2026</a>
+</body></html>`;
+const supplemental = parsePanamaProgrammePage(generalHtml,{sourceUrl:PANAMA_ALL_EVENTS_CALENDAR_URL});
+assert.deepEqual(supplemental.map(row => row.date),['2026-10-24']);
+const overlapping = parsePanamaProgrammePage('<h1>Programa Oficial</h1><p>Programa Oficial Sabado 24 de octubre de 2026</p>');
+const combined = mergePanamaProgrammeRows(supplemental,overlapping);
+assert.deepEqual(combined.map(row=>row.date),['2026-10-24']);
+assert.equal(combined[0].source_url,PANAMA_ALL_EVENTS_CALENDAR_URL);
+const sourceRunner = fs.readFileSync('scripts/timetable/run-panama-presidente-remon-official-window.mjs','utf8');
+assert.match(sourceRunner,/PANAMA_ALL_EVENTS_CALENDAR_URL/);
+assert.match(sourceRunner,/mergePanamaProgrammeRows/);
+assert.match(sourceRunner,/source_warnings: sourceWarnings/);
 
 const checkedAt = '2026-09-26T00:00:00Z';
 const record = buildPanamaMeetingRecord(rows[2], { checkedAt });
