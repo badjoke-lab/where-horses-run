@@ -1,0 +1,57 @@
+{
+  "source_id": "bangalore-fixtures",
+  "country_id": "india",
+  "racing_system_id": "india-bangalore-turf-club-thoroughbred-system",
+  "authority_id": "bangalore-turf-club",
+  "verified_at": "2026-10-25",
+  "source_url": "https://www.bangaloreraces.com/Club/Fixtures",
+  "access_method": "uncredentialed_direct_https_www_ua_low_volume",
+  "rights_review": {
+    "status": "REVIEW_REQUIRED",
+    "evidence_level": "E1",
+    "method": "direct_uncredentialed_https_read_only",
+    "fields": [
+      "meeting_date",
+      "physical_venue"
+    ],
+    "source_access_observations": [
+      "public_html_200_on_verified_actions_run_40156136871",
+      "robots_txt_http_404",
+      "intermittent_https_timeout"
+    ],
+    "requires_scope_review": [
+      "site_terms_applicability",
+      "systematic_extraction_and_source_database",
+      "republishing_24_date_facts",
+      "commercial_and_donation_scope",
+      "source_attribution"
+    ],
+    "output_exclusions": [
+      "race_names",
+      "racecards",
+      "times",
+      "results",
+      "photos",
+      "PDF",
+      "original_html",
+      "video",
+      "2027_28_dates"
+    ]
+  },
+  "verified_2026_27_season": {
+    "season_name": "Bangalore Winter Meeting 2026-27",
+    "physical_venue_id": "india--bangalore-racecourse",
+    "start": "2026-11-01",
+    "end": "2027-03-13",
+    "approved_date_fact_count": 24,
+    "source_observation": "GitHub Actions 40156136871 succeeded, 24 source rows and 15 in 90-day window from 2026-10-25",
+    "coverage_scope": "one_venue_one_club_only",
+    "not_a_claim_of_countrywide_racing": true,
+    "not_running_or_cancellation_inferred": false
+  },
+  "candidate_status": "DRAFT_NOT_ROUTED",
+  "production_status": "NOT_MERGED_NOT_PUBLISHED",
+  "parser_file": "scripts/timetable/india-bangalore-winter-2026-core.mjs",
+  "runner_file": "scripts/timetable/run-india-bangalore-winter-2026-window.mjs",
+  "evidence_notes": "Pure date+physical venue normalization; source pages and selected race labels are not redistributed."
+}
