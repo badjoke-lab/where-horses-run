@@ -3,11 +3,13 @@ import path from 'node:path';
 import {
   PANAMA_AUTHORITY_ID,
   PANAMA_PROGRAMME_URL,
+  PANAMA_ALL_EVENTS_CALENDAR_URL,
   PANAMA_SOURCE_ID,
   PANAMA_SYSTEM_ID,
   PANAMA_TIMEZONE,
   buildPanamaMeetingRecord,
   parsePanamaProgrammePage,
+  mergePanamaProgrammeRows,
 } from './panama-presidente-remon-core.mjs';
 
 function arg(name, fallback = null) {
@@ -64,23 +66,38 @@ const generatedAt = new Date().toISOString();
 let sourceUrl = PANAMA_PROGRAMME_URL;
 let allRows = [];
 const sourceErrors = [];
+const sourceWarnings = [];
 const parseFailures = [];
-let attemptStatus = 'success';
-try {
-  const fetched = await getHtml(PANAMA_PROGRAMME_URL);
-  sourceUrl = fetched.url;
-  allRows = parsePanamaProgrammePage(fetched.html, { sourceUrl: fetched.url });
-  if (allRows.length === 0) {
-    parseFailures.push({ code: 'no_programa_oficial_events_parsed', source_url: fetched.url });
-    attemptStatus = 'parse_error';
+const sourcePages = [];
+const groups = [];
+// The operator occasionally files an explicitly titled Programa Oficial
+// event under an unrelated category (observed Oct 24, 2026). Check the
+// existing category and its own calendar overview. Both are public, same-host
+// first-party HTML; no access-control fallback, browser spoofing or PDF copies.
+for (const [kind, url] of [
+  ['official_category', PANAMA_PROGRAMME_URL],
+  ['official_calendar_overview', PANAMA_ALL_EVENTS_CALENDAR_URL],
+]) {
+  try {
+    const fetched = await getHtml(url);
+    const parsed = parsePanamaProgrammePage(fetched.html, { sourceUrl: fetched.url });
+    sourcePages.push({ kind, source_url: fetched.url, parsed_rows: parsed.length, status: 'success' });
+    groups.push(parsed);
+  } catch (error) {
+    const failure = { kind, source_url: url, error: String(error?.message ?? error) };
+    sourcePages.push({ ...failure, status: 'source_error' });
+    sourceWarnings.push({ code: 'panama_calendar_page_unavailable', ...failure });
   }
-} catch (error) {
+}
+allRows = mergePanamaProgrammeRows(...groups);
+const availablePages = sourcePages.filter(row => row.status === 'success').length;
+let attemptStatus = 'success';
+if (availablePages === 0) {
   attemptStatus = 'network_error';
-  sourceErrors.push({
-    stage: 'programme_calendar_html',
-    source_url: PANAMA_PROGRAMME_URL,
-    error: String(error?.message ?? error),
-  });
+  sourceErrors.push(...sourcePages.map(({kind,source_url,error}) => ({stage:kind,source_url,error})));
+} else if (allRows.length === 0) {
+  attemptStatus = 'parse_error';
+  parseFailures.push({code:'no_programa_oficial_events_parsed',source_urls:sourcePages.filter(p=>p.status==='success').map(p=>p.source_url)});
 }
 
 const rows = allRows.filter((row) => inWindow(row.date, start, end));
@@ -114,6 +131,7 @@ const artifact = {
     method: 'official_programa_oficial_calendar_html',
     source_url: sourceUrl,
     source_visible_rows: allRows.length,
+    source_pages: sourcePages,
     rank_counts: rankCounts,
     completion_counts: completionCounts,
   },
@@ -124,14 +142,14 @@ const artifact = {
     coverage_claim: sourceErrors.length || parseFailures.length
       ? 'acquisition_failed_preserve_verified_state'
       : 'official_source_visible_horizon',
-    coverage_note: 'The official Programa Oficial category supplies meeting-date identity for Hipódromo Presidente Remón at rank C. The category is a source-visible published horizon, not proof that unlisted future dates are non-running. Event/operating hours are not race post times and are never promoted.',
+    coverage_note: 'Explicit Programa Oficial event titles on the operator category and same-host calendar overview supply positive meeting-date evidence only. The operator sometimes miscategorizies official programmes. Older-year articles, provisional programmes, betting forecasts, training/weight notices and event operating hours are not race-day or post-time evidence. Unlisted dates never imply cancellation or a complete 30-day schedule.',
   },
   records,
   diagnostics: {
     source_errors: sourceErrors,
     parse_failures: parseFailures,
     unknown_venues: [],
-    source_warnings: [],
+    source_warnings: sourceWarnings,
   },
 };
 write(output, artifact);
