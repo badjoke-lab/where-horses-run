@@ -3,6 +3,8 @@
  * Experimental isolated C candidate. Not a national India calendar.
  * No race names, racecards, copyrighted source tables, times or 2027-28 guess.
  */
+import {deriveBestAvailableRank} from './best-available-rank.mjs';
+import {classifyAcquisitionCompletion} from './acquisition-completion.mjs';
 export const BTC_SOURCE_URL='https://www.bangaloreraces.com/Club/Fixtures';
 export const BTC_COUNTRY='india';
 export const BTC_AUTHORITY='bangalore-turf-club';
@@ -53,10 +55,10 @@ export function buildBtcCMeeting(row,{checkedAt=new Date().toISOString()}={}){
  const id='india-bangalore-winter-'+row.date;
  const evidence={source_id:BTC_SOURCE_ID,official_source_url:BTC_SOURCE_URL,
   observed_at:checkedAt,successfully_verified_at:checkedAt,acquisition_method:'automatic'};
- return {
+ const record={
   candidate_id:id,meeting_id:id,country_id:BTC_COUNTRY,authority_id:BTC_AUTHORITY,
   racing_system_id:BTC_SYSTEM,racecourse_id:BTC_VENUE,date:row.date,
-  timezone:BTC_ZONE,racing_type:'thoroughbred-flat',capability_rank:'C',
+  timezone:BTC_ZONE,racing_type:'thoroughbred-flat',
   first_race_time_local:null,last_race_time_local:null,timetable_rows:[],
   source:{source_id:BTC_SOURCE_ID,official_url:BTC_SOURCE_URL,checked_at:checkedAt,
     extraction_method:'btc_winter_2026_27_venue_date_facts_only'},
@@ -66,4 +68,7 @@ export function buildBtcCMeeting(row,{checkedAt=new Date().toISOString()}={}){
   acquisition_attempt:{attempted_at:checkedAt,status:'success',source_id:BTC_SOURCE_ID,route_id:BTC_ROUTE,error_code:null},
   evidence_support:{meeting_identity:evidence,meeting_date:evidence}
  };
+ const capability_rank=deriveBestAvailableRank(record,[]);
+ record.acquisition_completion=classifyAcquisitionCompletion({...record,capability_rank},{technical_capability_rank:'C'});
+ return {...record,capability_rank};
 }
