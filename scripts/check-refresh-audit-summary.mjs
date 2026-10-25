@@ -27,7 +27,28 @@ function writeArtifact(rel, value) {
 }
 function state(rank, freshness) {
   const hk = { meeting_id: 'hk-test-2026-09-11', country_id: 'hong-kong', authority_id: 'hkjc', capability_rank: rank, freshness: { generated_at: freshness, last_checked_date: '2026-09-11' } };
-  const jra = { meeting_id: 'jra-test-2026-09-11', country_id: 'japan', authority_id: 'japan-racing-association', capability_rank: 'A+', freshness: { generated_at: freshness, last_checked_date: '2026-09-11' } };
+  const jra = {
+    meeting_id: 'jra-test-2026-09-11',
+    country_id: 'japan',
+    authority_id: 'japan-racing-association',
+    capability_rank: 'A+',
+    freshness: { generated_at: freshness, last_checked_date: '2026-09-11' },
+    source_trace: { source_id: 'jra-calendar', checked_at: freshness },
+    evidence_support: {
+      meeting_identity: {
+        source_id: 'jra-calendar',
+        official_source_url: 'https://www.jra.go.jp/',
+        observed_at: freshness,
+        successfully_verified_at: freshness,
+        acquisition_method: 'automatic',
+      },
+    },
+    acquisition_attempt: {
+      status: 'success',
+      source_id: 'jra-calendar',
+      attempted_at: freshness,
+    },
+  };
   const saudi = { meeting_id: 'saudi-test-2026-09-11', country_id: 'saudi-arabia', authority_id: 'jockey-club-of-saudi-arabia', capability_rank: 'C', freshness: { generated_at: freshness, last_checked_date: '2026-09-11' } };
   write('data/generated/timetable/canonical/meetings.json', { meetings: [hk, jra, saudi] });
   write('data/generated/timetable/canonical/meeting-details.json', { details: [] });
@@ -114,7 +135,7 @@ try {
   assert.equal(tjk.fetch_failed, 1, 'top-level TJK network_error must not disappear from the audit summary');
   const jra = summary.systems.find((row) => row.acquisition_group === 'jra');
   assert.equal(jra.checked, 1);
-  assert.equal(jra.changed, 0, 'freshness-only change must not count as substantive');
+  assert.equal(jra.changed, 0, 'nested evidence/acquisition timestamps and freshness-only changes must not count as substantive');
   assert.equal(jra.promoted, 0);
 
   writeArtifact('.calendar-unified/future-country-system.json', {
