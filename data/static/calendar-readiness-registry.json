@@ -2339,8 +2339,10 @@
       "system_id": "india-bangalore-turf-club",
       "system_name_en": "Bangalore Turf Club",
       "authority_source_key": "india/bangalore-turf-club/bangalore-fixtures",
-      "racecourse_ids": [],
-      "coverage_scope": "system_only",
+      "racecourse_ids": [
+        "india--bangalore-racecourse"
+      ],
+      "coverage_scope": "single_racecourse",
       "technical_rank": "A",
       "public_ceiling": "C",
       "confirmed_fields": {
@@ -2366,16 +2368,18 @@
       "implementation_status": "not_started",
       "fallback": "downgrade_to_C",
       "source_status": "partial",
-      "checked_date": "2026-06-20",
-      "evidence_reviewed_at": "2026-06-29",
+      "checked_date": "2026-10-25",
+      "evidence_reviewed_at": "2026-10-25",
       "revalidation_trigger": "Revalidate when Bangalore Turf Club fixture routes change.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/36-india/final-summary.json",
       "limitations": [
         "Technical A applies only to the reviewed Bangalore club system.",
-        "Complete Indian national club coverage remains unresolved."
+        "Complete Indian national club coverage remains unresolved.",
+        "The selected 2026–27 Bangalore winter fixture date collector has C capability only (24 dates, one physical venue), regardless of earlier broader club technical rank A aspirations.",
+        "2026–27 winter source proof: docs/timetable-source-tests/36-india/bangalore-winter-2026-27-c-candidate.json. E1 rights REVIEW_REQUIRED; Draft only, not routed."
       ],
-      "notes": "Club-specific prototype does not raise the India country ceiling above C."
+      "notes": "Bangalore Turf Club 2026–27 winter source: 24 fixture date+physical venue facts parsed in Actions #40156136871 with 0 parse/source errors; current draft emits C only, no racing times. Existing technical A capability is distinct from this bounded C candidate. No India country-wide completion claim."
     },
     {
       "readiness_id": "india--india-madras-race-club--madras-home",
