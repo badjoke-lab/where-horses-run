@@ -120,7 +120,7 @@ function withoutVolatile(value) {
   if (Array.isArray(value)) return value.map(withoutVolatile);
   if (!value || typeof value !== 'object') return value;
   return Object.fromEntries(Object.entries(value)
-    .filter(([key]) => !['freshness', 'last_checked_date', 'generated_at'].includes(key))
+    .filter(([key]) => !['freshness', 'last_checked_date', 'generated_at', 'observed_at', 'successfully_verified_at', 'attempted_at', 'checked_at'].includes(key))
     .map(([key, child]) => [key, withoutVolatile(child)]));
 }
 function sameSubstance(left, right) {
