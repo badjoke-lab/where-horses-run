@@ -7,6 +7,7 @@ on:
       - 'scripts/timetable/ecuador-chc-2026-core.mjs'
       - 'scripts/timetable/run-ecuador-chc-2026-official-window.mjs'
       - 'scripts/check-ecuador-chc-2026-adapter.mjs'
+      - 'scripts/check-ecuador-chc-canonical-public-integration.mjs'
   workflow_dispatch:
 
 permissions:
@@ -37,3 +38,8 @@ jobs:
           assert.equal(a.raw_body_retained,false);
           console.log('ECU_CHC_LIVE_SOURCE_PASS',a.records.map(x=>x.date));
           JS
+
+      - name: Check C-only canonical/public merge and missing-source retention (ephemeral)
+        run: |
+          node --check scripts/check-ecuador-chc-canonical-public-integration.mjs
+          node scripts/check-ecuador-chc-canonical-public-integration.mjs
