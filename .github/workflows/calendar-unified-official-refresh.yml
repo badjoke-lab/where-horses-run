@@ -710,6 +710,11 @@ jobs:
           node scripts/timetable/run-kra-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/kra.json
+      - name: Collect Bangalore BTC winter C official dates
+        run: |
+          node scripts/timetable/run-india-bangalore-winter-2026-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/india-bangalore.json
       - name: Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France, New Zealand, United Kingdom, Slovakia, Bahrain, Sweden, Germany, Spain, Italy and South Africa official windows
         run: |
           node scripts/timetable/run-tjk-current-best-available.mjs \
@@ -890,9 +895,6 @@ jobs:
           node scripts/timetable/run-argentina-la-plata-2026-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/argentina-la-plata.json
-          node scripts/timetable/run-india-bangalore-winter-2026-window.mjs \
-            --days="${{ steps.scope.outputs.days }}" \
-            --output=.calendar-unified/india-bangalore.json
           node scripts/timetable/run-australia-victoria-flemington-2026-27-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/australia-victoria-flemington.json
