@@ -1939,6 +1939,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Bangalore Turf Club first-party 2026–27 winter season lists 24 date+venue facts from 2026-11-01 to 2027-03-13 at ONE physical Bengaluru track. C only, no first post/racecard/video. Source fails closed on HTTP/robots/transport/parser and preserves last known valid observations; missing rows do not imply non-running. Limited-use source review E2 documented for factual dates only; not a general redistribution licence or national India coverage."
+    },
+    {
+      "system_id": "ecuador-chc-2026-selected-classic-fixtures-system",
+      "country_id": "ecuador",
+      "authority_id": "confederacion-hipica-del-caribe",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "chc-ecuador-2026-classic-date-facts",
+      "detail_source_id": "chc-ecuador-2026-classic-date-facts",
+      "schedule_adapter_id": "ecuador-chc-2026-selected-classics-pdf-v1",
+      "detail_adapter_id": "ecuador-chc-2026-selected-classics-pdf-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "CHC official 2026 selected classics only: 10 source-listed date facts at Miguel Salem Dibo, with 2026-11-08/2026-12-27 future. C-level factual date+venue subset; source-scoped conditional usage only, without claiming full Ecuador coverage, licence, race times, video or completed racing. Source failure retains verified state."
     }
   ]
 }
