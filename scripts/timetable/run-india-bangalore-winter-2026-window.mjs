@@ -1,6 +1,6 @@
 /**
  * Experimental, read-only BTC fixture smoke. No canonical/public writes.
- * Source-specific access and republication rights review remains open.
+ * Only normalized published fixture dates at one physical venue are reused. No explicit reuse licence is claimed.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -80,8 +80,8 @@ const records=visible.map(r=>buildBtcCMeeting(r,{checkedAt:timestamp}));
 const artifact={
  schema_version:'india-bangalore-winter-2026-27-c-candidate-v1',
  generated_at:timestamp,country_id:BTC_COUNTRY,authority_id:BTC_AUTHORITY,racing_system_id:BTC_SYSTEM,
- timezone:BTC_ZONE,source_id:BTC_SOURCE_ID,rights_decision:'REVIEW_REQUIRED',
- production_status:'DRAFT_NOT_ROUTED',raw_source_retained:false,
+ timezone:BTC_ZONE,source_id:BTC_SOURCE_ID,rights_decision:'USABLE_WITH_CONDITIONS',
+ production_status:'ROUTED_PENDING_PRODUCTION_VERIFICATION',raw_source_retained:false,
  acquisition_attempt:{attempted_at:timestamp,status,source_id:BTC_SOURCE_ID,error_code:status==='success'?null:'btc_'+status},
  discovery:{source_url:BTC_SOURCE_URL,source_visible_rows:rows.length,source_html_bytes:sourceBytes,
    robots_status:robotsStatus,window_visible_rows:records.length,rank_counts:{C:records.length}},
