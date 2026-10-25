@@ -1,0 +1,44 @@
+name: Calendar India Bangalore winter 2026-27 C candidate smoke
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-india-bangalore-winter-2026-candidate.yml'
+      - 'scripts/timetable/india-bangalore-winter-2026-core.mjs'
+      - 'scripts/timetable/run-india-bangalore-winter-2026-window.mjs'
+      - 'scripts/check-india-bangalore-winter-2026-adapter.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bounded-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Static and deterministic checks
+        run: |
+          node --check scripts/timetable/india-bangalore-winter-2026-core.mjs
+          node --check scripts/timetable/run-india-bangalore-winter-2026-window.mjs
+          node scripts/check-india-bangalore-winter-2026-adapter.mjs
+      - name: Inspect official BTC winter season dates (no public ingestion)
+        run: |
+          node scripts/timetable/run-india-bangalore-winter-2026-window.mjs \
+            --as-of=2026-10-25 --days=90 --output=/tmp/btc-winter-candidate.json
+          node --input-type=module -e "
+            import fs from 'node:fs';
+            import assert from 'node:assert/strict';
+            const a=JSON.parse(fs.readFileSync('/tmp/btc-winter-candidate.json','utf8'));
+            assert.equal(a.production_status,'DRAFT_NOT_ROUTED');
+            assert.equal(a.rights_decision,'REVIEW_REQUIRED');
+            assert.equal(a.acquisition_attempt.status,'success');
+            assert.equal(a.discovery.source_visible_rows,24);
+            assert.ok(a.records.length>=8,'expected visible approved winter fixture date facts');
+            assert.ok(a.records.every(r=>r.country_id==='india'&&r.capability_rank==='C'&&r.first_race_time_local===null));
+            assert.ok(a.records.every(r=>r.racecourse_id==='india--bangalore-racecourse'));
+          "
