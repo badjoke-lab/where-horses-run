@@ -3,7 +3,7 @@
  * Experimental isolated C candidate. Not a national India calendar.
  * No race names, racecards, copyrighted source tables, times or 2027-28 guess.
  */
-export const BTC_SOURCE_URL='https://bangaloreraces.com/Club/Fixtures';
+export const BTC_SOURCE_URL='https://www.bangaloreraces.com/Club/Fixtures';
 export const BTC_COUNTRY='india';
 export const BTC_AUTHORITY='bangalore-turf-club';
 export const BTC_SYSTEM='india-bangalore-turf-club-thoroughbred-system';
