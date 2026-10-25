@@ -44,7 +44,7 @@ const getPublicText=(url,{kind='fixture'}={})=>{
  }finally{fs.rmSync(dir,{recursive:true,force:true});}
 };
 try{
- const robot=getPublicText('https://bangaloreraces.com/robots.txt',{kind:'robots'});
+ const robot=getPublicText('https://www.bangaloreraces.com/robots.txt',{kind:'robots'});
  robotsStatus='http_'+robot.status;
  if([401,403,429].includes(robot.status))throw Error('robots access denied '+robot.status);
  if(robot.status===200){
