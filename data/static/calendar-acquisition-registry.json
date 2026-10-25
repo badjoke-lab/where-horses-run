@@ -1914,6 +1914,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Racing Victoria official 2026-27 approved source has 78 venue/date fixture lines: Caulfield 19 and Caulfield Heath 14 at the same physical venue, Sandown 28, Mornington 17. Three physical racecourses, C-only, no post time/race details/actual-running extrapolation. Independent from MRC, ATC and Racing Australia access rights; fetch failure preserves last verified state."
+    },
+    {
+      "system_id": "india-bangalore-turf-club-thoroughbred-system",
+      "country_id": "india",
+      "authority_id": "bangalore-turf-club",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "bangalore-fixtures",
+      "detail_source_id": "bangalore-fixtures",
+      "schedule_adapter_id": "india-bangalore-winter-2026-27-fixtures-html-c-v1",
+      "detail_adapter_id": "india-bangalore-winter-2026-27-fixtures-html-c-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Bangalore Turf Club first-party 2026–27 winter season lists 24 date+venue facts from 2026-11-01 to 2027-03-13 at ONE physical Bengaluru track. C only, no first post/racecard/video. Source fails closed on HTTP/robots/transport/parser and preserves last known valid observations; missing rows do not imply non-running. Limited-use source review E2 documented for factual dates only; not a general redistribution licence or national India coverage."
     }
   ]
 }

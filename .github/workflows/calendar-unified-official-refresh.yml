@@ -126,6 +126,8 @@ on:
       - 'scripts/timetable/run-canada-alberta-hra-official-window.mjs'
       - 'scripts/timetable/argentina-la-plata-2026-core.mjs'
       - 'scripts/timetable/run-argentina-la-plata-2026-official-window.mjs'
+      - 'scripts/timetable/india-bangalore-winter-2026-core.mjs'
+      - 'scripts/timetable/run-india-bangalore-winter-2026-window.mjs'
       - 'scripts/timetable/australia-victoria-flemington-2026-27-core.mjs'
       - 'scripts/timetable/run-australia-victoria-flemington-2026-27-official-window.mjs'
       - 'scripts/timetable/australia-victoria-mrc-2026-27-core.mjs'
@@ -341,6 +343,7 @@ jobs:
           node scripts/check-calendar-refresh-publication-boundaries.mjs
           node scripts/check-canada-alberta-hra-adapter.mjs
           node scripts/check-argentina-la-plata-2026-adapter.mjs
+          node scripts/check-india-bangalore-winter-2026-adapter.mjs
           node scripts/check-australia-victoria-flemington-2026-27-adapter.mjs
           node scripts/check-calendar-public-country-support.mjs
           node scripts/check-kra-window-bounds.mjs
@@ -707,6 +710,11 @@ jobs:
           node scripts/timetable/run-kra-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/kra.json
+      - name: Collect Bangalore BTC winter C official dates
+        run: |
+          node scripts/timetable/run-india-bangalore-winter-2026-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/india-bangalore.json
       - name: Collect TJK, SOREC, Chile, Ireland, Peru, Saudi, France, New Zealand, United Kingdom, Slovakia, Bahrain, Sweden, Germany, Spain, Italy and South Africa official windows
         run: |
           node scripts/timetable/run-tjk-current-best-available.mjs \
@@ -967,6 +975,7 @@ jobs:
             --artifact=.calendar-unified/canada-ontario/ajax_quarter_horse.json \
           --artifact=.calendar-unified/canada-alberta-century-mile.json \
           --artifact=.calendar-unified/argentina-la-plata.json \
+          --artifact=.calendar-unified/india-bangalore.json \
           --artifact=.calendar-unified/australia-victoria-flemington.json \
           --artifact=.calendar-unified/australia-victoria-mrc.json \
             --artifact=.calendar-unified/us-njrc/monmouth.json \
@@ -1380,6 +1389,14 @@ jobs:
           --authority-id=new-jersey-racing-commission \
           --racing-system-id=us-nj-far-hills-steeplechase-2026-system \
           --timezone=America/New_York
+      - name: Apply India Bangalore BTC winter C observations
+        run: |
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/india-bangalore.json \
+            --country-id=india \
+            --authority-id=bangalore-turf-club \
+            --racing-system-id=india-bangalore-turf-club-thoroughbred-system \
+            --timezone=Asia/Kolkata
       - name: Apply Australia Victoria MRC approved C dates
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \
