@@ -7,6 +7,7 @@ on:
       - 'scripts/timetable/india-bangalore-winter-2026-core.mjs'
       - 'scripts/timetable/run-india-bangalore-winter-2026-window.mjs'
       - 'scripts/check-india-bangalore-winter-2026-adapter.mjs'
+      - 'scripts/check-india-bangalore-canonical-public-integration.mjs'
   workflow_dispatch:
 
 permissions:
@@ -51,3 +52,8 @@ jobs:
               console.log('BTC_LIVE_VERIFIED: date-only candidates verified from live primary source.');
             }
           "
+
+      - name: Verify canonical/public publication and failed-source retention (ephemeral)
+        run: |
+          node --check scripts/check-india-bangalore-canonical-public-integration.mjs
+          node scripts/check-india-bangalore-canonical-public-integration.mjs
