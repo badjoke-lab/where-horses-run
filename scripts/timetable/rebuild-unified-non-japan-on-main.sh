@@ -197,7 +197,12 @@ refresh_non_japan_on_main() {
   node scripts/timetable/run-argentina-la-plata-2026-official-window.mjs \
     --days="${DAYS}" \
     --output=.calendar-unified/argentina-la-plata.json
-  node scripts/timetable/run-ecuador-chc-2026-official-window.mjs --days="${DAYS}" --output=.calendar-unified/ecuador-chc.json
+  node scripts/timetable/run-india-bangalore-winter-2026-window.mjs \
+    --days="${DAYS}" \
+    --output=.calendar-unified/india-bangalore.json
+  node scripts/timetable/run-ecuador-chc-2026-official-window.mjs \
+    --days="${DAYS}" \
+    --output=.calendar-unified/ecuador-chc.json
   node scripts/timetable/run-australia-victoria-flemington-2026-27-official-window.mjs \
     --days="${DAYS}" \
     --output=.calendar-unified/australia-victoria-flemington.json
@@ -276,6 +281,7 @@ refresh_non_japan_on_main() {
   --artifact=.calendar-unified/canada-ontario/ajax_quarter_horse.json \
   --artifact=.calendar-unified/canada-alberta-century-mile.json \
   --artifact=.calendar-unified/argentina-la-plata.json \
+  --artifact=.calendar-unified/india-bangalore.json \
   --artifact=.calendar-unified/ecuador-chc.json \
   --artifact=.calendar-unified/australia-victoria-flemington.json \
   --artifact=.calendar-unified/australia-victoria-mrc.json \
@@ -668,6 +674,13 @@ refresh_non_japan_on_main() {
     --authority-id=hipodromo-la-plata \
     --racing-system-id=argentina-la-plata-thoroughbred-system \
     --timezone=America/Argentina/Buenos_Aires
+
+  node scripts/timetable/apply-official-rolling-observations.mjs \
+    --artifact=.calendar-unified/india-bangalore.json \
+    --country-id=india \
+    --authority-id=bangalore-turf-club \
+    --racing-system-id=india-bangalore-turf-club-thoroughbred-system \
+    --timezone=Asia/Kolkata
 
   node scripts/timetable/apply-official-rolling-observations.mjs \
     --artifact=.calendar-unified/ecuador-chc.json \
