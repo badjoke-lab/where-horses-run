@@ -35,8 +35,8 @@ jobs:
             import fs from 'node:fs';
             import assert from 'node:assert/strict';
             const a=JSON.parse(fs.readFileSync('/tmp/btc-winter-candidate.json','utf8'));
-            assert.equal(a.production_status,'DRAFT_NOT_ROUTED');
-            assert.equal(a.rights_decision,'REVIEW_REQUIRED');
+            assert.equal(a.production_status,'ROUTED_PENDING_PRODUCTION_VERIFICATION');
+            assert.equal(a.rights_decision,'USABLE_WITH_CONDITIONS');
             assert.ok(['success','network_error','parse_error'].includes(a.acquisition_attempt.status));
             if(a.acquisition_attempt.status==='network_error'){
               assert.deepEqual(a.records,[],'network failure must not emit meetings');
