@@ -21,7 +21,7 @@ assert.equal(meeting.last_race_time_local,null);
 assert.deepEqual(meeting.timetable_rows,[]);
 assert.equal(meeting.review_status,'needs_review');
 assert.throws(()=>parseBtcWinterFixtures2026(mock.replace('2026-11-08','2026-11-01')),/duplicate or out of order/);
-assert.throws(()=>parseBtcWinterFixtures2026(mock.replace('2027-03-13','2027-03-14')),/horizon/);
+assert.throws(()=>parseBtcWinterFixtures2026(mock.replace('2027-03-13','2027-03-14')),/horizon|outside source season/);
 assert.throws(()=>parseBtcWinterFixtures2026(mock.replace('2026-11-13','2026-11-44')),/invalid fixture date/);
 assert.throws(()=>parseBtcWinterFixtures2026(mock.replace('2026-27','2027-28')),/heading missing/);
 assert.throws(()=>parseBtcWinterFixtures2026(mock.replace(/<tr><td>24th Day[\s\S]*?<\/tr>/,' ')),/denominator drift/);
