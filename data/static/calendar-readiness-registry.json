@@ -2336,21 +2336,21 @@
       "readiness_id": "india--india-bangalore-turf-club--bangalore-fixtures",
       "country_id": "india",
       "country_tracker_delivery_no": "36",
-      "system_id": "india-bangalore-turf-club",
-      "system_name_en": "Bangalore Turf Club",
+      "system_id": "india-bangalore-turf-club-thoroughbred-system",
+      "system_name_en": "Bangalore Turf Club 2026–27 winter fixture date/venue",
       "authority_source_key": "india/bangalore-turf-club/bangalore-fixtures",
       "racecourse_ids": [
         "india--bangalore-racecourse"
       ],
       "coverage_scope": "single_racecourse",
-      "technical_rank": "A",
+      "technical_rank": "C",
       "public_ceiling": "C",
       "confirmed_fields": {
         "meeting_date": true,
         "racecourse": true,
-        "first_race_time": true,
-        "last_race_time": true,
-        "per_race_post_times": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
         "race_name": false,
         "distance": false,
         "surface": false,
@@ -2358,28 +2358,28 @@
       },
       "source_format": "html",
       "access_mode": "direct",
-      "automation_mode": "semi_automatic",
+      "automation_mode": "automatic",
       "refresh_classes": [
-        "seasonal",
-        "weekly",
-        "near_meeting"
+        "daily",
+        "near_meeting",
+        "weekly"
       ],
       "readiness": "prototype_ready",
-      "implementation_status": "not_started",
-      "fallback": "downgrade_to_C",
-      "source_status": "partial",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "verified",
       "checked_date": "2026-10-25",
       "evidence_reviewed_at": "2026-10-25",
       "revalidation_trigger": "Revalidate when Bangalore Turf Club fixture routes change.",
       "blocked_reason": null,
-      "source_test_ref": "docs/timetable-source-tests/36-india/final-summary.json",
+      "source_test_ref": "docs/timetable-source-tests/36-india/bangalore-winter-2026-27-c-candidate.json",
       "limitations": [
-        "Technical A applies only to the reviewed Bangalore club system.",
-        "Complete Indian national club coverage remains unresolved.",
-        "The selected 2026–27 Bangalore winter fixture date collector has C capability only (24 dates, one physical venue), regardless of earlier broader club technical rank A aspirations.",
-        "2026–27 winter source proof: docs/timetable-source-tests/36-india/bangalore-winter-2026-27-c-candidate.json. E1 rights REVIEW_REQUIRED; Draft only, not routed."
+        "2026–27 BTC winter meeting only; 24 date+physical venue facts, one track; no complete India coverage.",
+        "Rank C only: no first race time, race times, racecard/races, result, actual ran, or free live access claim.",
+        "Source, HTTP, parse failures never imply cancellation; preserve last verified records. No next-season extrapolation.",
+        "Source-specific use review applies to normalized date/venue facts; no HTML/video/racecard republication."
       ],
-      "notes": "Bangalore Turf Club 2026–27 winter source: 24 fixture date+physical venue facts parsed in Actions #40156136871 with 0 parse/source errors; current draft emits C only, no racing times. Existing technical A capability is distinct from this bounded C candidate. No India country-wide completion claim."
+      "notes": "Official BTC WINTER 2026–27 listed 24 dates; 2026-10-25 live GitHub Actions sourced 24 rows and 15 in rolling 90d scope. Conditional source risk review must remain limited to the exact access method and date/venue public fields. No other India club system routed."
     },
     {
       "readiness_id": "india--india-madras-race-club--madras-home",
