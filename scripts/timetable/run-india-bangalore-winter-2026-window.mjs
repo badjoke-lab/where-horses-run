@@ -85,7 +85,12 @@ const artifact={
  acquisition_attempt:{attempted_at:timestamp,status,source_id:BTC_SOURCE_ID,error_code:status==='success'?null:'btc_'+status},
  discovery:{source_url:BTC_SOURCE_URL,source_visible_rows:rows.length,source_html_bytes:sourceBytes,
    robots_status:robotsStatus,window_visible_rows:records.length,rank_counts:{C:records.length}},
- window:{start_date:start,end_date_exclusive:end,days,coverage_claim:'Bangalore Turf Club official 2026-27 winter fixture dates only; NOT all India'},
+ window:{start_date:start,end_date_exclusive:end,days,coverage_claim:status==='success'
+  ?'Bangalore Turf Club official 2026-27 winter fixture dates only; NOT all India'
+  :'source_failure_keep_last_verified',
+  coverage_note:status==='success'
+    ?'Only the reviewed BTC winter date/physical venue facts are candidates; no actual-ran or cancellation inference.'
+    :'Inconclusive source attempt. Zero records emitted; previously verified canonical state must be preserved. This is not cancellation evidence.'},
  records,diagnostics:{source_errors,parse_failures,unknown_venues:[],source_warnings}
 };
 if(output){fs.mkdirSync(path.dirname(path.resolve(output)),{recursive:true});fs.writeFileSync(output,JSON.stringify(artifact,null,2)+'\n');}
