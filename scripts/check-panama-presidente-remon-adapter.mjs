@@ -38,7 +38,11 @@ const generalHtml = `<html><body>
 <a>Provisional Domingo 25 de octubre de 2026</a>
 <a>PESOS SABADO 24 OCTUBRE 2026</a>
 </body></html>`;
-const supplemental = parsePanamaProgrammePage(generalHtml,{sourceUrl:PANAMA_ALL_EVENTS_CALENDAR_URL});
+const allYears = parsePanamaProgrammePage(generalHtml,{sourceUrl:PANAMA_ALL_EVENTS_CALENDAR_URL});
+// Generic parser supports historical official programmes, but production
+// retains only the requested 2026 rolling window. Do not count a 2025 title.
+assert.deepEqual(allYears.map(row => row.date),['2025-10-25','2026-10-24']);
+const supplemental = allYears.filter(row => row.date >= '2026-10-24' && row.date < '2026-11-23');
 assert.deepEqual(supplemental.map(row => row.date),['2026-10-24']);
 const overlapping = parsePanamaProgrammePage('<h1>Programa Oficial</h1><p>Programa Oficial Sabado 24 de octubre de 2026</p>');
 const combined = mergePanamaProgrammeRows(supplemental,overlapping);
