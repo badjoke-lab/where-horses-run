@@ -7,6 +7,7 @@ export const PANAMA_SYSTEM_ID = 'presidente-remon-racing-system';
 export const PANAMA_SOURCE_ID = 'presidente-remon-programa-oficial';
 export const PANAMA_RACECOURSE_ID = 'panama--hipodromo-presidente-remon';
 export const PANAMA_PROGRAMME_URL = 'https://www.hipodromo.com/index.php/calendario/categoria/programa-oficial/';
+export const PANAMA_ALL_EVENTS_CALENDAR_URL = 'https://www.hipodromo.com/index.php/calendario/';
 
 const MONTHS = Object.freeze({
   enero: 1,
@@ -87,6 +88,20 @@ export function parsePanamaProgrammePage(html, { sourceUrl = PANAMA_PROGRAMME_UR
   const unique = new Map();
   for (const row of rows) unique.set(`${row.date}|${row.racecourse_id}`, row);
   return [...unique.values()].sort((a, b) => a.date.localeCompare(b.date));
+}
+
+// Preserve one C-level observation per real date/venue even when the operator
+// lists its own event in multiple calendar feeds. Never infer a meeting from a
+// provisional, forecast, horse-weight, training or operating-hours event.
+export function mergePanamaProgrammeRows(...groups) {
+  const unique = new Map();
+  for (const group of groups) {
+    for (const row of group) {
+      const key = `${row.date}|${row.racecourse_id}`;
+      if (!unique.has(key)) unique.set(key, row);
+    }
+  }
+  return [...unique.values()].sort((a,b)=>a.date.localeCompare(b.date));
 }
 
 function evidence(url, checkedAt) {
