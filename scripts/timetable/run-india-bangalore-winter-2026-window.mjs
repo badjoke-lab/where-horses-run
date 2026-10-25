@@ -4,6 +4,8 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
+import {execFileSync} from 'node:child_process';
 import {
  BTC_SOURCE_URL,BTC_SOURCE_ID,BTC_COUNTRY,BTC_AUTHORITY,BTC_SYSTEM,BTC_ZONE,
  parseBtcWinterFixtures2026,buildBtcCMeeting
@@ -23,35 +25,48 @@ const ua='WhereHorsesRun/1.0 (+https://whr.badjoke-lab.com/)';
 const hostIsReviewed=u=>['bangaloreraces.com','www.bangaloreraces.com'].includes(new URL(u).hostname);
 const approvedHttps=u=>new URL(u).protocol==='https:'&&hostIsReviewed(u);
 let rows=[],sourceBytes=0,robotsStatus='unreviewed';
+// curl is the same direct, uncredentialed public HTTPS route used by the earlier
+// India Actions probe. Not a proxy or a blocked-source workaround.
+const getPublicText=(url,{kind='fixture'}={})=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'whr-btc-'));
+ const temporary=path.join(dir,'source.tmp');
+ try{
+  const spec=execFileSync('curl',[
+   '--silent','--show-error','--location','--connect-timeout','10','--max-time','35',
+   '--max-filesize','1200000','--user-agent',ua,'--header','Accept: text/html',
+   '--output',temporary,'--write-out','%{http_code}|%{url_effective}|%{content_type}',url
+  ],{encoding:'utf8',timeout:44000,maxBuffer:120000});
+  const [rawStatus,finalUrl,rawType]=spec.trim().split('|');
+  const status=Number(rawStatus);
+  if(!approvedHttps(finalUrl))throw Error('BTC unreviewed '+kind+' redirect');
+  const contents=fs.existsSync(temporary)?fs.readFileSync(temporary,'utf8'):'';
+  return {status,url:finalUrl,type:(rawType||'').toLowerCase(),contents};
+ }finally{fs.rmSync(dir,{recursive:true,force:true});}
+};
 try{
- const robotsUrl='https://bangaloreraces.com/robots.txt';
- const robot=await fetch(robotsUrl,{headers:{'user-agent':ua},redirect:'follow',signal:AbortSignal.timeout(15000)});
+ const robot=getPublicText('https://bangaloreraces.com/robots.txt',{kind:'robots'});
  robotsStatus='http_'+robot.status;
- if(!approvedHttps(robot.url))throw Error('unreviewed robots redirect');
  if([401,403,429].includes(robot.status))throw Error('robots access denied '+robot.status);
- if(robot.ok){
-  const text=(await robot.text()).slice(0,100000);
-  // Conservative * agent disallow: if potentially blocked, skip acquisition.
-  const rules=text.split(/\r?\n/);let applies=false,disallowed=false;
-  for(const line of rules){
+ if(robot.status===200){
+  const text=robot.contents.slice(0,100000);
+  // Fail closed if a matching user-agent or wildcard section disallows fixtures.
+  let applies=false,disallowed=false;
+  for(const line of text.split(/\r?\n/)){
    const cleaned=line.replace(/#.*$/,'').trim();
    const agent=cleaned.match(/^user-agent:\s*(.*)$/i);
    if(agent){applies=agent[1].toLowerCase()==='*'||ua.toLowerCase().includes(agent[1].toLowerCase());continue}
-   if(applies){const rule=cleaned.match(/^disallow:\s*(.*)$/i);if(rule&&rule[1]&&('/Club/Fixtures'.startsWith(rule[1])||rule[1]==='/'))disallowed=true}
+   if(applies){const rule=cleaned.match(/^disallow:\s*(.*)$/i);
+    if(rule&&rule[1]&&('/Club/Fixtures'.startsWith(rule[1])||rule[1]==='/'))disallowed=true}
   }
   if(disallowed)throw Error('BTC robots disallow fixture path');
  }
- const r=await fetch(BTC_SOURCE_URL,{
-  headers:{'user-agent':ua,'accept':'text/html','accept-language':'en-IN,en;q=0.8'},
-  redirect:'follow',signal:AbortSignal.timeout(25000)});
- if(!approvedHttps(r.url))throw Error('unreviewed fixture redirect');
- if(!r.ok)throw Error('BTC fixtures HTTP '+r.status);
- const type=(r.headers.get('content-type')||'').toLowerCase();
- if(!type.includes('text/html'))throw Error('BTC fixtures not HTML');
- if(Number(r.headers.get('content-length')||0)>1200000)throw Error('BTC fixtures too large');
- const html=await r.text();sourceBytes=Buffer.byteLength(html);
+ if(robot.status!==200&&robot.status!==404)throw Error('robots unknown HTTP '+robot.status);
+ const fixture=getPublicText(BTC_SOURCE_URL);
+ if(fixture.status!==200)throw Error('BTC fixtures HTTP '+fixture.status);
+ if(!fixture.type.includes('text/html'))throw Error('BTC fixtures not HTML');
+ sourceBytes=Buffer.byteLength(fixture.contents);
  if(sourceBytes>1200000)throw Error('BTC fixtures too large');
- rows=parseBtcWinterFixtures2026(html);
+ rows=parseBtcWinterFixtures2026(fixture.contents);
 }catch(e){
  const message=String(e?.message??e);
  if(/heading|denominator|fixture day|invalid fixture date|duplicate|source horizon|out of order|outside source season/.test(message))
