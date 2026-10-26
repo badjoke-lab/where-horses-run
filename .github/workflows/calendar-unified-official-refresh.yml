@@ -130,6 +130,9 @@ on:
       - 'scripts/timetable/run-india-bangalore-winter-2026-window.mjs'
       - 'scripts/timetable/ecuador-chc-2026-core.mjs'
       - 'scripts/timetable/run-ecuador-chc-2026-official-window.mjs'
+      - 'scripts/timetable/venezuela-chc-2026-source-core.mjs'
+      - 'scripts/timetable/run-venezuela-chc-2026-official-window.mjs'
+      - 'scripts/check-venezuela-chc-2026-source.mjs'
       - 'scripts/check-ecuador-chc-2026-adapter.mjs'
       - 'scripts/timetable/australia-victoria-flemington-2026-27-core.mjs'
       - 'scripts/timetable/run-australia-victoria-flemington-2026-27-official-window.mjs'
@@ -348,6 +351,7 @@ jobs:
           node scripts/check-argentina-la-plata-2026-adapter.mjs
           node scripts/check-india-bangalore-winter-2026-adapter.mjs
           node scripts/check-ecuador-chc-2026-adapter.mjs
+          node scripts/check-venezuela-chc-2026-source.mjs
           node scripts/check-australia-victoria-flemington-2026-27-adapter.mjs
           node scripts/check-calendar-public-country-support.mjs
           node scripts/check-kra-window-bounds.mjs
@@ -757,6 +761,11 @@ jobs:
           node scripts/timetable/run-ecuador-chc-2026-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/ecuador-chc.json
+      - name: Collect Venezuela CHC 2026 La Rinconada selected dates
+        run: |
+          node scripts/timetable/run-venezuela-chc-2026-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/venezuela-chc.json
       - name: Collect Bangalore BTC winter C official dates
         run: |
           node scripts/timetable/run-india-bangalore-winter-2026-window.mjs \
@@ -1024,6 +1033,7 @@ jobs:
           --artifact=.calendar-unified/argentina-la-plata.json \
           --artifact=.calendar-unified/india-bangalore.json \
           --artifact=.calendar-unified/ecuador-chc.json \
+          --artifact=.calendar-unified/venezuela-chc.json \
           --artifact=.calendar-unified/australia-victoria-flemington.json \
           --artifact=.calendar-unified/australia-victoria-mrc.json \
             --artifact=.calendar-unified/us-njrc/monmouth.json \
@@ -1445,6 +1455,14 @@ jobs:
             --authority-id=confederacion-hipica-del-caribe \
             --racing-system-id=ecuador-chc-2026-selected-classic-fixtures-system \
             --timezone=America/Guayaquil
+      - name: Apply Venezuela CHC 2026 La Rinconada selected dates
+        run: |
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/venezuela-chc.json \
+            --country-id=venezuela \
+            --authority-id=confederacion-hipica-del-caribe \
+            --racing-system-id=venezuela-chc-2026-selected-classic-fixtures-system \
+            --timezone=America/Caracas
       - name: Apply India Bangalore BTC winter C observations
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \

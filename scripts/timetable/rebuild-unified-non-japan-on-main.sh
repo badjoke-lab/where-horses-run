@@ -203,6 +203,9 @@ refresh_non_japan_on_main() {
   node scripts/timetable/run-ecuador-chc-2026-official-window.mjs \
     --days="${DAYS}" \
     --output=.calendar-unified/ecuador-chc.json
+  node scripts/timetable/run-venezuela-chc-2026-official-window.mjs \
+    --days="${DAYS}" \
+    --output=.calendar-unified/venezuela-chc.json
   node scripts/timetable/run-australia-victoria-flemington-2026-27-official-window.mjs \
     --days="${DAYS}" \
     --output=.calendar-unified/australia-victoria-flemington.json
@@ -283,6 +286,7 @@ refresh_non_japan_on_main() {
   --artifact=.calendar-unified/argentina-la-plata.json \
   --artifact=.calendar-unified/india-bangalore.json \
   --artifact=.calendar-unified/ecuador-chc.json \
+  --artifact=.calendar-unified/venezuela-chc.json \
   --artifact=.calendar-unified/australia-victoria-flemington.json \
   --artifact=.calendar-unified/australia-victoria-mrc.json \
   --artifact=.calendar-unified/us-njrc/monmouth.json \
@@ -688,6 +692,13 @@ refresh_non_japan_on_main() {
     --authority-id=confederacion-hipica-del-caribe \
     --racing-system-id=ecuador-chc-2026-selected-classic-fixtures-system \
     --timezone=America/Guayaquil
+
+  node scripts/timetable/apply-official-rolling-observations.mjs \
+    --artifact=.calendar-unified/venezuela-chc.json \
+    --country-id=venezuela \
+    --authority-id=confederacion-hipica-del-caribe \
+    --racing-system-id=venezuela-chc-2026-selected-classic-fixtures-system \
+    --timezone=America/Caracas
 
   node scripts/timetable/apply-official-rolling-observations.mjs \
     --artifact=.calendar-unified/australia-victoria-flemington.json \

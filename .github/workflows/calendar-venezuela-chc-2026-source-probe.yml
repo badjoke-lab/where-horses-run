@@ -1,0 +1,46 @@
+name: Calendar Venezuela CHC 2026 first-party scoped probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-venezuela-chc-2026-source-probe.yml'
+      - 'scripts/timetable/venezuela-chc-2026-source-core.mjs'
+      - 'scripts/timetable/probe-venezuela-chc-2026-source.mjs'
+      - 'scripts/check-venezuela-chc-2026-source.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  read-only-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - name: Validate bounded VEN parser
+        run: |
+          node --check scripts/timetable/venezuela-chc-2026-source-core.mjs
+          node --check scripts/timetable/probe-venezuela-chc-2026-source.mjs
+          node scripts/check-venezuela-chc-2026-source.mjs
+      - name: Probe CHC first-party 2026 VEN selected dates (no publication)
+        run: |
+          node scripts/timetable/probe-venezuela-chc-2026-source.mjs \
+            --as-of=2026-10-26 --days=90 --output=/tmp/venezuela-chc-probe.json
+          node --input-type=module -e "
+            import fs from 'node:fs';
+            import assert from 'node:assert/strict';
+            const j=JSON.parse(fs.readFileSync('/tmp/venezuela-chc-probe.json','utf8'));
+            assert.equal(j.production_status,'PROBE_ONLY');
+            assert.equal(j.rights_status,'REVIEW_REQUIRED');
+            assert.equal(j.acquisition_status,'success','live source must parse to count as verified');
+            assert.ok(j.source_unique_dates>=8);
+            assert.ok(j.dates_in_window.includes('2026-11-15'));
+            assert.ok(j.dates_in_window.includes('2026-11-22'));
+            assert.ok(j.dates_in_window.includes('2026-12-13'));
+            console.log('VEN_CHC_SCOPED_SOURCE_VERIFIED',j.source_unique_dates,j.dates_in_window);
+          "

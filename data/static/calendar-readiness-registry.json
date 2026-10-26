@@ -6,7 +6,7 @@
   "programme_state": {
     "country_target": 98,
     "countries_with_closed_decision": 98,
-    "readiness_records": 141,
+    "readiness_records": 142,
     "next_backfill_work_ids": []
   },
   "records": [
@@ -6603,7 +6603,56 @@
         "No 2027, normal Sunday meetings, or repeated-weekly calendar inference."
       ],
       "notes": "Exactly 10 positive 2026 selected-classic dates at Miguel Salem Dibo, not weekly or national Ecuador programme; direct official source C only, no times, no video. Access and source/field-specific reproduction assessment is conditional and limited."
+    },
+    {
+      "readiness_id": "venezuela--venezuela-chc-2026-selected-classic-fixtures-system--chc-venezuela-2026-classic-date-facts",
+      "country_id": "venezuela",
+      "country_tracker_delivery_no": "59",
+      "system_id": "venezuela-chc-2026-selected-classic-fixtures-system",
+      "system_name_en": "Venezuela La Rinconada — CHC 2026 selected classic dates",
+      "authority_source_key": "venezuela/confederacion-hipica-del-caribe/chc-venezuela-2026-classic-date-facts",
+      "racecourse_ids": [
+        "venezuela--hipodromo-la-rinconada"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "pdf",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "daily",
+        "near_meeting",
+        "weekly"
+      ],
+      "readiness": "prototype_ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "partial",
+      "checked_date": "2026-10-26",
+      "evidence_reviewed_at": "2026-10-26",
+      "revalidation_trigger": "CHC calendar amendment, source rights conditions, 2027 publication or mismatch vs racecourse organizer current data",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/59-venezuela/chc-2026-selected-classic-source.json",
+      "limitations": [
+        "Only 25 distinct CHC-selected 2026 classic dates at La Rinconada; not all ordinary/routine Venezuela meetings or INH national programmes.",
+        "C-only dates + physical venue; no first-post, times, racecard, results or verified cancellation/actual-ran.",
+        "No 2027 extrapolation; CHC dates may be amended by operator and are not guaranteed completed.",
+        "CHC rights review is conditional for published date/venue facts only; no express source-wide reuse licence."
+      ],
+      "notes": "72 2026 listed VEN classics collapse to 25 unique positive date+venue facts; 3 future dates from 2026-10-26 in 90-day window. Existing INH blocked readiness is a separate source/authority and must not be changed."
     }
   ],
-  "last_updated": "2026-10-15"
+  "last_updated": "2026-10-26"
 }

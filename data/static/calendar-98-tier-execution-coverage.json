@@ -1,7 +1,7 @@
 {
   "schema_version": "calendar-98-tier-execution-coverage-v1",
   "work_id": "WHR-CALENDAR-98-TIER-EXECUTION-COVERAGE",
-  "as_of": "2026-10-25",
+  "as_of": "2026-10-26",
   "method_contract_ref": "data/static/calendar-98-tier-acquisition-methods/index.json",
   "execution_registry_ref": "data/static/calendar-acquisition-registry.json",
   "unified_refresh_ref": ".github/workflows/calendar-unified-official-refresh.yml",
@@ -13,9 +13,9 @@
   },
   "counts": {
     "tier_total": 98,
-    "registry_profile_total": 77,
-    "registry_routed_tiers": 59,
-    "active_runner_gap_tiers": 12,
+    "registry_profile_total": 78,
+    "registry_routed_tiers": 60,
+    "active_runner_gap_tiers": 11,
     "status_only_tiers": 20,
     "no_runner_required_tiers": 7
   },
@@ -78,13 +78,13 @@
     "argentina",
     "australia",
     "india",
-    "ecuador"
+    "ecuador",
+    "venezuela"
   ],
   "active_runner_gap_country_ids": [
     "zimbabwe",
     "malta",
     "philippines",
-    "venezuela",
     "indonesia",
     "russia",
     "kazakhstan",
@@ -129,6 +129,7 @@
     "united-states": "Equibase web automation is blocked without authorization. 2026 NJRC state-issued approved calendar date/venue facts are separate and feed only Monmouth Thoroughbred, Meadowlands Thoroughbred turf, and Far Hills steeplechase, as partial coverage. No private racecourse site automation.",
     "status_only": "A status-only tier returning no current dated official trigger is a valid zero state, not a failed active collector.",
     "india": "BTC first-party 2026-27 WINTER C-only 24 scheduled date/physical-venue facts; 1 Bangalore racecourse. Not India-wide; source-specific access/use scope reviewed, no full fixture/racecard/media reproduction.",
-    "ecuador": "2026 CHC first-party 10 selected classic date/physical venue facts only (Miguel Salem Dibo). Not a nationwide or weekly Ecuador schedule, no racecard/times/media, source-scoped conditional public-facts handling."
+    "ecuador": "2026 CHC first-party 10 selected classic date/physical venue facts only (Miguel Salem Dibo). Not a nationwide or weekly Ecuador schedule, no racecard/times/media, source-scoped conditional public-facts handling.",
+    "venezuela": "Source-routed only for CHC official 2026 selected La Rinconada classic dates, 25 distinct positives. INH national weekly/routine meetings are not covered; no 2027 inferred."
   }
 }

@@ -133,14 +133,16 @@
       "page_kind": "country",
       "method_class": "active_official",
       "source_ids": [
-        "inh-oficial-forward-programming"
+        "inh-oficial-forward-programming",
+        "chc-venezuela-2026-classic-date-facts"
       ],
-      "primary_source_url": "https://t.me/s/INHOficial",
+      "primary_source_url": "https://confederacionhipicadelcaribe.org/wp-content/uploads/2026/04/CALENDARIO-CLASICO-CHC-2026-4.pdf",
       "cadence_class": "event-triggered",
       "trigger_class": "meeting_or_source_window",
       "zero_policy": "emit_only_source_visible_current_meetings",
       "runner_state": "candidate",
-      "method_complete": true
+      "method_complete": true,
+      "production_scope_note": "Only La Rinconada CHC 2026 selected classics, 25 distinct official date+venue facts. INH national programme remains separate; no routine weekly/day inference."
     },
     {
       "tier": 60,
