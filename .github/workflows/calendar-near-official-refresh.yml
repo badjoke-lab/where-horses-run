@@ -340,13 +340,49 @@ jobs:
             git add data/generated/timetable/meeting-presence.json 2>/dev/null || true
           }
 
+          wait_for_japan_main_quiet() {
+            # A single Japan rebuild can take minutes. Avoid rebuilding against
+            # a main SHA that is changing rapidly due to parallel country PRs.
+            # Never silently pass an unfetched/unsaved Japan snapshot.
+            local current next started_at stable_since now
+            local required_stable_seconds=120
+            local poll_seconds=30
+            local max_wait_seconds=600
+
+            git fetch origin main
+            current="$(git rev-parse origin/main)"
+            started_at="$(date +%s)"
+            stable_since="$started_at"
+            while true; do
+              sleep "$poll_seconds"
+              git fetch origin main
+              next="$(git rev-parse origin/main)"
+              now="$(date +%s)"
+              if [[ "$next" != "$current" ]]; then
+                echo "Japan persistence: main advanced during quiet wait: $current -> $next."
+                current="$next"
+                stable_since="$now"
+              elif (( now - stable_since >= required_stable_seconds )); then
+                echo "Japan persistence: main stable for ${required_stable_seconds}s at $current."
+                break
+              fi
+              if (( now - started_at >= max_wait_seconds )); then
+                echo "::warning::Japan main remained busy after ${max_wait_seconds}s; using latest SHA $current with guarded push."
+                break
+              fi
+            done
+            QUIET_JAPAN_MAIN="$current"
+          }
+
           git fetch origin main
           remote_main="$(git rev-parse origin/main)"
           if [[ "$(git rev-parse HEAD)" != "$remote_main" ]]; then
-            refresh_japan_on_main "$remote_main"
+            wait_for_japan_main_quiet
+            refresh_japan_on_main "$QUIET_JAPAN_MAIN"
           fi
 
-          for attempt in 1 2 3; do
+          japan_max_attempts=5
+          for attempt in $(seq 1 "$japan_max_attempts"); do
             stage_japan_state
             if git diff --cached --quiet; then
               echo "No verified Japan timetable change to persist."
@@ -360,21 +396,23 @@ jobs:
             git fetch origin main
             remote_main="$(git rev-parse origin/main)"
             if [[ "$parent_sha" != "$remote_main" ]]; then
-              echo "main advanced before Japan push; rebuilding from $remote_main (attempt $attempt/3)."
-              refresh_japan_on_main "$remote_main"
+              echo "main advanced before Japan push; rebuilding from $remote_main (attempt $attempt/$japan_max_attempts)."
+              wait_for_japan_main_quiet
+              refresh_japan_on_main "$QUIET_JAPAN_MAIN"
               continue
             fi
 
             if git push origin "$candidate_sha:main"; then
-              echo "Persisted Japan snapshot from latest main on attempt $attempt/3."
+              echo "Persisted Japan snapshot from latest main on attempt $attempt/$japan_max_attempts."
               exit 0
             fi
 
             git fetch origin main
             remote_main="$(git rev-parse origin/main)"
             if [[ "$remote_main" != "$parent_sha" ]]; then
-              echo "main advanced during Japan push; rebuilding from $remote_main (attempt $attempt/3)."
-              refresh_japan_on_main "$remote_main"
+              echo "main advanced during Japan push; rebuilding from $remote_main (attempt $attempt/$japan_max_attempts)."
+              wait_for_japan_main_quiet
+              refresh_japan_on_main "$QUIET_JAPAN_MAIN"
               continue
             fi
 
@@ -382,7 +420,7 @@ jobs:
             exit 1
           done
 
-          echo "Japan persistence exhausted 3 bounded rebuild attempts." >&2
+          echo "Japan persistence exhausted $japan_max_attempts bounded rebuild attempts." >&2
           exit 1
       - name: Collect HKJC official window
         run: |
