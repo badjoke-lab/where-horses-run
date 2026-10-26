@@ -5,6 +5,7 @@ import {
   PANAMA_RACECOURSE_ID,
   PANAMA_ALL_EVENTS_CALENDAR_URL,
   mergePanamaProgrammeRows,
+  classifyPanamaPageCoverage,
   buildPanamaMeetingRecord,
   parsePanamaProgrammePage,
 } from './timetable/panama-presidente-remon-core.mjs';
@@ -52,6 +53,26 @@ const sourceRunner = fs.readFileSync('scripts/timetable/run-panama-presidente-re
 assert.match(sourceRunner,/PANAMA_ALL_EVENTS_CALENDAR_URL/);
 assert.match(sourceRunner,/mergePanamaProgrammeRows/);
 assert.match(sourceRunner,/source_warnings: sourceWarnings/);
+
+// In the real 2026-10-25 live probe, *both* pages returned HTTP 500.
+// On other runs, one page can be unavailable while the other contains old
+// records. Such a mixed result is partial, never a complete source horizon.
+const okPage = { kind: 'official_category', status: 'success', parsed_rows: 10 };
+const failedPage = { kind: 'official_calendar_overview', status: 'source_error', error: 'HTTP 500' };
+assert.deepEqual(classifyPanamaPageCoverage([okPage, failedPage], 10), {
+  status: 'success', coverage_claim: 'source_visible_partial',
+});
+assert.deepEqual(classifyPanamaPageCoverage([failedPage, failedPage], 0), {
+  status: 'network_error', coverage_claim: 'acquisition_failed_preserve_verified_state',
+});
+assert.deepEqual(classifyPanamaPageCoverage([okPage, failedPage], 0), {
+  status: 'parse_error', coverage_claim: 'acquisition_failed_preserve_verified_state',
+});
+assert.deepEqual(classifyPanamaPageCoverage([okPage, okPage], 10), {
+  status: 'success', coverage_claim: 'official_source_visible_horizon',
+});
+assert.match(sourceRunner, /coverage_claim: classification.coverage_claim/);
+assert.match(sourceRunner, /source_warnings: sourceWarnings.length/);
 
 const checkedAt = '2026-09-26T00:00:00Z';
 const record = buildPanamaMeetingRecord(rows[2], { checkedAt });
