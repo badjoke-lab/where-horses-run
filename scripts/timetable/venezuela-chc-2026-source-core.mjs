@@ -10,7 +10,7 @@ const date=(day,m)=>{
  const mm=months[String(m).replace(/[.\s]/g,'').slice(0,3)];
  const dd=Number(day);
  const d=mm&&new Date(Date.UTC(2026,mm-1,dd));
- if(!d||!Number.isInteger(dd)||dd<1||d.getUTCMonth()!==mm||d.getUTCDate()!==dd)
+ if(!d||!Number.isInteger(dd)||dd<1||d.getUTCMonth()!==mm-1||d.getUTCDate()!==dd)
   throw Error('CHC Venezuela invalid date');
  return '2026-'+String(mm).padStart(2,'0')+'-'+String(dd).padStart(2,'0');
 };
