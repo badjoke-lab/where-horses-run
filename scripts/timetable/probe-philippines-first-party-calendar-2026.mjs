@@ -22,7 +22,24 @@ const dataRange=(s)=>({
  fixtureCues:/\b(?:race\s*calendar|racing\s*calendar|racing\s*schedule|trainers\s+race\s+planner|fixtures)\b/i.test(s),
  htmlCalendarTables:(s.match(/<table\b/gi)||[]).length,
 });
-const sourcePath='/racing-calendar/';
+function firstPartyAssetPaths(html,pageUrl){
+ // Discover *references only*. Never request bundled JS, private APIs, embedded
+ // betting/login pages or third-party frames without an additional source review.
+ const base=new URL(pageUrl);
+ const paths=[];
+ for(const re of [/<script\b[^>]*\bsrc\s*=\s*["']([^"']+)["']/gi,/<iframe\b[^>]*\bsrc\s*=\s*["']([^"']+)["']/gi]){
+  for(const m of html.matchAll(re)){
+   try{
+    const u=new URL(m[1],base);
+    if(u.protocol!=='https:'||u.hostname!==base.hostname)continue;
+    if(u.username||u.password)continue;
+    paths.push(u.pathname);
+   }catch{}
+  }
+ }
+ return [...new Set(paths)].slice(0,20);
+}
+
 function checkRobots(body,url,userAgent){
  let global=false,specific=false,blocked=false;
  const target=new URL(url).pathname;
@@ -90,6 +107,7 @@ for(const source of SOURCES){
    }else {
     record.page_size_bucket=response.body.length<10000?'small':response.body.length<100000?'medium':'large';
     record.calendar_signal=dataRange(response.body);
+    record.first_party_asset_paths=firstPartyAssetPaths(response.body,source.url);
    }
   } else record.skipped=true;
  }catch(e){record.errors.push('source_transport_error:'+String(e.message).split('\n')[0].slice(0,150));}
