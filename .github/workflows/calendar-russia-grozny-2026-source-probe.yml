@@ -8,6 +8,7 @@ on:
       - 'scripts/timetable/russia-grozny-2026-source-core.mjs'
       - 'scripts/timetable/run-russia-grozny-2026-official-window.mjs'
       - 'scripts/check-russia-grozny-2026-adapter.mjs'
+      - 'scripts/check-russia-grozny-2026-canonical-public-integration.mjs'
   workflow_dispatch:
 
 permissions:
@@ -41,3 +42,7 @@ jobs:
           assert.ok(a.records.every(x=>x.capability_rank==='C'&&x.racecourse_id==='russia--grozny-hippodrome'&&x.timetable_rows.length===0));
           console.log('RUSSIA_GROZNY_C_LIVE_PASS',a.records.map(x=>x.date));
           JS
+      - name: Ephemeral canonical/public and failed-source preservation integration
+        run: |
+          node --check scripts/check-russia-grozny-2026-canonical-public-integration.mjs
+          node scripts/check-russia-grozny-2026-canonical-public-integration.mjs
