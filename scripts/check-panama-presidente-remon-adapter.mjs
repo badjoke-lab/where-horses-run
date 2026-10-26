@@ -6,6 +6,7 @@ import {
   PANAMA_ALL_EVENTS_CALENDAR_URL,
   mergePanamaProgrammeRows,
   classifyPanamaPageCoverage,
+  panamaBoundedWindow,
   buildPanamaMeetingRecord,
   parsePanamaProgrammePage,
 } from './timetable/panama-presidente-remon-core.mjs';
@@ -73,6 +74,35 @@ assert.deepEqual(classifyPanamaPageCoverage([okPage, okPage], 10), {
 });
 assert.match(sourceRunner, /coverage_claim: classification.coverage_claim/);
 assert.match(sourceRunner, /source_warnings: sourceWarnings.length/);
+
+// Bound the replay to positive official dates; do not truncate future horizon.
+const bounded = panamaBoundedWindow('2026-10-27', 30, 7);
+assert.deepEqual(bounded, {
+  start_date: '2026-10-20',
+  forward_start_date: '2026-10-27',
+  end_date_exclusive: '2026-11-26',
+  days: 37,
+  lookback_days: 7,
+});
+const candidates = ['2026-10-18', '2026-10-22', '2026-10-24', '2026-11-25', '2026-11-26'];
+assert.deepEqual(
+  candidates.filter(date => date >= bounded.start_date && date < bounded.end_date_exclusive),
+  ['2026-10-22', '2026-10-24', '2026-11-25'],
+);
+assert.deepEqual(panamaBoundedWindow('2026-10-27', 30).start_date, '2026-10-27');
+assert.throws(() => panamaBoundedWindow('2026-10-27', 30, 8), /lookback/);
+assert.throws(() => panamaBoundedWindow('2026-02-30', 30, 7), /calendar date/);
+assert.match(sourceRunner, /panamaBoundedWindow\(start, days, lookbackDays\)/);
+assert.match(sourceRunner, /inWindow\(row.date, collectionWindow.start_date, end\)/);
+for (const file of [
+  '.github/workflows/calendar-unified-official-refresh.yml',
+  '.github/workflows/calendar-near-official-refresh.yml',
+  'scripts/timetable/rebuild-unified-non-japan-on-main.sh',
+]) {
+  const data = fs.readFileSync(file, 'utf8');
+  const idx = data.indexOf('node scripts/timetable/run-panama-presidente-remon-official-window.mjs');
+  assert.ok(idx >= 0 && data.slice(idx, idx + 225).includes('--lookback-days=7'), file);
+}
 
 const checkedAt = '2026-09-26T00:00:00Z';
 const record = buildPanamaMeetingRecord(rows[2], { checkedAt });
