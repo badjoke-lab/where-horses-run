@@ -5,6 +5,7 @@
  */
 const site='https://porprovbekasikota2026.id';
 const page='/cabang-olahraga/berkuda-pacu';
+const venueNotice='/berita/bergerak-serentak-tim-pb-porprov-xv-jabar-2026-tinjau-puluhan-venue';
 const headers={'user-agent':'WhereHorsesRun/1.0 (+https://whr.badjoke-lab.com/)','accept':'text/html,text/plain;q=0.9'};
 const log=(id,value)=>console.log('INDONESIA_PORPROV_PROBE '+JSON.stringify({id,...value}));
 async function load(path){
@@ -25,7 +26,8 @@ try{
  let all=false;const directives=[];
  for(const raw of lines){const line=raw.replace(/#.*/,'').trim();if(/^user-agent:/i.test(line))all=/^user-agent:\s*\*\s*$/i.test(line);
   if(all&&/^(?:disallow|allow):/i.test(line))directives.push(line)}
- const denies=directives.some(line=>{const m=line.match(/^disallow:\s*(.+)/i);return m&&m[1]&&page.startsWith(m[1])});
+ const disallowed=(path)=>directives.some(line=>{const m=line.match(/^disallow:\s*(.+)/i);return m&&m[1]&&path.startsWith(m[1])});
+ const denies=disallowed(page);
  log('robots',{status:robots.status,http:robots.http,directives:directives.slice(0,25),event_path_disallowed:denies});
  if(denies)process.exit(0);
  const res=await load(page);
@@ -38,6 +40,16 @@ try{
    event_window_dates:raceCategory&&dateRange&&venue?['2026-11-07','2026-11-08']:[],
    individual_race_days_confirmed:false,
    physical_venue:'Pacuan Kuda Legok Jawa, Pangandaran',
-   countrywide_claim:false,rights_permission_not_inferred:true});
+   countrywide_claim:false,rights_permission_not_inferred:true,
+   meeting_records:[],publication_ready:false,publication_blocker:'event_range_is_not_day_specific_fixture'});
+ // Separate organizer notice corroborates that Legok Jawa is a physical racing
+ // venue. It does not confirm competition on either day of the event range.
+ if(!disallowed(venueNotice)){
+  const n=await load(venueNotice);
+  const t=n.status==='ok'?n.html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/\s+/g,' '):'';
+  log('venue_crosscheck',{status:n.status,http:n.http,
+    physical_track_corroborated:/pacuan\s+kuda\s+Legok\s*Jawa/i.test(t)&&/Pangandaran/i.test(t),
+    source_type:'organizer_venue_inspection_report',individual_race_days_confirmed:false,publication_ready:false});
+ }else log('venue_crosscheck',{status:'robots_disallowed',publication_ready:false});
 }catch(e){log('error',{status:'fetch_error',name:String(e?.name||'unknown')})}
 console.log('INDONESIA_PORPROV_PROBE_END no_publication');
