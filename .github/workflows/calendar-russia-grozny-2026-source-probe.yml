@@ -5,6 +5,9 @@ on:
     paths:
       - '.github/workflows/calendar-russia-grozny-2026-source-probe.yml'
       - 'scripts/timetable/probe-russia-grozny-2026-first-party.mjs'
+      - 'scripts/timetable/russia-grozny-2026-source-core.mjs'
+      - 'scripts/timetable/run-russia-grozny-2026-official-window.mjs'
+      - 'scripts/check-russia-grozny-2026-adapter.mjs'
   workflow_dispatch:
 
 permissions:
@@ -19,7 +22,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
       - name: Check Grozny first-party probe syntax
         run: node --check scripts/timetable/probe-russia-grozny-2026-first-party.mjs
       - name: Bounded source and robots check; no data publication
         run: node scripts/timetable/probe-russia-grozny-2026-first-party.mjs
+      - name: Validate C parser and bounded live source runner
+        run: |
+          node scripts/check-russia-grozny-2026-adapter.mjs
+          node scripts/timetable/run-russia-grozny-2026-official-window.mjs --as-of=2026-10-26 --days=30 --output=/tmp/russia-grozny.json
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          import assert from 'node:assert/strict';
+          const a=JSON.parse(fs.readFileSync('/tmp/russia-grozny.json','utf8'));
+          assert.equal(a.acquisition_attempt.status,'success',JSON.stringify(a.diagnostics));
+          assert.equal(a.discovery.source_visible_rows,1);
+          assert.deepEqual(a.records.map(x=>x.date),['2026-10-30']);
+          assert.ok(a.records.every(x=>x.capability_rank==='C'&&x.racecourse_id==='russia--grozny-hippodrome'&&x.timetable_rows.length===0));
+          console.log('RUSSIA_GROZNY_C_LIVE_PASS',a.records.map(x=>x.date));
+          JS
