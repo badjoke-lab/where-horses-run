@@ -121,6 +121,28 @@ export function classifyPanamaPageCoverage(sourcePages, sourceVisibleRows) {
   return { status: 'success', coverage_claim: 'official_source_visible_horizon' };
 }
 
+// Restrict reconciliation to positive programme titles within a bounded date window.
+export function panamaBoundedWindow(asOf, forwardDays, lookbackDays = 0) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(asOf)) throw new Error('invalid Panama as-of date format');
+  if (!Number.isInteger(forwardDays) || forwardDays < 1 || forwardDays > 62) throw new Error('invalid Panama forward days');
+  if (!Number.isInteger(lookbackDays) || lookbackDays < 0 || lookbackDays > 7) throw new Error('invalid Panama lookback days');
+  const move = (date, amount) => {
+    const value = new Date(date + 'T00:00:00Z');
+    if (Number.isNaN(value.valueOf()) || value.toISOString().slice(0, 10) !== date) {
+      throw new Error('invalid Panama calendar date');
+    }
+    value.setUTCDate(value.getUTCDate() + amount);
+    return value.toISOString().slice(0, 10);
+  };
+  return {
+    start_date: move(asOf, -lookbackDays),
+    forward_start_date: asOf,
+    end_date_exclusive: move(asOf, forwardDays),
+    days: forwardDays + lookbackDays,
+    lookback_days: lookbackDays,
+  };
+}
+
 function evidence(url, checkedAt) {
   return {
     source_id: PANAMA_SOURCE_ID,

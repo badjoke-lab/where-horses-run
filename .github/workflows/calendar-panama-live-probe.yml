@@ -45,3 +45,27 @@ jobs:
           if(data.records.length===0) process.exitCode=1;
           if(data.records.some(r=>r.first_race_time_local!==null||r.last_race_time_local!==null)) process.exitCode=1;
           NODE
+      - name: Verify bounded Oct 22/24 positive meetings from live operator
+        run: |
+          node scripts/timetable/run-panama-presidente-remon-official-window.mjs \
+            --as-of=2026-10-27 \
+            --days=30 \
+            --lookback-days=7 \
+            --output=.calendar-panama-probe/panama-lookback.json
+          node --input-type=module - <<'NODE'
+          import assert from 'node:assert/strict';
+          import fs from 'node:fs';
+          const data = JSON.parse(fs.readFileSync('.calendar-panama-probe/panama-lookback.json','utf8'));
+          assert.equal(data.window.start_date,'2026-10-20');
+          assert.equal(data.window.end_date_exclusive,'2026-11-26');
+          assert.equal(data.window.lookback_days,7);
+          assert.equal(data.diagnostics.source_errors.length,0);
+          assert.equal(data.diagnostics.parse_failures.length,0);
+          const dates = data.records.map(record => record.date);
+          for(const date of ['2026-10-22','2026-10-24']) {
+            assert.ok(dates.includes(date),'missing verified official positive date '+date);
+          }
+          assert.ok(!dates.includes('2026-10-18'),'lookback must exclude earlier meeting');
+          assert.ok(data.records.every(record => record.capability_rank==='C' && record.first_race_time_local===null && record.last_race_time_local===null));
+          console.log(JSON.stringify({date_window:data.window,dates,source_pages:data.discovery.source_pages}));
+          NODE

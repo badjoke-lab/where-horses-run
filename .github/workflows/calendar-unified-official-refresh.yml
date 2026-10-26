@@ -838,6 +838,7 @@ jobs:
             --output=.calendar-unified/south-africa-four-racing.json
           node scripts/timetable/run-panama-presidente-remon-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
+            --lookback-days=7 \
             --output=.calendar-unified/panama.json
           node scripts/timetable/run-brazil-jcb-reunioes-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
