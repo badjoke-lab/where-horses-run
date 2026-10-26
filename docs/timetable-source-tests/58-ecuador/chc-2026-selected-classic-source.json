@@ -18,38 +18,11 @@
     "2026-11-08",
     "2026-12-27"
   ],
-  "rights": {
-    "status": "USABLE_WITH_CONDITIONS",
-    "evidence_level": "E2_SCOPED",
-    "source_url": "https://confederacionhipicadelcaribe.org/wp-content/uploads/2026/04/CALENDARIO-CLASICO-CHC-2026-4.pdf",
-    "method": "direct_uncredentialed_low_frequency_first_party_pdf_read",
-    "published_fields": [
-      "meeting_date",
-      "physical_racecourse",
-      "country_id",
-      "racing_system_id",
-      "official_source_attribution"
-    ],
-    "review_axes": {
-      "A_fact_vs_expression": "Only normalized date and one physical venue are used; source prose, layout, named classic race entries and artwork not republished.",
-      "B_access": "Public first-party PDF; earlier Actions bounded-source succeeded without login; no proxy, forbidden bots, 403, robots or CAPTCHA bypass. Public homepage accessible; robots/terms links previously examined and no explicit licence verified.",
-      "C_republication": "Published date+venue facts only with primary link; no source document, racecard, PDF, selected classical race titles or table reproduced.",
-      "D_database": "Ten Ecuador selected-classic date facts from a larger pan-Caribbean document, not complete Ecuador racing or all CHC data; no bulk archive or competing database reconstruction.",
-      "E_commercial": "Non-licensed factual C fields for free public calendar/donation surface only; sales, paid API and substantially expanded automated reuse need new source-method review.",
-      "F_third_party": "Source is CHC's own first-party PDF with various national horse-racing programmes; third-party text, brands, media and rights are excluded."
-    },
-    "conditions": [
-      "Limit per-refresh source polling to required full/near windows and avoid rapid retries",
-      "Use a verified CHC official URL as evidence attribution on each meeting",
-      "No PDF/HTML/table content, race title, event narrative, image/video or logo reproduction",
-      "Stop and review only this CHC route if a concrete applicable prohibition or rights-holder objection appears",
-      "No automatic cancellation on a source outage or missing listed row",
-      "Do not describe featured classic dates as all regular Ecuador meetings"
-    ],
-    "explicit_licence_verified": false,
-    "access_contract_not_proven": "No applicable affirmative licence/permission discovered; conditional factual-field decision is not a general content reuse licence, legal opinion or authority consent.",
-    "source_nature": "Short distinct public facts (10 official date+venue entries); no original expression reused."
-  },
   "coverage_note": "Only 10 CHC-selected classic positive-date signals in 2026 for Miguel Salem Dibo; 2 future as of 2026-10-25. Other Ecuador systems and ordinary local fixture denominator remain gaps.",
-  "production_status": "ROUTED_PENDING_FIRST_PRODUCTION_RUN"
+  "production_status": "CANONICAL_PUBLIC_SAVED_ON_MAIN_2026-10-26",
+  "public_evidence_boundary": {
+    "publication_scope": "normalized_date_and_single_physical_venue_facts_only",
+    "raw_official_document_republished": false,
+    "express_reuse_permission_claimed": false
+  }
 }
