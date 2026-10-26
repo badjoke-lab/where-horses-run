@@ -1,0 +1,50 @@
+name: Calendar Malta H2 2026 official source discovery
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-malta-h2-2026-source-probe.yml'
+      - 'scripts/timetable/probe-malta-h2-2026-source.mjs'
+      - 'scripts/timetable/probe-malta-equidrome-2026-h2.mjs'
+      - 'scripts/timetable/probe-malta-independent-fixture-2026.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  official-source-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check scripts/timetable/probe-malta-h2-2026-source.mjs
+      - name: Inspect approved public official pages without source retention
+        run: node scripts/timetable/probe-malta-h2-2026-source.mjs
+
+  independent-equidrome-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check scripts/timetable/probe-malta-equidrome-2026-h2.mjs
+      - name: Inspect independent official venue date and rights signals
+        run: node scripts/timetable/probe-malta-equidrome-2026-h2.mjs
+
+  third-party-discovery-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check scripts/timetable/probe-malta-independent-fixture-2026.mjs
+      - name: Inspect independent fixture date hints without saving or republishing
+        run: node scripts/timetable/probe-malta-independent-fixture-2026.mjs
