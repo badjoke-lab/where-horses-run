@@ -15,35 +15,10 @@
     "actions_run": "https://github.com/badjoke-lab/where-horses-run/actions/runs/40310200056",
     "no_regular_national_coverage_claim": true
   },
-  "rights": {
-    "status": "USABLE_WITH_CONDITIONS",
-    "evidence_level": "E2_SCOPED",
-    "method": "direct_first_party_pdf_read_once_per_full_near_window",
-    "fields": [
-      "meeting_date",
-      "physical_racecourse",
-      "country_id",
-      "racing_system_id",
-      "official_source_attribution"
-    ],
-    "axes": {
-      "A": "Only 25 normalized date + venue facts from 2026; no CHC prose, named classics, table or racecard reproduction.",
-      "B": "First-party official URL fetched without login in Actions; no CAPTCHA/403/robots bypass, no rate-limit workarounds. Terms applicability is not an express permission.",
-      "C": "Only normalized dates and venue IDs shown with official source URL. No PDF or content republication.",
-      "D": "VEN 72 selected-classic line items normalize to 25 distinct dates; not a comprehensive racing meeting calendar or a reconstruction of the complete CHC collection.",
-      "E": "Free public WHR calendar with donations only. Paid feeds, advertising bundles or commercial redistribution require new source review.",
-      "F": "CHC publication aggregates third-party event descriptions; no protected media, text or trademarks are reused."
-    },
-    "conditions": [
-      "Low-frequency official URL only; no mirror fallback on a source denial",
-      "One venue and 25 published 2026 selected dates maximum; fingerprint drift must fail closed",
-      "No complete Venezuela calendar claim, race titles, source tables or PDF redistribution",
-      "Last-known-good preserved on source failure, never infer cancellations",
-      "Check source amendments and operator-specific corrections independently",
-      "Source-specific stop/review if an applicable prohibition or owner objection appears"
-    ],
-    "explicit_permission_verified": false,
-    "legal_opinion": false
-  },
-  "production_status": "IMPLEMENTED_IN_DRAFT_NOT_MERGED"
+  "production_status": "MERGED_ON_MAIN_PENDING_LIVE_PRODUCTION_VERIFICATION",
+  "public_evidence_boundary": {
+    "publication_scope": "normalized_date_and_single_physical_venue_facts_only",
+    "raw_official_document_republished": false,
+    "express_reuse_permission_claimed": false
+  }
 }
