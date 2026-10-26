@@ -1,0 +1,35 @@
+name: Calendar Philippines first-party calendar access probe
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-philippines-first-party-probe.yml'
+      - 'scripts/timetable/probe-philippines-first-party-calendar-2026.mjs'
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate probe syntax
+        run: node --check scripts/timetable/probe-philippines-first-party-calendar-2026.mjs
+      - name: Check first-party public source gates (no ingestion)
+        env:
+          WHR_PH_SOURCE_REPORT: /tmp/philippines-calendar-access-probe.json
+        run: |
+          node scripts/timetable/probe-philippines-first-party-calendar-2026.mjs
+          node --input-type=module -e "
+            import fs from 'node:fs';
+            import assert from 'node:assert/strict';
+            const d=JSON.parse(fs.readFileSync('/tmp/philippines-calendar-access-probe.json','utf8'));
+            assert.equal(d.publication_allowed,false);
+            assert.equal(d.source_bodies_retained,false);
+            assert.equal(d.results.length,3);
+            assert.ok(d.results.every(x=>x.country_id==='philippines'&&x.production_status==='NOT_ROUTED'));
+            console.log('PHILIPPINES_SOURCE_PROBE_PASS',d.results.map(x=>({id:x.source_id,status:x.page_http_status,robots:x.robots_status,errors:x.errors.length})));
+          "
