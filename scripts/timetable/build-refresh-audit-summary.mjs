@@ -77,6 +77,7 @@ const SYSTEMS = [
   { key: 'india-bangalore-winter', file: 'india-bangalore.json', country_id: 'india', authority_id: 'bangalore-turf-club', racing_system_id: 'india-bangalore-turf-club-thoroughbred-system' },
   { key: 'ecuador-chc', file: 'ecuador-chc.json', country_id: 'ecuador', authority_id: 'confederacion-hipica-del-caribe', racing_system_id: 'ecuador-chc-2026-selected-classic-fixtures-system' },
   { key: 'venezuela-chc', file: 'venezuela-chc.json', country_id: 'venezuela', authority_id: 'confederacion-hipica-del-caribe', racing_system_id: 'venezuela-chc-2026-selected-classic-fixtures-system' },
+  { key: 'russia-grozny', file: 'russia-grozny.json', country_id: 'russia', authority_id: 'grozny-hippodrome-operator', racing_system_id: 'russia-grozny-thoroughbred-system' },
   { key: 'australia-victoria-flemington', file: 'australia-victoria-flemington.json', country_id: 'australia', authority_id: 'racing-victoria', racing_system_id: 'australia-victoria-flemington-thoroughbred-system' },
   { key: 'australia-victoria-mrc', file: 'australia-victoria-mrc.json', country_id: 'australia', authority_id: 'racing-victoria', racing_system_id: 'australia-victoria-mrc-thoroughbred-system' },
   { key: 'us-nj-monmouth', file: 'us-njrc/monmouth.json', country_id: 'united-states', authority_id: 'new-jersey-racing-commission', racing_system_id: 'us-nj-monmouth-thoroughbred-2026-system' },

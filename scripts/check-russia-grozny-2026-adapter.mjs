@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {parseGrozny2026Date,buildGroznyCMeeting} from './timetable/russia-grozny-2026-source-core.mjs';
+const fixture='<html><h1>Грозненский ипподром</h1><p>Положение о проведении 11-го скакового дня (Приз Закрытия скакового сезона) 30.10.2026 (11-й скаковой день) на Грозненском ипподроме.</p></html>';
+const dates=parseGrozny2026Date(fixture);
+assert.deepEqual(dates,[{date:'2026-10-30',venue_id:'russia--grozny-hippodrome'}]);
+const row=buildGroznyCMeeting(dates[0],{checkedAt:'2026-10-26T00:00:00Z'});
+assert.equal(row.capability_rank,'C');
+assert.equal(row.country_id,'russia');
+assert.equal(row.date,'2026-10-30');
+assert.equal(row.timetable_rows.length,0);
+assert.equal(row.first_race_time_local,null);
+assert.throws(()=>parseGrozny2026Date(fixture.replace('30.10.2026','30.10.2025')),/fingerprint/);
+assert.throws(()=>parseGrozny2026Date(fixture.replaceAll('11','10')),/fingerprint/);
+console.log('RUSSIA_GROZNY_CORE_PASS single reviewed venue+date only, C, fail closed on drift');

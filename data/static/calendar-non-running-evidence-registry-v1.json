@@ -1677,6 +1677,27 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-10-26",
       "notes": "Do not infer scheduled ordinary meeting, actual race completion, cancellation, postponed or rescheduled date from a source outage or absent calendar entry."
+    },
+    {
+      "record_id": "russia-grozny-thoroughbred-system",
+      "country_id": "russia",
+      "system_id": "russia-grozny-thoroughbred-system",
+      "authority_id": "grozny-hippodrome-operator",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "First-party Grozny 2026 race day 11 positive date and venue notice only; no proof event actually ran.",
+      "evidence_urls": [
+        "https://grozny-hippodrom.ru/docs"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-10-26",
+      "notes": "No schedule disappearance or fetch error may be promoted to cancellation or postponement; no 2027 inference."
     }
   ]
 }
