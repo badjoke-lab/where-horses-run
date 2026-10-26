@@ -1,0 +1,44 @@
+name: Calendar Venezuela CHC 2026 selected-classic C production smoke
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-venezuela-chc-2026-production-smoke.yml'
+      - 'scripts/timetable/venezuela-chc-2026-source-core.mjs'
+      - 'scripts/timetable/run-venezuela-chc-2026-official-window.mjs'
+      - 'scripts/check-venezuela-chc-2026-source.mjs'
+      - 'scripts/check-venezuela-chc-canonical-public-integration.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bounded-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock --no-audit --no-fund
+      - run: node scripts/check-venezuela-chc-2026-source.mjs
+      - name: Live CHC official VEN date-only C candidate smoke
+        run: |
+          node scripts/timetable/run-venezuela-chc-2026-official-window.mjs --as-of=2026-10-26 --days=90 --output=/tmp/venezuela-chc.json
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import fs from 'node:fs';
+          const a=JSON.parse(fs.readFileSync('/tmp/venezuela-chc.json','utf8'));
+          assert.equal(a.acquisition_attempt.status,'success',JSON.stringify(a.diagnostics));
+          assert.equal(a.discovery.source_visible_rows,25);
+          assert.deepEqual(a.records.map(x=>x.date),['2026-11-15','2026-11-22','2026-12-13']);
+          assert.ok(a.records.every(x=>x.country_id==='venezuela'&&x.capability_rank==='C'&&x.racecourse_id==='venezuela--hipodromo-la-rinconada'&&x.first_race_time_local===null&&x.timetable_rows.length===0));
+          assert.equal(a.raw_body_retained,false);
+          console.log('VEN_CHC_LIVE_SOURCE_PASS',a.records.map(x=>x.date));
+          JS
+      - name: C-only canonical/public date proof and missing-source retention (ephemeral)
+        run: |
+          node --check scripts/check-venezuela-chc-canonical-public-integration.mjs
+          node scripts/check-venezuela-chc-canonical-public-integration.mjs
