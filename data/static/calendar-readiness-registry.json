@@ -6652,6 +6652,54 @@
         "CHC rights review is conditional for published date/venue facts only; no express source-wide reuse licence."
       ],
       "notes": "72 2026 listed VEN classics collapse to 25 unique positive date+venue facts; 3 future dates from 2026-10-26 in 90-day window. Existing INH blocked readiness is a separate source/authority and must not be changed."
+    },
+    {
+      "readiness_id": "russia--russia-grozny-thoroughbred-system--grozny-hippodrome-2026-day-11-notice",
+      "country_id": "russia",
+      "country_tracker_delivery_no": "69",
+      "system_id": "russia-grozny-thoroughbred-system",
+      "system_name_en": "Grozny Hippodrome 2026 operator day-11 closing meeting",
+      "authority_source_key": "russia/grozny-hippodrome-operator/grozny-hippodrome-2026-day-11-notice",
+      "racecourse_ids": [
+        "russia--grozny-hippodrome"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "automatic",
+      "refresh_classes": [
+        "daily",
+        "near_meeting",
+        "weekly"
+      ],
+      "readiness": "prototype_ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "partial",
+      "checked_date": "2026-10-26",
+      "evidence_reviewed_at": "2026-10-26",
+      "revalidation_trigger": "Grozny official date amendment, source change, next racing season publication or access/usage rights change",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/69-russia/grozny-2026-single-day-source.json",
+      "limitations": [
+        "Only October 30 2026 official day-11 closing meeting at Grozny; other Russian courses and 2027 unverified.",
+        "C date/physical venue only, no race title, racecard, time, results or actual running.",
+        "Do not infer cancellation from a missing or inaccessible source; last verified records retained."
+      ],
+      "notes": "First-party Grozny Oct 30 2026 source verified in GitHub Actions. Rostov remains a separate unresolved source and is not overwritten."
     }
   ],
   "last_updated": "2026-10-26"
