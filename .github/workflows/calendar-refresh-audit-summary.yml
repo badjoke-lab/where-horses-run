@@ -127,7 +127,7 @@ jobs:
             jq -r '.systems[] | select(.acquisition_group != "source-health") | [(.country_id + " / " + (.acquisition_group // .authority_id // .racing_system_id // "unknown")), .checked, .changed, .unchanged, .promoted, .added, .pending, .fetch_failed, .parse_failed] | "| \(.[0]) | \(.[1]) | \(.[2]) | \(.[3]) | \(.[4]) | \(.[5]) | \(.[6]) | \(.[7]) | \(.[8]) |"' .calendar-audit/refresh-audit-summary.json
             echo
             echo '### France LETROT non-running bulletin availability'
-            jq -r '"- Classification: \\(.classification); reported status: \\(.reported_status); successful PDFs: \\(.counts.success); current/future PDF 404: \\(.counts.bulletin_unavailable_404); source/parse errors: \\(.counts.source_error); other: \\(.counts.other); confirmed non-running: \\(.confirmed_non_running_count)"' .calendar-audit/france-letrot-non-running-health.json
+            jq -r '"- Classification: \(.classification); reported status: \(.reported_status); successful PDFs: \(.counts.success); current/future PDF 404: \(.counts.bulletin_unavailable_404); source/parse errors: \(.counts.source_error); other: \(.counts.other); confirmed non-running: \(.confirmed_non_running_count)"' .calendar-audit/france-letrot-non-running-health.json
             echo 'A missing bulletin is never evidence that a meeting was cancelled.'
           } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
