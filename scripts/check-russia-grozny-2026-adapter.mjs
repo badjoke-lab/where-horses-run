@@ -10,5 +10,5 @@ assert.equal(row.date,'2026-10-30');
 assert.equal(row.timetable_rows.length,0);
 assert.equal(row.first_race_time_local,null);
 assert.throws(()=>parseGrozny2026Date(fixture.replace('30.10.2026','30.10.2025')),/fingerprint/);
-assert.throws(()=>parseGrozny2026Date(fixture.replace('11-го','10-го')),/fingerprint/);
+assert.throws(()=>parseGrozny2026Date(fixture.replaceAll('11','10')),/fingerprint/);
 console.log('RUSSIA_GROZNY_CORE_PASS single reviewed venue+date only, C, fail closed on drift');
