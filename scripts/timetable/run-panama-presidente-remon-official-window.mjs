@@ -11,6 +11,7 @@ import {
   parsePanamaProgrammePage,
   mergePanamaProgrammeRows,
   classifyPanamaPageCoverage,
+  panamaBoundedWindow,
 } from './panama-presidente-remon-core.mjs';
 
 function arg(name, fallback = null) {
@@ -57,11 +58,13 @@ async function getHtml(url) {
 
 const output = arg('output');
 const days = Number(arg('days', '30'));
+const lookbackDays = Number(arg('lookback-days', '0'));
 const start = arg('as-of', localDate());
 if (!output) throw new Error('--output=<path> is required');
 if (!/^\d{4}-\d{2}-\d{2}$/.test(start)) throw new Error('--as-of must be YYYY-MM-DD');
 if (!Number.isInteger(days) || days < 1 || days > 62) throw new Error('--days must be 1..62');
-const end = plusDays(start, days);
+const collectionWindow = panamaBoundedWindow(start, days, lookbackDays);
+const end = collectionWindow.end_date_exclusive;
 const generatedAt = new Date().toISOString();
 
 let sourceUrl = PANAMA_PROGRAMME_URL;
@@ -100,7 +103,7 @@ if (availablePages === 0) {
   parseFailures.push({code:'no_programa_oficial_events_parsed',source_urls:sourcePages.filter(p=>p.status==='success').map(p=>p.source_url)});
 }
 
-const rows = allRows.filter((row) => inWindow(row.date, start, end));
+const rows = allRows.filter((row) => inWindow(row.date, collectionWindow.start_date, end));
 const records = rows.map((row) => buildPanamaMeetingRecord(row, { checkedAt: generatedAt }));
 const rankCounts = Object.fromEntries(
   ['C', 'B', 'B+', 'A', 'A+'].map((rank) => [rank, records.filter((record) => record.capability_rank === rank).length]),
@@ -136,9 +139,7 @@ const artifact = {
     completion_counts: completionCounts,
   },
   window: {
-    start_date: start,
-    end_date_exclusive: end,
-    days,
+    ...collectionWindow,
     coverage_claim: classification.coverage_claim,
     coverage_note: 'Explicit Programa Oficial event titles on the operator category and same-host calendar overview supply positive meeting-date evidence only. The operator sometimes miscategorizies official programmes. Older-year articles, provisional programmes, betting forecasts, training/weight notices and event operating hours are not race-day or post-time evidence. Unlisted dates never imply cancellation or a complete 30-day schedule.',
   },
@@ -153,8 +154,11 @@ const artifact = {
 write(output, artifact);
 console.log(JSON.stringify({
   output,
-  start_date: start,
+  start_date: collectionWindow.start_date,
+  forward_start_date: start,
   end_date_exclusive: end,
+  lookback_days: lookbackDays,
+  retrospective_meetings_emitted: records.filter((record) => record.date < start).length,
   source_visible_rows: allRows.length,
   meetings_emitted: records.length,
   rank_counts: rankCounts,
