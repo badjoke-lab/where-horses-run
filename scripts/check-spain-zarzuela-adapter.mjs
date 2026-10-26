@@ -57,7 +57,10 @@ assert.equal(future.status,'not_published');
 assert.equal(future.meeting_present,true);
 assert.equal(future.race_rows.length,0);
 
-if(process.env.GITHUB_ACTIONS==='true'){
+// Source-dependent live probing is opt-in. During a unified production run,
+// the source runner reports failure in its own artifact and preserves verified
+// meetings; external PDF availability must not block unrelated systems.
+if(process.env.SPAIN_ZARZUELA_LIVE_PROBE==='true'){
   const liveOutput='.spain-zarzuela-live-'+process.pid+'.json';
   try{
     execFileSync(process.execPath,[
