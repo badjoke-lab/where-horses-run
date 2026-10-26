@@ -35,7 +35,8 @@ try{
  const dateRange=/0?7\s+Nov(?:ember)?\s+2026.{0,110}0?8\s+Nov(?:ember)?\s+2026/i.test(text);
  const venue=/Pacuan\s+Kuda\s+Legok\s*Jawa/i.test(text);
  log('event',{status:'ok',http:200,event:'PORPROV XV Jawa Barat 2026',raceCategory,dateRange,venue,
-   positive_dates:raceCategory&&dateRange&&venue?['2026-11-07','2026-11-08']:[],
+   event_window_dates:raceCategory&&dateRange&&venue?['2026-11-07','2026-11-08']:[],
+   individual_race_days_confirmed:false,
    physical_venue:'Pacuan Kuda Legok Jawa, Pangandaran',
    countrywide_claim:false,rights_permission_not_inferred:true});
 }catch(e){log('error',{status:'fetch_error',name:String(e?.name||'unknown')})}
