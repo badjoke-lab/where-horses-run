@@ -82,10 +82,11 @@ for(const source of SOURCES){
    production_status:'NOT_ROUTED',robots_status:null,page_http_status:null,
    page_size_bucket:null,calendar_signal:null,errors:[],skipped:false};
  try{
-  let canRequest=true;
+  let canRequest=true,robotsBody=null;
   try{
    const robots=readPublic('https://'+host+'/robots.txt',host);
    record.robots_status='http_'+robots.status;
+   if(robots.status===200)robotsBody=robots.body;
    if([401,403,429].includes(robots.status))canRequest=false;
    else if(robots.status===200 && checkRobots(robots.body,source.url,UA))canRequest=false;
    else if(robots.status!==200&&robots.status!==404)canRequest=false;
@@ -108,6 +109,25 @@ for(const source of SOURCES){
     record.page_size_bucket=response.body.length<10000?'small':response.body.length<100000?'medium':'large';
     record.calendar_signal=dataRange(response.body);
     record.first_party_asset_paths=firstPartyAssetPaths(response.body,source.url);
+    if(source.id==='mmtci-race-calendar' && record.first_party_asset_paths.includes('/js/calendar1.js')){
+     // Public first-party calendar display asset only; no credentials,
+     // betting endpoints, dynamic APIs, racecards or venue programme copied.
+     const jsUrl=new URL('/js/calendar1.js',source.url).toString();
+     if(robotsBody && checkRobots(robotsBody,jsUrl,UA)){
+      record.calendar_script={status:'blocked_by_robots'};
+     }else{
+      try{
+       const js=readPublic(jsUrl,host);
+       const parsed=js.status===200?dataRange(js.body):null;
+       record.calendar_script={status:'http_'+js.status,
+        bytes_bucket:js.body.length<10000?'small':js.body.length<100000?'medium':'large',
+        structural_calendar_signals:parsed,
+        explicit_month_terms:/\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\b/i.test(js.body),
+        angular_calendar_cues:/\b(?:calendar|raceDate|meetingDate|eventDate|raceSchedule)\b/i.test(js.body)
+       };
+      }catch(err){record.calendar_script={status:'transport_error',error:String(err.message).split('\n')[0].slice(0,120)}}
+     }
+    }
    }
   } else record.skipped=true;
  }catch(e){record.errors.push('source_transport_error:'+String(e.message).split('\n')[0].slice(0,150));}
