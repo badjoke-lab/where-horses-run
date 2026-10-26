@@ -9,6 +9,9 @@ on:
       - '.github/workflows/calendar-near-official-refresh.yml'
       - '.github/workflows/calendar-unified-official-refresh.yml'
       - 'scripts/check-calendar-persistence-contention.mjs'
+      - 'scripts/timetable/panama-presidente-remon-core.mjs'
+      - 'scripts/timetable/run-panama-presidente-remon-official-window.mjs'
+      - 'scripts/check-panama-presidente-remon-adapter.mjs'
 
 permissions:
   contents: write

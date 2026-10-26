@@ -7,6 +7,7 @@ export const PANAMA_SYSTEM_ID = 'presidente-remon-racing-system';
 export const PANAMA_SOURCE_ID = 'presidente-remon-programa-oficial';
 export const PANAMA_RACECOURSE_ID = 'panama--hipodromo-presidente-remon';
 export const PANAMA_PROGRAMME_URL = 'https://www.hipodromo.com/index.php/calendario/categoria/programa-oficial/';
+export const PANAMA_ALL_EVENTS_CALENDAR_URL = 'https://www.hipodromo.com/index.php/calendario/';
 
 const MONTHS = Object.freeze({
   enero: 1,
@@ -87,6 +88,37 @@ export function parsePanamaProgrammePage(html, { sourceUrl = PANAMA_PROGRAMME_UR
   const unique = new Map();
   for (const row of rows) unique.set(`${row.date}|${row.racecourse_id}`, row);
   return [...unique.values()].sort((a, b) => a.date.localeCompare(b.date));
+}
+
+// Preserve one C-level observation per real date/venue even when the operator
+// lists its own event in multiple calendar feeds. Never infer a meeting from a
+// provisional, forecast, horse-weight, training or operating-hours event.
+export function mergePanamaProgrammeRows(...groups) {
+  const unique = new Map();
+  for (const group of groups) {
+    for (const row of group) {
+      const key = `${row.date}|${row.racecourse_id}`;
+      if (!unique.has(key)) unique.set(key, row);
+    }
+  }
+  return [...unique.values()].sort((a,b)=>a.date.localeCompare(b.date));
+}
+
+// A second first-party calendar page is necessary because official programmes
+// have been assigned to the operator's wrong category. Partial HTML access
+// must never be reported as an unqualified complete source-visible horizon.
+export function classifyPanamaPageCoverage(sourcePages, sourceVisibleRows) {
+  const successfulPages = sourcePages.filter(page => page.status === 'success').length;
+  if (successfulPages === 0) {
+    return { status: 'network_error', coverage_claim: 'acquisition_failed_preserve_verified_state' };
+  }
+  if (sourceVisibleRows === 0) {
+    return { status: 'parse_error', coverage_claim: 'acquisition_failed_preserve_verified_state' };
+  }
+  if (successfulPages < sourcePages.length) {
+    return { status: 'success', coverage_claim: 'source_visible_partial' };
+  }
+  return { status: 'success', coverage_claim: 'official_source_visible_horizon' };
 }
 
 function evidence(url, checkedAt) {
