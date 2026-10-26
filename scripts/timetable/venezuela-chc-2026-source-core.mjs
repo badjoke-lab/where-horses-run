@@ -37,3 +37,32 @@ export function parseChcVenezuela2026(pages){
   throw Error('CHC Venezuela expected late 2026 selected-day fingerprint drift');
  return {days,source_classic_rows:occurrences};
 }
+
+
+import {deriveBestAvailableRank} from './best-available-rank.mjs';
+import {classifyAcquisitionCompletion} from './acquisition-completion.mjs';
+export const VEN_CHC_COUNTRY='venezuela';
+export const VEN_CHC_AUTHORITY='confederacion-hipica-del-caribe';
+export const VEN_CHC_SYSTEM='venezuela-chc-2026-selected-classic-fixtures-system';
+export const VEN_CHC_SOURCE='chc-venezuela-2026-classic-date-facts';
+export const VEN_CHC_ROUTE='venezuela-chc-2026-classic-fixtures';
+export const VEN_CHC_TIMEZONE='America/Caracas';
+export function buildChcVenezuelaCMeeting(row,{checkedAt=new Date().toISOString()}={}){
+ const meetingId='venezuela-chc-2026-classic-'+row.date;
+ const evidence={source_id:VEN_CHC_SOURCE,official_source_url:VEN_CHC_URL,observed_at:checkedAt,successfully_verified_at:checkedAt,acquisition_method:'automatic'};
+ const m={
+  candidate_id:meetingId,meeting_id:meetingId,country_id:VEN_CHC_COUNTRY,
+  authority_id:VEN_CHC_AUTHORITY,racing_system_id:VEN_CHC_SYSTEM,
+  racecourse_id:VEN_CHC_VENUE,date:row.date,timezone:VEN_CHC_TIMEZONE,
+  racing_type:'thoroughbred-flat',first_race_time_local:null,last_race_time_local:null,timetable_rows:[],
+  source:{source_id:VEN_CHC_SOURCE,official_url:VEN_CHC_URL,checked_at:checkedAt,extraction_method:'chc_2026_venezuela_classic_date_venue_facts_only'},
+  route_id:VEN_CHC_ROUTE,confidence:'medium',review_status:'needs_review',
+  notes:'CHC official 2026 selected classic fixture date at La Rinconada only, not a complete Venezuela calendar. No actual-ran, first post, cancellation or next-year inference.',
+  detail_observation:{status:'not_applicable',evaluated_capability_rank:'C',race_count:0,calendar_url:VEN_CHC_URL},
+  acquisition_attempt:{attempted_at:checkedAt,status:'success',source_id:VEN_CHC_SOURCE,route_id:VEN_CHC_ROUTE,error_code:null},
+  evidence_support:{meeting_identity:evidence,meeting_date:evidence}
+ };
+ const capability_rank=deriveBestAvailableRank(m,[]);
+ m.acquisition_completion=classifyAcquisitionCompletion({...m,capability_rank},{technical_capability_rank:'C'});
+ return {...m,capability_rank};
+}
