@@ -104,6 +104,23 @@ export function mergePanamaProgrammeRows(...groups) {
   return [...unique.values()].sort((a,b)=>a.date.localeCompare(b.date));
 }
 
+// A second first-party calendar page is necessary because official programmes
+// have been assigned to the operator's wrong category. Partial HTML access
+// must never be reported as an unqualified complete source-visible horizon.
+export function classifyPanamaPageCoverage(sourcePages, sourceVisibleRows) {
+  const successfulPages = sourcePages.filter(page => page.status === 'success').length;
+  if (successfulPages === 0) {
+    return { status: 'network_error', coverage_claim: 'acquisition_failed_preserve_verified_state' };
+  }
+  if (sourceVisibleRows === 0) {
+    return { status: 'parse_error', coverage_claim: 'acquisition_failed_preserve_verified_state' };
+  }
+  if (successfulPages < sourcePages.length) {
+    return { status: 'success', coverage_claim: 'source_visible_partial' };
+  }
+  return { status: 'success', coverage_claim: 'official_source_visible_horizon' };
+}
+
 function evidence(url, checkedAt) {
   return {
     source_id: PANAMA_SOURCE_ID,
