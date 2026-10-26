@@ -18,6 +18,8 @@ on:
       - '.github/workflows/calendar-refresh-audit-summary.yml'
       - 'scripts/timetable/build-refresh-audit-summary.mjs'
       - 'scripts/check-refresh-audit-summary.mjs'
+      - 'scripts/timetable/summarize-france-letrot-non-running-health.mjs'
+      - 'scripts/check-france-letrot-non-running-health.mjs'
       - 'scripts/check-calendar-unified-audit-coverage.mjs'
       - '.github/workflows/calendar-unified-official-refresh.yml'
       - '.github/workflows/calendar-near-official-refresh.yml'
@@ -42,6 +44,7 @@ jobs:
           node --check scripts/timetable/build-refresh-audit-summary.mjs
           node --check scripts/check-refresh-audit-summary.mjs
           node scripts/check-refresh-audit-summary.mjs
+          node scripts/check-france-letrot-non-running-health.mjs
           node scripts/check-calendar-unified-audit-coverage.mjs
 
   audit:
@@ -106,6 +109,11 @@ jobs:
             --run-completed-at="${{ steps.source.outputs.completed_at }}" \
             --source-conclusion="${{ steps.source.outputs.conclusion }}" \
             --output=.calendar-audit/refresh-audit-summary.json
+      - name: Classify France LETROT bulletin availability without non-running inference
+        run: |
+          node scripts/timetable/summarize-france-letrot-non-running-health.mjs \
+            --artifact-root=.source-refresh-artifact \
+            --output=.calendar-audit/france-letrot-non-running-health.json
       - name: Publish audit table to run summary
         shell: bash
         run: |
@@ -117,10 +125,16 @@ jobs:
             echo '| Country / system | Checked | Changed | Unchanged | Promoted | Added | Pending | Fetch failed | Parse failed |'
             echo '|---|---:|---:|---:|---:|---:|---:|---:|---:|'
             jq -r '.systems[] | select(.acquisition_group != "source-health") | [(.country_id + " / " + (.acquisition_group // .authority_id // .racing_system_id // "unknown")), .checked, .changed, .unchanged, .promoted, .added, .pending, .fetch_failed, .parse_failed] | "| \(.[0]) | \(.[1]) | \(.[2]) | \(.[3]) | \(.[4]) | \(.[5]) | \(.[6]) | \(.[7]) | \(.[8]) |"' .calendar-audit/refresh-audit-summary.json
+            echo
+            echo '### France LETROT non-running bulletin availability'
+            jq -r '"- Classification: \(.classification); reported status: \(.reported_status); successful PDFs: \(.counts.success); current/future PDF 404: \(.counts.bulletin_unavailable_404); source/parse errors: \(.counts.source_error); other: \(.counts.other); confirmed non-running: \(.confirmed_non_running_count)"' .calendar-audit/france-letrot-non-running-health.json
+            echo 'A missing bulletin is never evidence that a meeting was cancelled.'
           } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: calendar-refresh-audit-summary-${{ steps.source.outputs.run_id }}
           retention-days: 30
-          path: .calendar-audit/refresh-audit-summary.json
+          path: |
+            .calendar-audit/refresh-audit-summary.json
+            .calendar-audit/france-letrot-non-running-health.json
