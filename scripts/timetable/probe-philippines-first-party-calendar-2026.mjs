@@ -128,6 +128,28 @@ for(const source of SOURCES){
       }catch(err){record.calendar_script={status:'transport_error',error:String(err.message).split('\n')[0].slice(0,120)}}
      }
     }
+    if(source.id==='mmtci-race-calendar' && record.first_party_asset_paths.includes('/js/controller.min.js')){
+     const u=new URL('/js/controller.min.js',source.url).toString();
+     if(robotsBody && checkRobots(robotsBody,u,UA)){
+      record.angular_controller={status:'blocked_by_robots'};
+     }else{
+      try{
+       const asset=readPublic(u,host);
+       const body=asset.status===200?asset.body:'';
+       const literals=[...body.matchAll(/["'](\/?[A-Za-z0-9/_-]*(?:calendar|fixture|racing|schedule)[A-Za-z0-9/_-]*)["']/gi)]
+        .map(m=>m[1]).filter(v=>v.length<=95&&v.length>=5).slice(0,25);
+       record.angular_controller={
+        status:'http_'+asset.status,
+        date_token_count:(body.match(/\b20(?:26|27)-\d{2}-\d{2}\b/g)||[]).length,
+        calendar_literal_paths:[...new Set(literals)].slice(0,12),
+        uses_angular_http:/\$http\.(?:get|post)|\.ajax\(|XMLHttpRequest/i.test(body),
+        auth_related_code_present:/\b(?:token|password|login|decrypt|credential)\b/i.test(body),
+        byte_bucket:body.length<10000?'small':body.length<100000?'medium':'large'
+       };
+      }catch(err){record.angular_controller={status:'transport_error',error:String(err.message).split('\n')[0].slice(0,120)}}
+     }
+    }
+
    }
   } else record.skipped=true;
  }catch(e){record.errors.push('source_transport_error:'+String(e.message).split('\n')[0].slice(0,150));}
