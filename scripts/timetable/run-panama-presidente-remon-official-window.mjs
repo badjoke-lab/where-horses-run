@@ -10,6 +10,7 @@ import {
   buildPanamaMeetingRecord,
   parsePanamaProgrammePage,
   mergePanamaProgrammeRows,
+  classifyPanamaPageCoverage,
 } from './panama-presidente-remon-core.mjs';
 
 function arg(name, fallback = null) {
@@ -91,12 +92,11 @@ for (const [kind, url] of [
 }
 allRows = mergePanamaProgrammeRows(...groups);
 const availablePages = sourcePages.filter(row => row.status === 'success').length;
-let attemptStatus = 'success';
+const classification = classifyPanamaPageCoverage(sourcePages, allRows.length);
+const attemptStatus = classification.status;
 if (availablePages === 0) {
-  attemptStatus = 'network_error';
   sourceErrors.push(...sourcePages.map(({kind,source_url,error}) => ({stage:kind,source_url,error})));
 } else if (allRows.length === 0) {
-  attemptStatus = 'parse_error';
   parseFailures.push({code:'no_programa_oficial_events_parsed',source_urls:sourcePages.filter(p=>p.status==='success').map(p=>p.source_url)});
 }
 
@@ -139,9 +139,7 @@ const artifact = {
     start_date: start,
     end_date_exclusive: end,
     days,
-    coverage_claim: sourceErrors.length || parseFailures.length
-      ? 'acquisition_failed_preserve_verified_state'
-      : 'official_source_visible_horizon',
+    coverage_claim: classification.coverage_claim,
     coverage_note: 'Explicit Programa Oficial event titles on the operator category and same-host calendar overview supply positive meeting-date evidence only. The operator sometimes miscategorizies official programmes. Older-year articles, provisional programmes, betting forecasts, training/weight notices and event operating hours are not race-day or post-time evidence. Unlisted dates never imply cancellation or a complete 30-day schedule.',
   },
   records,
@@ -162,6 +160,9 @@ console.log(JSON.stringify({
   rank_counts: rankCounts,
   completion_counts: completionCounts,
   source_errors: sourceErrors.length,
+  source_warnings: sourceWarnings.length,
+  source_page_successes: availablePages,
+  coverage_claim: classification.coverage_claim,
   parse_failures: parseFailures.length,
   raw_body_retained: false,
 }));
