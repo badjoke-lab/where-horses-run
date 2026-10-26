@@ -75,6 +75,7 @@ refresh_non_japan_on_main() {
     --output=.calendar-unified/south-africa-four-racing.json
   node scripts/timetable/run-panama-presidente-remon-official-window.mjs \
     --days="${DAYS}" \
+    --lookback-days=7 \
     --output=.calendar-unified/panama.json
   node scripts/timetable/run-brazil-jcb-reunioes-official-window.mjs \
     --days="${DAYS}" \
