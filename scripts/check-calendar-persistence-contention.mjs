@@ -28,6 +28,13 @@ for (const [label, path, smokeGroup] of workflows) {
     1, label + ': Flemington apply step must occur exactly once',
   );
 
+  assert.match(text, /wait_for_japan_main_quiet\(\)\s*\{/, label + ': Japan persistence quiet-gate helper missing');
+  assert.match(text, /local required_stable_seconds=120/, label + ': Japan quiet window missing');
+  assert.match(text, /local max_wait_seconds=600/, label + ': Japan bounded main quiet wait missing');
+  assert.match(text, /japan_max_attempts=5/, label + ': Japan bounded rebuild budget missing');
+  assert.match(text, /Japan persistence exhausted \$japan_max_attempts bounded rebuild attempts/, label + ': Japan fail-closed exhaustion missing');
+  assert.equal((text.match(/refresh_japan_on_main "\$QUIET_JAPAN_MAIN"/g) ?? []).length, 3,
+    label + ': every Japan rebase/rebuild must start from observed quiet main');
   assert.match(text, /wait_for_main_quiet\(\)\s*\{/, label + ': wait_for_main_quiet helper missing');
   assert.match(text, /required_stable_seconds=600/, label + ': 10-minute main quiet gate missing');
   assert.match(text, /max_wait_seconds=1800/, label + ': bounded quiet wait missing');
