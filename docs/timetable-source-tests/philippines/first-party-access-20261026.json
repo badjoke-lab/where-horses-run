@@ -7,7 +7,7 @@
   "countrywide_coverage_claim": false,
   "publication_fields": [],
   "raw_source_retained": false,
-  "evidence_run": "https://github.com/badjoke-lab/where-horses-run/actions/runs/40313237387",
+  "evidence_run": "https://github.com/badjoke-lab/where-horses-run/actions/runs/40313530580",
   "sources": [
     {
       "id": "philracom-calendar",
@@ -26,7 +26,12 @@
       "asset_http": "200",
       "asset_has_actual_2026_dates": false,
       "static_calendar_cue": true,
-      "next": "source display uses Angular/JS, verify first-party public actual dated venue fixture route and applicable terms before any collection"
+      "next": "source display uses Angular/JS, verify first-party public actual dated venue fixture route and applicable terms before any collection",
+      "angular_calendar_asset": "/js/controller.min.js",
+      "angular_asset_http": "200",
+      "angular_asset_contains_iso_dates": false,
+      "calendar_literal_paths": [],
+      "note": "Official Angular controller and calendar display assets respond 200, but neither exposes scheduled date/venue facts as simple static HTML or an identified reviewed feed. No deeper betting/login/API access attempted."
     },
     {
       "id": "pjc-trainer-fixtures",
