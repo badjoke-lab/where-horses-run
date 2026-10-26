@@ -1,0 +1,22 @@
+name: Calendar Indonesia PORPROV XV 2026 source probe
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-indonesia-porprov-2026-source-probe.yml'
+      - 'scripts/timetable/probe-indonesia-porprov-2026-legokjawa.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  official-event-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate bounded first-party source script
+        run: node --check scripts/timetable/probe-indonesia-porprov-2026-legokjawa.mjs
+      - name: Verify exact November Legok Jawa event dates without source retention
+        run: node scripts/timetable/probe-indonesia-porprov-2026-legokjawa.mjs
