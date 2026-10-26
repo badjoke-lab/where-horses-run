@@ -19,5 +19,5 @@ assert.equal(d.days.length,11);
 assert.equal(d.days.find(x=>x.date==='2026-11-15')?.races_listed,2);
 assert.throws(()=>parseChcVenezuela2026([[...header,'VEN','Wrong venue','15','Nov.'],[],[]]),/venue/);
 assert.throws(()=>parseChcVenezuela2026([fixtures,[]]),/page count/);
-assert.throws(()=>parseChcVenezuela2026([fixtures.map(x=>x==='2026'?'2027':x),[],[]].map(p=>p)),/fingerprint/);
+assert.throws(()=>parseChcVenezuela2026([fixtures.map(x=>x.replace('2026','2027')),[],[]].map(p=>p)),/fingerprint/);
 console.log('VEN_CHC_PARSER_PASS 2026 limited selected date/venue facts only');
