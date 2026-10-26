@@ -285,14 +285,16 @@
       "page_kind": "country",
       "method_class": "active_official",
       "source_ids": [
-        "rostov-2026-season-notice"
+        "rostov-2026-season-notice",
+        "grozny-hippodrome-2026-day-11-notice"
       ],
-      "primary_source_url": "https://www.rosippo.ru/test-program.html",
+      "primary_source_url": "https://grozny-hippodrom.ru/docs",
       "cadence_class": "event-triggered",
       "trigger_class": "meeting_or_source_window",
       "zero_policy": "emit_only_source_visible_current_meetings",
       "runner_state": "candidate",
-      "method_complete": true
+      "method_complete": true,
+      "production_scope_note": "First-party Grozny closing day 2026-10-30 only; Rostov remains independent link-only. One physical venue and one source-positive date, no national or next-season claim."
     },
     {
       "tier": 70,
