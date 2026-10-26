@@ -1989,6 +1989,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "CHC first-party 2026 selected classic calendar yields 25 distinct positive-date signals at La Rinconada. C fact-only, not national Venezuela racing dates. No reproduction of named classics, PDF, racecards or media. Full/near low-frequency direct source; failure preserves previously verified public data and never implies cancellation. Conditional rights E2 for 25 date+venue facts only."
+    },
+    {
+      "system_id": "russia-grozny-thoroughbred-system",
+      "country_id": "russia",
+      "authority_id": "grozny-hippodrome-operator",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "grozny-hippodrome-2026-day-11-notice",
+      "detail_source_id": "grozny-hippodrome-2026-day-11-notice",
+      "schedule_adapter_id": "russia-grozny-single-date-html-v1",
+      "detail_adapter_id": "russia-grozny-single-date-html-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Grozny first-party Oct 30 2026 day-11 closing notice; one verified physical-venue/date fact only. Not Russian nationwide, not Rostov, not complete 2026 season. No horse/racecard/media reuse, no live or completion inference; bounded direct source and retain last verified on failure."
     }
   ]
 }
