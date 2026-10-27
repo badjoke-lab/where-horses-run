@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-non-running-evidence-registry-v1",
-  "reviewed_at": "2026-10-26",
+  "reviewed_at": "2026-10-28",
   "records": [
     {
       "record_id": "japan-jra-system",
@@ -1698,6 +1698,29 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-10-26",
       "notes": "No schedule disappearance or fetch error may be promoted to cancellation or postponement; no 2027 inference."
+    },
+    {
+      "record_id": "indonesia-porprov-xv-jabar-2026-pacuan-system",
+      "country_id": "indonesia",
+      "system_id": "indonesia-porprov-xv-jabar-2026-pacuan-system",
+      "authority_id": "porprov-xv-jabar-organizer",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "KONI West Java 2026 PORPROV XV Nov 7/8 race-sport scheduled date+venue facts only. No separate official meeting-cancellation/postponement evidence source established.",
+      "evidence_urls": [
+        "https://porprov.konijabar.or.id/cabor/berkuda",
+        "https://porprov.konijabar.or.id/jadwal?tgl=2026-11-07",
+        "https://porprov.konijabar.or.id/jadwal?tgl=2026-11-08"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-10-28",
+      "notes": "A missing event/date row, unavailable source or parser failure is not evidence of cancelled, postponed or completed racing. Preserve last source-verified C date/venue and require explicit whole-meeting independent evidence before any removal."
     }
   ]
 }
