@@ -6,6 +6,7 @@ on:
       - 'scripts/timetable/probe-indonesia-porprov-2026-legokjawa.mjs'
       - 'scripts/timetable/indonesia-porprov-2026-source-core.mjs'
       - 'scripts/check-indonesia-porprov-2026-source-scope.mjs'
+      - 'scripts/timetable/probe-indonesia-koni-2026-two-day-schedule.mjs'
   workflow_dispatch:
 permissions:
   contents: read
@@ -24,3 +25,5 @@ jobs:
         run: node scripts/check-indonesia-porprov-2026-source-scope.mjs
       - name: Verify exact November Legok Jawa event dates without source retention
         run: node scripts/timetable/probe-indonesia-porprov-2026-legokjawa.mjs
+      - name: Probe KONI dated sport listings and terms
+        run: node scripts/timetable/probe-indonesia-koni-2026-two-day-schedule.mjs
