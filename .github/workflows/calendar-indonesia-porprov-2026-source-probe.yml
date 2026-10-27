@@ -1,0 +1,41 @@
+name: Calendar Indonesia PORPROV XV 2026 source probe
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-indonesia-porprov-2026-source-probe.yml'
+      - 'scripts/timetable/probe-indonesia-porprov-2026-legokjawa.mjs'
+      - 'scripts/timetable/indonesia-porprov-2026-source-core.mjs'
+      - 'scripts/check-indonesia-porprov-2026-source-scope.mjs'
+      - 'scripts/timetable/run-indonesia-porprov-2026-official-window.mjs'
+      - 'scripts/timetable/indonesia-porprov-2026-c-source-core.mjs'
+      - 'scripts/check-indonesia-porprov-2026-c-adapter.mjs'
+      - 'scripts/check-indonesia-porprov-2026-canonical-public-integration.mjs'
+      - 'scripts/timetable/probe-indonesia-koni-2026-two-day-schedule.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  official-event-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate bounded first-party source script
+        run: node --check scripts/timetable/probe-indonesia-porprov-2026-legokjawa.mjs
+      - name: Verify offline 2026 event-scope and no-meeting guards
+        run: node scripts/check-indonesia-porprov-2026-source-scope.mjs
+      - name: Verify exact November Legok Jawa event dates without source retention
+        run: node scripts/timetable/probe-indonesia-porprov-2026-legokjawa.mjs
+      - name: Probe KONI dated sport listings and terms
+        run: node scripts/timetable/probe-indonesia-koni-2026-two-day-schedule.mjs
+      - name: Validate 2026 Indonesia C date/venue adapter (offline)
+        run: node scripts/check-indonesia-porprov-2026-c-adapter.mjs
+      - name: Execute bounded two-day candidate without any canonical or public write
+        run: |
+          node scripts/timetable/run-indonesia-porprov-2026-official-window.mjs --as-of=2026-10-28 --days=30 --output=/tmp/indonesia-porprov-c.json
+          node --input-type=module -e "import fs from 'node:fs'; const a=JSON.parse(fs.readFileSync('/tmp/indonesia-porprov-c.json','utf8')); if(a.acquisition_attempt.status!=='success'||a.records.length!==2||!a.records.every(x=>x.capability_rank==='C')) process.exit(1); console.log('INDONESIA_C_CANDIDATE_PASS records=2 rank=C no_publication');"
+      - name: Validate isolated canonical/public C projection and failed-source retention
+        run: node scripts/check-indonesia-porprov-2026-canonical-public-integration.mjs

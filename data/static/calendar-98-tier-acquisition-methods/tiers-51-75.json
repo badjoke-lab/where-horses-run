@@ -268,16 +268,18 @@
       "tier": 68,
       "country_id": "indonesia",
       "page_kind": "country",
-      "method_class": "active_source_driven",
+      "method_class": "active_official",
       "source_ids": [
-        "pordasi-race-calendar-2026"
+        "pordasi-race-calendar-2026",
+        "porprov-jabar-2026-koni-sport-days"
       ],
-      "primary_source_url": "https://pordasi.id/",
-      "cadence_class": "source-driven",
+      "primary_source_url": "https://porprov.konijabar.or.id/cabor/berkuda",
+      "cadence_class": "event-triggered",
       "trigger_class": "meeting_or_source_window",
       "zero_policy": "emit_only_source_visible_current_meetings",
       "runner_state": "candidate",
-      "method_complete": true
+      "method_complete": true,
+      "production_scope_note": "Only one 2026 PORPROV horse-racing venue, Nov 7-8; PORDASI nation-wide remains uncovered."
     },
     {
       "tier": 69,

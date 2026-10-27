@@ -47,6 +47,7 @@ jobs:
           node scripts/check-ecuador-chc-2026-adapter.mjs
           node scripts/check-venezuela-chc-2026-source.mjs
           node scripts/check-russia-grozny-2026-adapter.mjs
+          node scripts/check-indonesia-porprov-2026-c-adapter.mjs
           node scripts/check-australia-victoria-flemington-2026-27-adapter.mjs
           node scripts/check-kra-window-bounds.mjs
           node scripts/check-kra-fetch-failure-retention.mjs
@@ -459,6 +460,11 @@ jobs:
           node scripts/timetable/run-russia-grozny-2026-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/russia-grozny.json
+      - name: Collect Indonesia PORPROV XV 2026 Legokjawa C meeting dates
+        run: |
+          node scripts/timetable/run-indonesia-porprov-2026-official-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/indonesia-porprov.json
       - name: Collect Bangalore BTC winter C official dates
         run: |
           node scripts/timetable/run-india-bangalore-winter-2026-window.mjs \
@@ -729,6 +735,7 @@ jobs:
           --artifact=.calendar-unified/ecuador-chc.json \
           --artifact=.calendar-unified/venezuela-chc.json \
           --artifact=.calendar-unified/russia-grozny.json \
+          --artifact=.calendar-unified/indonesia-porprov.json \
           --artifact=.calendar-unified/australia-victoria-flemington.json \
           --artifact=.calendar-unified/australia-victoria-mrc.json \
             --artifact=.calendar-unified/us-njrc/monmouth.json \
@@ -1166,6 +1173,14 @@ jobs:
             --authority-id=grozny-hippodrome-operator \
             --racing-system-id=russia-grozny-thoroughbred-system \
             --timezone=Europe/Moscow
+      - name: Apply Indonesia PORPROV XV 2026 Legokjawa C observations
+        run: |
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/indonesia-porprov.json \
+            --country-id=indonesia \
+            --authority-id=porprov-xv-jabar-organizer \
+            --racing-system-id=indonesia-porprov-xv-jabar-2026-pacuan-system \
+            --timezone=Asia/Jakarta
       - name: Apply India Bangalore BTC winter C observations
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \

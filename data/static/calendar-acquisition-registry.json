@@ -2014,6 +2014,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Grozny first-party Oct 30 2026 day-11 closing notice; one verified physical-venue/date fact only. Not Russian nationwide, not Rostov, not complete 2026 season. No horse/racecard/media reuse, no live or completion inference; bounded direct source and retain last verified on failure."
+    },
+    {
+      "system_id": "indonesia-porprov-xv-jabar-2026-pacuan-system",
+      "country_id": "indonesia",
+      "authority_id": "porprov-xv-jabar-organizer",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "porprov-jabar-2026-koni-sport-days",
+      "detail_source_id": "porprov-jabar-2026-koni-sport-days",
+      "schedule_adapter_id": "indonesia-porprov-legokjawa-2026-c-v1",
+      "detail_adapter_id": "indonesia-porprov-legokjawa-2026-c-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Only Nov 7-8 2026 scheduled racing competition at Legokjawa, C date/venue only, not national or racecard. Small first-party informational fact extraction, source attribution, no bulk scraping. Preserve last-known-good on source failure."
     }
   ]
 }

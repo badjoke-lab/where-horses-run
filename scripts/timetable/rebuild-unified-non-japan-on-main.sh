@@ -210,6 +210,9 @@ refresh_non_japan_on_main() {
   node scripts/timetable/run-russia-grozny-2026-official-window.mjs \
     --days="${DAYS}" \
     --output=.calendar-unified/russia-grozny.json
+  node scripts/timetable/run-indonesia-porprov-2026-official-window.mjs \
+    --days="${DAYS}" \
+    --output=.calendar-unified/indonesia-porprov.json
   node scripts/timetable/run-australia-victoria-flemington-2026-27-official-window.mjs \
     --days="${DAYS}" \
     --output=.calendar-unified/australia-victoria-flemington.json
@@ -292,6 +295,7 @@ refresh_non_japan_on_main() {
   --artifact=.calendar-unified/ecuador-chc.json \
   --artifact=.calendar-unified/venezuela-chc.json \
   --artifact=.calendar-unified/russia-grozny.json \
+  --artifact=.calendar-unified/indonesia-porprov.json \
   --artifact=.calendar-unified/australia-victoria-flemington.json \
   --artifact=.calendar-unified/australia-victoria-mrc.json \
   --artifact=.calendar-unified/us-njrc/monmouth.json \
@@ -711,6 +715,12 @@ refresh_non_japan_on_main() {
     --authority-id=grozny-hippodrome-operator \
     --racing-system-id=russia-grozny-thoroughbred-system \
     --timezone=Europe/Moscow
+  node scripts/timetable/apply-official-rolling-observations.mjs \
+    --artifact=.calendar-unified/indonesia-porprov.json \
+    --country-id=indonesia \
+    --authority-id=porprov-xv-jabar-organizer \
+    --racing-system-id=indonesia-porprov-xv-jabar-2026-pacuan-system \
+    --timezone=Asia/Jakarta
 
   node scripts/timetable/apply-official-rolling-observations.mjs \
     --artifact=.calendar-unified/australia-victoria-flemington.json \
