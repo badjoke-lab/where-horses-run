@@ -1,0 +1,81 @@
+name: Calendar Panama/Spain production boundary probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-panama-spain-production-probe.yml'
+      - 'scripts/timetable/check-panama-production-boundary-20261028.mjs'
+      - 'scripts/timetable/check-panama-live-browser-20261028.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  panama-public-en-ja:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check persisted Panama C rows and live EN/JA Calendar and track HTML
+        run: node scripts/timetable/check-panama-production-boundary-20261028.mjs
+
+  spain-official-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Recheck first-party Spanish PDF acquisition without affecting global refresh
+        run: |
+          asof="$(TZ=Europe/Madrid date +%F)"
+          node scripts/timetable/run-spain-zarzuela-official-window.mjs \
+            "--as-of=$asof" --days=30 --output=spain-live-probe.json
+          node --input-type=module -e '
+            import fs from "node:fs";
+            const a=JSON.parse(fs.readFileSync("spain-live-probe.json","utf8"));
+            const d=a.diagnostics??{};
+            const summary={
+              annual_source_status:d.annual_source_status,
+              source_errors:d.source_errors,
+              parse_failures:d.parse_failures,
+              annual_rows:a.discovery?.annual_rows,
+              meetings_emitted:a.records?.length,
+              schedule_source_url:a.discovery?.schedule_source_url,
+              checked_at:a.generated_at
+            };
+            console.log("SPAIN_INDEPENDENT_LIVE_SOURCE",JSON.stringify(summary));
+            if(d.annual_source_status!=="success" ||
+               !(a.discovery?.annual_rows>0) ||
+               !Array.isArray(a.records) ||
+               (d.parse_failures?.length??0)>0)process.exitCode=1;
+          '
+      - name: Delete temporary live source artifact (not republished)
+        if: always()
+        run: rm -f spain-live-probe.json
+
+  panama-browser-en-ja:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install ephemeral Chromium controller
+        run: npm install --no-save --ignore-scripts --no-audit --no-fund puppeteer-core
+      - name: Render EN/JA Calendar and Panama track on desktop and mobile
+        run: node scripts/timetable/check-panama-live-browser-20261028.mjs
+      - name: Preserve rendered screenshots for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: panama-live-browser-qa-20261028
+          path: panama-live-browser-qa/
+          if-no-files-found: ignore
