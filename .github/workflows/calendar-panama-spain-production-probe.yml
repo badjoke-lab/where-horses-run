@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/calendar-panama-spain-production-probe.yml'
       - 'scripts/timetable/check-panama-production-boundary-20261028.mjs'
+      - 'scripts/timetable/check-panama-live-browser-20261028.mjs'
   workflow_dispatch:
 
 permissions:
@@ -58,3 +59,23 @@ jobs:
       - name: Delete temporary live source artifact (not republished)
         if: always()
         run: rm -f spain-live-probe.json
+
+  panama-browser-en-ja:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install ephemeral Chromium controller
+        run: npm install --no-save --ignore-scripts --no-audit --no-fund puppeteer-core
+      - name: Render EN/JA Calendar and Panama track on desktop and mobile
+        run: node scripts/timetable/check-panama-live-browser-20261028.mjs
+      - name: Preserve rendered screenshots for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: panama-live-browser-qa-20261028
+          path: panama-live-browser-qa/
+          if-no-files-found: ignore
