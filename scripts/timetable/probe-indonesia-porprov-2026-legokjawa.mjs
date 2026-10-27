@@ -3,6 +3,7 @@
  * Source/method/field scope: one organizer page; two candidate dates at Legok Jawa.
  * Read-only, no page retention or Calendar/Registry writes.
  */
+import { parseBerkudaPacuEventWindow, visibleText } from './indonesia-porprov-2026-source-core.mjs';
 const site='https://porprovbekasikota2026.id';
 const page='/cabang-olahraga/berkuda-pacu';
 const venueNotice='/berita/bergerak-serentak-tim-pb-porprov-xv-jabar-2026-tinjau-puluhan-venue';
@@ -32,21 +33,22 @@ try{
  if(denies)process.exit(0);
  const res=await load(page);
  if(res.status!=='ok'){log('event',{status:res.status,http:res.http,source_candidate:false});process.exit(0)}
- const text=res.html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;|&#160;/gi,' ').replace(/\s+/g,' ');
- const raceCategory=/Berkuda\s+Pacu/i.test(text);
- const dateRange=/0?7\s+Nov(?:ember)?\s+2026.{0,110}0?8\s+Nov(?:ember)?\s+2026/i.test(text);
- const venue=/Pacuan\s+Kuda\s+Legok\s*Jawa/i.test(text);
- log('event',{status:'ok',http:200,event:'PORPROV XV Jawa Barat 2026',raceCategory,dateRange,venue,
-   event_window_dates:raceCategory&&dateRange&&venue?['2026-11-07','2026-11-08']:[],
-   individual_race_days_confirmed:false,
+ const parsed=parseBerkudaPacuEventWindow(res.html);
+ log('event',{status:'ok',http:200,event:'PORPROV XV Jawa Barat 2026',
+   raceCategory:parsed.raceCategory,dateRange:parsed.dateRange,venue:parsed.venue,
+   source_scope_confirmed:parsed.sourceScopeConfirmed,
+   event_window_dates:parsed.eventWindowDates,
+   individual_race_days_confirmed:parsed.individualRaceDaysConfirmed,
    physical_venue:'Pacuan Kuda Legok Jawa, Pangandaran',
    countrywide_claim:false,rights_permission_not_inferred:true,
-   meeting_records:[],publication_ready:false,publication_blocker:'event_range_is_not_day_specific_fixture'});
+   meeting_records:parsed.meetingRecords,publication_ready:parsed.publicationReady,
+   publication_blocker:parsed.publicationBlocker});
+ if(!parsed.sourceScopeConfirmed)process.exitCode=1;
  // Separate organizer notice corroborates that Legok Jawa is a physical racing
  // venue. It does not confirm competition on either day of the event range.
  if(!disallowed(venueNotice)){
   const n=await load(venueNotice);
-  const t=n.status==='ok'?n.html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/\s+/g,' '):'';
+  const t=n.status==='ok'?visibleText(n.html):'';
   log('venue_crosscheck',{status:n.status,http:n.http,
     physical_track_corroborated:/pacuan\s+kuda\s+Legok\s*Jawa/i.test(t)&&/Pangandaran/i.test(t),
     source_type:'organizer_venue_inspection_report',individual_race_days_confirmed:false,publication_ready:false});
