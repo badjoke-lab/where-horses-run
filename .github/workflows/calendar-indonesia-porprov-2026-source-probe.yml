@@ -4,6 +4,8 @@ on:
     paths:
       - '.github/workflows/calendar-indonesia-porprov-2026-source-probe.yml'
       - 'scripts/timetable/probe-indonesia-porprov-2026-legokjawa.mjs'
+      - 'scripts/timetable/indonesia-porprov-2026-source-core.mjs'
+      - 'scripts/check-indonesia-porprov-2026-source-scope.mjs'
   workflow_dispatch:
 permissions:
   contents: read
@@ -18,5 +20,7 @@ jobs:
           node-version: '22'
       - name: Validate bounded first-party source script
         run: node --check scripts/timetable/probe-indonesia-porprov-2026-legokjawa.mjs
+      - name: Verify offline 2026 event-scope and no-meeting guards
+        run: node scripts/check-indonesia-porprov-2026-source-scope.mjs
       - name: Verify exact November Legok Jawa event dates without source retention
         run: node scripts/timetable/probe-indonesia-porprov-2026-legokjawa.mjs
