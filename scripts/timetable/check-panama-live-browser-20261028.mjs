@@ -4,6 +4,14 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import puppeteer from 'puppeteer-core';
+import { execFileSync } from 'node:child_process';
+
+// The DOM may contain Japanese text even when the CI browser draws empty tofu
+// squares. A successful DOM/horizontal-overflow check is not visual QA without
+// Japanese glyph coverage in the headless fontconfig environment.
+const japaneseFonts=execFileSync('fc-list',[':lang=ja','family'],{encoding:'utf8'}).trim();
+assert.ok(japaneseFonts.length>0,'Japanese fontconfig glyph coverage is required for visual QA');
+console.log('PANAMA_JA_RENDER_FONT',japaneseFonts.split('\n').slice(0,4).join(' | '));
 
 const binary=['/usr/bin/google-chrome','/usr/bin/google-chrome-stable',
   '/usr/bin/chromium','/usr/bin/chromium-browser'].find(p=>fs.existsSync(p));
