@@ -22,7 +22,7 @@ async function load(path){
 }
 try{
  const robots=await load('/robots.txt');
- if(robots.status==='blocked_or_redirect'||robots.status==='http_error'){log('robots',{status:robots.status,http:robots.http,stop:true});process.exit(0)}
+ if(robots.status==='blocked_or_redirect'||robots.status==='http_error'){log('robots',{status:robots.status,http:robots.http,stop:true});throw new Error('robots_access_unavailable')}
  const lines=(robots.html||'').split(/\r?\n/);
  let all=false;const directives=[];
  for(const raw of lines){const line=raw.replace(/#.*/,'').trim();if(/^user-agent:/i.test(line))all=/^user-agent:\s*\*\s*$/i.test(line);
@@ -30,9 +30,9 @@ try{
  const disallowed=(path)=>directives.some(line=>{const m=line.match(/^disallow:\s*(.+)/i);return m&&m[1]&&path.startsWith(m[1])});
  const denies=disallowed(page);
  log('robots',{status:robots.status,http:robots.http,directives:directives.slice(0,25),event_path_disallowed:denies});
- if(denies)process.exit(0);
+ if(denies)throw new Error('event_page_robots_disallowed');
  const res=await load(page);
- if(res.status!=='ok'){log('event',{status:res.status,http:res.http,source_candidate:false});process.exit(0)}
+ if(res.status!=='ok'){log('event',{status:res.status,http:res.http,source_candidate:false});throw new Error('event_source_unavailable')}
  const parsed=parseBerkudaPacuEventWindow(res.html);
  log('event',{status:'ok',http:200,event:'PORPROV XV Jawa Barat 2026',
    raceCategory:parsed.raceCategory,dateRange:parsed.dateRange,venue:parsed.venue,
@@ -53,5 +53,5 @@ try{
     physical_track_corroborated:/pacuan\s+kuda\s+Legok\s*Jawa/i.test(t)&&/Pangandaran/i.test(t),
     source_type:'organizer_venue_inspection_report',individual_race_days_confirmed:false,publication_ready:false});
  }else log('venue_crosscheck',{status:'robots_disallowed',publication_ready:false});
-}catch(e){log('error',{status:'fetch_error',name:String(e?.name||'unknown')})}
+}catch(e){log('error',{status:'source_probe_failed',name:String(e?.name||'unknown'),message:String(e?.message||'unknown')});process.exitCode=1}
 console.log('INDONESIA_PORPROV_PROBE_END no_publication');
