@@ -54,9 +54,9 @@ async function fetchBounded(url){
  if((new URL(response.url)).origin!==(new URL(url)).origin)return {status:'unexpected_origin'};
  if(!/^text\/(?:html|plain)(?:;|$)/i.test(response.headers.get('content-type')||''))return {status:'unexpected_content_type'};
  const size=Number(response.headers.get('content-length')||0);
- if(size>650000)return {status:'too_large'};
+ if(size>2200000)return {status:'too_large'};
  const body=await response.text();
- if(body.length>650000)return {status:'too_large'};
+ if(body.length>2200000)return {status:'too_large'};
  return {status:'ok',body};
 }
 async function check(source){
