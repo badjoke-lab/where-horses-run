@@ -63,6 +63,25 @@ async function read(url,max=900000){
  if(body.length>max)return {status:'size_exceeded'};
  return {status:'ok',body};
 }
+function sellerPolicySignals(html){
+ const content=strip(html).toLowerCase();
+ return {
+  intermediary_disclosed:content.includes('tickito acts as an intermediary'),
+  promoter_controls_event:content.includes('each event promoter is solely responsible'),
+  automated_access_licence_confirmed:false,
+  permission_for_calendar_republication_confirmed:false
+ };
+}
+function eligibility({eventFacts,policyFacts,physicalRacecourseVerified=false,organiserVerified=false,rightsReviewed=false}){
+ const gates={
+  public_event_date_venue:!!eventFacts?.date,
+  seller_intermediary_role_identified:!!(policyFacts?.intermediary_disclosed&&policyFacts?.promoter_controls_event),
+  independently_identified_organiser:organiserVerified,
+  physically_normalized_racecourse:physicalRacecourseVerified,
+  source_method_and_fields_rights_reviewed:rightsReviewed
+ };
+ return {gates,release_ready:Object.values(gates).every(Boolean)};
+}
 function horizon(asOf,days){
  const d=new Date(asOf+'T00:00:00Z');
  if(!Number.isInteger(days)||days<1||days>120||Number.isNaN(d.getTime())||d.toISOString().slice(0,10)!==asOf)throw Error('invalid horizon');
@@ -83,6 +102,11 @@ function selfTest(){
  if(signals(good.replace('2026-10-31','year-hidden'),'', '2026-10-29').date)throw Error('unconfirmed year');
  if(signals(good.replace('2026-10-31','year-hidden'),'<p>Saturday 31 Oct Nyelex Farm Tlhale Horse Racing Competition</p>','2027-10-29').date)throw Error('wrong year');
  if(!horizon('2026-10-29',3)||horizon('2026-11-01',30))throw Error('no stale/future inference');
+ const policy=sellerPolicySignals('<p>Each event promoter is solely responsible for ensuring that the scheduled event takes place as planned.</p><p>Tickito acts as an intermediary between the customers and the event promoters</p>');
+ if(!policy.intermediary_disclosed||!policy.promoter_controls_event)throw Error('policy role');
+ if(eligibility({eventFacts:inferred,policyFacts:policy}).release_ready)throw Error('must not publish when organiser/venue/rights unverified');
+ if(!eligibility({eventFacts:inferred,policyFacts:policy,physicalRacecourseVerified:true,organiserVerified:true,rightsReviewed:true}).release_ready)throw Error('release gate unexpectedly false');
+ if(eligibility({eventFacts:{},policyFacts:policy,physicalRacecourseVerified:true,organiserVerified:true,rightsReviewed:true}).release_ready)throw Error('date must be source positive');
  console.log('BOTSWANA_TLHALE_C_CANDIDATE_TEST_PASS');
 }
 if(process.argv.includes('--self-test'))selfTest();
@@ -91,7 +115,7 @@ else {
   new Intl.DateTimeFormat('en-CA',{timeZone:'Africa/Gaborone',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
  const days=Number(process.argv.find(x=>x.startsWith('--days='))?.split('=')[1]||'30');
  const inWindow=horizon(asOf,days);
- let source_status='not_checked',robot_status='not_checked',data=null,reason=null;
+ let source_status='not_checked',robot_status='not_checked',data=null,policy=null,policy_status='not_checked',reason=null;
  try{
   const robot=await read('https://tickito.thevoicebw.com/robots.txt',170000);
   robot_status=robot.status;
@@ -104,14 +128,20 @@ else {
   if(listing.status!=='ok')throw Error('listing_'+listing.status);
   data=signals(page.body,listing.body,asOf);
   if(!data.date)reason='date_venue_title_or_year_not_source_confirmed';
+  // The seller's own policy is evidence of *its intermediary role*, NOT a
+  // grant to republish data nor confirmation that the event itself took place.
+  const policyRes=await read('https://tickito.thevoicebw.com/return-policy/',550000);
+  policy_status=policyRes.status;
+  if(policyRes.status==='ok')policy=sellerPolicySignals(policyRes.body);
  }catch(e){reason=String(e.message||e).slice(0,130);source_status='not_usable';}
  const report={
   checked_at:new Date().toISOString(),country_id:'botswana',source_url:EVENT_URL,
   source_type:'independent_ticketing_notice_not_organiser',
-  source_status,robots_status:robot_status,
+  source_status,robots_status:robot_status,policy_status,policy_evidence:policy,
   scope:'One Tlhale horse-racing event only. Not Kokotsha / Botswana nationwide.',
   date:EVENT_DATE,source_evidence:data,event_in_requested_window:inWindow,
-  source_positive:!!data?.date,
+  source_positive:!!data?.date,source_only_fact_evidence:!!data?.date,
+  publication_eligibility:eligibility({eventFacts:data,policyFacts:policy}),
   candidate_date_venue:inWindow&&data?.date?{date:data.date,venue_label:data.venue_label}:null,
   promoter_identity_verified:false,physical_racecourse_id_verified:false,
   rights_status:'REVIEW_REQUIRED',
