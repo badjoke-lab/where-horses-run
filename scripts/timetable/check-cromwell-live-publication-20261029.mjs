@@ -45,13 +45,16 @@ try{
       page.on('pageerror',e=>errors.push(String(e.message).slice(0,300)));
       await page.setViewport({width:vp.width,height:vp.height,deviceScaleFactor:1,isMobile:vp.name==='mobile'});
       const base='https://whr.badjoke-lab.com/'+(lang==='ja'?'ja/':'');
-      const url=base+'calendar/?date='+date+'&view=list';
+      // Explicit Asia/Tokyo is required: on Oct 28 UTC, Nov 27 falls outside a 30-day UTC window,
+      // while it falls inside the Oct 29 JST through Nov 27 JST window.
+      const url=base+'calendar/?date='+date+'&view=list&tz=Asia%2FTokyo';
       try{
         const response=await page.goto(url,{waitUntil:'domcontentloaded',timeout:30000});
         await new Promise(res=>setTimeout(res,1500));
         const state=await page.evaluate((id,venue)=>{
           const row=Array.from(document.querySelectorAll('[data-calendar-meeting-row]')).find(el=>el.getAttribute('data-meeting-id')===id);
           const selected=document.querySelector('[data-filter-date]')?.value??null;
+          const runtime=window.__WHR_CALENDAR_RUNTIME__??null;
           const styles=row?getComputedStyle(row):null;
           const visible=!!row&&row.getClientRects().length>0&&!row.closest('[hidden]')&&styles.display!=='none'&&styles.visibility!=='hidden';
           const venueLink=row?.querySelector('a[href*="/tracks/'+venue+'/"]')??null;
@@ -60,7 +63,8 @@ try{
           let markerRecord=null;
           try{markerRecord=JSON.parse(mapText).find(x=>x.meetingId===id)??null;}catch{}
           return {
-            selected,found:!!row,visible,flag,
+            selected,runtimeTimeZone:runtime?.timeZone??null,runtimeStart:runtime?.windowStart??null,runtimeEnd:runtime?.windowEndInclusive??null,
+            found:!!row,visible,flag,
             sourceDate:row?.dataset.sourceDate??null,
             firstTime:row?.dataset.firstRaceTime??null,
             lastTime:row?.dataset.lastRaceTime??null,
@@ -71,9 +75,12 @@ try{
         },id,venue);
         const expectedHref=(lang==='ja'?'/ja':'')+'/tracks/cromwell-racecourse/';
         const expectedMap={meetingId:id,racecourseId:venue,racecourseSlug:venue,hasReviewedLocation:true};
-        const listPass=response?.status()===200&&state.selected===date&&state.found&&state.visible&&
+        const route=new URL(state.venueHref??'/',base);
+        const listPass=response?.status()===200&&state.selected===date&&state.runtimeTimeZone==='Asia/Tokyo'&&
+          state.runtimeStart<=date&&state.runtimeEnd>=date&&state.found&&state.visible&&
           state.flag==='🇳🇿'&&state.sourceDate===date&&state.firstTime===''&&state.lastTime===''&&
-          state.venueHref===expectedHref&&JSON.stringify(state.mapRecord)===JSON.stringify(expectedMap)&&
+          route.pathname===expectedHref&&route.searchParams.get('tz')==='Asia/Tokyo'&&
+          JSON.stringify(state.mapRecord)===JSON.stringify(expectedMap)&&
           !state.overflow&&errors.length===0;
         if(state.found){
           await page.evaluate(id=>document.querySelector('[data-meeting-id="'+id+'"]')?.scrollIntoView({block:'center'}),id);
