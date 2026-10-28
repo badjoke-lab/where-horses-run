@@ -23,13 +23,27 @@ if(!/^\d{4}-\d{2}-\d{2}$/.test(start)) throw new Error('--as-of must be YYYY-MM-
 if(!Number.isInteger(days)||days<1||days>120) throw new Error('--days must be 1..120');
 const end=plusDays(start,days),generatedAt=new Date().toISOString(),sourceErrors=[],parseFailures=[],sourceWarnings=[];
 let allRows=[],sourceUrl=MAURITIUS_CALENDAR_URL;
-try{
-  const [gra,calendar]=await Promise.all([getHtml(MAURITIUS_GRA_URL),getHtml(MAURITIUS_CALENDAR_URL)]);
-  try{validateGraContext(gra.html);}catch(e){parseFailures.push({stage:'gra_context',source_url:gra.url||MAURITIUS_GRA_URL,error:String(e?.message??e)});}
-  sourceUrl=calendar.url||MAURITIUS_CALENDAR_URL;
-  try{allRows=parseSupertoteCalendarHtml(calendar.html,{sourceUrl});}
-  catch(e){parseFailures.push({stage:'supertote_calendar',source_url:sourceUrl,error:String(e?.message??e)});}
-}catch(e){sourceErrors.push({stage:'mauritius_fallback_fetch',source_url:MAURITIUS_CALENDAR_URL,error:String(e?.message??e)});}
+// Report the regulator and operator independently. Promise.all previously
+// attributed *both* request failures to the Supertote calendar URL.
+const [graResult, calendarResult] = await Promise.allSettled([
+  getHtml(MAURITIUS_GRA_URL),
+  getHtml(MAURITIUS_CALENDAR_URL),
+]);
+if (graResult.status === 'fulfilled') {
+  const gra = graResult.value;
+  try { validateGraContext(gra.html); }
+  catch (error) { parseFailures.push({stage:'gra_context',source_url:gra.url||MAURITIUS_GRA_URL,error:String(error?.message??error)}); }
+} else {
+  sourceErrors.push({stage:'gra_context_fetch',source_url:MAURITIUS_GRA_URL,error:String(graResult.reason?.message??graResult.reason)});
+}
+if (calendarResult.status === 'fulfilled') {
+  const calendar = calendarResult.value;
+  sourceUrl = calendar.url||MAURITIUS_CALENDAR_URL;
+  try { allRows = parseSupertoteCalendarHtml(calendar.html,{sourceUrl}); }
+  catch (error) { parseFailures.push({stage:'supertote_calendar',source_url:sourceUrl,error:String(error?.message??error)}); }
+} else {
+  sourceErrors.push({stage:'supertote_calendar_fetch',source_url:MAURITIUS_CALENDAR_URL,error:String(calendarResult.reason?.message??calendarResult.reason)});
+}
 const status=sourceErrors.length?'network_error':(parseFailures.length?'parse_error':'success');
 const visible=allRows.filter(r=>r.date>=start&&r.date<end);
 const records=status==='success'?visible.map(r=>buildMauritiusMeetingRecord(r,{checkedAt:generatedAt})):[];
