@@ -57,6 +57,7 @@ jobs:
           node scripts/check-peru-monterrico-adapter.mjs
           node scripts/check-saudi-jcsa-adapter.mjs
           node scripts/check-france-fnch-adapter.mjs
+          node scripts/check-france-letrot-non-running-health.mjs
           node scripts/check-new-zealand-official-adapter.mjs
           node scripts/check-united-kingdom-bha-adapter.mjs
           node scripts/check-slovakia-zavodisko-adapter.mjs
@@ -237,6 +238,7 @@ jobs:
           node scripts/check-peru-monterrico-adapter.mjs
           node scripts/check-saudi-jcsa-adapter.mjs
           node scripts/check-france-fnch-adapter.mjs
+          node scripts/check-france-letrot-non-running-health.mjs
           node scripts/check-new-zealand-official-adapter.mjs
           node scripts/check-united-kingdom-bha-adapter.mjs
           node scripts/check-slovakia-zavodisko-adapter.mjs
@@ -494,6 +496,9 @@ jobs:
             --days="${{ steps.scope.outputs.days }}" \
             --galop-output=.calendar-unified/france-galop.json \
             --letrot-output=.calendar-unified/france-letrot.json
+          node scripts/timetable/summarize-france-letrot-non-running-health.mjs \
+            --artifact-root=. \
+            --output=.calendar-unified/france-letrot-non-running-health.json
           node scripts/timetable/run-new-zealand-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --thoroughbred-output=.calendar-unified/new-zealand-thoroughbred.json \
