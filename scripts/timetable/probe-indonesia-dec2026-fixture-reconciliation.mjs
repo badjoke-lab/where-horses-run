@@ -19,15 +19,17 @@ function visibleText(html){
 }
 function sourceSignals(html){
  const text=visibleText(html);
- const anchor=/Piala\s+Raja\s+(?:HB\s*X|Hamengku\s+Buwono\s*X)\s+Cup\s+2026/i.exec(text);
- const context=anchor?text.slice(Math.max(0,anchor.index-160),anchor.index+400):'';
+ // The article title names the event without the venue/date; scan each
+ // event mention, not just the first headline.
+ const mentions=[...text.matchAll(/Piala\s+Raja\s+(?:HB\s*X|Hamengku\s+Buwono\s*X)\s+Cup\s+2026/gi)];
+ const contexts=mentions.map(m=>text.slice(Math.max(0,m.index-180),m.index+230));
  const dates=[];
- if(/(?:6\s+Desember\s+2026|6\s+December\s+2026)/i.test(context) && /Sultan\s+Agung/i.test(context))dates.push('2026-12-06');
- // Government's 2026 annual-agenda notice names a planned November date.
- // This is a conflict signal, NOT a cancellation or a final revised date.
- if(/(?:15\s+November\s+(?:2026)?)/i.test(context) && /Sultan\s+Agung/i.test(context))dates.push('2026-11-15');
- return {event_named:Boolean(anchor),venue_named:/Sultan\s+Agung/i.test(context),
-  date_claims:[...new Set(dates)],race_meetings_confirmed:false};
+ if(contexts.some(c=>/(?:6\s+Desember\s+2026|6\s+December\s+2026)/i.test(c)&&/Sultan\s+Agung/i.test(c))) dates.push('2026-12-06');
+ // A separate earlier notice says 15 November; neither assertion is
+ // taken as a confirmed running/cancellation signal.
+ if(contexts.some(c=>/15\s+November(?:\s+2026)?/i.test(c)&&/Sultan\s+Agung/i.test(c))) dates.push('2026-11-15');
+ return {event_named:mentions.length>0,venue_named:contexts.some(c=>/Sultan\s+Agung/i.test(c)),
+  date_claims:dates,race_meetings_confirmed:false};
 }
 function robotsAllowed(body,target){
  const path=new URL(target).pathname;
