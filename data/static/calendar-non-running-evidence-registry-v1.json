@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-non-running-evidence-registry-v1",
-  "reviewed_at": "2026-10-28",
+  "reviewed_at": "2026-10-29",
   "records": [
     {
       "record_id": "japan-jra-system",
@@ -1721,6 +1721,28 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-10-28",
       "notes": "A missing event/date row, unavailable source or parser failure is not evidence of cancelled, postponed or completed racing. Preserve last source-verified C date/venue and require explicit whole-meeting independent evidence before any removal."
+    },
+    {
+      "record_id": "malta-reviewed-system",
+      "country_id": "malta",
+      "system_id": "malta-reviewed-system",
+      "authority_id": "malta-racing-club",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "Single 2026-11-08 Malta Equidrome manually reviewed press conference date fact only; no verified cancellation or postponement feed.",
+      "evidence_urls": [
+        "https://www.maltaracingclub.com/",
+        "https://www.maltaequidrome.com/racetrack/"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-10-29",
+      "notes": "Absence from a future official Club page, third-party fixture feed silence or a source failure never proves cancelled, postponed or completed racing; no 2027 date inference. Explicit single-day independent evidence needed before meeting-state change."
     }
   ]
 }
