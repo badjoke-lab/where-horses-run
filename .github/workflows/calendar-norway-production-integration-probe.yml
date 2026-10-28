@@ -29,12 +29,14 @@ jobs:
       - name: Collect Norway official 30-day windows
         run: |
           mkdir -p .calendar-norway-integration
+          as_of="$(TZ=Europe/Oslo date +%F)"
+          echo "NORWAY_LIVE_LOCAL_WINDOW_START=${as_of}"
           node scripts/timetable/run-norway-dnt-official-window.mjs \
-            --as-of=2026-09-29 \
+            --as-of="$as_of" \
             --days=30 \
             --output=.calendar-norway-integration/dnt.json
           node scripts/timetable/run-norway-ovrevoll-official-window.mjs \
-            --as-of=2026-09-29 \
+            --as-of="$as_of" \
             --days=30 \
             --output=.calendar-norway-integration/ovrevoll.json
       - name: Assert Norway collector diagnostics
@@ -47,7 +49,12 @@ jobs:
             if ((d.source_errors?.length ?? 0) || (d.parse_failures?.length ?? 0) || (d.unknown_venues?.length ?? 0)) {
               throw new Error(file+' has collector diagnostics: '+JSON.stringify(d));
             }
-            if (!(data.records?.length > 0)) throw new Error(file+' emitted no meetings');
+            if (data.acquisition_attempt?.status!=='success') throw new Error(file+' did not acquire official source');
+            if (file==='dnt.json' && !(data.discovery?.source_visible_rows>0)) throw new Error('DNT source visibly empty');
+            if (file==='dnt.json' && !(data.records?.length > 0)) throw new Error('DNT current rolling window unexpectedly empty');
+            // Ovrevoll is a seasonal gallop course. Its live annual source may
+            // have zero meetings in the *current* 30-day window without an error.
+            if (file==='ovrevoll.json' && !(data.discovery?.annual_rows>0)) throw new Error('Ovrevoll annual official calendar missing');
             if (data.records.some(r => r.capability_rank !== 'C')) throw new Error(file+' emitted non-C observation');
           }
           NODE
