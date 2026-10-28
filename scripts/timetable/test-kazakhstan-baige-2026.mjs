@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {checkFederation,checkCity,buildCandidate} from './kazakhstan-baige-2026-c-source-core.mjs';
+const a=checkFederation('2026 Қазан VIII кезең 10.10');
+const b=checkCity('Қазақстан чемпионатының финалы 10 қазанда Алматы ипподромында өтті. Омаров көшесі, 10А');
+assert.equal(a.date,'2026-10-10');assert.equal(b.date,'2026-10-10');
+assert.equal(buildCandidate(a,b,{start:'2026-10-29',days:30,checkedAt:'test'}).records.length,0);
+assert.equal(buildCandidate(a,b,{start:'2026-10-09',days:2,checkedAt:'test'}).records.length,1);
+assert.throws(()=>checkCity('10 қазан Алматы қаласы'));
+assert.throws(()=>checkFederation('2025 Қазан VIII кезең 10.10'));
+console.log('KAZAKHSTAN_BAIGE_C_CONTRACT_PASS');
