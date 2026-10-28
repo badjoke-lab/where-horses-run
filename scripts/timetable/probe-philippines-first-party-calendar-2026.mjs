@@ -109,6 +109,40 @@ for(const source of SOURCES){
     record.page_size_bucket=response.body.length<10000?'small':response.body.length<100000?'medium':'large';
     record.calendar_signal=dataRange(response.body);
     record.first_party_asset_paths=firstPartyAssetPaths(response.body,source.url);
+
+    if(source.id==='pjc-trainer-fixtures' && record.first_party_asset_paths.includes('/assets/js/dist/pjc-fixtures.js')){
+     // PJC's own publicly linked calendar UI bundle. Read only the linked
+     // display asset; never follow API, betting, login, or authenticated URLs.
+     const jsUrl=new URL('/assets/js/dist/pjc-fixtures.js',source.url).toString();
+     if(robotsBody && checkRobots(robotsBody,jsUrl,UA)){
+      record.pjc_fixture_script={status:'blocked_by_robots',source_production_ready:false};
+     }else{
+      try{
+       const asset=readPublic(jsUrl,host);
+       if(asset.status!==200 || !/javascript|text\/plain|octet-stream/i.test(asset.type)){
+        record.pjc_fixture_script={status:'http_'+asset.status,content_type_review_needed:true,source_production_ready:false};
+       }else{
+        const js=asset.body;
+        const dated=[...new Set(js.match(/\b20(?:26|27)-\d{2}-\d{2}\b/g)||[])];
+        const hasHttp=/\b(?:fetch\s*\(|axios\.|\.ajax\s*\(|\$\.get\s*\(|XMLHttpRequest|\$http\.)/i.test(js);
+        const strings=[...js.matchAll(/['"]([^'"\r\n]{1,120})['"]/g)].map(x=>x[1]);
+        const publicRoutes=[...new Set(strings.filter(x=>/^\/[A-Za-z0-9_\/.?=&-]{3,119}$/.test(x)&&/(?:fixture|calendar|schedule|race|date|planner)/i.test(x)))];
+        record.pjc_fixture_script={
+         status:'http_200',source_production_ready:false,
+         fixture_js_reachable:true,static_2026_2027_date_token_count:dated.length,
+         static_future_date_tokens:dated.filter(x=>x>localDate()).slice(0,8),
+         display_calendar_request_code:hasHttp,
+         plausible_fixture_path_literal_count:publicRoutes.length,
+         private_or_betting_endpoints_followed:false,
+         raw_javascript_retained:false,
+         provenance:'PJC publicly linked /assets/js/dist/pjc-fixtures.js only',
+         needs_separate_rights_and_public_feed_review:true
+        };
+       }
+      }catch(e){record.pjc_fixture_script={status:'transport_error',reason:String(e.message).slice(0,130),source_production_ready:false};}
+     }
+    }
+
     if(source.id==='mmtci-race-calendar' && record.first_party_asset_paths.includes('/js/calendar1.js')){
      // Public first-party calendar display asset only; no credentials,
      // betting endpoints, dynamic APIs, racecards or venue programme copied.
