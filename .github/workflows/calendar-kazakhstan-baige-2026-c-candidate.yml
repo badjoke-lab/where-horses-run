@@ -1,0 +1,37 @@
+name: Calendar Kazakhstan Baige 2026 C candidate
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-kazakhstan-baige-2026-c-candidate.yml'
+      - 'scripts/timetable/kazakhstan-baige-2026-c-source-core.mjs'
+      - 'scripts/timetable/test-kazakhstan-baige-2026.mjs'
+      - 'scripts/timetable/run-kazakhstan-baige-2026-c-candidate.mjs'
+permissions:
+  contents: read
+jobs:
+  candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Exact date / real venue and no-future-inference contracts
+        run: |
+          node --check scripts/timetable/run-kazakhstan-baige-2026-c-candidate.mjs
+          node scripts/timetable/test-kazakhstan-baige-2026.mjs
+      - name: Direct first-party acquisition test (no production writes)
+        run: |
+          node scripts/timetable/run-kazakhstan-baige-2026-c-candidate.mjs --as-of=2026-10-29 --days=30 --output=/tmp/baige-kz-2026.json
+          node --input-type=module -e '
+            import fs from "node:fs"; import assert from "node:assert/strict";
+            const r=JSON.parse(fs.readFileSync("/tmp/baige-kz-2026.json","utf8"));
+            assert.equal(r.production_routing,false);
+            assert.equal(r.canonical_writes,false);
+            assert.equal(r.public_writes,false);
+            assert.equal(r.records.length,0);
+            assert.equal(r.acquisition_attempt.status,"success","official source not verified; do not route country");
+            console.log("KAZAKHSTAN_BAIGE_C_SOURCE_VERIFIED zero_current_future=valid");
+          '
