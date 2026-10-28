@@ -13,22 +13,28 @@ function strip(html){
  return String(html).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ')
   .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ')
   .replace(/<[^>]*>/g,' ').replace(/&(?:nbsp|#160);/gi,' ')
-  .replace(/&#0*39;|&rsquo;|&apos;/gi,"'")
+  .replace(/&#0*39;|&#8217;|&#x2019;|&rsquo;|&apos;/gi,"'")
   .replace(/&amp;/gi,'&').replace(/\s+/g,' ').trim();
 }
-function signals(html){
- const visible=strip(html);
+function signals(html,indexHtml='',asOf='2026-10-29'){
+ const visible=strip(html),index=strip(indexHtml);
  const named=/Tlhale\s+Horse\s+Racing\s+Competition/i.test(visible);
  const farm=/Nyelex[\s'’\u2019]*Farm/i.test(visible);
  const bodyYear=/(?:2026-10-31|2026\/10\/31|Oct(?:ober)?\s+31,?\s*2026|31\s+Oct(?:ober)?\s+2026)/i.test(html);
  const summaryDay=/Oct(?:ober)?\s+31/i.test(visible);
- const explicitPromoter=/Promoter\s*(?:(?!Not provided)[A-Z][a-zA-Z\s.-]{3,50})/.test(visible);
+ // The event detail omits the year in display text. Resolve it only from a
+ // SAME-PUBLISHER current "Upcoming Events" index plus Saturday/day/venue.
+ // This is a contextual year resolution, never an "explicit" source year.
+ const indexMatched=/Tlhale\s+Horse\s+Racing\s+Competition/i.test(index)
+  &&/Nyelex[\s'’\u2019]*Farm/i.test(index)
+  &&/Saturday\s+31\s+Oct/i.test(index);
+ const contextYear=!bodyYear&&indexMatched&&asOf>='2026-10-28'&&asOf<='2026-10-31';
  const promoterMissing=/Promoter\s+Not\s+provided/i.test(visible);
- // Specific source identity AND explicit full year and named venue must hold.
  return {event_title_match:named,venue_label_match:farm,
-  year_explicit_in_source:bodyYear,day_label_match:summaryDay,
-  promoter_missing:promoterMissing,promoter_explicit_claim:explicitPromoter,
-  date:bodyYear&&summaryDay&&named&&farm?EVENT_DATE:null,
+  year_explicit_in_event_page:bodyYear,year_resolved_from_same_publisher_index:contextYear,
+  index_event_match:indexMatched,day_label_match:summaryDay,
+  promoter_missing:promoterMissing,
+  date:(bodyYear||contextYear)&&summaryDay&&named&&farm?EVENT_DATE:null,
   venue_label:farm?"Nyelex' Farm":null};
 }
 function denied(robots,url){
@@ -71,6 +77,11 @@ function selfTest(){
  if(signals(good.replace('Nyelex’ Farm','Unknown Venue')).date)throw Error('venue guard');
  if(!denied('User-agent: *\nDisallow: /events/','https://tickito.thevoicebw.com/events/example'))throw Error('robots deny');
  if(denied('User-agent: *\nDisallow: /private/','https://tickito.thevoicebw.com/events/example'))throw Error('robots allow');
+ const inferred=signals(good.replace('2026-10-31','year-hidden'),
+  '<h2>Upcoming Events</h2><p>Saturday 31 Oct Nyelex&#8217; Farm Tlhale Horse Racing Competition</p>','2026-10-29');
+ if(!inferred.date||!inferred.year_resolved_from_same_publisher_index)throw Error('upcoming index year resolution');
+ if(signals(good.replace('2026-10-31','year-hidden'),'', '2026-10-29').date)throw Error('unconfirmed year');
+ if(signals(good.replace('2026-10-31','year-hidden'),'<p>Saturday 31 Oct Nyelex Farm Tlhale Horse Racing Competition</p>','2027-10-29').date)throw Error('wrong year');
  if(!horizon('2026-10-29',3)||horizon('2026-11-01',30))throw Error('no stale/future inference');
  console.log('BOTSWANA_TLHALE_C_CANDIDATE_TEST_PASS');
 }
@@ -89,7 +100,9 @@ else {
   const page=await read(EVENT_URL);
   source_status=page.status;
   if(page.status!=='ok')throw Error('event_'+page.status);
-  data=signals(page.body);
+  const listing=await read('https://tickito.thevoicebw.com/',650000);
+  if(listing.status!=='ok')throw Error('listing_'+listing.status);
+  data=signals(page.body,listing.body,asOf);
   if(!data.date)reason='date_venue_title_or_year_not_source_confirmed';
  }catch(e){reason=String(e.message||e).slice(0,130);source_status='not_usable';}
  const report={
