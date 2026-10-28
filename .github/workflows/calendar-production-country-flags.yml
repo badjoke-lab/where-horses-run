@@ -1,0 +1,29 @@
+name: Calendar production country flag coverage
+
+on:
+  pull_request:
+    paths:
+      - 'src/lib/calendarDisplayNames.ts'
+      - 'data/static/calendar-98-tier-execution-coverage.json'
+      - 'scripts/check-calendar-production-country-flags.mjs'
+      - '.github/workflows/calendar-production-country-flags.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  country-flags:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify active registry country flags
+        run: node scripts/check-calendar-production-country-flags.mjs
+      - name: Check TypeScript source compilation through site build
+        run: |
+          npm install --ignore-scripts --no-audit --no-fund
+          npm run build
