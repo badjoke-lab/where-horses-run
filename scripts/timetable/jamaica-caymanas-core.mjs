@@ -68,6 +68,28 @@ export function parseCaymanasEntries(html,{sourceUrl=JAMAICA_ENTRIES_URL}={}){
   return out;
 }
 
+// A successful HTTP/API parse does not prove the requested forward dates are
+// published. Keep the source-visible horizon distinct from meeting absence.
+export function summarizeCaymanasSourceHorizon(sourceRows,startDate,endDateExclusive){
+  if(!Array.isArray(sourceRows)) throw new Error('Caymanas sourceRows must be an array');
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(startDate)||!/^\d{4}-\d{2}-\d{2}$/.test(endDateExclusive)||startDate>=endDateExclusive)
+    throw new Error('Caymanas horizon requires a valid forward ISO window');
+  const dates=[...new Set(sourceRows.map(row=>String(row.date??'')))].sort();
+  if(dates.some(date=>!/^\d{4}-\d{2}-\d{2}$/.test(date))) throw new Error('Invalid Caymanas source row date');
+  const inWindow=dates.filter(date=>date>=startDate&&date<endDateExclusive);
+  const lastVisible=dates.at(-1)??null;
+  return {
+    source_first_date:dates[0]??null,
+    source_last_date:lastVisible,
+    source_distinct_dates:dates.length,
+    window_distinct_dates:inWindow.length,
+    horizon_status:dates.length===0?'source_empty':
+      inWindow.length>0?'bounded_source_dates_visible':
+      lastVisible<startDate?'past_only':'no_dates_in_requested_window',
+    forward_window_complete:false,
+  };
+}
+
 export function parseCaymanasEntriesApi(payload,{sourceUrl=JAMAICA_ENTRIES_URL}={}){
   if(!payload||typeof payload!=='object') throw new Error('Caymanas Entries API payload must be an object');
   const groups=[payload.currentEntries,payload.nextMonthEntries];
@@ -77,7 +99,7 @@ export function parseCaymanasEntriesApi(payload,{sourceUrl=JAMAICA_ENTRIES_URL}=
     for(const item of values){
       const raw=String(item?.date??'');
       const m=raw.match(/(20\d{2})-(\d{2})-(\d{2})/);
-      if(!m) continue;
+      if(!m || !validDate(Number(m[1]),Number(m[2]),Number(m[3]))) continue;
       const date=m[1]+'-'+m[2]+'-'+m[3];
       rows.push({date,weekday:String(item?.day??''),racecourse_id:JAMAICA_RACECOURSE_ID,venue_name:'Caymanas Park',source_url:sourceUrl,source_record_id:item?.id??null,source_slug:item?.slug??null});
     }
