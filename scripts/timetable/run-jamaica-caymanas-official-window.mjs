@@ -3,7 +3,7 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import {
   JAMAICA_AUTHORITY_ID,JAMAICA_ENTRIES_URL,JAMAICA_ENTRIES_API_URL,JAMAICA_SOURCE_ID,JAMAICA_SYSTEM_ID,JAMAICA_TIMEZONE,
-  buildJamaicaMeetingRecord,parseCaymanasEntries,parseCaymanasEntriesApi,
+  buildJamaicaMeetingRecord,parseCaymanasEntries,parseCaymanasEntriesApi,summarizeCaymanasSourceHorizon,
 } from './jamaica-caymanas-core.mjs';
 
 function arg(name,fallback=null){const p=`--${name}=`;const v=process.argv.find(x=>x.startsWith(p));return v?v.slice(p.length):fallback;}
@@ -26,6 +26,8 @@ async function getJson(url){
   const csrf=(pageHtml.match(/<meta\b[^>]*name=["']csrf-token["'][^>]*content=["']([^"']+)["'][^>]*>/i)||[])[1]||'';
   const xsrfPair=setCookies.map(v=>String(v).split(';')[0]).find(v=>/^XSRF-TOKEN=/i.test(v))||'';
   const xsrf=xsrfPair?decodeURIComponent(xsrfPair.slice(xsrfPair.indexOf('=')+1)):'';
+  // Preserve the already-retrieved official page if the API fails.
+  try{
   const r=await fetch(url,{redirect:'manual',headers:{
     ...common,
     'accept':'application/json, text/plain, */*',
@@ -43,6 +45,11 @@ async function getJson(url){
     throw new Error('Non-JSON response '+r.status+' '+contentType+' cookies='+setCookies.length+' csrf='+(csrf?'yes':'no')+' xsrf='+(xsrf?'yes':'no'));
   }
   return {json:JSON.parse(text),url:r.url||url,content_type:contentType};
+  }catch(error){
+    const decorated=new Error(String(error?.message??error));
+    Object.defineProperty(decorated,'entries_bootstrap_html',{value:pageHtml});
+    throw decorated;
+  }
 }
 
 function renderOfficialEntries(){
@@ -69,18 +76,36 @@ try{
   allRows=parseCaymanasEntriesApi(fetched.json,{sourceUrl:JAMAICA_ENTRIES_URL});
 }catch(apiError){
   const apiMsg=String(apiError?.message??apiError);
-  try{
-    const rendered=renderOfficialEntries();
-    allRows=parseCaymanasEntries(rendered.html,{sourceUrl:JAMAICA_ENTRIES_URL});
-    discoveryMethod='caymanas_entries_browser_rendered_html';
-    sourceWarnings.push({code:'caymanas_api_unavailable_browser_fallback',source_url:JAMAICA_ENTRIES_API_URL,error:apiMsg,browser:rendered.browser});
-  }catch(browserError){
-    const browserMsg=String(browserError?.message??browserError);
-    attemptStatus=/monthly fingerprint|monthly dates|API dates missing|payload/i.test(browserMsg)?'parse_error':'network_error';
-    if(attemptStatus==='parse_error') parseFailures.push({code:'caymanas_entries_browser_parse_failed',source_url:JAMAICA_ENTRIES_URL,error:browserMsg,api_error:apiMsg});
-    else sourceErrors.push({stage:'caymanas_entries_browser',source_url:JAMAICA_ENTRIES_URL,error:browserMsg,api_error:apiMsg});
+  // Reuse the existing first-party Entries bootstrap HTML before spawning
+  // Chrome. Do not make another HTTP request, change source, or bypass access.
+  if(typeof apiError?.entries_bootstrap_html==='string'){
+    try{
+      allRows=parseCaymanasEntries(apiError.entries_bootstrap_html,{sourceUrl:JAMAICA_ENTRIES_URL});
+      discoveryMethod='caymanas_entries_bootstrap_html';
+      sourceWarnings.push({code:'caymanas_api_unavailable_bootstrap_html_recovered',source_url:JAMAICA_ENTRIES_URL,api_error:apiMsg});
+    }catch(bootstrapError){
+      sourceWarnings.push({code:'caymanas_bootstrap_html_not_usable',source_url:JAMAICA_ENTRIES_URL,error:String(bootstrapError?.message??bootstrapError)});
+    }
+  }
+  if(!allRows.length){
+    try{
+      const rendered=renderOfficialEntries();
+      allRows=parseCaymanasEntries(rendered.html,{sourceUrl:JAMAICA_ENTRIES_URL});
+      discoveryMethod='caymanas_entries_browser_rendered_html';
+      sourceWarnings.push({code:'caymanas_api_unavailable_browser_fallback',source_url:JAMAICA_ENTRIES_API_URL,error:apiMsg,browser:rendered.browser});
+    }catch(browserError){
+      const browserMsg=String(browserError?.message??browserError);
+      attemptStatus=/monthly fingerprint|monthly dates|API dates missing|payload/i.test(browserMsg)?'parse_error':'network_error';
+      if(attemptStatus==='parse_error') parseFailures.push({code:'caymanas_entries_browser_parse_failed',source_url:JAMAICA_ENTRIES_URL,error:browserMsg,api_error:apiMsg});
+      else sourceErrors.push({stage:'caymanas_entries_browser',source_url:JAMAICA_ENTRIES_URL,error:browserMsg,api_error:apiMsg});
+    }
   }
 }
+const horizon=summarizeCaymanasSourceHorizon(allRows,start,end);
+if(attemptStatus==='success'&&horizon.horizon_status==='past_only')
+  sourceWarnings.push({code:'caymanas_source_past_only',last_visible_date:horizon.source_last_date,note:'Past-only source does not prove no racing in future 30 days'});
+else if(attemptStatus==='success'&&horizon.horizon_status==='no_dates_in_requested_window')
+  sourceWarnings.push({code:'caymanas_no_dated_meetings_in_requested_window',note:'Source dates outside window do not prove non-running'});
 const rows=allRows.filter(r=>r.date>=start&&r.date<end);
 const records=rows.map(r=>buildJamaicaMeetingRecord(r,{checkedAt:generatedAt}));
 const rankCounts=Object.fromEntries(['C','B','B+','A','A+'].map(rank=>[rank,records.filter(r=>r.capability_rank===rank).length]));
@@ -104,7 +129,7 @@ const artifact={
   },
   discovery:{
     method:discoveryMethod,source_url:sourceUrl,source_visible_rows:allRows.length,
-    rank_counts:rankCounts,completion_counts:completionCounts,
+    source_horizon:horizon,rank_counts:rankCounts,completion_counts:completionCounts,
   },
   window:{
     start_date:start,end_date_exclusive:end,days,
@@ -117,6 +142,6 @@ const artifact={
 write(output,artifact);
 console.log(JSON.stringify({
   output,start_date:start,end_date_exclusive:end,source_visible_rows:allRows.length,meetings_emitted:records.length,
-  dates:records.map(r=>r.date),rank_counts:rankCounts,completion_counts:completionCounts,
+  dates:records.map(r=>r.date),source_horizon:horizon,rank_counts:rankCounts,completion_counts:completionCounts,
   source_errors:sourceErrors.length,parse_failures:parseFailures.length,raw_body_retained:false,
 }));
