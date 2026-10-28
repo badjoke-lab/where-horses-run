@@ -1,7 +1,7 @@
 /** Read-only Kazakhstan C candidate. No registry/public writes; no past event promotion. */
 import fs from 'node:fs';
 import path from 'node:path';
-import {KZ,checkFederation,checkCity,buildCandidate} from './kazakhstan-baige-2026-c-source-core.mjs';
+import {KZ,checkCity,buildCandidate} from './kazakhstan-baige-2026-c-source-core.mjs';
 const arg=(name,defaultValue)=>process.argv.find(v=>v.startsWith('--'+name+'='))?.slice(name.length+3)??defaultValue;
 const current=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Almaty',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
 const start=arg('as-of',current()),days=Number(arg('days','30')),output=arg('output','/tmp/kazakhstan-baige-2026-c-candidate.json');
@@ -38,9 +38,8 @@ async function scopeFetch(url){
 }
 let status='success',error=null,records=[],sourceDate=KZ.date;
 try{
- const a=checkFederation(await scopeFetch(KZ.federation));
  const b=checkCity(await scopeFetch(KZ.city));
- records=buildCandidate(a,b,{start,days,checkedAt}).records;
+ records=buildCandidate(b,{start,days,checkedAt}).records;
 }catch(e){error=String(e.message||e).slice(0,160);status=/fingerprint|conflict/i.test(error)?'parse_error':'network_error'}
 const report={schema_version:'kazakhstan-baige-2026-almaty-c-candidate-v1',
  country_id:KZ.country_id,source_id:KZ.source_id,generated_at:checkedAt,
