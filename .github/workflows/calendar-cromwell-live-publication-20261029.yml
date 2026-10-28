@@ -1,0 +1,33 @@
+name: Calendar Cromwell EN-JA deployed publication verification
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-cromwell-live-publication-20261029.yml'
+      - 'scripts/timetable/check-cromwell-live-publication-20261029.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  cromwell-en-ja:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser tools with Japanese fonts
+        run: |
+          npm install --no-save --ignore-scripts --no-audit --no-fund puppeteer-core
+          sudo apt-get update -qq
+          sudo apt-get install -y fonts-noto-cjk
+          fc-cache -f
+      - name: Validate generated data and actual EN-JA public selected date and track
+        run: node scripts/timetable/check-cromwell-live-publication-20261029.mjs
+      - name: Save deployed screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cromwell-live-20261029
+          path: cromwell-live-qa-20261029/
+          if-no-files-found: ignore
