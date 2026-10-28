@@ -12,33 +12,33 @@ const sources=[
 const ua='WhereHorsesRun/1.0 (+https://whr.badjoke-lab.com/)';
 const requestHeaders={'user-agent':ua,accept:'text/html,text/plain;q=0.9'};
 function visibleText(html){
- return String(html).replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi,' ')
-  .replace(/<style\\b[^>]*>[\\s\\S]*?<\\/style>/gi,' ')
+ return String(html).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ')
+  .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ')
   .replace(/<[^>]*>/g,' ').replace(/&(?:nbsp|#160);/gi,' ')
-  .replace(/&amp;/gi,'&').replace(/\\s+/g,' ').trim();
+  .replace(/&amp;/gi,'&').replace(/\s+/g,' ').trim();
 }
 function sourceSignals(html){
  const text=visibleText(html);
- const anchor=/Piala\\s+Raja\\s+(?:HB\\s*X|Hamengku\\s+Buwono\\s*X)\\s+Cup\\s+2026/i.exec(text);
+ const anchor=/Piala\s+Raja\s+(?:HB\s*X|Hamengku\s+Buwono\s*X)\s+Cup\s+2026/i.exec(text);
  const context=anchor?text.slice(Math.max(0,anchor.index-160),anchor.index+400):'';
  const dates=[];
- if(/(?:6\\s+Desember\\s+2026|6\\s+December\\s+2026)/i.test(context) && /Sultan\\s+Agung/i.test(context))dates.push('2026-12-06');
+ if(/(?:6\s+Desember\s+2026|6\s+December\s+2026)/i.test(context) && /Sultan\s+Agung/i.test(context))dates.push('2026-12-06');
  // Government's 2026 annual-agenda notice names a planned November date.
  // This is a conflict signal, NOT a cancellation or a final revised date.
- if(/(?:15\\s+November\\s+(?:2026)?)/i.test(context) && /Sultan\\s+Agung/i.test(context))dates.push('2026-11-15');
- return {event_named:Boolean(anchor),venue_named:/Sultan\\s+Agung/i.test(context),
+ if(/(?:15\s+November\s+(?:2026)?)/i.test(context) && /Sultan\s+Agung/i.test(context))dates.push('2026-11-15');
+ return {event_named:Boolean(anchor),venue_named:/Sultan\s+Agung/i.test(context),
   date_claims:[...new Set(dates)],race_meetings_confirmed:false};
 }
 function robotsAllowed(body,target){
  const path=new URL(target).pathname;
  const blocks=[];let agents=[],rules=[];let hasDirective=false;
  const flush=()=>{if(agents.length)blocks.push({agents:[...agents],rules:[...rules]});agents=[];rules=[];hasDirective=false;};
- for(const raw of body.split(/\\r?\\n/)){
+ for(const raw of body.split(/\r?\n/)){
   const line=raw.replace(/#.*$/,'').trim();
   if(!line)continue;
-  const m=line.match(/^user-agent:\\s*(.+)$/i);
+  const m=line.match(/^user-agent:\s*(.+)$/i);
   if(m){if(hasDirective)flush();agents.push(m[1].trim().toLowerCase());continue;}
-  const d=line.match(/^(allow|disallow):\\s*(.*)$/i);
+  const d=line.match(/^(allow|disallow):\s*(.*)$/i);
   if(d&&agents.length){hasDirective=true;rules.push({kind:d[1].toLowerCase(),path:d[2].trim()});}
  }
  flush();
@@ -52,7 +52,7 @@ async function fetchBounded(url){
  const response=await fetch(url,{headers:requestHeaders,redirect:'manual',signal:AbortSignal.timeout(17000)});
  if(response.status!==200)return {status:'http_'+response.status};
  if((new URL(response.url)).origin!==(new URL(url)).origin)return {status:'unexpected_origin'};
- if(!/^text\\/(?:html|plain)(?:;|$)/i.test(response.headers.get('content-type')||''))return {status:'unexpected_content_type'};
+ if(!/^text\/(?:html|plain)(?:;|$)/i.test(response.headers.get('content-type')||''))return {status:'unexpected_content_type'};
  const size=Number(response.headers.get('content-length')||0);
  if(size>650000)return {status:'too_large'};
  const body=await response.text();
@@ -83,8 +83,8 @@ function selfTest(){
  for(const [s,expected]of tests){
   if(JSON.stringify(sourceSignals(s).date_claims)!==JSON.stringify(expected))throw Error('source signal self-test failure');
  }
- if(robotsAllowed('User-agent: *\\nDisallow: /id/','https://news.sarga.co/id/event/foo'))throw Error('robots denial test failure');
- if(!robotsAllowed('User-agent: *\\nDisallow: /private/','https://news.sarga.co/id/event/foo'))throw Error('robots allowance test failure');
+ if(robotsAllowed('User-agent: *\nDisallow: /id/','https://news.sarga.co/id/event/foo'))throw Error('robots denial test failure');
+ if(!robotsAllowed('User-agent: *\nDisallow: /private/','https://news.sarga.co/id/event/foo'))throw Error('robots allowance test failure');
  console.log('INDONESIA_DEC2026_SELF_TEST_PASS');
 }
 if(process.argv.includes('--self-test'))selfTest();
