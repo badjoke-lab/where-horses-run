@@ -34,8 +34,8 @@ export function summarizeFranceLetrotNonRunningHealth(artifact) {
         const url = new URL(result.source_url);
         const rawYear = url.searchParams.get('annee');
         const rawWeek = url.searchParams.get('semaine');
-        if (/^20\\d{2}$/.test(rawYear ?? '')) year = Number(rawYear);
-        if (/^\\d{1,2}$/.test(rawWeek ?? '') && Number(rawWeek) >= 1 && Number(rawWeek) <= 53) week = Number(rawWeek);
+        if (/^20\d{2}$/.test(rawYear ?? '')) year = Number(rawYear);
+        if (/^\d{1,2}$/.test(rawWeek ?? '') && Number(rawWeek) >= 1 && Number(rawWeek) <= 53) week = Number(rawWeek);
       } catch {
         // An invalid diagnostic URL must not invent a bulletin identity.
       }
