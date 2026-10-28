@@ -1,0 +1,51 @@
+{
+  "schema_version": "malta-2026-presidents-cup-manual-single-c-fact-v1",
+  "reviewed_at": "2026-10-29",
+  "date": "2026-11-08",
+  "competition": "26th EquestriMalta Presidents Cup Final",
+  "racecourse_id": "malta--malta-equidrome",
+  "method": "human_reviewed_press_conference_fact",
+  "venue_owner_verified": true,
+  "independent_report_date_crosscheck": true,
+  "source_content_retained": false,
+  "independently_reviewed_sources": [
+    {
+      "source_type": "journalist_reporting_press_conference",
+      "url": "https://maltasport.mt/other-sports/horse-racing/twelve-horses-to-compete-for-26th-equestrimalta-presidents-cup/",
+      "published": "2026-10-27",
+      "scope": "date plus named physical venue only"
+    },
+    {
+      "source_type": "separate_trainer_calendar_operator_news",
+      "url": "https://www.maltatrotracing.com/news/twelve-finalists-set-for-26th-equestrimalta-president-s-cup-final",
+      "published": "2026-10-26",
+      "scope": "cross-check only, no automated access or re-use of database"
+    },
+    {
+      "source_type": "venue_owner",
+      "url": "https://www.maltaequidrome.com/racetrack/",
+      "scope": "physical racetrack existence only"
+    },
+    {
+      "source_type": "venue_owner",
+      "url": "https://www.maltaequidrome.com/practical-information/",
+      "scope": "independent Marsa physical address only"
+    }
+  ],
+  "publication_method": "low-volume human-reviewed one-off date/venue facts without original source content",
+  "rights_review": {
+    "status": "REVIEW_REQUIRED",
+    "legal_note": "Distinct access/republication/DB considerations; one factual manually reviewed date; do not claim site-wide license or automate sources. Maltatrotracing automated-access/redistribution rights indicators are not cleared.",
+    "risk": "medium",
+    "automation_allowed": false
+  },
+  "excluded": [
+    "no 1 Nov or 6 Nov import",
+    "no race title on public meeting",
+    "no race time inferred",
+    "no source text/photos/racecards/odds/videos",
+    "no national completeness",
+    "no 2027 extrapolation",
+    "no source-scraping on GitHub runner"
+  ]
+}
