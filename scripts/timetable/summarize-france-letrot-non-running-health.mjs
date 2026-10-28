@@ -15,6 +15,8 @@ export function summarizeFranceLetrotNonRunningHealth(artifact) {
       bulletin_count: 0,
       counts: { success: 0, bulletin_unavailable_404: 0, source_error: 0, other: 0 },
       confirmed_non_running_count: 0,
+      artifact_generated_at: artifact?.generated_at ?? null,
+      bulletins: [],
     };
   }
   const counts = { success: 0, bulletin_unavailable_404: 0, source_error: 0, other: 0 };
@@ -22,6 +24,31 @@ export function summarizeFranceLetrotNonRunningHealth(artifact) {
     if (Object.hasOwn(counts, result.status)) counts[result.status] += 1;
     else counts.other += 1;
   }
+  // Preserve one bounded source/status observation per requested official
+  // Bulletin. This is a provenance report, NOT evidence of cancellation.
+  const bulletins = nonRunning.bulletin_results.map((result) => {
+    let year = null;
+    let week = null;
+    if (typeof result.source_url === 'string') {
+      try {
+        const url = new URL(result.source_url);
+        const rawYear = url.searchParams.get('annee');
+        const rawWeek = url.searchParams.get('semaine');
+        if (/^20\d{2}$/.test(rawYear ?? '')) year = Number(rawYear);
+        if (/^\d{1,2}$/.test(rawWeek ?? '') && Number(rawWeek) >= 1 && Number(rawWeek) <= 53) week = Number(rawWeek);
+      } catch {
+        // An invalid diagnostic URL must not invent a bulletin identity.
+      }
+    }
+    return {
+      source_url: typeof result.source_url === 'string' ? result.source_url : null,
+      bulletin_year: year,
+      bulletin_week: week,
+      status: result.status ?? 'unknown',
+      error: result.error ?? null,
+      checked_at: result.checked_at ?? null,
+    };
+  });
   const classification = counts.source_error || counts.other
     ? 'source_or_parse_error'
     : counts.bulletin_unavailable_404
@@ -37,6 +64,8 @@ export function summarizeFranceLetrotNonRunningHealth(artifact) {
     bulletin_count: nonRunning.bulletin_results.length,
     counts,
     confirmed_non_running_count: Number(nonRunning.confirmed_non_running_count ?? 0),
+    artifact_generated_at: artifact?.generated_at ?? null,
+    bulletins,
   };
 }
 
