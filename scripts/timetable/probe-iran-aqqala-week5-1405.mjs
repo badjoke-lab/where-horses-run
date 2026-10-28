@@ -71,6 +71,11 @@ async function get(url,max=1500000){
  return {status:'ok',body};
 }
 async function check(s){
+ // Telegram Content Licensing ToS limits third-party collection/reuse.
+ // Keep the public board as a manual discovery link only. Never fetch its
+ // content through an automated Calendar collector/probe without a new
+ // explicit source/method/field permission review.
+ if(s.id==='aqqala-board') return {id:s.id,status:'method_change_required',source_access:'link_only',terms:'https://telegram.org/tos/content-licensing'};
  const u=new URL(s.url);
  try{
   const robots=await get(u.origin+'/robots.txt',150000);
