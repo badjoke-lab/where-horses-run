@@ -51,13 +51,15 @@ try{
           const visible=!!el&&el.getClientRects().length>0&&!el.closest('[hidden]')&&
             getComputedStyle(el).visibility!=='hidden'&&getComputedStyle(el).display!=='none';
           const trackLinked=!!el?.querySelector('a[href*="/tracks/indonesia--legokjawa-racecourse/"]');
-          return {idFound:!!el,visible,selectedDate,trackLinked,
+          const countryFlag=el?.querySelector('.meeting-row__country-flag')?.textContent?.trim()??null;
+          return {idFound:!!el,visible,selectedDate,trackLinked,countryFlag,
             sourceDate:el?.getAttribute('data-source-date')??null,
             horizontalOverflow:document.documentElement.scrollWidth>window.innerWidth+2,
             title:document.title};
         },id);
         const passed=response?.status()===200&&resultRow.idFound&&resultRow.visible&&
           resultRow.selectedDate===date&&resultRow.sourceDate===date&&resultRow.trackLinked&&
+          resultRow.countryFlag==='🇮🇩'&&
           !resultRow.horizontalOverflow&&errs.length===0;
         result.push({viewport:viewport.name,lang,date,status:response?.status(),...resultRow,pageErrors:errs,pass:passed});
         // Capture the actual Indonesia meeting row rather than only the page hero.
