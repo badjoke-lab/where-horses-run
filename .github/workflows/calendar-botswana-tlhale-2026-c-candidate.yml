@@ -1,0 +1,24 @@
+name: Calendar Botswana Tlhale 2026 future-event source candidate
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-botswana-tlhale-2026-c-candidate.yml'
+      - 'scripts/timetable/run-botswana-tlhale-2026-c-candidate.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  first-party-like-ticketing-source-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Parse/scope/year/robots/horizon tests
+        run: |
+          node --check scripts/timetable/run-botswana-tlhale-2026-c-candidate.mjs
+          node scripts/timetable/run-botswana-tlhale-2026-c-candidate.mjs --self-test
+      - name: Actual limited event-source read (never publish)
+        run: node scripts/timetable/run-botswana-tlhale-2026-c-candidate.mjs --as-of=2026-10-29 --days=4
