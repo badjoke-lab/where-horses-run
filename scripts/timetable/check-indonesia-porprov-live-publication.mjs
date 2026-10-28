@@ -60,6 +60,9 @@ try{
           resultRow.selectedDate===date&&resultRow.sourceDate===date&&resultRow.trackLinked&&
           !resultRow.horizontalOverflow&&errs.length===0;
         result.push({viewport:viewport.name,lang,date,status:response?.status(),...resultRow,pageErrors:errs,pass:passed});
+        // Capture the actual Indonesia meeting row rather than only the page hero.
+        await page.evaluate((meetingId)=>document.querySelector('[data-meeting-id="'+meetingId+'"]')?.scrollIntoView({block:'center',inline:'nearest'}),id);
+        await new Promise(resolve=>setTimeout(resolve,450));
         await page.screenshot({path:path.join('indonesia-live-qa-20261028',viewport.name+'-'+lang+'-'+date+'.png'),fullPage:false});
       }catch(error){
         result.push({viewport:viewport.name,lang,date,error:String(error?.message??error),pass:false});
