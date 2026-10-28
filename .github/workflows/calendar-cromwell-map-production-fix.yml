@@ -1,0 +1,32 @@
+name: Calendar Cromwell map production blocker regression
+on:
+  pull_request:
+    paths:
+      - 'data/static/racecourses-public-timetable-identities-v1.json'
+      - 'data/static/racecourse-locations-v1.json'
+      - 'data/static/racecourse-location-supplement-evidence-v1.json'
+      - 'scripts/check-calendar-cromwell-physical-venue.mjs'
+      - '.github/workflows/calendar-cromwell-map-production-fix.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  venue-map-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Assert independent physical venue and grounded reserve location
+        run: node scripts/check-calendar-cromwell-physical-venue.mjs
+      - name: Run public Calendar and racecourse location parity
+        run: |
+          node scripts/check-racecourse-location-registry.mjs
+          node scripts/check-racecourse-location-schema.mjs
+          node scripts/check-calendar-public-map-parity.mjs
+      - name: Build site with exact approved venue record
+        run: |
+          npm install --ignore-scripts --no-audit --no-fund
+          npm run build
