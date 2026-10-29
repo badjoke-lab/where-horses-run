@@ -77,6 +77,7 @@ const SYSTEMS = [
   { key: 'india-bangalore-winter', file: 'india-bangalore.json', country_id: 'india', authority_id: 'bangalore-turf-club', racing_system_id: 'india-bangalore-turf-club-thoroughbred-system' },
   { key: 'ecuador-chc', file: 'ecuador-chc.json', country_id: 'ecuador', authority_id: 'confederacion-hipica-del-caribe', racing_system_id: 'ecuador-chc-2026-selected-classic-fixtures-system' },
   { key: 'venezuela-chc', file: 'venezuela-chc.json', country_id: 'venezuela', authority_id: 'confederacion-hipica-del-caribe', racing_system_id: 'venezuela-chc-2026-selected-classic-fixtures-system' },
+  { key: 'malta-presidents-cup', file: 'malta-president-cup.json', country_id: 'malta', authority_id: 'malta-racing-club', racing_system_id: 'malta-reviewed-system' },
   { key: 'russia-grozny', file: 'russia-grozny.json', country_id: 'russia', authority_id: 'grozny-hippodrome-operator', racing_system_id: 'russia-grozny-thoroughbred-system' },
   { key: 'indonesia-porprov', file: 'indonesia-porprov.json', country_id: 'indonesia', authority_id: 'porprov-xv-jabar-organizer', racing_system_id: 'indonesia-porprov-xv-jabar-2026-pacuan-system' },
   { key: 'australia-victoria-flemington', file: 'australia-victoria-flemington.json', country_id: 'australia', authority_id: 'racing-victoria', racing_system_id: 'australia-victoria-flemington-thoroughbred-system' },

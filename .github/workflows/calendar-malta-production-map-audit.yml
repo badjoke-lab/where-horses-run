@@ -1,0 +1,26 @@
+name: Calendar Malta production map and downstream audit gate
+on:
+  pull_request:
+    paths:
+      - 'data/static/racecourse-locations-v1.json'
+      - 'data/static/racecourse-location-supplement-evidence-v1.json'
+      - 'scripts/timetable/build-refresh-audit-summary.mjs'
+      - 'scripts/check-malta-calendar-production-map-audit.mjs'
+      - '.github/workflows/calendar-malta-production-map-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Malta physical site and audit registry
+        run: |
+          node scripts/check-malta-calendar-production-map-audit.mjs
+          node scripts/check-calendar-unified-audit-coverage.mjs
+          node scripts/check-calendar-98-tier-execution-coverage.mjs
