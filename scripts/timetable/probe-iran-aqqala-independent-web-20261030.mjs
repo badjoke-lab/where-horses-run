@@ -82,7 +82,7 @@ function selfTest(){
  const p=extractSignals(sample);
  if(p.date_signals.length!==3||p.date_signals[2]!=='2026-10-30')throw Error('3-day Persian-date parsing failure');
  if(extractSignals(sample.replace('آق‌قلا','تهران')).date_signals.length)throw Error('venue guard failure');
- if(extractSignals(sample.replace('پنجمین هفته مسابقات اسبدوانی','نمایشگاه')).date_signals.length)throw Error('racing guard failure');
+ if(extractSignals(sample.replace('پنجمین هفته مسابقات اسبدوانی کورس پاییزه ۱۴۰۵','نمایشگاه')).date_signals.length)throw Error('racing guard failure');
  if(robotsAllowed('User-agent: *\nDisallow: /news/',SOURCES[0].url))throw Error('robots denial failure');
  if(!robotsAllowed('User-agent: *\nDisallow: /private/',SOURCES[0].url))throw Error('robots allow failure');
  if(robotsAllowed('User-agent: *\nDisallow: /\nAllow: /news/7723',SOURCES[0].url)===false)throw Error('robots specificity failure');
