@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/calendar-iran-aqqala-week5-source-probe.yml'
       - 'scripts/timetable/probe-iran-aqqala-week5-1405.mjs'
+      - 'scripts/timetable/probe-iran-aqqala-independent-web-20261030.mjs'
 permissions:
   contents: read
 jobs:
@@ -22,3 +23,9 @@ jobs:
           node scripts/timetable/probe-iran-aqqala-week5-1405.mjs --self-test
       - name: Source-scoped bulletin and physical racecourse verification
         run: node scripts/timetable/probe-iran-aqqala-week5-1405.mjs
+      - name: Independent web-source parser, venue guard, and robots fixtures
+        run: |
+          node --check scripts/timetable/probe-iran-aqqala-independent-web-20261030.mjs
+          node scripts/timetable/probe-iran-aqqala-independent-web-20261030.mjs --self-test
+      - name: Restricted non-Telegram 2026 local-web discovery
+        run: node scripts/timetable/probe-iran-aqqala-independent-web-20261030.mjs
