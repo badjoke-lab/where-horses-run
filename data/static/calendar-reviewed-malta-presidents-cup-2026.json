@@ -36,7 +36,7 @@
   "rights_review": {
     "status": "USABLE_WITH_CONDITIONS",
     "evidence_level": "E2",
-    "risk": "low_for_one_independently_corrobated_nonexpressive_fact_pair",
+    "risk": "low_for_one_independently_corroborated_nonexpressive_fact_pair",
     "source_content_reuse_status": "PERMISSION_REQUIRED",
     "decision_scope": "One manually rechecked announced 2026-11-08 trotting event day + independently verified Malta Equidrome/Marsa physical venue. NOT the text or data compilation of the websites.",
     "access_method": "AI-assisted one-off editorial check; automated recurring source requests: none",
@@ -50,10 +50,6 @@
       {
         "url": "https://maltasport.mt/terms-editorial-policy/",
         "applies_to": "copyrighted site content, reproduction and noncommercial use; no text/images/site content copied"
-      },
-      {
-        "url": "https://www.maltatrotracing.com/terms",
-        "applies_to": "cross-check only; zero recurring automated extraction or database copying; terms scope must be rechecked before any future use"
       },
       {
         "url": "https://www.maltaequidrome.com/racetrack/",
@@ -71,7 +67,12 @@
     "reasoning": "The publicly announced bare event date and racecourse are unprotectable factual identifiers independently reported from a press conference; neither original editorial expression nor a substantial/repeated database selection is copied. The press publication terms expressly restrict reuse of site content, so no expressive content is used. This narrow conditional technical publication decision is not a broad licence or legal assurance.",
     "reviewed_at": "2026-10-29",
     "reviewer": "WHR Calendar Expansion AI-assisted source-scoped assessment",
-    "automation_allowed": false
+    "automation_allowed": false,
+    "crosscheck_not_reused": {
+      "source": "MaltaTrotRacing",
+      "terms_status": "not_reused_as_calendar_input",
+      "rule": "News report checked for date consistency only; automated or database extraction not allowed by this route."
+    }
   },
   "excluded": [
     "no 1 Nov or 6 Nov import",
