@@ -81,7 +81,9 @@ jobs:
             assert.equal(pm[0].country_id,"malta");
             assert.equal(cm[0].capability_rank,"C");
             assert.equal(cm[0].racecourse_id,"malta--malta-equidrome");
-            assert.equal(cm[0].source_trace.source_label,"Human-reviewed press-conference report (not a first-party organizer fixture)");
+            assert.equal(cm[0].source_trace.source_label,"AI-assisted reviewed press-conference report (not a first-party organizer fixture)");
             assert.match(cm[0].source_trace.official_source_url,/maltasport\.mt/);
+            assert.equal(cm[0].evidence_support.meeting_date.acquisition_method,"reviewed");
+            assert.equal(cm[0].evidence_support.meeting_date.review.reviewed_at,"2026-10-29T00:00:00Z");
             console.log("MALTA_CANONICAL_PUBLIC_POSITIVE country=malta rank=C records=1");
           '
