@@ -1,0 +1,45 @@
+name: Calendar Botswana Premier Cup 2026 date-city candidate
+on:
+  pull_request:
+    paths:
+      - 'data/static/calendar-botswana-premier-cup-2026-candidate.json'
+      - 'scripts/timetable/run-botswana-premier-cup-2026-candidate.mjs'
+      - '.github/workflows/calendar-botswana-premier-cup-2026-candidate.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  candidate-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax, strict date-window, provenance and nonpublication gates
+        run: |
+          node --check scripts/timetable/run-botswana-premier-cup-2026-candidate.mjs
+          node scripts/timetable/run-botswana-premier-cup-2026-candidate.mjs --self-test
+      - name: Current 30-day window must not invent an event
+        run: |
+          node scripts/timetable/run-botswana-premier-cup-2026-candidate.mjs --as-of=2026-10-30 --days=30 > /tmp/bw-30d.json
+          node --input-type=module -e '
+            import fs from "node:fs"; import assert from "node:assert/strict";
+            const x=JSON.parse(fs.readFileSync("/tmp/bw-30d.json","utf8"));
+            assert.equal(x.date_city_signal,null);
+            assert.equal(x.production_routed,false);
+            assert.deepEqual(x.public_meetings,[]);
+          '
+      - name: Future 60-day discovery only, never canonical or public
+        run: |
+          node scripts/timetable/run-botswana-premier-cup-2026-candidate.mjs --as-of=2026-10-30 --days=60 > /tmp/bw-60d.json
+          node --input-type=module -e '
+            import fs from "node:fs"; import assert from "node:assert/strict";
+            const x=JSON.parse(fs.readFileSync("/tmp/bw-60d.json","utf8"));
+            assert.equal(x.date_city_signal.date,"2026-12-12");
+            assert.equal(x.date_city_signal.city,"Maun");
+            assert.equal(x.publication_eligible,false);
+            assert.deepEqual(x.canonical_meetings,[]);
+            assert.deepEqual(x.public_meetings,[]);
+          '
