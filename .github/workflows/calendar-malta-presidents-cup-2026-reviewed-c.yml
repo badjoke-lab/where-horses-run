@@ -49,3 +49,39 @@ jobs:
             assert.equal(j.discovery.source_visible_rows,1);
             console.log("MALTA_NOV_8_EXPIRED_NO_2027_INFERENCE");
           '
+
+      - name: Isolated canonical-to-public acceptance proof (no repository write)
+        run: |
+          mkdir -p /tmp/whr-malta-canary
+          cp data/generated/timetable/canonical/meetings.json /tmp/whr-malta-canary/canonical.json
+          cp data/generated/timetable/canonical/meeting-details.json /tmp/whr-malta-canary/canonical-details.json
+          cp data/generated/timetable/public/meeting-list.json /tmp/whr-malta-canary/public.json
+          cp data/generated/timetable/public/meeting-details.json /tmp/whr-malta-canary/public-details.json
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=/tmp/malta-reviewed-c.json \
+            --country-id=malta \
+            --authority-id=malta-racing-club \
+            --racing-system-id=malta-reviewed-system \
+            --timezone=Europe/Malta \
+            --canonical=/tmp/whr-malta-canary/canonical.json \
+            --canonical-details=/tmp/whr-malta-canary/canonical-details.json \
+            --public=/tmp/whr-malta-canary/public.json \
+            --public-details=/tmp/whr-malta-canary/public-details.json
+          node --input-type=module -e '
+            import fs from "node:fs"; import assert from "node:assert/strict";
+            const dir="/tmp/whr-malta-canary/";
+            const c=JSON.parse(fs.readFileSync(dir+"canonical.json","utf8"));
+            const p=JSON.parse(fs.readFileSync(dir+"public.json","utf8"));
+            const id="malta-marsa-presidents-cup-2026-11-08";
+            const cm=c.meetings.filter(x=>x.meeting_id===id);
+            const pm=p.meetings.filter(x=>x.meeting_id===id);
+            assert.equal(cm.length,1,"new canonical meeting missing/duplicated");
+            assert.equal(pm.length,1,"public C meeting not included/duplicated");
+            assert.equal(cm[0].country_id,"malta");
+            assert.equal(pm[0].country_id,"malta");
+            assert.equal(cm[0].capability_rank,"C");
+            assert.equal(cm[0].racecourse_id,"malta--malta-equidrome");
+            assert.equal(cm[0].source_trace.source_label,"Human-reviewed press-conference report (not a first-party organizer fixture)");
+            assert.match(cm[0].source_trace.official_source_url,/maltasport\.mt/);
+            console.log("MALTA_CANONICAL_PUBLIC_POSITIVE country=malta rank=C records=1");
+          '
