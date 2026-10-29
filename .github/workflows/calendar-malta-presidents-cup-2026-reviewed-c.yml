@@ -34,10 +34,10 @@ jobs:
             assert.equal(j.records[0].date,"2026-11-08");
             assert.equal(j.records[0].capability_rank,"C");
             assert.equal(j.records[0].racecourse_id,"malta--malta-equidrome");
-            assert.equal(j.source_access,"human_reviewed_no_network");
-            assert.equal(j.rights_status,"REVIEW_REQUIRED");
+            assert.equal(j.source_access,"reviewed_no_network");
+            assert.equal(j.rights_status,"USABLE_WITH_CONDITIONS");
             assert.equal(j.production_routing,false);
-            console.log("MALTA_NOV_8_C_POSITIVE source_method=human_reviewed source_copy=none");
+            console.log("MALTA_NOV_8_C_POSITIVE source_method=reviewed source_copy=none");
           '
       - name: Expiry and non-extrapolation contract
         run: |
