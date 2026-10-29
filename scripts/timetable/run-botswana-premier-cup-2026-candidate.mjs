@@ -33,7 +33,9 @@ function contract(){
   const course=record.independent_2026_racecourse_context;
   assert.equal(course.site_name,'Ma-Sa Racing Park');
   assert.equal(course.publication_date,'2026-03-23');
-  assert.equal(course.confirmed_2026_site_used_for_horse_racing,true);
+  assert.equal(course.confirmed_2026_horses_arriving_and_race_preparations,true);
+  assert.equal(course.confirmed_2026_april_race_actually_held,null);
+  assert.match(course.confirmed_2026_april_race_actually_held_semantics,/Unknown:/);
   assert.equal(course.confirms_2026_12_12_premier_champions_cup_venue,false);
   assert.equal(course.confirms_2026_12_12_premier_champions_cup_organizer,false);
   assert.match(course.source,/^https:\/\/dailynews\.gov\.bw\/news-detail\/90672$/);
