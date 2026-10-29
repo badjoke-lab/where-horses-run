@@ -27,6 +27,9 @@ assert.match(audit,/\{\s*key:\s*'malta-presidents-cup',\s*file:\s*'malta-preside
 const dated=load('data/static/calendar-reviewed-malta-presidents-cup-2026.json');
 assert.equal(dated.date,'2026-11-08');
 assert.equal(dated.racecourse_id,id);
-assert.equal(dated.rights_review.status,'REVIEW_REQUIRED');
+assert.equal(dated.rights_review.status,'USABLE_WITH_CONDITIONS');
+assert.equal(dated.rights_review.evidence_level,'E2');
+assert.deepEqual(dated.rights_review.published_fields,['meeting_date','physical_racecourse','country_id','racing_system_id']);
+assert.equal(dated.rights_review.source_content_reuse_status,'PERMISSION_REQUIRED');
 assert.equal(dated.rights_review.automation_allowed,false);
-console.log('MALTA_PRODUCTION_LOCATION_AUDIT_INTEGRATION_PASS venue_location=reviewed audit_artifact=registered rights=REVIEW_REQUIRED');
+console.log('MALTA_PRODUCTION_LOCATION_AUDIT_INTEGRATION_PASS venue_location=reviewed audit_artifact=registered rights=USABLE_WITH_CONDITIONS_fact_only');
