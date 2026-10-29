@@ -27,7 +27,19 @@ function contract(){
   assert.equal(record.source_evidence.original_2026_pdf_access_verified,false);
   assert.equal(record.source_evidence.first_party_organizer_event_confirmation,false);
   assert.equal(record.source_evidence.first_party_2026_physical_venue_confirmation,false);
-  assert.match(record.distinct_historical_context.restriction,/NOT be imputed/);
+  assert.match(record.distinct_historical_context.restriction,/not.*imputed/i);
+  assert.equal(record.distinct_historical_context.organizer_2025,'TT Horse Racing Events');
+  assert.equal(record.distinct_historical_context.ongoing_2026_organizer_not_established,true);
+  assert.equal(record.source_evidence.promoter_submitted_calendar_notice_verified,true);
+  assert.equal(record.source_evidence.original_2026_pdf_access_verified,false);
+  assert.equal(record.rights.original_publisher_terms_applicability_verified,false);
+  const domains=Object.keys(record.rights.source_scope_6_domains||{});
+  assert.deepEqual(domains,['facts_vs_expression','access','publication','database','commercial','third_party']);
+  assert.equal(record.production.free_live_status,'unverified_no_stream_offered');
+  assert.equal(record.production.local_post_time_claim_allowed,false);
+  assert.equal(record.production.estimated_2026_venue_from_history_allowed,false);
+  assert.equal(record.rights.review_blockers.length,4);
+  assert.equal(record.source_evidence.first_party_2026_physical_venue_confirmation,false);
   assert.equal(record.rights.decision,'REVIEW_REQUIRED');
   assert.equal(record.rights.evidence_level,'E1');
   assert.equal(record.rights.automated_calendar_source_access_approved,false);
@@ -36,6 +48,9 @@ function contract(){
   assert.equal(record.production.apply_to_registry,false);
   assert.equal(record.production.apply_to_canonical,false);
   assert.equal(record.production.apply_to_public,false);
+  assert.equal(record.rights.public_date_venue_fact_use_approved,false);
+  assert.equal(record.rights.publisher_content_reuse_approved,false);
+  assert.equal(record.rights.automated_calendar_source_access_approved,false);
 }
 function output(asOf,days) {
   contract();
