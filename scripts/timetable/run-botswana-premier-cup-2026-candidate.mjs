@@ -60,13 +60,13 @@ function output(asOf,days) {
 function selfTest(){
   assert.equal(output('2026-10-30',30).date_city_signal,null);
   assert.equal(output('2026-10-30',60).date_city_signal.date,target);
-  assert.equal(output('2026-11-12',30).date_city_signal.date,target);
+  assert.equal(output('2026-11-13',30).date_city_signal.date,target);
   assert.equal(output('2026-12-12',1).date_city_signal.date,target);
   assert.equal(output('2026-12-13',30).date_city_signal,null);
   assert.equal(output('2027-12-12',30).date_city_signal,null);
-  assert.deepEqual(output('2026-11-12',30).public_meetings,[]);
-  assert.deepEqual(output('2026-11-12',30).canonical_meetings,[]);
-  assert.equal(output('2026-11-12',30).publication_eligible,false);
+  assert.deepEqual(output('2026-11-13',30).public_meetings,[]);
+  assert.deepEqual(output('2026-11-13',30).canonical_meetings,[]);
+  assert.equal(output('2026-11-13',30).publication_eligible,false);
   console.log('BOTSWANA_PREMIER_CUP_2026_CANDIDATE_CONTRACT_PASS');
 }
 const opts=new Map(process.argv.slice(2).filter(s=>s.startsWith('--')).map(s=>{
