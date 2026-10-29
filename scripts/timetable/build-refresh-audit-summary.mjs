@@ -223,6 +223,7 @@ for (const [name, value] of Object.entries({ sourceRunId, sourceHeadSha, runStar
 const systemArtifactDir = path.join(artifactRoot, '.calendar-unified');
 const auxiliaryArtifactFiles = new Set([
   'banei-non-running.json',
+  'france-letrot-non-running-health.json',
   'japan-non-running.json',
   'nar-non-running.json',
   'reviewed-public-observations.json',
