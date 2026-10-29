@@ -117,6 +117,28 @@ try {
   assert.equal(jra.changed, 0, 'freshness-only change must not count as substantive');
   assert.equal(jra.promoted, 0);
 
+  // LETROT health is a bounded diagnostic, not a new racing system.
+  // It must not create an extra audited meeting or fail artifact coverage.
+  writeArtifact('.calendar-unified/france-letrot-non-running-health.json', {
+    schema_version: 'calendar-letrot-non-running-health-v1',
+    classification: 'bounded_document_unavailable',
+    confirmed_non_running_count: 0,
+  });
+  const auxiliaryRun = spawnSync(process.execPath, [
+    builder,
+    `--repo-root=${repo}`,
+    `--artifact-root=${artifacts}`,
+    '--source-run-id=123',
+    `--source-head-sha=${base}`,
+    '--run-started-at=2026-09-11T00:01:00Z',
+    '--run-completed-at=2026-09-11T00:10:00Z',
+    '--source-conclusion=success',
+    `--output=${output}`,
+  ], { encoding: 'utf8' });
+  assert.equal(auxiliaryRun.status, 0, auxiliaryRun.stderr || auxiliaryRun.stdout);
+  assert.deepEqual(JSON.parse(fs.readFileSync(output, 'utf8')).totals, summary.totals,
+    'auxiliary LETROT health must not change the meeting audit totals');
+
   writeArtifact('.calendar-unified/future-country-system.json', {
     generated_at: '2026-09-11T00:04:00Z',
     records: [],
