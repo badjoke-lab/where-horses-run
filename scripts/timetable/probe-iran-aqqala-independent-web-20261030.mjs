@@ -7,7 +7,8 @@
 const UA='WhereHorsesRun/1.0 (+https://whr.badjoke-lab.com/)';
 const SOURCES=[
  {id:'golestan-provincial-news',url:'https://golestan-horse.ir/news/7723'},
- {id:'golestan-independent-news',url:'https://tashbihnwes.ir/?p=106451'}
+ {id:'golestan-independent-news',url:'https://tashbihnwes.ir/?p=106451'},
+ {id:'asbdavani-public-racecards',url:'https://asbdavani.app/racecards'}
 ];
 const EXPECTED=[
  {jalali:'1405/08/06',iso:'2026-10-28'},
