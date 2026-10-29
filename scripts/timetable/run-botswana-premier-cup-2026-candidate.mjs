@@ -30,6 +30,14 @@ function contract(){
   assert.match(record.distinct_historical_context.restriction,/2025.*may be imputed.*without a 2026-specific source/i);
   assert.equal(record.distinct_historical_context.organizer_2025,'TT Horse Racing Events');
   assert.equal(record.distinct_historical_context.ongoing_2026_organizer_not_established,true);
+  const course=record.independent_2026_racecourse_context;
+  assert.equal(course.site_name,'Ma-Sa Racing Park');
+  assert.equal(course.publication_date,'2026-03-23');
+  assert.equal(course.confirmed_2026_site_used_for_horse_racing,true);
+  assert.equal(course.confirms_2026_12_12_premier_champions_cup_venue,false);
+  assert.equal(course.confirms_2026_12_12_premier_champions_cup_organizer,false);
+  assert.match(course.source,/^https:\/\/dailynews\.gov\.bw\/news-detail\/90672$/);
+  assert.equal(record.physical_racecourse_id,null);
   assert.equal(record.source_evidence.promoter_submitted_calendar_notice_verified,true);
   assert.equal(record.source_evidence.original_2026_pdf_access_verified,false);
   assert.equal(record.rights.original_publisher_terms_applicability_verified,false);
