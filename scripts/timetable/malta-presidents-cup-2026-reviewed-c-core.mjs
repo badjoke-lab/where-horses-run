@@ -42,7 +42,7 @@ export function verifyManualEvidence(evidence){
 export function buildC(date,{checkedAt}){
  if(date!==MALTA_REVIEW.date)throw Error('Unreviewed Malta meeting');
  const id='malta-marsa-presidents-cup-2026-11-08';
- const evidence={source_id:MALTA_REVIEW.source_id,official_source_url:MALTA_REVIEW.venue_page,
+ const evidence={source_id:MALTA_REVIEW.source_id,official_source_url:MALTA_REVIEW.dates[0],
   observed_at:checkedAt,successfully_verified_at:checkedAt,acquisition_method:'manual_reviewed'};
  const row={
   candidate_id:id,meeting_id:id,
@@ -51,11 +51,12 @@ export function buildC(date,{checkedAt}){
   date,timezone:MALTA_REVIEW.timezone,racing_type:'trotting',
   first_race_time_local:null,last_race_time_local:null,timetable_rows:[],
   source:{source_id:MALTA_REVIEW.source_id,
-   official_url:MALTA_REVIEW.organiser_calendar,checked_at:checkedAt,
+   official_url:MALTA_REVIEW.dates[0],checked_at:checkedAt,
    extraction_method:'human_reviewed_single_press_conference_date_venue_fact'},
+  source_label:'Human-reviewed press-conference report (not a first-party organizer fixture)',
   route_id:MALTA_REVIEW.route_id,confidence:'medium',review_status:'needs_review',
   notes:'Only the announced 2026-11-08 President’s Cup race day at Malta Equidrome, not the whole 2026 timetable. Date cross-checked in independent press accounts; racecourse independently verified by venue owner. No post time, racecard, status/actual-ran, or free LIVE inferred.',
-  detail_observation:{status:'not_applicable',evaluated_capability_rank:'C',race_count:0,calendar_url:MALTA_REVIEW.organiser_calendar},
+  detail_observation:{status:'not_applicable',evaluated_capability_rank:'C',race_count:0,calendar_url:MALTA_REVIEW.dates[0]},
   acquisition_attempt:{attempted_at:checkedAt,status:'success',source_id:MALTA_REVIEW.source_id,route_id:MALTA_REVIEW.route_id,error_code:null},
   evidence_support:{meeting_identity:evidence,meeting_date:evidence}
  };
