@@ -27,7 +27,7 @@ function contract(){
   assert.equal(record.source_evidence.original_2026_pdf_access_verified,false);
   assert.equal(record.source_evidence.first_party_organizer_event_confirmation,false);
   assert.equal(record.source_evidence.first_party_2026_physical_venue_confirmation,false);
-  assert.match(record.distinct_historical_context.restriction,/not.*imputed/i);
+  assert.match(record.distinct_historical_context.restriction,/2025.*may be imputed.*without a 2026-specific source/i);
   assert.equal(record.distinct_historical_context.organizer_2025,'TT Horse Racing Events');
   assert.equal(record.distinct_historical_context.ongoing_2026_organizer_not_established,true);
   assert.equal(record.source_evidence.promoter_submitted_calendar_notice_verified,true);
