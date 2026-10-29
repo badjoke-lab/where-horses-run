@@ -58,6 +58,7 @@ function robotsAllowed(robots,target){
 }
 async function get(url,max){
  const r=await fetch(url,{redirect:'manual',headers:{'User-Agent':UA,'Accept':'text/html,text/plain;q=0.8'},signal:AbortSignal.timeout(12000)});
+ if([301,302,307,308].includes(r.status))return {status:'redirect',location:r.headers.get('location')};
  if(r.status!==200)return {status:'http_'+r.status};
  if(new URL(r.url).origin!==new URL(url).origin)return {status:'redirect_blocked'};
  if(!/^text\/(?:html|plain)\b/i.test(r.headers.get('content-type')||''))return {status:'not_html'};
@@ -66,16 +67,39 @@ async function get(url,max){
  const body=await r.text();if(body.length>max)return {status:'too_large'};
  return {status:'ok',body};
 }
+function canonicalSamePublisher(location,original,robotsOnly=false){
+ if(!location)return null;
+ try {
+  const old=new URL(original),next=new URL(location,old);
+  const host=v=>v.replace(/^www\./,'').toLowerCase();
+  if(next.protocol!=='https:'||next.username||next.password||next.port)return null;
+  if(host(next.hostname)!==host(old.hostname))return null;
+  if(robotsOnly&&next.pathname!=='/robots.txt')return null;
+  if(!robotsOnly&&(next.pathname!==old.pathname||next.search!==old.search))return null;
+  return next.toString();
+ }catch{return null;}
+}
 async function runSource(s){
  const origin=new URL(s.url).origin;
  try {
-  const robots=await get(origin+'/robots.txt',150000);
+  const robotsUrl=origin+'/robots.txt';
+  let robots=await get(robotsUrl,150000);
+  if(robots.status==='redirect'){
+   const canonical=canonicalSamePublisher(robots.location,robotsUrl,true);
+   if(!canonical)return {id:s.id,status:'robots_redirect_blocked',source_url:s.url};
+   robots=await get(canonical,150000);
+  }
   if(robots.status!=='ok')return {id:s.id,status:'robots_'+robots.status,source_url:s.url};
   if(!robotsAllowed(robots.body,s.url))return {id:s.id,status:'robots_disallow',source_url:s.url};
-  const page=await get(s.url,500000);
+  let page=await get(s.url,500000);
+  if(page.status==='redirect'){
+   const canonical=canonicalSamePublisher(page.location,s.url,false);
+   if(!canonical||!robotsAllowed(robots.body,canonical))return {id:s.id,status:'page_redirect_blocked',source_url:s.url};
+   page=await get(canonical,500000);
+  }
   if(page.status!=='ok')return {id:s.id,status:page.status,source_url:s.url};
   return {id:s.id,status:'ok',source_url:s.url,...extractSignals(page.body)};
- } catch(e) {return {id:s.id,status:'request_error',error_name:String(e?.name||'Error').slice(0,40),source_url:s.url};}
+ }catch(e){return {id:s.id,status:'request_error',error_name:String(e?.name||'Error').slice(0,40),source_url:s.url};}
 }
 function selfTest(){
  const sample='<article>پنجمین هفته مسابقات اسبدوانی کورس پاییزه ۱۴۰۵ آق‌قلا چهارشنبه ۶ آبان (۱۴۰۵/۰۸/۰۶) پنجشنبه ۷ آبان (۱۴۰۵/۰۸/۰۷) جمعه ۸ آبان (۱۴۰۵/۰۸/۰۸)</article>';
@@ -86,6 +110,9 @@ function selfTest(){
  if(robotsAllowed('User-agent: *\nDisallow: /news/',SOURCES[0].url))throw Error('robots denial failure');
  if(!robotsAllowed('User-agent: *\nDisallow: /private/',SOURCES[0].url))throw Error('robots allow failure');
  if(robotsAllowed('User-agent: *\nDisallow: /\nAllow: /news/7723',SOURCES[0].url)===false)throw Error('robots specificity failure');
+ if(canonicalSamePublisher('https://www.tashbihnwes.ir/robots.txt','https://tashbihnwes.ir/robots.txt',true)!=='https://www.tashbihnwes.ir/robots.txt')throw Error('safe canonical robots failed');
+ if(canonicalSamePublisher('https://evil.example/robots.txt','https://tashbihnwes.ir/robots.txt',true)!==null)throw Error('cross-site robots redirect guard failed');
+ if(canonicalSamePublisher('https://www.tashbihnwes.ir/other','https://tashbihnwes.ir/?p=106451',false)!==null)throw Error('page path substitution guard failed');
  console.log('IRAN_AQQALA_ALTERNATIVE_WEB_SELF_TEST_PASS');
 }
 if(process.argv.includes('--self-test'))selfTest();
