@@ -4,7 +4,7 @@ import fs from 'node:fs';
 const record=JSON.parse(fs.readFileSync('data/static/calendar-botswana-premier-cup-2026-candidate.json','utf8'));
 const target='2026-12-12';
 function isoDate(s) {
-  assert.match(s,/^\\d{4}-\\d{2}-\\d{2}$/,'ISO date required');
+  assert.match(s,/^\d{4}-\d{2}-\d{2}$/,'ISO date required');
   const d=new Date(s+'T00:00:00Z');
   assert(!Number.isNaN(d.getTime())&&d.toISOString().slice(0,10)===s,'invalid ISO date');
   return d;
