@@ -358,6 +358,7 @@ jobs:
           node scripts/check-india-bangalore-winter-2026-adapter.mjs
           node scripts/check-ecuador-chc-2026-adapter.mjs
           node scripts/check-venezuela-chc-2026-source.mjs
+          node scripts/check-malta-presidents-cup-2026-reviewed-c.mjs
           node scripts/check-russia-grozny-2026-adapter.mjs
           node scripts/check-indonesia-porprov-2026-c-adapter.mjs
           node scripts/check-australia-victoria-flemington-2026-27-adapter.mjs
@@ -776,6 +777,11 @@ jobs:
           node scripts/timetable/run-venezuela-chc-2026-official-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/venezuela-chc.json
+      - name: Build Malta Nov 8 manual-reviewed President's Cup C candidate (no source network requests)
+        run: |
+          node scripts/timetable/run-malta-presidents-cup-2026-reviewed-c-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/malta-president-cup.json
       - name: Collect Russia Grozny official 2026 closing day C date
         run: |
           node scripts/timetable/run-russia-grozny-2026-official-window.mjs \
@@ -1058,6 +1064,7 @@ jobs:
           --artifact=.calendar-unified/india-bangalore.json \
           --artifact=.calendar-unified/ecuador-chc.json \
           --artifact=.calendar-unified/venezuela-chc.json \
+          --artifact=.calendar-unified/malta-president-cup.json \
           --artifact=.calendar-unified/russia-grozny.json \
           --artifact=.calendar-unified/indonesia-porprov.json \
           --artifact=.calendar-unified/australia-victoria-flemington.json \
@@ -1489,6 +1496,14 @@ jobs:
             --authority-id=confederacion-hipica-del-caribe \
             --racing-system-id=venezuela-chc-2026-selected-classic-fixtures-system \
             --timezone=America/Caracas
+      - name: Apply Malta Nov 8 single manual-reviewed C meeting fact
+        run: |
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/malta-president-cup.json \
+            --country-id=malta \
+            --authority-id=malta-racing-club \
+            --racing-system-id=malta-reviewed-system \
+            --timezone=Europe/Malta
       - name: Apply Russia Grozny 2026 closing day C observation
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \

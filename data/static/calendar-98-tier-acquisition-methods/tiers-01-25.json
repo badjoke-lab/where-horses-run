@@ -343,14 +343,16 @@
       "page_kind": "country",
       "method_class": "active_source_driven",
       "source_ids": [
-        "malta-racing-calendar"
+        "malta-racing-calendar",
+        "malta-2026-presidents-cup-press-reviewed"
       ],
       "primary_source_url": "https://maltaracingclub.com/index.php/calendar.php",
       "cadence_class": "source-driven",
       "trigger_class": "meeting_or_source_window",
       "zero_policy": "emit_only_source_visible_current_meetings",
       "runner_state": "candidate",
-      "method_complete": true
+      "method_complete": true,
+      "production_scope_note": "Only manually reviewed C date/physical venue fact for 2026-11-08 EquestriMalta President's Cup at Marsa, not whole 2026 Malta calendar; Malta Racing Club official source HTTP 403 from GitHub runner and is not fetched by new runner. One-off human-reviewed single date, no 2027 extrapolation or live."
     },
     {
       "tier": 23,

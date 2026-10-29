@@ -2039,6 +2039,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Only Nov 7-8 2026 scheduled racing competition at Legokjawa, C date/venue only, not national or racecard. Small first-party informational fact extraction, source attribution, no bulk scraping. Preserve last-known-good on source failure."
+    },
+    {
+      "system_id": "malta-reviewed-system",
+      "country_id": "malta",
+      "authority_id": "malta-racing-club",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "malta-2026-presidents-cup-press-reviewed",
+      "detail_source_id": "malta-2026-presidents-cup-press-reviewed",
+      "schedule_adapter_id": "malta-2026-press-reviewed-one-date-c-v1",
+      "detail_adapter_id": "malta-2026-press-reviewed-one-date-c-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Only the 2026-11-08 EquestriMalta President's Cup racing day in Marsa, manually cross-checked to independent press-conference reporting and physical Malta Equidrome first-party venue. One event only; no MRC automated access, no timetable/odds/results/news article reuse or LIVE; no 2027 inference. Conditional manual fact-only rights review; separate E2 source/method/fields record."
     }
   ]
 }

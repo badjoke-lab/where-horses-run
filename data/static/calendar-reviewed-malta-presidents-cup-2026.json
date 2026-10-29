@@ -1,0 +1,86 @@
+{
+  "schema_version": "malta-2026-presidents-cup-manual-single-c-fact-v1",
+  "reviewed_at": "2026-10-29",
+  "date": "2026-11-08",
+  "competition": "26th EquestriMalta Presidents Cup Final",
+  "racecourse_id": "malta--malta-equidrome",
+  "method": "human_reviewed_press_conference_fact",
+  "venue_owner_verified": true,
+  "independent_report_date_crosscheck": true,
+  "source_content_retained": false,
+  "independently_reviewed_sources": [
+    {
+      "source_type": "journalist_reporting_press_conference",
+      "url": "https://maltasport.mt/other-sports/horse-racing/twelve-horses-to-compete-for-26th-equestrimalta-presidents-cup/",
+      "published": "2026-10-27",
+      "scope": "date plus named physical venue only"
+    },
+    {
+      "source_type": "separate_trainer_calendar_operator_news",
+      "url": "https://www.maltatrotracing.com/news/twelve-finalists-set-for-26th-equestrimalta-president-s-cup-final",
+      "published": "2026-10-26",
+      "scope": "cross-check only, no automated access or re-use of database"
+    },
+    {
+      "source_type": "venue_owner",
+      "url": "https://www.maltaequidrome.com/racetrack/",
+      "scope": "physical racetrack existence only"
+    },
+    {
+      "source_type": "venue_owner",
+      "url": "https://www.maltaequidrome.com/practical-information/",
+      "scope": "independent Marsa physical address only"
+    }
+  ],
+  "publication_method": "low-volume human-reviewed one-off date/venue facts without original source content",
+  "rights_review": {
+    "status": "USABLE_WITH_CONDITIONS",
+    "evidence_level": "E2",
+    "risk": "low_for_one_independently_corroborated_nonexpressive_fact_pair",
+    "source_content_reuse_status": "PERMISSION_REQUIRED",
+    "decision_scope": "One manually rechecked announced 2026-11-08 trotting event day + independently verified Malta Equidrome/Marsa physical venue. NOT the text or data compilation of the websites.",
+    "access_method": "AI-assisted one-off editorial check; automated recurring source requests: none",
+    "published_fields": [
+      "meeting_date",
+      "physical_racecourse",
+      "country_id",
+      "racing_system_id"
+    ],
+    "terms_reviewed": [
+      {
+        "url": "https://maltasport.mt/terms-editorial-policy/",
+        "applies_to": "copyrighted site content, reproduction and noncommercial use; no text/images/site content copied"
+      },
+      {
+        "url": "https://www.maltaequidrome.com/racetrack/",
+        "applies_to": "physical venue identity confirmation only"
+      }
+    ],
+    "conditions": [
+      "Use only one independently corroborated scheduled date and owner-verified physical venue as factual metadata.",
+      "Do not reproduce article wording, editorial layout, photographs, logo, racecards, competitors, betting data, race times, or compiled fixture databases.",
+      "No automated crawling of MaltaSport, MaltaTrotRacing, MRC or Malta Equidrome for this one-date source.",
+      "Source notice later changed or actual cancellation: require independent specific positive evidence; do not infer from missing source.",
+      "No 2027 projection and no general Malta seasonal coverage.",
+      "Any new dates, commercial reuse of protected site content or automated source method triggers new review."
+    ],
+    "reasoning": "The publicly announced bare event date and racecourse are unprotectable factual identifiers independently reported from a press conference; neither original editorial expression nor a substantial/repeated database selection is copied. The press publication terms expressly restrict reuse of site content, so no expressive content is used. This narrow conditional technical publication decision is not a broad licence or legal assurance.",
+    "reviewed_at": "2026-10-29",
+    "reviewer": "WHR Calendar Expansion AI-assisted source-scoped assessment",
+    "automation_allowed": false,
+    "crosscheck_not_reused": {
+      "source": "MaltaTrotRacing",
+      "terms_status": "not_reused_as_calendar_input",
+      "rule": "News report checked for date consistency only; automated or database extraction not allowed by this route."
+    }
+  },
+  "excluded": [
+    "no 1 Nov or 6 Nov import",
+    "no race title on public meeting",
+    "no race time inferred",
+    "no source text/photos/racecards/odds/videos",
+    "no national completeness",
+    "no 2027 extrapolation",
+    "no source-scraping on GitHub runner"
+  ]
+}
