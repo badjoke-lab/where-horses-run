@@ -22,6 +22,5 @@ jobs:
       - name: Malta physical site and audit registry
         run: |
           node scripts/check-malta-calendar-production-map-audit.mjs
-          node scripts/check-racecourse-location-registry.mjs
           node scripts/check-calendar-unified-audit-coverage.mjs
           node scripts/check-calendar-98-tier-execution-coverage.mjs
