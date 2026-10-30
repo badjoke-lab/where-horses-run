@@ -1,6 +1,6 @@
 {
   "schema_version": "japan-zero-based-30d-reconciliation-v1",
-  "checked_at": "2026-10-29T15:16:33.595Z",
+  "checked_at": "2026-10-30T10:11:06.402Z",
   "range": {
     "start": "2026-10-30",
     "end_exclusive": "2026-11-29",
@@ -39,10 +39,10 @@
   },
   "official_counts": {
     "jra": 24,
-    "nar-standard": 97,
+    "nar-standard": 98,
     "banei": 3
   },
-  "official_meeting_count": 124,
+  "official_meeting_count": 125,
   "reconciliations": [
     {
       "meeting_id": "jra-kyoto-racecourse-2026-10-31",
@@ -399,7 +399,7 @@
     {
       "meeting_id": "jra-kyoto-racecourse-2026-11-28",
       "acquisition_group": "jra",
-      "outcome": "add",
+      "outcome": "no_op",
       "official_rank": "A+",
       "public_rank": "A+",
       "acquisition_completion": "complete_current_best_available",
@@ -415,7 +415,7 @@
     {
       "meeting_id": "jra-tokyo-racecourse-2026-11-28",
       "acquisition_group": "jra",
-      "outcome": "add",
+      "outcome": "no_op",
       "official_rank": "A+",
       "public_rank": "A+",
       "acquisition_completion": "complete_current_best_available",
@@ -475,7 +475,7 @@
     {
       "meeting_id": "nar-oi-racecourse-2026-10-30",
       "acquisition_group": "nar-standard",
-      "outcome": "no_op",
+      "outcome": "update",
       "official_rank": "A+",
       "public_rank": "A+",
       "acquisition_completion": "complete_current_best_available",
@@ -485,6 +485,12 @@
           "role": "mother_set",
           "source_label": "地方競馬全国協会",
           "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=20&k_raceDate=2026%2F10%2F30"
+        },
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/bangumi/20262011.do"
         }
       ]
     },
@@ -573,10 +579,10 @@
     {
       "meeting_id": "nar-morioka-racecourse-2026-11-01",
       "acquisition_group": "nar-standard",
-      "outcome": "no_op",
-      "official_rank": "B+",
-      "public_rank": "B+",
-      "acquisition_completion": "implementation_gap",
+      "outcome": "update",
+      "official_rank": "A+",
+      "public_rank": "A+",
+      "acquisition_completion": "complete_current_best_available",
       "source_observations": [
         {
           "source_id": "nar-monthly-schedule-racelist",
@@ -595,11 +601,10 @@
     {
       "meeting_id": "nar-saga-racecourse-2026-11-01",
       "acquisition_group": "nar-standard",
-      "outcome": "details_pending",
-      "reason": "partial_race_programme_publication",
-      "official_rank": "C",
-      "public_rank": "A",
-      "acquisition_completion": "pending_publication",
+      "outcome": "update",
+      "official_rank": "A+",
+      "public_rank": "A+",
+      "acquisition_completion": "complete_current_best_available",
       "source_observations": [
         {
           "source_id": "nar-monthly-schedule-racelist",
@@ -612,27 +617,32 @@
     {
       "meeting_id": "nar-funabashi-racecourse-2026-11-02",
       "acquisition_group": "nar-standard",
-      "outcome": "details_pending",
-      "reason": "scheduled_pending_details",
-      "official_rank": "C",
+      "outcome": "update",
+      "official_rank": "A+",
       "public_rank": "A+",
-      "acquisition_completion": "pending_publication",
+      "acquisition_completion": "complete_current_best_available",
       "source_observations": [
         {
           "source_id": "nar-monthly-schedule-racelist",
           "role": "mother_set",
           "source_label": "地方競馬全国協会",
           "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=19&k_raceDate=2026%2F11%2F02"
+        },
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/bangumi/20261908.do"
         }
       ]
     },
     {
       "meeting_id": "nar-kasamatsu-racecourse-2026-11-02",
       "acquisition_group": "nar-standard",
-      "outcome": "no_op",
-      "official_rank": "B",
-      "public_rank": "B",
-      "acquisition_completion": "implementation_gap",
+      "outcome": "update",
+      "official_rank": "A+",
+      "public_rank": "A+",
+      "acquisition_completion": "complete_current_best_available",
       "source_observations": [
         {
           "source_id": "nar-monthly-schedule-racelist",
@@ -651,10 +661,10 @@
     {
       "meeting_id": "nar-morioka-racecourse-2026-11-02",
       "acquisition_group": "nar-standard",
-      "outcome": "no_op",
-      "official_rank": "B+",
-      "public_rank": "B+",
-      "acquisition_completion": "implementation_gap",
+      "outcome": "update",
+      "official_rank": "A+",
+      "public_rank": "A+",
+      "acquisition_completion": "complete_current_best_available",
       "source_observations": [
         {
           "source_id": "nar-monthly-schedule-racelist",
@@ -671,30 +681,52 @@
       ]
     },
     {
-      "meeting_id": "nar-funabashi-racecourse-2026-11-03",
-      "acquisition_group": "nar-standard",
-      "outcome": "details_pending",
-      "reason": "scheduled_pending_details",
-      "official_rank": "C",
-      "public_rank": "A+",
-      "acquisition_completion": "pending_publication",
-      "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=19&k_raceDate=2026%2F11%2F03"
-        }
-      ]
-    },
-    {
-      "meeting_id": "nar-kanazawa-racecourse-2026-11-03",
+      "meeting_id": "nar-urawa-racecourse-2026-11-02",
       "acquisition_group": "nar-standard",
       "outcome": "details_pending",
       "reason": "scheduled_pending_details",
       "official_rank": "C",
       "public_rank": "C",
       "acquisition_completion": "pending_publication",
+      "source_observations": [
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/calendar/202610.do"
+        }
+      ]
+    },
+    {
+      "meeting_id": "nar-funabashi-racecourse-2026-11-03",
+      "acquisition_group": "nar-standard",
+      "outcome": "no_op",
+      "official_rank": "A+",
+      "public_rank": "A+",
+      "acquisition_completion": "complete_current_best_available",
+      "source_observations": [
+        {
+          "source_id": "nar-monthly-schedule-racelist",
+          "role": "mother_set",
+          "source_label": "地方競馬全国協会",
+          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=19&k_raceDate=2026%2F11%2F03"
+        },
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/bangumi/20261908.do"
+        }
+      ]
+    },
+    {
+      "meeting_id": "nar-kanazawa-racecourse-2026-11-03",
+      "acquisition_group": "nar-standard",
+      "outcome": "acquisition_failed",
+      "reason": "published_programme_with_non_continuous_race_numbers",
+      "official_rank": "C",
+      "public_rank": "C",
+      "acquisition_completion": "retry_required",
       "source_observations": [
         {
           "source_id": "nar-monthly-schedule-racelist",
@@ -713,11 +745,10 @@
     {
       "meeting_id": "nar-monbetsu-racecourse-2026-11-03",
       "acquisition_group": "nar-standard",
-      "outcome": "details_pending",
-      "reason": "scheduled_pending_details",
-      "official_rank": "C",
-      "public_rank": "C",
-      "acquisition_completion": "pending_publication",
+      "outcome": "update",
+      "official_rank": "A+",
+      "public_rank": "A+",
+      "acquisition_completion": "complete_current_best_available",
       "source_observations": [
         {
           "source_id": "nar-monthly-schedule-racelist",
@@ -730,17 +761,22 @@
     {
       "meeting_id": "nar-funabashi-racecourse-2026-11-04",
       "acquisition_group": "nar-standard",
-      "outcome": "details_pending",
-      "reason": "scheduled_pending_details",
-      "official_rank": "C",
+      "outcome": "no_op",
+      "official_rank": "A+",
       "public_rank": "A+",
-      "acquisition_completion": "pending_publication",
+      "acquisition_completion": "complete_current_best_available",
       "source_observations": [
         {
           "source_id": "nar-monthly-schedule-racelist",
           "role": "mother_set",
           "source_label": "地方競馬全国協会",
           "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=19&k_raceDate=2026%2F11%2F04"
+        },
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/bangumi/20261908.do"
         }
       ]
     },
@@ -771,7 +807,7 @@
       "meeting_id": "nar-monbetsu-racecourse-2026-11-04",
       "acquisition_group": "nar-standard",
       "outcome": "details_pending",
-      "reason": "scheduled_pending_details",
+      "reason": "partial_race_programme_publication",
       "official_rank": "C",
       "public_rank": "C",
       "acquisition_completion": "pending_publication",
@@ -832,17 +868,22 @@
     {
       "meeting_id": "nar-funabashi-racecourse-2026-11-05",
       "acquisition_group": "nar-standard",
-      "outcome": "details_pending",
-      "reason": "scheduled_pending_details",
-      "official_rank": "C",
+      "outcome": "no_op",
+      "official_rank": "A+",
       "public_rank": "A+",
-      "acquisition_completion": "pending_publication",
+      "acquisition_completion": "complete_current_best_available",
       "source_observations": [
         {
           "source_id": "nar-monthly-schedule-racelist",
           "role": "mother_set",
           "source_label": "地方競馬全国協会",
           "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=19&k_raceDate=2026%2F11%2F05"
+        },
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/bangumi/20261908.do"
         }
       ]
     },
@@ -872,7 +913,7 @@
       "meeting_id": "nar-monbetsu-racecourse-2026-11-05",
       "acquisition_group": "nar-standard",
       "outcome": "details_pending",
-      "reason": "scheduled_pending_details",
+      "reason": "partial_race_programme_publication",
       "official_rank": "C",
       "public_rank": "C",
       "acquisition_completion": "pending_publication",
@@ -911,17 +952,22 @@
     {
       "meeting_id": "nar-funabashi-racecourse-2026-11-06",
       "acquisition_group": "nar-standard",
-      "outcome": "details_pending",
-      "reason": "scheduled_pending_details",
-      "official_rank": "C",
+      "outcome": "no_op",
+      "official_rank": "A+",
       "public_rank": "A+",
-      "acquisition_completion": "pending_publication",
+      "acquisition_completion": "complete_current_best_available",
       "source_observations": [
         {
           "source_id": "nar-monthly-schedule-racelist",
           "role": "mother_set",
           "source_label": "地方競馬全国協会",
           "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=19&k_raceDate=2026%2F11%2F06"
+        },
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/bangumi/20261908.do"
         }
       ]
     },
@@ -1086,6 +1132,12 @@
           "role": "mother_set",
           "source_label": "地方競馬全国協会",
           "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F11%2F09"
+        },
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/calendar/202610.do"
         }
       ]
     },
@@ -1188,6 +1240,12 @@
           "role": "mother_set",
           "source_label": "地方競馬全国協会",
           "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F11%2F10"
+        },
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/calendar/202610.do"
         }
       ]
     },
@@ -1267,6 +1325,12 @@
           "role": "mother_set",
           "source_label": "地方競馬全国協会",
           "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F11%2F11"
+        },
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/calendar/202610.do"
         }
       ]
     },
@@ -1347,6 +1411,12 @@
           "role": "mother_set",
           "source_label": "地方競馬全国協会",
           "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F11%2F12"
+        },
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/calendar/202610.do"
         }
       ]
     },
@@ -1450,6 +1520,12 @@
           "role": "mother_set",
           "source_label": "地方競馬全国協会",
           "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F11%2F13"
+        },
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/calendar/202610.do"
         }
       ]
     },
@@ -1685,6 +1761,12 @@
           "role": "mother_set",
           "source_label": "地方競馬全国協会",
           "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=20&k_raceDate=2026%2F11%2F16"
+        },
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/calendar/202610.do"
         }
       ]
     },
@@ -1748,6 +1830,12 @@
           "role": "mother_set",
           "source_label": "地方競馬全国協会",
           "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=20&k_raceDate=2026%2F11%2F17"
+        },
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/calendar/202610.do"
         }
       ]
     },
@@ -1788,6 +1876,12 @@
           "role": "mother_set",
           "source_label": "地方競馬全国協会",
           "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=20&k_raceDate=2026%2F11%2F18"
+        },
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/calendar/202610.do"
         }
       ]
     },
@@ -1851,6 +1945,12 @@
           "role": "mother_set",
           "source_label": "地方競馬全国協会",
           "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=20&k_raceDate=2026%2F11%2F19"
+        },
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/calendar/202610.do"
         }
       ]
     },
@@ -1914,6 +2014,12 @@
           "role": "mother_set",
           "source_label": "地方競馬全国協会",
           "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=20&k_raceDate=2026%2F11%2F20"
+        },
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/calendar/202610.do"
         }
       ]
     },
@@ -2166,6 +2272,12 @@
           "role": "mother_set",
           "source_label": "地方競馬全国協会",
           "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F11%2F24"
+        },
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/calendar/202610.do"
         }
       ]
     },
@@ -2229,6 +2341,12 @@
           "role": "mother_set",
           "source_label": "地方競馬全国協会",
           "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F11%2F25"
+        },
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/calendar/202610.do"
         }
       ]
     },
@@ -2315,6 +2433,12 @@
           "role": "mother_set",
           "source_label": "地方競馬全国協会",
           "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F11%2F26"
+        },
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/calendar/202610.do"
         }
       ]
     },
@@ -2378,6 +2502,12 @@
           "role": "mother_set",
           "source_label": "地方競馬全国協会",
           "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F11%2F27"
+        },
+        {
+          "source_id": "nankankeiba-south-kanto-calendar",
+          "role": "mother_set",
+          "source_label": "南関東4競馬場",
+          "official_source_url": "https://www.nankankeiba.com/calendar/202610.do"
         }
       ]
     },
@@ -2440,10 +2570,10 @@
     {
       "meeting_id": "banei-obihiro-racecourse-2026-11-01",
       "acquisition_group": "banei",
-      "outcome": "no_op",
-      "official_rank": "A",
-      "public_rank": "A",
-      "acquisition_completion": "implementation_gap",
+      "outcome": "update",
+      "official_rank": "A+",
+      "public_rank": "A+",
+      "acquisition_completion": "complete_current_best_available",
       "source_observations": [
         {
           "source_id": "banei-official-monthly-schedule-nar-detail",
@@ -2470,13 +2600,7 @@
       ]
     }
   ],
-  "stale_audit": [
-    {
-      "meeting_id": "nar-urawa-racecourse-2026-11-02",
-      "date": "2026-11-02",
-      "audit": "canonical_public_only_not_deleted"
-    }
-  ],
+  "stale_audit": [],
   "complete": false,
   "public_rank_lower_than_official": 0,
   "scope": "full",
@@ -2617,8 +2741,8 @@
         "https://www.jra.go.jp/keiba/calendar2026/2026/11/1128.html"
       ],
       "failures": [],
-      "fetch_started_at": "2026-10-29T15:16:33.595Z",
-      "fetch_ended_at": "2026-10-29T15:16:43.438Z"
+      "fetch_started_at": "2026-10-30T10:11:06.402Z",
+      "fetch_ended_at": "2026-10-30T10:11:14.317Z"
     },
     {
       "source_id": "nar-monthly-convene-info",
@@ -2659,8 +2783,8 @@
           "2026-11-28"
         ]
       },
-      "fetch_started_at": "2026-10-29T15:16:43.439Z",
-      "fetch_ended_at": "2026-10-29T15:16:44.773Z",
+      "fetch_started_at": "2026-10-30T10:11:14.317Z",
+      "fetch_ended_at": "2026-10-30T10:11:16.097Z",
       "result": "complete",
       "completeness": "complete",
       "parsed_meeting_count": 97,
@@ -2712,8 +2836,8 @@
           "2026-11-28"
         ]
       },
-      "fetch_started_at": "2026-10-29T15:17:05.312Z",
-      "fetch_ended_at": "2026-10-29T15:17:08.095Z",
+      "fetch_started_at": "2026-10-30T10:11:36.264Z",
+      "fetch_ended_at": "2026-10-30T10:11:39.086Z",
       "result": "complete",
       "completeness": "complete",
       "parsed_meeting_count": 3,
@@ -2767,7 +2891,7 @@
       },
       "result": "failed",
       "completeness": "failed",
-      "parsed_meeting_count": 0,
+      "parsed_meeting_count": 21,
       "parsed_detail_count": 0,
       "pending_count": 0,
       "failure_count": 1,
@@ -2779,12 +2903,12 @@
       "failures": [
         {
           "source_url": "https://www.nankankeiba.com/calendar/202610.do",
-          "reason": "HTTP 503: https://www.nankankeiba.com/calendar/202610.do"
+          "reason": "calendar_structure_incomplete"
         }
       ],
       "supplemental_failures": [],
-      "fetch_started_at": "2026-10-29T15:16:44.773Z",
-      "fetch_ended_at": "2026-10-29T15:16:46.693Z"
+      "fetch_started_at": "2026-10-30T10:11:16.097Z",
+      "fetch_ended_at": "2026-10-30T10:11:18.383Z"
     },
     {
       "source_id": "iwatekeiba-official-calendar",
@@ -2837,8 +2961,8 @@
         "https://www.iwatekeiba.or.jp/calendar/2026_11"
       ],
       "failures": [],
-      "fetch_started_at": "2026-10-29T15:16:46.693Z",
-      "fetch_ended_at": "2026-10-29T15:16:49.970Z"
+      "fetch_started_at": "2026-10-30T10:11:18.383Z",
+      "fetch_ended_at": "2026-10-30T10:11:21.349Z"
     },
     {
       "source_id": "hyogo-urban-keiba-official-calendar",
@@ -2891,8 +3015,8 @@
         "https://www.sonoda-himeji.jp/schedule/2026/11"
       ],
       "failures": [],
-      "fetch_started_at": "2026-10-29T15:16:49.971Z",
-      "fetch_ended_at": "2026-10-29T15:16:51.680Z"
+      "fetch_started_at": "2026-10-30T10:11:21.349Z",
+      "fetch_ended_at": "2026-10-30T10:11:23.063Z"
     },
     {
       "source_id": "tokai-region-joint-official-calendar",
@@ -2952,8 +3076,8 @@
         "end": "2027-03-31"
       },
       "failures": [],
-      "fetch_started_at": "2026-10-29T15:16:51.680Z",
-      "fetch_ended_at": "2026-10-29T15:16:54.644Z"
+      "fetch_started_at": "2026-10-30T10:11:23.063Z",
+      "fetch_ended_at": "2026-10-30T10:11:26.019Z"
     },
     {
       "source_id": "hokkaido-keiba-official-calendar",
@@ -3051,8 +3175,8 @@
           "reason": "HTTP 503: https://www.hokkaidokeiba.net/kaisai/nittei.php?p_ym=202611"
         }
       ],
-      "fetch_started_at": "2026-10-29T15:16:54.644Z",
-      "fetch_ended_at": "2026-10-29T15:16:56.885Z"
+      "fetch_started_at": "2026-10-30T10:11:26.019Z",
+      "fetch_ended_at": "2026-10-30T10:11:28.185Z"
     },
     {
       "source_id": "kanazawa-keiba-official-calendar",
@@ -3182,8 +3306,8 @@
         }
       ],
       "failures": [],
-      "fetch_started_at": "2026-10-29T15:16:56.885Z",
-      "fetch_ended_at": "2026-10-29T15:17:02.192Z"
+      "fetch_started_at": "2026-10-30T10:11:28.185Z",
+      "fetch_ended_at": "2026-10-30T10:11:33.384Z"
     },
     {
       "source_id": "kochi-keiba-official-calendar",
@@ -3260,8 +3384,8 @@
       "published_plan_as_of": "2026-02-26",
       "schedule_status": "official_published_plan_subject_to_change",
       "failures": [],
-      "fetch_started_at": "2026-10-29T15:17:02.192Z",
-      "fetch_ended_at": "2026-10-29T15:17:03.643Z"
+      "fetch_started_at": "2026-10-30T10:11:33.384Z",
+      "fetch_ended_at": "2026-10-30T10:11:34.925Z"
     },
     {
       "source_id": "saga-keiba-official-calendar",
@@ -3354,8 +3478,8 @@
           "reason": "HTTP 503: https://www.sagakeiba.net/schedule/sch202611/"
         }
       ],
-      "fetch_started_at": "2026-10-29T15:17:03.643Z",
-      "fetch_ended_at": "2026-10-29T15:17:05.311Z"
+      "fetch_started_at": "2026-10-30T10:11:34.925Z",
+      "fetch_ended_at": "2026-10-30T10:11:36.264Z"
     }
   ],
   "mother_set_complete": false,
@@ -3385,7 +3509,5 @@
   "absence_reconciliation_applied": true,
   "removed_invalid_aliases": [],
   "removed_stale_public": [],
-  "preserved_stale_public": [
-    "nar-urawa-racecourse-2026-11-02"
-  ]
+  "preserved_stale_public": []
 }
