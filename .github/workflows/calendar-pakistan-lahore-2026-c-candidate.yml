@@ -1,0 +1,72 @@
+name: Calendar Pakistan Lahore Nov 1 2026 bounded C candidate
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-pakistan-lahore-2026-c-candidate.yml'
+      - 'data/static/calendar-pakistan-lahore-2026-11-01-c-candidate.json'
+      - 'scripts/timetable/run-pakistan-lahore-nov1-2026-c-candidate.mjs'
+      - 'data/static/racecourses-extensions.json'
+      - 'data/static/racecourse-locations-v1.json'
+      - 'data/static/racecourse-location-supplement-evidence-v1.json'
+      - 'data/static/racecourse-display-names-v1.json'
+permissions:
+  contents: read
+jobs:
+  one-date-source-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax, dates, no extra Sundays, and rights/provenance fail-closed
+        run: |
+          node --check scripts/timetable/run-pakistan-lahore-nov1-2026-c-candidate.mjs
+          node scripts/timetable/run-pakistan-lahore-nov1-2026-c-candidate.mjs --self-test
+      - name: One single 2026-11-01 verified media candidate in current 30-day window
+        run: |
+          node scripts/timetable/run-pakistan-lahore-nov1-2026-c-candidate.mjs --as-of=2026-10-31 --days=30 > /tmp/lahore-candidate.json
+          node --input-type=module -e '
+            import assert from "node:assert/strict";import fs from "node:fs";
+            const d=JSON.parse(fs.readFileSync("/tmp/lahore-candidate.json","utf8"));
+            assert.equal(d.date_venue_candidate.date,"2026-11-01");
+            assert.equal(d.date_venue_candidate.racecourse_id,"pakistan--lahore-race-club");
+            assert.equal(d.date_venue_candidate.rank_if_approved,"C");
+            assert.equal(d.production_routing,false);
+            assert.equal(d.publication_eligible,false);
+            assert.equal(d.source_access,"reviewed_no_network");
+            assert.deepEqual(d.canonical_meetings,[]);
+            assert.deepEqual(d.public_meetings,[]);
+            console.log("PAKISTAN_LAHORE_2026_CANDIDATE_NO_PUBLISH_PASS");
+          '
+      - name: Physical racecourse, map, and source evidence identity
+        run: |
+          node --input-type=module -e '
+            import assert from "node:assert/strict";import fs from "node:fs";
+            const read=p=>JSON.parse(fs.readFileSync(p,"utf8"));
+            const id="pakistan--lahore-race-club";
+            const ext=read("data/static/racecourses-extensions.json").filter(x=>x.id===id);
+            const loc=read("data/static/racecourse-locations-v1.json").locations.filter(x=>x.id===id);
+            const ev=read("data/static/racecourse-location-supplement-evidence-v1.json").entries.filter(x=>x.id===id);
+            const alias=read("data/static/racecourse-display-names-v1.json").entries.filter(x=>x.racecourse_id===id);
+            assert.equal(ext.length,1);assert.equal(loc.length,1);assert.equal(ev.length,1);assert.equal(alias.length,1);
+            assert.equal(loc[0].location.precision,"venue");
+            assert.equal(loc[0].location.latitude,31.43882);
+            assert.equal(loc[0].location.longitude,74.33279);
+            assert.match(ev[0].address_source_url,/^https:\/\/lahoreraceclub\.com/);
+            assert.match(ev[0].coordinate_source_url,/mapcarta\.com/);
+            assert.equal(ext[0].timezone,"Asia/Karachi");
+            console.log("PAKISTAN_LAHORE_PHYSICAL_VENUE_MAP_IDENTITY_PASS");
+          '
+      - name: Expired candidate never projects 2027 or public source rows
+        run: |
+          node scripts/timetable/run-pakistan-lahore-nov1-2026-c-candidate.mjs --as-of=2026-11-02 --days=120 > /tmp/lahore-expired.json
+          node --input-type=module -e '
+            import assert from "node:assert/strict";import fs from "node:fs";
+            const d=JSON.parse(fs.readFileSync("/tmp/lahore-expired.json","utf8"));
+            assert.equal(d.date_venue_candidate,null);
+            assert.deepEqual(d.public_meetings,[]);
+            console.log("PAKISTAN_LAHORE_EXPIRED_NO_RECURRENCE_PASS");
+          '
