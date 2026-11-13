@@ -2,7 +2,7 @@ name: Calendar near official refresh
 
 on:
   schedule:
-    - cron: '17 11,19 * * *' # rolling near-3-day detail refresh
+    - cron: '18 11,19 * * *' # rolling near-3-day detail refresh
   workflow_dispatch:
   pull_request:
     paths:
