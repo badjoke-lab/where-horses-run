@@ -76,6 +76,49 @@ const programmeLinks = extractChileTeletrakProgrammeLinks(linkedHtml, { referenc
 assert.equal(programmeLinks.programme_links.size, 4);
 assert.equal(programmeLinks.conflicts.length, 0);
 
+const multiSantiago = 'https://teletrak.cl/wp-content/uploads/2026/11/VOLANTE_MULTI_HIPODROMOS_2026-11-13.pdf';
+const specificSantiago = 'https://static.clubhipico.cl/archivos/volantes/13-11-2026.pdf';
+const multiHipodromo = 'https://teletrak.cl/wp-content/uploads/2026/11/VOLANTE_MULTI_HIPODROMOS_2026-11-14.pdf';
+const specificHipodromo = 'https://storage.elturf.com/pdf_volantes/pdf_hch/102142.pdf';
+const cardWithProgrammeLinks = (day, venue, urls) => '<article><strong>' + day
+  + '</strong><img alt="Icono ' + venue + '">'
+  + urls.map((url) => '<a href="' + url + '">Descargar programa</a>').join('')
+  + '</article>';
+for (const santiagoLinks of [[specificSantiago, multiSantiago], [multiSantiago, specificSantiago]]) {
+  const dualHtml = '<html><h2>Semana de carreras</h2><p>Teletrak</p>'
+    + cardWithProgrammeLinks('VIE 13', 'Club Hípico de Santiago', santiagoLinks)
+    + cardWithProgrammeLinks('SAB 14', 'Hipódromo Chile', [multiHipodromo, specificHipodromo])
+    + '</html>';
+  const dual = extractChileTeletrakProgrammeLinks(dualHtml, { referenceDate: '2026-11-14' });
+  assert.deepEqual(dual.conflicts, [], 'aggregate and venue-specific PDF links must not abort the entire refresh');
+  assert.equal(dual.programme_links.get('2026-11-13/club-hipico-de-santiago-racecourse'), specificSantiago);
+  assert.equal(dual.programme_links.get('2026-11-14/hipodromo-chile'), specificHipodromo);
+  const dualParsed = parseChileTeletrakWeeklyHtml(dualHtml, {
+    referenceDate: '2026-11-14', startDate: '2026-11-13', endDateExclusive: '2026-11-15',
+  });
+  assert.equal(dualParsed.records.length, 2);
+  assert.equal(dualParsed.parse_failures.length, 0);
+}
+const aggregateOnlyHtml = '<h2>Semana de carreras</h2><p>Teletrak</p>'
+  + cardWithProgrammeLinks('SAB 14', 'Hipódromo Chile', [multiHipodromo]);
+assert.equal(
+  extractChileTeletrakProgrammeLinks(aggregateOnlyHtml, { referenceDate: '2026-11-14' })
+    .programme_links.get('2026-11-14/hipodromo-chile'),
+  multiHipodromo,
+  'an aggregate PDF must remain available when there is no venue-specific link',
+);
+const genuineConflictHtml = '<h2>Semana de carreras</h2><p>Teletrak</p>'
+  + cardWithProgrammeLinks('VIE 13', 'Club Hípico de Santiago', [
+    specificSantiago,
+    'https://static.clubhipico.cl/archivos/volantes/13-11-2026-v2.pdf',
+  ]);
+assert.equal(
+  extractChileTeletrakProgrammeLinks(genuineConflictHtml, { referenceDate: '2026-11-14' }).conflicts.length,
+  1,
+  'two conflicting venue-specific programme links must still fail closed',
+);
+
+
 const clubHipicoViewer = 'https://www.clubhipico.cl/carreras/volante/?fecha=2026-09-21';
 assert.equal(
   resolveClubHipicoSantiagoProgrammePdfCandidate(clubHipicoViewer, { racecourseId: 'club-hipico-de-santiago-racecourse' }),
