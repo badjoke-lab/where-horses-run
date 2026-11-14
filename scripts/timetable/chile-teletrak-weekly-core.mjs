@@ -115,6 +115,16 @@ export function extractClubHipicoSantiagoOfficialPdfHref(html, { baseUrl } = {})
   return null;
 }
 
+function isTeletrakMultiVenueProgrammeUrl(rawUrl) {
+  try {
+    const url = new URL(rawUrl);
+    return ['teletrak.cl', 'www.teletrak.cl'].includes(url.hostname.toLowerCase())
+      && /\/VOLANTE_MULTI_HIPODROMOS_[^/]*\.pdf$/i.test(url.pathname);
+  } catch {
+    return false;
+  }
+}
+
 function nearestProgrammeCardContext(html, anchorIndex) {
   const context = htmlToText(String(html).slice(Math.max(0, anchorIndex - 3200), anchorIndex));
   const normalized = normalize(context).toUpperCase();
@@ -152,6 +162,14 @@ export function extractChileTeletrakProgrammeLinks(html, { referenceDate } = {})
     const key = `${date}/${context.venue.racecourse_id}`;
     const previous = links.get(key);
     if (previous && previous !== href) {
+      const previousIsAggregate = isTeletrakMultiVenueProgrammeUrl(previous);
+      const nextIsAggregate = isTeletrakMultiVenueProgrammeUrl(href);
+      if (previousIsAggregate !== nextIsAggregate) {
+        // A meeting-specific programme wins over the all-hippodrome Teletrak handout,
+        // regardless of link order. Other distinct programme links remain conflicts.
+        if (previousIsAggregate) links.set(key, href);
+        continue;
+      }
       conflicts.push({ code: 'multiple_programme_links', date, racecourse_id: context.venue.racecourse_id, urls: [previous, href] });
       continue;
     }
