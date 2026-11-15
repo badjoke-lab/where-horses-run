@@ -32,6 +32,15 @@ export function visibleText(html){
 }
 const pad=v=>String(Number(v)).padStart(2,'0');
 
+// A successful HTTP status can still contain only a tiny placeholder rather
+// than the official racing calendar. This is missing source content, not
+// evidence that RBSC has no upcoming meetings or that its dates changed.
+export function isRbscIncompleteResponse(html){
+  if(typeof html!=='string'||!html.trim()) return true;
+  const text=visibleText(html);
+  return text.length<80&&!/\\bUPCOMING\\s+RACE\\s+DAYS\\b|\\bRACING\\s+CALENDAR\\s+20\\d{2}\\b/i.test(text);
+}
+
 export function parseRbscRacingCalendarPage(html,{sourceUrl=THAILAND_SOURCE_URL}={}){
   if(typeof html!=='string'||!html.trim()) throw new Error('RBSC racing HTML must be non-empty');
   const text=visibleText(html);
