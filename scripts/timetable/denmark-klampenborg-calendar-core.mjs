@@ -15,12 +15,25 @@ function pad(v){return String(v).padStart(2,'0');}
 export function parseKlampenborgCalendar(html,{sourceUrl=DENMARK_CALENDAR_URL}={}){
   if(typeof html!=='string'||!html.trim()) throw new Error('Klampenborg calendar HTML must be non-empty');
   const text=visibleText(html);
-  if(!/Løbskalender\s+2026/i.test(text)) throw new Error('Klampenborg 2026 calendar fingerprint missing');
+  // The official /loebskalender URL now redirects to the 2027 ticket calendar.
+  // Do not require the historical "Løbskalender 2026" heading, and do not
+  // treat promotional/expiry dates as race meetings.
+  const season=text.match(/Løbskalender\s+(20\d{2})\b/i)?.[1]
+    ??text.match(/løbskalender\s+for\s+(20\d{2})\b/i)?.[1]
+    ??text.match(/Vi\s+ses\s+i\s+(20\d{2})\b/i)?.[1];
+  if(!/Løbskalender/i.test(text)||!season) throw new Error('Klampenborg racing-calendar season fingerprint missing');
   const rows=[];
-  const rx=/\b([0-3]?\d)\.\s*(januar|februar|marts|april|maj|juni|juli|august|september|oktober|november|december)\s+(20\d{2})(?:\s*-\s*([0-2]?\d:[0-5]\d))?/gi;
+  // Only calendar entries with explicit Danish date AND event start time qualify.
+  // Time is retained as source_event_time, NEVER promoted to first-race post time.
+  const rx=/\b([0-3]?\d)\.\s*(januar|februar|marts|april|maj|juni|juli|august|september|oktober|november|december)\s+(20\d{2})\s*(?:-\s*)?([0-2]?\d)[:.]([0-5]\d)\b/gi;
   for(const m of text.matchAll(rx)){
-    const month=MONTHS[m[2].toLowerCase()];
-    rows.push({date:m[3]+'-'+pad(month)+'-'+pad(m[1]),source_event_time:m[4]||null,racecourse_id:DENMARK_RACECOURSE_ID,venue_name:'Klampenborg Galopbane',source_url:sourceUrl});
+    if(m[3]!==season) continue;
+    const prefix=text.slice(Math.max(0,m.index-55),m.index);
+    if(/(?:gælder\s+t\.?o\.?m\.?|valid\s+until|udløber)\s+(?:den\s+)?$/i.test(prefix)) continue;
+    const date=m[3]+'-'+pad(MONTHS[m[2].toLowerCase()])+'-'+pad(m[1]);
+    if(Number(m[4])>23||new Date(date+'T00:00:00Z').toISOString().slice(0,10)!==date) continue;
+    const source_event_time=pad(m[4])+':'+m[5];
+    rows.push({date,source_event_time,racecourse_id:DENMARK_RACECOURSE_ID,venue_name:'Klampenborg Galopbane',source_url:sourceUrl});
   }
   const out=[...new Map(rows.map(r=>[r.date,r])).values()].sort((a,b)=>a.date.localeCompare(b.date));
   if(!out.length) throw new Error('Klampenborg source-visible race dates missing');
