@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {THAILAND_RACECOURSE_ID,buildThailandMeetingRecord,parseRbscRacingCalendarPage} from './timetable/thailand-rbsc-calendar-core.mjs';
+import {THAILAND_RACECOURSE_ID,buildThailandMeetingRecord,parseRbscRacingCalendarPage,isRbscIncompleteResponse} from './timetable/thailand-rbsc-calendar-core.mjs';
 
 const html='<html><body><h2>RACING CALENDAR 2026</h2><p>(Every other Sunday. Moved to Sunday in the event of a religious holiday)</p><p>04 JANUARY - NEW YEAR MEETING (Saturday) 17 JANUARY 1 & 15 FEBRUARY 1, 15 & 29 MARCH 12 APRIL 26 APRIL - MAGIC MILLIONS MEETING 10 MAY & (Saturday) 23 MAY 7 JUNE 5 & 19 JULY 2, 16 & 30 AUGUST 13 & 27 SEPTEMBER (Saturday) 10 & 25 OCTOBER 8 & 22 NOVEMBER 6 DECEMBER - KING’S CUP MEETING 20 DECEMBER - END OF YEAR MEETING</p><h2>ENTRANCE FEE</h2></body></html>';
 const rows=parseRbscRacingCalendarPage(html);
@@ -25,6 +25,10 @@ assert.ok(upcoming.every(row=>row.racecourse_id===THAILAND_RACECOURSE_ID));
 assert.equal(buildThailandMeetingRecord(upcoming[0],{checkedAt:'2026-10-17T00:00:00Z'}).first_race_time_local,null);
 assert.throws(()=>parseRbscRacingCalendarPage('<h2>UPCOMING RACE DAYS</h2><p>25 October 2026</p>'),/boundary missing/);
 assert.throws(()=>parseRbscRacingCalendarPage('<h2>UPCOMING RACE DAYS</h2><p>no dates</p><h2>FEATURE RACES</h2>'),/month\/year sections missing/);
+
+assert.ok(isRbscIncompleteResponse('<html><body><main>Please try again later.</main></body></html>'));
+assert.equal(isRbscIncompleteResponse(html),false);
+assert.equal(isRbscIncompleteResponse(upcomingHtml),false);
 
 const rec=buildThailandMeetingRecord(rows.at(-5),{checkedAt:'2026-10-11T00:00:00Z'});
 assert.equal(rec.capability_rank,'C');
