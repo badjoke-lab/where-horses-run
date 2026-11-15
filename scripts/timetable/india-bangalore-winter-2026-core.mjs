@@ -15,7 +15,7 @@ export const BTC_VENUE='india--bangalore-racecourse';
 export const BTC_ZONE='Asia/Kolkata';
 const HEADING=/Fixtures\s+for\s+Bangalore\s+Winter\s+Meeting\s+2026[\u2010-\u2015-]27/i;
 const DAY=/\b(\d{1,2})(?:st|nd|rd|th)\s+Day\s+(20(?:26|27)-\d{2}-\d{2})\b/g;
-const EXPECTED_COUNT=24;
+const LAST_OFFICIAL_DAY=24;
 const parseDate=date=>{
  const d=new Date(date+'T00:00:00Z');
  if(Number.isNaN(d.valueOf())||d.toISOString().slice(0,10)!==date)throw Error('BTC invalid fixture date '+date);
@@ -39,15 +39,21 @@ export function parseBtcWinterFixtures2026(html){
  const stop=/\b(?:Fixtures\s+for\s+Bangalore\s+(?:Summer|Winter)\s+Meeting\s+\d{4}|DISCLAIMER|Copyright)\b/i.exec(section);
  if(stop)section=section.slice(0,stop.index);
  const matches=[...section.matchAll(DAY)];
- if(matches.length!==EXPECTED_COUNT)throw Error('BTC winter fixture day denominator drift: '+matches.length);
+ // BTC removes already elapsed dates from the first-party fixtures listing.
+ // Accept only a contiguous suffix through official day 24; never invent
+ // omitted past dates or silently accept gaps inside the published sequence.
+ const firstDay=Number(matches[0]?.[1]);
+ if(!Number.isInteger(firstDay)||firstDay<1||firstDay>LAST_OFFICIAL_DAY
+    ||matches.length!==LAST_OFFICIAL_DAY-firstDay+1)
+  throw Error('BTC winter fixture day denominator drift: '+matches.length);
  const rows=matches.map((m,i)=>{
   const day=Number(m[1]); const date=parseDate(m[2]);
-  if(day!==i+1)throw Error('BTC expected sequential meeting day '+(i+1));
+  if(day!==firstDay+i)throw Error('BTC expected sequential meeting day '+(firstDay+i));
   if(date<'2026-11-01'||date>'2027-03-13')throw Error('BTC winter fixture date outside source season');
   return {date,racecourse_id:BTC_VENUE,source_url:BTC_SOURCE_URL,source_day_number:day};
  });
  if(rows.some((r,i)=>i>0&&r.date<=rows[i-1].date))throw Error('BTC fixture dates duplicate or out of order');
- if(rows[0]?.date!=='2026-11-01'||rows.at(-1)?.date!=='2027-03-13')
+ if((firstDay===1&&rows[0]?.date!=='2026-11-01')||rows.at(-1)?.date!=='2027-03-13')
   throw Error('BTC 2026-27 source horizon/fingerprint drift');
  return rows;
 }
