@@ -14,6 +14,24 @@ const mock='<h5>Fixtures for Bangalore Winter Meeting 2026-27</h5><table><tr><th
 const rows=parseBtcWinterFixtures2026(mock);
 assert.deepEqual(rows.map(x=>x.date),all);
 assert.ok(rows.every(x=>x.racecourse_id===BTC_VENUE));
+
+// The current official fixtures page shows only 2nd Day..24th Day:
+// elapsed 1st Day has disappeared, but later dates remain source-verified.
+const currentListing=mock.replace(/<tr><td>1st Day[\s\S]*?<\/tr>/,'');
+const currentRows=parseBtcWinterFixtures2026(currentListing);
+assert.equal(currentRows.length,23);
+assert.deepEqual(currentRows.map(r=>r.date),all.slice(1));
+assert.equal(currentRows.some(r=>r.date==='2026-11-01'),false,
+  'elapsed day 1 must not be synthesized from the known historical fixture');
+assert.throws(
+  ()=>parseBtcWinterFixtures2026(currentListing.replace(/<tr><td>8th Day[\s\S]*?<\/tr>/,'')),
+  /denominator drift/,
+  'an omitted day in the middle is not a legitimate elapsed-prefix omission');
+assert.throws(
+  ()=>parseBtcWinterFixtures2026(currentListing.replace(/<tr><td>24th Day[\s\S]*?<\/tr>/,'')),
+  /denominator drift/,
+  'missing terminal official fixture day must still fail closed');
+
 const meeting=buildBtcCMeeting(rows[0],{checkedAt:'2026-10-25T00:00:00Z'});
 assert.equal(meeting.capability_rank,'C');
 assert.equal(meeting.first_race_time_local,null);
@@ -25,4 +43,4 @@ assert.throws(()=>parseBtcWinterFixtures2026(mock.replace('2027-03-13','2027-03-
 assert.throws(()=>parseBtcWinterFixtures2026(mock.replace('2026-11-13','2026-11-44')),/invalid fixture date/);
 assert.throws(()=>parseBtcWinterFixtures2026(mock.replace('2026-27','2027-28')),/heading missing/);
 assert.throws(()=>parseBtcWinterFixtures2026(mock.replace(/<tr><td>24th Day[\s\S]*?<\/tr>/,' ')),/denominator drift/);
-console.log('INDIA_BANGALORE_CORE_PASS official winter 2026-27 fixed-venue 24-date C-only candidate');
+console.log('INDIA_BANGALORE_CORE_PASS official winter 2026-27 fixed-venue published-suffix C-only candidate');
