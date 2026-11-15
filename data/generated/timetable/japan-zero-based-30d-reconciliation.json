@@ -1,11 +1,10 @@
 {
   "schema_version": "japan-zero-based-30d-reconciliation-v1",
-  "checked_at": "2026-11-15T13:47:09.303Z",
+  "checked_at": "2026-11-15T15:09:31.811Z",
   "range": {
-    "start": "2026-11-15",
-    "end_exclusive": "2026-12-15",
+    "start": "2026-11-16",
+    "end_exclusive": "2026-12-16",
     "dates": [
-      "2026-11-15",
       "2026-11-16",
       "2026-11-17",
       "2026-11-18",
@@ -34,64 +33,17 @@
       "2026-12-11",
       "2026-12-12",
       "2026-12-13",
-      "2026-12-14"
+      "2026-12-14",
+      "2026-12-15"
     ]
   },
   "official_counts": {
-    "jra": 26,
+    "jra": 23,
     "nar-standard": 92,
-    "banei": 8
+    "banei": 7
   },
-  "official_meeting_count": 126,
+  "official_meeting_count": 122,
   "reconciliations": [
-    {
-      "meeting_id": "jra-fukushima-racecourse-2026-11-15",
-      "acquisition_group": "jra",
-      "outcome": "no_op",
-      "official_rank": "A+",
-      "public_rank": "A+",
-      "acquisition_completion": "complete_current_best_available",
-      "source_observations": [
-        {
-          "source_id": "jra-racing-calendar-programme",
-          "role": "mother_set",
-          "source_label": "Japan Racing Association",
-          "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/11/1115.html"
-        }
-      ]
-    },
-    {
-      "meeting_id": "jra-kyoto-racecourse-2026-11-15",
-      "acquisition_group": "jra",
-      "outcome": "no_op",
-      "official_rank": "A+",
-      "public_rank": "A+",
-      "acquisition_completion": "complete_current_best_available",
-      "source_observations": [
-        {
-          "source_id": "jra-racing-calendar-programme",
-          "role": "mother_set",
-          "source_label": "Japan Racing Association",
-          "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/11/1115.html"
-        }
-      ]
-    },
-    {
-      "meeting_id": "jra-tokyo-racecourse-2026-11-15",
-      "acquisition_group": "jra",
-      "outcome": "no_op",
-      "official_rank": "A+",
-      "public_rank": "A+",
-      "acquisition_completion": "complete_current_best_available",
-      "source_observations": [
-        {
-          "source_id": "jra-racing-calendar-programme",
-          "role": "mother_set",
-          "source_label": "Japan Racing Association",
-          "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/11/1115.html"
-        }
-      ]
-    },
     {
       "meeting_id": "jra-fukushima-racecourse-2026-11-21",
       "acquisition_group": "jra",
@@ -457,94 +409,6 @@
           "role": "mother_set",
           "source_label": "Japan Racing Association",
           "official_source_url": "https://www.jra.go.jp/keiba/calendar2026/2026/12/1213.html"
-        }
-      ]
-    },
-    {
-      "meeting_id": "nar-kanazawa-racecourse-2026-11-15",
-      "acquisition_group": "nar-standard",
-      "outcome": "no_op",
-      "official_rank": "A+",
-      "public_rank": "A+",
-      "acquisition_completion": "complete_current_best_available",
-      "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=22&k_raceDate=2026%2F11%2F15"
-        },
-        {
-          "source_id": "kanazawa-keiba-official-calendar",
-          "role": "mother_set",
-          "source_label": "金沢競馬",
-          "official_source_url": "https://www.kanazawakeiba.com/schedule/?s_year=2026&s_month=11&mode=honba"
-        }
-      ]
-    },
-    {
-      "meeting_id": "nar-kochi-racecourse-2026-11-15",
-      "acquisition_group": "nar-standard",
-      "outcome": "no_op",
-      "official_rank": "A+",
-      "public_rank": "A+",
-      "acquisition_completion": "complete_current_best_available",
-      "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=31&k_raceDate=2026%2F11%2F15"
-        },
-        {
-          "source_id": "kochi-keiba-official-calendar",
-          "role": "mother_set",
-          "source_label": "高知けいば",
-          "official_source_url": "https://www.keiba.or.jp/wp/wp-content/uploads/2026/02/c408d71a0237f46b0a96517eaac55217.pdf"
-        }
-      ]
-    },
-    {
-      "meeting_id": "nar-mizusawa-racecourse-2026-11-15",
-      "acquisition_group": "nar-standard",
-      "outcome": "no_op",
-      "official_rank": "A+",
-      "public_rank": "A+",
-      "acquisition_completion": "complete_current_best_available",
-      "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=11&k_raceDate=2026%2F11%2F15"
-        },
-        {
-          "source_id": "iwatekeiba-official-calendar",
-          "role": "mother_set",
-          "source_label": "岩手競馬",
-          "official_source_url": "https://www.iwatekeiba.or.jp/calendar/2026_11"
-        }
-      ]
-    },
-    {
-      "meeting_id": "nar-saga-racecourse-2026-11-15",
-      "acquisition_group": "nar-standard",
-      "outcome": "no_op",
-      "official_rank": "A+",
-      "public_rank": "A+",
-      "acquisition_completion": "complete_current_best_available",
-      "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=32&k_raceDate=2026%2F11%2F15"
-        },
-        {
-          "source_id": "saga-keiba-official-calendar",
-          "role": "mother_set",
-          "source_label": "佐賀競馬",
-          "official_source_url": "https://www.sagakeiba.net/schedule/sch202611/"
         }
       ]
     },
@@ -2428,18 +2292,88 @@
       ]
     },
     {
-      "meeting_id": "banei-obihiro-racecourse-2026-11-15",
-      "acquisition_group": "banei",
-      "outcome": "no_op",
-      "official_rank": "A+",
-      "public_rank": "A+",
-      "acquisition_completion": "complete_current_best_available",
+      "meeting_id": "nar-kanazawa-racecourse-2026-12-15",
+      "acquisition_group": "nar-standard",
+      "outcome": "details_pending",
+      "reason": "scheduled_pending_details",
+      "official_rank": "C",
+      "public_rank": "C",
+      "acquisition_completion": "pending_publication",
       "source_observations": [
         {
-          "source_id": "banei-official-monthly-schedule-nar-detail",
+          "source_id": "nar-monthly-schedule-racelist",
           "role": "mother_set",
-          "source_label": "ばんえい十勝",
-          "official_source_url": "https://www.banei-keiba.or.jp/race_schedule.php?c=mon&d=1793458800"
+          "source_label": "地方競馬全国協会",
+          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=22&k_raceDate=2026%2F12%2F15"
+        },
+        {
+          "source_id": "kanazawa-keiba-official-calendar",
+          "role": "mother_set",
+          "source_label": "金沢競馬",
+          "official_source_url": "https://www.kanazawakeiba.com/schedule/?s_year=2026&s_month=12&mode=honba"
+        }
+      ]
+    },
+    {
+      "meeting_id": "nar-kasamatsu-racecourse-2026-12-15",
+      "acquisition_group": "nar-standard",
+      "outcome": "details_pending",
+      "reason": "scheduled_pending_details",
+      "official_rank": "C",
+      "public_rank": "C",
+      "acquisition_completion": "pending_publication",
+      "source_observations": [
+        {
+          "source_id": "nar-monthly-schedule-racelist",
+          "role": "mother_set",
+          "source_label": "地方競馬全国協会",
+          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=23&k_raceDate=2026%2F12%2F15"
+        },
+        {
+          "source_id": "tokai-region-joint-official-calendar",
+          "role": "mother_set",
+          "source_label": "東海地区競馬開催日程 / 笠松けいば開催日程",
+          "official_source_url": "https://www.kasamatsu-keiba.com/schedule/2026/12"
+        }
+      ]
+    },
+    {
+      "meeting_id": "nar-kawasaki-racecourse-2026-12-15",
+      "acquisition_group": "nar-standard",
+      "outcome": "details_pending",
+      "reason": "scheduled_pending_details",
+      "official_rank": "C",
+      "public_rank": "C",
+      "acquisition_completion": "pending_publication",
+      "source_observations": [
+        {
+          "source_id": "nar-monthly-schedule-racelist",
+          "role": "mother_set",
+          "source_label": "地方競馬全国協会",
+          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=21&k_raceDate=2026%2F12%2F15"
+        }
+      ]
+    },
+    {
+      "meeting_id": "nar-mizusawa-racecourse-2026-12-15",
+      "acquisition_group": "nar-standard",
+      "outcome": "details_pending",
+      "reason": "scheduled_pending_details",
+      "official_rank": "C",
+      "public_rank": "C",
+      "acquisition_completion": "pending_publication",
+      "source_observations": [
+        {
+          "source_id": "nar-monthly-schedule-racelist",
+          "role": "mother_set",
+          "source_label": "地方競馬全国協会",
+          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=11&k_raceDate=2026%2F12%2F15"
+        },
+        {
+          "source_id": "iwatekeiba-official-calendar",
+          "role": "mother_set",
+          "source_label": "岩手競馬",
+          "official_source_url": "https://www.iwatekeiba.or.jp/calendar/2026_12"
         }
       ]
     },
@@ -2568,7 +2502,6 @@
   "scope": "full",
   "requested_days": 30,
   "selected_dates": [
-    "2026-11-15",
     "2026-11-16",
     "2026-11-17",
     "2026-11-18",
@@ -2597,17 +2530,17 @@
     "2026-12-11",
     "2026-12-12",
     "2026-12-13",
-    "2026-12-14"
+    "2026-12-14",
+    "2026-12-15"
   ],
   "source_completeness": [
     {
       "source_id": "jra-racing-calendar-programme",
       "role": "mother_set",
       "requested_window": {
-        "start": "2026-11-15",
-        "end_exclusive": "2026-12-15",
+        "start": "2026-11-16",
+        "end_exclusive": "2026-12-16",
         "dates": [
-          "2026-11-15",
           "2026-11-16",
           "2026-11-17",
           "2026-11-18",
@@ -2636,16 +2569,17 @@
           "2026-12-11",
           "2026-12-12",
           "2026-12-13",
-          "2026-12-14"
+          "2026-12-14",
+          "2026-12-15"
         ]
       },
       "result": "complete",
       "completeness": "complete",
-      "parsed_meeting_count": 26,
-      "parsed_detail_count": 26,
+      "parsed_meeting_count": 23,
+      "parsed_detail_count": 23,
       "pending_count": 0,
       "failure_count": 0,
-      "source_visible_horizon": "2026-12-14",
+      "source_visible_horizon": "2026-12-15",
       "source_urls": [
         "https://www.jra.go.jp/keiba/common/calendar/json/202611.json",
         "https://www.jra.go.jp/keiba/common/calendar/json/202612.json"
@@ -2661,8 +2595,8 @@
           "month": 11,
           "structural_valid": true,
           "calendar_date_count": 24,
-          "racing_date_count": 7,
-          "meeting_count": 14
+          "racing_date_count": 6,
+          "meeting_count": 11
         },
         {
           "source_url": "https://www.jra.go.jp/keiba/common/calendar/json/202612.json",
@@ -2675,7 +2609,6 @@
         }
       ],
       "successful_programme_dates": [
-        "2026-11-15",
         "2026-11-21",
         "2026-11-22",
         "2026-11-23",
@@ -2692,7 +2625,6 @@
       "programme_failure_count": 0,
       "programme_failures": [],
       "programme_source_urls": [
-        "https://www.jra.go.jp/keiba/calendar2026/2026/11/1115.html",
         "https://www.jra.go.jp/keiba/calendar2026/2026/11/1121.html",
         "https://www.jra.go.jp/keiba/calendar2026/2026/11/1122.html",
         "https://www.jra.go.jp/keiba/calendar2026/2026/11/1123.html",
@@ -2705,17 +2637,16 @@
         "https://www.jra.go.jp/keiba/calendar2026/2026/12/1213.html"
       ],
       "failures": [],
-      "fetch_started_at": "2026-11-15T13:47:09.304Z",
-      "fetch_ended_at": "2026-11-15T13:47:15.757Z"
+      "fetch_started_at": "2026-11-15T15:09:31.811Z",
+      "fetch_ended_at": "2026-11-15T15:09:40.608Z"
     },
     {
       "source_id": "nar-monthly-convene-info",
       "role": "mother_set",
       "requested_window": {
-        "start": "2026-11-15",
-        "end_exclusive": "2026-12-15",
+        "start": "2026-11-16",
+        "end_exclusive": "2026-12-16",
         "dates": [
-          "2026-11-15",
           "2026-11-16",
           "2026-11-17",
           "2026-11-18",
@@ -2744,18 +2675,19 @@
           "2026-12-11",
           "2026-12-12",
           "2026-12-13",
-          "2026-12-14"
+          "2026-12-14",
+          "2026-12-15"
         ]
       },
-      "fetch_started_at": "2026-11-15T13:47:15.758Z",
-      "fetch_ended_at": "2026-11-15T13:47:17.846Z",
+      "fetch_started_at": "2026-11-15T15:09:40.609Z",
+      "fetch_ended_at": "2026-11-15T15:09:43.334Z",
       "result": "complete",
       "completeness": "complete",
       "parsed_meeting_count": 92,
       "parsed_detail_count": 0,
       "pending_count": 0,
       "failure_count": 0,
-      "source_visible_horizon": "2026-12-14",
+      "source_visible_horizon": "2026-12-15",
       "source_urls": [
         "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop"
       ],
@@ -2765,10 +2697,9 @@
       "source_id": "banei-official-schedule",
       "role": "mother_set",
       "requested_window": {
-        "start": "2026-11-15",
-        "end_exclusive": "2026-12-15",
+        "start": "2026-11-16",
+        "end_exclusive": "2026-12-16",
         "dates": [
-          "2026-11-15",
           "2026-11-16",
           "2026-11-17",
           "2026-11-18",
@@ -2797,18 +2728,19 @@
           "2026-12-11",
           "2026-12-12",
           "2026-12-13",
-          "2026-12-14"
+          "2026-12-14",
+          "2026-12-15"
         ]
       },
-      "fetch_started_at": "2026-11-15T13:47:32.113Z",
-      "fetch_ended_at": "2026-11-15T13:47:33.978Z",
+      "fetch_started_at": "2026-11-15T15:10:00.977Z",
+      "fetch_ended_at": "2026-11-15T15:10:03.443Z",
       "result": "complete",
       "completeness": "complete",
-      "parsed_meeting_count": 8,
+      "parsed_meeting_count": 7,
       "parsed_detail_count": 0,
       "pending_count": 0,
       "failure_count": 0,
-      "source_visible_horizon": "2026-12-14",
+      "source_visible_horizon": "2026-12-15",
       "source_urls": [
         "https://www.banei-keiba.or.jp/race_schedule.php"
       ],
@@ -2818,10 +2750,9 @@
       "source_id": "nankankeiba-south-kanto-calendar",
       "role": "mother_set",
       "requested_window": {
-        "start": "2026-11-15",
-        "end_exclusive": "2026-12-15",
+        "start": "2026-11-16",
+        "end_exclusive": "2026-12-16",
         "dates": [
-          "2026-11-15",
           "2026-11-16",
           "2026-11-17",
           "2026-11-18",
@@ -2850,7 +2781,8 @@
           "2026-12-11",
           "2026-12-12",
           "2026-12-13",
-          "2026-12-14"
+          "2026-12-14",
+          "2026-12-15"
         ]
       },
       "result": "failed",
@@ -2860,7 +2792,7 @@
       "pending_count": 0,
       "failure_count": 1,
       "supplemental_failure_count": 0,
-      "source_visible_horizon": "2026-12-14",
+      "source_visible_horizon": "2026-12-15",
       "source_urls": [
         "https://www.nankankeiba.com/calendar/202610.do"
       ],
@@ -2871,17 +2803,16 @@
         }
       ],
       "supplemental_failures": [],
-      "fetch_started_at": "2026-11-15T13:47:17.846Z",
-      "fetch_ended_at": "2026-11-15T13:47:18.591Z"
+      "fetch_started_at": "2026-11-15T15:09:43.334Z",
+      "fetch_ended_at": "2026-11-15T15:09:44.422Z"
     },
     {
       "source_id": "iwatekeiba-official-calendar",
       "role": "mother_set",
       "requested_window": {
-        "start": "2026-11-15",
-        "end_exclusive": "2026-12-15",
+        "start": "2026-11-16",
+        "end_exclusive": "2026-12-16",
         "dates": [
-          "2026-11-15",
           "2026-11-16",
           "2026-11-17",
           "2026-11-18",
@@ -2910,7 +2841,8 @@
           "2026-12-11",
           "2026-12-12",
           "2026-12-13",
-          "2026-12-14"
+          "2026-12-14",
+          "2026-12-15"
         ]
       },
       "result": "complete",
@@ -2919,23 +2851,22 @@
       "parsed_detail_count": 0,
       "pending_count": 0,
       "failure_count": 0,
-      "source_visible_horizon": "2026-12-14",
+      "source_visible_horizon": "2026-12-15",
       "source_urls": [
         "https://www.iwatekeiba.or.jp/calendar/2026_11",
         "https://www.iwatekeiba.or.jp/calendar/2026_12"
       ],
       "failures": [],
-      "fetch_started_at": "2026-11-15T13:47:18.591Z",
-      "fetch_ended_at": "2026-11-15T13:47:21.124Z"
+      "fetch_started_at": "2026-11-15T15:09:44.422Z",
+      "fetch_ended_at": "2026-11-15T15:09:47.467Z"
     },
     {
       "source_id": "hyogo-urban-keiba-official-calendar",
       "role": "mother_set",
       "requested_window": {
-        "start": "2026-11-15",
-        "end_exclusive": "2026-12-15",
+        "start": "2026-11-16",
+        "end_exclusive": "2026-12-16",
         "dates": [
-          "2026-11-15",
           "2026-11-16",
           "2026-11-17",
           "2026-11-18",
@@ -2964,7 +2895,8 @@
           "2026-12-11",
           "2026-12-12",
           "2026-12-13",
-          "2026-12-14"
+          "2026-12-14",
+          "2026-12-15"
         ]
       },
       "result": "complete",
@@ -2973,23 +2905,22 @@
       "parsed_detail_count": 0,
       "pending_count": 0,
       "failure_count": 0,
-      "source_visible_horizon": "2026-12-14",
+      "source_visible_horizon": "2026-12-15",
       "source_urls": [
         "https://www.sonoda-himeji.jp/schedule/2026/11",
         "https://www.sonoda-himeji.jp/schedule/2026/12"
       ],
       "failures": [],
-      "fetch_started_at": "2026-11-15T13:47:21.124Z",
-      "fetch_ended_at": "2026-11-15T13:47:22.651Z"
+      "fetch_started_at": "2026-11-15T15:09:47.467Z",
+      "fetch_ended_at": "2026-11-15T15:09:49.189Z"
     },
     {
       "source_id": "tokai-region-joint-official-calendar",
       "role": "mother_set",
       "requested_window": {
-        "start": "2026-11-15",
-        "end_exclusive": "2026-12-15",
+        "start": "2026-11-16",
+        "end_exclusive": "2026-12-16",
         "dates": [
-          "2026-11-15",
           "2026-11-16",
           "2026-11-17",
           "2026-11-18",
@@ -3018,16 +2949,17 @@
           "2026-12-11",
           "2026-12-12",
           "2026-12-13",
-          "2026-12-14"
+          "2026-12-14",
+          "2026-12-15"
         ]
       },
       "result": "complete",
       "completeness": "complete",
-      "parsed_meeting_count": 13,
+      "parsed_meeting_count": 14,
       "parsed_detail_count": 0,
       "pending_count": 0,
       "failure_count": 0,
-      "source_visible_horizon": "2026-12-14",
+      "source_visible_horizon": "2026-12-15",
       "source_urls": [
         "https://www.kasamatsu-keiba.com/resources/pdfs/news/2026/1768888484_abd42430844a7f06de8d.pdf",
         "https://www.kasamatsu-keiba.com/schedule/2026/11",
@@ -3040,17 +2972,16 @@
         "end": "2027-03-31"
       },
       "failures": [],
-      "fetch_started_at": "2026-11-15T13:47:22.651Z",
-      "fetch_ended_at": "2026-11-15T13:47:24.528Z"
+      "fetch_started_at": "2026-11-15T15:09:49.189Z",
+      "fetch_ended_at": "2026-11-15T15:09:51.842Z"
     },
     {
       "source_id": "hokkaido-keiba-official-calendar",
       "role": "mother_set",
       "requested_window": {
-        "start": "2026-11-15",
-        "end_exclusive": "2026-12-15",
+        "start": "2026-11-16",
+        "end_exclusive": "2026-12-16",
         "dates": [
-          "2026-11-15",
           "2026-11-16",
           "2026-11-17",
           "2026-11-18",
@@ -3079,7 +3010,8 @@
           "2026-12-11",
           "2026-12-12",
           "2026-12-13",
-          "2026-12-14"
+          "2026-12-14",
+          "2026-12-15"
         ]
       },
       "result": "failed",
@@ -3099,7 +3031,6 @@
         {
           "source_url": "https://www.hokkaidokeiba.net/kaisai/nittei.php?p_ym=202611",
           "requested_dates": [
-            "2026-11-15",
             "2026-11-16",
             "2026-11-17",
             "2026-11-18",
@@ -3134,22 +3065,22 @@
             "2026-12-11",
             "2026-12-12",
             "2026-12-13",
-            "2026-12-14"
+            "2026-12-14",
+            "2026-12-15"
           ],
           "reason": "HTTP 503: https://www.hokkaidokeiba.net/kaisai/nittei.php?p_ym=202612"
         }
       ],
-      "fetch_started_at": "2026-11-15T13:47:24.528Z",
-      "fetch_ended_at": "2026-11-15T13:47:26.842Z"
+      "fetch_started_at": "2026-11-15T15:09:51.842Z",
+      "fetch_ended_at": "2026-11-15T15:09:54.107Z"
     },
     {
       "source_id": "kanazawa-keiba-official-calendar",
       "role": "mother_set",
       "requested_window": {
-        "start": "2026-11-15",
-        "end_exclusive": "2026-12-15",
+        "start": "2026-11-16",
+        "end_exclusive": "2026-12-16",
         "dates": [
-          "2026-11-15",
           "2026-11-16",
           "2026-11-17",
           "2026-11-18",
@@ -3178,7 +3109,8 @@
           "2026-12-11",
           "2026-12-12",
           "2026-12-13",
-          "2026-12-14"
+          "2026-12-14",
+          "2026-12-15"
         ]
       },
       "result": "complete",
@@ -3187,7 +3119,7 @@
       "parsed_detail_count": 0,
       "pending_count": 0,
       "failure_count": 0,
-      "source_visible_horizon": "2026-12-14",
+      "source_visible_horizon": "2026-12-15",
       "source_urls": [
         "https://www.kanazawakeiba.com/wp-content/uploads/2026/01/R8nenkan.pdf",
         "https://www.kanazawakeiba.com/schedule/?s_year=2026&s_month=11&mode=honba",
@@ -3268,17 +3200,16 @@
         }
       ],
       "failures": [],
-      "fetch_started_at": "2026-11-15T13:47:26.842Z",
-      "fetch_ended_at": "2026-11-15T13:47:28.657Z"
+      "fetch_started_at": "2026-11-15T15:09:54.107Z",
+      "fetch_ended_at": "2026-11-15T15:09:56.662Z"
     },
     {
       "source_id": "kochi-keiba-official-calendar",
       "role": "mother_set",
       "requested_window": {
-        "start": "2026-11-15",
-        "end_exclusive": "2026-12-15",
+        "start": "2026-11-16",
+        "end_exclusive": "2026-12-16",
         "dates": [
-          "2026-11-15",
           "2026-11-16",
           "2026-11-17",
           "2026-11-18",
@@ -3307,16 +3238,17 @@
           "2026-12-11",
           "2026-12-12",
           "2026-12-13",
-          "2026-12-14"
+          "2026-12-14",
+          "2026-12-15"
         ]
       },
       "result": "complete",
       "completeness": "complete",
-      "parsed_meeting_count": 9,
+      "parsed_meeting_count": 8,
       "parsed_detail_count": 0,
       "pending_count": 0,
       "failure_count": 0,
-      "source_visible_horizon": "2026-12-14",
+      "source_visible_horizon": "2026-12-15",
       "source_urls": [
         "https://www.keiba.or.jp/wp/wp-content/uploads/2026/02/c408d71a0237f46b0a96517eaac55217.pdf",
         "https://www.keiba.or.jp/?p=120880"
@@ -3346,17 +3278,16 @@
       "published_plan_as_of": "2026-02-26",
       "schedule_status": "official_published_plan_subject_to_change",
       "failures": [],
-      "fetch_started_at": "2026-11-15T13:47:28.657Z",
-      "fetch_ended_at": "2026-11-15T13:47:29.769Z"
+      "fetch_started_at": "2026-11-15T15:09:56.662Z",
+      "fetch_ended_at": "2026-11-15T15:09:58.110Z"
     },
     {
       "source_id": "saga-keiba-official-calendar",
       "role": "mother_set",
       "requested_window": {
-        "start": "2026-11-15",
-        "end_exclusive": "2026-12-15",
+        "start": "2026-11-16",
+        "end_exclusive": "2026-12-16",
         "dates": [
-          "2026-11-15",
           "2026-11-16",
           "2026-11-17",
           "2026-11-18",
@@ -3385,16 +3316,17 @@
           "2026-12-11",
           "2026-12-12",
           "2026-12-13",
-          "2026-12-14"
+          "2026-12-14",
+          "2026-12-15"
         ]
       },
       "result": "complete",
       "completeness": "complete",
-      "parsed_meeting_count": 11,
+      "parsed_meeting_count": 10,
       "parsed_detail_count": 0,
       "pending_count": 0,
       "failure_count": 0,
-      "source_visible_horizon": "2026-12-14",
+      "source_visible_horizon": "2026-12-15",
       "source_urls": [
         "https://www.sagakeiba.net/race/schedule/",
         "https://www.sagakeiba.net/wp-content/uploads/2026/02/R8kaisainittei.pdf",
@@ -3549,8 +3481,8 @@
       },
       "schedule_status": "annual_official_plan_plus_published_monthly_positive_union",
       "failures": [],
-      "fetch_started_at": "2026-11-15T13:47:29.769Z",
-      "fetch_ended_at": "2026-11-15T13:47:32.112Z"
+      "fetch_started_at": "2026-11-15T15:09:58.110Z",
+      "fetch_ended_at": "2026-11-15T15:10:00.977Z"
     }
   ],
   "mother_set_complete": false,
