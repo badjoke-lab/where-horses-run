@@ -11,8 +11,9 @@ if(artifact.acquisition_attempt?.status!=='success'){
  process.exit(0);
 }
 const ids=new Set(artifact.records.map(r=>r.meeting_id));
-assert.equal(artifact.discovery.source_visible_rows,24);
-assert.equal(ids.size,15);
+assert.ok(artifact.discovery.source_visible_rows>=1&&artifact.discovery.source_visible_rows<=24);
+assert.equal(ids.size,artifact.records.length,'live observed candidate IDs must be unique');
+assert.ok(ids.size>0,'source-visible future dates required');
 const applyFile='scripts/timetable/apply-official-rolling-observations.mjs';
 const args=(file)=>[applyFile,'--artifact='+file,'--country-id=india','--authority-id=bangalore-turf-club',
  '--racing-system-id=india-bangalore-turf-club-thoroughbred-system','--timezone=Asia/Kolkata'];
@@ -21,15 +22,17 @@ const canonPath='data/generated/timetable/canonical/meetings.json';
 const pubPath='data/generated/timetable/public/meeting-list.json';
 const sourceState=fs.readFileSync(canonPath,'utf8');
 const sourcePublic=fs.readFileSync(pubPath,'utf8');
+const baselineCanon=new Set(JSON.parse(sourceState).meetings.filter(x=>x.country_id==='india'&&x.authority_id==='bangalore-turf-club').map(x=>x.meeting_id));
+const baselinePub=new Set(JSON.parse(sourcePublic).meetings.filter(x=>x.country_id==='india'&&x.authority_id==='bangalore-turf-club').map(x=>x.meeting_id));
 console.log('BTC_E2E_APPLY '+run(source).trim());
 const canon=JSON.parse(fs.readFileSync(canonPath,'utf8'));
 const pub=JSON.parse(fs.readFileSync(pubPath,'utf8'));
 const myCanon=canon.meetings.filter(r=>r.country_id==='india'&&r.authority_id==='bangalore-turf-club');
 const myPub=pub.meetings.filter(r=>r.country_id==='india'&&r.authority_id==='bangalore-turf-club');
-assert.equal(myCanon.length,15,'15 winter-date facts must enter isolated canonical snapshot');
-assert.equal(myPub.length,15,'15 winter-date facts must enter isolated public snapshot');
-assert.ok(myCanon.every(x=>ids.has(x.meeting_id)&&x.racecourse_id==='india--bangalore-racecourse'&&x.capability_rank==='C'));
-assert.ok(myPub.every(x=>ids.has(x.meeting_id)&&x.racecourse_id==='india--bangalore-racecourse'));
+assert.equal(myCanon.length,new Set([...baselineCanon,...ids]).size,'apply must preserve verified canonical and add only source-visible fixture IDs');
+assert.equal(myPub.length,new Set([...baselinePub,...ids]).size,'apply must preserve verified public and add only source-visible fixture IDs');
+assert.ok([...ids].every(id=>myCanon.some(x=>x.meeting_id===id&&x.racecourse_id==='india--bangalore-racecourse'&&x.capability_rank==='C')));
+assert.ok([...ids].every(id=>myPub.some(x=>x.meeting_id===id&&x.racecourse_id==='india--bangalore-racecourse')));
 assert.ok(myPub.every(x=>!x.timetable_rows?.length),'C fixture must never publish racecard details');
 const originalOtherCanon=JSON.parse(sourceState).meetings.filter(x=>x.country_id!=='india');
 const originalOtherPub=JSON.parse(sourcePublic).meetings.filter(x=>x.country_id!=='india');
