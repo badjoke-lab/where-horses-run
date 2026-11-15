@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {
   THAILAND_AUTHORITY_ID,THAILAND_SOURCE_ID,THAILAND_SOURCE_URL,THAILAND_SYSTEM_ID,THAILAND_TIMEZONE,
-  buildThailandMeetingRecord,parseRbscRacingCalendarPage
+  buildThailandMeetingRecord,parseRbscRacingCalendarPage,isRbscIncompleteResponse
 } from './thailand-rbsc-calendar-core.mjs';
 
 function arg(n,f=null){const p='--'+n+'=';const v=process.argv.find(x=>x.startsWith(p));return v?v.slice(p.length):f;}
@@ -30,6 +30,7 @@ const end=plusDays(start,days),generatedAt=new Date().toISOString(),sourceErrors
 let allRows=[],sourceUrl=THAILAND_SOURCE_URL;
 try{
   const page=await getHtml(THAILAND_SOURCE_URL); sourceUrl=page.url||THAILAND_SOURCE_URL;
+  if(isRbscIncompleteResponse(page.html)) throw new Error('RBSC official racing content missing: HTTP 200 short placeholder; no meeting absence inferred');
   try{allRows=parseRbscRacingCalendarPage(page.html,{sourceUrl});}
   catch(e){parseFailures.push({stage:'rbsc_racing_calendar_parse',source_url:sourceUrl,error:String(e?.message??e)});}
 }catch(e){sourceErrors.push({stage:'rbsc_racing_calendar_fetch',source_url:THAILAND_SOURCE_URL,error:String(e?.message??e)});}

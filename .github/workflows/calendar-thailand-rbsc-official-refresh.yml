@@ -53,11 +53,27 @@ jobs:
           node-version: '22'
       - run: npm install --no-package-lock --no-audit --no-fund
       - run: npm run validate:thailand-rbsc
+      - name: Inspect live official RBSC calendar fingerprint (metadata only)
+        run: |
+          node --input-type=module - <<'NODE'
+          import { visibleText, parseRbscRacingCalendarPage, THAILAND_SOURCE_URL } from './scripts/timetable/thailand-rbsc-calendar-core.mjs';
+          try {
+            const response=await fetch(THAILAND_SOURCE_URL,{
+              headers:{'user-agent':'Mozilla/5.0 (compatible; WhereHorsesRun/1.0; +https://whr.badjoke-lab.com/)',accept:'text/html,application/xhtml+xml;q=0.9,*/*;q=0.5','accept-language':'en-US,en;q=0.9,th;q=0.7'},
+              signal:AbortSignal.timeout(30000)
+            });
+            const html=await response.text(), text=visibleText(html);
+            let parsed=0,parseError=null;
+            try { parsed=parseRbscRacingCalendarPage(html).length; } catch(e) { parseError=String(e?.message??e); }
+            console.log(JSON.stringify({http:response.status,final_url:response.url,content_type:response.headers.get('content-type'),html_chars:html.length,visible_chars:text.length,parsed_dates:parsed,parse_error:parseError,
+              markers:{upcoming_raw:/UPCOMING/i.test(html),upcoming_visible:/\\bUPCOMING\\b/i.test(text),race_days_visible:/\\bRACE\\s+DAYS\\b/i.test(text),upcoming_race_days_visible:/\\bUPCOMING\\s+RACE\\s+DAYS\\b/i.test(text),racing_calendar_2026:/RACING\\s+CALENDAR\\s+2026/i.test(text),feature_races:/FEATURE\\s+RACES/i.test(text),month_year:/\\b(?:NOVEMBER|DECEMBER|JANUARY|FEBRUARY)\\s+20\\d{2}\\b/i.test(text),challenge:/cloudflare|attention required|enable javascript|access denied/i.test(text)}}));
+          } catch(error) { console.log(JSON.stringify({source_probe_error:String(error?.message??error)})); }
+          NODE
       - name: Exercise Thailand production path
         run: |
           mkdir -p .calendar-thailand
           node scripts/timetable/run-thailand-rbsc-official-window.mjs --days=90 --output=.calendar-thailand/thailand.json
-          node -e "const fs=require('fs');const a=JSON.parse(fs.readFileSync('.calendar-thailand/thailand.json','utf8'));if(a.acquisition_attempt?.status!=='success'||(a.diagnostics?.source_errors?.length??0)!==0||(a.diagnostics?.parse_failures?.length??0)!==0||(a.records?.length??0)<1){console.error(JSON.stringify({attempt:a.acquisition_attempt,discovery:a.discovery,diagnostics:a.diagnostics,records:a.records?.length??0}));process.exit(1)}"
+          node -e "const fs=require('fs');const a=JSON.parse(fs.readFileSync('.calendar-thailand/thailand.json','utf8'));const status=a.acquisition_attempt?.status;const errors=a.diagnostics?.source_errors??[];const parses=a.diagnostics?.parse_failures??[];if(status==='network_error'&&errors.length>0&&parses.length===0&&(a.records?.length??0)===0){console.log('RBSC_SOURCE_UNAVAILABLE: failed source retained; no missing meetings inferred');}else if(status!=='success'||errors.length||parses.length||(a.records?.length??0)<1){console.error(JSON.stringify({attempt:a.acquisition_attempt,discovery:a.discovery,diagnostics:a.diagnostics,records:a.records?.length??0}));process.exit(1)}"
           node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-thailand/thailand.json --country-id=thailand --authority-id=rbsc --racing-system-id=thailand-rbsc-system --timezone=Asia/Bangkok
           node scripts/check-calendar-public-country-support.mjs
           node scripts/check-calendar-public-map-parity.mjs
@@ -86,6 +102,7 @@ jobs:
         run: |
           mkdir -p .calendar-thailand
           node scripts/timetable/run-thailand-rbsc-official-window.mjs --days="${{ steps.scope.outputs.days }}" --output=.calendar-thailand/thailand.json
+          node -e "const fs=require('fs');const a=JSON.parse(fs.readFileSync('.calendar-thailand/thailand.json','utf8'));if(a.acquisition_attempt?.status!=='success'){console.error('THAILAND_SOURCE_REFRESH_FAILED '+JSON.stringify({attempt:a.acquisition_attempt,diagnostics:a.diagnostics}));process.exit(1)}"
           node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-thailand/thailand.json --country-id=thailand --authority-id=rbsc --racing-system-id=thailand-rbsc-system --timezone=Asia/Bangkok
           node scripts/timetable/apply-reviewed-calendar-observations.mjs
           node scripts/check-calendar-public-country-support.mjs
@@ -100,6 +117,7 @@ jobs:
             rm -rf .calendar-thailand
             mkdir -p .calendar-thailand
             node scripts/timetable/run-thailand-rbsc-official-window.mjs --days="${{ steps.scope.outputs.days }}" --output=.calendar-thailand/thailand.json
+            node -e "const fs=require('fs');const a=JSON.parse(fs.readFileSync('.calendar-thailand/thailand.json','utf8'));if(a.acquisition_attempt?.status!=='success'){console.error('THAILAND_SOURCE_REFRESH_FAILED '+JSON.stringify({attempt:a.acquisition_attempt,diagnostics:a.diagnostics}));process.exit(1)}"
             node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-thailand/thailand.json --country-id=thailand --authority-id=rbsc --racing-system-id=thailand-rbsc-system --timezone=Asia/Bangkok
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
             node scripts/check-calendar-public-country-support.mjs
