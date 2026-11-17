@@ -178,10 +178,67 @@ if (!Number.isInteger(days) || days < 1 || days > 62) throw new Error('--days mu
 
 const endDateExclusive = plusDays(startDate, days);
 const generatedAt = new Date().toISOString();
-const html = fixture ? fs.readFileSync(path.resolve(fixture), 'utf8') : await fetchOfficialHtml();
-const { candidate: scheduleCandidate, diagnostics } = buildChileTeletrakCandidate({ html, checkedAt: generatedAt, startDate, endDateExclusive });
-if (diagnostics.unknown_venues.length > 0) throw new Error(`Chile Teletrak unknown domestic meeting card(s): ${JSON.stringify(diagnostics.unknown_venues)}`);
-if (diagnostics.parse_failures.length > 0) throw new Error(`Chile Teletrak parse failure(s): ${JSON.stringify(diagnostics.parse_failures)}`);
+// Acquisition failure must not become a zero-meeting assertion or prevent
+// independent authorities from refreshing. Emit a typed empty observation
+// artifact, which the downstream audit counts as a failure; never emit
+// unverified positive or negative evidence from this rejected schedule.
+function rejectSchedule(status, errorCode, { sourceErrors = [], parseFailures = [], unknownVenues = [] } = {}) {
+  const artifact = {
+    schema_version: 'chile-teletrak-official-window-candidates-v2',
+    generated_at: generatedAt, country_id: 'chile', authority_id: CHILE_TELETRAK_AUTHORITY_ID,
+    racing_system_id: CHILE_TELETRAK_SYSTEM_ID, timezone: CHILE_TIMEZONE, source_id: CHILE_TELETRAK_SOURCE_ID,
+    collection_target_rank: 'best_available', raw_body_retained: false,
+    acquisition_attempt: { attempted_at: generatedAt, status, source_id: CHILE_TELETRAK_SOURCE_ID, error_code: errorCode },
+    discovery: {
+      method: 'official_teletrak_weekly_homepage_plus_linked_programmes',
+      schedule_source_id: CHILE_TELETRAK_SOURCE_ID, schedule_source_url: CHILE_TELETRAK_URL,
+      detail_status_counts: { available: 0, not_published: 0, source_error: 0 },
+    },
+    window: { start_date: startDate, end_date_exclusive: endDateExclusive, days,
+      coverage_claim: 'acquisition_failed_preserve_verified_state',
+      coverage_note: 'Rejected source schedule; no new evidence of meetings or non-running. Preserve verified state.' },
+    records: [], meeting_presence_records: [],
+    diagnostics: { source_errors: sourceErrors, parse_failures: parseFailures, unknown_venues: unknownVenues,
+      programme_detail: [], non_running: { status: 'not_checked', confirmed_non_running_count: 0 } },
+  };
+  const absolute = path.resolve(output);
+  fs.mkdirSync(path.dirname(absolute), { recursive: true });
+  fs.writeFileSync(absolute, `${JSON.stringify(artifact, null, 2)}\n`);
+  console.error(JSON.stringify({ output, acquisition_status: status, error_code: errorCode,
+    source_errors: sourceErrors.length, parse_failures: parseFailures.length, unknown_venues: unknownVenues.length,
+    meetings_emitted: 0, verified_state_preserved: true }));
+  process.exit(0);
+}
+
+let html;
+if (fixture) {
+  html = fs.readFileSync(path.resolve(fixture), 'utf8');
+} else {
+  try { html = await fetchOfficialHtml(); }
+  catch (error) {
+    rejectSchedule('network_error', 'teletrak_weekly_fetch_failed', {
+      sourceErrors: [{ source_url: CHILE_TELETRAK_URL, error: String(error?.message ?? error) }],
+    });
+  }
+}
+let scheduleCandidate, diagnostics;
+try {
+  ({ candidate: scheduleCandidate, diagnostics } = buildChileTeletrakCandidate({ html, checkedAt: generatedAt, startDate, endDateExclusive }));
+} catch (error) {
+  // Only expected source-content validation failures are isolated.
+  // Unexpected programmer/IO failures still stop the command.
+  if (!/Chile Teletrak (?:source body|weekly fingerprint)/.test(String(error?.message ?? error))) throw error;
+  rejectSchedule('parse_error', 'teletrak_weekly_fingerprint_failed', {
+    parseFailures: [{ code: 'weekly_fingerprint_failed', source_url: CHILE_TELETRAK_URL }],
+  });
+}
+if (diagnostics.unknown_venues.length > 0 || diagnostics.parse_failures.length > 0) {
+  const unknownVenues = diagnostics.unknown_venues.map(({ date }) => ({ date }));
+  rejectSchedule('parse_error', 'teletrak_weekly_schedule_rejected', {
+    unknownVenues,
+    parseFailures: [...diagnostics.parse_failures, ...unknownVenues.map(({ date }) => ({ code: 'unknown_domestic_venue', date }))],
+  });
+}
 
 const programmeResults = {};
 const detailDiagnostics = [];
