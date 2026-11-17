@@ -15,15 +15,22 @@ assert.equal(rec.racecourse_id,'netherlands--victoria-park-wolvega');
 if(process.env.GITHUB_ACTIONS==='true'){
   const output='.netherlands-live-'+process.pid+'.json';
   try{
-    execFileSync(process.execPath,['scripts/timetable/run-netherlands-ndr-official-window.mjs','--as-of=2026-10-01','--days=30','--output='+output],{encoding:'utf8',timeout:120000});
+    execFileSync(process.execPath,['scripts/timetable/run-netherlands-ndr-official-window.mjs','--days=30','--output='+output],{encoding:'utf8',timeout:120000});
     const artifact=JSON.parse(fs.readFileSync(output,'utf8'));
     console.log('NETHERLANDS_NDR_LIVE: '+JSON.stringify({attempt:artifact.acquisition_attempt,discovery:artifact.discovery,diagnostics:artifact.diagnostics,records:(artifact.records??[]).map(r=>({date:r.date,racecourse_id:r.racecourse_id}))}));
     assert.equal(artifact.acquisition_attempt?.status,'success');
     const liveRecords=artifact.records??[];
     const visibleRows=artifact.discovery?.source_visible_rows??0;
     assert.ok(visibleRows>=liveRecords.length,'official NDR visible-row count must cover emitted records');
-    if(visibleRows>0) assert.ok(liveRecords.length>0,'visible official NDR rows must yield at least one current/upcoming meeting');
-    assert.ok(liveRecords.every(r=>/^2026-\d{2}-\d{2}$/.test(r.date??'')),'live NDR records must retain normalized ISO dates');
+    const sourceRows=artifact.discovery?.source_visible_meetings;
+    assert.ok(Array.isArray(sourceRows),'source-visible date/venue evidence required');
+    assert.equal(sourceRows.length,visibleRows);
+    const {start_date:start,end_date_exclusive:end}=artifact.window;
+    assert.ok(/^\d{4}-\d{2}-\d{2}$/.test(start)&&/^\d{4}-\d{2}-\d{2}$/.test(end)&&start<end);
+    const key=r=>r.date+'|'+r.racecourse_id;
+    const expected=sourceRows.filter(r=>r.date>=start&&r.date<end).map(key).sort();
+    assert.deepEqual(liveRecords.map(key).sort(),expected,'all and only visible meetings inside the current window must be emitted');
+    assert.ok(liveRecords.every(r=>/^\d{4}-\d{2}-\d{2}$/.test(r.date??'')),'live NDR records must retain normalized ISO dates');
     assert.ok(liveRecords.every(r=>String(r.racecourse_id??'').startsWith('netherlands--')),'live NDR records must resolve to canonical Netherlands racecourses');
     assert.equal(artifact.diagnostics?.source_errors?.length,0);
     assert.equal(artifact.diagnostics?.parse_failures?.length,0);

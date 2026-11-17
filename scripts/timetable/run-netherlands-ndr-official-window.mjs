@@ -46,7 +46,7 @@ const artifact={
   authority_id:NETHERLANDS_AUTHORITY_ID,racing_system_id:NETHERLANDS_SYSTEM_ID,timezone:NETHERLANDS_TIMEZONE,source_id:NETHERLANDS_SOURCE_ID,
   collection_target_rank:'best_available',raw_body_retained:false,
   acquisition_attempt:{attempted_at:generatedAt,status,source_id:NETHERLANDS_SOURCE_ID,route_id:'ndr-current-upcoming',error_code:status==='network_error'?'ndr_upcoming_fetch_failed':(status==='parse_error'?'ndr_upcoming_parse_or_venue_failed':null)},
-  discovery:{method:'official_ndr_current_upcoming_html',source_url:sourceUrl,source_visible_rows:allRows.length,rank_counts:ranks(records),completion_counts:completions(records)},
+  discovery:{method:'official_ndr_current_upcoming_html',source_url:sourceUrl,source_visible_rows:allRows.length,source_visible_meetings:allRows.map(({date,racecourse_id})=>({date,racecourse_id})),rank_counts:ranks(records),completion_counts:completions(records)},
   window:{start_date:start,end_date_exclusive:end,days,coverage_claim:status==='success'?'official_source_visible_horizon':'acquisition_failed_preserve_verified_state',coverage_note:'Official NDR current upcoming list supplies source-visible meeting dates and venues across current Dutch draf/rensport scheduling. Permanent and temporary kortebaan venues remain separate physical venue identities. Race post times are not inferred. Source absence is not non-running evidence.'},
   records,
   diagnostics:{source_errors:sourceErrors,parse_failures:parseFailures,unknown_venues:unknownVenues,source_warnings:[]}
