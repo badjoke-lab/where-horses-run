@@ -125,6 +125,27 @@ function isTeletrakMultiVenueProgrammeUrl(rawUrl) {
   }
 }
 
+// A dated PDF linked by Teletrak may coexist with the original Santiago
+// racecourse programme. Prefer the explicitly date-matched first-party
+// venue PDF only for this reviewed pair. Do not resolve unrelated conflicts.
+function preferSantiagoOfficialDatedProgramme(previous, next, { date, racecourseId }) {
+  if (racecourseId !== 'club-hipico-de-santiago-racecourse') return null;
+  const [year, month, day] = date.split('-');
+  const filename = `${day}-${month}-${year}.pdf`;
+  const official = `https://static.clubhipico.cl/archivos/volantes/${filename}`;
+  const isDatedTeletrak = (value) => {
+    try {
+      const u = new URL(value);
+      return u.protocol === 'https:'
+        && ['teletrak.cl', 'www.teletrak.cl'].includes(u.hostname.toLowerCase())
+        && u.pathname === `/wp-content/uploads/${year}/${month}/${filename}`;
+    } catch { return false; }
+  };
+  if (previous === official && isDatedTeletrak(next)) return previous;
+  if (next === official && isDatedTeletrak(previous)) return next;
+  return null;
+}
+
 function nearestProgrammeCardContext(html, anchorIndex) {
   const context = htmlToText(String(html).slice(Math.max(0, anchorIndex - 3200), anchorIndex));
   const normalized = normalize(context).toUpperCase();
@@ -162,6 +183,13 @@ export function extractChileTeletrakProgrammeLinks(html, { referenceDate } = {})
     const key = `${date}/${context.venue.racecourse_id}`;
     const previous = links.get(key);
     if (previous && previous !== href) {
+      const preferred = preferSantiagoOfficialDatedProgramme(previous, href, {
+        date, racecourseId: context.venue.racecourse_id,
+      });
+      if (preferred) {
+        links.set(key, preferred);
+        continue;
+      }
       const previousIsAggregate = isTeletrakMultiVenueProgrammeUrl(previous);
       const nextIsAggregate = isTeletrakMultiVenueProgrammeUrl(href);
       if (previousIsAggregate !== nextIsAggregate) {
@@ -296,7 +324,10 @@ export function parseChileTeletrakWeeklyHtml(html, { referenceDate, startDate = 
   const programmeLinkResult = extractChileTeletrakProgrammeLinks(html, { referenceDate });
   const records = [];
   const unknownVenues = [];
-  const parseFailures = [...programmeLinkResult.conflicts];
+  // Programme conflicts outside this requested window must not abort
+  // collection of unrelated in-window meetings. In-window conflicts remain fatal.
+  const parseFailures = programmeLinkResult.conflicts.filter((conflict) =>
+    inWindow(conflict.date, startDate, endDateExclusive));
   const seen = new Set();
   for (let index = 0; index < dayMatches.length; index += 1) {
     const match = dayMatches[index];

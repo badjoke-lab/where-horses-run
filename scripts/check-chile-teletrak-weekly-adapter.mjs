@@ -119,6 +119,33 @@ assert.equal(
 );
 
 
+// Regression: both dated links appeared in the official Teletrak listing.
+const nov16Official = 'https://static.clubhipico.cl/archivos/volantes/16-11-2026.pdf';
+const nov16Teletrak = 'https://teletrak.cl/wp-content/uploads/2026/11/16-11-2026.pdf';
+for (const urls of [[nov16Official, nov16Teletrak], [nov16Teletrak, nov16Official]]) {
+  const dated = '<h2>Semana de carreras</h2><p>Teletrak</p>'
+    + cardWithProgrammeLinks('LUN 16', 'Club Hípico de Santiago', urls);
+  const parsed = extractChileTeletrakProgrammeLinks(dated, { referenceDate: '2026-11-17' });
+  assert.deepEqual(parsed.conflicts, []);
+  assert.equal(parsed.programme_links.get('2026-11-16/club-hipico-de-santiago-racecourse'), nov16Official);
+}
+const wrongDate = '<h2>Semana de carreras</h2><p>Teletrak</p>'
+  + cardWithProgrammeLinks('LUN 16', 'Club Hípico de Santiago', [
+    nov16Official, 'https://teletrak.cl/wp-content/uploads/2026/11/17-11-2026.pdf',
+  ]);
+assert.equal(extractChileTeletrakProgrammeLinks(wrongDate, { referenceDate: '2026-11-17' }).conflicts.length, 1);
+const mixedConflict = genuineConflictHtml
+  + cardWithProgrammeLinks('SAB 14', 'Hipódromo Chile', [specificHipodromo]);
+const windowOnly = parseChileTeletrakWeeklyHtml(mixedConflict, {
+  referenceDate: '2026-11-14', startDate: '2026-11-14', endDateExclusive: '2026-11-15',
+});
+assert.equal(windowOnly.parse_failures.length, 0);
+assert.equal(windowOnly.records.length, 1);
+assert.equal(windowOnly.records[0].racecourse_id, 'hipodromo-chile');
+assert.equal(parseChileTeletrakWeeklyHtml(mixedConflict, {
+  referenceDate: '2026-11-14', startDate: '2026-11-13', endDateExclusive: '2026-11-15',
+}).parse_failures.length, 1);
+
 const clubHipicoViewer = 'https://www.clubhipico.cl/carreras/volante/?fecha=2026-09-21';
 assert.equal(
   resolveClubHipicoSantiagoProgrammePdfCandidate(clubHipicoViewer, { racecourseId: 'club-hipico-de-santiago-racecourse' }),
