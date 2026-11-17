@@ -1,4 +1,7 @@
 import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 import assert from 'node:assert/strict';
 import {
   CHILE_TELETRAK_ADAPTER_ID,
@@ -286,6 +289,29 @@ const unknownParsed = parseChileTeletrakWeeklyHtml(unknown, { referenceDate: '20
 assert.equal(unknownParsed.records.length, 0);
 assert.equal(unknownParsed.unknown_venues.length, 1);
 assert.throws(() => parseChileTeletrakWeeklyHtml('<html>not teletrak</html>', { referenceDate: '2026-09-09' }), /fingerprint/);
+
+// A source-content failure rejects the complete Chile candidate and is
+// auditable without aborting the independent authorities' collection.
+const rejectedDir = fs.mkdtempSync(path.join(os.tmpdir(), 'whr-chile-rejected-'));
+try {
+  for (const [label, input, expected] of [
+    ['conflict', genuineConflictHtml, 'teletrak_weekly_schedule_rejected'],
+    ['fingerprint', '<html><body>Maintenance</body></html>', 'teletrak_weekly_fingerprint_failed'],
+  ]) {
+    const fixtureFile = path.join(rejectedDir, label + '.html');
+    const artifactFile = path.join(rejectedDir, label + '.json');
+    fs.writeFileSync(fixtureFile, input);
+    execFileSync(process.execPath, ['scripts/timetable/run-chile-teletrak-official-window.mjs',
+      '--fixture=' + fixtureFile, '--output=' + artifactFile, '--as-of=2026-11-13', '--days=3'], { encoding: 'utf8', timeout: 30000 });
+    const artifact = JSON.parse(fs.readFileSync(artifactFile, 'utf8'));
+    assert.equal(artifact.acquisition_attempt.status, 'parse_error');
+    assert.equal(artifact.acquisition_attempt.error_code, expected);
+    assert.deepEqual(artifact.records, []);
+    assert.deepEqual(artifact.meeting_presence_records, []);
+    assert.ok(artifact.diagnostics.parse_failures.length > 0);
+    assert.equal(artifact.window.coverage_claim, 'acquisition_failed_preserve_verified_state');
+  }
+} finally { fs.rmSync(rejectedDir, { recursive: true, force: true }); }
 
 const unifiedWorkflow = fs.readFileSync('.github/workflows/calendar-unified-official-refresh.yml', 'utf8');
 const latestMainRebuild = fs.readFileSync('scripts/timetable/rebuild-unified-non-japan-on-main.sh', 'utf8');
