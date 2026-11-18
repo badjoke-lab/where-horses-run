@@ -7,6 +7,10 @@ const html='<html><body><h1>Trotting BE</h1>03-10-2026 Programma Mons Toestand T
 const rows=parseBelgiumTrottingPage(html);
 assert.deepEqual(rows.map(r=>r.date),['2026-10-03','2026-10-06','2026-10-11']);
 assert.deepEqual(rows.map(r=>r.racecourse_id),['belgium--hippodrome-de-wallonie','belgium--gaverbeekhippodroom','belgium--jeker-hippodroom']);
+// Regression: Near run 44163038939 saw a results tab before Mons.
+const resultsTab=parseBelgiumTrottingPage(html.replace('Programma Mons','Programma Resultaten Mons'));
+assert.deepEqual(resultsTab,rows);
+assert.throws(()=>parseBelgiumTrottingPage(html.replace('Programma Mons','Programma Resultaten Unknown')),/Unknown Belgian trotting venue labels/);
 const rec=buildBelgiumMeetingRecord(rows[0],{checkedAt:'2026-10-02T00:00:00Z'});
 assert.equal(rec.capability_rank,'C');
 assert.equal(rec.first_race_time_local,null);
@@ -35,7 +39,11 @@ if(process.env.GITHUB_ACTIONS==='true'){
     // The live authority list drops past meetings. A successful source check
     // must not fail merely because a hardcoded 2026 test month expired.
     assert.ok(artifact.discovery?.source_visible_rows>0,'Official source list must be non-empty');
-    assert.ok((artifact.records??[]).length>=1,'Expected current-season meetings in the actual rolling 30-day window');
+    const visible=artifact.discovery?.source_visible_meetings;
+    assert.ok(Array.isArray(visible));
+    assert.equal(visible.length,artifact.discovery.source_visible_rows);
+    const key=r=>r.date+'|'+r.racecourse_id;
+    assert.deepEqual((artifact.records??[]).map(key).sort(),visible.filter(r=>r.date>=windowStart&&r.date<windowEnd).map(key).sort(),'exact official date/venue set in the rolling window');
     assert.ok((artifact.records??[]).every(r=>r.date>=windowStart&&r.date<windowEnd));
     assert.ok((artifact.records??[]).every(r=>[
       'belgium--hippodrome-de-wallonie',

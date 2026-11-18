@@ -46,7 +46,7 @@ const artifact={
   authority_id:BELGIUM_AUTHORITY_ID,racing_system_id:BELGIUM_SYSTEM_ID,timezone:BELGIUM_TIMEZONE,source_id:BELGIUM_SOURCE_ID,
   collection_target_rank:'best_available',raw_body_retained:false,
   acquisition_attempt:{attempted_at:generatedAt,status,source_id:BELGIUM_SOURCE_ID,route_id:'belgium-trotting-public-races',error_code:status==='network_error'?'belgium_trotting_fetch_failed':(status==='parse_error'?'belgium_trotting_parse_failed':null)},
-  discovery:{method:'official_belgian_federation_trotting_programme',source_url:sourceUrl,source_visible_rows:allRows.length,rank_counts:ranks(records),completion_counts:completions(records)},
+  discovery:{method:'official_belgian_federation_trotting_programme',source_url:sourceUrl,source_visible_rows:allRows.length,source_visible_meetings:allRows.map(({date,racecourse_id})=>({date,racecourse_id})),rank_counts:ranks(records),completion_counts:completions(records)},
   window:{start_date:start,end_date_exclusive:end,days,coverage_claim:status==='success'?'official_source_visible_horizon':'acquisition_failed_preserve_verified_state',coverage_note:'Automatic production route covers the current federation trotting programme only and publishes date plus mapped physical venue at C. It does not claim all Belgian flat/harness automation and does not downgrade separate reviewed countrywide A-capability evidence. Source absence is not non-running evidence.'},
   records,diagnostics:{source_errors:sourceErrors,parse_failures:parseFailures,unknown_venues:[],source_warnings:sourceWarnings}
 };

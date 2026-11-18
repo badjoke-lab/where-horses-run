@@ -23,7 +23,8 @@ export function parseBelgiumTrottingPage(html,{sourceUrl=BELGIUM_SOURCE_URL}={})
   if(!/Trotting\s+BE/i.test(text)||!/Datum\s+van\s+het\s+einde\s+van\s+de\s+aangifte/i.test(text)) throw new Error('Belgium trotting page fingerprint missing');
   const rows=[];
   const unknown=[];
-  const rx=/\b(\d{2})-(\d{2})-(20\d{2})\s+Programma\s+([\p{L}][\p{L}\s'.()/-]{0,80}?)\s+Toestand\s+Tijd\s+Naam\s+Prijzengeld\b/giu;
+  // Completed/current meetings can expose a separate Resultaten tab before the venue heading.
+  const rx=/\b(\d{2})-(\d{2})-(20\d{2})\s+Programma\s+(?:Resultaten\s+)?([\p{L}][\p{L}\s'.()/-]{0,80}?)\s+Toestand\s+Tijd\s+Naam\s+Prijzengeld\b/giu;
   for(const m of text.matchAll(rx)){
     const label=m[4].trim().replace(/\s+/g,' ');
     const key=label.toLocaleLowerCase('en-US');
