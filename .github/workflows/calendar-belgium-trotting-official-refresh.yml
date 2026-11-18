@@ -50,7 +50,7 @@ jobs:
       - name: Exercise Belgium 30-day production path
         run: |
           mkdir -p .calendar-belgium
-          node scripts/timetable/run-belgium-trotting-official-window.mjs --as-of=2026-10-02 --days=30 --output=.calendar-belgium/trotting.json
+          node scripts/timetable/run-belgium-trotting-official-window.mjs --days=30 --output=.calendar-belgium/trotting.json
           node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-belgium/trotting.json --country-id=belgium --authority-id=belgian-federation-horse-racing --racing-system-id=belgian-trotting-programme-system --timezone=Europe/Brussels
           node scripts/check-calendar-public-country-support.mjs
           node scripts/check-calendar-public-map-parity.mjs
@@ -84,6 +84,7 @@ jobs:
         run: |
           mkdir -p .calendar-belgium
           node scripts/timetable/run-belgium-trotting-official-window.mjs --days="${{ steps.scope.outputs.days }}" --output=.calendar-belgium/trotting.json
+          node -e "const a=JSON.parse(require('fs').readFileSync('.calendar-belgium/trotting.json','utf8'));if(a.acquisition_attempt?.status!=='success'){console.error(JSON.stringify(a.diagnostics));process.exit(1)}"
           node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-belgium/trotting.json --country-id=belgium --authority-id=belgian-federation-horse-racing --racing-system-id=belgian-trotting-programme-system --timezone=Europe/Brussels
           node scripts/timetable/apply-reviewed-calendar-observations.mjs
           node scripts/check-calendar-public-country-support.mjs
@@ -98,6 +99,7 @@ jobs:
             rm -rf .calendar-belgium
             mkdir -p .calendar-belgium
             node scripts/timetable/run-belgium-trotting-official-window.mjs --days="${{ steps.scope.outputs.days }}" --output=.calendar-belgium/trotting.json
+            node -e "const a=JSON.parse(require('fs').readFileSync('.calendar-belgium/trotting.json','utf8'));if(a.acquisition_attempt?.status!=='success'){console.error(JSON.stringify(a.diagnostics));process.exit(1)}"
             node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-belgium/trotting.json --country-id=belgium --authority-id=belgian-federation-horse-racing --racing-system-id=belgian-trotting-programme-system --timezone=Europe/Brussels
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
             node scripts/check-calendar-public-country-support.mjs
