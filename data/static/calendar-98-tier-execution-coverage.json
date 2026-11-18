@@ -1,7 +1,7 @@
 {
   "schema_version": "calendar-98-tier-execution-coverage-v1",
   "work_id": "WHR-CALENDAR-98-TIER-EXECUTION-COVERAGE",
-  "as_of": "2026-10-29",
+  "as_of": "2026-11-18",
   "method_contract_ref": "data/static/calendar-98-tier-acquisition-methods/index.json",
   "execution_registry_ref": "data/static/calendar-acquisition-registry.json",
   "unified_refresh_ref": ".github/workflows/calendar-unified-official-refresh.yml",
@@ -15,8 +15,8 @@
     "tier_total": 98,
     "registry_profile_total": 81,
     "registry_routed_tiers": 63,
-    "active_runner_gap_tiers": 8,
-    "status_only_tiers": 20,
+    "active_runner_gap_tiers": 9,
+    "status_only_tiers": 19,
     "no_runner_required_tiers": 7
   },
   "registry_routed_country_ids": [
@@ -85,6 +85,7 @@
     "malta"
   ],
   "active_runner_gap_country_ids": [
+    "oman",
     "zimbabwe",
     "philippines",
     "kazakhstan",
@@ -95,7 +96,6 @@
     "botswana"
   ],
   "status_only_country_ids": [
-    "oman",
     "kuwait",
     "pakistan",
     "tunisia",
@@ -132,6 +132,7 @@
     "ecuador": "2026 CHC first-party 10 selected classic date/physical venue facts only (Miguel Salem Dibo). Not a nationwide or weekly Ecuador schedule, no racecard/times/media, source-scoped conditional public-facts handling.",
     "venezuela": "Source-routed only for CHC official 2026 selected La Rinconada classic dates, 25 distinct positives. INH national weekly/routine meetings are not covered; no 2027 inferred.",
     "russia": "Grozny Hippodrome only: first-party 2026-10-30 closing day C positive date+venue fact; not Rostov system or Russian national schedule; 2027 unconfirmed, no times/media/actual-ran inference.",
-    "indonesia": "PORPROV XV West Java Nov 7-8 at Legokjawa only: two scheduled horse-racing competition days. C dates/venue facts; no national programme, per-day racecard, post times, results or LIVE."
+    "indonesia": "PORPROV XV West Java Nov 7-8 at Legokjawa only: two scheduled horse-racing competition days. C dates/venue facts; no national programme, per-day racecard, post times, results or LIVE.",
+    "oman": "Tier 11 is active-runner-gap following reported 2026/27 Oman Horse Racing Club season announcement (25 meetings); specific 2026-11-21 Al Rahba dated candidate corroborated by reporting and calendar cues. No production runner, source rights approval or public meeting changes."
   }
 }

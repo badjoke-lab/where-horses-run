@@ -1,0 +1,83 @@
+{
+  "schema_version": "oman-season-activation-review-v1",
+  "reviewed_at": "2026-11-18",
+  "country_id": "oman",
+  "tier": 11,
+  "classification_before": "status_only",
+  "classification_after": "active_runner_gap",
+  "season": {
+    "label": "2026/27",
+    "reported_meeting_count": 25,
+    "start_date": "2026-10-17",
+    "end_date": "2027-04-17",
+    "evidence_scope": "Reported club announcement, not full verified calendar acquisition."
+  },
+  "dated_candidate": {
+    "date": "2026-11-21",
+    "racecourse_id": "al-rahba-racecourse",
+    "event": "National Day Race",
+    "evidence_status": "reported_date_and_named_track_not_publication_cleared",
+    "post_time": null,
+    "actual_ran": null
+  },
+  "sources": [
+    {
+      "url": "https://www.fananews.com/25-%D8%B3%D8%A8%D8%A7%D9%82%D9%8B%D8%A7-%D8%AA%D8%AA%D8%B6%D9%85%D9%86%D9%87%D8%A7-%D8%A3%D8%AC%D9%86%D8%AF%D8%A9-%D9%85%D9%88%D8%B3%D9%85-%D8%B3%D8%A8%D8%A7%D9%82%D8%A7%D8%AA-%D8%A7%D9%84%D8%AE%D9%8A%D9%84-%D8%A7%D9%84%D8%B9%D9%8F%D9%85%D8%A7%D9%86%D9%8A/",
+      "role": "ONA-origin season announcement carried by Federation of Arab News Agencies; indexed extract only; direct full-page retrieval failed"
+    },
+    {
+      "url": "https://omanscore.com/ajnda-musm-sbaqat-al-khil-fi-sltna-aman-2026-2027/",
+      "role": "Separate sports reporting crosscheck of Nov 21 and Al Rahba; indexed extract only"
+    },
+    {
+      "url": "https://muhra.majalis.om/blog/oman-horse-racing-season-20262027-25-races-across-seven-months?lang=en",
+      "role": "Independent equine portal season report date crosscheck; indexed extract only"
+    },
+    {
+      "url": "https://muhraequine.om/events?lang=en",
+      "role": "Third-party calendar category and Rahba National Day Race event title; month-view text alone does not prove event day"
+    },
+    {
+      "url": "https://rhrc.om/Fixture.aspx",
+      "role": "Existing official club fixture page; indexed older/inconsistent listings and direct fetch timed out; not a verified current dated schedule"
+    }
+  ],
+  "venue": {
+    "racecourse_id": "al-rahba-racecourse",
+    "identity_reference": "data/static/country-page-racecourses-11-oman.json",
+    "location_reference": "data/static/racecourse-locations-v1.json",
+    "map_existing": true
+  },
+  "rights": {
+    "decision": "REVIEW_REQUIRED",
+    "evidence_level": "E1",
+    "source_terms": [
+      {
+        "url": "https://muhraequine.om/terms-and-conditions",
+        "finding": "Indexed terms section 7 restricts copying/modifying/distributing protected platform content. Do not treat this calendar as a licensed feed."
+      }
+    ],
+    "method": "one-time editorial discovery only",
+    "publication_fields": [],
+    "automation_allowed": false,
+    "reason": "Season activation evidence changes the tier classification, not the permission to publish schedule data. Direct article retrieval and source-specific terms review still needed. No original prose, compiled calendar, racecards, media, odds or post times retained.",
+    "legal_context": "Oman Royal Decree 65/2008 excludes mere journalistic news from copyright; this does not by itself establish applicable site contract or data reuse rights."
+  },
+  "live": {
+    "status": "not_verified",
+    "note": "No provider-specific live destination and access-condition audit completed for this new meeting; do not display LIVE."
+  },
+  "production": {
+    "profile_added": false,
+    "canonical_writes": false,
+    "public_writes": false,
+    "expected_registry_routed_tiers": 63,
+    "expected_active_runner_gap_tiers": 9,
+    "expected_status_only_tiers": 19
+  },
+  "next_steps": [
+    "Obtain current club-origin specific fixture and confirm Nov 21 date and physical track; do not assume all 25 meetings occur at Rahba.",
+    "Finish source/method/publication-field review and implement bounded C collection path without copying protected materials.",
+    "Wire registry, full/near, canonical/public, audit and production proof only when the source is cleared."
+  ]
+}

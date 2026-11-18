@@ -641,7 +641,9 @@
       "system_id": "oman-source-led-racing-system",
       "system_name_en": "Oman source-led racing system",
       "authority_source_key": "oman/oman-racing-evidence-network/oman-official-news-and-club-channel",
-      "racecourse_ids": [],
+      "racecourse_ids": [
+        "al-rahba-racecourse"
+      ],
       "coverage_scope": "single_racecourse",
       "technical_rank": "C",
       "public_ceiling": "C",
@@ -668,17 +670,17 @@
       "implementation_status": "not_started",
       "fallback": "hide_from_current_calendar",
       "source_status": "partial",
-      "checked_date": "2026-06-17",
+      "checked_date": "2026-11-18",
       "evidence_reviewed_at": "2026-06-29",
-      "revalidation_trigger": "Reopen when a stable advance fixture and scheduled post-time source appears for the 2026-27 season.",
-      "blocked_reason": "No stable advance meeting and post-time source was confirmed.",
-      "source_test_ref": "docs/timetable-source-tests/11-oman/final-summary.json",
+      "revalidation_trigger": "Obtain a current first-party dated fixture/notice or complete source/method/field review for narrowly reviewed date and physical venue; each additional venue/date needs evidence. Post times are not a prerequisite for C.",
+      "blocked_reason": "2026/27 season activation and 2026-11-21 date/venue reported, but direct source completeness and publication-method rights remain unverified.",
+      "source_test_ref": "docs/timetable-source-tests/11-oman/2026-27-season-reactivation-20261118.json",
       "limitations": [
-        "Reviewed evidence is primarily retrospective or same-day.",
-        "No stable country-wide advance timetable was confirmed.",
-        "Recorded or live-start times must not be converted into scheduled post times."
+        "Season announcement indicates 25 meetings, not verified 25 physical venue/date pairs.",
+        "Only explicitly named date and track facts may enter a future reviewed C path; calendar fixture site remains incomplete.",
+        "No current race-time, actual-running, cancellation or free LIVE inference."
       ],
-      "notes": "The evidence confirms activity at Al Rahba but does not support recurring current Calendar operation."
+      "notes": "Current season is no longer a status-only absence. Calendar runner remains unimplemented. C-level date and venue evidence must not be blocked solely by missing post times. See docs/timetable-source-tests/11-oman/2026-27-season-reactivation-20261118.json"
     },
     {
       "readiness_id": "zimbabwe--zimbabwe-borrowdale-card-system--zimracing-racecards",

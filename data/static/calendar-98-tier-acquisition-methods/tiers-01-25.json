@@ -163,16 +163,18 @@
       "tier": 11,
       "country_id": "oman",
       "page_kind": "country",
-      "method_class": "status_watch",
+      "method_class": "active_source_driven",
       "source_ids": [
-        "oman-rhrc-race-calendar"
+        "oman-rhrc-race-calendar",
+        "oman-2026-27-season-announcement-discovery"
       ],
       "primary_source_url": "https://rhrc.om/ar/Calendar.aspx?PID=4&T=R",
-      "cadence_class": "status-watch",
-      "trigger_class": "official_publication_change",
-      "zero_policy": "emit_zero_until_current_official_trigger",
-      "runner_state": "status_only",
-      "method_complete": true
+      "cadence_class": "source-driven",
+      "trigger_class": "meeting_or_source_window",
+      "zero_policy": "emit_only_source_visible_current_meetings",
+      "runner_state": "candidate",
+      "method_complete": true,
+      "production_scope_note": "Current 2026/27 season announcement establishes activation; current rights and source method remain to be verified for production. No automatic use of third-party calendar or articles; no assumption all 25 dates use Al Rahba."
     },
     {
       "tier": 12,
