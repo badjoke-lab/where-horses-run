@@ -8,10 +8,14 @@ import {
   buildMonterricoMeetingRecord,
   extractMonterricoEntryProgrammeLinks,
   extractMonterricoReunionIds,
+  PERU_MONTERRICO_DATE_API_PREFIX,
+  PERU_MONTERRICO_REUNION_API_PREFIX,
   parseMonterricoProgrammeHtml,
   parseMonterricoProgrammePayload,
 } from './timetable/peru-monterrico-core.mjs';
 
+assert.equal(PERU_MONTERRICO_DATE_API_PREFIX,'https://hipodromodemonterrico.com.pe/api/club/api/general/carreras/general/programas/fecha/');
+assert.equal(PERU_MONTERRICO_REUNION_API_PREFIX,'https://hipodromodemonterrico.com.pe/api/club/api/general/carreras/general/programas/');
 assert.deepEqual(extractMonterricoReunionIds({reuniones:[]}),[]);
 assert.deepEqual(extractMonterricoReunionIds({reuniones:[{id_reunion:102400}]}),[102400]);
 assert.deepEqual(extractMonterricoReunionIds({reuniones:[{idReunion:'102401'}]}),[102401]);

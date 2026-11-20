@@ -7,8 +7,8 @@ export const PERU_MONTERRICO_RACECOURSE_ID = 'monterrico-racecourse';
 export const PERU_MONTERRICO_TIMEZONE = 'America/Lima';
 export const PERU_MONTERRICO_PROGRAMME_URL = 'https://hipodromodemonterrico.com.pe/carreras-proximos-programas';
 export const PERU_MONTERRICO_ENTRY_PROGRAMME_URL = 'https://hipodromodemonterrico.com.pe/programa-de-entradas';
-export const PERU_MONTERRICO_DATE_API_PREFIX = 'https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/fecha/';
-export const PERU_MONTERRICO_REUNION_API_PREFIX = 'https://hipodromodemonterrico.com.pe/api/general/carreras/general/programas/';
+export const PERU_MONTERRICO_DATE_API_PREFIX = 'https://hipodromodemonterrico.com.pe/api/club/api/general/carreras/general/programas/fecha/';
+export const PERU_MONTERRICO_REUNION_API_PREFIX = 'https://hipodromodemonterrico.com.pe/api/club/api/general/carreras/general/programas/';
 
 const MONTHS = { enero:1,febrero:2,marzo:3,abril:4,mayo:5,junio:6,julio:7,agosto:8,septiembre:9,setiembre:9,octubre:10,noviembre:11,diciembre:12 };
 

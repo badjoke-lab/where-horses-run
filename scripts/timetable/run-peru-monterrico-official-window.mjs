@@ -34,7 +34,7 @@ async function get(url,accept) {
         'user-agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36',
         accept,
         'accept-language':'es-PE,es;q=0.9,en;q=0.7',
-        referer:'https://hipodromodemonterrico.com.pe/programa-de-entradas',
+        referer:'https://hipodromodemonterrico.com.pe/monterrico/programa-de-entradas',
         origin:'https://hipodromodemonterrico.com.pe',
         'x-requested-with':'XMLHttpRequest'
       },signal:AbortSignal.timeout(20000)});
