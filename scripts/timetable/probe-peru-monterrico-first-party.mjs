@@ -28,6 +28,23 @@ for(const {label,url} of urls){
     else {
       const raw=await r.text();
       info.body_chars=raw.length;
+      if(label==='entry_programmes'){
+        const assets=[...raw.matchAll(/<script\\b[^>]*\\bsrc\\s*=\\s*["']([^"']+)["']/gi)].map(x=>new URL(x[1],r.url).href);
+        const moduleAssets=[...raw.matchAll(/<link\\b[^>]*\\b(?:href)\\s*=\\s*["']([^"']+\\.js(?:\\?[^"']*)?)["']/gi)].map(x=>new URL(x[1],r.url).href);
+        info.script_assets=[...new Set([...assets,...moduleAssets])].filter(x=>new URL(x).hostname==='hipodromodemonterrico.com.pe').slice(0,15);
+        info.is_spa_shell=/(?:id=["']app["']|id=["']root["']|id=["']__next["'])/i.test(raw);
+        for(const asset of info.script_assets.slice(0,3)){
+          try{
+            const s=await fetch(asset,{signal:AbortSignal.timeout(15000)});
+            const body=await s.text();
+            const paths=[...body.matchAll(/["'`]+(\\/(?:api|monterrico\\/api)[^"'`\\s]{3,130})["'`]+/g)]
+              .map(m=>m[1]).filter(p=>/reunion|carrera|calend|program|meeting/i.test(p));
+            info.module_hints??=[];
+            info.module_hints.push({asset_url:asset,status:s.status,chars:body.length,api_paths:[...new Set(paths)].slice(0,25),
+              mentions_reunion:/reunion|reuni[oó]n/i.test(body),mentions_racing:/carreras|racing/i.test(body)});
+          }catch(e){info.module_hints??=[];info.module_hints.push({asset_url:asset,error:String(e?.message??e).slice(0,90)});}
+        }
+      }
       if(label==='entry_programmes'&&r.ok){
         const rows=extractMonterricoEntryProgrammeLinks(raw);
         const start=today,end=plusDays(today,30);
