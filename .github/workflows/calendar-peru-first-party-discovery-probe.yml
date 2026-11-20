@@ -23,3 +23,19 @@ jobs:
         run: |
           node --check scripts/timetable/probe-peru-monterrico-first-party.mjs
           node scripts/timetable/probe-peru-monterrico-first-party.mjs
+      - name: Inspect existing Monterrico collector against new official club proxy (Nov 21-22 only)
+        run: |
+          node scripts/check-peru-monterrico-adapter.mjs
+          node scripts/timetable/run-peru-monterrico-official-window.mjs --as-of=2026-11-21 --days=2 --output=.peru-probe.json
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const a=JSON.parse(fs.readFileSync('.peru-probe.json','utf8'));
+          console.log('MONTRRICO_CLUB_PROXY_COLLECTOR '+JSON.stringify({
+            status:a.acquisition_attempt?.status,date_success:a.discovery.date_requests_successful,
+            records:a.records?.map(r=>({date:r.date,rank:r.capability_rank,race_count:r.timetable_rows?.length,detail:r.detail_observation?.status,source:r.source?.official_url})),
+            source_errors:a.diagnostics?.source_errors?.slice(0,4)
+          }));
+          if(a.discovery.date_requests_successful!==2)process.exit(1);
+          if(a.records?.length!==2)process.exit(1);
+          if(a.diagnostics?.source_errors?.length)process.exit(1);
+          NODE
