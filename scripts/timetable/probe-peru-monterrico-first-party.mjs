@@ -33,12 +33,10 @@ for(const {label,url} of urls){
         const moduleAssets=[...raw.matchAll(/<link\\b[^>]*\\b(?:href)\\s*=\\s*["']([^"']+\\.js(?:\\?[^"']*)?)["']/gi)].map(x=>new URL(x[1],r.url).href);
         info.script_assets=[...new Set([...assets,...moduleAssets])].filter(x=>new URL(x).hostname==='hipodromodemonterrico.com.pe').slice(0,15);
         info.is_spa_shell=/(?:id=["']app["']|id=["']root["']|id=["']__next["'])/i.test(raw);
-        info.script_tags=[...raw.matchAll(/<script\\b[^>]*>/gi)].map(x=>x[0].slice(0,240)).slice(0,12);
-        info.script_count=[...raw.matchAll(/<script\\b/gi)].length;
-        info.asset_link_tags=[...raw.matchAll(/<link\\b[^>]*>/gi)].map(x=>x[0].slice(0,240))
-          .filter(x=>/script|module|preload|\\.js|asset/i.test(x)).slice(0,12);
-        info.inline_module_references=[...raw.matchAll(/(?:import\\s*\\(|import\\s+[^;]*?from\\s+|src\\s*=\\s*)["']([^"']{2,160})["']/gi)]
-          .map(x=>x[1]).slice(0,12);
+        info.script_tags=[...raw.matchAll(/<script[^>]*>/gi)].map(x=>x[0].slice(0,240)).slice(0,12);
+        info.script_count=info.script_tags.length;
+        info.asset_link_tags=[...raw.matchAll(/<link[^>]*>/gi)].map(x=>x[0].slice(0,240))
+          .filter(x=>/script|module|preload|asset/i.test(x)).slice(0,12);
         for(const asset of info.script_assets.slice(0,3)){
           try{
             const s=await fetch(asset,{signal:AbortSignal.timeout(15000)});
