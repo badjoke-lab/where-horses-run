@@ -46,11 +46,16 @@ for(const {label,url} of urls){
           try{
             const s=await fetch(asset,{signal:AbortSignal.timeout(15000)});
             const body=await s.text();
+            const candidateChunks=body.split('"').flatMap(part=>part.split("'"))
+              .filter(token=>token.length<180&&(token.endsWith('.js')||token.endsWith('.mjs')))
+              .filter(token=>token.includes('assets/')||token.startsWith('./'));
+            const uniqueChunks=[...new Set(candidateChunks)].slice(0,80);
+
             const paths=[...body.matchAll(new RegExp('/(?:api|monterrico/api)[A-Za-z0-9_/?&=%.-]{3,130}', 'g'))]
               .map(m=>m[0]).filter(p=>/reunion|carrera|calend|program|meeting/i.test(p));
             info.module_hints??=[];
             info.module_hints.push({asset_url:asset,status:s.status,chars:body.length,api_paths:[...new Set(paths)].slice(0,25),
-              mentions_reunion:/reunion|reuni[oó]n/i.test(body),mentions_racing:/carreras|racing/i.test(body)});
+              mentions_reunion:/reunion|reuni[oó]n/i.test(body),mentions_racing:/carreras|racing/i.test(body),chunks:uniqueChunks});
           }catch(e){info.module_hints??=[];info.module_hints.push({asset_url:asset,error:String(e?.message??e).slice(0,90)});}
         }
       }
