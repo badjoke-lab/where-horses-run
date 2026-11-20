@@ -35,6 +35,11 @@ for(const {label,url} of urls){
         info.is_spa_shell=/(?:id=["']app["']|id=["']root["']|id=["']__next["'])/i.test(raw);
         info.script_tags=[...raw.matchAll(/<script[^>]*>/gi)].map(x=>x[0].slice(0,240)).slice(0,12);
         info.script_count=info.script_tags.length;
+        info.script_assets=info.script_tags
+          .map(tag=>tag.match(/src="([^"]+)"/i)?.[1]).filter(Boolean)
+          .map(url=>new URL(url,r.url).href)
+          .filter(url=>new URL(url).hostname==='hipodromodemonterrico.com.pe'&&/\\.js(?:$|\\?)/i.test(url))
+          .slice(0,5);
         info.asset_link_tags=[...raw.matchAll(/<link[^>]*>/gi)].map(x=>x[0].slice(0,240))
           .filter(x=>/script|module|preload|asset/i.test(x)).slice(0,12);
         for(const asset of info.script_assets.slice(0,3)){
