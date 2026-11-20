@@ -37,8 +37,8 @@ for(const {label,url} of urls){
           try{
             const s=await fetch(asset,{signal:AbortSignal.timeout(15000)});
             const body=await s.text();
-            const paths=[...body.matchAll(/["'`]+(\\/(?:api|monterrico\\/api)[^"'`\\s]{3,130})["'`]+/g)]
-              .map(m=>m[1]).filter(p=>/reunion|carrera|calend|program|meeting/i.test(p));
+            const paths=[...body.matchAll(new RegExp('/(?:api|monterrico/api)[A-Za-z0-9_/?&=%.-]{3,130}', 'g'))]
+              .map(m=>m[0]).filter(p=>/reunion|carrera|calend|program|meeting/i.test(p));
             info.module_hints??=[];
             info.module_hints.push({asset_url:asset,status:s.status,chars:body.length,api_paths:[...new Set(paths)].slice(0,25),
               mentions_reunion:/reunion|reuni[oó]n/i.test(body),mentions_racing:/carreras|racing/i.test(body)});
