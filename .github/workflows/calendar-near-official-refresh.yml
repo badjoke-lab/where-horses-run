@@ -47,6 +47,7 @@ jobs:
           node scripts/check-ecuador-chc-2026-adapter.mjs
           node scripts/check-venezuela-chc-2026-source.mjs
           node scripts/check-malta-presidents-cup-2026-reviewed-c.mjs
+          node scripts/check-oman-national-day-2026-reviewed-c.mjs
           node scripts/check-russia-grozny-2026-adapter.mjs
           node scripts/check-indonesia-porprov-2026-c-adapter.mjs
           node scripts/check-australia-victoria-flemington-2026-27-adapter.mjs
@@ -463,6 +464,11 @@ jobs:
           node scripts/timetable/run-malta-presidents-cup-2026-reviewed-c-window.mjs \
             --days="${{ steps.scope.outputs.days }}" \
             --output=.calendar-unified/malta-president-cup.json
+      - name: Build Oman Nov 21 single reviewed C date / physical venue (no network)
+        run: |
+          node scripts/timetable/run-oman-national-day-2026-reviewed-c-window.mjs \
+            --days="${{ steps.scope.outputs.days }}" \
+            --output=.calendar-unified/oman-national-day.json
       - name: Collect Russia Grozny official 2026 closing day C date
         run: |
           node scripts/timetable/run-russia-grozny-2026-official-window.mjs \
@@ -746,6 +752,7 @@ jobs:
           --artifact=.calendar-unified/ecuador-chc.json \
           --artifact=.calendar-unified/venezuela-chc.json \
           --artifact=.calendar-unified/malta-president-cup.json \
+          --artifact=.calendar-unified/oman-national-day.json \
           --artifact=.calendar-unified/russia-grozny.json \
           --artifact=.calendar-unified/indonesia-porprov.json \
           --artifact=.calendar-unified/australia-victoria-flemington.json \
@@ -1185,6 +1192,14 @@ jobs:
             --authority-id=malta-racing-club \
             --racing-system-id=malta-reviewed-system \
             --timezone=Europe/Malta
+      - name: Apply Oman Nov 21 reviewed date+track C observation
+        run: |
+          node scripts/timetable/apply-official-rolling-observations.mjs \
+            --artifact=.calendar-unified/oman-national-day.json \
+            --country-id=oman \
+            --authority-id=oman-racing-evidence-network \
+            --racing-system-id=oman-source-led-racing-system \
+            --timezone=Asia/Muscat
       - name: Apply Russia Grozny 2026 closing day C observation
         run: |
           node scripts/timetable/apply-official-rolling-observations.mjs \

@@ -1,0 +1,55 @@
+name: Calendar Oman National Day 2026 reviewed C contract
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-oman-national-day-2026-reviewed-c.yml'
+      - 'scripts/timetable/oman-national-day-2026-reviewed-c-core.mjs'
+      - 'scripts/timetable/run-oman-national-day-2026-reviewed-c-window.mjs'
+      - 'scripts/check-oman-national-day-2026-reviewed-c.mjs'
+      - 'data/static/calendar-reviewed-oman-national-day-2026.json'
+      - 'data/static/calendar-acquisition-registry.json'
+      - 'data/static/calendar-98-tier-execution-coverage.json'
+      - 'data/static/racecourses-extensions.json'
+      - 'data/static/calendar-readiness-registry.json'
+      - 'data/static/calendar-public-country-support-v1.json'
+      - '.github/workflows/calendar-near-official-refresh.yml'
+      - '.github/workflows/calendar-unified-official-refresh.yml'
+permissions:
+  contents: read
+jobs:
+  reviewed-c:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate reviewed one-event legal and C acquisition boundaries
+        run: |
+          node --check scripts/timetable/oman-national-day-2026-reviewed-c-core.mjs
+          node --check scripts/timetable/run-oman-national-day-2026-reviewed-c-window.mjs
+          node scripts/check-oman-national-day-2026-reviewed-c.mjs
+          node scripts/check-calendar-acquisition-registry.mjs
+          node scripts/check-calendar-public-country-support.mjs
+          node scripts/check-calendar-public-map-parity.mjs
+          node scripts/check-calendar-98-tier-acquisition-methods.mjs
+          node scripts/check-calendar-98-tier-execution-coverage.mjs
+          node scripts/check-calendar-non-running-evidence-registry.mjs
+      - name: Verify current meeting and expiry do not infer future dates
+        run: |
+          node scripts/timetable/run-oman-national-day-2026-reviewed-c-window.mjs --as-of=2026-11-21 --days=1 --output=/tmp/oman-today.json
+          node scripts/timetable/run-oman-national-day-2026-reviewed-c-window.mjs --as-of=2026-11-22 --days=120 --output=/tmp/oman-future.json
+          node --input-type=module -e '
+            import assert from "node:assert/strict";import fs from "node:fs";
+            const read=p=>JSON.parse(fs.readFileSync(p,"utf8"));
+            const a=read("/tmp/oman-today.json"),b=read("/tmp/oman-future.json");
+            assert.deepEqual(a.records.map(x=>x.date),["2026-11-21"]);
+            assert.equal(a.records[0].racecourse_id,"al-rahba-racecourse");
+            assert.equal(a.records[0].capability_rank,"C");
+            assert.equal(b.records.length,0);
+            assert.equal(a.source_access,"reviewed_no_network");
+            assert.equal(a.raw_body_retained,false);
+            console.log("OMAN_SCOPED_ONE_DATE_C_2026_PASS");
+          '
