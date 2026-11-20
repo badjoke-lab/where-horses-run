@@ -40,6 +40,14 @@ for(const {label,url} of urls){
           if(Array.isArray(payload)&&payload.length&&typeof payload[0]==='object') info.first_item_keys=Object.keys(payload[0]).slice(0,25);
           for(const [key,value] of Object.entries(payload??{}).slice(0,15)){
             if(Array.isArray(value)) info[key+'_array_size']=value.length;
+            if(key==='reuniones'&&Array.isArray(value)){
+              info.reunion_field_keys=Object.keys(value[0]??{}).slice(0,35);
+              info.reunion_date_keys=Object.keys(value[0]??{}).filter(name=>/fecha|date|dia/i.test(name));
+              info.reunion_id_keys=Object.keys(value[0]??{}).filter(name=>/id|numero/i.test(name)).slice(0,14);
+              info.reunion_date_samples=value.slice(0,8).map(x=>
+                Object.fromEntries(Object.entries(x??{}).filter(([k,v])=>/fecha|date|dia/i.test(k)&&typeof v!=='object')));
+              info.top_fecha=payload.fecha??null;
+            }
           }
         }catch{info.json_parse='failed';}
       }
