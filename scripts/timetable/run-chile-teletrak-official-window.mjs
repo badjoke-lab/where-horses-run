@@ -232,12 +232,32 @@ try {
     parseFailures: [{ code: 'weekly_fingerprint_failed', source_url: CHILE_TELETRAK_URL }],
   });
 }
-if (diagnostics.unknown_venues.length > 0 || diagnostics.parse_failures.length > 0) {
+// A conflict between documents for one identified venue must never be
+// silently resolved using whichever link happened to appear first. Quarantine
+// that meeting, retain its explicit parse failure in the audit, and allow
+// independent, unambiguous Chile meeting cards to be collected.
+const conflictingLinks = diagnostics.parse_failures.filter((row) => row.code === 'multiple_programme_links');
+const otherParseFailures = diagnostics.parse_failures.filter((row) => row.code !== 'multiple_programme_links');
+if (diagnostics.unknown_venues.length > 0 || otherParseFailures.length > 0) {
   const unknownVenues = diagnostics.unknown_venues.map(({ date }) => ({ date }));
   rejectSchedule('parse_error', 'teletrak_weekly_schedule_rejected', {
     unknownVenues,
     parseFailures: [...diagnostics.parse_failures, ...unknownVenues.map(({ date }) => ({ code: 'unknown_domestic_venue', date }))],
   });
+}
+const conflictingKeys = new Set(conflictingLinks.map((row) => `${row.date}/${row.racecourse_id}`));
+if (conflictingKeys.size) {
+  scheduleCandidate = {
+    ...scheduleCandidate,
+    records: scheduleCandidate.records.filter((row) => !conflictingKeys.has(`${row.date}/${row.racecourse_id}`)),
+  };
+  // A completely ambiguous collection is still rejected without inventing
+  // zero-meeting evidence or any candidate for publication.
+  if (!scheduleCandidate.records.length) {
+    rejectSchedule('parse_error', 'teletrak_weekly_schedule_rejected', { parseFailures: diagnostics.parse_failures });
+  }
+  diagnostics.records_emitted = scheduleCandidate.records.length;
+  diagnostics.quarantined_meetings = conflictingLinks.map(({ date, racecourse_id, code }) => ({ date, racecourse_id, code }));
 }
 
 const programmeResults = {};
@@ -273,7 +293,7 @@ let nonRunningDiagnostics = {
   source_url: CHILE_CLUB_HIPICO_CORPORATE_NEWS_URL,
   confirmed_non_running_count: 0,
 };
-try {
+if (!fixture) try {
   const archiveHtml = await fetchNonRunningHtml(
     CHILE_CLUB_HIPICO_CORPORATE_NEWS_URL,
     'Club Hipico Corporativo archive',
