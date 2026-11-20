@@ -58,6 +58,22 @@ for(const {label,url} of urls){
               mentions_reunion:/reunion|reuni[oó]n/i.test(body),mentions_racing:/carreras|racing/i.test(body),chunks:uniqueChunks});
           }catch(e){info.module_hints??=[];info.module_hints.push({asset_url:asset,error:String(e?.message??e).slice(0,90)});}
         }
+        const bundles=[...new Set((info.module_hints??[]).flatMap(h=>h.chunks??[]))]
+          .filter(n=>['calendarioVivo','jornada-viva','App-'].some(t=>n.includes(t))).slice(0,3);
+        for(const name of bundles){
+          const url=new URL(name.startsWith('./')?name.slice(2):name,firstParty+'/').href;
+          try{
+            const response=await fetch(url,{signal:AbortSignal.timeout(15000)});
+            const moduleText=await response.text();
+            const tokens=moduleText.split('"').flatMap(s=>s.split("'"))
+              .filter(v=>v.length>4&&v.length<200&&['api','reunion','carrera','programa','calendario','http'].some(t=>v.toLowerCase().includes(t)))
+              .filter(v=>v.includes('/')).slice(0,60);
+            info.component_hints??=[];
+            info.component_hints.push({name,url,http:response.status,chars:moduleText.length,
+              candidate_urls:[...new Set(tokens)].slice(0,45),
+              has_fetch:moduleText.includes('fetch('),has_api:moduleText.includes('/api/')});
+          }catch(e){info.component_hints??=[];info.component_hints.push({name,error:String(e?.message??e).slice(0,100)});}
+        }
       }
       if(label==='entry_programmes'&&r.ok){
         const rows=extractMonterricoEntryProgrammeLinks(raw);
