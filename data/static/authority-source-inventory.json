@@ -107,13 +107,13 @@
       "authority_type": "racecourse_operator",
       "racecourse_scope": "single_racecourse",
       "official_source_id": "monterrico-upcoming-programmes",
-      "official_source_url": "https://hipodromodemonterrico.com.pe/carreras-proximos-programas",
+      "official_source_url": "https://hipodromodemonterrico.com.pe/api/club/api/general/carreras/general/programas/fecha/",
       "source_kind": "programme",
       "source_status": "verified",
-      "last_checked_date": "2026-09-21",
+      "last_checked_date": "2026-11-21",
       "capability_rank": "A",
       "adapter_candidate_status": "candidate",
-      "notes": "The official Monterrico upcoming-programmes route remains current. Reviewed meeting/programme evidence supports complete race labels and post times with race names and distances; prior source testing also observed surface through a separate race-detail endpoint, but no course label was confirmed. Under the current rank contract this source family is A rather than A+. National completeness is not claimed."
+      "notes": "As of 2026-11-21 the publicly linked JCP/Monterrico app exposes a same-origin /api/club/api/general/carreras/general/programas/fecha/{date} route; the legacy unprefixed URL returns HTTP 404. The associated same-origin reunion route returns a date-matched carreras timetable. A bounded Actions live check #44783375668 confirmed two Monterrico meetings on 2026-11-21/22, 12 races each, with no source or parse failures. Use only normalized meeting and basic race facts, never raw API bodies, and do not claim all Peruvian systems. Because the app uses ElTurf infrastructure, source-specific access/republication terms require distinct rights review; technical success alone is not clearance."
     },
     {
       "country_id": "mexico",

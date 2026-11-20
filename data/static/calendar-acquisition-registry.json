@@ -297,7 +297,7 @@
       "supports_source_visible_horizon": false,
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
-      "operator_notes": "GitHub Actions scans the requested Peru-local date window through the official Monterrico date API, then resolves each discovered reunion through the official Monterrico reunion JSON API at /api/general/carreras/general/programas/{id_reunion}. The carreras array supplies continuous per-race post times, race names and distances through evidence-derived A. Unpublished or unavailable detail preserves the verified C meeting identity with explicit pending/retry state. Coverage is limited to the reviewed Monterrico system."
+      "operator_notes": "GitHub Actions requests each Peru-local date through the first-party Monterrico app's public /api/club/api/general/carreras/general/programas/fecha/{date} proxy, then resolves the discovered reunion id through /api/club/api/general/carreras/general/programas/{id_reunion}. The legacy direct /api/general URL returns HTTP 404. The current first-party proxy returned the exact Monterrico 2026-11-21 and 2026-11-22 meetings with 12 complete race rows each in live Actions #44783375668. Evidence-derived A covers date, times, race names and distances; no surface or course is fabricated, no raw JSON is retained. The scope is Monterrico only. API access and limited re-publication of factual fields remain subject to separate source-specific rights review."
     },
     {
       "system_id": "saudi-arabia-jcsa-system",

@@ -332,9 +332,9 @@
       "implementation_status": "scheduled_candidate_active",
       "fallback": "keep_last_verified_and_mark_stale",
       "source_status": "verified",
-      "checked_date": "2026-09-21",
+      "checked_date": "2026-11-21",
       "evidence_reviewed_at": "2026-09-21",
-      "revalidation_trigger": "Revalidate if the Monterrico date API, reunion JSON API, carreras payload structure, or reviewed venue scope changes.",
+      "revalidation_trigger": "Revalidate the public Monterrico /api/club/ proxy if its date or reunion JSON path, carreras payload fields, current venue scope, or site access/use terms change.",
       "blocked_reason": null,
       "source_test_ref": "docs/timetable-source-tests/06-peru/final-summary.json",
       "limitations": [
@@ -342,7 +342,7 @@
         "The production route does not retain raw API bodies.",
         "Surface and course labels are not claimed by the current production adapter."
       ],
-      "notes": "The production route discovers reunion ids through the official date API and resolves complete timetable rows through the official reunion JSON API. The carreras array supplies post times, names and distances through A; surface/course are not fabricated."
+      "notes": "The current first-party app /api/club/ date and reunion proxies supply verified Monterrico meeting identity and continuous race rows. Actions #44783375668 observed two rank-A 12-race meetings on Nov 21-22 with source/parse failures 0. No raw API body retention. Distinct rights/access review of the ElTurf-backed proxy remains open; the source test does not itself establish licensed redistribution."
     },
     {
       "readiness_id": "mexico--mexico-hipodromo-las-americas-system--hipodromo-programas-oficiales",
