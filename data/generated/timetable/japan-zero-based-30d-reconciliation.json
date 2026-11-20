@@ -1,6 +1,6 @@
 {
   "schema_version": "japan-zero-based-30d-reconciliation-v1",
-  "checked_at": "2026-11-20T17:10:23.776Z",
+  "checked_at": "2026-11-20T17:56:40.415Z",
   "range": {
     "start": "2026-11-21",
     "end_exclusive": "2026-12-21",
@@ -39,10 +39,10 @@
   },
   "official_counts": {
     "jra": 29,
-    "nar-standard": 76,
+    "nar-standard": 71,
     "banei": 6
   },
-  "official_meeting_count": 111,
+  "official_meeting_count": 106,
   "reconciliations": [
     {
       "meeting_id": "jra-fukushima-racecourse-2026-11-21",
@@ -463,7 +463,7 @@
     {
       "meeting_id": "jra-chukyo-racecourse-2026-12-20",
       "acquisition_group": "jra",
-      "outcome": "add",
+      "outcome": "no_op",
       "official_rank": "A+",
       "public_rank": "A+",
       "acquisition_completion": "complete_current_best_available",
@@ -479,7 +479,7 @@
     {
       "meeting_id": "jra-hanshin-racecourse-2026-12-20",
       "acquisition_group": "jra",
-      "outcome": "add",
+      "outcome": "no_op",
       "official_rank": "A+",
       "public_rank": "A+",
       "acquisition_completion": "complete_current_best_available",
@@ -495,7 +495,7 @@
     {
       "meeting_id": "jra-nakayama-racecourse-2026-12-20",
       "acquisition_group": "jra",
-      "outcome": "add",
+      "outcome": "no_op",
       "official_rank": "A+",
       "public_rank": "A+",
       "acquisition_completion": "complete_current_best_available",
@@ -511,18 +511,12 @@
     {
       "meeting_id": "nar-kochi-racecourse-2026-11-21",
       "acquisition_group": "nar-standard",
-      "outcome": "conflict",
-      "reason": "retained_stronger_canonical_evidence",
-      "official_rank": "A",
+      "outcome": "details_pending",
+      "reason": "scheduled_pending_details",
+      "official_rank": "C",
       "public_rank": "A+",
-      "acquisition_completion": "implementation_gap",
+      "acquisition_completion": "pending_publication",
       "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=31&k_raceDate=2026%2F11%2F21"
-        },
         {
           "source_id": "kochi-keiba-official-calendar",
           "role": "mother_set",
@@ -534,18 +528,12 @@
     {
       "meeting_id": "nar-saga-racecourse-2026-11-21",
       "acquisition_group": "nar-standard",
-      "outcome": "conflict",
-      "reason": "retained_stronger_canonical_evidence",
-      "official_rank": "A",
+      "outcome": "details_pending",
+      "reason": "scheduled_pending_details",
+      "official_rank": "C",
       "public_rank": "A+",
-      "acquisition_completion": "implementation_gap",
+      "acquisition_completion": "pending_publication",
       "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=32&k_raceDate=2026%2F11%2F21"
-        },
         {
           "source_id": "saga-keiba-official-calendar",
           "role": "mother_set",
@@ -557,18 +545,12 @@
     {
       "meeting_id": "nar-kochi-racecourse-2026-11-22",
       "acquisition_group": "nar-standard",
-      "outcome": "conflict",
-      "reason": "retained_stronger_canonical_evidence",
-      "official_rank": "A",
+      "outcome": "details_pending",
+      "reason": "scheduled_pending_details",
+      "official_rank": "C",
       "public_rank": "A+",
-      "acquisition_completion": "implementation_gap",
+      "acquisition_completion": "pending_publication",
       "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=31&k_raceDate=2026%2F11%2F22"
-        },
         {
           "source_id": "kochi-keiba-official-calendar",
           "role": "mother_set",
@@ -587,12 +569,6 @@
       "acquisition_completion": "implementation_gap",
       "source_observations": [
         {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=11&k_raceDate=2026%2F11%2F22"
-        },
-        {
           "source_id": "iwatekeiba-official-calendar",
           "role": "mother_set",
           "source_label": "岩手競馬",
@@ -609,12 +585,6 @@
       "public_rank": "A+",
       "acquisition_completion": "implementation_gap",
       "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=32&k_raceDate=2026%2F11%2F22"
-        },
         {
           "source_id": "saga-keiba-official-calendar",
           "role": "mother_set",
@@ -633,12 +603,6 @@
       "acquisition_completion": "pending_publication",
       "source_observations": [
         {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=22&k_raceDate=2026%2F11%2F23"
-        },
-        {
           "source_id": "kanazawa-keiba-official-calendar",
           "role": "mother_set",
           "source_label": "金沢競馬",
@@ -649,18 +613,12 @@
     {
       "meeting_id": "nar-mizusawa-racecourse-2026-11-23",
       "acquisition_group": "nar-standard",
-      "outcome": "conflict",
-      "reason": "retained_stronger_canonical_evidence",
-      "official_rank": "A",
+      "outcome": "details_pending",
+      "reason": "scheduled_pending_details",
+      "official_rank": "C",
       "public_rank": "A+",
-      "acquisition_completion": "implementation_gap",
+      "acquisition_completion": "pending_publication",
       "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=11&k_raceDate=2026%2F11%2F23"
-        },
         {
           "source_id": "iwatekeiba-official-calendar",
           "role": "mother_set",
@@ -679,12 +637,6 @@
       "acquisition_completion": "pending_publication",
       "source_observations": [
         {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=32&k_raceDate=2026%2F11%2F23"
-        },
-        {
           "source_id": "saga-keiba-official-calendar",
           "role": "mother_set",
           "source_label": "佐賀競馬",
@@ -701,12 +653,6 @@
       "public_rank": "C",
       "acquisition_completion": "pending_publication",
       "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=11&k_raceDate=2026%2F11%2F24"
-        },
         {
           "source_id": "iwatekeiba-official-calendar",
           "role": "mother_set",
@@ -725,33 +671,10 @@
       "acquisition_completion": "pending_publication",
       "source_observations": [
         {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F11%2F24"
-        },
-        {
           "source_id": "tokai-region-joint-official-calendar",
           "role": "mother_set",
           "source_label": "東海地区競馬開催日程 / 笠松けいば開催日程",
           "official_source_url": "https://www.kasamatsu-keiba.com/schedule/2026/11"
-        }
-      ]
-    },
-    {
-      "meeting_id": "nar-urawa-racecourse-2026-11-24",
-      "acquisition_group": "nar-standard",
-      "outcome": "details_pending",
-      "reason": "scheduled_pending_details",
-      "official_rank": "C",
-      "public_rank": "C",
-      "acquisition_completion": "pending_publication",
-      "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F11%2F24"
         }
       ]
     },
@@ -764,12 +687,6 @@
       "public_rank": "C",
       "acquisition_completion": "pending_publication",
       "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F11%2F25"
-        },
         {
           "source_id": "tokai-region-joint-official-calendar",
           "role": "mother_set",
@@ -788,33 +705,10 @@
       "acquisition_completion": "pending_publication",
       "source_observations": [
         {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=27&k_raceDate=2026%2F11%2F25"
-        },
-        {
           "source_id": "hyogo-urban-keiba-official-calendar",
           "role": "mother_set",
           "source_label": "兵庫県競馬組合",
           "official_source_url": "https://www.sonoda-himeji.jp/schedule/2026/11"
-        }
-      ]
-    },
-    {
-      "meeting_id": "nar-urawa-racecourse-2026-11-25",
-      "acquisition_group": "nar-standard",
-      "outcome": "details_pending",
-      "reason": "scheduled_pending_details",
-      "official_rank": "C",
-      "public_rank": "C",
-      "acquisition_completion": "pending_publication",
-      "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F11%2F25"
         }
       ]
     },
@@ -827,12 +721,6 @@
       "public_rank": "C",
       "acquisition_completion": "pending_publication",
       "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=22&k_raceDate=2026%2F11%2F26"
-        },
         {
           "source_id": "kanazawa-keiba-official-calendar",
           "role": "mother_set",
@@ -851,12 +739,6 @@
       "acquisition_completion": "pending_publication",
       "source_observations": [
         {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F11%2F26"
-        },
-        {
           "source_id": "tokai-region-joint-official-calendar",
           "role": "mother_set",
           "source_label": "東海地区競馬開催日程 / 笠松けいば開催日程",
@@ -874,33 +756,10 @@
       "acquisition_completion": "pending_publication",
       "source_observations": [
         {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=27&k_raceDate=2026%2F11%2F26"
-        },
-        {
           "source_id": "hyogo-urban-keiba-official-calendar",
           "role": "mother_set",
           "source_label": "兵庫県競馬組合",
           "official_source_url": "https://www.sonoda-himeji.jp/schedule/2026/11"
-        }
-      ]
-    },
-    {
-      "meeting_id": "nar-urawa-racecourse-2026-11-26",
-      "acquisition_group": "nar-standard",
-      "outcome": "details_pending",
-      "reason": "scheduled_pending_details",
-      "official_rank": "C",
-      "public_rank": "C",
-      "acquisition_completion": "pending_publication",
-      "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F11%2F26"
         }
       ]
     },
@@ -913,12 +772,6 @@
       "public_rank": "C",
       "acquisition_completion": "pending_publication",
       "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=24&k_raceDate=2026%2F11%2F27"
-        },
         {
           "source_id": "tokai-region-joint-official-calendar",
           "role": "mother_set",
@@ -937,33 +790,10 @@
       "acquisition_completion": "pending_publication",
       "source_observations": [
         {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=27&k_raceDate=2026%2F11%2F27"
-        },
-        {
           "source_id": "hyogo-urban-keiba-official-calendar",
           "role": "mother_set",
           "source_label": "兵庫県競馬組合",
           "official_source_url": "https://www.sonoda-himeji.jp/schedule/2026/11"
-        }
-      ]
-    },
-    {
-      "meeting_id": "nar-urawa-racecourse-2026-11-27",
-      "acquisition_group": "nar-standard",
-      "outcome": "details_pending",
-      "reason": "scheduled_pending_details",
-      "official_rank": "C",
-      "public_rank": "C",
-      "acquisition_completion": "pending_publication",
-      "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=18&k_raceDate=2026%2F11%2F27"
         }
       ]
     },
@@ -976,12 +806,6 @@
       "public_rank": "C",
       "acquisition_completion": "pending_publication",
       "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=31&k_raceDate=2026%2F11%2F28"
-        },
         {
           "source_id": "kochi-keiba-official-calendar",
           "role": "mother_set",
@@ -1000,12 +824,6 @@
       "acquisition_completion": "pending_publication",
       "source_observations": [
         {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=32&k_raceDate=2026%2F11%2F28"
-        },
-        {
           "source_id": "saga-keiba-official-calendar",
           "role": "mother_set",
           "source_label": "佐賀競馬",
@@ -1022,12 +840,6 @@
       "public_rank": "C",
       "acquisition_completion": "pending_publication",
       "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=22&k_raceDate=2026%2F11%2F29"
-        },
         {
           "source_id": "kanazawa-keiba-official-calendar",
           "role": "mother_set",
@@ -1046,12 +858,6 @@
       "acquisition_completion": "pending_publication",
       "source_observations": [
         {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=31&k_raceDate=2026%2F11%2F29"
-        },
-        {
           "source_id": "kochi-keiba-official-calendar",
           "role": "mother_set",
           "source_label": "高知けいば",
@@ -1069,12 +875,6 @@
       "acquisition_completion": "pending_publication",
       "source_observations": [
         {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=11&k_raceDate=2026%2F11%2F29"
-        },
-        {
           "source_id": "iwatekeiba-official-calendar",
           "role": "mother_set",
           "source_label": "岩手競馬",
@@ -1090,12 +890,6 @@
       "public_rank": "A",
       "acquisition_completion": "implementation_gap",
       "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=32&k_raceDate=2026%2F11%2F29"
-        },
         {
           "source_id": "saga-keiba-official-calendar",
           "role": "mother_set",
@@ -1114,12 +908,6 @@
       "acquisition_completion": "pending_publication",
       "source_observations": [
         {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=22&k_raceDate=2026%2F11%2F30"
-        },
-        {
           "source_id": "kanazawa-keiba-official-calendar",
           "role": "mother_set",
           "source_label": "金沢競馬",
@@ -1137,33 +925,10 @@
       "acquisition_completion": "pending_publication",
       "source_observations": [
         {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=11&k_raceDate=2026%2F11%2F30"
-        },
-        {
           "source_id": "iwatekeiba-official-calendar",
           "role": "mother_set",
           "source_label": "岩手競馬",
           "official_source_url": "https://www.iwatekeiba.or.jp/calendar/2026_11"
-        }
-      ]
-    },
-    {
-      "meeting_id": "nar-oi-racecourse-2026-11-30",
-      "acquisition_group": "nar-standard",
-      "outcome": "details_pending",
-      "reason": "scheduled_pending_details",
-      "official_rank": "C",
-      "public_rank": "C",
-      "acquisition_completion": "pending_publication",
-      "source_observations": [
-        {
-          "source_id": "nar-monthly-schedule-racelist",
-          "role": "mother_set",
-          "source_label": "地方競馬全国協会",
-          "official_source_url": "https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/RaceList?k_babaCode=20&k_raceDate=2026%2F11%2F30"
         }
       ]
     },
@@ -1952,11 +1717,11 @@
     {
       "meeting_id": "banei-obihiro-racecourse-2026-11-21",
       "acquisition_group": "banei",
-      "outcome": "conflict",
-      "reason": "retained_stronger_canonical_evidence",
-      "official_rank": "A",
+      "outcome": "acquisition_failed",
+      "reason": "HTTP 403: https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=3&k_raceDate=2026%2F11%2F21&k_raceNo=7",
+      "official_rank": "C",
       "public_rank": "A+",
-      "acquisition_completion": "implementation_gap",
+      "acquisition_completion": "retry_required",
       "source_observations": [
         {
           "source_id": "banei-official-monthly-schedule-nar-detail",
@@ -1969,11 +1734,11 @@
     {
       "meeting_id": "banei-obihiro-racecourse-2026-11-22",
       "acquisition_group": "banei",
-      "outcome": "conflict",
-      "reason": "retained_stronger_canonical_evidence",
-      "official_rank": "A",
+      "outcome": "acquisition_failed",
+      "reason": "HTTP 403: https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable?k_babaCode=3&k_raceDate=2026%2F11%2F22&k_raceNo=10",
+      "official_rank": "C",
       "public_rank": "A+",
-      "acquisition_completion": "implementation_gap",
+      "acquisition_completion": "retry_required",
       "source_observations": [
         {
           "source_id": "banei-official-monthly-schedule-nar-detail",
@@ -2050,6 +1815,31 @@
     }
   ],
   "stale_audit": [
+    {
+      "meeting_id": "nar-urawa-racecourse-2026-11-24",
+      "date": "2026-11-24",
+      "audit": "canonical_public_only_not_deleted"
+    },
+    {
+      "meeting_id": "nar-urawa-racecourse-2026-11-25",
+      "date": "2026-11-25",
+      "audit": "canonical_public_only_not_deleted"
+    },
+    {
+      "meeting_id": "nar-urawa-racecourse-2026-11-26",
+      "date": "2026-11-26",
+      "audit": "canonical_public_only_not_deleted"
+    },
+    {
+      "meeting_id": "nar-urawa-racecourse-2026-11-27",
+      "date": "2026-11-27",
+      "audit": "canonical_public_only_not_deleted"
+    },
+    {
+      "meeting_id": "nar-oi-racecourse-2026-11-30",
+      "date": "2026-11-30",
+      "audit": "canonical_public_only_not_deleted"
+    },
     {
       "meeting_id": "nar-oi-racecourse-2026-12-01",
       "date": "2026-12-01",
@@ -2275,8 +2065,8 @@
         "https://www.jra.go.jp/keiba/calendar2026/2026/12/1220.html"
       ],
       "failures": [],
-      "fetch_started_at": "2026-11-20T17:10:23.776Z",
-      "fetch_ended_at": "2026-11-20T17:10:33.060Z"
+      "fetch_started_at": "2026-11-20T17:56:40.415Z",
+      "fetch_ended_at": "2026-11-20T17:56:49.524Z"
     },
     {
       "source_id": "nar-monthly-convene-info",
@@ -2317,19 +2107,24 @@
           "2026-12-20"
         ]
       },
-      "fetch_started_at": "2026-11-20T17:10:33.061Z",
-      "fetch_ended_at": "2026-11-20T17:10:34.626Z",
-      "result": "complete",
-      "completeness": "complete",
-      "parsed_meeting_count": 30,
+      "fetch_started_at": "2026-11-20T17:56:49.524Z",
+      "fetch_ended_at": "2026-11-20T17:56:50.749Z",
+      "result": "failed",
+      "completeness": "failed",
+      "parsed_meeting_count": 0,
       "parsed_detail_count": 0,
       "pending_count": 0,
-      "failure_count": 0,
-      "source_visible_horizon": "2026-12-20",
+      "failure_count": 1,
+      "source_visible_horizon": null,
       "source_urls": [
         "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop"
       ],
-      "failures": []
+      "failures": [
+        {
+          "source_url": "https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop",
+          "reason": "HTTP 403: https://www.keiba.go.jp/KeibaWeb/MonthlyConveneInfo/MonthlyConveneInfoTop?k_month=11&k_year=2026"
+        }
+      ]
     },
     {
       "source_id": "banei-official-schedule",
@@ -2370,8 +2165,8 @@
           "2026-12-20"
         ]
       },
-      "fetch_started_at": "2026-11-20T17:10:52.936Z",
-      "fetch_ended_at": "2026-11-20T17:10:55.350Z",
+      "fetch_started_at": "2026-11-20T17:57:09.557Z",
+      "fetch_ended_at": "2026-11-20T17:57:12.122Z",
       "result": "complete",
       "completeness": "complete",
       "parsed_meeting_count": 6,
@@ -2441,8 +2236,8 @@
         }
       ],
       "supplemental_failures": [],
-      "fetch_started_at": "2026-11-20T17:10:34.626Z",
-      "fetch_ended_at": "2026-11-20T17:10:35.644Z"
+      "fetch_started_at": "2026-11-20T17:56:50.749Z",
+      "fetch_ended_at": "2026-11-20T17:56:51.782Z"
     },
     {
       "source_id": "iwatekeiba-official-calendar",
@@ -2495,8 +2290,8 @@
         "https://www.iwatekeiba.or.jp/calendar/2026_12"
       ],
       "failures": [],
-      "fetch_started_at": "2026-11-20T17:10:35.644Z",
-      "fetch_ended_at": "2026-11-20T17:10:36.475Z"
+      "fetch_started_at": "2026-11-20T17:56:51.782Z",
+      "fetch_ended_at": "2026-11-20T17:56:52.666Z"
     },
     {
       "source_id": "hyogo-urban-keiba-official-calendar",
@@ -2549,8 +2344,8 @@
         "https://www.sonoda-himeji.jp/schedule/2026/12"
       ],
       "failures": [],
-      "fetch_started_at": "2026-11-20T17:10:36.475Z",
-      "fetch_ended_at": "2026-11-20T17:10:38.386Z"
+      "fetch_started_at": "2026-11-20T17:56:52.666Z",
+      "fetch_ended_at": "2026-11-20T17:56:54.294Z"
     },
     {
       "source_id": "tokai-region-joint-official-calendar",
@@ -2610,8 +2405,8 @@
         "end": "2027-03-31"
       },
       "failures": [],
-      "fetch_started_at": "2026-11-20T17:10:38.386Z",
-      "fetch_ended_at": "2026-11-20T17:10:40.958Z"
+      "fetch_started_at": "2026-11-20T17:56:54.294Z",
+      "fetch_ended_at": "2026-11-20T17:56:56.846Z"
     },
     {
       "source_id": "hokkaido-keiba-official-calendar",
@@ -2666,8 +2461,8 @@
       "requested_month_count": 2,
       "successful_month_count": 2,
       "failures": [],
-      "fetch_started_at": "2026-11-20T17:10:40.958Z",
-      "fetch_ended_at": "2026-11-20T17:10:46.529Z"
+      "fetch_started_at": "2026-11-20T17:56:56.846Z",
+      "fetch_ended_at": "2026-11-20T17:57:02.890Z"
     },
     {
       "source_id": "kanazawa-keiba-official-calendar",
@@ -2795,8 +2590,8 @@
         }
       ],
       "failures": [],
-      "fetch_started_at": "2026-11-20T17:10:46.529Z",
-      "fetch_ended_at": "2026-11-20T17:10:48.973Z"
+      "fetch_started_at": "2026-11-20T17:57:02.890Z",
+      "fetch_ended_at": "2026-11-20T17:57:05.323Z"
     },
     {
       "source_id": "kochi-keiba-official-calendar",
@@ -2873,8 +2668,8 @@
       "published_plan_as_of": "2026-02-26",
       "schedule_status": "official_published_plan_subject_to_change",
       "failures": [],
-      "fetch_started_at": "2026-11-20T17:10:48.973Z",
-      "fetch_ended_at": "2026-11-20T17:10:50.330Z"
+      "fetch_started_at": "2026-11-20T17:57:05.323Z",
+      "fetch_ended_at": "2026-11-20T17:57:06.733Z"
     },
     {
       "source_id": "saga-keiba-official-calendar",
@@ -3076,8 +2871,8 @@
       },
       "schedule_status": "annual_official_plan_plus_published_monthly_positive_union",
       "failures": [],
-      "fetch_started_at": "2026-11-20T17:10:50.330Z",
-      "fetch_ended_at": "2026-11-20T17:10:52.936Z"
+      "fetch_started_at": "2026-11-20T17:57:06.733Z",
+      "fetch_ended_at": "2026-11-20T17:57:09.557Z"
     }
   ],
   "mother_set_complete": false,
@@ -3085,6 +2880,7 @@
     "complete": false,
     "missing_source_ids": [],
     "incomplete_source_ids": [
+      "nar-monthly-convene-info",
       "nankankeiba-south-kanto-calendar"
     ]
   },
@@ -3093,13 +2889,13 @@
     "jra": true,
     "banei": true,
     "south_kanto": false,
-    "iwate": true,
-    "hyogo": true,
-    "tokai": true,
-    "hokkaido": true,
-    "kanazawa": true,
-    "kochi": true,
-    "saga": true,
+    "iwate": false,
+    "hyogo": false,
+    "tokai": false,
+    "hokkaido": false,
+    "kanazawa": false,
+    "kochi": false,
+    "saga": false,
     "other_nar": false
   },
   "absence_reconciliation_applied": true,
@@ -3118,9 +2914,14 @@
     "nar-kawasaki-racecourse-2026-12-18",
     "nar-nagoya-racecourse-2026-12-07",
     "nar-nagoya-racecourse-2026-12-11",
+    "nar-oi-racecourse-2026-11-30",
     "nar-oi-racecourse-2026-12-01",
     "nar-oi-racecourse-2026-12-02",
     "nar-oi-racecourse-2026-12-03",
-    "nar-oi-racecourse-2026-12-04"
+    "nar-oi-racecourse-2026-12-04",
+    "nar-urawa-racecourse-2026-11-24",
+    "nar-urawa-racecourse-2026-11-25",
+    "nar-urawa-racecourse-2026-11-26",
+    "nar-urawa-racecourse-2026-11-27"
   ]
 }
