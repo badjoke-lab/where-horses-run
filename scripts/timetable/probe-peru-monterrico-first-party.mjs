@@ -38,7 +38,7 @@ for(const {label,url} of urls){
         info.script_assets=info.script_tags
           .map(tag=>tag.match(/src="([^"]+)"/i)?.[1]).filter(Boolean)
           .map(url=>new URL(url,r.url).href)
-          .filter(url=>new URL(url).hostname==='hipodromodemonterrico.com.pe'&&/\\.js(?:$|\\?)/i.test(url))
+          .filter(url=>new URL(url).hostname==='hipodromodemonterrico.com.pe'&&(url.endsWith('.js')||url.includes('.js?')))
           .slice(0,5);
         info.asset_link_tags=[...raw.matchAll(/<link[^>]*>/gi)].map(x=>x[0].slice(0,240))
           .filter(x=>/script|module|preload|asset/i.test(x)).slice(0,12);
