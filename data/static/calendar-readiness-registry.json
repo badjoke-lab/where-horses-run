@@ -6,7 +6,7 @@
   "programme_state": {
     "country_target": 98,
     "countries_with_closed_decision": 98,
-    "readiness_records": 145,
+    "readiness_records": 146,
     "next_backfill_work_ids": []
   },
   "records": [
@@ -678,7 +678,7 @@
         "No stable country-wide advance timetable was confirmed.",
         "Recorded or live-start times must not be converted into scheduled post times."
       ],
-      "notes": "The evidence confirms activity at Al Rahba but does not support recurring current Calendar operation."
+      "notes": "The evidence confirms activity at Al Rahba but does not support recurring current Calendar operation. A separate limited Oman 2026-11-21 reviewed fact route now exists, without making the recurring RHRC online fixture collector usable."
     },
     {
       "readiness_id": "zimbabwe--zimbabwe-borrowdale-card-system--zimracing-racecards",
@@ -6796,7 +6796,55 @@
         "No first/last post times, racecards, results, actual-run, free LIVE or negative cancellation inference."
       ],
       "notes": "One off manually reviewed source facts. Reuse only one date/venue as factual identifiers. Press text, databases and images excluded. The source type is journalist reporting of organizer conference, not official first-party date acquisition."
+    },
+    {
+      "readiness_id": "oman--oman-source-led-racing-system--oman-2026-national-day-ona-reviewed",
+      "country_id": "oman",
+      "country_tracker_delivery_no": "11",
+      "system_id": "oman-source-led-racing-system",
+      "system_name_en": "Oman Al Rahba 2026 National Day reviewed date",
+      "authority_source_key": "oman/oman-racing-evidence-network/oman-2026-national-day-ona-reviewed",
+      "racecourse_ids": [
+        "al-rahba-racecourse"
+      ],
+      "coverage_scope": "single_racecourse",
+      "technical_rank": "C",
+      "public_ceiling": "C",
+      "confirmed_fields": {
+        "meeting_date": true,
+        "racecourse": true,
+        "first_race_time": false,
+        "last_race_time": false,
+        "per_race_post_times": false,
+        "race_name": false,
+        "distance": false,
+        "surface": false,
+        "course": false
+      },
+      "source_format": "html",
+      "access_mode": "direct",
+      "automation_mode": "manual_confirmation",
+      "refresh_classes": [
+        "daily",
+        "near_meeting",
+        "weekly"
+      ],
+      "readiness": "prototype_ready",
+      "implementation_status": "active",
+      "fallback": "keep_last_verified_and_mark_stale",
+      "source_status": "partial",
+      "checked_date": "2026-11-21",
+      "evidence_reviewed_at": "2026-11-21",
+      "revalidation_trigger": "New source-specific dated race/venue notice, explicit change or cancellation; never extrapolate 2027",
+      "blocked_reason": null,
+      "source_test_ref": "docs/timetable-source-tests/11-oman/national-day-2026-one-day-manual-source.json",
+      "limitations": [
+        "Only one 2026-11-21 date and physical Al Rahba track; not entire 25-meeting season.",
+        "Bare date+venue C only, no original publisher content, no race times, cards, results or LIVE.",
+        "Source disappearance does not mean cancellation."
+      ],
+      "notes": "Oman Horse Racing Club's 2026/27 National Day announcement carried by ONA/Al Watan; human-reviewed one-date date/venue source. Original RHRC recurring source remains blocked."
     }
   ],
-  "last_updated": "2026-10-29"
+  "last_updated": "2026-11-21"
 }

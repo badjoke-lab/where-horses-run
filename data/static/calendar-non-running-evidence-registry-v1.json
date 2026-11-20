@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-non-running-evidence-registry-v1",
-  "reviewed_at": "2026-10-29",
+  "reviewed_at": "2026-11-21",
   "records": [
     {
       "record_id": "japan-jra-system",
@@ -1743,6 +1743,29 @@
       "example_evidence_url": null,
       "reviewed_at": "2026-10-29",
       "notes": "Absence from a future official Club page, third-party fixture feed silence or a source failure never proves cancelled, postponed or completed racing; no 2027 date inference. Explicit single-day independent evidence needed before meeting-state change."
+    },
+    {
+      "record_id": "oman-source-led-racing-system",
+      "country_id": "oman",
+      "system_id": "oman-source-led-racing-system",
+      "authority_id": "oman-racing-evidence-network",
+      "mode": "unsupported",
+      "automation_status": "not_implemented",
+      "whole_meeting_non_running": "not_proven",
+      "postponement": "not_proven",
+      "partial_race_policy": "never_promote_to_whole_meeting",
+      "source_absence_policy": "absent_unconfirmed",
+      "acquisition_failure_policy": "preserve_verified_state",
+      "replacement_date_policy": "independent_meeting_only",
+      "evidence_source_family": "ONA announced 2026-11-21 Al Rahba National Day; no verified cancellation feed.",
+      "evidence_urls": [
+        "https://alwatan.om/article/46361/25-%D8%B3%D8%A8%D8%A7%D9%82%D8%A7-%D8%AA%D8%AA%D8%B6%D9%85%D9%86%D9%87%D8%A7-%D8%A3%D8%AC%D9%86%D8%AF%D8%A9-%D9%85%D8%AA%D9%83%D8%A7%D9%85%D9%84%D8%A9-%D9%86%D8%A7%D8%AF%D9%8A-%D8%B3%D8%A8%D8%A7%D9%82-%D8%A7%D9%84%D8%AE%D9%8A%D9%84-%D8%A7%D9%84%D8%B9%D9%85%D8%A7%D9%86%D9%8A-%D9%8A%D8%B9%D9%84%D9%86-%D8%B9%D9%86-%D8%A8%D8%B1%D9%86%D8%A7%D9%85%D8%AC-%D8%B3%D8%A8%D8%A7%D9%82%D8%A7%D8%AA-%D8%A7%D9%84%D8%AE%D9%8A%D9%84-%D9%84%D9%84%D9%85%D9%88%D8%B3%D9%85-20262027%D9%85",
+        "https://www.fananews.com/language/en/oman-horse-racing-season-2026-2027-includes-25-races/",
+        "https://rhrc.om/Fixture.aspx"
+      ],
+      "example_evidence_url": null,
+      "reviewed_at": "2026-11-21",
+      "notes": "Absent third-party site record or later parser error never confirms no running, change or cancellation."
     }
   ]
 }

@@ -1,0 +1,83 @@
+{
+  "schema_version": "oman-2026-national-day-manual-c-fact-v1",
+  "reviewed_at": "2026-11-21",
+  "date": "2026-11-21",
+  "competition": "Oman National Day Race 2026",
+  "racecourse_id": "al-rahba-racecourse",
+  "method": "human_reviewed_ona_announcement_fact",
+  "venue_verified_from_existing_project": true,
+  "organizer_announcement_origin_verified": true,
+  "source_content_retained": false,
+  "reviewed_sources": [
+    {
+      "type": "ona_news_release_carried_by_independent_publisher",
+      "url": "https://alwatan.om/article/46361/25-%D8%B3%D8%A8%D8%A7%D9%82%D8%A7-%D8%AA%D8%AA%D8%B6%D9%85%D9%86%D9%87%D8%A7-%D8%A3%D8%AC%D9%86%D8%AF%D8%A9-%D9%85%D8%AA%D9%83%D8%A7%D9%85%D9%84%D8%A9-%D9%86%D8%A7%D8%AF%D9%8A-%D8%B3%D8%A8%D8%A7%D9%82-%D8%A7%D9%84%D8%AE%D9%8A%D9%84-%D8%A7%D9%84%D8%B9%D9%85%D8%A7%D9%86%D9%8A-%D9%8A%D8%B9%D9%84%D9%86-%D8%B9%D9%86-%D8%A8%D8%B1%D9%86%D8%A7%D9%85%D8%AC-%D8%B3%D8%A8%D8%A7%D9%82%D8%A7%D8%AA-%D8%A7%D9%84%D8%AE%D9%8A%D9%84-%D9%84%D9%84%D9%85%D9%88%D8%B3%D9%85-20262027%D9%85",
+      "published": "2026-09-08",
+      "usage": "One date/venue fact"
+    },
+    {
+      "type": "equine_reporting_crosscheck_only",
+      "url": "https://muhra.majalis.om/blog/oman-horse-racing-season-20262027-25-races-across-seven-months?lang=en",
+      "published": "2026-09-14",
+      "usage": "Crosscheck event context only, no database copy"
+    },
+    {
+      "type": "ona_english_season_crosscheck",
+      "url": "https://www.fananews.com/language/en/oman-horse-racing-season-2026-2027-includes-25-races/",
+      "published": "2026-09-08",
+      "usage": "Club and season origin, not day+track evidence"
+    },
+    {
+      "type": "official_club_home",
+      "url": "https://rhrc.om/Fixture.aspx",
+      "usage": "Official identity reference; current 2026/27 detail from live club not acquired"
+    }
+  ],
+  "rights_review": {
+    "status": "USABLE_WITH_CONDITIONS",
+    "evidence_level": "E2",
+    "risk": "low_one_nonexpressive_date_and_venue_fact",
+    "source_content_reuse_status": "PERMISSION_REQUIRED",
+    "decision_scope": "One Nov 21 2026 National Day race date and named physical Al Rahba course only, NOT any full 25-race calendar or original text.",
+    "access_method": "One-off AI-assisted editorial review; recurring automated article or RHRC website requests NONE",
+    "published_fields": [
+      "meeting_date",
+      "physical_racecourse",
+      "country_id",
+      "racing_system_id"
+    ],
+    "terms_reviewed": [
+      {
+        "url": "https://alwatan.om/",
+        "applies_to": "Copyright reserved footer applies to editorial content, not reproduced; specific site licence for copying content not identified"
+      },
+      {
+        "url": "https://alwatan.om/privacy-policy",
+        "applies_to": "Privacy notice is not a content reuse licence"
+      },
+      {
+        "url": "https://muhraequine.om/terms-and-conditions",
+        "applies_to": "Platform forbids copying content; used only as independent manual crosscheck, not an input feed"
+      }
+    ],
+    "conditions": [
+      "Limit input to one source-announced date and physical track factual pair, no expression, images, logos, racecards, odds, entries or accumulated fixture list.",
+      "No programmatic recurring fetch from Al Watan, Muhra, ONA or RHRC for this one-off candidate.",
+      "New season dates, any change of venue, rights conditions or output fields require separate review.",
+      "Missing/expired source does not imply cancellation; do not invent 2027 dates or free LIVE."
+    ],
+    "reasoning": "A single organizer-announced scheduled date with independently mapped physical venue is nonexpressive factual metadata; no text, original presentation or material compilation is reused. Reviewed copyright-notice and crosscheck-site terms are respected by not copying protected content. This is limited editorial publication approval, not licence to crawl or redistribute the fixture database.",
+    "reviewed_at": "2026-11-21",
+    "reviewer": "WHR Calendar Expansion AI-assisted source-scoped assessment",
+    "automation_allowed": false
+  },
+  "excluded": [
+    "no times",
+    "no original article text",
+    "no horse/racecard/betting",
+    "no 25-meeting calendar copy",
+    "no 2027 inference",
+    "no broadcast status inference",
+    "no completed-race status inference"
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "schema_version": "calendar-public-country-support-v1",
-  "reviewed_at": "2026-10-29",
+  "reviewed_at": "2026-11-21",
   "basis": "Countries currently wired into the production Calendar unified official refresh on main. Japan uses the official mother-set path; non-Japan countries use official rolling-window collectors and monotonic public observation application.",
   "source_ref": ".github/workflows/calendar-unified-official-refresh.yml",
   "countries": [
@@ -318,6 +318,11 @@
       "country_id": "malta",
       "calendar_supported": true,
       "acquisition_key": "malta-2026-press-reviewed-one-date-c-v1"
+    },
+    {
+      "country_id": "oman",
+      "calendar_supported": true,
+      "acquisition_key": "oman-2026-national-day-press-reviewed-one-date-c-v1"
     }
   ]
 }

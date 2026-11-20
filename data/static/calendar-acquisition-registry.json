@@ -2064,6 +2064,31 @@
       "supports_rank_upgrade_retry": false,
       "pending_fields": [],
       "operator_notes": "Only the 2026-11-08 EquestriMalta President's Cup racing day in Marsa, manually cross-checked to independent press-conference reporting and physical Malta Equidrome first-party venue. One event only; no MRC automated access, no timetable/odds/results/news article reuse or LIVE; no 2027 inference. Conditional manual fact-only rights review; separate E2 source/method/fields record."
+    },
+    {
+      "system_id": "oman-source-led-racing-system",
+      "country_id": "oman",
+      "authority_id": "oman-racing-evidence-network",
+      "profile_status": "active",
+      "primary_runner": "github_actions",
+      "fallback_runner": null,
+      "schedule_source_id": "oman-2026-national-day-ona-reviewed",
+      "detail_source_id": "oman-2026-national-day-ona-reviewed",
+      "schedule_adapter_id": "oman-2026-national-day-press-reviewed-one-date-c-v1",
+      "detail_adapter_id": "oman-2026-national-day-press-reviewed-one-date-c-v1",
+      "technical_capability_rank": "C",
+      "collection_target_rank": "best_available",
+      "public_ceiling": "C",
+      "supported_observation_ranks": [
+        "C"
+      ],
+      "supports_date_window": true,
+      "supports_cross_month_window": true,
+      "supports_selected_meetings": false,
+      "supports_source_visible_horizon": true,
+      "supports_rank_upgrade_retry": false,
+      "pending_fields": [],
+      "operator_notes": "Only independently announced 2026-11-21 National Day scheduled meeting at physical Al Rahba track. One ONA-origin manually reviewed bare fact pair, no source automation. Not full Oman season, other venues, times, racecards or LIVE. Source-specific E2 conditional use."
     }
   ]
 }
