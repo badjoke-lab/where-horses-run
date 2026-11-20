@@ -12,6 +12,9 @@ const urls=[
   {label:'upcoming_programmes',url:firstParty+'/carreras-proximos-programas'},
   {label:'new_web_calendar',url:firstParty+'/monterrico/web'},
   {label:'legacy_date_api',url:firstParty+'/api/general/carreras/general/programas/fecha/'+today},
+  {label:'new_api_first_party',url:firstParty+'/api/v1/elturf/reuniones-dia?fecha='+today+'&vivo=1'},
+  {label:'new_api_proxy',url:firstParty+'/api/turf/api/v1/elturf/reuniones-dia?fecha='+today+'&vivo=1'},
+  {label:'official_app_backend',url:'https://eltiaback.elturf.com/api/v1/elturf/reuniones-dia?fecha='+today+'&vivo=1'},
 ];
 for(const {label,url} of urls){
   const info={label,source_url:url};
@@ -28,6 +31,18 @@ for(const {label,url} of urls){
     else {
       const raw=await r.text();
       info.body_chars=raw.length;
+      if(label==='new_api_first_party'||label==='new_api_proxy'||label==='official_app_backend'){
+        try{
+          const payload=JSON.parse(raw);
+          info.json_type=Array.isArray(payload)?'array':typeof payload;
+          info.top_keys=payload&&!Array.isArray(payload)&&typeof payload==='object'?Object.keys(payload).slice(0,25):[];
+          info.array_length=Array.isArray(payload)?payload.length:null;
+          if(Array.isArray(payload)&&payload.length&&typeof payload[0]==='object') info.first_item_keys=Object.keys(payload[0]).slice(0,25);
+          for(const [key,value] of Object.entries(payload??{}).slice(0,15)){
+            if(Array.isArray(value)) info[key+'_array_size']=value.length;
+          }
+        }catch{info.json_parse='failed';}
+      }
       if(label==='entry_programmes'){
         const assets=[...raw.matchAll(/<script\\b[^>]*\\bsrc\\s*=\\s*["']([^"']+)["']/gi)].map(x=>new URL(x[1],r.url).href);
         const moduleAssets=[...raw.matchAll(/<link\\b[^>]*\\b(?:href)\\s*=\\s*["']([^"']+\\.js(?:\\?[^"']*)?)["']/gi)].map(x=>new URL(x[1],r.url).href);
