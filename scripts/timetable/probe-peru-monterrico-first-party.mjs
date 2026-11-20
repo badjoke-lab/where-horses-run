@@ -12,6 +12,8 @@ const urls=[
   {label:'upcoming_programmes',url:firstParty+'/carreras-proximos-programas'},
   {label:'new_web_calendar',url:firstParty+'/monterrico/web'},
   {label:'legacy_date_api',url:firstParty+'/api/general/carreras/general/programas/fecha/'+today},
+  {label:'club_proxy_date_api',url:firstParty+'/api/club/api/general/carreras/general/programas/fecha/'+today},
+  {label:'club_proxy_next_day',url:firstParty+'/api/club/api/general/carreras/general/programas/fecha/'+plusDays(today,1)},
   {label:'new_api_first_party',url:firstParty+'/api/v1/elturf/reuniones-dia?fecha='+today+'&vivo=1'},
   {label:'new_api_proxy',url:firstParty+'/api/turf/api/v1/elturf/reuniones-dia?fecha='+today+'&vivo=1'},
   {label:'new_api_proxy_next_day',url:firstParty+'/api/turf/api/v1/elturf/reuniones-dia?fecha='+plusDays(today,1)+'&vivo=1'},
@@ -33,12 +35,16 @@ for(const {label,url} of urls){
     else {
       const raw=await r.text();
       info.body_chars=raw.length;
-      if(label==='new_api_first_party'||label.startsWith('new_api_proxy')||label==='official_app_backend'){
+      if(label.startsWith('club_proxy')||label==='new_api_first_party'||label.startsWith('new_api_proxy')||label==='official_app_backend'){
         try{
           const payload=JSON.parse(raw);
           info.json_type=Array.isArray(payload)?'array':typeof payload;
           info.top_keys=payload&&!Array.isArray(payload)&&typeof payload==='object'?Object.keys(payload).slice(0,25):[];
           info.array_length=Array.isArray(payload)?payload.length:null;
+          if(label.startsWith('club_proxy')){
+            info.reuniones_count=Array.isArray(payload.reuniones)?payload.reuniones.length:null;
+            info.first_reunion_keys=Array.isArray(payload.reuniones)&&payload.reuniones.length?Object.keys(payload.reuniones[0]).slice(0,25):[];
+          }
           if(Array.isArray(payload)&&payload.length&&typeof payload[0]==='object') info.first_item_keys=Object.keys(payload[0]).slice(0,25);
           for(const [key,value] of Object.entries(payload??{}).slice(0,15)){
             if(Array.isArray(value)) info[key+'_array_size']=value.length;
