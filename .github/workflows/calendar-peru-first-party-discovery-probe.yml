@@ -1,0 +1,25 @@
+name: Peru Monterrico first-party schedule discovery probe
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/timetable/probe-peru-monterrico-first-party.mjs'
+      - '.github/workflows/calendar-peru-first-party-discovery-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax and bounded official-site discovery
+        run: |
+          node --check scripts/timetable/probe-peru-monterrico-first-party.mjs
+          node scripts/timetable/probe-peru-monterrico-first-party.mjs
