@@ -84,6 +84,7 @@ const countryFlagEmojiById: Record<string, string> = {
   'russia': '🇷🇺',
   'indonesia': '🇮🇩',
   'malta': '🇲🇹',
+  'oman': '🇴🇲',
 };
 
 const authorityCompactLabelById: Record<string, string> = {
