@@ -14,6 +14,8 @@ const urls=[
   {label:'legacy_date_api',url:firstParty+'/api/general/carreras/general/programas/fecha/'+today},
   {label:'new_api_first_party',url:firstParty+'/api/v1/elturf/reuniones-dia?fecha='+today+'&vivo=1'},
   {label:'new_api_proxy',url:firstParty+'/api/turf/api/v1/elturf/reuniones-dia?fecha='+today+'&vivo=1'},
+  {label:'new_api_proxy_next_day',url:firstParty+'/api/turf/api/v1/elturf/reuniones-dia?fecha='+plusDays(today,1)+'&vivo=1'},
+  {label:'new_api_proxy_day2',url:firstParty+'/api/turf/api/v1/elturf/reuniones-dia?fecha='+plusDays(today,2)+'&vivo=1'},
   {label:'official_app_backend',url:'https://eltiaback.elturf.com/api/v1/elturf/reuniones-dia?fecha='+today+'&vivo=1'},
 ];
 for(const {label,url} of urls){
@@ -31,7 +33,7 @@ for(const {label,url} of urls){
     else {
       const raw=await r.text();
       info.body_chars=raw.length;
-      if(label==='new_api_first_party'||label==='new_api_proxy'||label==='official_app_backend'){
+      if(label==='new_api_first_party'||label.startsWith('new_api_proxy')||label==='official_app_backend'){
         try{
           const payload=JSON.parse(raw);
           info.json_type=Array.isArray(payload)?'array':typeof payload;
@@ -47,6 +49,11 @@ for(const {label,url} of urls){
               info.reunion_date_samples=value.slice(0,8).map(x=>
                 Object.fromEntries(Object.entries(x??{}).filter(([k,v])=>/fecha|date|dia/i.test(k)&&typeof v!=='object')));
               info.top_fecha=payload.fecha??null;
+              info.reunion_identifiers=value.slice(0,24).map(x=>({
+                id:x.id,iso:x.iso,numero:x.numero,hipodromo:x.hipodromo,idHipodromo:x.idHipodromo,
+                race_count:Array.isArray(x.races)?x.races.length:null,
+                race_fields:Array.isArray(x.races)&&x.races.length?Object.keys(x.races[0]).slice(0,20):[],
+              }));
             }
           }
         }catch{info.json_parse='failed';}
