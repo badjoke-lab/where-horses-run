@@ -149,6 +149,38 @@ assert.equal(parseChileTeletrakWeeklyHtml(mixedConflict, {
   referenceDate: '2026-11-14', startDate: '2026-11-13', endDateExclusive: '2026-11-15',
 }).parse_failures.length, 1);
 
+// One disputed 2026-11-19 Hipódromo Chile PDF cannot invalidate the
+// independent Chile venue meeting on the same weekly official source.
+const ambiguousHch = 'https://storage.elturf.com/pdf_volantes/pdf_hch/102143.pdf';
+const ambiguousTeletrak = 'https://teletrak.cl/wp-content/uploads/2026/11/19-11-2026-1.pdf';
+const conflictingWeek = '<h2>Semana de carreras</h2><p>Teletrak</p>'
+  + cardWithProgrammeLinks('JUE 19', 'Hipódromo Chile', [ambiguousHch, ambiguousTeletrak])
+  + cardWithProgrammeLinks('VIE 20', 'Club Hípico de Concepción', []);
+const mixedRows = parseChileTeletrakWeeklyHtml(conflictingWeek, {
+  referenceDate: '2026-11-19', startDate: '2026-11-19', endDateExclusive: '2026-11-21',
+});
+assert.equal(mixedRows.parse_failures.length, 1);
+assert.equal(mixedRows.records.length, 2);
+const partialDir = fs.mkdtempSync(path.join(os.tmpdir(), 'whr-chile-partial-'));
+try {
+  const inputFile = path.join(partialDir, 'week.html');
+  const outputFile = path.join(partialDir, 'observation.json');
+  fs.writeFileSync(inputFile, conflictingWeek);
+  execFileSync(process.execPath, ['scripts/timetable/run-chile-teletrak-official-window.mjs',
+    '--fixture=' + inputFile, '--output=' + outputFile,
+    '--as-of=2026-11-19', '--days=2'], { encoding: 'utf8', timeout: 30000 });
+  const result = JSON.parse(fs.readFileSync(outputFile, 'utf8'));
+  assert.equal(result.records.length, 1);
+  assert.equal(result.records[0].racecourse_id, 'club-hipico-de-concepcion-racecourse');
+  assert.equal(result.records[0].capability_rank, 'C');
+  assert.equal(result.diagnostics.parse_failures.length, 1);
+  assert.deepEqual(result.diagnostics.quarantined_meetings, [{
+    date: '2026-11-19', racecourse_id: 'hipodromo-chile', code: 'multiple_programme_links',
+  }]);
+  assert.deepEqual(result.meeting_presence_records, []);
+  assert.equal(result.discovery.non_running_source_status, 'not_checked');
+} finally { fs.rmSync(partialDir, { recursive: true, force: true }); }
+
 const clubHipicoViewer = 'https://www.clubhipico.cl/carreras/volante/?fecha=2026-09-21';
 assert.equal(
   resolveClubHipicoSantiagoProgrammePdfCandidate(clubHipicoViewer, { racecourseId: 'club-hipico-de-santiago-racecourse' }),
