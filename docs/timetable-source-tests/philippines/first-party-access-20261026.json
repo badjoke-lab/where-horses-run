@@ -1,0 +1,54 @@
+{
+  "schema_version": "philippines-first-party-access-20261026-v1",
+  "checked_at": "2026-10-26",
+  "source_type": "first_party_only",
+  "rights_status": "REVIEW_REQUIRED",
+  "production_status": "NOT_ROUTED",
+  "countrywide_coverage_claim": false,
+  "publication_fields": [],
+  "raw_source_retained": false,
+  "evidence_run": "https://github.com/badjoke-lab/where-horses-run/actions/runs/40313530580",
+  "sources": [
+    {
+      "id": "philracom-calendar",
+      "official_url": "https://philracom.gov.ph/racing-calendar/",
+      "robots": "403",
+      "access": "not_attempted_due_to_robots_403",
+      "next": "do not bypass; seek independently permissible official date source"
+    },
+    {
+      "id": "mmtci-race-calendar",
+      "official_url": "https://mmtci.com/",
+      "robots": "200",
+      "html": "200",
+      "html_iso_date_count": 0,
+      "public_display_asset": "/js/calendar1.js",
+      "asset_http": "200",
+      "asset_has_actual_2026_dates": false,
+      "static_calendar_cue": true,
+      "next": "source display uses Angular/JS, verify first-party public actual dated venue fixture route and applicable terms before any collection",
+      "angular_calendar_asset": "/js/controller.min.js",
+      "angular_asset_http": "200",
+      "angular_asset_contains_iso_dates": false,
+      "calendar_literal_paths": [],
+      "note": "Official Angular controller and calendar display assets respond 200, but neither exposes scheduled date/venue facts as simple static HTML or an identified reviewed feed. No deeper betting/login/API access attempted."
+    },
+    {
+      "id": "pjc-trainer-fixtures",
+      "official_url": "https://pjcracing.com/fixtures",
+      "robots": "200",
+      "html": "200",
+      "html_iso_date_count": 0,
+      "public_display_asset": "/assets/js/dist/pjc-fixtures.js",
+      "asset_http": "not_checked",
+      "next": "dynamic trainer planner and reuse restrictions must be assessed; do not infer exact race meetings from weekdays"
+    }
+  ],
+  "exclusions": [
+    "no timetable dates inferred",
+    "no login/account/betting endpoint",
+    "no robots/403 bypass",
+    "no source page or JavaScript redistribution",
+    "no registered production acquisition profile"
+  ]
+}
