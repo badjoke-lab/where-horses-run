@@ -17,7 +17,8 @@ assert.equal(rec.capability_rank,'C');
 assert.equal(rec.first_race_time_local,null);
 assert.equal(rec.racecourse_id,'romania--hipodromul-ploiesti');
 
-if(process.env.GITHUB_ACTIONS==='true'){
+// PR smoke uses deterministic fixtures; scheduled production owns live source status.
+if(process.env.GITHUB_ACTIONS==='true' && process.env.WHR_SKIP_LIVE_ADAPTER_CHECK!=='1'){
   const output='.romania-live-'+process.pid+'.json';
   try{
     execFileSync(process.execPath,['scripts/timetable/run-romania-ploiesti-official-window.mjs','--as-of=2026-10-01','--days=30','--output='+output],{encoding:'utf8',timeout:180000});
