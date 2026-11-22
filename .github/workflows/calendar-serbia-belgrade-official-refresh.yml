@@ -44,7 +44,8 @@ jobs:
         with:
           node-version: '22'
       - run: npm install --no-package-lock --no-audit --no-fund
-      - run: npm run validate:serbia-belgrade
+      # PR parser checks use deterministic fixtures; scheduled refresh checks the live authority.
+      - run: WHR_SKIP_LIVE_ADAPTER_CHECK=1 npm run validate:serbia-belgrade
       - name: Exercise Serbia 30-day production path
         run: |
           mkdir -p .calendar-serbia
