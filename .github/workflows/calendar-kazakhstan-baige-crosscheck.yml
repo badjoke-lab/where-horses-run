@@ -1,0 +1,23 @@
+name: Calendar Kazakhstan Baige official source crosscheck
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/calendar-kazakhstan-baige-crosscheck.yml'
+      - 'scripts/check-calendar-kazakhstan-baige-crosscheck.mjs'
+      - 'docs/timetable-source-tests/77-kazakhstan/official-calendar-crosscheck-20261123.json'
+permissions:
+  contents: read
+jobs:
+  fixture-consistency:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate source dates, discrepancy guards and no-publication boundary
+        run: |
+          node --check scripts/check-calendar-kazakhstan-baige-crosscheck.mjs
+          node scripts/check-calendar-kazakhstan-baige-crosscheck.mjs --self-test
