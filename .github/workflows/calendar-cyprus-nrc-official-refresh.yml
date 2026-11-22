@@ -82,6 +82,7 @@ jobs:
         run: |
           mkdir -p .calendar-cyprus
           node scripts/timetable/run-cyprus-nrc-official-window.mjs --days="${{ steps.scope.outputs.days }}" --output=.calendar-cyprus/nrc.json
+          node -e "const fs=require('fs');const a=JSON.parse(fs.readFileSync('.calendar-cyprus/nrc.json','utf8'));if(a.acquisition_attempt?.status!=='success'){console.error('CYPRUS_SOURCE_REFRESH_FAILED '+JSON.stringify({attempt:a.acquisition_attempt,diagnostics:a.diagnostics}));process.exit(1)}"
           node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-cyprus/nrc.json --country-id=cyprus --authority-id=nicosia-race-club --racing-system-id=nicosia-national-racing-system --timezone=Europe/Nicosia
           node scripts/timetable/apply-reviewed-calendar-observations.mjs
           node scripts/check-calendar-public-country-support.mjs
@@ -96,6 +97,7 @@ jobs:
             rm -rf .calendar-cyprus
             mkdir -p .calendar-cyprus
             node scripts/timetable/run-cyprus-nrc-official-window.mjs --days="${{ steps.scope.outputs.days }}" --output=.calendar-cyprus/nrc.json
+          node -e "const fs=require('fs');const a=JSON.parse(fs.readFileSync('.calendar-cyprus/nrc.json','utf8'));if(a.acquisition_attempt?.status!=='success'){console.error('CYPRUS_SOURCE_REFRESH_FAILED '+JSON.stringify({attempt:a.acquisition_attempt,diagnostics:a.diagnostics}));process.exit(1)}"
             node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-cyprus/nrc.json --country-id=cyprus --authority-id=nicosia-race-club --racing-system-id=nicosia-national-racing-system --timezone=Europe/Nicosia
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
             node scripts/check-calendar-public-country-support.mjs
