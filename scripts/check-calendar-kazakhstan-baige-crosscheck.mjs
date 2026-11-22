@@ -10,7 +10,7 @@ const fixtureUrl = new URL('../docs/timetable-source-tests/77-kazakhstan/officia
 const expectedStages = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
 
 function dateUTC(value) {
-  assert.match(value, /^\\d{4}-\\d{2}-\\d{2}$/, 'Use an explicit ISO calendar date');
+  assert.match(value, /^\d{4}-\d{2}-\d{2}$/, 'Use an explicit ISO calendar date');
   const parsed = new Date(value + 'T00:00:00Z');
   assert.equal(parsed.toISOString().slice(0, 10), value, 'Impossible calendar date');
   return parsed;
@@ -20,7 +20,7 @@ export function validateBaigeCrosscheck(doc) {
   assert.equal(doc.schema_version, 'calendar-kazakhstan-baige-official-calendar-crosscheck-v1');
   assert.equal(doc.country_id, 'kazakhstan');
   assert.equal(doc.racing_system_id, 'baige-national-championship');
-  assert.match(doc.first_party_source_url, /^https:\\/\\/www\\.baigefederation\\.kz\\/horse-racing$/);
+  assert.match(doc.first_party_source_url, /^https:\/\/www\.baigefederation\.kz\/horse-racing$/);
   assert.equal(doc.status, 'review_only_no_production_route');
   assert.equal(doc.production_routing, false);
   assert.equal(doc.publication_eligible, false);
@@ -46,7 +46,7 @@ export function validateBaigeCrosscheck(doc) {
   assert.deepEqual(conflicts, doc.expected_conflicting_stage_ids, 'Source discrepancies changed; re-review the official source');
   assert.deepEqual(conflicts, ['II', 'VI'], 'Do not silently reconcile the 2026 source discrepancies');
   assert.equal(doc.independent_confirmation.date, '2026-10-10');
-  assert.match(doc.independent_confirmation.url, /^https:\\/\\/www\\.gov\\.kz\\//);
+  assert.match(doc.independent_confirmation.url, /^https:\/\/www\.gov\.kz\//);
   return {
     work_id: doc.work_id,
     status: 'SOURCE_CROSSCHECK_ONLY',
@@ -69,7 +69,7 @@ function main() {
     assert.throws(() => validateBaigeCrosscheck(unexpectedCorrection), /Source discrepancies changed/);
     const nextYearGuess = structuredClone(doc);
     nextYearGuess.stages[7].city_card_date = '2027-10-10';
-    assert.throws(() => validateBaigeCrosscheck(nextYearGuess), /2026|current\\/future/);
+    assert.throws(() => validateBaigeCrosscheck(nextYearGuess), /2026|current\/future/);
     const inventedVenue = structuredClone(doc);
     inventedVenue.stages[0].physical_racecourse_id = 'invented-venue';
     assert.throws(() => validateBaigeCrosscheck(inventedVenue), /physical racecourse/);
