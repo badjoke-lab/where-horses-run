@@ -18,7 +18,8 @@ assert.equal(rec.last_race_time_local,null);
 assert.deepEqual(rec.timetable_rows,[]);
 assert.equal(rec.racecourse_id,'cyprus--nicosia-racecourse');
 
-if(process.env.GITHUB_ACTIONS==='true'){
+// PR smoke uses deterministic fixtures; scheduled production owns live source status.
+if(process.env.GITHUB_ACTIONS==='true' && process.env.WHR_SKIP_LIVE_ADAPTER_CHECK!=='1'){
   const output='.cyprus-live-'+process.pid+'.json';
   try{
     execFileSync(process.execPath,['scripts/timetable/run-cyprus-nrc-official-window.mjs','--as-of=2026-10-02','--days=30','--output='+output],{encoding:'utf8',timeout:120000});
