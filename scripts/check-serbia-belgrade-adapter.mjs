@@ -9,7 +9,8 @@ assert.equal(rec.capability_rank,'C');
 assert.equal(rec.first_race_time_local,null);
 assert.equal(rec.racecourse_id,'serbia--belgrade-hippodrome');
 
-if(process.env.GITHUB_ACTIONS==='true'){
+// PR smoke uses deterministic fixtures; scheduled production owns live source status.
+if(process.env.GITHUB_ACTIONS==='true' && process.env.WHR_SKIP_LIVE_ADAPTER_CHECK!=='1'){
   const output='.serbia-live-'+process.pid+'.json';
   try{
     execFileSync(process.execPath,['scripts/timetable/run-serbia-belgrade-official-window.mjs','--as-of=2026-09-30','--days=30','--output='+output],{encoding:'utf8',timeout:120000});
