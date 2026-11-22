@@ -44,7 +44,8 @@ jobs:
         with:
           node-version: '22'
       - run: npm install --no-package-lock --no-audit --no-fund
-      - run: npm run validate:romania-ploiesti
+      # PR parser checks use deterministic fixtures; scheduled refresh checks the live authority.
+      - run: WHR_SKIP_LIVE_ADAPTER_CHECK=1 npm run validate:romania-ploiesti
       - name: Exercise Romania 30-day production path
         run: |
           mkdir -p .calendar-romania
@@ -82,6 +83,7 @@ jobs:
         run: |
           mkdir -p .calendar-romania
           node scripts/timetable/run-romania-ploiesti-official-window.mjs --days="${{ steps.scope.outputs.days }}" --output=.calendar-romania/ploiesti.json
+          node -e "const fs=require('fs');const a=JSON.parse(fs.readFileSync('.calendar-romania/ploiesti.json','utf8'));if(a.acquisition_attempt?.status!=='success'){console.error('ROMANIA_SOURCE_REFRESH_FAILED '+JSON.stringify({attempt:a.acquisition_attempt,diagnostics:a.diagnostics}));process.exit(1)}"
           node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-romania/ploiesti.json --country-id=romania --authority-id=csm-ploiesti --racing-system-id=romania-ploiesti-system --timezone=Europe/Bucharest
           node scripts/timetable/apply-reviewed-calendar-observations.mjs
           node scripts/check-calendar-public-country-support.mjs
@@ -96,6 +98,7 @@ jobs:
             rm -rf .calendar-romania
             mkdir -p .calendar-romania
             node scripts/timetable/run-romania-ploiesti-official-window.mjs --days="${{ steps.scope.outputs.days }}" --output=.calendar-romania/ploiesti.json
+            node -e "const fs=require('fs');const a=JSON.parse(fs.readFileSync('.calendar-romania/ploiesti.json','utf8'));if(a.acquisition_attempt?.status!=='success'){console.error('ROMANIA_SOURCE_REFRESH_FAILED '+JSON.stringify({attempt:a.acquisition_attempt,diagnostics:a.diagnostics}));process.exit(1)}"
             node scripts/timetable/apply-official-rolling-observations.mjs --artifact=.calendar-romania/ploiesti.json --country-id=romania --authority-id=csm-ploiesti --racing-system-id=romania-ploiesti-system --timezone=Europe/Bucharest
             node scripts/timetable/apply-reviewed-calendar-observations.mjs
             node scripts/check-calendar-public-country-support.mjs
